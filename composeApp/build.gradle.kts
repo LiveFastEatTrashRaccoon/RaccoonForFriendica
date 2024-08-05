@@ -70,6 +70,8 @@ kotlin {
             implementation(projects.domain.identity.repository)
 
             implementation(projects.feature.timeline)
+
+            implementation(projects.unit.accountdetail)
         }
     }
 }
