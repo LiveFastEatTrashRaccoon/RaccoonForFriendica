@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.timeline
 
+import accountdetail.AccountDetailScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -102,8 +103,11 @@ class TimelineScreen : Screen {
                         TimelineItem(
                             entry = status,
                             onOpenUrl = { url ->
-                                // TODO
                                 urlManager.open(url)
+                            },
+                            onOpenUser = {
+                                val screen = AccountDetailScreen(it.id)
+                                navigationCoordinator.push(screen)
                             },
                         )
                         HorizontalDivider(
