@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,13 +22,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
 
 @Composable
-fun ContentHeader(
+internal fun ReblogInfo(
     modifier: Modifier = Modifier,
-    account: AccountModel? = null,
-    iconSize: Dp = IconSize.l,
+    account: AccountModel?,
+    iconSize: Dp = IconSize.s,
     onOpenUser: ((AccountModel) -> Unit)? = null,
 ) {
     val creatorName = account?.let { it.displayName ?: it.handle }.orEmpty()
@@ -37,6 +41,17 @@ fun ContentHeader(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
+        Icon(
+            modifier = Modifier.size(iconSize),
+            imageVector = Icons.Default.Repeat,
+            contentDescription = null,
+            tint = fullColor,
+        )
+        Text(
+            text = LocalStrings.current.timelineEntryRebloggedBy,
+            style = MaterialTheme.typography.bodySmall,
+            color = fullColor,
+        )
         if (creatorAvatar.isNotEmpty()) {
             CustomImage(
                 modifier =

@@ -21,6 +21,8 @@ interface Strings {
     val timelineAll: String
     val timelineSubscriptions: String
     val nodeVia: String
+    val timelineEntryRebloggedBy: String
+    val timelineEntryInReplyTo: String
 }
 
 object Locales {
