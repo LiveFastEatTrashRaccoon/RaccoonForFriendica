@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,7 @@ fun ContentHeader(
     modifier: Modifier = Modifier,
     account: AccountModel? = null,
     iconSize: Dp = IconSize.l,
+    onOpenUser: ((AccountModel) -> Unit)? = null,
 ) {
     val creatorName = account?.let { it.displayName ?: it.handle }.orEmpty()
     val creatorAvatar = account?.avatar.orEmpty()
@@ -39,7 +41,11 @@ fun ContentHeader(
             CustomImage(
                 modifier =
                     Modifier
-                        .padding(Spacing.xxxs)
+                        .clickable {
+                            if (account != null) {
+                                onOpenUser?.invoke(account)
+                            }
+                        }.padding(Spacing.xxxs)
                         .size(iconSize)
                         .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
@@ -48,6 +54,12 @@ fun ContentHeader(
             )
         } else {
             PlaceholderImage(
+                modifier =
+                    Modifier.clickable {
+                        if (account != null) {
+                            onOpenUser?.invoke(account)
+                        }
+                    },
                 size = iconSize,
                 title = creatorName,
             )
