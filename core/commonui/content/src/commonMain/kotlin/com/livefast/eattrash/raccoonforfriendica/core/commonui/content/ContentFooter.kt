@@ -40,19 +40,19 @@ fun ContentFooter(
     ) {
         FooterItem(
             icon = Icons.AutoMirrored.Default.Message,
-            value = replyCount,
+            value = replyCount.takeIf { it > 0 },
             onClick = onReply,
         )
         FooterItem(
             icon = Icons.Default.Repeat,
-            value = reblogCount,
+            value = reblogCount.takeIf { it > 0 },
             toggled = reblogged,
             onClick = onReblog,
         )
         FooterItem(
             icon = Icons.Default.StarBorder,
             toggledIcon = Icons.Default.Star,
-            value = favoriteCount,
+            value = favoriteCount.takeIf { it > 0 },
             toggled = favorite,
             onClick = onFavorite,
         )
