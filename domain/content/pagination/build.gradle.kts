@@ -55,7 +55,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.github.akesiseli.raccoonforfriendica.domain.lemmy.pagination"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.domain.lemmy.pagination"
     compileSdk =
         libs.versions.android.targetSdk
             .get()

@@ -75,7 +75,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.github.akesiseli.raccoonforfriendica"
+    namespace = "com.livefast.eattrash.raccoonforfriendica"
     compileSdk =
         libs.versions.android.compileSdk
             .get()
@@ -86,7 +86,7 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = "com.github.akesiseli.raccoonforfriendica"
+        applicationId = "com.livefast.eattrash.raccoonforfriendica"
         minSdk =
             libs.versions.android.minSdk
                 .get()

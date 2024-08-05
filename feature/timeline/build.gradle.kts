@@ -62,7 +62,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.github.akesiseli.raccoonforfriendica.feature.timeline"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.feature.timeline"
     compileSdk =
         libs.versions.android.targetSdk
             .get()
