@@ -20,7 +20,13 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType as MediaTypeDto
 
-fun Status.toModel() =
+internal fun Status.toModelWithReply() =
+    toModel().copy(
+        inReplyTo = inReplyToStatus?.toModel(),
+        reblog = reblog?.toModel(),
+    )
+
+internal fun Status.toModel() =
     TimelineEntryModel(
         attachments = attachments.map { it.toModel() },
         id = id,
@@ -42,9 +48,10 @@ fun Status.toModel() =
         updated = editedAt,
         url = url,
         visibility = visibility.toModel(),
+        title = addons?.title?.takeIf { it.isNotBlank() },
     )
 
-fun MediaAttachment.toModel() =
+internal fun MediaAttachment.toModel() =
     AttachmentModel(
         id = id,
         description = description,
@@ -53,7 +60,7 @@ fun MediaAttachment.toModel() =
         type = type.toModel(),
     )
 
-fun MediaTypeDto.toModel(): MediaType =
+internal fun MediaTypeDto.toModel(): MediaType =
     when (this) {
         IMAGE -> MediaType.Image
         VIDEO -> MediaType.Video
@@ -62,7 +69,7 @@ fun MediaTypeDto.toModel(): MediaType =
         UNKNOWN -> MediaType.Unknown
     }
 
-fun ContentVisibility.toModel(): Visibility =
+internal fun ContentVisibility.toModel(): Visibility =
     when (this) {
         ContentVisibility.PUBLIC -> Visibility.Public
         ContentVisibility.UNLISTED -> Visibility.Unlisted
@@ -70,7 +77,7 @@ fun ContentVisibility.toModel(): Visibility =
         ContentVisibility.DIRECT -> Visibility.Direct
     }
 
-fun Account.toModel() =
+internal fun Account.toModel() =
     AccountModel(
         avatar = avatar,
         bot = bot,
@@ -88,13 +95,13 @@ fun Account.toModel() =
         username = username,
     )
 
-fun Field.toModel() =
+internal fun Field.toModel() =
     FieldModel(
         key = name,
         value = value,
     )
 
-fun Tag.toModel() =
+internal fun Tag.toModel() =
     TagModel(
         url = url,
         name = name,

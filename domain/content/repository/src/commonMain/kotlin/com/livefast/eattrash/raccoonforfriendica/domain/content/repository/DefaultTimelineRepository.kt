@@ -17,7 +17,7 @@ internal class DefaultTimelineRepository(
                         maxId = pageCursor,
                         limit = DEFAULT_PAGE_SIZE,
                     )
-                response.map { it.toModel() }
+                response.map { it.toModelWithReply() }
             }.getOrElse { emptyList() }
         }
 
@@ -29,7 +29,7 @@ internal class DefaultTimelineRepository(
                         maxId = pageCursor,
                         limit = DEFAULT_PAGE_SIZE,
                     )
-                response.map { it.toModel() }
+                response.map { it.toModelWithReply() }
             }.getOrElse { emptyList() }
         }
 
@@ -45,7 +45,7 @@ internal class DefaultTimelineRepository(
                         maxId = pageCursor,
                         limit = DEFAULT_PAGE_SIZE,
                     )
-                response.map { it.toModel() }
+                response.map { it.toModelWithReply() }
             }.getOrElse { emptyList() }
         }
 
