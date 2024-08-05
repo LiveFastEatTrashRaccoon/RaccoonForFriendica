@@ -14,4 +14,6 @@ internal open class DefaultStrings : Strings {
     override val timelineAll = "All"
     override val timelineSubscriptions = "Subscriptions"
     override val nodeVia = "via"
+    override val timelineEntryInReplyTo = "in reply to"
+    override val timelineEntryRebloggedBy = "re-shared by"
 }
