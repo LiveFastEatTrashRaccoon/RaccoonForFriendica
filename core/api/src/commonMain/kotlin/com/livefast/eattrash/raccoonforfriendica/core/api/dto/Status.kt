@@ -14,6 +14,7 @@ data class Status(
     @SerialName("favourites_count") val favoritesCount: Int = 0,
     @SerialName("id") val id: String,
     @SerialName("in_reply_to_account_id") val inReplyToAccountId: String? = null,
+    @SerialName("in_reply_to_status") val inReplyToStatus: Status? = null,
     @SerialName("in_reply_to_id") val inReplyToId: String? = null,
     @SerialName("language") val lang: String? = null,
     @SerialName("media_attachments") val attachments: List<MediaAttachment> = emptyList(),
@@ -30,4 +31,5 @@ data class Status(
     @SerialName("tags") val tags: List<Tag> = emptyList(),
     @SerialName("url") val url: String? = null,
     @SerialName("visibility") val visibility: ContentVisibility = ContentVisibility.PUBLIC,
+    @SerialName("friendica") val addons: StatusAddons? = null,
 )
