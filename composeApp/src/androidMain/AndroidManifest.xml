@@ -10,12 +10,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name="com.github.akesiseli.raccoonforfriendica.MainApplication"
+        android:name="com.livefast.eattrash.raccoonforfriendica.MainApplication"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
-            android:name="com.github.akesiseli.raccoonforfriendica.MainActivity">
+            android:name="com.livefast.eattrash.raccoonforfriendica.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

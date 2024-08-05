@@ -53,7 +53,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.github.akesiseli.raccoonforfriendica.core.navigation"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.core.navigation"
     compileSdk =
         libs.versions.android.targetSdk
             .get()

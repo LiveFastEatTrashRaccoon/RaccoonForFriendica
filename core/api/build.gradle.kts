@@ -49,7 +49,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.github.akesiseli.raccoonforfriendica.core.api"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.core.api"
     compileSdk =
         libs.versions.android.targetSdk
             .get()
