@@ -36,7 +36,7 @@ fun TimelineItem(
                 onOpenUrl = onOpenUrl,
             )
             ContentFooter(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
                 favoriteCount = entry.favoriteCount,
                 favorite = entry.favorite,
                 reblogCount = entry.reblogCount,
