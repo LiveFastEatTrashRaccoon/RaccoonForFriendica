@@ -38,6 +38,12 @@ interface Strings {
     val accountSectionPinned: String
     val accountSectionMedia: String
     val postTitleBy: String
+    val settingsTitle: String
+    val settingsHeaderLookAndFeel: String
+    val settingsItemLanguage: String
+    val settingsItemUiTheme: String
+    val languageEn: String
+    val languageIt: String
 }
 
 object Locales {
