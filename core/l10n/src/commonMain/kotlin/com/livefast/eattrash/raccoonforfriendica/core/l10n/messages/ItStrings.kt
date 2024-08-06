@@ -31,4 +31,5 @@ internal val ItStrings =
         override val accountSectionAll = "Tutti"
         override val accountSectionPinned = "Fissati"
         override val accountSectionMedia = "Media"
+        override val postTitleBy = "Post di"
     }

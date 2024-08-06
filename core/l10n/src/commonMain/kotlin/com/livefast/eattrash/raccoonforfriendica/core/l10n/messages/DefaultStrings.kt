@@ -30,4 +30,5 @@ internal open class DefaultStrings : Strings {
     override val accountSectionAll = "Everything"
     override val accountSectionPinned = "Pinned"
     override val accountSectionMedia = "Media"
+    override val postTitleBy = "Post by"
 }
