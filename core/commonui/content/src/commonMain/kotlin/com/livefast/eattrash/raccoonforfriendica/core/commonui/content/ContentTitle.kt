@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 fun ContentTitle(
     content: String = "",
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
@@ -30,6 +31,8 @@ fun ContentTitle(
                         ?.item
                 if (!url.isNullOrBlank()) {
                     onOpenUrl?.invoke(url)
+                } else {
+                    onClick?.invoke()
                 }
             },
         )
