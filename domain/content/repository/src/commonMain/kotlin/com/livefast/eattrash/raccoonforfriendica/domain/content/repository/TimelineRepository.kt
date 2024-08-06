@@ -11,4 +11,13 @@ interface TimelineRepository {
         hashtag: String,
         pageCursor: String? = null,
     ): List<TimelineEntryModel>
+
+    suspend fun getByAccount(
+        accountId: String,
+        pageCursor: String? = null,
+        excludeReplies: Boolean = false,
+        excludeReblogs: Boolean = false,
+        pinned: Boolean = false,
+        onlyMedia: Boolean = false,
+    ): List<TimelineEntryModel>
 }
