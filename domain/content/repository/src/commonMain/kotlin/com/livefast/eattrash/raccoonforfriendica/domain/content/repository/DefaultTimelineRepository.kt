@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -71,6 +72,21 @@ internal class DefaultTimelineRepository(
                 response.map { it.toModelWithReply() }
             }
         }.getOrElse { emptyList() }
+
+    override suspend fun getById(entryId: String): TimelineEntryModel? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.status.get(id = entryId).toModelWithReply()
+            }
+        }.getOrNull()
+
+    override suspend fun getContext(entryId: String): TimelineContextModel? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val response = provider.status.getContext(id = entryId)
+                response.toModel()
+            }.getOrNull()
+        }
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20

@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AccountService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.StatusService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import de.jensklingenberg.ktorfit.Ktorfit
@@ -26,6 +27,7 @@ internal class DefaultServiceProvider(
 
     override lateinit var timeline: TimelineService
     override lateinit var account: AccountService
+    override lateinit var status: StatusService
 
     private val baseUrl: String get() = "https://$currentNode/api/$VERSION/"
 
@@ -72,5 +74,6 @@ internal class DefaultServiceProvider(
                 .build()
         timeline = ktorfit.create()
         account = ktorfit.create()
+        status = ktorfit.create()
     }
 }

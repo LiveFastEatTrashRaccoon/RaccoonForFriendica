@@ -10,12 +10,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.IMAGE
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.UNKNOWN
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.VIDEO
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType as MediaTypeDto
@@ -50,6 +52,12 @@ internal fun Status.toModel() =
         visibility = visibility.toModel(),
         title = addons?.title?.takeIf { it.isNotBlank() },
     )
+
+internal fun StatusContext.toModel() =
+    TimelineContextModel(
+        ancestors = ancestors.map { it.toModel() },
+        descendants = descendants.map { it.toModel() },
+)
 
 internal fun MediaAttachment.toModel() =
     AttachmentModel(

@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
 interface TimelineRepository {
@@ -20,4 +21,8 @@ interface TimelineRepository {
         pinned: Boolean = false,
         onlyMedia: Boolean = false,
     ): List<TimelineEntryModel>
+
+    suspend fun getById(entryId: String): TimelineEntryModel?
+
+    suspend fun getContext(entryId: String): TimelineContextModel?
 }
