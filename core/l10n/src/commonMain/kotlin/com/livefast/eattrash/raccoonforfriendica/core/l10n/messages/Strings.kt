@@ -37,6 +37,7 @@ interface Strings {
     val accountSectionAll: String
     val accountSectionPinned: String
     val accountSectionMedia: String
+    val postTitleBy: String
 }
 
 object Locales {

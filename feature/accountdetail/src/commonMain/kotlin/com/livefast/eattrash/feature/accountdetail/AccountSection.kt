@@ -1,4 +1,4 @@
-package accountdetail
+package com.livefast.eattrash.feature.accountdetail
 
 import androidx.compose.runtime.Composable
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings

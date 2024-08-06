@@ -1,7 +1,5 @@
-package accountdetail
+package com.livefast.eattrash.feature.accountdetail
 
-import accountdetail.composable.AccountFields
-import accountdetail.composable.AccountHeader
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -39,10 +37,13 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.feature.accountdetail.composable.AccountFields
+import com.livefast.eattrash.feature.accountdetail.composable.AccountHeader
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getUrlManager
@@ -66,6 +67,7 @@ class AccountDetailScreen(
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val uriHandler = LocalUriHandler.current
         val urlManager = remember { getUrlManager(uriHandler) }
+        val detailOpener = remember { getDetailOpener() }
 
         Scaffold(
             topBar = {
@@ -171,15 +173,17 @@ class AccountDetailScreen(
                         items(
                             items = uiState.entries,
                             key = { it.id },
-                        ) { status ->
+                        ) { entry ->
                             TimelineItem(
-                                entry = status,
+                                entry = entry,
+                                onClick = {
+                                    detailOpener.openEntryDetail(entry.id)
+                                },
                                 onOpenUrl = { url ->
                                     urlManager.open(url)
                                 },
                                 onOpenUser = {
-                                    val screen = AccountDetailScreen(it.id)
-                                    navigationCoordinator.push(screen)
+                                    detailOpener.openAccountDetail(it.id)
                                 },
                             )
                             HorizontalDivider(

@@ -21,7 +21,7 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "feature.timeline"
+            baseName = "feature.accountdetail"
             isStatic = true
         }
     }
@@ -36,12 +36,12 @@ kotlin {
                 implementation(compose.materialIconsExtended)
 
                 implementation(libs.koin.core)
-                implementation(libs.voyager.navigator)
                 implementation(libs.voyager.screenmodel)
                 implementation(libs.voyager.koin)
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.architecture)
+                implementation(projects.core.commonui.components)
                 implementation(projects.core.commonui.content)
                 implementation(projects.core.l10n)
                 implementation(projects.core.navigation)
@@ -50,19 +50,13 @@ kotlin {
                 implementation(projects.domain.content.data)
                 implementation(projects.domain.content.pagination)
                 implementation(projects.domain.content.repository)
-                implementation(projects.domain.identity.repository)
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
             }
         }
     }
 }
 
 android {
-    namespace = "com.livefast.eattrash.raccoonforfriendica.feature.timeline"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.feature.accountdetail"
     compileSdk =
         libs.versions.android.targetSdk
             .get()

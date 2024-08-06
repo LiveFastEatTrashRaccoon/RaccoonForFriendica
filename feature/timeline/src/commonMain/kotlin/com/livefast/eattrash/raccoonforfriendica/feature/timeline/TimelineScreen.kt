@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.timeline
 
-import accountdetail.AccountDetailScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -35,6 +34,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getUrlManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.readableName
@@ -51,6 +51,7 @@ class TimelineScreen : Screen {
         val connection = navigationCoordinator.getBottomBarScrollConnection()
         val uriHandler = LocalUriHandler.current
         val urlManager = remember { getUrlManager(uriHandler) }
+        val detailOpener = remember { getDetailOpener() }
 
         Scaffold(
             topBar = {
@@ -99,15 +100,17 @@ class TimelineScreen : Screen {
                     items(
                         items = uiState.entries,
                         key = { it.id },
-                    ) { status ->
+                    ) { entry ->
                         TimelineItem(
-                            entry = status,
+                            entry = entry,
+                            onClick = {
+                                detailOpener.openEntryDetail(entry.id)
+                            },
                             onOpenUrl = { url ->
                                 urlManager.open(url)
                             },
                             onOpenUser = {
-                                val screen = AccountDetailScreen(it.id)
-                                navigationCoordinator.push(screen)
+                                detailOpener.openAccountDetail(it.id)
                             },
                         )
                         HorizontalDivider(

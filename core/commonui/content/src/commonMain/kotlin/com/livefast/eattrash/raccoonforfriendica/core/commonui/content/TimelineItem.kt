@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ fun TimelineItem(
     entry: TimelineEntryModel,
     modifier: Modifier = Modifier,
     onOpenUrl: ((String) -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
     onOpenUser: ((AccountModel) -> Unit)? = null,
     onReply: (() -> Unit)? = null,
     onReblog: (() -> Unit)? = null,
@@ -26,7 +28,11 @@ fun TimelineItem(
     val isReblog = entry.reblog != null
 
     Box(
-        modifier = modifier.padding(horizontal = 10.dp),
+        modifier =
+            modifier
+                .clickable {
+                    onClick?.invoke()
+                }.padding(horizontal = 10.dp),
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
@@ -62,12 +68,14 @@ fun TimelineItem(
             entry.title?.let { title ->
                 ContentTitle(
                     content = title,
+                    onClick = onClick,
                     onOpenUrl = onOpenUrl,
                 )
             }
 
             ContentBody(
                 content = entry.content,
+                onClick = onClick,
                 onOpenUrl = onOpenUrl,
             )
 
