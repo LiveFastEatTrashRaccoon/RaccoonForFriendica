@@ -6,7 +6,7 @@ import org.koin.dsl.module
 
 val domainContentPaginationModule =
     module {
-        single<TimelinePaginationManager> {
+        factory<TimelinePaginationManager> {
             DefaultTimelinePaginationManager(
                 timelineRepository = get(),
             )
