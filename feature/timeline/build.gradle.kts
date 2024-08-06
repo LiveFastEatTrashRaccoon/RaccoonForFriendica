@@ -51,8 +51,6 @@ kotlin {
                 implementation(projects.domain.content.pagination)
                 implementation(projects.domain.content.repository)
                 implementation(projects.domain.identity.repository)
-
-                implementation(projects.unit.accountdetail)
             }
         }
         val commonTest by getting {

@@ -69,9 +69,8 @@ kotlin {
             implementation(projects.domain.content.repository)
             implementation(projects.domain.identity.repository)
 
+            implementation(projects.feature.accountdetail)
             implementation(projects.feature.timeline)
-
-            implementation(projects.unit.accountdetail)
         }
     }
 }

@@ -46,6 +46,5 @@ include(":domain:content:pagination")
 include(":domain:content:repository")
 include(":domain:identity:repository")
 
+include(":feature:accountdetail")
 include(":feature:timeline")
-
-include(":unit:accountdetail")

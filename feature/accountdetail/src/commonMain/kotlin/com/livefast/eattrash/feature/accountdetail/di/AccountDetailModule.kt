@@ -1,10 +1,10 @@
-package accountdetail.di
+package com.livefast.eattrash.feature.accountdetail.di
 
-import accountdetail.AccountDetailMviModel
-import accountdetail.AccountDetailViewModel
+import com.livefast.eattrash.feature.accountdetail.AccountDetailMviModel
+import com.livefast.eattrash.feature.accountdetail.AccountDetailViewModel
 import org.koin.dsl.module
 
-val unitAccountDetailModule =
+val featureAccountDetailModule =
     module {
         factory<AccountDetailMviModel> { params ->
             AccountDetailViewModel(

@@ -1,4 +1,4 @@
-package accountdetail
+package com.livefast.eattrash.feature.accountdetail
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel

@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.di
 
-import accountdetail.di.unitAccountDetailModule
+import com.livefast.eattrash.feature.accountdetail.di.featureAccountDetailModule
 import com.livefast.eattrash.raccoonforfriendica.core.api.di.coreApiModule
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.coreAppearanceModule
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.coreL10nModule
@@ -30,7 +30,7 @@ fun initKoin() {
             domainContentRepositoryModule,
             domainIdentityRepositoryModule,
             featureTimelineModule,
-            unitAccountDetailModule,
+            featureAccountDetailModule,
         )
     }
 }

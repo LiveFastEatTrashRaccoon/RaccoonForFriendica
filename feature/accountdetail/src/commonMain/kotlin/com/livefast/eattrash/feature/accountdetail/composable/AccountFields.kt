@@ -1,4 +1,4 @@
-package accountdetail.composable
+package com.livefast.eattrash.feature.accountdetail.composable
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
