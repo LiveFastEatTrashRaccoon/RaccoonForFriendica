@@ -4,6 +4,7 @@ import com.livefast.eattrash.feature.accountdetail.AccountDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
 
 class DefaultDetailOpener(
     private val navigationCoordinator: NavigationCoordinator,
@@ -15,6 +16,11 @@ class DefaultDetailOpener(
 
     override fun openEntryDetail(id: String) {
         val screen = EntryDetailScreen(id)
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openSettings() {
+        val screen = SettingsScreen()
         navigationCoordinator.push(screen)
     }
 }
