@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.domainContentPaginationModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.domainContentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.domainIdentityRepositoryModule
+import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.featureEntryDetailModule
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.di.featureTimelineModule
 import org.koin.core.context.startKoin
 
@@ -31,6 +32,7 @@ fun initKoin() {
             domainIdentityRepositoryModule,
             featureTimelineModule,
             featureAccountDetailModule,
+            featureEntryDetailModule,
         )
     }
 }
