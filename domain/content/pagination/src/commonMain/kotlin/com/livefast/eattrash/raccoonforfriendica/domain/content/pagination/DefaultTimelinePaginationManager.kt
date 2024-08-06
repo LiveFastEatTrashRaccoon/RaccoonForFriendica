@@ -14,6 +14,7 @@ internal class DefaultTimelinePaginationManager(
 
     override suspend fun reset(specification: TimelinePaginationSpecification) {
         this.specification = specification
+        pageCursor = null
         history.clear()
     }
 
@@ -39,6 +40,16 @@ internal class DefaultTimelinePaginationManager(
                 is TimelinePaginationSpecification.Hashtag -> {
                     timelineRepository.getHashtag(specification.hashtag)
                 }
+
+                is TimelinePaginationSpecification.Account ->
+                    timelineRepository.getByAccount(
+                        accountId = specification.accountId,
+                        pageCursor = pageCursor,
+                        excludeReplies = specification.excludeReplies,
+                        excludeReblogs = specification.excludeReblogs,
+                        onlyMedia = specification.onlyMedia,
+                        pinned = specification.pinned,
+                    )
             }.deduplicate()
 
         if (results.isNotEmpty()) {
