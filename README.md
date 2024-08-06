@@ -18,7 +18,8 @@ failures and yet-to-implement features.
 Please be willing to contribute if you can, instead of being ready to demand. Thank you.
 
 <div align="center">
-  <img width="310" src="https://github.com/user-attachments/assets/aae31ec5-6459-49a1-b5d9-cafb99c3087d" alt="timeline screen" />
+  <img width="310" src="https://github.com/user-attachments/assets/6b01d961-4fe6-4a44-8c3f-2fb5185656fa" alt="timeline screen" />
   <img width="310" src="https://github.com/user-attachments/assets/cd4dd4f7-eeed-4cb5-aa7f-822a249f9db2" alt="account detail screen" />
+  <img width="310" src="https://github.com/user-attachments/assets/316b7a93-f46f-42f7-90fd-5efe223bbdd6" alt="post detail screen" />
 </div>
 
