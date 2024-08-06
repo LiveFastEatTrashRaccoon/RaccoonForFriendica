@@ -48,4 +48,6 @@ include(":domain:identity:repository")
 
 include(":feature:accountdetail")
 include(":feature:entrydetail")
+include(":feature:profile")
+include(":feature:settings")
 include(":feature:timeline")
