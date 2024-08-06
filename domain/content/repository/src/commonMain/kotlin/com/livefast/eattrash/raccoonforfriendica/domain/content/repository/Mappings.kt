@@ -80,6 +80,7 @@ internal fun ContentVisibility.toModel(): Visibility =
 internal fun Account.toModel() =
     AccountModel(
         avatar = avatar,
+        bio = note,
         bot = bot,
         created = createdAt,
         displayName = displayName,
@@ -99,6 +100,7 @@ internal fun Field.toModel() =
     FieldModel(
         key = name,
         value = value,
+        verified = verifiedAt != null,
     )
 
 internal fun Tag.toModel() =

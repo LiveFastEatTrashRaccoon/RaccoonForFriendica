@@ -23,6 +23,20 @@ interface Strings {
     val nodeVia: String
     val timelineEntryRebloggedBy: String
     val timelineEntryInReplyTo: String
+    val accountFollowing: String
+    val accountFollower: String
+    val accountGroup: String
+    val accountAge: String
+    val dateYearShort: String
+    val dateMonthShort: String
+    val dateDayShort: String
+    val timeHourShort: String
+    val timeMinuteShort: String
+    val timeSecondShort: String
+    val accountSectionPosts: String
+    val accountSectionAll: String
+    val accountSectionPinned: String
+    val accountSectionMedia: String
 }
 
 object Locales {

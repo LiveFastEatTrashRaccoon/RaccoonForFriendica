@@ -10,6 +10,7 @@ val unitAccountDetailModule =
             AccountDetailViewModel(
                 id = params[0],
                 accountRepository = get(),
+                paginationManager = get(),
             )
         }
     }

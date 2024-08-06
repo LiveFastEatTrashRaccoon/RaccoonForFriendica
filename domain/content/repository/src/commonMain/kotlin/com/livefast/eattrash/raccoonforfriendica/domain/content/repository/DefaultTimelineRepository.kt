@@ -49,6 +49,29 @@ internal class DefaultTimelineRepository(
             }.getOrElse { emptyList() }
         }
 
+    override suspend fun getByAccount(
+        accountId: String,
+        pageCursor: String?,
+        excludeReplies: Boolean,
+        excludeReblogs: Boolean,
+        pinned: Boolean,
+        onlyMedia: Boolean,
+    ): List<TimelineEntryModel> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val response =
+                    provider.account.getStatuses(
+                        id = accountId,
+                        excludeReblogs = excludeReblogs,
+                        maxId = pageCursor,
+                        excludeReplies = excludeReplies,
+                        pinned = pinned,
+                        onlyMedia = onlyMedia,
+                    )
+                response.map { it.toModelWithReply() }
+            }
+        }.getOrElse { emptyList() }
+
     companion object {
         const val DEFAULT_PAGE_SIZE = 20
     }

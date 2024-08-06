@@ -10,4 +10,12 @@ sealed interface TimelinePaginationSpecification {
     data class Hashtag(
         val hashtag: String,
     ) : TimelinePaginationSpecification
+
+    data class Account(
+        val accountId: String,
+        val onlyMedia: Boolean = false,
+        val excludeReplies: Boolean = true,
+        val excludeReblogs: Boolean = true,
+        val pinned: Boolean = false,
+    ) : TimelinePaginationSpecification
 }
