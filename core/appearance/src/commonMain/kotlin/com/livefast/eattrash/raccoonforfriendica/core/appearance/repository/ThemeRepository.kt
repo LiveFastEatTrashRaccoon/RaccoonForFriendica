@@ -13,11 +13,11 @@ interface ThemeRepository {
     val dynamicColors: StateFlow<Boolean>
     val customSeedColor: StateFlow<Color?>
 
-    fun changeUiTheme(value: UiTheme?)
+    fun changeUiTheme(theme: UiTheme?)
 
-    fun changeFontFamily(value: UiFontFamily)
+    fun changeFontFamily(family: UiFontFamily)
 
-    fun changeDynamicColors(value: Boolean)
+    fun changeDynamicColors(enabled: Boolean)
 
-    fun changeCustomSeedColor(value: Color?)
+    fun changeCustomSeedColor(color: Color?)
 }

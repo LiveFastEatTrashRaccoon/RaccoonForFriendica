@@ -12,19 +12,19 @@ internal class DefaultThemeRepository : ThemeRepository {
     override val dynamicColors = MutableStateFlow(false)
     override val customSeedColor = MutableStateFlow<Color?>(null)
 
-    override fun changeUiTheme(value: UiTheme?) {
-        uiTheme.update { value }
+    override fun changeUiTheme(theme: UiTheme?) {
+        uiTheme.update { theme }
     }
 
-    override fun changeFontFamily(value: UiFontFamily) {
-        fontFamily.update { value }
+    override fun changeFontFamily(family: UiFontFamily) {
+        fontFamily.update { family }
     }
 
-    override fun changeDynamicColors(value: Boolean) {
-        dynamicColors.update { value }
+    override fun changeDynamicColors(enabled: Boolean) {
+        dynamicColors.update { enabled }
     }
 
-    override fun changeCustomSeedColor(value: Color?) {
-        customSeedColor.update { value }
+    override fun changeCustomSeedColor(color: Color?) {
+        customSeedColor.update { color }
     }
 }
