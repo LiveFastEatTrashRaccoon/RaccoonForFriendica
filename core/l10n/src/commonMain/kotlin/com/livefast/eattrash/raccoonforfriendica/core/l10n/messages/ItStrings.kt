@@ -32,4 +32,8 @@ internal val ItStrings =
         override val accountSectionPinned = "Fissati"
         override val accountSectionMedia = "Media"
         override val postTitleBy = "Post di"
+        override val settingsTitle = "Impostazioni"
+        override val settingsHeaderLookAndFeel = "Aspetto"
+        override val settingsItemLanguage = "Lingua"
+        override val settingsItemUiTheme = "Tema UI"
     }

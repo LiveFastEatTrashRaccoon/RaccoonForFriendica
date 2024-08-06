@@ -31,4 +31,10 @@ internal open class DefaultStrings : Strings {
     override val accountSectionPinned = "Pinned"
     override val accountSectionMedia = "Media"
     override val postTitleBy = "Post by"
+    override val settingsTitle = "Settings"
+    override val settingsHeaderLookAndFeel = "Look & feel"
+    override val settingsItemLanguage = "Language"
+    override val settingsItemUiTheme = "UI theme"
+    override val languageEn = "English"
+    override val languageIt = "Italiano"
 }

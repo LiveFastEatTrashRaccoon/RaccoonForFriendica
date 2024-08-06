@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.do
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.domainContentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.domainIdentityRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.featureEntryDetailModule
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.featureSettingsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.di.featureTimelineModule
 import org.koin.dsl.module
 
@@ -33,5 +34,6 @@ val sharedHelperModule =
             featureTimelineModule,
             featureAccountDetailModule,
             featureEntryDetailModule,
+            featureSettingsModule,
         )
     }

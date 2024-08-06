@@ -45,7 +45,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.koin.core)
-
+            implementation(libs.lyricist)
             implementation(libs.coil)
 
             implementation(libs.voyager.navigator)
@@ -53,7 +53,6 @@ kotlin {
             implementation(libs.voyager.koin)
             implementation(libs.voyager.transition)
             implementation(libs.voyager.tab)
-            implementation(libs.voyager.bottomsheet)
 
             implementation(projects.core.api)
             implementation(projects.core.appearance)
@@ -71,6 +70,8 @@ kotlin {
 
             implementation(projects.feature.accountdetail)
             implementation(projects.feature.entrydetail)
+            implementation(projects.feature.profile)
+            implementation(projects.feature.settings)
             implementation(projects.feature.timeline)
         }
     }

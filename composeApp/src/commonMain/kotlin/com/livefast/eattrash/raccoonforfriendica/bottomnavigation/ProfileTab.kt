@@ -1,9 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.bottomnavigation
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileScreen
 
 object ProfileTab : Tab {
     override val options: TabOptions
@@ -16,6 +17,6 @@ object ProfileTab : Tab {
 
     @Composable
     override fun Content() {
-        Text("Profile tab")
+        Navigator(ProfileScreen())
     }
 }

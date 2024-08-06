@@ -25,7 +25,6 @@ ktorfit = "2.0.0-rc01"
 lyricist = "1.7.0"
 materialKolor = "1.7.0"
 mockk = "1.13.12"
-multiplatform-markdown-renderer = "0.24.0"
 multiplatform-settings = "1.1.1"
 stately = "2.0.7"
 sqlcipher = "4.6.0"
@@ -88,7 +87,6 @@ kotlincrypto-md5 = { module = "org.kotlincrypto.hash:md" }
 
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
-voyager-bottomsheet = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
 voyager-tab = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-transition = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
