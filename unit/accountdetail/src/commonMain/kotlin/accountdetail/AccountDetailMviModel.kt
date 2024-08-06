@@ -3,6 +3,7 @@ package accountdetail
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
 interface AccountDetailMviModel :
     ScreenModel,
@@ -11,6 +12,10 @@ interface AccountDetailMviModel :
         data object Refresh : Intent
 
         data object LoadNextPage : Intent
+
+        data class ChangeSection(
+            val section: AccountSection,
+        ) : Intent
     }
 
     data class State(
@@ -19,6 +24,8 @@ interface AccountDetailMviModel :
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
         val account: AccountModel? = null,
+        val section: AccountSection = AccountSection.Posts,
+        val entries: List<TimelineEntryModel> = emptyList(),
     )
 
     sealed interface Effect
