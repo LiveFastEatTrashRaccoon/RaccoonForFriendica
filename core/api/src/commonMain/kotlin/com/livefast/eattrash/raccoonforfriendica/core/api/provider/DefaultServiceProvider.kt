@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AccountService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.StatusService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
@@ -8,6 +9,9 @@ import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
+import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -21,13 +25,16 @@ internal class DefaultServiceProvider(
     companion object {
         private const val VERSION = "v1"
         private const val ENABLE_LOGGING = false
+        private const val REAM_NAME = "Friendica"
     }
 
     private var currentNode: String = ""
+    private var auth: BasicAuthCredentials? = null
 
     override lateinit var timeline: TimelineService
-    override lateinit var account: AccountService
-    override lateinit var status: StatusService
+    override lateinit var accounts: AccountService
+    override lateinit var statuses: StatusService
+    override lateinit var notifications: NotificationService
 
     private val baseUrl: String get() = "https://$currentNode/api/$VERSION/"
 
@@ -36,6 +43,19 @@ internal class DefaultServiceProvider(
             currentNode = value
             reinitialize()
         }
+    }
+
+    override fun setAuth(credentials: Pair<String, String>?) {
+        auth =
+            if (credentials == null) {
+                null
+            } else {
+                BasicAuthCredentials(
+                    username = credentials.first,
+                    password = credentials.second,
+                )
+            }
+        reinitialize()
     }
 
     private fun reinitialize() {
@@ -50,6 +70,12 @@ internal class DefaultServiceProvider(
                     requestTimeoutMillis = 600_000
                     connectTimeoutMillis = 30_000
                     socketTimeoutMillis = 30_000
+                }
+                install(Auth) {
+                    basic {
+                        credentials { auth }
+                        realm = REAM_NAME
+                    }
                 }
                 if (ENABLE_LOGGING) {
                     install(Logging) {
@@ -73,7 +99,8 @@ internal class DefaultServiceProvider(
                 .httpClient(client)
                 .build()
         timeline = ktorfit.create()
-        account = ktorfit.create()
-        status = ktorfit.create()
+        accounts = ktorfit.create()
+        statuses = ktorfit.create()
+        notifications = ktorfit.create()
     }
 }

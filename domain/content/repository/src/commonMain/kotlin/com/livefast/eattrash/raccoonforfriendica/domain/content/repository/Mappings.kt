@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.GIFV
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.IMAGE
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.UNKNOWN
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.VIDEO
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
@@ -16,11 +17,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountMode
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType as MediaTypeDto
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType as NotificationTypeDto
 
 internal fun Status.toModelWithReply() =
     toModel().copy(
@@ -116,3 +120,37 @@ internal fun Tag.toModel() =
         url = url,
         name = name,
     )
+
+internal fun NotificationType.toDto(): NotificationTypeDto? =
+    when (this) {
+        NotificationType.Entry -> NotificationTypeDto.STATUS
+        NotificationType.Favorite -> NotificationTypeDto.FAVOURITE
+        NotificationType.Follow -> NotificationTypeDto.FOLLOW
+        NotificationType.FollowRequest -> NotificationTypeDto.FOLLOW_REQUEST
+        NotificationType.Mention -> NotificationTypeDto.MENTION
+        NotificationType.Poll -> NotificationTypeDto.POLL
+        NotificationType.Reblog -> NotificationTypeDto.REBLOG
+        NotificationType.Update -> NotificationTypeDto.UPDATE
+        else -> null
+    }
+
+internal fun NotificationTypeDto.toModel(): NotificationType =
+    when (this) {
+        NotificationTypeDto.MENTION -> NotificationType.Mention
+        NotificationTypeDto.STATUS -> NotificationType.Entry
+        NotificationTypeDto.REBLOG -> NotificationType.Reblog
+        NotificationTypeDto.FOLLOW -> NotificationType.Follow
+        NotificationTypeDto.FOLLOW_REQUEST -> NotificationType.FollowRequest
+        NotificationTypeDto.FAVOURITE -> NotificationType.Favorite
+        NotificationTypeDto.POLL -> NotificationType.Poll
+        NotificationTypeDto.UPDATE -> NotificationType.Update
+        else -> NotificationType.Unknown
+    }
+
+internal fun Notification.toModel() =
+    NotificationModel(
+        id = id,
+        type = type.toModel(),
+        account = account?.toModel(),
+        entry = status?.toModel(),
+)
