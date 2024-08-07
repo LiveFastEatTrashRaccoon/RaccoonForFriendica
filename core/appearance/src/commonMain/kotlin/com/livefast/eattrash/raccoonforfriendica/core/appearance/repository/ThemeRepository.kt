@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Stable
 interface ThemeRepository {
-    val uiTheme: StateFlow<UiTheme?>
+    val theme: StateFlow<UiTheme>
     val fontFamily: StateFlow<UiFontFamily>
     val dynamicColors: StateFlow<Boolean>
     val customSeedColor: StateFlow<Color?>
 
-    fun changeUiTheme(theme: UiTheme?)
+    fun changeTheme(theme: UiTheme)
 
     fun changeFontFamily(family: UiFontFamily)
 

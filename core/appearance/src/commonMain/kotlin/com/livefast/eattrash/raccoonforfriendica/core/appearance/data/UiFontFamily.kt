@@ -3,10 +3,12 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.data
 import androidx.compose.runtime.Composable
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
-enum class UiFontFamily {
-    Exo2,
-    NotoSans,
-    Default,
+sealed interface UiFontFamily {
+    data object Exo2 : UiFontFamily
+
+    data object NotoSans : UiFontFamily
+
+    data object Default : UiFontFamily
 }
 
 fun Int.toUiFontFamily() =

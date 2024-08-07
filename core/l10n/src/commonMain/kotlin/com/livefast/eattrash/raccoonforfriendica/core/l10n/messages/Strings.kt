@@ -38,12 +38,28 @@ interface Strings {
     val accountSectionPinned: String
     val accountSectionMedia: String
     val postTitleBy: String
-    val settingsTitle: String
-    val settingsHeaderLookAndFeel: String
-    val settingsItemLanguage: String
-    val settingsItemUiTheme: String
     val languageEn: String
     val languageIt: String
+    val settingsTitle: String
+    val settingsHeaderGeneral: String
+    val settingsItemLanguage: String
+    val settingsHeaderLookAndFeel: String
+    val settingsItemTheme: String
+    val settingsItemFontFamily: String
+    val settingsItemDynamicColors: String
+    val settingsItemDynamicColorsSubtitle: String
+    val settingsItemThemeColor: String
+    val settingsItemThemeColorSubtitle: String
+    val themeColorPurple: String
+    val themeColorBlue: String
+    val themeColorLightBlue: String
+    val themeColorGreen: String
+    val themeColorYellow: String
+    val themeColorOrange: String
+    val themeColorRed: String
+    val themeColorPink: String
+    val themeColorGray: String
+    val themeColorWhite: String
 }
 
 object Locales {

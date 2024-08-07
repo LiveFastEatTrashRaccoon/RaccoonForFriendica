@@ -6,10 +6,10 @@ android-targetSdk = "34"
 
 androidx-activity = "1.9.0"
 androidx-appcompat = "1.7.0"
-androidx-constraintlayout = "2.1.4"
 androidx-core-ktx = "1.13.1"
 androidx-crypto = "1.0.0"
 androidx-material = "1.12.0"
+androidx-sqlite = "2.5.0-alpha5"
 androidx-test-junit = "1.2.1"
 coil = "3.0.0-alpha09"
 compose-plugin = "1.6.11"
@@ -26,9 +26,8 @@ lyricist = "1.7.0"
 materialKolor = "1.7.0"
 mockk = "1.13.12"
 multiplatform-settings = "1.1.1"
+room = "2.7.0-alpha05"
 stately = "2.0.7"
-sqlcipher = "4.6.0"
-sqldelight = "2.0.2"
 turbine = "1.1.0"
 voyager = "1.0.0"
 
@@ -36,7 +35,6 @@ voyager = "1.0.0"
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidx-crypto" }
 androidx-material = { group = "com.google.android.material", name = "material", version.ref = "androidx-material" }
@@ -78,9 +76,9 @@ lyricist = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" 
 
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately" }
 
-sqlcipher = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipher" }
-sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
-sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
+room-sqlite = { module = "androidx.sqlite:sqlite-bundled", version.ref = "androidx-sqlite" }
+room-ksp = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 
 kotlincrypto-bom = { module = "org.kotlincrypto.hash:bom", version.ref = "kotlincrypto" }
 kotlincrypto-md5 = { module = "org.kotlincrypto.hash:md" }
@@ -104,4 +102,4 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
-sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+room = { id = "androidx.room", version.ref = "room" }

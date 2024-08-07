@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.settings.composables
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -31,7 +33,7 @@ internal fun LanguageBottomSheet(
             Modifier.padding(
                 start = Spacing.m,
                 end = Spacing.m,
-                bottom = Spacing.l,
+                bottom = Spacing.xl,
             ),
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
@@ -43,17 +45,21 @@ internal fun LanguageBottomSheet(
         )
         LazyColumn {
             items(items = languages) { lang ->
-                Text(
+                Row(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(vertical = Spacing.s)
                             .clickable {
                                 onSelected?.invoke(lang)
-                            },
-                    text = lang.toLanguageName().orEmpty(),
-                    style = MaterialTheme.typography.labelLarge,
-                )
+                            }.padding(vertical = Spacing.s),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                ) {
+                    Text(
+                        text = lang.toLanguageName().orEmpty(),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
             }
         }
     }
