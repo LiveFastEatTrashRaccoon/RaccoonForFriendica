@@ -5,12 +5,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.di.coreApiModule
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.coreAppearanceModule
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.coreL10nModule
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.coreNavigationModule
+import com.livefast.eattrash.raccoonforfriendica.core.persistence.di.corePersistenceModule
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.di.corePreferencesModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsFileSystemModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.domainContentPaginationModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.domainContentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.domainIdentityRepositoryModule
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.domainIdentityUseCaseModule
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.featureEntryDetailModule
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.featureSettingsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.di.featureTimelineModule
@@ -23,6 +25,7 @@ val sharedHelperModule =
             coreApiModule,
             coreAppearanceModule,
             coreL10nModule,
+            corePersistenceModule,
             corePreferencesModule,
             coreNavigationModule,
             coreResourceModule,
@@ -31,6 +34,7 @@ val sharedHelperModule =
             domainContentPaginationModule,
             domainContentRepositoryModule,
             domainIdentityRepositoryModule,
+            domainIdentityUseCaseModule,
             featureTimelineModule,
             featureAccountDetailModule,
             featureEntryDetailModule,
