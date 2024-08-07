@@ -12,7 +12,7 @@ internal class DefaultAccountRepository(
     override suspend fun getById(id: String): AccountModel? =
         runCatching {
             withContext(Dispatchers.IO) {
-                provider.account.getById(id).toModel()
+                provider.accounts.getById(id).toModel()
             }
         }.getOrNull()
 }

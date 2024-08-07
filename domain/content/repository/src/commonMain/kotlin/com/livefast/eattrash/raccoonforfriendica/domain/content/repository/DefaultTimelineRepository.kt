@@ -61,7 +61,7 @@ internal class DefaultTimelineRepository(
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
-                    provider.account.getStatuses(
+                    provider.accounts.getStatuses(
                         id = accountId,
                         excludeReblogs = excludeReblogs,
                         maxId = pageCursor,
@@ -76,14 +76,14 @@ internal class DefaultTimelineRepository(
     override suspend fun getById(entryId: String): TimelineEntryModel? =
         withContext(Dispatchers.IO) {
             runCatching {
-                provider.status.get(id = entryId).toModelWithReply()
+                provider.statuses.get(id = entryId).toModelWithReply()
             }
         }.getOrNull()
 
     override suspend fun getContext(entryId: String): TimelineContextModel? =
         withContext(Dispatchers.IO) {
             runCatching {
-                val response = provider.status.getContext(id = entryId)
+                val response = provider.statuses.getContext(id = entryId)
                 response.toModel()
             }.getOrNull()
         }
