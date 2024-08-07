@@ -7,13 +7,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
 internal class DefaultThemeRepository : ThemeRepository {
-    override val uiTheme = MutableStateFlow<UiTheme?>(null)
-    override val fontFamily = MutableStateFlow<UiFontFamily>(UiFontFamily.Exo2)
+    override val theme = MutableStateFlow<UiTheme>(UiTheme.Default)
+    override val fontFamily = MutableStateFlow<UiFontFamily>(UiFontFamily.Default)
     override val dynamicColors = MutableStateFlow(false)
     override val customSeedColor = MutableStateFlow<Color?>(null)
 
-    override fun changeUiTheme(theme: UiTheme?) {
-        uiTheme.update { theme }
+    override fun changeTheme(theme: UiTheme) {
+        this.theme.update { theme }
     }
 
     override fun changeFontFamily(family: UiFontFamily) {

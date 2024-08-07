@@ -24,7 +24,7 @@ fun AppTheme(
             getThemeRepository()
         }
 
-    val themeState by repository.uiTheme.collectAsState()
+    val themeState by repository.theme.collectAsState()
     val customSeedColor by repository.customSeedColor.collectAsState()
     val defaultTheme =
         if (isSystemInDarkTheme()) {
