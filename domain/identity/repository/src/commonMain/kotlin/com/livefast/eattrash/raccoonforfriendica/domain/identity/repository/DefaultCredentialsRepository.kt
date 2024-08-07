@@ -6,10 +6,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class DefaultAuthenticationRepository(
+internal class DefaultCredentialsRepository(
     private val provider: ServiceProvider,
-) : AuthenticationRepository {
-    override suspend fun validateCredentials(
+) : CredentialsRepository {
+    override suspend fun validate(
         node: String,
         user: String,
         pass: String,

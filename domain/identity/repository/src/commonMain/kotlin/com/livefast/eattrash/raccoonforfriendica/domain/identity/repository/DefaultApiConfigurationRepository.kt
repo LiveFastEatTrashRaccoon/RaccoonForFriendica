@@ -15,6 +15,7 @@ internal class DefaultApiConfigurationRepository(
     private val keyStore: TemporaryKeyStore,
 ) : ApiConfigurationRepository {
     override val node = MutableStateFlow("")
+    override val isLogged = MutableStateFlow(false)
 
     init {
         val instance = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
@@ -28,6 +29,7 @@ internal class DefaultApiConfigurationRepository(
         node.update { value }
         serviceProvider.changeNode(value)
         keyStore.save(KEY_LAST_NODE, value)
+        setAuth(null)
     }
 
     override fun setAuth(credentials: Pair<String, String>?) {
@@ -36,5 +38,6 @@ internal class DefaultApiConfigurationRepository(
             keyStore.save(KEY_CRED_1, credentials.first)
             keyStore.save(KEY_CRED_2, credentials.second)
         }
+        isLogged.update { credentials != null }
     }
 }
