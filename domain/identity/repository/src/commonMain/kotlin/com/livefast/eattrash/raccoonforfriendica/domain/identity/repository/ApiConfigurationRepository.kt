@@ -8,4 +8,6 @@ interface ApiConfigurationRepository {
     val node: StateFlow<String>
 
     fun changeNode(value: String)
+
+    fun setAuth(credentials: Pair<String, String>? = null)
 }

@@ -6,13 +6,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Defa
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val domainIdentityRepositoryModule =
     module {
         single<ApiConfigurationRepository> {
             DefaultApiConfigurationRepository(
-                serviceProvider = get(),
+                serviceProvider = get(named("default")),
                 keyStore = get(),
             )
         }

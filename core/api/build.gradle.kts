@@ -32,17 +32,14 @@ kotlin {
             dependencies {
                 implementation(libs.koin.core)
                 implementation(libs.kotlinx.serialization.json)
-                implementation(libs.ktorfit.lib)
-                implementation(libs.ktor.serialization)
                 implementation(libs.ktor.contentnegotiation)
+                implementation(libs.ktor.auth)
                 implementation(libs.ktor.json)
                 implementation(libs.ktor.logging)
+                implementation(libs.ktor.serialization)
+                implementation(libs.ktorfit.lib)
+
                 implementation(projects.core.utils)
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
             }
         }
     }

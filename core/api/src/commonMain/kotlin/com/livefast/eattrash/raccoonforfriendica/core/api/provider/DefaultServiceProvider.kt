@@ -9,6 +9,9 @@ import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
+import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -22,9 +25,11 @@ internal class DefaultServiceProvider(
     companion object {
         private const val VERSION = "v1"
         private const val ENABLE_LOGGING = false
+        private const val REAM_NAME = "Friendica"
     }
 
     private var currentNode: String = ""
+    private var auth: BasicAuthCredentials? = null
 
     override lateinit var timeline: TimelineService
     override lateinit var accounts: AccountService
@@ -40,6 +45,19 @@ internal class DefaultServiceProvider(
         }
     }
 
+    override fun setAuth(credentials: Pair<String, String>?) {
+        auth =
+            if (credentials == null) {
+                null
+            } else {
+                BasicAuthCredentials(
+                    username = credentials.first,
+                    password = credentials.second,
+                )
+            }
+        reinitialize()
+    }
+
     private fun reinitialize() {
         val client =
             HttpClient(factory) {
@@ -52,6 +70,12 @@ internal class DefaultServiceProvider(
                     requestTimeoutMillis = 600_000
                     connectTimeoutMillis = 30_000
                     socketTimeoutMillis = 30_000
+                }
+                install(Auth) {
+                    basic {
+                        credentials { auth }
+                        realm = REAM_NAME
+                    }
                 }
                 if (ENABLE_LOGGING) {
                     install(Logging) {

@@ -6,23 +6,24 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val domainContentRepositoryModule =
     module {
         single<TimelineRepository> {
             DefaultTimelineRepository(
-                provider = get(),
+                provider = get(named("default")),
             )
         }
         single<AccountRepository> {
             DefaultAccountRepository(
-                provider = get(),
+                provider = get(named("default")),
             )
         }
         single<NotificationRepository> {
             DefaultNotificationRepository(
-                provider = get(),
+                provider = get(named("default")),
             )
         }
     }

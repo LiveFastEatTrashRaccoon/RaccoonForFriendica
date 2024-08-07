@@ -12,4 +12,6 @@ interface ServiceProvider {
     val timeline: TimelineService
 
     fun changeNode(value: String)
+
+    fun setAuth(credentials: Pair<String, String>? = null)
 }
