@@ -10,6 +10,9 @@ val featureSettingsModule =
             SettingsViewModel(
                 l10nManager = get(),
                 themeRepository = get(),
+                settingsRepository = get(),
+                colorSchemeProvider = get(),
+                themeColorRepository = get(),
             )
         }
     }

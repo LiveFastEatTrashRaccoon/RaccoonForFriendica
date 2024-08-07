@@ -14,19 +14,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Locales
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 
 @Composable
-internal fun LanguageBottomSheet(
-    languages: List<String> =
+internal fun FontFamilyBottomSheet(
+    fontFamilies: List<UiFontFamily> =
         listOf(
-            Locales.EN,
-            Locales.IT,
+            UiFontFamily.Exo2,
+            UiFontFamily.NotoSans,
+            UiFontFamily.Default,
         ),
-    onSelected: ((String) -> Unit)? = null,
+    onSelected: ((UiFontFamily) -> Unit)? = null,
 ) {
     Column(
         modifier =
@@ -40,23 +41,23 @@ internal fun LanguageBottomSheet(
         Text(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            text = LocalStrings.current.settingsItemLanguage,
+            text = LocalStrings.current.settingsItemFontFamily,
             style = MaterialTheme.typography.titleMedium,
         )
         LazyColumn {
-            items(items = languages) { lang ->
+            items(items = fontFamilies) { family ->
                 Row(
                     modifier =
                         Modifier
                             .fillMaxWidth()
                             .clickable {
-                                onSelected?.invoke(lang)
+                                onSelected?.invoke(family)
                             }.padding(vertical = Spacing.s),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                 ) {
                     Text(
-                        text = lang.toLanguageName().orEmpty(),
+                        text = family.toReadableName(),
                         style = MaterialTheme.typography.labelLarge,
                     )
                 }
