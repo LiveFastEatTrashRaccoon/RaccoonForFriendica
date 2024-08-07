@@ -19,6 +19,7 @@ class MainViewModel :
             ),
     ),
     MainMviModel {
+
     override fun reduce(intent: MainMviModel.Intent) {
         when (intent) {
             is MainMviModel.Intent.SetBottomBarOffsetHeightPx -> {
