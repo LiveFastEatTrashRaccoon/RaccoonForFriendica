@@ -21,6 +21,5 @@ Please be willing to contribute if you can, instead of being ready to demand. Th
   <img width="310" src="https://github.com/user-attachments/assets/6b01d961-4fe6-4a44-8c3f-2fb5185656fa" alt="timeline screen" />
   <img width="310" src="https://github.com/user-attachments/assets/cd4dd4f7-eeed-4cb5-aa7f-822a249f9db2" alt="account detail screen" />
   <img width="310" src="https://github.com/user-attachments/assets/316b7a93-f46f-42f7-90fd-5efe223bbdd6" alt="post detail screen" />
-  <img width="310" src="https://github.com/user-attachments/assets/300b48b8-5d9f-4581-b547-a5ec5b33a142" alt="settings screen" />
+  <img width="310" src="[https://github.com/user-attachments/assets/300b48b8-5d9f-4581-b547-a5ec5b33a142](https://github.com/user-attachments/assets/2920e28d-d3e1-4d43-b8a2-3023302575d2)" alt="settings screen" />
 </div>
-
