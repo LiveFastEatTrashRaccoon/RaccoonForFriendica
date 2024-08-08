@@ -2,10 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthenticationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultAccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultApiConfigurationRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultAuthenticationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultCredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import org.koin.core.qualifier.named
@@ -20,8 +20,8 @@ val domainIdentityRepositoryModule =
             )
         }
 
-        single<AuthenticationRepository> {
-            DefaultAuthenticationRepository(
+        single<CredentialsRepository> {
+            DefaultCredentialsRepository(
                 provider = get(named("other")),
             )
         }

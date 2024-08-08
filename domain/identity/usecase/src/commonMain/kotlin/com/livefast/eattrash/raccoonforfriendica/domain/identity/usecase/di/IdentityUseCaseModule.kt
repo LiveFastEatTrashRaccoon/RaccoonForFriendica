@@ -19,7 +19,7 @@ val domainIdentityUseCaseModule =
 
         single<LoginUseCase> {
             DefaultLoginUseCase(
-                authenticationRepository = get(),
+                credentialsRepository = get(),
                 apiConfigurationRepository = get(),
                 accountRepository = get(),
                 settingsRepository = get(),

@@ -6,4 +6,6 @@ interface DetailOpener {
     fun openEntryDetail(id: String)
 
     fun openSettings()
+
+    fun openLogin()
 }

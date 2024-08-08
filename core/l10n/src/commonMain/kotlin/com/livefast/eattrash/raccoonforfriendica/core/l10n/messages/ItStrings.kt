@@ -2,6 +2,14 @@ package com.livefast.eattrash.raccoonforfriendica.core.l10n.messages
 
 internal val ItStrings =
     object : DefaultStrings() {
+        override val messageSuccess = "Operazione completata con successo!"
+        override val messageGenericError = "Si è verificato un errore inaspettato"
+        override val messageInvalidField = "Campo non valido"
+        override val messageMissingField = "Campo obbligatorio"
+        override val buttonSubmit = "Invia"
+        override val buttonOk = "OK"
+        override val buttonClose = "Chiudi"
+        override val buttonCancel = "Annulla"
         override val systemDefault = "Sistema"
         override val settingsThemeLight = "Chiaro"
         override val settingsThemeDark = "Scuro"
@@ -54,4 +62,9 @@ internal val ItStrings =
         override val themeColorPink = "Unicorno unico"
         override val themeColorGray = "Procione pasticcione"
         override val themeColorWhite = "Orso originale"
+        override val messageUserUnlogged = "È necessario effettuare il login"
+        override val loginTitle = "Login"
+        override val fieldNodeName = "Nome istanza"
+        override val fieldUsername = "Username"
+        override val fieldPassword = "Password"
     }

@@ -21,7 +21,7 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "feature.profile"
+            baseName = "feature.login"
             isStatic = true
         }
     }
@@ -41,12 +41,11 @@ kotlin {
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.architecture)
-                implementation(projects.core.commonui.components)
-                implementation(projects.core.commonui.content)
                 implementation(projects.core.l10n)
                 implementation(projects.core.navigation)
                 implementation(projects.core.utils)
 
+                implementation(projects.domain.identity.data)
                 implementation(projects.domain.identity.repository)
                 implementation(projects.domain.identity.usecase)
             }
@@ -55,7 +54,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.livefast.eattrash.raccoonforfriendica.feature.profile"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.feature.login"
     compileSdk =
         libs.versions.android.targetSdk
             .get()

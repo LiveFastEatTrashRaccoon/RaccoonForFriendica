@@ -4,12 +4,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountMod
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthenticationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 
 internal class DefaultLoginUseCase(
     private val apiConfigurationRepository: ApiConfigurationRepository,
-    private val authenticationRepository: AuthenticationRepository,
+    private val credentialsRepository: CredentialsRepository,
     private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
 ) : LoginUseCase {
@@ -19,7 +19,7 @@ internal class DefaultLoginUseCase(
         pass: String,
     ) {
         val isValid =
-            authenticationRepository.validateCredentials(node = node, user = user, pass = pass)
+            credentialsRepository.validate(node = node, user = user, pass = pass)
         check(isValid) { "Invalid credentials" }
 
         apiConfigurationRepository.changeNode(node)
@@ -43,7 +43,7 @@ internal class DefaultLoginUseCase(
             val oldSettings = settingsRepository.get(accountId)
             val defaultSettings = settingsRepository.get(anonymousAccountId) ?: SettingsModel()
             if (oldSettings == null) {
-                settingsRepository.create(defaultSettings.copy(accountId = accountId))
+                settingsRepository.create(defaultSettings.copy(id = 0, accountId = accountId))
             }
 
             val settings = settingsRepository.get(accountId) ?: defaultSettings
