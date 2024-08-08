@@ -4,4 +4,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountMode
 
 interface AccountRepository {
     suspend fun getById(id: String): AccountModel?
+
+    suspend fun getByHandle(handle: String): AccountModel?
 }

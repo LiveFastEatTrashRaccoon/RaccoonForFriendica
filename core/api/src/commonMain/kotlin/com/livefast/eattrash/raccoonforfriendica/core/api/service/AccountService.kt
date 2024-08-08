@@ -22,4 +22,9 @@ interface AccountService {
         @Query("exclude_reblogs") excludeReblogs: Boolean = false,
         @Query("pinned") pinned: Boolean = false,
     ): List<Status>
+
+    @GET("accounts/lookup")
+    suspend fun lookup(
+        @Query("acct") acct: String,
+    ): Account
 }
