@@ -122,6 +122,8 @@ class AccountDetailScreen(
                             item {
                                 AccountHeader(
                                     account = uiState.account,
+                                    relationshipStatus = uiState.relationshipStatus,
+                                    notificationStatus = uiState.notificationStatus,
                                     onOpenUrl = { url ->
                                         urlManager.open(url)
                                     },
