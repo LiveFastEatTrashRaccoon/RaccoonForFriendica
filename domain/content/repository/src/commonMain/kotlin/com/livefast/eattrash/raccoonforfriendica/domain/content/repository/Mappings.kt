@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.IMAGE
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.UNKNOWN
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.VIDEO
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
@@ -19,6 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -154,3 +156,17 @@ internal fun Notification.toModel() =
         account = account?.toModel(),
         entry = status?.toModel(),
 )
+
+internal fun Relationship.toModel() =
+    RelationshipModel(
+        id = id,
+        following = following,
+        notifying = notifying,
+        followedBy = followedBy,
+        blocking = blocking,
+        muting = muting,
+        mutingNotifications = mutingNotifications,
+        requested = requested,
+        requestedBy = requestedBy,
+        note = note,
+    )
