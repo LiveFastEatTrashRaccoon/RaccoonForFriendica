@@ -14,6 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.do
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.domainIdentityRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.domainIdentityUseCaseModule
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.featureEntryDetailModule
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.di.featureInboxModule
 import com.livefast.eattrash.raccoonforfriendica.feature.login.di.featureLoginModule
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.di.featureProfileModule
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.featureSettingsModule
@@ -40,6 +41,7 @@ val sharedHelperModule =
             featureTimelineModule,
             featureAccountDetailModule,
             featureEntryDetailModule,
+            featureInboxModule,
             featureLoginModule,
             featureProfileModule,
             featureSettingsModule,
