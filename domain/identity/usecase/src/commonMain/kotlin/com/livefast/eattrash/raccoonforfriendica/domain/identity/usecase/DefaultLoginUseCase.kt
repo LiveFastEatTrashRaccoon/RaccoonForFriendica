@@ -43,7 +43,7 @@ internal class DefaultLoginUseCase(
             val oldSettings = settingsRepository.get(accountId)
             val defaultSettings = settingsRepository.get(anonymousAccountId) ?: SettingsModel()
             if (oldSettings == null) {
-                settingsRepository.create(defaultSettings.copy(accountId = accountId))
+                settingsRepository.create(defaultSettings.copy(id = 0, accountId = accountId))
             }
 
             val settings = settingsRepository.get(accountId) ?: defaultSettings
