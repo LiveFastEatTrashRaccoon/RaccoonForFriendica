@@ -327,7 +327,7 @@ class LoginScreen : Screen {
                                     color = MaterialTheme.colorScheme.onPrimary,
                                 )
                             }
-                            Text(LocalStrings.current.buttonSubmit)
+                            Text(LocalStrings.current.buttonConfirm)
                         }
                     }
                 }
