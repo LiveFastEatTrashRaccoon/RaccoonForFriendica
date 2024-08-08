@@ -46,6 +46,9 @@ kotlin {
                 implementation(projects.core.l10n)
                 implementation(projects.core.navigation)
                 implementation(projects.core.utils)
+
+                implementation(projects.domain.identity.repository)
+                implementation(projects.domain.identity.usecase)
             }
         }
     }
