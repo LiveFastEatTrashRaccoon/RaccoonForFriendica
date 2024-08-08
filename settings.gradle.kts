@@ -51,6 +51,7 @@ include(":domain:identity:usecase")
 
 include(":feature:accountdetail")
 include(":feature:entrydetail")
+include(":feature:login")
 include(":feature:profile")
 include(":feature:settings")
 include(":feature:timeline")
