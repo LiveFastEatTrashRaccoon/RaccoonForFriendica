@@ -2,6 +2,7 @@ package com.livefast.eattrash.feature.accountdetail
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
