@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Path
@@ -27,4 +28,9 @@ interface AccountService {
     suspend fun lookup(
         @Query("acct") acct: String,
     ): Account
+
+    @GET("accounts/relationships")
+    suspend fun getRelationships(
+        @Query("id") id: String,
+    ): List<Relationship>
 }
