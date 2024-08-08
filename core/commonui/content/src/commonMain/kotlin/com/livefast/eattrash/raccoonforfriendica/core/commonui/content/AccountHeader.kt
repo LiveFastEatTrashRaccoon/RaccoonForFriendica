@@ -1,4 +1,4 @@
-package com.livefast.eattrash.feature.accountdetail.composable
+package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +33,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
 
@@ -45,7 +44,7 @@ private object AnnotationConstants {
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-internal fun AccountHeader(
+fun AccountHeader(
     account: AccountModel?,
     modifier: Modifier = Modifier,
     onOpenFollowers: (() -> Unit)? = null,

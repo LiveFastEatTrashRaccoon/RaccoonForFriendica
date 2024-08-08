@@ -1,4 +1,4 @@
-package com.livefast.eattrash.feature.accountdetail.composable
+package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,11 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 
 @Composable
-internal fun AccountFields(
+fun AccountFields(
     fields: List<FieldModel> = emptyList(),
     modifier: Modifier = Modifier,
     onOpenUrl: ((String) -> Unit)? = null,
