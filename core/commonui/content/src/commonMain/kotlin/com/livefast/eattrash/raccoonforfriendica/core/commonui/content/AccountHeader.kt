@@ -62,6 +62,7 @@ fun AccountHeader(
     modifier: Modifier = Modifier,
     relationshipStatus: RelationshipStatus? = null,
     notificationStatus: NotificationStatus? = null,
+    onClick: (() -> Unit)? = null,
     onOpenFollowers: (() -> Unit)? = null,
     onOpenFollowing: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
@@ -75,7 +76,10 @@ fun AccountHeader(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
     Column(
-        modifier = modifier,
+        modifier =
+            modifier.clickable {
+                onClick?.invoke()
+            },
     ) {
         Box {
             CustomImage(
@@ -200,6 +204,12 @@ fun AccountHeader(
                                             } else {
                                                 MaterialTheme.colorScheme.surfaceVariant
                                             },
+                                        contentColor =
+                                            if (relationshipStatus.isProminent()) {
+                                                MaterialTheme.colorScheme.onPrimary
+                                            } else {
+                                                MaterialTheme.colorScheme.onSurfaceVariant
+                                            },
                                     ),
                                 onClick = {
                                     onRelationshipClicked?.invoke()
@@ -249,6 +259,7 @@ fun AccountHeader(
                 ContentBody(
                     content = bio,
                     onOpenUrl = onOpenUrl,
+                    onClick = onClick,
                 )
             }
         }
@@ -265,12 +276,12 @@ private fun NotificationStatus.toIcon(): ImageVector =
 @Composable
 private fun RelationshipStatus.toReadableName(): String =
     when (this) {
-        RelationshipStatus.Following -> "Stai seguendo"
-        RelationshipStatus.FollowsYou -> "Ti segue"
-        RelationshipStatus.MutualFollow -> "Vi seguite a vicenda"
-        RelationshipStatus.RequestedToOther -> "Richiesta inviata"
-        RelationshipStatus.RequestedToYou -> "Accetta richiesta"
-        RelationshipStatus.Undetermined -> "Segui"
+        RelationshipStatus.Following -> LocalStrings.current.relationshipStatusFollowing
+        RelationshipStatus.FollowsYou -> LocalStrings.current.relationshipStatusFollowsYou
+        RelationshipStatus.MutualFollow -> LocalStrings.current.relationshipStatusMutual
+        RelationshipStatus.RequestedToOther -> LocalStrings.current.relationshipStatusRequestedToOther
+        RelationshipStatus.RequestedToYou -> LocalStrings.current.relationshipStatusRequestedToYou
+        RelationshipStatus.Undetermined -> LocalStrings.current.relationshipStatusGeneric
     }
 
 @Composable

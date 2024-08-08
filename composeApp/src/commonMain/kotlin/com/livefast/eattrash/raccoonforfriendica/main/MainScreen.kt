@@ -77,7 +77,9 @@ object MainScreen : Screen {
         navigationCoordinator.setBottomBarScrollConnection(scrollConnection)
 
         LaunchedEffect(navigationCoordinator) {
-            navigationCoordinator.setCurrentSection(BottomNavigationSection.Home)
+            if (navigationCoordinator.currentSection == null) {
+                navigationCoordinator.setCurrentSection(BottomNavigationSection.Home)
+            }
         }
 
         TabNavigator(HomeTab) { tabNavigator ->

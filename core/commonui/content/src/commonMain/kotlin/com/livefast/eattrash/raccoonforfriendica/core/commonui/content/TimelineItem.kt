@@ -17,6 +17,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 fun TimelineItem(
     entry: TimelineEntryModel,
     modifier: Modifier = Modifier,
+    actionsEnabled: Boolean = true,
     onOpenUrl: ((String) -> Unit)? = null,
     onClick: (() -> Unit)? = null,
     onOpenUser: ((AccountModel) -> Unit)? = null,
@@ -79,19 +80,21 @@ fun TimelineItem(
                 onOpenUrl = onOpenUrl,
             )
 
-            ContentFooter(
-                modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
-                favoriteCount = entry.favoriteCount,
-                favorite = entry.favorite,
-                reblogCount = entry.reblogCount,
-                reblogged = entry.reblogged,
-                bookmarked = entry.bookmarked,
-                replyCount = entry.replyCount,
-                onReply = onReply,
-                onReblog = onReblog,
-                onFavorite = onFavorite,
-                onBookmark = onBookmark,
-            )
+            if (actionsEnabled) {
+                ContentFooter(
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
+                    favoriteCount = entry.favoriteCount,
+                    favorite = entry.favorite,
+                    reblogCount = entry.reblogCount,
+                    reblogged = entry.reblogged,
+                    bookmarked = entry.bookmarked,
+                    replyCount = entry.replyCount,
+                    onReply = onReply,
+                    onReblog = onReblog,
+                    onFavorite = onFavorite,
+                    onBookmark = onBookmark,
+                )
+            }
         }
     }
 }

@@ -76,6 +76,20 @@ interface Strings {
     val fieldUsername: String
     val fieldPassword: String
     val actionLogout: String
+    val relationshipStatusGeneric: String
+    val relationshipStatusFollowing: String
+    val relationshipStatusFollowsYou: String
+    val relationshipStatusMutual: String
+    val relationshipStatusRequestedToOther: String
+    val relationshipStatusRequestedToYou: String
+    val notificationTypeEntry: String
+    val notificationTypeFavorite: String
+    val notificationTypeFollow: String
+    val notificationTypeFollowRequest: String
+    val notificationTypeMention: String
+    val notificationTypePoll: String
+    val notificationTypeReblog: String
+    val notificationTypeUpdate: String
 }
 
 object Locales {
