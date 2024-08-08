@@ -6,4 +6,6 @@ interface CredentialsRepository {
         user: String,
         pass: String,
     ): Boolean
+
+    suspend fun validateNode(node: String): Boolean
 }

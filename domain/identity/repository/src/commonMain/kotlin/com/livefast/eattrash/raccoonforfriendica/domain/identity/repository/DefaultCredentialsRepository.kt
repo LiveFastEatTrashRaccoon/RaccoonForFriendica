@@ -16,8 +16,18 @@ internal class DefaultCredentialsRepository(
     ): Boolean =
         withContext(Dispatchers.IO) {
             provider.changeNode(node)
+            provider.setAuth(user to pass)
             runCatching {
                 provider.notifications.get(types = listOf(NotificationType.FOLLOW))
+                true
+            }.getOrElse { false }
+        }
+
+    override suspend fun validateNode(node: String): Boolean =
+        withContext(Dispatchers.IO) {
+            provider.changeNode(node)
+            runCatching {
+                provider.timeline.getPublic()
                 true
             }.getOrElse { false }
         }
