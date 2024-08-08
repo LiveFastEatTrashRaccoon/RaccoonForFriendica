@@ -1,4 +1,4 @@
-package com.livefast.eattrash.feature.accountdetail
+package com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
@@ -6,9 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountSe
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
-interface AccountDetailMviModel :
+interface MyAccountMviModel :
     ScreenModel,
-    MviModel<AccountDetailMviModel.Intent, AccountDetailMviModel.State, AccountDetailMviModel.Effect> {
+    MviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 

@@ -1,11 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.core.l10n.messages
 
 internal open class DefaultStrings : Strings {
+    override val messageAreYouSure = "Are you sure you want to continue?"
     override val messageSuccess = "Operation completed successfully!"
     override val messageGenericError = "An unexpected error occurred"
     override val messageInvalidField = "Invalid field"
     override val messageMissingField = "Missing field"
-    override val buttonSubmit = "Submit"
+    override val messageEmptyList = "There is nothing to display here  \uD83E\uDD37\uD83C\uDFFD"
+    override val buttonConfirm = "Confirm"
     override val buttonOk = "OK"
     override val buttonClose = "Close"
     override val buttonCancel = "Cancel"
@@ -66,4 +68,5 @@ internal open class DefaultStrings : Strings {
     override val fieldNodeName = "Instance name"
     override val fieldUsername = "Username"
     override val fieldPassword = "Password"
+    override val actionLogout = "Logout"
 }

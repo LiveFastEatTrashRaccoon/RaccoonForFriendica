@@ -34,14 +34,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
-import com.livefast.eattrash.feature.accountdetail.composable.AccountFields
-import com.livefast.eattrash.feature.accountdetail.composable.AccountHeader
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountFields
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountHeader
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountSection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toAccountSection
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toInt
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -189,6 +194,17 @@ class AccountDetailScreen(
                             HorizontalDivider(
                                 modifier = Modifier.padding(vertical = Spacing.s),
                             )
+                        }
+
+                        if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
+                            item {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                                    text = LocalStrings.current.messageEmptyList,
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            }
                         }
 
                         item {

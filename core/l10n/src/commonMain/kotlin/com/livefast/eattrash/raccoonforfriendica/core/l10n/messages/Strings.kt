@@ -9,10 +9,12 @@ import cafe.adriel.lyricist.ProvideStrings
 
 interface Strings {
     val messageSuccess: String
+    val messageAreYouSure: String
     val messageGenericError: String
     val messageInvalidField: String
     val messageMissingField: String
-    val buttonSubmit: String
+    val messageEmptyList: String
+    val buttonConfirm: String
     val buttonClose: String
     val buttonOk: String
     val buttonCancel: String
@@ -73,6 +75,7 @@ interface Strings {
     val fieldNodeName: String
     val fieldUsername: String
     val fieldPassword: String
+    val actionLogout: String
 }
 
 object Locales {

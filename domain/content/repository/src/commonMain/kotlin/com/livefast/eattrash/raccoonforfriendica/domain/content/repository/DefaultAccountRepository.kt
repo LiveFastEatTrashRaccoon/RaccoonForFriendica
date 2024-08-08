@@ -15,4 +15,11 @@ internal class DefaultAccountRepository(
                 provider.accounts.getById(id).toModel()
             }
         }.getOrNull()
+
+    override suspend fun getByHandle(handle: String): AccountModel? =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.accounts.lookup(handle).toModel()
+            }
+        }.getOrNull()
 }

@@ -2,11 +2,13 @@ package com.livefast.eattrash.raccoonforfriendica.core.l10n.messages
 
 internal val ItStrings =
     object : DefaultStrings() {
+        override val messageAreYouSure = "Sei sicuro/a di voler continuare"
         override val messageSuccess = "Operazione completata con successo!"
         override val messageGenericError = "Si è verificato un errore inaspettato"
         override val messageInvalidField = "Campo non valido"
         override val messageMissingField = "Campo obbligatorio"
-        override val buttonSubmit = "Invia"
+        override val messageEmptyList = "Qui non c'è nulla da visualizzare  \uD83E\uDD37\uD83C\uDFFD"
+        override val buttonConfirm = "Conferma"
         override val buttonOk = "OK"
         override val buttonClose = "Chiudi"
         override val buttonCancel = "Annulla"
@@ -67,4 +69,5 @@ internal val ItStrings =
         override val fieldNodeName = "Nome istanza"
         override val fieldUsername = "Username"
         override val fieldPassword = "Password"
+        override val actionLogout = "Logout"
     }

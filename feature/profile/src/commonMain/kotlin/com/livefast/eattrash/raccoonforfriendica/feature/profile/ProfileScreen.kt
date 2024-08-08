@@ -2,14 +2,11 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -22,15 +19,19 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.Navigator
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.AnonymousScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountScreen
 
 class ProfileScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -41,6 +42,7 @@ class ProfileScreen : Screen {
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val detailOpener = remember { getDetailOpener() }
+        var confirmLogoutDialogOpened by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -60,7 +62,7 @@ class ProfileScreen : Screen {
                                     Modifier
                                         .padding(horizontal = Spacing.xs)
                                         .clickable {
-                                            model.reduce(ProfileMviModel.Intent.Logout)
+                                            confirmLogoutDialogOpened = true
                                         },
                                 imageVector = Icons.AutoMirrored.Default.Logout,
                                 contentDescription = null,
@@ -88,33 +90,51 @@ class ProfileScreen : Screen {
                             .padding(padding)
                             .nestedScroll(scrollBehavior.nestedScrollConnection),
                 ) {
-                    if (!uiState.isLogged) {
-                        Column(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(Spacing.s),
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(horizontal = Spacing.m),
-                                text = LocalStrings.current.messageUserUnlogged,
-                                style = MaterialTheme.typography.titleMedium,
-                            )
-
-                            Spacer(modifier = Modifier.height(Spacing.xl))
-
-                            Button(
-                                modifier = Modifier.align(Alignment.CenterHorizontally),
-                                onClick = {
-                                    detailOpener.openLogin()
-                                },
-                            ) {
-                                Text(LocalStrings.current.loginTitle)
-                            }
-                        }
-                    }
+                    Navigator(
+                        if (!uiState.isLogged) {
+                            AnonymousScreen()
+                        } else {
+                            MyAccountScreen()
+                        },
+                    )
                 }
             },
         )
+
+        if (confirmLogoutDialogOpened) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmLogoutDialogOpened = false
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionLogout,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmLogoutDialogOpened = false
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            confirmLogoutDialogOpened = false
+                            model.reduce(ProfileMviModel.Intent.Logout)
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
     }
 }

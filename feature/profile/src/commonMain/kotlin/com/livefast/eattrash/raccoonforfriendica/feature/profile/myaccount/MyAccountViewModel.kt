@@ -1,4 +1,4 @@
-package com.livefast.eattrash.feature.accountdetail
+package com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
@@ -7,15 +7,16 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AccountRepository
 import kotlinx.coroutines.launch
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository as IdentityAccountRepository
 
-class AccountDetailViewModel(
-    private val id: String,
+class MyAccountViewModel(
     private val accountRepository: AccountRepository,
+    private val identityAccountRepository: IdentityAccountRepository,
     private val paginationManager: TimelinePaginationManager,
-) : DefaultMviModel<AccountDetailMviModel.Intent, AccountDetailMviModel.State, AccountDetailMviModel.Effect>(
-        initialState = AccountDetailMviModel.State(),
+) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
+        initialState = MyAccountMviModel.State(),
     ),
-    AccountDetailMviModel {
+    MyAccountMviModel {
     init {
         screenModelScope.launch {
             if (uiState.value.initial) {
@@ -25,20 +26,20 @@ class AccountDetailViewModel(
         }
     }
 
-    override fun reduce(intent: AccountDetailMviModel.Intent) {
+    override fun reduce(intent: MyAccountMviModel.Intent) {
         when (intent) {
-            is AccountDetailMviModel.Intent.ChangeSection ->
+            is MyAccountMviModel.Intent.ChangeSection ->
                 screenModelScope.launch {
                     updateState { it.copy(section = intent.section) }
                     refresh(initial = true)
                 }
 
-            AccountDetailMviModel.Intent.LoadNextPage ->
+            MyAccountMviModel.Intent.LoadNextPage ->
                 screenModelScope.launch {
                     loadNextPage()
                 }
 
-            AccountDetailMviModel.Intent.Refresh ->
+            MyAccountMviModel.Intent.Refresh ->
                 screenModelScope.launch {
                     refresh()
                 }
@@ -46,19 +47,19 @@ class AccountDetailViewModel(
     }
 
     private suspend fun loadUser() {
-        val account = accountRepository.getById(id)
-        updateState {
-            it.copy(account = account)
-        }
+        val handle = identityAccountRepository.getActive()?.handle.orEmpty()
+        val currentAccount = accountRepository.getByHandle(handle)
+        updateState { it.copy(account = currentAccount) }
     }
 
     private suspend fun refresh(initial: Boolean = false) {
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
+        val accountId = uiState.value.account?.id ?: ""
         paginationManager.reset(
             TimelinePaginationSpecification.Account(
-                accountId = id,
+                accountId = accountId,
                 excludeReblogs = uiState.value.section == AccountSection.Posts,
                 excludeReplies = uiState.value.section == AccountSection.Posts,
                 onlyMedia = uiState.value.section == AccountSection.Media,
