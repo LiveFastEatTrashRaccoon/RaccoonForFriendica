@@ -8,6 +8,14 @@ import cafe.adriel.lyricist.Lyricist
 import cafe.adriel.lyricist.ProvideStrings
 
 interface Strings {
+    val messageSuccess: String
+    val messageGenericError: String
+    val messageInvalidField: String
+    val messageMissingField: String
+    val buttonSubmit: String
+    val buttonClose: String
+    val buttonOk: String
+    val buttonCancel: String
     val systemDefault: String
     val settingsThemeLight: String
     val settingsThemeDark: String
@@ -60,6 +68,11 @@ interface Strings {
     val themeColorPink: String
     val themeColorGray: String
     val themeColorWhite: String
+    val messageUserUnlogged: String
+    val loginTitle: String
+    val fieldNodeName: String
+    val fieldUsername: String
+    val fieldPassword: String
 }
 
 object Locales {
