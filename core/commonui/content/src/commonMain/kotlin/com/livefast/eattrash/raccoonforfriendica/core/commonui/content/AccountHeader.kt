@@ -1,18 +1,27 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,12 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withAnnotation
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -35,6 +46,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
 
 private object AnnotationConstants {
     const val TAG = "action"
@@ -47,13 +60,17 @@ private object AnnotationConstants {
 fun AccountHeader(
     account: AccountModel?,
     modifier: Modifier = Modifier,
+    relationshipStatus: RelationshipStatus? = null,
+    notificationStatus: NotificationStatus? = null,
     onOpenFollowers: (() -> Unit)? = null,
     onOpenFollowing: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
+    onRelationshipClicked: (() -> Unit)? = null,
+    onNotificationsClicked: (() -> Unit)? = null,
 ) {
     val banner = account?.header.orEmpty()
     val avatar = account?.avatar.orEmpty()
-    val avatarSize = 100.dp
+    val avatarSize = 110.dp
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
@@ -77,7 +94,7 @@ fun AccountHeader(
                         .offset(
                             y = -avatarSize * 0.1f,
                         ).padding(horizontal = Spacing.m),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Bottom,
             ) {
                 if (avatar.isNotEmpty()) {
                     CustomImage(
@@ -99,7 +116,6 @@ fun AccountHeader(
                 Spacer(modifier = Modifier.weight(1f))
 
                 Column(
-                    modifier = Modifier.padding(top = Spacing.s),
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
                     val followerDesc = LocalStrings.current.accountFollower
@@ -145,6 +161,55 @@ fun AccountHeader(
                         },
                     )
 
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.m),
+                    ) {
+                        if (notificationStatus != null) {
+                            Icon(
+                                modifier =
+                                    Modifier
+                                        .size(IconSize.l)
+                                        .clickable {
+                                            onNotificationsClicked?.invoke()
+                                        }.border(
+                                            width = Dp.Hairline,
+                                            color =
+                                                MaterialTheme.colorScheme.onBackground.copy(
+                                                    ancillaryTextAlpha,
+                                                ),
+                                            shape = CircleShape,
+                                        ).padding(5.dp),
+                                imageVector = notificationStatus.toIcon(),
+                                tint = MaterialTheme.colorScheme.onBackground,
+                                contentDescription = null,
+                            )
+                        }
+                        if (relationshipStatus != null) {
+                            Button(
+                                contentPadding =
+                                    PaddingValues(
+                                        horizontal = Spacing.l,
+                                        vertical = 0.dp,
+                                    ),
+                                colors =
+                                    ButtonDefaults.buttonColors().copy(
+                                        containerColor =
+                                            if (relationshipStatus.isProminent()) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else {
+                                                MaterialTheme.colorScheme.surfaceVariant
+                                            },
+                                    ),
+                                onClick = {
+                                    onRelationshipClicked?.invoke()
+                                },
+                            ) {
+                                Text(relationshipStatus.toReadableName())
+                            }
+                        }
+                    }
+
                     if (account?.group == true) {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
@@ -189,3 +254,32 @@ fun AccountHeader(
         }
     }
 }
+
+private fun NotificationStatus.toIcon(): ImageVector =
+    when (this) {
+        NotificationStatus.Disabled -> Icons.Default.NotificationsNone
+        NotificationStatus.Enabled -> Icons.Default.NotificationsActive
+        NotificationStatus.Undetermined -> Icons.Default.Notifications
+    }
+
+@Composable
+private fun RelationshipStatus.toReadableName(): String =
+    when (this) {
+        RelationshipStatus.Following -> "Stai seguendo"
+        RelationshipStatus.FollowsYou -> "Ti segue"
+        RelationshipStatus.MutualFollow -> "Vi seguite a vicenda"
+        RelationshipStatus.RequestedToOther -> "Richiesta inviata"
+        RelationshipStatus.RequestedToYou -> "Accetta richiesta"
+        RelationshipStatus.Undetermined -> "Segui"
+    }
+
+@Composable
+private fun RelationshipStatus.isProminent(): Boolean =
+    when (this) {
+        RelationshipStatus.Following -> false
+        RelationshipStatus.FollowsYou -> false
+        RelationshipStatus.MutualFollow -> false
+        RelationshipStatus.RequestedToOther -> false
+        RelationshipStatus.RequestedToYou -> true
+        RelationshipStatus.Undetermined -> true
+    }
