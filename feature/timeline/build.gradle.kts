@@ -53,11 +53,6 @@ kotlin {
                 implementation(projects.domain.identity.repository)
             }
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
     }
 }
 
