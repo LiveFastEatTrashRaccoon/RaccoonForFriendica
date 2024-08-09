@@ -80,6 +80,7 @@ kotlin {
             implementation(projects.feature.settings)
             implementation(projects.feature.timeline)
             implementation(projects.feature.userdetail)
+            implementation(projects.feature.userlist)
         }
         val commonTest by getting {
             dependencies {
