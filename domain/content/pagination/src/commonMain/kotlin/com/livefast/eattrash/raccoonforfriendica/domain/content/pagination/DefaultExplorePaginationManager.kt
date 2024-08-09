@@ -2,12 +2,12 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 
 internal class DefaultExplorePaginationManager(
     private val trendsRepository: TrendsRepository,
-    private val accountRepository: AccountRepository,
+    private val userRepository: UserRepository,
 ) : ExplorePaginationManager {
     private var specification: ExplorePaginationSpecification? = null
     private var offset = 0
@@ -41,7 +41,7 @@ internal class DefaultExplorePaginationManager(
                     }
 
                 ExplorePaginationSpecification.Suggestions ->
-                    accountRepository.getSuggestions().map {
+                    userRepository.getSuggestions().map {
                         ExploreItemModel.Suggestion(
                             it.copy(
                                 relationshipStatus = RelationshipStatus.Undetermined,

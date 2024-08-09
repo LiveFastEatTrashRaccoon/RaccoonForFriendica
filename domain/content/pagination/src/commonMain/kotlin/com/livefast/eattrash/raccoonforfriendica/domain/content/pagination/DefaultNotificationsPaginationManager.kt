@@ -3,12 +3,12 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 
 internal class DefaultNotificationsPaginationManager(
     private val notificationRepository: NotificationRepository,
-    private val accountRepository: AccountRepository,
+    private val userRepository: UserRepository,
 ) : NotificationsPaginationManager {
     private var specification: NotificationsPaginationSpecification? = null
     private var pageCursor: String? = null
@@ -27,16 +27,17 @@ internal class DefaultNotificationsPaginationManager(
         val results =
             when (specification) {
                 is NotificationsPaginationSpecification.Default ->
-                    notificationRepository.getAll(
-                        pageCursor = pageCursor,
-                        types = specification.types,
-                    ).let { list ->
-                        if (specification.withRelationshipStatus) {
-                            list.determineRelationshipStatus()
-                        } else {
-                            list
+                    notificationRepository
+                        .getAll(
+                            pageCursor = pageCursor,
+                            types = specification.types,
+                        ).let { list ->
+                            if (specification.withRelationshipStatus) {
+                                list.determineRelationshipStatus()
+                            } else {
+                                list
+                            }
                         }
-                    }
             }.deduplicate()
 
         if (results.isNotEmpty()) {
@@ -54,14 +55,14 @@ internal class DefaultNotificationsPaginationManager(
 
     private suspend fun List<NotificationModel>.determineRelationshipStatus(): List<NotificationModel> =
         map {
-            val accountId = it.account?.id
+            val accountId = it.user?.id
             if (accountId == null) {
                 it
             } else {
-                val relationship = accountRepository.getRelationship(accountId)
+                val relationship = userRepository.getRelationship(accountId)
                 it.copy(
-                    account =
-                        it.account?.copy(
+                    user =
+                        it.user?.copy(
                             relationshipStatus = relationship?.toStatus(),
                             notificationStatus = relationship?.toNotificationStatus(),
                         ),
