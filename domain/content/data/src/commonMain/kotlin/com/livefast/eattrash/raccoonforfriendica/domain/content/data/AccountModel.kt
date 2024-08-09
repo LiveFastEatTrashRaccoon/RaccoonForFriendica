@@ -16,4 +16,6 @@ data class AccountModel(
     val id: String,
     val locked: Boolean = false,
     val username: String? = null,
+    val relationshipStatus: RelationshipStatus? = null,
+    val notificationStatus: NotificationStatus? = null,
 )

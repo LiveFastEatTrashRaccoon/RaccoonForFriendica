@@ -16,6 +16,7 @@ val domainContentPaginationModule =
         factory<NotificationsPaginationManager> {
             DefaultNotificationsPaginationManager(
                 notificationRepository = get(),
+                accountRepository = get(),
             )
         }
     }

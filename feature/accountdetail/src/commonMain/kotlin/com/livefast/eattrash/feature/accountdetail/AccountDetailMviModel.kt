@@ -4,8 +4,6 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
 interface AccountDetailMviModel :
@@ -22,8 +20,6 @@ interface AccountDetailMviModel :
     }
 
     data class State(
-        val relationshipStatus: RelationshipStatus = RelationshipStatus.Undetermined,
-        val notificationStatus: NotificationStatus = NotificationStatus.Undetermined,
         val refreshing: Boolean = false,
         val loading: Boolean = false,
         val initial: Boolean = true,

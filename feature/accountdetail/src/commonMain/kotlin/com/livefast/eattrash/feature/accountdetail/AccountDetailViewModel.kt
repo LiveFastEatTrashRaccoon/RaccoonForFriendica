@@ -3,8 +3,6 @@ package com.livefast.eattrash.feature.accountdetail
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountSection
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
@@ -54,11 +52,11 @@ class AccountDetailViewModel(
         val relationship = accountRepository.getRelationship(id)
         updateState {
             it.copy(
-                account = account,
-                relationshipStatus =
-                    relationship?.toStatus() ?: RelationshipStatus.Undetermined,
-                notificationStatus =
-                    relationship?.toNotificationStatus() ?: NotificationStatus.Undetermined,
+                account =
+                    account?.copy(
+                        relationshipStatus = relationship?.toStatus(),
+                        notificationStatus = relationship?.toNotificationStatus(),
+                    ),
             )
         }
     }
