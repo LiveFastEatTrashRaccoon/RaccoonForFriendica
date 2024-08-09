@@ -38,7 +38,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
-fun NotificationItem(
+internal fun NotificationItem(
     notification: NotificationModel,
     modifier: Modifier = Modifier,
     onOpenUrl: ((String) -> Unit)? = null,
