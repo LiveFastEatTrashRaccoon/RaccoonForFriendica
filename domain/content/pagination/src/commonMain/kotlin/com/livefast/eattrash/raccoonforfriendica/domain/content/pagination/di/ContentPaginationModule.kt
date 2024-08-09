@@ -18,13 +18,13 @@ val domainContentPaginationModule =
         factory<NotificationsPaginationManager> {
             DefaultNotificationsPaginationManager(
                 notificationRepository = get(),
-                accountRepository = get(),
+                userRepository = get(),
             )
         }
         factory<ExplorePaginationManager> {
             DefaultExplorePaginationManager(
                 trendsRepository = get(),
-                accountRepository = get(),
+                userRepository = get(),
             )
         }
     }

@@ -17,7 +17,7 @@ val featureProfileModule =
         factory<MyAccountMviModel> {
             MyAccountViewModel(
                 identityAccountRepository = get(),
-                accountRepository = get(),
+                userRepository = get(),
                 paginationManager = get(),
             )
         }

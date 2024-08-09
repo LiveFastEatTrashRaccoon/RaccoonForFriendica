@@ -71,14 +71,15 @@ kotlin {
             implementation(projects.domain.identity.repository)
             implementation(projects.domain.identity.usecase)
 
-            implementation(projects.feature.accountdetail)
             implementation(projects.feature.entrydetail)
             implementation(projects.feature.explore)
+            implementation(projects.feature.hashtag)
             implementation(projects.feature.inbox)
             implementation(projects.feature.login)
             implementation(projects.feature.profile)
             implementation(projects.feature.settings)
             implementation(projects.feature.timeline)
+            implementation(projects.feature.userdetail)
         }
         val commonTest by getting {
             dependencies {
