@@ -12,6 +12,10 @@ interface TimelineMviModel :
         data object Refresh : Intent
 
         data object LoadNextPage : Intent
+
+        data class ChangeType(
+            val type: TimelineType,
+        ) : Intent
     }
 
     data class State(
@@ -20,9 +24,12 @@ interface TimelineMviModel :
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
         val nodeName: String = "",
-        val timelineType: TimelineType = TimelineType.All,
+        val timelineType: TimelineType = TimelineType.Local,
+        val availableTimelineTypes: List<TimelineType> = emptyList(),
         val entries: List<TimelineEntryModel> = emptyList(),
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object BackToTop : Effect
+    }
 }

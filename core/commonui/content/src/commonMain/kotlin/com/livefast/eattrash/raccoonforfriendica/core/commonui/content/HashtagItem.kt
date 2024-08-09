@@ -89,15 +89,14 @@ private fun HashtagChart(
         val height = drawContext.size.height
 
         val trimmedDataSet = dataset.takeLast(10)
-        val dataSetSize = trimmedDataSet.size + 1
         val maxValue = trimmedDataSet.maxOf { it.uses }
         val heightUnit = height / maxValue
-        val widthUnit = width / dataSetSize
+        val widthUnit = width / trimmedDataSet.size
 
         val path = Path()
         path.moveTo(0f, height)
         for (i in trimmedDataSet.indices) {
-            val x = (i + 2) * widthUnit
+            val x = (i + 1) * widthUnit
             val y = height - trimmedDataSet[i].uses * heightUnit
             path.lineTo(x, y)
         }

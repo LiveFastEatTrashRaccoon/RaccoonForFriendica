@@ -24,6 +24,7 @@ internal val ItStrings =
         override val barThemeTransparent = "Trasparente"
         override val timelineAll = "Tutti"
         override val timelineSubscriptions = "Iscrizioni"
+        override val timelineLocal = "Locale"
         override val nodeVia = "via"
         override val timelineEntryInReplyTo = "in risposta a"
         override val timelineEntryRebloggedBy = "ricondiviso da"
@@ -88,4 +89,5 @@ internal val ItStrings =
         override val exploreSectionLinks = "Link"
         override val exploreSectionSuggestions = "Per te"
         override val hashtagPeopleUsing = "persone ne stanno parlando"
+        override val feedTypeTitle = "Tipo di feed"
     }

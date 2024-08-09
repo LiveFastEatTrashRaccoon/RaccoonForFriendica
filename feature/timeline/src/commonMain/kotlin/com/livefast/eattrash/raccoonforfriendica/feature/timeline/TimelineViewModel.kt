@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.timeline
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
@@ -22,9 +23,36 @@ class TimelineViewModel(
                 .onEach { node ->
                     updateState { it.copy(nodeName = node) }
                 }.launchIn(this)
-            if (uiState.value.initial) {
-                refresh(initial = true)
-            }
+
+            apiConfigurationRepository.isLogged
+                .onEach { isLogged ->
+                    if (isLogged) {
+                        updateState {
+                            it.copy(
+                                availableTimelineTypes =
+                                    listOf(
+                                        TimelineType.All,
+                                        TimelineType.Subscriptions,
+                                        TimelineType.Local,
+                                    ),
+                                timelineType = TimelineType.Subscriptions,
+                            )
+                        }
+                        refresh(initial = true)
+                    } else {
+                        updateState {
+                            it.copy(
+                                availableTimelineTypes =
+                                    listOf(
+                                        TimelineType.All,
+                                        TimelineType.Local,
+                                    ),
+                                timelineType = TimelineType.Local,
+                            )
+                        }
+                        refresh(initial = true)
+                    }
+                }.launchIn(this)
         }
     }
 
@@ -38,6 +66,19 @@ class TimelineViewModel(
             TimelineMviModel.Intent.LoadNextPage ->
                 screenModelScope.launch {
                     loadNextPage()
+                }
+
+            is TimelineMviModel.Intent.ChangeType ->
+                screenModelScope.launch {
+                    if (uiState.value.loading) {
+                        return@launch
+                    }
+
+                    updateState {
+                        it.copy(timelineType = intent.type)
+                    }
+                    emitEffect(TimelineMviModel.Effect.BackToTop)
+                    refresh(initial = true)
                 }
         }
     }

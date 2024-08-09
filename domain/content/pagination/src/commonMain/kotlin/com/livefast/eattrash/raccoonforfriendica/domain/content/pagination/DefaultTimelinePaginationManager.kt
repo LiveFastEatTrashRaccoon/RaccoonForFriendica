@@ -34,6 +34,11 @@ internal class DefaultTimelinePaginationManager(
                             timelineRepository.getHome(
                                 pageCursor = pageCursor,
                             )
+
+                        TimelineType.Local ->
+                            timelineRepository.getLocal(
+                                pageCursor = pageCursor,
+                            )
                     }
                 }
 

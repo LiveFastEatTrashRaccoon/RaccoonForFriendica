@@ -8,6 +8,8 @@ interface TimelineRepository {
 
     suspend fun getHome(pageCursor: String? = null): List<TimelineEntryModel>
 
+    suspend fun getLocal(pageCursor: String? = null): List<TimelineEntryModel>
+
     suspend fun getHashtag(
         hashtag: String,
         pageCursor: String? = null,
