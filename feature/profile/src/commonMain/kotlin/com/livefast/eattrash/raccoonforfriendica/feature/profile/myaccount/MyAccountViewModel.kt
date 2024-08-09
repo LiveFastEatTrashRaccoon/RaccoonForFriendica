@@ -53,14 +53,14 @@ class MyAccountViewModel(
     private suspend fun loadUser() {
         val handle = identityAccountRepository.getActive()?.handle.orEmpty()
         val currentAccount = userRepository.getByHandle(handle)
-        updateState { it.copy(account = currentAccount) }
+        updateState { it.copy(user = currentAccount) }
     }
 
     private suspend fun refresh(initial: Boolean = false) {
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        val accountId = uiState.value.account?.id ?: ""
+        val accountId = uiState.value.user?.id ?: ""
         paginationManager.reset(
             TimelinePaginationSpecification.User(
                 userId = accountId,

@@ -218,9 +218,9 @@ class ExploreScreen : Screen {
 
                             is ExploreItemModel.Suggestion -> {
                                 UserItem(
-                                    account = item.account,
+                                    account = item.user,
                                     onClick = {
-                                        detailOpener.openUserDetail(item.account.id)
+                                        detailOpener.openUserDetail(item.user.id)
                                     },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.interItem))

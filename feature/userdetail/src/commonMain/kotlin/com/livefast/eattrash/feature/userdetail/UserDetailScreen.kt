@@ -101,7 +101,7 @@ class UserDetailScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            text = uiState.account?.handle.orEmpty(),
+                            text = uiState.user?.handle.orEmpty(),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.titleMedium,
@@ -140,12 +140,18 @@ class UserDetailScreen(
                     LazyColumn(
                         state = lazyListState,
                     ) {
-                        if (uiState.account != null) {
+                        if (uiState.user != null) {
                             item {
                                 UserHeader(
-                                    account = uiState.account,
+                                    account = uiState.user,
                                     onOpenUrl = { url ->
                                         openUrl(url)
+                                    },
+                                    onOpenFollowers = {
+                                        detailOpener.openFollowers(id)
+                                    },
+                                    onOpenFollowing = {
+                                        detailOpener.openFollowing(id)
                                     },
                                 )
                             }
@@ -163,7 +169,7 @@ class UserDetailScreen(
                                     ),
                                 fields =
                                     buildList {
-                                        uiState.account?.created?.also { date ->
+                                        uiState.user?.created?.also { date ->
                                             add(
                                                 FieldModel(
                                                     key = LocalStrings.current.accountAge,
@@ -171,7 +177,7 @@ class UserDetailScreen(
                                                 ),
                                             )
                                         }
-                                        addAll(uiState.account?.fields.orEmpty())
+                                        addAll(uiState.user?.fields.orEmpty())
                                     },
                                 onOpenUrl = { url ->
                                     openUrl(url)

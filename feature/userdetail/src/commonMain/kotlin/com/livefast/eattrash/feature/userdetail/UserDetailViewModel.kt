@@ -56,7 +56,7 @@ class UserDetailViewModel(
         val relationship = userRepository.getRelationship(id)
         updateState {
             it.copy(
-                account =
+                user =
                     account?.copy(
                         relationshipStatus = relationship?.toStatus(),
                         notificationStatus = relationship?.toNotificationStatus(),
