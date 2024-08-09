@@ -90,4 +90,6 @@ internal val ItStrings =
         override val exploreSectionSuggestions = "Per te"
         override val hashtagPeopleUsing = "persone ne stanno parlando"
         override val feedTypeTitle = "Tipo di feed"
+        override val followerTitle = "Seguaci"
+        override val followingTitle = "Seguiti"
     }

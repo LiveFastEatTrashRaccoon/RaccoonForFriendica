@@ -96,6 +96,8 @@ interface Strings {
     val exploreSectionSuggestions: String
     val hashtagPeopleUsing: String
     val feedTypeTitle: String
+    val followerTitle: String
+    val followingTitle: String
 }
 
 object Locales {

@@ -89,4 +89,6 @@ internal open class DefaultStrings : Strings {
     override val exploreSectionSuggestions = "For you"
     override val hashtagPeopleUsing = "people are talking about it"
     override val feedTypeTitle = "Feed type"
+    override val followerTitle = "Followers"
+    override val followingTitle = "Following"
 }
