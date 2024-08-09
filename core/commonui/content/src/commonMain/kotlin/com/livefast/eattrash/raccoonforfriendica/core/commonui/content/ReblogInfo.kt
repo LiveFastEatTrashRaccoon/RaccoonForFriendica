@@ -23,17 +23,17 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
 internal fun ReblogInfo(
     modifier: Modifier = Modifier,
-    account: AccountModel?,
+    user: UserModel?,
     iconSize: Dp = IconSize.s,
-    onOpenUser: ((AccountModel) -> Unit)? = null,
+    onOpenUser: ((UserModel) -> Unit)? = null,
 ) {
-    val creatorName = account?.let { it.displayName ?: it.handle }.orEmpty()
-    val creatorAvatar = account?.avatar.orEmpty()
+    val creatorName = user?.let { it.displayName ?: it.handle }.orEmpty()
+    val creatorAvatar = user?.avatar.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
 
     Row(
@@ -57,8 +57,8 @@ internal fun ReblogInfo(
                 modifier =
                     Modifier
                         .clickable {
-                            if (account != null) {
-                                onOpenUser?.invoke(account)
+                            if (user != null) {
+                                onOpenUser?.invoke(user)
                             }
                         }.padding(Spacing.xxxs)
                         .size(iconSize)
@@ -71,8 +71,8 @@ internal fun ReblogInfo(
             PlaceholderImage(
                 modifier =
                     Modifier.clickable {
-                        if (account != null) {
-                            onOpenUser?.invoke(account)
+                        if (user != null) {
+                            onOpenUser?.invoke(user)
                         }
                     },
                 size = iconSize,

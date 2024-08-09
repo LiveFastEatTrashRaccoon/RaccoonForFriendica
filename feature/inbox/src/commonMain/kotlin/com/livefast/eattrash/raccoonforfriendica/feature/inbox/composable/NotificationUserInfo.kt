@@ -32,13 +32,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isProminent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 
 @Composable
 fun NotificationUserInfo(
-    account: AccountModel,
+    account: UserModel,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,

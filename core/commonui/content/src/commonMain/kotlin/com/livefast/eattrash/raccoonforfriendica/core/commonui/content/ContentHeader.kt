@@ -19,17 +19,17 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
 fun ContentHeader(
     modifier: Modifier = Modifier,
-    account: AccountModel? = null,
+    user: UserModel? = null,
     iconSize: Dp = IconSize.l,
-    onOpenUser: ((AccountModel) -> Unit)? = null,
+    onOpenUser: ((UserModel) -> Unit)? = null,
 ) {
-    val creatorName = account?.let { it.displayName ?: it.handle }.orEmpty()
-    val creatorAvatar = account?.avatar.orEmpty()
+    val creatorName = user?.let { it.displayName ?: it.handle }.orEmpty()
+    val creatorAvatar = user?.avatar.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
 
     Row(
@@ -42,8 +42,8 @@ fun ContentHeader(
                 modifier =
                     Modifier
                         .clickable {
-                            if (account != null) {
-                                onOpenUser?.invoke(account)
+                            if (user != null) {
+                                onOpenUser?.invoke(user)
                             }
                         }.padding(Spacing.xxxs)
                         .size(iconSize)
@@ -56,8 +56,8 @@ fun ContentHeader(
             PlaceholderImage(
                 modifier =
                     Modifier.clickable {
-                        if (account != null) {
-                            onOpenUser?.invoke(account)
+                        if (user != null) {
+                            onOpenUser?.invoke(user)
                         }
                     },
                 size = iconSize,

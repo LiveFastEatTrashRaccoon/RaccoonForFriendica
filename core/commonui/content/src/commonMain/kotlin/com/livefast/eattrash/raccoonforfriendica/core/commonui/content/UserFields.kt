@@ -17,7 +17,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 
 @Composable
-fun AccountFields(
+fun UserFields(
     fields: List<FieldModel> = emptyList(),
     modifier: Modifier = Modifier,
     onOpenUrl: ((String) -> Unit)? = null,

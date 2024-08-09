@@ -41,7 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isProminent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
@@ -54,8 +54,8 @@ private object AnnotationConstants {
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-fun AccountHeader(
-    account: AccountModel?,
+fun UserHeader(
+    account: UserModel?,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     onOpenFollowers: (() -> Unit)? = null,

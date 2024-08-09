@@ -55,7 +55,7 @@ fun HashtagItem(
             Text(
                 text =
                     buildString {
-                        append(hashtag.history.first().accounts)
+                        append(hashtag.history.first().users)
                         append(" ")
                         append(LocalStrings.current.hashtagPeopleUsing)
                     },

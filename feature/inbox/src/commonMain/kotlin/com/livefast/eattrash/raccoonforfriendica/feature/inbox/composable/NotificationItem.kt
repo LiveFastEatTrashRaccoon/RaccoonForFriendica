@@ -32,23 +32,23 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
 fun NotificationItem(
     notification: NotificationModel,
     modifier: Modifier = Modifier,
     onOpenUrl: ((String) -> Unit)? = null,
-    onOpenUser: ((AccountModel) -> Unit)? = null,
+    onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val boxColor = MaterialTheme.colorScheme.surfaceVariant
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val entry = notification.entry
-    val account = notification.account
+    val account = notification.user
 
     Column(
         modifier = modifier,

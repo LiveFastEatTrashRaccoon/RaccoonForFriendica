@@ -18,13 +18,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
 internal fun NotificationHeaderUserInfo(
     modifier: Modifier = Modifier,
-    account: AccountModel,
-    onOpenUser: ((AccountModel) -> Unit)? = null,
+    account: UserModel,
+    onOpenUser: ((UserModel) -> Unit)? = null,
 ) {
     val iconSize = IconSize.s
     val creatorName = account?.let { it.displayName ?: it.handle }.orEmpty()
