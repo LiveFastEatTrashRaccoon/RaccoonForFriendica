@@ -7,11 +7,14 @@ sealed interface TimelineType {
     data object All : TimelineType
 
     data object Subscriptions : TimelineType
+
+    data object Local : TimelineType
 }
 
 @Composable
-fun TimelineType.readableName(): String =
+fun TimelineType.toReadableName(): String =
     when (this) {
         TimelineType.All -> LocalStrings.current.timelineAll
         TimelineType.Subscriptions -> LocalStrings.current.timelineSubscriptions
+        TimelineType.Local -> LocalStrings.current.timelineLocal
     }
