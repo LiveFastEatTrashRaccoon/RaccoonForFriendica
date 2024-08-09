@@ -11,6 +11,7 @@ interface TimelineService {
         @Query("max_id") maxId: String? = null,
         @Query("min_id") minId: String? = null,
         @Query("limit") limit: Int = 20,
+        @Query("local") local: Boolean = false,
     ): List<Status>
 
     @GET("timelines/home")

@@ -34,6 +34,19 @@ internal class DefaultTimelineRepository(
             }.getOrElse { emptyList() }
         }
 
+    override suspend fun getLocal(pageCursor: String?): List<TimelineEntryModel> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val response =
+                    provider.timeline.getPublic(
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                        local = true,
+                    )
+                response.map { it.toModelWithReply() }
+            }.getOrElse { emptyList() }
+        }
+
     override suspend fun getHashtag(
         hashtag: String,
         pageCursor: String?,
