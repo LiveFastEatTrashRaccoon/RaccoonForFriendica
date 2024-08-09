@@ -86,6 +86,8 @@ class AccountDetailScreen(
                         AccountDetailMviModel.Effect.BackToTop ->
                             runCatching {
                                 lazyListState.scrollToItem(0)
+                                topAppBarState.heightOffset = 0f
+                                topAppBarState.contentOffset = 0f
                             }
                     }
                 }.launchIn(this)
