@@ -11,4 +11,14 @@ interface UserRepository {
     suspend fun getRelationship(id: String): RelationshipModel?
 
     suspend fun getSuggestions(): List<UserModel>
+
+    suspend fun getFollowers(
+        id: String,
+        pageCursor: String? = null,
+    ): List<UserModel>
+
+    suspend fun getFollowing(
+        id: String,
+        pageCursor: String? = null,
+    ): List<UserModel>
 }
