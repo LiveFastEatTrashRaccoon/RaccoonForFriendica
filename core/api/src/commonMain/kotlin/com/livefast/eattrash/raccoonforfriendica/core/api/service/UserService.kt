@@ -23,6 +23,7 @@ interface UserService {
         @Query("exclude_replies") excludeReplies: Boolean = false,
         @Query("exclude_reblogs") excludeReblogs: Boolean = false,
         @Query("pinned") pinned: Boolean = false,
+        @Query("limit") limit: Int = 20,
     ): List<Status>
 
     @GET("accounts/lookup")
@@ -40,4 +41,20 @@ interface UserService {
     suspend fun getSuggestions(
         @Query("limit") limit: Int,
     ): List<Suggestion>
+
+    @GET("accounts/{id}/followers")
+    suspend fun getFollowers(
+        @Path("id") id: String,
+        @Query("max_id") maxId: String? = null,
+        @Query("min_id") minId: String? = null,
+        @Query("limit") limit: Int = 20,
+    ): List<Account>
+
+    @GET("accounts/{id}/following")
+    suspend fun getFollowing(
+        @Path("id") id: String,
+        @Query("max_id") maxId: String? = null,
+        @Query("min_id") minId: String? = null,
+        @Query("limit") limit: Int = 20,
+    ): List<Account>
 }
