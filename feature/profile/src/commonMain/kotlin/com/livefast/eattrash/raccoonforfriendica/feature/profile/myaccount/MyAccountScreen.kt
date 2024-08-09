@@ -31,8 +31,10 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserFields
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserHeader
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserHeaderPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toAccountSection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toInt
@@ -90,7 +92,12 @@ class MyAccountScreen : Screen {
                             },
                         )
                     }
+                } else {
+                    item {
+                        UserHeaderPlaceholder(modifier = Modifier.fillMaxWidth())
+                    }
                 }
+
                 item {
                     UserFields(
                         modifier =
@@ -115,27 +122,36 @@ class MyAccountScreen : Screen {
                         },
                     )
                 }
-                if (uiState.account != null) {
-                    stickyHeader {
-                        SectionSelector(
-                            modifier = Modifier.padding(bottom = Spacing.s),
-                            titles =
-                                listOf(
-                                    UserSection.Posts.toReadableName(),
-                                    UserSection.All.toReadableName(),
-                                    UserSection.Pinned.toReadableName(),
-                                    UserSection.Media.toReadableName(),
-                                ),
-                            currentSection = uiState.section.toInt(),
-                            onSectionSelected = {
-                                val section = it.toAccountSection()
-                                model.reduce(
-                                    MyAccountMviModel.Intent.ChangeSection(section),
-                                )
-                            },
+
+                stickyHeader {
+                    SectionSelector(
+                        modifier = Modifier.padding(bottom = Spacing.s),
+                        titles =
+                            listOf(
+                                UserSection.Posts.toReadableName(),
+                                UserSection.All.toReadableName(),
+                                UserSection.Pinned.toReadableName(),
+                                UserSection.Media.toReadableName(),
+                            ),
+                        currentSection = uiState.section.toInt(),
+                        onSectionSelected = {
+                            val section = it.toAccountSection()
+                            model.reduce(
+                                MyAccountMviModel.Intent.ChangeSection(section),
+                            )
+                        },
+                    )
+                }
+
+                if (uiState.initial) {
+                    items(5) {
+                        TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = Spacing.s),
                         )
                     }
                 }
+
                 items(
                     items = uiState.entries,
                     key = { it.id },

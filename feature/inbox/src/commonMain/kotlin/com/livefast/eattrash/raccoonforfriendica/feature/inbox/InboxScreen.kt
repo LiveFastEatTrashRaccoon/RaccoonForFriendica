@@ -37,6 +37,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItem
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItemPlaceholder
 
 class InboxScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -86,6 +87,15 @@ class InboxScreen : Screen {
                         .pullRefresh(pullRefreshState),
             ) {
                 LazyColumn {
+                    if (uiState.initial) {
+                        items(5) {
+                            NotificationItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = Spacing.interItem),
+                            )
+                        }
+                    }
+
                     items(
                         items = uiState.notifications,
                         key = { it.id },
