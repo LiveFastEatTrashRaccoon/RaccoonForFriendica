@@ -30,18 +30,18 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountFields
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountHeader
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountSection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserFields
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserHeader
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toAccountSection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toInt
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getUrlManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -52,7 +52,7 @@ class MyAccountScreen : Screen {
         val model = getScreenModel<MyAccountMviModel>()
         val uiState by model.uiState.collectAsState()
         val uriHandler = LocalUriHandler.current
-        val urlManager = remember { getUrlManager(uriHandler) }
+        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
 
@@ -83,16 +83,16 @@ class MyAccountScreen : Screen {
             ) {
                 if (uiState.account != null) {
                     item {
-                        AccountHeader(
+                        UserHeader(
                             account = uiState.account,
                             onOpenUrl = { url ->
-                                urlManager.open(url)
+                                openUrl(url)
                             },
                         )
                     }
                 }
                 item {
-                    AccountFields(
+                    UserFields(
                         modifier =
                             Modifier.padding(
                                 top = Spacing.m,
@@ -111,7 +111,7 @@ class MyAccountScreen : Screen {
                                 addAll(uiState.account?.fields.orEmpty())
                             },
                         onOpenUrl = { url ->
-                            urlManager.open(url)
+                            openUrl(url)
                         },
                     )
                 }
@@ -121,10 +121,10 @@ class MyAccountScreen : Screen {
                             modifier = Modifier.padding(bottom = Spacing.s),
                             titles =
                                 listOf(
-                                    AccountSection.Posts.toReadableName(),
-                                    AccountSection.All.toReadableName(),
-                                    AccountSection.Pinned.toReadableName(),
-                                    AccountSection.Media.toReadableName(),
+                                    UserSection.Posts.toReadableName(),
+                                    UserSection.All.toReadableName(),
+                                    UserSection.Pinned.toReadableName(),
+                                    UserSection.Media.toReadableName(),
                                 ),
                             currentSection = uiState.section.toInt(),
                             onSectionSelected = {
@@ -146,10 +146,10 @@ class MyAccountScreen : Screen {
                             detailOpener.openEntryDetail(entry.id)
                         },
                         onOpenUrl = { url ->
-                            urlManager.open(url)
+                            openUrl(url)
                         },
                         onOpenUser = {
-                            detailOpener.openAccountDetail(it.id)
+                            detailOpener.openUserDetail(it.id)
                         },
                     )
                     HorizontalDivider(
