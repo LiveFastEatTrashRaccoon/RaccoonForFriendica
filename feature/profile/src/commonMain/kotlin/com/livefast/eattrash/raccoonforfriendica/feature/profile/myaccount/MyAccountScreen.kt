@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +42,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getUrlManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 
 class MyAccountScreen : Screen {
-    @OptIn(ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
         val model = getScreenModel<MyAccountMviModel>()
@@ -47,7 +51,16 @@ class MyAccountScreen : Screen {
         val urlManager = remember { getUrlManager(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
 
-        Box {
+        val pullRefreshState =
+            rememberPullRefreshState(
+                refreshing = uiState.refreshing,
+                onRefresh = {
+                    model.reduce(MyAccountMviModel.Intent.Refresh)
+                },
+            )
+        Box(
+            modifier = Modifier.pullRefresh(pullRefreshState),
+        ) {
             LazyColumn {
                 if (uiState.account != null) {
                     item {
@@ -153,6 +166,14 @@ class MyAccountScreen : Screen {
                     Spacer(modifier = Modifier.height(Spacing.xxxl))
                 }
             }
+
+            PullRefreshIndicator(
+                refreshing = uiState.refreshing,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                backgroundColor = MaterialTheme.colorScheme.background,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+            )
         }
     }
 }
