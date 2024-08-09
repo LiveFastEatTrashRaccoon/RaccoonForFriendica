@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Field
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.HistoryItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaAttachment
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.AUDIO
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.GIFV
@@ -14,9 +15,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHistoryItem
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
@@ -117,10 +121,18 @@ internal fun Field.toModel() =
         verified = verifiedAt != null,
     )
 
+internal fun HistoryItem.toModel() =
+    HashtagHistoryItem(
+        day = day,
+        uses = uses,
+        accounts = accounts,
+    )
+
 internal fun Tag.toModel() =
     TagModel(
         url = url,
         name = name,
+        history = history?.map { it.toModel() }.orEmpty(),
     )
 
 internal fun NotificationType.toDto(): NotificationTypeDto? =
@@ -169,4 +181,13 @@ internal fun Relationship.toModel() =
         requested = requested,
         requestedBy = requestedBy,
         note = note,
+    )
+
+internal fun TrendsLink.toModel() =
+    LinkModel(
+        url = url,
+        title = title.orEmpty(),
+        authorName = authorName,
+        description = description,
+        image = image,
     )

@@ -9,4 +9,6 @@ interface AccountRepository {
     suspend fun getByHandle(handle: String): AccountModel?
 
     suspend fun getRelationship(id: String): RelationshipModel?
+
+    suspend fun getSuggestions(): List<AccountModel>
 }
