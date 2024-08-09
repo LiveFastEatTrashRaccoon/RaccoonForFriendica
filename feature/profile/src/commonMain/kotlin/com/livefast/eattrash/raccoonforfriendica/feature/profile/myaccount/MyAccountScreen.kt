@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -17,6 +18,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -40,6 +42,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getUrlManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class MyAccountScreen : Screen {
     @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -50,6 +54,19 @@ class MyAccountScreen : Screen {
         val uriHandler = LocalUriHandler.current
         val urlManager = remember { getUrlManager(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
+        val lazyListState = rememberLazyListState()
+
+        LaunchedEffect(model) {
+            model.effects
+                .onEach { event ->
+                    when (event) {
+                        MyAccountMviModel.Effect.BackToTop ->
+                            runCatching {
+                                lazyListState.scrollToItem(0)
+                            }
+                    }
+                }.launchIn(this)
+        }
 
         val pullRefreshState =
             rememberPullRefreshState(
@@ -61,7 +78,9 @@ class MyAccountScreen : Screen {
         Box(
             modifier = Modifier.pullRefresh(pullRefreshState),
         ) {
-            LazyColumn {
+            LazyColumn(
+                state = lazyListState,
+            ) {
                 if (uiState.account != null) {
                     item {
                         AccountHeader(
