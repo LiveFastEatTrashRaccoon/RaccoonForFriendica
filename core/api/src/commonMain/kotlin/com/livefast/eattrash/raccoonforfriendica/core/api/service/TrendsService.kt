@@ -10,18 +10,18 @@ interface TrendsService {
     @GET("trends/tags")
     suspend fun getHashtags(
         @Query("offset") offset: Int,
-        @Query("limit") limit: Int,
+        @Query("limit") limit: Int = 20,
     ): List<Tag>
 
     @GET("trends/statuses")
     suspend fun getStatuses(
         @Query("offset") offset: Int,
-        @Query("limit") limit: Int,
+        @Query("limit") limit: Int = 20,
     ): List<Status>
 
     @GET("trends/links")
     suspend fun getLinks(
         @Query("offset") offset: Int,
-        @Query("limit") limit: Int,
+        @Query("limit") limit: Int = 20,
     ): List<TrendsLink>
 }
