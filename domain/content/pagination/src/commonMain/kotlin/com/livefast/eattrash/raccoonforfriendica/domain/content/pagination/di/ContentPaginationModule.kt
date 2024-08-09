@@ -3,9 +3,11 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultExplorePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultNotificationsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultTimelinePaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultUserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.ExplorePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import org.koin.dsl.module
 
 val domainContentPaginationModule =
@@ -24,6 +26,11 @@ val domainContentPaginationModule =
         factory<ExplorePaginationManager> {
             DefaultExplorePaginationManager(
                 trendsRepository = get(),
+                userRepository = get(),
+            )
+        }
+        factory<UserPaginationManager> {
+            DefaultUserPaginationManager(
                 userRepository = get(),
             )
         }
