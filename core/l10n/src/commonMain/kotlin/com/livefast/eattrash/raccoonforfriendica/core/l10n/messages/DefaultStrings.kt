@@ -23,6 +23,7 @@ internal open class DefaultStrings : Strings {
     override val barThemeTransparent = "Transparent"
     override val timelineAll = "All"
     override val timelineSubscriptions = "Subscriptions"
+    override val timelineLocal = "Local"
     override val nodeVia = "via"
     override val timelineEntryInReplyTo = "in reply to"
     override val timelineEntryRebloggedBy = "re-shared by"
@@ -87,4 +88,5 @@ internal open class DefaultStrings : Strings {
     override val exploreSectionLinks = "Links"
     override val exploreSectionSuggestions = "For you"
     override val hashtagPeopleUsing = "people are talking about it"
+    override val feedTypeTitle = "Feed type"
 }

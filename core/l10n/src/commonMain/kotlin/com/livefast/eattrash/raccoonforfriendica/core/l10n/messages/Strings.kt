@@ -30,6 +30,7 @@ interface Strings {
     val barThemeOpaque: String
     val timelineAll: String
     val timelineSubscriptions: String
+    val timelineLocal: String
     val nodeVia: String
     val timelineEntryRebloggedBy: String
     val timelineEntryInReplyTo: String
@@ -94,6 +95,7 @@ interface Strings {
     val exploreSectionLinks: String
     val exploreSectionSuggestions: String
     val hashtagPeopleUsing: String
+    val feedTypeTitle: String
 }
 
 object Locales {
