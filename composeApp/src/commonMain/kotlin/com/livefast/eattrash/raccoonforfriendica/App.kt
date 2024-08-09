@@ -21,11 +21,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getS
 import com.livefast.eattrash.raccoonforfriendica.main.MainScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview
-fun App() {
+fun App(onLoadingFinished: (() -> Unit)? = null) {
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val l10nManager = remember { getL10nManager() }
     val themeRepository = remember { getThemeRepository() }
@@ -46,6 +44,7 @@ fun App() {
 
                     if (!isInitialized) {
                         isInitialized = true
+                        onLoadingFinished?.invoke()
                     }
                 }
             }.launchIn(this)
