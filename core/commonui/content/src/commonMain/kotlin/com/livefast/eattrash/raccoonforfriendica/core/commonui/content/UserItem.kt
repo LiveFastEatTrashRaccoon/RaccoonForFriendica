@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
@@ -28,7 +29,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isProminent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 
 @Composable
-fun AccountItem(
+fun UserItem(
     account: UserModel,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
@@ -47,6 +48,7 @@ fun AccountItem(
                     onClick?.invoke()
                 }.padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         if (avatar.isNotEmpty()) {
             CustomImage(
