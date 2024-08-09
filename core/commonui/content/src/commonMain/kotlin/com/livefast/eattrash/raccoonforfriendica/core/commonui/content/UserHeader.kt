@@ -214,6 +214,7 @@ fun UserHeader(
                     if (account?.group == true) {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Icon(
                                 modifier = Modifier.size(IconSize.s),

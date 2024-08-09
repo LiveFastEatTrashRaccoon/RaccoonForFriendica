@@ -22,8 +22,8 @@ sealed interface ExploreItemModel {
     }
 
     data class Suggestion(
-        val account: UserModel,
+        val user: UserModel,
     ) : ExploreItemModel {
-        override val id = account.id
+        override val id = user.id
     }
 }

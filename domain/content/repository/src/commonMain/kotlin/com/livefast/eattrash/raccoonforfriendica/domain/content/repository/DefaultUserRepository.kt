@@ -48,6 +48,36 @@ internal class DefaultUserRepository(
             }
         }.getOrElse { emptyList() }
 
+    override suspend fun getFollowers(
+        id: String,
+        pageCursor: String?,
+    ): List<UserModel> =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .getFollowers(
+                        id = id,
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrElse { emptyList() }
+
+    override suspend fun getFollowing(
+        id: String,
+        pageCursor: String?,
+    ): List<UserModel> =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .getFollowing(
+                        id = id,
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrElse { emptyList() }
+
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20
     }

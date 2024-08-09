@@ -83,12 +83,22 @@ class MyAccountScreen : Screen {
             LazyColumn(
                 state = lazyListState,
             ) {
-                if (uiState.account != null) {
+                if (uiState.user != null) {
                     item {
                         UserHeader(
-                            account = uiState.account,
+                            account = uiState.user,
                             onOpenUrl = { url ->
                                 openUrl(url)
+                            },
+                            onOpenFollowers = {
+                                uiState.user?.id?.also { userId ->
+                                    detailOpener.openFollowers(userId)
+                                }
+                            },
+                            onOpenFollowing = {
+                                uiState.user?.id?.also { userId ->
+                                    detailOpener.openFollowing(userId)
+                                }
                             },
                         )
                     }
@@ -107,7 +117,7 @@ class MyAccountScreen : Screen {
                             ),
                         fields =
                             buildList {
-                                uiState.account?.created?.also { date ->
+                                uiState.user?.created?.also { date ->
                                     add(
                                         FieldModel(
                                             key = LocalStrings.current.accountAge,
@@ -115,7 +125,7 @@ class MyAccountScreen : Screen {
                                         ),
                                     )
                                 }
-                                addAll(uiState.account?.fields.orEmpty())
+                                addAll(uiState.user?.fields.orEmpty())
                             },
                         onOpenUrl = { url ->
                             openUrl(url)

@@ -21,6 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.login.di.featureLoginMo
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.di.featureProfileModule
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.featureSettingsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.di.featureTimelineModule
+import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.featureUserListModule
 import org.koin.core.context.startKoin
 
 fun initKoin() {
@@ -41,7 +42,6 @@ fun initKoin() {
             domainIdentityRepositoryModule,
             domainIdentityUseCaseModule,
             featureTimelineModule,
-            featureUserDetailModule,
             featureEntryDetailModule,
             featureExploreModule,
             featureHashtagModule,
@@ -49,6 +49,8 @@ fun initKoin() {
             featureLoginModule,
             featureProfileModule,
             featureSettingsModule,
+            featureUserDetailModule,
+            featureUserListModule,
         )
     }
 }

@@ -19,16 +19,16 @@ are related and share a common heritage.
 
 The app is under ongoing development, here is a list of the features that are being implemented:
 
-- [x] timeline view (Public/Local/Subscriptions) with ability to switch feed type
+- [x] timeline view (Public/Local/Subscriptions) with ability to switch feed type
 - [x] post detail, i.e. opening a conversation or a reply in its context
 - [x] user detail with ability to see posts/post and replies/pinned/media posts
 - [x] login/logout to one's own instance
 - [x] view notification list
 - [x] view one's own profile
-- [x] see treding posts/hashtags/news
+- [x] see trending posts/hashtags/news
 - [x] see following recommendations
 - [x] view all the posts containing a given hashtag
-- [ ] view followers and following of a given user
+- [x] view followers and following of a given user
 - [ ] media visualization
 - [ ] follow/unfollow an account
 - [ ] enable/disable notifications for an account

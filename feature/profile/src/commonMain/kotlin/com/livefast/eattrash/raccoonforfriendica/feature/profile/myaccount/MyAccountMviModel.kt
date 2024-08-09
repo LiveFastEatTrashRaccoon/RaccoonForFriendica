@@ -24,7 +24,7 @@ interface MyAccountMviModel :
         val loading: Boolean = false,
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
-        val account: UserModel? = null,
+        val user: UserModel? = null,
         val section: UserSection = UserSection.Posts,
         val entries: List<TimelineEntryModel> = emptyList(),
     )
