@@ -28,7 +28,6 @@ kotlin {
     }
 
     sourceSets {
-
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -73,11 +72,17 @@ kotlin {
 
             implementation(projects.feature.accountdetail)
             implementation(projects.feature.entrydetail)
+            implementation(projects.feature.explore)
             implementation(projects.feature.inbox)
             implementation(projects.feature.login)
             implementation(projects.feature.profile)
             implementation(projects.feature.settings)
             implementation(projects.feature.timeline)
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
         }
     }
 }

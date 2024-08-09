@@ -42,11 +42,6 @@ kotlin {
                 implementation(projects.core.l10n)
             }
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
     }
 }
 

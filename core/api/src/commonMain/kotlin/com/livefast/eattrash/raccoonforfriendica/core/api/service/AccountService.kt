@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
@@ -33,4 +34,10 @@ interface AccountService {
     suspend fun getRelationships(
         @Query("id") id: String,
     ): List<Relationship>
+
+    // TODO: the v1 API is deprecated
+    @GET("suggestions")
+    suspend fun getSuggestions(
+        @Query("limit") limit: Int,
+    ): List<Suggestion>
 }

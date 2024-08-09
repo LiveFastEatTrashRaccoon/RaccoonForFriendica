@@ -33,4 +33,22 @@ internal class DefaultAccountRepository(
                     ?.toModel()
             }
         }.getOrNull()
+
+    override suspend fun getSuggestions(): List<AccountModel> =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.accounts
+                    .getSuggestions(
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.account.toModel() }
+            }
+        }.apply {
+            exceptionOrNull()?.also {
+                it.printStackTrace()
+            }
+        }.getOrElse { emptyList() }
+
+    companion object {
+        private const val DEFAULT_PAGE_SIZE = 40
+    }
 }

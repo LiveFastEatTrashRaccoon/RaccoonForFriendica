@@ -30,24 +30,14 @@ internal class DefaultNotificationsPaginationManager(
                     notificationRepository.getAll(
                         pageCursor = pageCursor,
                         types = specification.types,
-                    )
-            }.deduplicate()
-                .map {
-                    // get relationship status with account
-                    val accountId = it.account?.id
-                    if (accountId == null) {
-                        it
-                    } else {
-                        val relationship = accountRepository.getRelationship(accountId)
-                        it.copy(
-                            account =
-                                it.account?.copy(
-                                    relationshipStatus = relationship?.toStatus(),
-                                    notificationStatus = relationship?.toNotificationStatus(),
-                                ),
-                        )
+                    ).let { list ->
+                        if (specification.withRelationshipStatus) {
+                            list.determineRelationshipStatus()
+                        } else {
+                            list
+                        }
                     }
-                }
+            }.deduplicate()
 
         if (results.isNotEmpty()) {
             pageCursor = results.last().id
@@ -61,6 +51,23 @@ internal class DefaultNotificationsPaginationManager(
         // return a copy
         return history.map { it }
     }
+
+    private suspend fun List<NotificationModel>.determineRelationshipStatus(): List<NotificationModel> =
+        map {
+            val accountId = it.account?.id
+            if (accountId == null) {
+                it
+            } else {
+                val relationship = accountRepository.getRelationship(accountId)
+                it.copy(
+                    account =
+                        it.account?.copy(
+                            relationshipStatus = relationship?.toStatus(),
+                            notificationStatus = relationship?.toNotificationStatus(),
+                        ),
+                )
+            }
+        }
 
     private fun List<NotificationModel>.deduplicate(): List<NotificationModel> =
         filter { e1 ->

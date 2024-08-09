@@ -61,6 +61,7 @@ class TimelineScreen : Screen {
                         Column {
                             Text(
                                 text = uiState.timelineType.readableName(),
+                                style = MaterialTheme.typography.titleMedium,
                             )
                             Text(
                                 text =

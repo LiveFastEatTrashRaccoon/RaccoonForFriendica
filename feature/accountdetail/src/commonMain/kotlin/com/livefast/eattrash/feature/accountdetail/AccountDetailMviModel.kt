@@ -29,5 +29,7 @@ interface AccountDetailMviModel :
         val entries: List<TimelineEntryModel> = emptyList(),
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object BackToTop : Effect
+    }
 }

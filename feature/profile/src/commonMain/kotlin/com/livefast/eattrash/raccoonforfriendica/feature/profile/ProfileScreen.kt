@@ -50,7 +50,6 @@ class ProfileScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.sectionTitleProfile,
                             style = MaterialTheme.typography.titleMedium,
                         )
