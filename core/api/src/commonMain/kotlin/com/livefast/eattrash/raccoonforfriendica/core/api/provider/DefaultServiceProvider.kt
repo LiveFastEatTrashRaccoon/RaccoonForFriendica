@@ -1,10 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.AccountService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.StatusService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
@@ -33,7 +33,7 @@ internal class DefaultServiceProvider(
     private var auth: BasicAuthCredentials? = null
 
     override lateinit var timeline: TimelineService
-    override lateinit var accounts: AccountService
+    override lateinit var users: UserService
     override lateinit var statuses: StatusService
     override lateinit var notifications: NotificationService
     override lateinit var trends: TrendsService
@@ -101,7 +101,7 @@ internal class DefaultServiceProvider(
                 .httpClient(client)
                 .build()
         timeline = ktorfit.create()
-        accounts = ktorfit.create()
+        users = ktorfit.create()
         statuses = ktorfit.create()
         notifications = ktorfit.create()
         trends = ktorfit.create()

@@ -8,7 +8,7 @@ import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
 
-interface AccountService {
+interface UserService {
     @GET("accounts/{id}")
     suspend fun getById(
         @Path("id") id: String,

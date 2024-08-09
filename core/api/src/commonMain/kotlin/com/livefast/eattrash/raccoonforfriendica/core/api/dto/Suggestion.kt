@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Suggestion(
     @SerialName("sources") val sources: List<SuggestionSource> = emptyList(),
-    @SerialName("account") val account: Account,
+    @SerialName("account") val user: Account,
 )
