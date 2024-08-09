@@ -49,6 +49,6 @@ internal class DefaultUserRepository(
         }.getOrElse { emptyList() }
 
     companion object {
-        private const val DEFAULT_PAGE_SIZE = 40
+        private const val DEFAULT_PAGE_SIZE = 20
     }
 }

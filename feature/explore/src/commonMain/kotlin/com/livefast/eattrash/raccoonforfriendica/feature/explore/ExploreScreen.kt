@@ -35,10 +35,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.HashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.LinkItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -139,6 +142,36 @@ class ExploreScreen : Screen {
                             },
                         )
                     }
+
+                    if (uiState.initial) {
+                        items(20) {
+                            val modifier = Modifier.fillMaxWidth()
+                            when (uiState.section) {
+                                ExploreSection.Hashtags -> {
+                                    GenericPlaceholder(modifier)
+                                    Spacer(modifier = Modifier.height(Spacing.interItem))
+                                }
+
+                                ExploreSection.Links -> {
+                                    GenericPlaceholder(modifier)
+                                    Spacer(modifier = Modifier.height(Spacing.interItem))
+                                }
+
+                                ExploreSection.Posts -> {
+                                    TimelineItemPlaceholder(modifier)
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(vertical = Spacing.s),
+                                    )
+                                }
+
+                                ExploreSection.Suggestions -> {
+                                    UserItemPlaceholder(modifier)
+                                    Spacer(modifier = Modifier.height(Spacing.interItem))
+                                }
+                            }
+                        }
+                    }
+
                     items(
                         items = uiState.items,
                         key = { it.id },
@@ -184,7 +217,7 @@ class ExploreScreen : Screen {
                             }
 
                             is ExploreItemModel.Suggestion -> {
-                                AccountItem(
+                                UserItem(
                                     account = item.account,
                                     onClick = {
                                         detailOpener.openUserDetail(item.account.id)
