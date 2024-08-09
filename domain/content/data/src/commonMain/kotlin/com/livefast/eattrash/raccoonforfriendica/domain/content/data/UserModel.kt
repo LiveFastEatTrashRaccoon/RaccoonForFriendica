@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
-data class AccountModel(
+data class UserModel(
     val avatar: String? = null,
     val bio: String? = null,
     val bot: Boolean = false,
