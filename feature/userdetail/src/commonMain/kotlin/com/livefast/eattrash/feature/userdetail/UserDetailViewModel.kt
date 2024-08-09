@@ -1,23 +1,23 @@
-package com.livefast.eattrash.feature.accountdetail
+package com.livefast.eattrash.feature.userdetail
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountSection
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import kotlinx.coroutines.launch
 
-class AccountDetailViewModel(
+class UserDetailViewModel(
     private val id: String,
-    private val accountRepository: AccountRepository,
+    private val userRepository: UserRepository,
     private val paginationManager: TimelinePaginationManager,
-) : DefaultMviModel<AccountDetailMviModel.Intent, AccountDetailMviModel.State, AccountDetailMviModel.Effect>(
-        initialState = AccountDetailMviModel.State(),
+) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
+        initialState = UserDetailMviModel.State(),
     ),
-    AccountDetailMviModel {
+    UserDetailMviModel {
     init {
         screenModelScope.launch {
             if (uiState.value.initial) {
@@ -27,24 +27,24 @@ class AccountDetailViewModel(
         }
     }
 
-    override fun reduce(intent: AccountDetailMviModel.Intent) {
+    override fun reduce(intent: UserDetailMviModel.Intent) {
         when (intent) {
-            is AccountDetailMviModel.Intent.ChangeSection ->
+            is UserDetailMviModel.Intent.ChangeSection ->
                 screenModelScope.launch {
                     if (uiState.value.loading) {
                         return@launch
                     }
                     updateState { it.copy(section = intent.section) }
-                    emitEffect(AccountDetailMviModel.Effect.BackToTop)
+                    emitEffect(UserDetailMviModel.Effect.BackToTop)
                     refresh(initial = true)
                 }
 
-            AccountDetailMviModel.Intent.LoadNextPage ->
+            UserDetailMviModel.Intent.LoadNextPage ->
                 screenModelScope.launch {
                     loadNextPage()
                 }
 
-            AccountDetailMviModel.Intent.Refresh ->
+            UserDetailMviModel.Intent.Refresh ->
                 screenModelScope.launch {
                     refresh()
                 }
@@ -52,8 +52,8 @@ class AccountDetailViewModel(
     }
 
     private suspend fun loadUser() {
-        val account = accountRepository.getById(id)
-        val relationship = accountRepository.getRelationship(id)
+        val account = userRepository.getById(id)
+        val relationship = userRepository.getRelationship(id)
         updateState {
             it.copy(
                 account =
@@ -70,12 +70,12 @@ class AccountDetailViewModel(
             it.copy(initial = initial, refreshing = !initial)
         }
         paginationManager.reset(
-            TimelinePaginationSpecification.Account(
-                accountId = id,
-                excludeReblogs = uiState.value.section == AccountSection.Posts,
-                excludeReplies = uiState.value.section == AccountSection.Posts,
-                onlyMedia = uiState.value.section == AccountSection.Media,
-                pinned = uiState.value.section == AccountSection.Pinned,
+            TimelinePaginationSpecification.User(
+                userId = id,
+                excludeReblogs = uiState.value.section == UserSection.Posts,
+                excludeReplies = uiState.value.section == UserSection.Posts,
+                onlyMedia = uiState.value.section == UserSection.Media,
+                pinned = uiState.value.section == UserSection.Pinned,
             ),
         )
         loadNextPage()

@@ -11,8 +11,8 @@ sealed interface TimelinePaginationSpecification {
         val hashtag: String,
     ) : TimelinePaginationSpecification
 
-    data class Account(
-        val accountId: String,
+    data class User(
+        val userId: String,
         val onlyMedia: Boolean = false,
         val excludeReplies: Boolean = true,
         val excludeReblogs: Boolean = true,

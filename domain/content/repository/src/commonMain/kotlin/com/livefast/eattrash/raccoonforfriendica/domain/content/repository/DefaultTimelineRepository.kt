@@ -63,8 +63,8 @@ internal class DefaultTimelineRepository(
             }.getOrElse { emptyList() }
         }
 
-    override suspend fun getByAccount(
-        accountId: String,
+    override suspend fun getByUser(
+        userId: String,
         pageCursor: String?,
         excludeReplies: Boolean,
         excludeReblogs: Boolean,
@@ -74,8 +74,8 @@ internal class DefaultTimelineRepository(
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
-                    provider.accounts.getStatuses(
-                        id = accountId,
+                    provider.users.getStatuses(
+                        id = userId,
                         excludeReblogs = excludeReblogs,
                         maxId = pageCursor,
                         excludeReplies = excludeReplies,

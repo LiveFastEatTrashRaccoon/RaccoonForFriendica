@@ -42,8 +42,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getUrlManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.composable.TimelineTypeBottomSheet
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -59,7 +59,7 @@ class TimelineScreen : Screen {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val connection = navigationCoordinator.getBottomBarScrollConnection()
         val uriHandler = LocalUriHandler.current
-        val urlManager = remember { getUrlManager(uriHandler) }
+        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         var timelineTypeSelectorOpen by remember { mutableStateOf(false) }
         val lazyListState = rememberLazyListState()
@@ -143,10 +143,10 @@ class TimelineScreen : Screen {
                                 detailOpener.openEntryDetail(entry.id)
                             },
                             onOpenUrl = { url ->
-                                urlManager.open(url)
+                                openUrl(url)
                             },
                             onOpenUser = {
-                                detailOpener.openAccountDetail(it.id)
+                                detailOpener.openUserDetail(it.id)
                             },
                         )
                         HorizontalDivider(

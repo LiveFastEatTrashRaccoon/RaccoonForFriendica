@@ -1,5 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di
 
+import androidx.compose.ui.platform.UriHandler
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.OpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
 
 expect fun getSetupAccountUseCase(): SetupAccountUseCase
+
+expect fun getOpenUrlUseCase(default: UriHandler): OpenUrlUseCase

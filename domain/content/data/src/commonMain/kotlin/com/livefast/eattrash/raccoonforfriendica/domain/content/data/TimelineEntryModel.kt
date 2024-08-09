@@ -5,7 +5,7 @@ data class TimelineEntryModel(
     val bookmarked: Boolean = false,
     val content: String,
     val created: String? = null,
-    val creator: AccountModel? = null,
+    val creator: UserModel? = null,
     val favorite: Boolean = false,
     val favoriteCount: Int = 0,
     val id: String,

@@ -1,11 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 interface DetailOpener {
-    fun openAccountDetail(id: String)
+    fun openUserDetail(id: String)
 
     fun openEntryDetail(id: String)
 
     fun openSettings()
 
     fun openLogin()
+
+    fun openHashtag(tag: String)
 }

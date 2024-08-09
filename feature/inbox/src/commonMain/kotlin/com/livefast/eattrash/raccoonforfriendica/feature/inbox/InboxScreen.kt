@@ -35,7 +35,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getUrlManager
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItem
 
 class InboxScreen : Screen {
@@ -49,7 +49,7 @@ class InboxScreen : Screen {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val connection = navigationCoordinator.getBottomBarScrollConnection()
         val uriHandler = LocalUriHandler.current
-        val urlManager = remember { getUrlManager(uriHandler) }
+        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
 
         Scaffold(
@@ -96,10 +96,10 @@ class InboxScreen : Screen {
                                 detailOpener.openEntryDetail(entry.id)
                             },
                             onOpenUrl = { url ->
-                                urlManager.open(url)
+                                openUrl(url)
                             },
                             onOpenUser = {
-                                detailOpener.openAccountDetail(it.id)
+                                detailOpener.openUserDetail(it.id)
                             },
                         )
                         HorizontalDivider(

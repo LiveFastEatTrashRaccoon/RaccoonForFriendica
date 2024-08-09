@@ -1,18 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
-import androidx.compose.ui.platform.UriHandler
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.DefaultFileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
-import com.livefast.eattrash.raccoonforfriendica.core.utils.url.UrlManager
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
-actual fun getImageLoaderProvider(): ImageLoaderProvider = ImageLoaderDiHelper.imageLoaderProvider
-
-actual fun getUrlManager(default: UriHandler): UrlManager = ImageLoaderDiHelper.getUrlManager(default)
+actual fun getImageLoaderProvider(): ImageLoaderProvider = CoreUtilsDiHelper.imageLoaderProvider
 
 actual val coreUtilsFileSystemModule =
     module {
@@ -21,15 +16,6 @@ actual val coreUtilsFileSystemModule =
         }
     }
 
-internal object ImageLoaderDiHelper : KoinComponent {
+internal object CoreUtilsDiHelper : KoinComponent {
     val imageLoaderProvider: ImageLoaderProvider by inject()
-
-    fun getUrlManager(default: UriHandler): UrlManager {
-        val res by inject<UrlManager>(
-            parameters = {
-                parametersOf(default)
-            },
-        )
-        return res
-    }
 }

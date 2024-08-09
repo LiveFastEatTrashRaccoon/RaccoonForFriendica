@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.di
 
-import com.livefast.eattrash.feature.accountdetail.di.featureAccountDetailModule
+import com.livefast.eattrash.feature.userdetail.di.featureUserDetailModule
 import com.livefast.eattrash.raccoonforfriendica.core.api.di.coreApiModule
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.coreAppearanceModule
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.coreL10nModule
@@ -15,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.d
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.domainIdentityUseCaseModule
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.featureEntryDetailModule
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.di.featureExploreModule
+import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.di.featureHashtagModule
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.di.featureInboxModule
 import com.livefast.eattrash.raccoonforfriendica.feature.login.di.featureLoginModule
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.di.featureProfileModule
@@ -40,9 +41,10 @@ fun initKoin() {
             domainIdentityRepositoryModule,
             domainIdentityUseCaseModule,
             featureTimelineModule,
-            featureAccountDetailModule,
+            featureUserDetailModule,
             featureEntryDetailModule,
             featureExploreModule,
+            featureHashtagModule,
             featureInboxModule,
             featureLoginModule,
             featureProfileModule,

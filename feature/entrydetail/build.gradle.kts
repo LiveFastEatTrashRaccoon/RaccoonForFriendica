@@ -49,6 +49,7 @@ kotlin {
 
                 implementation(projects.domain.content.data)
                 implementation(projects.domain.content.repository)
+                implementation(projects.domain.identity.usecase)
             }
         }
     }

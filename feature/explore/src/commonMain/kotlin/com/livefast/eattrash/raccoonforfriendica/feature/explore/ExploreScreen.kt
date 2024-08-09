@@ -42,8 +42,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getUrlManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toExploreSection
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toInt
@@ -66,7 +66,7 @@ class ExploreScreen : Screen {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val connection = navigationCoordinator.getBottomBarScrollConnection()
         val uriHandler = LocalUriHandler.current
-        val urlManager = remember { getUrlManager(uriHandler) }
+        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
 
@@ -151,10 +151,10 @@ class ExploreScreen : Screen {
                                         detailOpener.openEntryDetail(item.entry.id)
                                     },
                                     onOpenUrl = { url ->
-                                        urlManager.open(url)
+                                        openUrl(url)
                                     },
                                     onOpenUser = {
-                                        detailOpener.openAccountDetail(it.id)
+                                        detailOpener.openUserDetail(it.id)
                                     },
                                 )
 
@@ -166,6 +166,9 @@ class ExploreScreen : Screen {
                             is ExploreItemModel.HashTag -> {
                                 HashtagItem(
                                     hashtag = item.hashtag,
+                                    onOpen = {
+                                        detailOpener.openHashtag(it)
+                                    },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.interItem))
                             }
@@ -174,7 +177,7 @@ class ExploreScreen : Screen {
                                 LinkItem(
                                     link = item.link,
                                     onOpen = { url ->
-                                        urlManager.open(url)
+                                        openUrl(url)
                                     },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.interItem))
@@ -184,7 +187,7 @@ class ExploreScreen : Screen {
                                 AccountItem(
                                     account = item.account,
                                     onClick = {
-                                        detailOpener.openAccountDetail(item.account.id)
+                                        detailOpener.openUserDetail(item.account.id)
                                     },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.interItem))

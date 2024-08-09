@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
 fun TimelineItem(
@@ -20,7 +20,7 @@ fun TimelineItem(
     actionsEnabled: Boolean = true,
     onOpenUrl: ((String) -> Unit)? = null,
     onClick: (() -> Unit)? = null,
-    onOpenUser: ((AccountModel) -> Unit)? = null,
+    onOpenUser: ((UserModel) -> Unit)? = null,
     onReply: (() -> Unit)? = null,
     onReblog: (() -> Unit)? = null,
     onFavorite: (() -> Unit)? = null,
@@ -42,7 +42,7 @@ fun TimelineItem(
                 entry.creator?.let {
                     ReblogInfo(
                         modifier = Modifier.fillMaxWidth(),
-                        account = it,
+                        user = it,
                         onOpenUser = onOpenUser,
                     )
                 }
@@ -50,14 +50,14 @@ fun TimelineItem(
             entry.inReplyTo?.creator?.let {
                 InReplyToInfo(
                     modifier = Modifier.fillMaxWidth(),
-                    account = it,
+                    user = it,
                     onOpenUser = onOpenUser,
                 )
             }
 
             ContentHeader(
                 modifier = Modifier.fillMaxWidth(),
-                account =
+                user =
                     if (isReblog) {
                         entry.reblog?.creator
                     } else {

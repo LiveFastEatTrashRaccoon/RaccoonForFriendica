@@ -46,9 +46,9 @@ internal class DefaultTimelinePaginationManager(
                     timelineRepository.getHashtag(specification.hashtag)
                 }
 
-                is TimelinePaginationSpecification.Account ->
-                    timelineRepository.getByAccount(
-                        accountId = specification.accountId,
+                is TimelinePaginationSpecification.User ->
+                    timelineRepository.getByUser(
+                        userId = specification.userId,
                         pageCursor = pageCursor,
                         excludeReplies = specification.excludeReplies,
                         excludeReblogs = specification.excludeReblogs,

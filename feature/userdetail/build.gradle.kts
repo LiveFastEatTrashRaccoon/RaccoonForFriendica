@@ -21,7 +21,7 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "feature.accountdetail"
+            baseName = "feature.userdetail"
             isStatic = true
         }
     }
@@ -50,13 +50,14 @@ kotlin {
                 implementation(projects.domain.content.data)
                 implementation(projects.domain.content.pagination)
                 implementation(projects.domain.content.repository)
+                implementation(projects.domain.identity.usecase)
             }
         }
     }
 }
 
 android {
-    namespace = "com.livefast.eattrash.raccoonforfriendica.feature.accountdetail"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.feature.userdetail"
     compileSdk =
         libs.versions.android.targetSdk
             .get()

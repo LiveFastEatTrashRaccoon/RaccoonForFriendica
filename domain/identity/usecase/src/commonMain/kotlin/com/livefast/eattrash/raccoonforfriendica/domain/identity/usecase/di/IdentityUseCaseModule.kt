@@ -2,9 +2,11 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultLoginUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultLogoutUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.OpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
 import org.koin.dsl.module
 
@@ -31,6 +33,14 @@ val domainIdentityUseCaseModule =
                 apiConfigurationRepository = get(),
                 accountRepository = get(),
                 settingsRepository = get(),
+            )
+        }
+        single<OpenUrlUseCase> { params ->
+            DefaultOpenUrlUseCase(
+                defaultHandler = params[0],
+                apiConfigurationRepository = get(),
+                detailOpener = get(),
+                userRepository = get(),
             )
         }
     }

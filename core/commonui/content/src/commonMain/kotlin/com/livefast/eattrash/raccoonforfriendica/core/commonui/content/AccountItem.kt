@@ -23,13 +23,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isProminent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 
 @Composable
 fun AccountItem(
-    account: AccountModel,
+    account: UserModel,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     onRelationshipClicked: (() -> Unit)? = null,
@@ -42,9 +42,10 @@ fun AccountItem(
 
     Row(
         modifier =
-            modifier.clickable {
-                onClick?.invoke()
-            }.padding(Spacing.s),
+            modifier
+                .clickable {
+                    onClick?.invoke()
+                }.padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         if (avatar.isNotEmpty()) {
