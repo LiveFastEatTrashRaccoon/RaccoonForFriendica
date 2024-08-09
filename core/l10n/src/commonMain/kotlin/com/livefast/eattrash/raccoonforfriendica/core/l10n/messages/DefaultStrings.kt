@@ -83,4 +83,8 @@ internal open class DefaultStrings : Strings {
     override val notificationTypePoll = "see the results of a poll you participated in"
     override val notificationTypeReblog = "re-shared one of your posts"
     override val notificationTypeUpdate = "updated a post you re-shared"
+    override val exploreSectionHashtags = "Hashtags"
+    override val exploreSectionLinks = "Links"
+    override val exploreSectionSuggestions = "For you"
+    override val hashtagPeopleUsing = "people are talking about it"
 }

@@ -90,6 +90,10 @@ interface Strings {
     val notificationTypePoll: String
     val notificationTypeReblog: String
     val notificationTypeUpdate: String
+    val exploreSectionHashtags: String
+    val exploreSectionLinks: String
+    val exploreSectionSuggestions: String
+    val hashtagPeopleUsing: String
 }
 
 object Locales {

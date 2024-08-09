@@ -84,4 +84,8 @@ internal val ItStrings =
         override val notificationTypePoll = "vedi i risultati di un sondaggio cui hai partecipato"
         override val notificationTypeReblog = "ha ricondiviso un tuo post"
         override val notificationTypeUpdate = "ha aggiornato un post che hai ricondiviso"
+        override val exploreSectionHashtags = "Hashtag"
+        override val exploreSectionLinks = "Link"
+        override val exploreSectionSuggestions = "Per te"
+        override val hashtagPeopleUsing = "persone ne stanno parlando"
     }
