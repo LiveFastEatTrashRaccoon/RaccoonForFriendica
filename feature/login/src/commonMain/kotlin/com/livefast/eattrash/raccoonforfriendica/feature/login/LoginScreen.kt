@@ -106,7 +106,6 @@ class LoginScreen : Screen {
                     title = {
                         Text(
                             text = LocalStrings.current.loginTitle,
-                            color = MaterialTheme.colorScheme.onBackground,
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },
