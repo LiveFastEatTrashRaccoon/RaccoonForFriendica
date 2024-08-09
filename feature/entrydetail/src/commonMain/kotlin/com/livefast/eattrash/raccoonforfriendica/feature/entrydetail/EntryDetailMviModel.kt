@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.entrydetail
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 interface EntryDetailMviModel :
     ScreenModel,
@@ -15,7 +15,7 @@ interface EntryDetailMviModel :
     data class State(
         val refreshing: Boolean = false,
         val initial: Boolean = true,
-        val creator: AccountModel? = null,
+        val creator: UserModel? = null,
         val entries: List<TimelineEntryModel> = emptyList(),
     )
 
