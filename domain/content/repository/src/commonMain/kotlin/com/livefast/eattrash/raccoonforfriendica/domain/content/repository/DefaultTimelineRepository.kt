@@ -81,6 +81,7 @@ internal class DefaultTimelineRepository(
                         excludeReplies = excludeReplies,
                         pinned = pinned,
                         onlyMedia = onlyMedia,
+                        limit = DEFAULT_PAGE_SIZE,
                     )
                 response.map { it.toModelWithReply() }
             }
