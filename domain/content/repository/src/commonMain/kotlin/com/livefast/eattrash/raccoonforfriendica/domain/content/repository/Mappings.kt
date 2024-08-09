@@ -16,7 +16,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHistoryItem
@@ -28,6 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Relationshi
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType as MediaTypeDto
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType as NotificationTypeDto
@@ -67,7 +67,7 @@ internal fun StatusContext.toModel() =
     TimelineContextModel(
         ancestors = ancestors.map { it.toModel() },
         descendants = descendants.map { it.toModel() },
-)
+    )
 
 internal fun MediaAttachment.toModel() =
     AttachmentModel(
@@ -96,7 +96,7 @@ internal fun ContentVisibility.toModel(): Visibility =
     }
 
 internal fun Account.toModel() =
-    AccountModel(
+    UserModel(
         avatar = avatar,
         bio = note,
         bot = bot,
@@ -125,7 +125,7 @@ internal fun HistoryItem.toModel() =
     HashtagHistoryItem(
         day = day,
         uses = uses,
-        accounts = accounts,
+        users = accounts,
     )
 
 internal fun Tag.toModel() =
@@ -165,9 +165,9 @@ internal fun Notification.toModel() =
     NotificationModel(
         id = id,
         type = type.toModel(),
-        account = account?.toModel(),
+        user = account?.toModel(),
         entry = status?.toModel(),
-)
+    )
 
 internal fun Relationship.toModel() =
     RelationshipModel(

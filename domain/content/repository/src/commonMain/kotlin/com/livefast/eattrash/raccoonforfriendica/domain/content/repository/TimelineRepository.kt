@@ -15,8 +15,8 @@ interface TimelineRepository {
         pageCursor: String? = null,
     ): List<TimelineEntryModel>
 
-    suspend fun getByAccount(
-        accountId: String,
+    suspend fun getByUser(
+        userId: String,
         pageCursor: String? = null,
         excludeReplies: Boolean = false,
         excludeReblogs: Boolean = false,

@@ -1,46 +1,46 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class DefaultAccountRepository(
+internal class DefaultUserRepository(
     private val provider: ServiceProvider,
-) : AccountRepository {
-    override suspend fun getById(id: String): AccountModel? =
+) : UserRepository {
+    override suspend fun getById(id: String): UserModel? =
         runCatching {
             withContext(Dispatchers.IO) {
-                provider.accounts.getById(id).toModel()
+                provider.users.getById(id).toModel()
             }
         }.getOrNull()
 
-    override suspend fun getByHandle(handle: String): AccountModel? =
+    override suspend fun getByHandle(handle: String): UserModel? =
         runCatching {
             withContext(Dispatchers.IO) {
-                provider.accounts.lookup(handle).toModel()
+                provider.users.lookup(handle).toModel()
             }
         }.getOrNull()
 
     override suspend fun getRelationship(id: String): RelationshipModel? =
         runCatching {
             withContext(Dispatchers.IO) {
-                provider.accounts
+                provider.users
                     .getRelationships(id)
                     .firstOrNull()
                     ?.toModel()
             }
         }.getOrNull()
 
-    override suspend fun getSuggestions(): List<AccountModel> =
+    override suspend fun getSuggestions(): List<UserModel> =
         runCatching {
             withContext(Dispatchers.IO) {
-                provider.accounts
+                provider.users
                     .getSuggestions(
                         limit = DEFAULT_PAGE_SIZE,
-                    ).map { it.account.toModel() }
+                    ).map { it.user.toModel() }
             }
         }.apply {
             exceptionOrNull()?.also {
