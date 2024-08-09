@@ -1,21 +1,21 @@
-package com.livefast.eattrash.feature.accountdetail
+package com.livefast.eattrash.feature.userdetail
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AccountSection
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
-interface AccountDetailMviModel :
+interface UserDetailMviModel :
     ScreenModel,
-    MviModel<AccountDetailMviModel.Intent, AccountDetailMviModel.State, AccountDetailMviModel.Effect> {
+    MviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 
         data object LoadNextPage : Intent
 
         data class ChangeSection(
-            val section: AccountSection,
+            val section: UserSection,
         ) : Intent
     }
 
@@ -24,8 +24,8 @@ interface AccountDetailMviModel :
         val loading: Boolean = false,
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
-        val account: AccountModel? = null,
-        val section: AccountSection = AccountSection.Posts,
+        val account: UserModel? = null,
+        val section: UserSection = UserSection.Posts,
         val entries: List<TimelineEntryModel> = emptyList(),
     )
 
