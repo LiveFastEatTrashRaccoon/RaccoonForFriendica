@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -26,6 +27,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -53,6 +55,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getUrlManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koin.core.parameter.parametersOf
 
 class AccountDetailScreen(
@@ -73,6 +77,19 @@ class AccountDetailScreen(
         val uriHandler = LocalUriHandler.current
         val urlManager = remember { getUrlManager(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
+        val lazyListState = rememberLazyListState()
+
+        LaunchedEffect(model) {
+            model.effects
+                .onEach { event ->
+                    when (event) {
+                        AccountDetailMviModel.Effect.BackToTop ->
+                            runCatching {
+                                lazyListState.scrollToItem(0)
+                            }
+                    }
+                }.launchIn(this)
+        }
 
         Scaffold(
             topBar = {
@@ -80,7 +97,6 @@ class AccountDetailScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = uiState.account?.handle.orEmpty(),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -117,7 +133,9 @@ class AccountDetailScreen(
                             .nestedScroll(scrollBehavior.nestedScrollConnection)
                             .pullRefresh(pullRefreshState),
                 ) {
-                    LazyColumn {
+                    LazyColumn(
+                        state = lazyListState,
+                    ) {
                         if (uiState.account != null) {
                             item {
                                 AccountHeader(

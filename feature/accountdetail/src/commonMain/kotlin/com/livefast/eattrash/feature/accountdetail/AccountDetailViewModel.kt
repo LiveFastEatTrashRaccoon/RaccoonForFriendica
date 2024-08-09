@@ -31,7 +31,11 @@ class AccountDetailViewModel(
         when (intent) {
             is AccountDetailMviModel.Intent.ChangeSection ->
                 screenModelScope.launch {
+                    if (uiState.value.loading) {
+                        return@launch
+                    }
                     updateState { it.copy(section = intent.section) }
+                    emitEffect(AccountDetailMviModel.Effect.BackToTop)
                     refresh(initial = true)
                 }
 
