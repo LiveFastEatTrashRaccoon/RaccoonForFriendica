@@ -3,6 +3,9 @@ package com.livefast.eattrash.raccoonforfriendica.feature.userlist
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -44,6 +47,9 @@ internal class UserListViewModel(
                 screenModelScope.launch {
                     refresh()
                 }
+            is UserListMviModel.Intent.AcceptFollowRequest -> acceptFollowRequest(intent.userId)
+            is UserListMviModel.Intent.Follow -> follow(intent.userId)
+            is UserListMviModel.Intent.Unfollow -> unfollow(intent.userId)
         }
     }
 
@@ -75,6 +81,79 @@ internal class UserListViewModel(
                 initial = false,
                 refreshing = false,
             )
+        }
+    }
+
+    private suspend fun updateUserInState(
+        userId: String,
+        block: (UserModel) -> UserModel,
+    ) {
+        updateState {
+            it.copy(
+                users =
+                    it.users.map { user ->
+                        if (user.id == userId) {
+                            user.let(block)
+                        } else {
+                            user
+                        }
+                    },
+            )
+        }
+    }
+
+    private fun acceptFollowRequest(userId: String) {
+        screenModelScope.launch {
+            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
+            val currentUser = uiState.value.users.firstOrNull { it.id == userId }
+            userRepository.acceptFollowRequest(userId)
+            val newRelationship = userRepository.getRelationships(listOf(userId)).firstOrNull()
+            val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
+            val newNotificationStatus =
+                newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
+            updateUserInState(userId) {
+                it.copy(
+                    relationshipStatus = newStatus,
+                    notificationStatus = newNotificationStatus,
+                    relationshipStatusPending = false,
+                )
+            }
+        }
+    }
+
+    private fun follow(userId: String) {
+        screenModelScope.launch {
+            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
+            val currentUser = uiState.value.users.firstOrNull { it.id == userId }
+            val newRelationship = userRepository.follow(userId)
+            val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
+            val newNotificationStatus =
+                newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
+            updateUserInState(userId) {
+                it.copy(
+                    relationshipStatus = newStatus,
+                    notificationStatus = newNotificationStatus,
+                    relationshipStatusPending = false,
+                )
+            }
+        }
+    }
+
+    private fun unfollow(userId: String) {
+        screenModelScope.launch {
+            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
+            val currentUser = uiState.value.users.firstOrNull { it.id == userId }
+            val newRelationship = userRepository.unfollow(userId)
+            val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
+            val newNotificationStatus =
+                newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
+            updateUserInState(userId) {
+                it.copy(
+                    relationshipStatus = newStatus,
+                    notificationStatus = newNotificationStatus,
+                    relationshipStatusPending = false,
+                )
+            }
         }
     }
 }
