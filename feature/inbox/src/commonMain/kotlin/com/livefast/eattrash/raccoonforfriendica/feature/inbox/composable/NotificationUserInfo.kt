@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -12,9 +11,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,10 +28,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserRelationshipButton
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isProminent
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 
 @Composable
 fun NotificationUserInfo(
@@ -42,7 +39,7 @@ fun NotificationUserInfo(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
-    onRelationshipClicked: (() -> Unit)? = null,
+    onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
 ) {
     val banner = account.header.orEmpty()
     val avatar = account.avatar.orEmpty()
@@ -118,27 +115,11 @@ fun NotificationUserInfo(
                 Spacer(modifier = Modifier.weight(1f))
 
                 if (relationshipStatus != null) {
-                    val buttonPadding =
-                        PaddingValues(horizontal = Spacing.l, vertical = 0.dp)
-                    if (relationshipStatus.isProminent()) {
-                        Button(
-                            contentPadding = buttonPadding,
-                            onClick = {
-                                onRelationshipClicked?.invoke()
-                            },
-                        ) {
-                            Text(relationshipStatus.toReadableName())
-                        }
-                    } else {
-                        OutlinedButton(
-                            contentPadding = buttonPadding,
-                            onClick = {
-                                onRelationshipClicked?.invoke()
-                            },
-                        ) {
-                            Text(relationshipStatus.toReadableName())
-                        }
-                    }
+                    UserRelationshipButton(
+                        relationshipStatus = relationshipStatus,
+                        pending = account.relationshipStatusPending,
+                        onClick = onRelationshipClicked,
+                    )
                 }
             }
 

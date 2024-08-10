@@ -34,6 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
@@ -44,11 +45,12 @@ internal fun NotificationItem(
     onOpenUrl: ((String) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
+    onUserRelationshipClicked: ((String, RelationshipStatusNextAction) -> Unit)? = null,
 ) {
     val boxColor = MaterialTheme.colorScheme.surfaceVariant
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val entry = notification.entry
-    val account = notification.user
+    val user = notification.user
 
     Column(
         modifier = modifier,
@@ -65,10 +67,10 @@ internal fun NotificationItem(
                 contentDescription = null,
                 tint = ancillaryColor,
             )
-            if (account != null) {
+            if (user != null) {
                 NotificationHeaderUserInfo(
                     modifier = Modifier.padding(start = Spacing.xs),
-                    account = account,
+                    account = user,
                     onOpenUser = onOpenUser,
                 )
             }
@@ -98,13 +100,16 @@ internal fun NotificationItem(
                     onOpenUser = onOpenUser,
                     onOpenUrl = onOpenUrl,
                 )
-            } else if (account != null) {
+            } else if (user != null) {
                 NotificationUserInfo(
                     modifier = Modifier.padding(bottom = Spacing.m),
-                    account = account,
+                    account = user,
                     onOpenUrl = onOpenUrl,
                     onClick = {
-                        onOpenUser?.invoke(account)
+                        onOpenUser?.invoke(user)
+                    },
+                    onRelationshipClicked = { nextAction ->
+                        onUserRelationshipClicked?.invoke(user.id, nextAction)
                     },
                 )
             }

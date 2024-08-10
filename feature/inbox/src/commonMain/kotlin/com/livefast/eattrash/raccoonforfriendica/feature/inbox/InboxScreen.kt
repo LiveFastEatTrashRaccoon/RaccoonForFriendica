@@ -11,6 +11,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -23,7 +25,9 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -35,6 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItem
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItemPlaceholder
@@ -52,6 +57,8 @@ class InboxScreen : Screen {
         val uriHandler = LocalUriHandler.current
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
+        var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
+        var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
 
         Scaffold(
             topBar = {
@@ -111,6 +118,29 @@ class InboxScreen : Screen {
                             onOpenUser = {
                                 detailOpener.openUserDetail(it.id)
                             },
+                            onUserRelationshipClicked = { userId, nextAction ->
+                                when (nextAction) {
+                                    RelationshipStatusNextAction.AcceptRequest -> {
+                                        model.reduce(InboxMviModel.Intent.AcceptFollowRequest(userId))
+                                    }
+
+                                    RelationshipStatusNextAction.ConfirmUnfollow -> {
+                                        confirmUnfollowDialogUserId = userId
+                                    }
+
+                                    RelationshipStatusNextAction.ConfirmDeleteFollowRequest -> {
+                                        confirmDeleteFollowRequestDialogUserId = userId
+                                    }
+
+                                    RelationshipStatusNextAction.Follow -> {
+                                        model.reduce(InboxMviModel.Intent.Follow(userId))
+                                    }
+
+                                    RelationshipStatusNextAction.Unfollow -> {
+                                        model.reduce(InboxMviModel.Intent.Unfollow(userId))
+                                    }
+                                }
+                            },
                         )
                         HorizontalDivider(
                             modifier = Modifier.padding(vertical = Spacing.interItem),
@@ -154,6 +184,84 @@ class InboxScreen : Screen {
                     contentColor = MaterialTheme.colorScheme.onBackground,
                 )
             }
+        }
+
+        if (confirmUnfollowDialogUserId != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmUnfollowDialogUserId = null
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionUnfollow,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmUnfollowDialogUserId = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val userId = confirmUnfollowDialogUserId ?: ""
+                            confirmUnfollowDialogUserId = null
+                            if (userId.isNotEmpty()) {
+                                model.reduce(InboxMviModel.Intent.Unfollow(userId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmDeleteFollowRequestDialogUserId != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmUnfollowDialogUserId = null
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionDeleteFollowRequest,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmUnfollowDialogUserId = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val userId = confirmUnfollowDialogUserId ?: ""
+                            confirmUnfollowDialogUserId = null
+                            if (userId.isNotEmpty()) {
+                                model.reduce(InboxMviModel.Intent.Unfollow(userId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
         }
     }
 }
