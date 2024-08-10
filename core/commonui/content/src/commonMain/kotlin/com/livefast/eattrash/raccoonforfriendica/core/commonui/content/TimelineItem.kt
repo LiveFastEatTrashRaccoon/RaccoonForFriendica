@@ -54,19 +54,15 @@ fun TimelineItem(
                     onOpenUser = onOpenUser,
                 )
             }
+            val entryToDisplay = entry.reblog ?: entry
 
             ContentHeader(
                 modifier = Modifier.fillMaxWidth(),
-                user =
-                    if (isReblog) {
-                        entry.reblog?.creator
-                    } else {
-                        entry.creator
-                    },
+                user = entryToDisplay.creator,
                 onOpenUser = onOpenUser,
             )
 
-            entry.title?.let { title ->
+            entryToDisplay.title?.let { title ->
                 ContentTitle(
                     content = title,
                     onClick = onClick,
@@ -75,7 +71,7 @@ fun TimelineItem(
             }
 
             ContentBody(
-                content = entry.content,
+                content = entryToDisplay.content,
                 onClick = onClick,
                 onOpenUrl = onOpenUrl,
             )
@@ -83,11 +79,11 @@ fun TimelineItem(
             if (actionsEnabled) {
                 ContentFooter(
                     modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
-                    favoriteCount = entry.favoriteCount,
-                    favorite = entry.favorite,
-                    reblogCount = entry.reblogCount,
-                    reblogged = entry.reblogged,
-                    bookmarked = entry.bookmarked,
+                    favoriteCount = entryToDisplay.favoriteCount,
+                    favorite = entryToDisplay.favorite,
+                    reblogCount = entryToDisplay.reblogCount,
+                    reblogged = entryToDisplay.reblogged,
+                    bookmarked = entryToDisplay.bookmarked,
                     replyCount = entry.replyCount,
                     onReply = onReply,
                     onReblog = onReblog,
