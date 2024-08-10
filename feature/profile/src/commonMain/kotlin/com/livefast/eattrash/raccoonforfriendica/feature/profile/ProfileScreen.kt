@@ -89,13 +89,11 @@ class ProfileScreen : Screen {
                             .padding(padding)
                             .nestedScroll(scrollBehavior.nestedScrollConnection),
                 ) {
-                    Navigator(
-                        if (!uiState.isLogged) {
-                            AnonymousScreen()
-                        } else {
-                            MyAccountScreen()
-                        },
-                    )
+                    if (!uiState.isLogged) {
+                        Navigator(AnonymousScreen())
+                    } else {
+                        Navigator(MyAccountScreen())
+                    }
                 }
             },
         )
