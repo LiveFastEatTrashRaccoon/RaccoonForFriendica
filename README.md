@@ -29,8 +29,9 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] see following recommendations
 - [x] view all the posts containing a given hashtag
 - [x] view followers and following of a given user
-- [ ] media visualization
 - [ ] follow/unfollow an account
+- [ ] post actions (re-share, favorite, bookmark)
+- [ ] media visualization
 - [ ] enable/disable notifications for an account
 - [ ] edit one's own profile
 - [ ] create a post/reply

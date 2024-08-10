@@ -9,12 +9,12 @@ import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
 
 interface UserService {
-    @GET("accounts/{id}")
+    @GET("v1/accounts/{id}")
     suspend fun getById(
         @Path("id") id: String,
     ): Account
 
-    @GET("accounts/{id}/statuses")
+    @GET("v1/accounts/{id}/statuses")
     suspend fun getStatuses(
         @Path("id") id: String,
         @Query("max_id") maxId: String? = null,
@@ -26,23 +26,22 @@ interface UserService {
         @Query("limit") limit: Int = 20,
     ): List<Status>
 
-    @GET("accounts/lookup")
+    @GET("v1/accounts/lookup")
     suspend fun lookup(
         @Query("acct") acct: String,
     ): Account
 
-    @GET("accounts/relationships")
+    @GET("v1/accounts/relationships")
     suspend fun getRelationships(
-        @Query("id") id: String,
+        @Query("id[]") id: List<String>,
     ): List<Relationship>
 
-    // TODO: the v1 API is deprecated
-    @GET("suggestions")
+    @GET("v2/suggestions")
     suspend fun getSuggestions(
         @Query("limit") limit: Int,
     ): List<Suggestion>
 
-    @GET("accounts/{id}/followers")
+    @GET("v1/accounts/{id}/followers")
     suspend fun getFollowers(
         @Path("id") id: String,
         @Query("max_id") maxId: String? = null,
@@ -50,7 +49,7 @@ interface UserService {
         @Query("limit") limit: Int = 20,
     ): List<Account>
 
-    @GET("accounts/{id}/following")
+    @GET("v1/accounts/{id}/following")
     suspend fun getFollowing(
         @Path("id") id: String,
         @Query("max_id") maxId: String? = null,
