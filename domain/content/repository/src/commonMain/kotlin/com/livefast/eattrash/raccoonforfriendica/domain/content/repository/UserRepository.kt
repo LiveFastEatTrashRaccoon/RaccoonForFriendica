@@ -21,4 +21,18 @@ interface UserRepository {
         id: String,
         pageCursor: String? = null,
     ): List<UserModel>
+
+    suspend fun follow(
+        id: String,
+        reblogs: Boolean = false,
+        notifications: Boolean = false,
+    ): RelationshipModel?
+
+    suspend fun unfollow(id: String): RelationshipModel?
+
+    suspend fun getFollowRequests(pageCursor: String?): List<UserModel>
+
+    suspend fun acceptFollowRequest(id: String): Boolean
+
+    suspend fun rejectFollowRequest(id: String): Boolean
 }
