@@ -9,6 +9,7 @@ val featureInboxModule =
         factory<InboxMviModel> {
             InboxViewModel(
                 paginationManager = get(),
+                userRepository = get(),
             )
         }
     }

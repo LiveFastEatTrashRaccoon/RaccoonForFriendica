@@ -17,6 +17,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -30,7 +32,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -39,6 +43,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
@@ -56,6 +61,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -64,6 +70,9 @@ import org.koin.core.parameter.parametersOf
 class UserDetailScreen(
     private val id: String,
 ) : Screen {
+    override val key: ScreenKey
+        get() = super.key + id
+
     @OptIn(
         ExperimentalMaterial3Api::class,
         ExperimentalFoundationApi::class,
@@ -80,6 +89,8 @@ class UserDetailScreen(
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
+        var confirmUnfollowDialogOpen by remember { mutableStateOf(false) }
+        var confirmDeleteFollowRequestDialogOpen by remember { mutableStateOf(false) }
 
         LaunchedEffect(model) {
             model.effects
@@ -143,9 +154,32 @@ class UserDetailScreen(
                         if (uiState.user != null) {
                             item {
                                 UserHeader(
-                                    account = uiState.user,
+                                    user = uiState.user,
                                     onOpenUrl = { url ->
                                         openUrl(url)
+                                    },
+                                    onRelationshipClicked = { nextAction ->
+                                        when (nextAction) {
+                                            RelationshipStatusNextAction.AcceptRequest -> {
+                                                model.reduce(UserDetailMviModel.Intent.AcceptFollowRequest)
+                                            }
+
+                                            RelationshipStatusNextAction.ConfirmUnfollow -> {
+                                                confirmUnfollowDialogOpen = true
+                                            }
+
+                                            RelationshipStatusNextAction.ConfirmDeleteFollowRequest -> {
+                                                confirmDeleteFollowRequestDialogOpen = true
+                                            }
+
+                                            RelationshipStatusNextAction.Follow -> {
+                                                model.reduce(UserDetailMviModel.Intent.Follow)
+                                            }
+
+                                            RelationshipStatusNextAction.Unfollow -> {
+                                                model.reduce(UserDetailMviModel.Intent.Unfollow)
+                                            }
+                                        }
                                     },
                                     onOpenFollowers = {
                                         detailOpener.openFollowers(id)
@@ -277,5 +311,77 @@ class UserDetailScreen(
                 }
             },
         )
+
+        if (confirmUnfollowDialogOpen) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmUnfollowDialogOpen = false
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionUnfollow,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmUnfollowDialogOpen = false
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            confirmUnfollowDialogOpen = false
+                            model.reduce(UserDetailMviModel.Intent.Unfollow)
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmDeleteFollowRequestDialogOpen) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmDeleteFollowRequestDialogOpen = false
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionDeleteFollowRequest,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmDeleteFollowRequestDialogOpen = false
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            confirmDeleteFollowRequestDialogOpen = false
+                            model.reduce(UserDetailMviModel.Intent.Unfollow)
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
     }
 }

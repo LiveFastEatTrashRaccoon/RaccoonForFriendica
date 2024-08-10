@@ -31,13 +31,7 @@ internal class DefaultNotificationsPaginationManager(
                         .getAll(
                             pageCursor = pageCursor,
                             types = specification.types,
-                        ).let { list ->
-                            if (specification.withRelationshipStatus) {
-                                list.determineRelationshipStatus()
-                            } else {
-                                list
-                            }
-                        }
+                        ).determineRelationshipStatus()
             }.deduplicate()
 
         if (results.isNotEmpty()) {

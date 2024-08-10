@@ -98,6 +98,8 @@ interface Strings {
     val feedTypeTitle: String
     val followerTitle: String
     val followingTitle: String
+    val actionUnfollow: String
+    val actionDeleteFollowRequest: String
 }
 
 object Locales {

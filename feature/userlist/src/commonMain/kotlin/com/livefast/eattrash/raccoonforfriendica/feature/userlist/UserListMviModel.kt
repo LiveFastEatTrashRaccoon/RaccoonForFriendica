@@ -11,6 +11,18 @@ interface UserListMviModel :
         data object Refresh : Intent
 
         data object LoadNextPage : Intent
+
+        data class AcceptFollowRequest(
+            val userId: String,
+        ) : Intent
+
+        data class Follow(
+            val userId: String,
+        ) : Intent
+
+        data class Unfollow(
+            val userId: String,
+        ) : Intent
     }
 
     data class State(

@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -76,6 +77,56 @@ internal class DefaultUserRepository(
                     ).map { it.toModel() }
             }
         }.getOrElse { emptyList() }
+
+    override suspend fun follow(
+        id: String,
+        reblogs: Boolean,
+        notify: Boolean,
+    ): RelationshipModel? =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                val data = FollowUserForm(reblogs = reblogs, notify = notify)
+                provider.users
+                    .follow(
+                        id = id,
+                        data = data,
+                    ).toModel()
+            }
+        }.getOrNull()
+
+    override suspend fun unfollow(id: String): RelationshipModel? =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users.unfollow(id).toModel()
+            }
+        }.getOrNull()
+
+    override suspend fun getFollowRequests(pageCursor: String?): List<UserModel> =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .getFollowRequests(
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrElse { emptyList() }
+
+    override suspend fun acceptFollowRequest(id: String) =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users.acceptFollowRequest(id)
+                true
+            }
+        }.getOrElse { false }
+
+    override suspend fun rejectFollowRequest(id: String) =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users.rejectFollowRequest(id)
+                true
+            }
+        }.getOrElse { false }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20

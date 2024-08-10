@@ -48,6 +48,10 @@ class UserDetailViewModel(
                 screenModelScope.launch {
                     refresh()
                 }
+
+            UserDetailMviModel.Intent.AcceptFollowRequest -> acceptFollowRequest()
+            UserDetailMviModel.Intent.Follow -> follow()
+            UserDetailMviModel.Intent.Unfollow -> unfollow()
         }
     }
 
@@ -96,6 +100,67 @@ class UserDetailViewModel(
                 initial = false,
                 refreshing = false,
             )
+        }
+    }
+
+    private fun acceptFollowRequest() {
+        screenModelScope.launch {
+            updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
+            userRepository.acceptFollowRequest(id)
+            val newRelationship = userRepository.getRelationships(listOf(id)).firstOrNull()
+            val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
+            val newNotificationStatus =
+                newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
+            updateState {
+                it.copy(
+                    user =
+                        it.user?.copy(
+                            relationshipStatus = newStatus,
+                            notificationStatus = newNotificationStatus,
+                            relationshipStatusPending = false,
+                        ),
+                )
+            }
+        }
+    }
+
+    private fun follow() {
+        screenModelScope.launch {
+            updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
+            val newRelationship = userRepository.follow(id)
+            val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
+            val newNotificationStatus =
+                newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
+            updateState {
+                it.copy(
+                    user =
+                        it.user?.copy(
+                            relationshipStatus = newStatus,
+                            notificationStatus = newNotificationStatus,
+                            relationshipStatusPending = false,
+                        ),
+                )
+            }
+        }
+    }
+
+    private fun unfollow() {
+        screenModelScope.launch {
+            updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
+            val newRelationship = userRepository.unfollow(id)
+            val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
+            val newNotificationStatus =
+                newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
+            updateState {
+                it.copy(
+                    user =
+                        it.user?.copy(
+                            relationshipStatus = newStatus,
+                            notificationStatus = newNotificationStatus,
+                            relationshipStatusPending = false,
+                        ),
+                )
+            }
         }
     }
 }

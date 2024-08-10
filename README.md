@@ -29,14 +29,20 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] see following recommendations
 - [x] view all the posts containing a given hashtag
 - [x] view followers and following of a given user
-- [ ] follow/unfollow an account
+- [x] follow/unfollow an account
 - [ ] post actions (re-share, favorite, bookmark)
-- [ ] advanced media visualization (videos, GIFs, etc.)
+- [ ] follow/unfollow hashtags
+- [ ] view list of pending follow request and accept/reject them
+- [ ] view list of followed hashtags
+- [ ] view list of favorites
+- [ ] view list of bookmarks
 - [ ] enable/disable notifications for an account
 - [ ] edit one's own profile
 - [ ] create a post/reply
 - [ ] open a user (group) detail in "forum mode"
 - [ ] manage one's own circles
+- [ ] advanced media visualization (videos, GIFs, etc.)
+- [ ] custom emojis
 
 <div align="center">
   <img width="310" src="https://github.com/user-attachments/assets/6b01d961-4fe6-4a44-8c3f-2fb5185656fa" alt="timeline screen" />

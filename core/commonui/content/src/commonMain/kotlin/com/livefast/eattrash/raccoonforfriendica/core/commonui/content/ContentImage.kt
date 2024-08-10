@@ -28,7 +28,7 @@ fun ContentImage(
             modifier
                 .fillMaxWidth()
                 .heightIn(min = minHeight, max = maxHeight)
-                .clip(RoundedCornerShape(CornerSize.m))
+                .clip(RoundedCornerShape(CornerSize.xl))
                 .clickable {
                     onClick?.invoke()
                 },

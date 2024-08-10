@@ -92,4 +92,6 @@ internal val ItStrings =
         override val feedTypeTitle = "Tipo di feed"
         override val followerTitle = "Seguaci"
         override val followingTitle = "Seguiti"
+        override val actionUnfollow = "Non seguire più"
+        override val actionDeleteFollowRequest = "Annulla richiesta di seguire"
     }
