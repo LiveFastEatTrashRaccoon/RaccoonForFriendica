@@ -64,6 +64,9 @@ import org.koin.core.parameter.parametersOf
 class UserDetailScreen(
     private val id: String,
 ) : Screen {
+    override val key: ScreenKey
+        get() = super.key + id
+
     @OptIn(
         ExperimentalMaterial3Api::class,
         ExperimentalFoundationApi::class,

@@ -35,6 +35,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -49,6 +50,9 @@ import org.koin.core.parameter.parametersOf
 class EntryDetailScreen(
     private val id: String,
 ) : Screen {
+    override val key: ScreenKey
+        get() = super.key + id
+
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
