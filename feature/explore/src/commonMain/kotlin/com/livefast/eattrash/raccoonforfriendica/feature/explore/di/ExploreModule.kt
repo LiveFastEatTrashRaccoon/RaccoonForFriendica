@@ -9,6 +9,7 @@ val featureExploreModule =
         factory<ExploreMviModel> {
             ExploreViewModel(
                 paginationManager = get(),
+                userRepository = get(),
             )
         }
     }

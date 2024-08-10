@@ -13,6 +13,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -26,7 +28,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -46,6 +50,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toExploreSection
@@ -72,6 +77,8 @@ class ExploreScreen : Screen {
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
+        var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
+        var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
 
         LaunchedEffect(model) {
             model.effects
@@ -218,9 +225,37 @@ class ExploreScreen : Screen {
 
                             is ExploreItemModel.Suggestion -> {
                                 UserItem(
-                                    account = item.user,
+                                    user = item.user,
                                     onClick = {
                                         detailOpener.openUserDetail(item.user.id)
+                                    },
+                                    onRelationshipClicked = { nextAction ->
+                                        when (nextAction) {
+                                            RelationshipStatusNextAction.AcceptRequest -> {
+                                                model.reduce(
+                                                    ExploreMviModel.Intent.AcceptFollowRequest(
+                                                        item.user.id,
+                                                    ),
+                                                )
+                                            }
+
+                                            RelationshipStatusNextAction.ConfirmUnfollow -> {
+                                                confirmUnfollowDialogUserId = item.user.id
+                                            }
+
+                                            RelationshipStatusNextAction.ConfirmDeleteFollowRequest -> {
+                                                confirmDeleteFollowRequestDialogUserId =
+                                                    item.user.id
+                                            }
+
+                                            RelationshipStatusNextAction.Follow -> {
+                                                model.reduce(ExploreMviModel.Intent.Follow(item.user.id))
+                                            }
+
+                                            RelationshipStatusNextAction.Unfollow -> {
+                                                model.reduce(ExploreMviModel.Intent.Unfollow(item.user.id))
+                                            }
+                                        }
                                     },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.interItem))
@@ -255,6 +290,84 @@ class ExploreScreen : Screen {
                     contentColor = MaterialTheme.colorScheme.onBackground,
                 )
             }
+        }
+
+        if (confirmUnfollowDialogUserId != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmUnfollowDialogUserId = null
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionUnfollow,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmUnfollowDialogUserId = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val userId = confirmUnfollowDialogUserId ?: ""
+                            confirmUnfollowDialogUserId = null
+                            if (userId.isNotEmpty()) {
+                                model.reduce(ExploreMviModel.Intent.Unfollow(userId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmDeleteFollowRequestDialogUserId != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmUnfollowDialogUserId = null
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionDeleteFollowRequest,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmUnfollowDialogUserId = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val userId = confirmUnfollowDialogUserId ?: ""
+                            confirmUnfollowDialogUserId = null
+                            if (userId.isNotEmpty()) {
+                                model.reduce(ExploreMviModel.Intent.Unfollow(userId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
         }
     }
 }
