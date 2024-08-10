@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -17,10 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,10 +38,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isProminent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 
 private object AnnotationConstants {
     const val TAG = "action"
@@ -55,22 +51,22 @@ private object AnnotationConstants {
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun UserHeader(
-    account: UserModel?,
+    user: UserModel?,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     onOpenFollowers: (() -> Unit)? = null,
     onOpenFollowing: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
-    onRelationshipClicked: (() -> Unit)? = null,
+    onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
     onNotificationsClicked: (() -> Unit)? = null,
 ) {
-    val banner = account?.header.orEmpty()
-    val avatar = account?.avatar.orEmpty()
+    val banner = user?.header.orEmpty()
+    val avatar = user?.avatar.orEmpty()
     val avatarSize = 110.dp
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
-    val relationshipStatus = account?.relationshipStatus
-    val notificationStatus = account?.notificationStatus
+    val relationshipStatus = user?.relationshipStatus
+    val notificationStatus = user?.notificationStatus
 
     Column(
         modifier =
@@ -110,7 +106,7 @@ fun UserHeader(
                 } else {
                     PlaceholderImage(
                         size = avatarSize,
-                        title = account?.displayName ?: account?.handle ?: "?",
+                        title = user?.displayName ?: user?.handle ?: "?",
                     )
                 }
 
@@ -128,7 +124,7 @@ fun UserHeader(
                                 annotation = AnnotationConstants.ACTION_OPEN_FOLLOWER,
                             ) {
                                 withStyle(SpanStyle(color = fullColor)) {
-                                    append("${account?.followers ?: 0}")
+                                    append("${user?.followers ?: 0}")
                                 }
                                 append(" ")
                                 append(followerDesc)
@@ -139,7 +135,7 @@ fun UserHeader(
                                 annotation = AnnotationConstants.ACTION_OPEN_FOLLOWING,
                             ) {
                                 withStyle(SpanStyle(color = fullColor)) {
-                                    append("${account?.following ?: 0}")
+                                    append("${user?.following ?: 0}")
                                 }
                                 append(" ")
                                 append(followingDesc)
@@ -187,31 +183,15 @@ fun UserHeader(
                             )
                         }
                         if (relationshipStatus != null) {
-                            val buttonPadding =
-                                PaddingValues(horizontal = Spacing.l, vertical = 0.dp)
-                            if (relationshipStatus.isProminent()) {
-                                Button(
-                                    contentPadding = buttonPadding,
-                                    onClick = {
-                                        onRelationshipClicked?.invoke()
-                                    },
-                                ) {
-                                    Text(relationshipStatus.toReadableName())
-                                }
-                            } else {
-                                OutlinedButton(
-                                    contentPadding = buttonPadding,
-                                    onClick = {
-                                        onRelationshipClicked?.invoke()
-                                    },
-                                ) {
-                                    Text(relationshipStatus.toReadableName())
-                                }
-                            }
+                            UserRelationshipButton(
+                                relationshipStatus = relationshipStatus,
+                                pending = user.relationshipStatusPending,
+                                onClick = onRelationshipClicked,
+                            )
                         }
                     }
 
-                    if (account?.group == true) {
+                    if (user?.group == true) {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
                             verticalAlignment = Alignment.CenterVertically,
@@ -238,16 +218,16 @@ fun UserHeader(
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             Text(
-                text = account?.displayName ?: account?.username ?: "",
+                text = user?.displayName ?: user?.username ?: "",
                 style = MaterialTheme.typography.titleMedium,
                 color = fullColor,
             )
             Text(
-                text = account?.handle ?: account?.username ?: "",
+                text = user?.handle ?: user?.username ?: "",
                 style = MaterialTheme.typography.titleSmall,
                 color = ancillaryColor,
             )
-            account?.bio?.takeIf { it.isNotEmpty() }?.let { bio ->
+            user?.bio?.takeIf { it.isNotEmpty() }?.let { bio ->
                 ContentBody(
                     content = bio,
                     onOpenUrl = onOpenUrl,

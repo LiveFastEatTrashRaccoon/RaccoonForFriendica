@@ -86,7 +86,7 @@ class MyAccountScreen : Screen {
                 if (uiState.user != null) {
                     item {
                         UserHeader(
-                            account = uiState.user,
+                            user = uiState.user,
                             onOpenUrl = { url ->
                                 openUrl(url)
                             },
