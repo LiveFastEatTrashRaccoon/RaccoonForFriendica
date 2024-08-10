@@ -6,7 +6,7 @@ import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Query
 
 interface NotificationService {
-    @GET("notifications")
+    @GET("v1/notifications")
     suspend fun get(
         @Query("types") types: List<NotificationType>,
         @Query("max_id") maxId: String? = null,

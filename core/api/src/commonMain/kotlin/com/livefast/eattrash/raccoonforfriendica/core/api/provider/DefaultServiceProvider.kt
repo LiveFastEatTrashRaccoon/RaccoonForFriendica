@@ -24,7 +24,6 @@ internal class DefaultServiceProvider(
     private val factory: HttpClientEngine = provideHttpClientEngine(),
 ) : ServiceProvider {
     companion object {
-        private const val VERSION = "v1"
         private const val ENABLE_LOGGING = false
         private const val REAM_NAME = "Friendica"
     }
@@ -38,7 +37,7 @@ internal class DefaultServiceProvider(
     override lateinit var notifications: NotificationService
     override lateinit var trends: TrendsService
 
-    private val baseUrl: String get() = "https://$currentNode/api/$VERSION/"
+    private val baseUrl: String get() = "https://$currentNode/api/"
 
     override fun changeNode(value: String) {
         if (currentNode != value) {
