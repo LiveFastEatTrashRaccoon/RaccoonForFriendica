@@ -91,4 +91,6 @@ internal open class DefaultStrings : Strings {
     override val feedTypeTitle = "Feed type"
     override val followerTitle = "Followers"
     override val followingTitle = "Following"
+    override val actionUnfollow = "Unfollow"
+    override val actionDeleteFollowRequest = "Cancel follow request"
 }
