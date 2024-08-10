@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
@@ -75,6 +76,18 @@ fun TimelineItem(
                 onClick = onClick,
                 onOpenUrl = onOpenUrl,
             )
+
+            val imageUrl =
+                entryToDisplay.attachments
+                    .firstOrNull { attachment -> attachment.type == MediaType.Image }
+                    ?.url
+                    ?.takeIf { it.isNotBlank() }
+            if (imageUrl != null) {
+                ContentImage(
+                    url = imageUrl,
+                    blurred = entryToDisplay.sensitive,
+                )
+            }
 
             if (actionsEnabled) {
                 ContentFooter(
