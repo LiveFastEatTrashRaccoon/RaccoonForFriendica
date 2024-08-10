@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -22,7 +23,8 @@ internal class AnonymousScreen : Screen {
         val detailOpener = remember { getDetailOpener() }
 
         Column(
-            modifier = Modifier.padding(Spacing.s),
+            modifier = Modifier.padding(Spacing.s).fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 modifier = Modifier.padding(horizontal = Spacing.m),
@@ -33,7 +35,6 @@ internal class AnonymousScreen : Screen {
             Spacer(modifier = Modifier.height(Spacing.xl))
 
             Button(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = {
                     detailOpener.openLogin()
                 },
