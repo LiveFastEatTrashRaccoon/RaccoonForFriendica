@@ -12,6 +12,6 @@ sealed interface NotificationsPaginationSpecification {
                 NotificationType.Entry,
                 NotificationType.Update,
             ),
-        val withRelationshipStatus: Boolean = false,
+        val withRelationshipStatus: Boolean = true,
     ) : NotificationsPaginationSpecification
 }

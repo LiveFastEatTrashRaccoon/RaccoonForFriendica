@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 
@@ -36,14 +37,8 @@ internal class DefaultUserPaginationManager(
                             id = specification.userId,
                             pageCursor = pageCursor,
                         )
-            }.map {
-                // determine relationship status
-                val userId = it.id
-                val relationship = userRepository.getRelationship(userId)
-                it.copy(
-                    relationshipStatus = relationship?.toStatus(),
-                )
-            }.deduplicate()
+            }.determineRelationshipStatus()
+                .deduplicate()
 
         if (results.isNotEmpty()) {
             pageCursor = results.last().id
@@ -57,6 +52,19 @@ internal class DefaultUserPaginationManager(
         // return a copy
         return history.map { it }
     }
+
+    private suspend fun List<UserModel>.determineRelationshipStatus(): List<UserModel> =
+        run {
+            val userIds = map { user -> user.id }
+            val relationships = userRepository.getRelationships(userIds)
+            map { user ->
+                val relationship = relationships.firstOrNull { rel -> rel.id == user.id }
+                user.copy(
+                    relationshipStatus = relationship?.toStatus(),
+                    notificationStatus = relationship?.toNotificationStatus(),
+                )
+            }
+        }
 
     private fun List<UserModel>.deduplicate(): List<UserModel> =
         filter { e1 ->

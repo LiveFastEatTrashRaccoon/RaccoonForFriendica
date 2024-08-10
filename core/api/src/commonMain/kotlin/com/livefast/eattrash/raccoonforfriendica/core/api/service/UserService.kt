@@ -33,7 +33,7 @@ interface UserService {
 
     @GET("accounts/relationships")
     suspend fun getRelationships(
-        @Query("id") id: String,
+        @Query("id[]") id: List<String>,
     ): List<Relationship>
 
     // TODO: the v1 API is deprecated

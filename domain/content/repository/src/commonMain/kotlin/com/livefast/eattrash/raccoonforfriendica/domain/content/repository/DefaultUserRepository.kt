@@ -24,15 +24,14 @@ internal class DefaultUserRepository(
             }
         }.getOrNull()
 
-    override suspend fun getRelationship(id: String): RelationshipModel? =
+    override suspend fun getRelationships(ids: List<String>): List<RelationshipModel> =
         runCatching {
             withContext(Dispatchers.IO) {
                 provider.users
-                    .getRelationships(id)
-                    .firstOrNull()
-                    ?.toModel()
+                    .getRelationships(ids)
+                    .map { it.toModel() }
             }
-        }.getOrNull()
+        }.getOrElse { emptyList() }
 
     override suspend fun getSuggestions(): List<UserModel> =
         runCatching {

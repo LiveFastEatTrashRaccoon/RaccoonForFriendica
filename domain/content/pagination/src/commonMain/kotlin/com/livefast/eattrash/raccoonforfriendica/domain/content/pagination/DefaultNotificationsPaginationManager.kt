@@ -54,15 +54,15 @@ internal class DefaultNotificationsPaginationManager(
     }
 
     private suspend fun List<NotificationModel>.determineRelationshipStatus(): List<NotificationModel> =
-        map {
-            val accountId = it.user?.id
-            if (accountId == null) {
-                it
-            } else {
-                val relationship = userRepository.getRelationship(accountId)
-                it.copy(
+        run {
+            val userIds = mapNotNull { notification -> notification.user?.id }
+            val relationships = userRepository.getRelationships(userIds)
+            map { notification ->
+                val relationship =
+                    relationships.firstOrNull { rel -> rel.id == notification.user?.id }
+                notification.copy(
                     user =
-                        it.user?.copy(
+                        notification.user?.copy(
                             relationshipStatus = relationship?.toStatus(),
                             notificationStatus = relationship?.toNotificationStatus(),
                         ),

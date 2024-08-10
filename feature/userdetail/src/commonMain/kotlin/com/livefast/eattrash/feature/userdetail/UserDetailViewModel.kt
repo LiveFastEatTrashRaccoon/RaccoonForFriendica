@@ -53,7 +53,7 @@ class UserDetailViewModel(
 
     private suspend fun loadUser() {
         val account = userRepository.getById(id)
-        val relationship = userRepository.getRelationship(id)
+        val relationship = userRepository.getRelationships(listOf(id)).firstOrNull()
         updateState {
             it.copy(
                 user =
