@@ -13,6 +13,18 @@ interface HashtagMviModel :
         data object Refresh : Intent
 
         data object LoadNextPage : Intent
+
+        data class ToggleReblog(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleFavorite(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleBookmark(
+            val entryId: String,
+        ) : Intent
     }
 
     data class State(

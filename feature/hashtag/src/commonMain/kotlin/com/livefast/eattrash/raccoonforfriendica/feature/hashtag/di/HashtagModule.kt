@@ -10,6 +10,7 @@ val featureHashtagModule =
             HashtagViewModel(
                 tag = params[0],
                 paginationManager = get(),
+                timelineEntryRepository = get(),
             )
         }
     }
