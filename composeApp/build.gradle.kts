@@ -74,6 +74,7 @@ kotlin {
             implementation(projects.feature.drawer)
             implementation(projects.feature.entrydetail)
             implementation(projects.feature.explore)
+            implementation(projects.feature.favorites)
             implementation(projects.feature.hashtag)
             implementation(projects.feature.inbox)
             implementation(projects.feature.login)
