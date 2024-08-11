@@ -1,5 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
+import androidx.compose.runtime.Stable
+
+@Stable
 interface DetailOpener {
     fun openUserDetail(id: String)
 

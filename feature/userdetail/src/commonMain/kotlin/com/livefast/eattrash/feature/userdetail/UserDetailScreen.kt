@@ -98,9 +98,17 @@ class UserDetailScreen(
                     when (event) {
                         UserDetailMviModel.Effect.BackToTop ->
                             runCatching {
-                                lazyListState.scrollToItem(0)
-                                topAppBarState.heightOffset = 0f
-                                topAppBarState.contentOffset = 0f
+                                if (lazyListState.firstVisibleItemIndex > 0) {
+                                    if (uiState.entries.isEmpty()) {
+                                        lazyListState.scrollToItem(1)
+                                    } else {
+                                        lazyListState.scrollToItem(2)
+                                    }
+                                } else {
+                                    lazyListState.scrollToItem(0)
+                                    topAppBarState.heightOffset = 0f
+                                    topAppBarState.contentOffset = 0f
+                                }
                             }
                     }
                 }.launchIn(this)
