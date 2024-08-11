@@ -38,6 +38,7 @@ kotlin {
                 implementation(libs.ktor.logging)
                 implementation(libs.ktor.serialization)
                 implementation(libs.ktorfit.lib)
+                implementation(libs.ktorfit.converters.response)
 
                 implementation(projects.core.utils)
             }

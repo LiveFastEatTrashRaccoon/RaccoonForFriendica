@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import de.jensklingenberg.ktorfit.Ktorfit
+import de.jensklingenberg.ktorfit.converter.ResponseConverterFactory
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
@@ -100,6 +101,7 @@ internal class DefaultServiceProvider(
                 .Builder()
                 .baseUrl(baseUrl)
                 .httpClient(client)
+                .converterFactories(ResponseConverterFactory())
                 .build()
         notifications = ktorfit.create()
         statuses = ktorfit.create()

@@ -29,6 +29,7 @@ kotlin {
             dependencies {
                 implementation(libs.koin.core)
                 implementation(libs.ktorfit.lib)
+                implementation(libs.ktorfit.converters.response)
 
                 implementation(projects.core.api)
                 implementation(projects.core.utils)

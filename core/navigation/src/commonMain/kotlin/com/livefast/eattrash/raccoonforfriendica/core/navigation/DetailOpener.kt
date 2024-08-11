@@ -21,4 +21,6 @@ interface DetailOpener {
     fun openFavorites()
 
     fun openBookmarks()
+
+    fun openFollowedHashtags()
 }

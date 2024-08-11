@@ -34,7 +34,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] follow/unfollow hashtags
 - [x] view list of favorites
 - [x] view list of bookmarks
-- [ ] view list of followed hashtags
+- [x] view list of followed hashtags
 - [ ] view list of pending follow request and accept/reject them
 - [ ] enable/disable notifications for an account
 - [ ] edit one's own profile
