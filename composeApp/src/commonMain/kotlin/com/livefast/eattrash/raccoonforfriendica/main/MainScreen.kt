@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -33,6 +34,7 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigationItem
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.HomeTab
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.toTab
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import kotlinx.coroutines.flow.launchIn
@@ -75,11 +77,23 @@ object MainScreen : Screen {
                 }
             }
         navigationCoordinator.setBottomBarScrollConnection(scrollConnection)
+        val exitMessage = LocalStrings.current.messageConfirmExit
 
         LaunchedEffect(navigationCoordinator) {
             if (navigationCoordinator.currentSection == null) {
                 navigationCoordinator.setCurrentSection(BottomNavigationSection.Home)
             }
+
+            navigationCoordinator.exitMessageVisible
+                .onEach { visible ->
+                    if (visible) {
+                        snackbarHostState.showSnackbar(
+                            message = exitMessage,
+                            duration = SnackbarDuration.Short,
+                        )
+                        navigationCoordinator.setExitMessageVisible(false)
+                    }
+                }.launchIn(this)
         }
 
         TabNavigator(HomeTab) { tabNavigator ->

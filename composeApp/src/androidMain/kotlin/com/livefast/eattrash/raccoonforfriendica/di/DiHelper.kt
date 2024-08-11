@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.do
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.domainContentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.domainIdentityRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.domainIdentityUseCaseModule
+import com.livefast.eattrash.raccoonforfriendica.feature.drawer.di.featureDrawerModule
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.featureEntryDetailModule
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.di.featureExploreModule
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.di.featureHashtagModule
@@ -51,5 +52,6 @@ val sharedHelperModule =
             featureSettingsModule,
             featureUserDetailModule,
             featureUserListModule,
+            featureDrawerModule,
         )
     }

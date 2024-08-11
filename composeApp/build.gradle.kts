@@ -71,6 +71,7 @@ kotlin {
             implementation(projects.domain.identity.repository)
             implementation(projects.domain.identity.usecase)
 
+            implementation(projects.feature.drawer)
             implementation(projects.feature.entrydetail)
             implementation(projects.feature.explore)
             implementation(projects.feature.hashtag)

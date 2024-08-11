@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.l10n.messages
 
 internal open class DefaultStrings : Strings {
+    override val messageConfirmExit = "Tap \uD83D\uDD19 again to exit"
     override val messageAreYouSure = "Are you sure you want to continue?"
     override val messageSuccess = "Operation completed successfully!"
     override val messageGenericError = "An unexpected error occurred"
@@ -93,4 +94,11 @@ internal open class DefaultStrings : Strings {
     override val actionFollow = "Follow"
     override val actionUnfollow = "Unfollow"
     override val actionDeleteFollowRequest = "Cancel follow request"
+    override val sidebarAnonymousTitle = "Anonymous"
+    override val sidebarAnonymousMessage =
+        "Welcome to Raccoon!\n\nYou can log in to your instance at any time from the Profile screen.\n\nEnjoy Friendica!"
+    override val bookmarksTitle = "Bookmarks"
+    override val favoritesTitle = "Favorites"
+    override val followedHashtagsTitle = "Followed hashtags"
+    override val followRequestsTitle = "Follow requests"
 }

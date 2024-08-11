@@ -8,6 +8,7 @@ import cafe.adriel.lyricist.Lyricist
 import cafe.adriel.lyricist.ProvideStrings
 
 interface Strings {
+    val messageConfirmExit: String
     val messageSuccess: String
     val messageAreYouSure: String
     val messageGenericError: String
@@ -100,6 +101,12 @@ interface Strings {
     val followingTitle: String
     val actionUnfollow: String
     val actionDeleteFollowRequest: String
+    val sidebarAnonymousTitle: String
+    val sidebarAnonymousMessage: String
+    val bookmarksTitle: String
+    val favoritesTitle: String
+    val followedHashtagsTitle: String
+    val followRequestsTitle: String
 }
 
 object Locales {

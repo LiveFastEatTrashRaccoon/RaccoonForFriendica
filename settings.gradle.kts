@@ -49,6 +49,7 @@ include(":domain:identity:data")
 include(":domain:identity:repository")
 include(":domain:identity:usecase")
 
+include(":feature:drawer")
 include(":feature:entrydetail")
 include(":feature:explore")
 include(":feature:hashtag")

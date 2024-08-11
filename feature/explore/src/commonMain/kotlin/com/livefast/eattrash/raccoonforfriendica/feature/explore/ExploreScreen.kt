@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.explore
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -30,9 +34,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import cafe.adriel.voyager.core.screen.Screen
@@ -48,6 +54,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
@@ -58,6 +65,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toReadableName
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class ExploreScreen : Screen {
     @OptIn(
@@ -76,6 +84,8 @@ class ExploreScreen : Screen {
         val uriHandler = LocalUriHandler.current
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
+        val scope = rememberCoroutineScope()
+        val drawerCoordinator = remember { getDrawerCoordinator() }
         val lazyListState = rememberLazyListState()
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
@@ -102,6 +112,19 @@ class ExploreScreen : Screen {
                         Text(
                             text = LocalStrings.current.sectionTitleExplore,
                             style = MaterialTheme.typography.titleMedium,
+                        )
+                    },
+                    navigationIcon = {
+                        Image(
+                            modifier =
+                                Modifier.clickable {
+                                    scope.launch {
+                                        drawerCoordinator.toggleDrawer()
+                                    }
+                                },
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                         )
                     },
                 )

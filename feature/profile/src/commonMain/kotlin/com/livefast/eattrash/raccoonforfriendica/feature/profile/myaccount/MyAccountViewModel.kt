@@ -8,12 +8,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import kotlinx.coroutines.launch
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository as IdentityAccountRepository
 
 class MyAccountViewModel(
     private val userRepository: UserRepository,
-    private val identityAccountRepository: IdentityAccountRepository,
+    private val accountRepository: AccountRepository,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
 ) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
@@ -58,7 +58,7 @@ class MyAccountViewModel(
     }
 
     private suspend fun loadUser() {
-        val handle = identityAccountRepository.getActive()?.handle.orEmpty()
+        val handle = accountRepository.getActive()?.handle.orEmpty()
         val currentAccount = userRepository.getByHandle(handle)
         updateState { it.copy(user = currentAccount) }
     }
