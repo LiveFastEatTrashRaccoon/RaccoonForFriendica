@@ -1,10 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultExplorePaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultFavoritesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultNotificationsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultTimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultUserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.ExplorePaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
@@ -33,6 +35,11 @@ val domainContentPaginationModule =
         factory<UserPaginationManager> {
             DefaultUserPaginationManager(
                 userRepository = get(),
+            )
+        }
+        factory<FavoritesPaginationManager> {
+            DefaultFavoritesPaginationManager(
+                timelineEntryRepository = get(),
             )
         }
     }
