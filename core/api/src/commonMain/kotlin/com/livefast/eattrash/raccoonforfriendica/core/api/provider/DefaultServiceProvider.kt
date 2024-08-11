@@ -29,7 +29,6 @@ internal class DefaultServiceProvider(
     }
 
     private var currentNode: String = ""
-    private var auth: BasicAuthCredentials? = null
 
     override lateinit var timeline: TimelineService
     override lateinit var users: UserService
@@ -42,12 +41,12 @@ internal class DefaultServiceProvider(
     override fun changeNode(value: String) {
         if (currentNode != value) {
             currentNode = value
-            reinitialize()
+            reinitialize(null)
         }
     }
 
     override fun setAuth(credentials: Pair<String, String>?) {
-        auth =
+        val basicAuthCredentials =
             if (credentials == null) {
                 null
             } else {
@@ -56,10 +55,10 @@ internal class DefaultServiceProvider(
                     password = credentials.second,
                 )
             }
-        reinitialize()
+        reinitialize(basicAuthCredentials)
     }
 
-    private fun reinitialize() {
+    private fun reinitialize(basicCredentials: BasicAuthCredentials?) {
         val client =
             HttpClient(factory) {
                 defaultRequest {
@@ -74,8 +73,9 @@ internal class DefaultServiceProvider(
                 }
                 install(Auth) {
                     basic {
-                        credentials { auth }
+                        credentials { basicCredentials }
                         realm = REAM_NAME
+                        sendWithoutRequest { true }
                     }
                 }
                 if (ENABLE_LOGGING) {

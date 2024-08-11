@@ -18,8 +18,8 @@ internal class DefaultApiConfigurationRepository(
     override val isLogged = MutableStateFlow(false)
 
     init {
-        val instance = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
-        changeNode(instance)
+        val nodeName = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
+        changeNode(nodeName)
 
         val credentials = keyStore[KEY_CRED_1, ""] to keyStore[KEY_CRED_2, ""]
         setAuth(credentials.takeIf { it.first.isNotEmpty() && it.second.isNotEmpty() })
@@ -29,7 +29,6 @@ internal class DefaultApiConfigurationRepository(
         node.update { value }
         serviceProvider.changeNode(value)
         keyStore.save(KEY_LAST_NODE, value)
-        setAuth(null)
     }
 
     override fun setAuth(credentials: Pair<String, String>?) {
