@@ -11,12 +11,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Loop
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.Poll
 import androidx.compose.material.icons.filled.PostAdd
 import androidx.compose.material.icons.filled.QuestionMark
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -135,7 +135,7 @@ private fun NotificationType.toReadableName(): String =
 private fun NotificationType.toIcon(): ImageVector =
     when (this) {
         NotificationType.Entry -> Icons.Default.PostAdd
-        NotificationType.Favorite -> Icons.Default.Star
+        NotificationType.Favorite -> Icons.Default.Favorite
         NotificationType.Follow -> Icons.Default.PersonAdd
         NotificationType.FollowRequest -> Icons.Default.PersonAdd
         NotificationType.Mention -> Icons.Default.ChatBubble

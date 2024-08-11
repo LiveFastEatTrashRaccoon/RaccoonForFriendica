@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.PersonAddAlt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.HorizontalDivider
@@ -83,10 +82,6 @@ class DrawerContent : Screen {
                     onSelected = {
                         handleOpen { detailOpener.openFollowedHashtags() }
                     },
-                )
-                DrawerShortcut(
-                    title = LocalStrings.current.followRequestsTitle,
-                    icon = Icons.Default.PersonAddAlt,
                 )
             }
 
