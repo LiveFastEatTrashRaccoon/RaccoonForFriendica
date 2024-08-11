@@ -8,9 +8,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Repeat
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,8 +50,8 @@ fun ContentFooter(
             onClick = onReblog,
         )
         FooterItem(
-            icon = Icons.Default.StarBorder,
-            toggledIcon = Icons.Default.Star,
+            icon = Icons.Default.FavoriteBorder,
+            toggledIcon = Icons.Default.Favorite,
             value = favoriteCount.takeIf { it > 0 },
             toggled = favorite,
             onClick = onFavorite,
