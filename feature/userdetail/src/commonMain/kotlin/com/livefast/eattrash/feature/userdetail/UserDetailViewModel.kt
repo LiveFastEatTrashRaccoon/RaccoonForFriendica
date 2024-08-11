@@ -82,7 +82,6 @@ class UserDetailViewModel(
         paginationManager.reset(
             TimelinePaginationSpecification.User(
                 userId = id,
-                excludeReblogs = uiState.value.section == UserSection.Posts,
                 excludeReplies = uiState.value.section == UserSection.Posts,
                 onlyMedia = uiState.value.section == UserSection.Media,
                 pinned = uiState.value.section == UserSection.Pinned,
