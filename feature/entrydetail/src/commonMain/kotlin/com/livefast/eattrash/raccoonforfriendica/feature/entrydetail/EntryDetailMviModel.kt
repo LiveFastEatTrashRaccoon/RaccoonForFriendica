@@ -12,6 +12,18 @@ interface EntryDetailMviModel :
     MviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
+
+        data class ToggleReblog(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleFavorite(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleBookmark(
+            val entryId: String,
+        ) : Intent
     }
 
     data class State(
