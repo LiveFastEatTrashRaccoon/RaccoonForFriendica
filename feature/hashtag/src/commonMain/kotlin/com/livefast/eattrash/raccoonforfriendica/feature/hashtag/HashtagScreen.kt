@@ -39,6 +39,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
@@ -126,6 +127,14 @@ class HashtagScreen(
                 LazyColumn(
                     state = lazyListState,
                 ) {
+                    if (uiState.initial) {
+                        items(5) {
+                            TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = Spacing.s),
+                            )
+                        }
+                    }
                     items(
                         items = uiState.entries,
                         key = { it.id },
@@ -140,6 +149,15 @@ class HashtagScreen(
                             },
                             onOpenUser = {
                                 detailOpener.openUserDetail(it.id)
+                            },
+                            onReblog = {
+                                model.reduce(HashtagMviModel.Intent.ToggleReblog(entry.id))
+                            },
+                            onBookmark = {
+                                model.reduce(HashtagMviModel.Intent.ToggleBookmark(entry.id))
+                            },
+                            onFavorite = {
+                                model.reduce(HashtagMviModel.Intent.ToggleFavorite(entry.id))
                             },
                         )
                         HorizontalDivider(

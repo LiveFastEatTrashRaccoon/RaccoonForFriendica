@@ -1,11 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount
 
+import androidx.compose.runtime.Stable
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
+@Stable
 interface MyAccountMviModel :
     ScreenModel,
     MviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect> {
@@ -16,6 +18,18 @@ interface MyAccountMviModel :
 
         data class ChangeSection(
             val section: UserSection,
+        ) : Intent
+
+        data class ToggleReblog(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleFavorite(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleBookmark(
+            val entryId: String,
         ) : Intent
     }
 

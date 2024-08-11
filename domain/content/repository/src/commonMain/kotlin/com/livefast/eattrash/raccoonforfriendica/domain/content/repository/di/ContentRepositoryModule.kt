@@ -1,10 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNotificationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTrendsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -15,6 +17,11 @@ val domainContentRepositoryModule =
     module {
         single<TimelineRepository> {
             DefaultTimelineRepository(
+                provider = get(named("default")),
+            )
+        }
+        single<TimelineEntryRepository> {
+            DefaultTimelineEntryRepository(
                 provider = get(named("default")),
             )
         }

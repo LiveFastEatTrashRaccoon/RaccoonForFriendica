@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.settings
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.ThemeColor
@@ -7,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFami
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 
+@Stable
 interface SettingsMviModel :
     ScreenModel,
     MviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect> {

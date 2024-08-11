@@ -158,6 +158,15 @@ class TimelineScreen : Screen {
                             onOpenUser = {
                                 detailOpener.openUserDetail(it.id)
                             },
+                            onReblog = {
+                                model.reduce(TimelineMviModel.Intent.ToggleReblog(entry.id))
+                            },
+                            onBookmark = {
+                                model.reduce(TimelineMviModel.Intent.ToggleBookmark(entry.id))
+                            },
+                            onFavorite = {
+                                model.reduce(TimelineMviModel.Intent.ToggleFavorite(entry.id))
+                            },
                         )
                         HorizontalDivider(
                             modifier = Modifier.padding(vertical = Spacing.s),

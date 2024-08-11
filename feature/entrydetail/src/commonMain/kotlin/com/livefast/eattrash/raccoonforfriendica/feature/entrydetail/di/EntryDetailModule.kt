@@ -9,7 +9,7 @@ val featureEntryDetailModule =
         factory<EntryDetailMviModel> { params ->
             EntryDetailViewModel(
                 id = params[0],
-                timelineRepository = get(),
+                timelineEntryRepository = get(),
             )
         }
     }

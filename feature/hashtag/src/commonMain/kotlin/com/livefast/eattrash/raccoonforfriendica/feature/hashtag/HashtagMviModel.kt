@@ -1,9 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.hashtag
 
+import androidx.compose.runtime.Stable
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
+@Stable
 interface HashtagMviModel :
     ScreenModel,
     MviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect> {
@@ -11,6 +13,18 @@ interface HashtagMviModel :
         data object Refresh : Intent
 
         data object LoadNextPage : Intent
+
+        data class ToggleReblog(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleFavorite(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleBookmark(
+            val entryId: String,
+        ) : Intent
     }
 
     data class State(

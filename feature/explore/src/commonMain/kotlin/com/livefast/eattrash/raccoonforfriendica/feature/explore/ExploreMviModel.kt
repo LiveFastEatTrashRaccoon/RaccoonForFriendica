@@ -1,10 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.explore
 
+import androidx.compose.runtime.Stable
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
 
+@Stable
 interface ExploreMviModel :
     ScreenModel,
     MviModel<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect> {
@@ -27,6 +29,18 @@ interface ExploreMviModel :
 
         data class Unfollow(
             val userId: String,
+        ) : Intent
+
+        data class ToggleReblog(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleFavorite(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleBookmark(
+            val entryId: String,
         ) : Intent
     }
 
