@@ -1,10 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.timeline
 
+import androidx.compose.runtime.Stable
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 
+@Stable
 interface TimelineMviModel :
     ScreenModel,
     MviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect> {
