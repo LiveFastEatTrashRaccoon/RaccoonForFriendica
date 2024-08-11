@@ -1,11 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,17 +22,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.Navigator
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.AnonymousScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountScreen
+import kotlinx.coroutines.launch
 
 class ProfileScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +45,8 @@ class ProfileScreen : Screen {
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val detailOpener = remember { getDetailOpener() }
+        val scope = rememberCoroutineScope()
+        val drawerCoordinator = remember { getDrawerCoordinator() }
         var confirmLogoutDialogOpened by remember { mutableStateOf(false) }
 
         Scaffold(
@@ -52,6 +57,19 @@ class ProfileScreen : Screen {
                         Text(
                             text = LocalStrings.current.sectionTitleProfile,
                             style = MaterialTheme.typography.titleMedium,
+                        )
+                    },
+                    navigationIcon = {
+                        Image(
+                            modifier =
+                                Modifier.clickable {
+                                    scope.launch {
+                                        drawerCoordinator.toggleDrawer()
+                                    }
+                                },
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                         )
                     },
                     actions = {
@@ -68,17 +86,6 @@ class ProfileScreen : Screen {
                                 tint = MaterialTheme.colorScheme.onBackground,
                             )
                         }
-                        Icon(
-                            modifier =
-                                Modifier
-                                    .padding(horizontal = Spacing.xs)
-                                    .clickable {
-                                        detailOpener.openSettings()
-                                    },
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                        )
                     },
                 )
             },
