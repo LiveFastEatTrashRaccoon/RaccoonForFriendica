@@ -196,6 +196,15 @@ class ExploreScreen : Screen {
                                     onOpenUser = {
                                         detailOpener.openUserDetail(it.id)
                                     },
+                                    onReblog = {
+                                        model.reduce(ExploreMviModel.Intent.ToggleReblog(item.entry.id))
+                                    },
+                                    onBookmark = {
+                                        model.reduce(ExploreMviModel.Intent.ToggleBookmark(item.entry.id))
+                                    },
+                                    onFavorite = {
+                                        model.reduce(ExploreMviModel.Intent.ToggleFavorite(item.entry.id))
+                                    },
                                 )
 
                                 HorizontalDivider(

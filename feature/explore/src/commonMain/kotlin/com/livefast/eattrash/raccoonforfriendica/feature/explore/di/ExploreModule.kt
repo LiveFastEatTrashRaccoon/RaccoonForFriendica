@@ -10,6 +10,7 @@ val featureExploreModule =
             ExploreViewModel(
                 paginationManager = get(),
                 userRepository = get(),
+                timelineEntryRepository = get(),
             )
         }
     }

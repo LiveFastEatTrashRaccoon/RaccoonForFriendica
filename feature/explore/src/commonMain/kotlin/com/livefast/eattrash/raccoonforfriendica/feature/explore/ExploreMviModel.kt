@@ -30,6 +30,18 @@ interface ExploreMviModel :
         data class Unfollow(
             val userId: String,
         ) : Intent
+
+        data class ToggleReblog(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleFavorite(
+            val entryId: String,
+        ) : Intent
+
+        data class ToggleBookmark(
+            val entryId: String,
+        ) : Intent
     }
 
     data class State(
