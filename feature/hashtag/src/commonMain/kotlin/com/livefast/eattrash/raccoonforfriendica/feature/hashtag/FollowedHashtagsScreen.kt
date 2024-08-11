@@ -28,7 +28,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,56 +37,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalUriHandler
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TwoStateFollowButton
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import org.koin.core.parameter.parametersOf
+import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.components.FollowedHashtagItem
 
-class HashtagScreen(
-    private val tag: String,
-) : Screen {
-    override val key: ScreenKey
-        get() = super.key + tag
-
+class FollowedHashtagsScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        val model = getScreenModel<HashtagMviModel>(parameters = { parametersOf(tag) })
+        val model = getScreenModel<FollowedHashtagsMviModel>()
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val connection = navigationCoordinator.getBottomBarScrollConnection()
-        val uriHandler = LocalUriHandler.current
-        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
-        var confirmUnfollowHashtagDialogOpen by remember { mutableStateOf(false) }
-
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        HashtagMviModel.Effect.BackToTop ->
-                            runCatching {
-                                lazyListState.scrollToItem(0)
-                                topAppBarState.heightOffset = 0f
-                                topAppBarState.contentOffset = 0f
-                            }
-                    }
-                }.launchIn(this)
-        }
+        var confirmUnfollowHashtagName by remember { mutableStateOf<String?>(null) }
 
         Scaffold(
             topBar = {
@@ -95,24 +66,9 @@ class HashtagScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            text = "#$tag",
+                            text = LocalStrings.current.followedHashtagsTitle,
                             style = MaterialTheme.typography.titleMedium,
                         )
-                    },
-                    actions = {
-                        uiState.following?.also { following ->
-                            TwoStateFollowButton(
-                                modifier = Modifier.padding(horizontal = Spacing.xs),
-                                following = following,
-                                onClick = { newValue ->
-                                    if (!newValue) {
-                                        confirmUnfollowHashtagDialogOpen = true
-                                    } else {
-                                        model.reduce(HashtagMviModel.Intent.ToggleTagFollow(newValue))
-                                    }
-                                },
-                            )
-                        }
                     },
                     navigationIcon = {
                         if (navigationCoordinator.canPop.value) {
@@ -134,7 +90,7 @@ class HashtagScreen(
                 rememberPullRefreshState(
                     refreshing = uiState.refreshing,
                     onRefresh = {
-                        model.reduce(HashtagMviModel.Intent.Refresh)
+                        model.reduce(FollowedHashtagsMviModel.Intent.Refresh)
                     },
                 )
             Box(
@@ -155,45 +111,40 @@ class HashtagScreen(
                 ) {
                     if (uiState.initial) {
                         items(5) {
-                            TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                            GenericPlaceholder(modifier = Modifier.fillMaxWidth())
                             HorizontalDivider(
                                 modifier = Modifier.padding(vertical = Spacing.s),
                             )
                         }
                     }
                     items(
-                        items = uiState.entries,
-                        key = { it.id },
-                    ) { entry ->
-                        TimelineItem(
-                            entry = entry,
-                            onClick = {
-                                detailOpener.openEntryDetail(entry.id)
+                        items = uiState.items,
+                        key = { it.name },
+                    ) { tag ->
+                        // use item with button
+                        FollowedHashtagItem(
+                            hashtag = tag,
+                            onOpen = {
+                                detailOpener.openHashtag(tag.name)
                             },
-                            onOpenUrl = { url ->
-                                openUrl(url)
+                            onToggleFollow = { newFollow ->
+                                if (newFollow) {
+                                    model.reduce(
+                                        FollowedHashtagsMviModel.Intent.ToggleTagFollow(
+                                            tag.name,
+                                            newFollow,
+                                        ),
+                                    )
+                                } else {
+                                    confirmUnfollowHashtagName = tag.name
+                                }
                             },
-                            onOpenUser = {
-                                detailOpener.openUserDetail(it.id)
-                            },
-                            onReblog = {
-                                model.reduce(HashtagMviModel.Intent.ToggleReblog(entry.id))
-                            },
-                            onBookmark = {
-                                model.reduce(HashtagMviModel.Intent.ToggleBookmark(entry.id))
-                            },
-                            onFavorite = {
-                                model.reduce(HashtagMviModel.Intent.ToggleFavorite(entry.id))
-                            },
-                        )
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = Spacing.s),
                         )
                     }
 
                     item {
                         if (!uiState.initial && !uiState.loading && uiState.canFetchMore) {
-                            model.reduce(HashtagMviModel.Intent.LoadNextPage)
+                            model.reduce(FollowedHashtagsMviModel.Intent.LoadNextPage)
                         }
                         if (uiState.loading) {
                             Box(
@@ -220,10 +171,10 @@ class HashtagScreen(
             }
         }
 
-        if (confirmUnfollowHashtagDialogOpen) {
+        if (confirmUnfollowHashtagName != null) {
             AlertDialog(
                 onDismissRequest = {
-                    confirmUnfollowHashtagDialogOpen = false
+                    confirmUnfollowHashtagName = null
                 },
                 title = {
                     Text(
@@ -237,7 +188,7 @@ class HashtagScreen(
                 dismissButton = {
                     Button(
                         onClick = {
-                            confirmUnfollowHashtagDialogOpen = false
+                            confirmUnfollowHashtagName = null
                         },
                     ) {
                         Text(text = LocalStrings.current.buttonCancel)
@@ -246,8 +197,16 @@ class HashtagScreen(
                 confirmButton = {
                     Button(
                         onClick = {
-                            confirmUnfollowHashtagDialogOpen = false
-                            model.reduce(HashtagMviModel.Intent.ToggleTagFollow(false))
+                            val oldtag = confirmUnfollowHashtagName
+                            confirmUnfollowHashtagName = null
+                            if (oldtag != null) {
+                                model.reduce(
+                                    FollowedHashtagsMviModel.Intent.ToggleTagFollow(
+                                        name = oldtag,
+                                        newValue = false,
+                                    ),
+                                )
+                            }
                         },
                     ) {
                         Text(text = LocalStrings.current.buttonConfirm)
