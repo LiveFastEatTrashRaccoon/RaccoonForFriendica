@@ -273,6 +273,15 @@ class UserDetailScreen(
                                 onOpenUser = {
                                     detailOpener.openUserDetail(it.id)
                                 },
+                                onReblog = {
+                                    model.reduce(UserDetailMviModel.Intent.ToggleReblog(entry.id))
+                                },
+                                onBookmark = {
+                                    model.reduce(UserDetailMviModel.Intent.ToggleBookmark(entry.id))
+                                },
+                                onFavorite = {
+                                    model.reduce(UserDetailMviModel.Intent.ToggleFavorite(entry.id))
+                                },
                             )
                             HorizontalDivider(
                                 modifier = Modifier.padding(vertical = Spacing.s),
