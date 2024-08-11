@@ -14,6 +14,10 @@ interface HashtagMviModel :
 
         data object LoadNextPage : Intent
 
+        data class ToggleTagFollow(
+            val newValue: Boolean,
+        ) : Intent
+
         data class ToggleReblog(
             val entryId: String,
         ) : Intent
@@ -28,6 +32,7 @@ interface HashtagMviModel :
     }
 
     data class State(
+        val following: Boolean? = null,
         val refreshing: Boolean = false,
         val loading: Boolean = false,
         val initial: Boolean = true,

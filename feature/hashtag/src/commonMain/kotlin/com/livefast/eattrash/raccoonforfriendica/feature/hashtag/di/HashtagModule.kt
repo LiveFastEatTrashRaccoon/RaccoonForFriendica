@@ -11,6 +11,7 @@ val featureHashtagModule =
                 tag = params[0],
                 paginationManager = get(),
                 timelineEntryRepository = get(),
+                tagRepository = get(),
             )
         }
     }

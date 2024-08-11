@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import kotlinx.coroutines.launch
 
@@ -12,6 +13,7 @@ class HashtagViewModel(
     private val tag: String,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val tagRepository: TagRepository,
 ) : DefaultMviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>(
         initialState = HashtagMviModel.State(),
     ),
@@ -19,6 +21,12 @@ class HashtagViewModel(
     init {
         screenModelScope.launch {
             if (uiState.value.initial) {
+                val model = tagRepository.getBy(tag)
+                updateState {
+                    it.copy(
+                        following = model?.following == true,
+                    )
+                }
                 refresh(initial = true)
             }
         }
@@ -39,6 +47,7 @@ class HashtagViewModel(
             is HashtagMviModel.Intent.ToggleReblog -> toggleReblog(intent.entryId)
             is HashtagMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entryId)
             is HashtagMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entryId)
+            is HashtagMviModel.Intent.ToggleTagFollow -> toggleTagFollow(intent.newValue)
         }
     }
 
@@ -143,6 +152,20 @@ class HashtagViewModel(
                         bookmarked = newEntry.bookmarked,
                     )
                 }
+            }
+        }
+    }
+
+    private fun toggleTagFollow(newFollowing: Boolean) {
+        screenModelScope.launch {
+            val newModel =
+                if (newFollowing) {
+                    tagRepository.follow(tag)
+                } else {
+                    tagRepository.unfollow(tag)
+                }
+            updateState {
+                it.copy(following = newModel?.following == true)
             }
         }
     }

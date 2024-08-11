@@ -40,6 +40,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TwoStateFollowButton
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
@@ -87,6 +88,17 @@ class HashtagScreen(
                             text = "#$tag",
                             style = MaterialTheme.typography.titleMedium,
                         )
+                    },
+                    actions = {
+                        uiState.following?.also { following ->
+                            TwoStateFollowButton(
+                                modifier = Modifier.padding(horizontal = Spacing.xs),
+                                following = following,
+                                onClick = { newValue ->
+                                    model.reduce(HashtagMviModel.Intent.ToggleTagFollow(newValue))
+                                },
+                            )
+                        }
                     },
                     navigationIcon = {
                         if (navigationCoordinator.canPop.value) {
