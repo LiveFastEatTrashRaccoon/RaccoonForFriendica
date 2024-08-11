@@ -89,16 +89,15 @@ class TimelineScreen : Screen {
         Scaffold(
             topBar = {
                 TopAppBar(
+                    modifier =
+                        Modifier.clickable {
+                            if (uiState.availableTimelineTypes.isNotEmpty()) {
+                                timelineTypeSelectorOpen = true
+                            }
+                        },
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier =
-                                Modifier
-                                    .clickable {
-                                        if (uiState.availableTimelineTypes.isNotEmpty()) {
-                                            timelineTypeSelectorOpen = true
-                                        }
-                                    }.fillMaxWidth(),
                             text = uiState.timelineType.toReadableName(),
                             style = MaterialTheme.typography.titleMedium,
                         )
