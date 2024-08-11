@@ -19,6 +19,7 @@ val featureProfileModule =
                 identityAccountRepository = get(),
                 userRepository = get(),
                 paginationManager = get(),
+                timelineEntryRepository = get(),
             )
         }
     }

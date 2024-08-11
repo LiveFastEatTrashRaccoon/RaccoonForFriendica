@@ -64,7 +64,15 @@ class MyAccountScreen : Screen {
                     when (event) {
                         MyAccountMviModel.Effect.BackToTop ->
                             runCatching {
-                                lazyListState.scrollToItem(0)
+                                if (lazyListState.firstVisibleItemIndex > 0) {
+                                    if (uiState.entries.isEmpty()) {
+                                        lazyListState.scrollToItem(1)
+                                    } else {
+                                        lazyListState.scrollToItem(2)
+                                    }
+                                } else {
+                                    lazyListState.scrollToItem(0)
+                                }
                             }
                     }
                 }.launchIn(this)
@@ -176,6 +184,15 @@ class MyAccountScreen : Screen {
                         },
                         onOpenUser = {
                             detailOpener.openUserDetail(it.id)
+                        },
+                        onReblog = {
+                            model.reduce(MyAccountMviModel.Intent.ToggleReblog(entry.id))
+                        },
+                        onBookmark = {
+                            model.reduce(MyAccountMviModel.Intent.ToggleBookmark(entry.id))
+                        },
+                        onFavorite = {
+                            model.reduce(MyAccountMviModel.Intent.ToggleFavorite(entry.id))
                         },
                     )
                     HorizontalDivider(
