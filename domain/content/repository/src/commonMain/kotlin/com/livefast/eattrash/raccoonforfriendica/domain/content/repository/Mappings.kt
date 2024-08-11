@@ -132,6 +132,7 @@ internal fun Tag.toModel() =
     TagModel(
         url = url,
         name = name,
+        following = following,
         history = history?.map { it.toModel() }.orEmpty(),
     )
 

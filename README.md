@@ -31,7 +31,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] view followers and following of a given user
 - [x] follow/unfollow an account
 - [x] post actions (re-share, favorite, bookmark)
-- [ ] follow/unfollow hashtags
+- [x] follow/unfollow hashtags
 - [ ] view list of pending follow request and accept/reject them
 - [ ] view list of followed hashtags
 - [ ] view list of favorites

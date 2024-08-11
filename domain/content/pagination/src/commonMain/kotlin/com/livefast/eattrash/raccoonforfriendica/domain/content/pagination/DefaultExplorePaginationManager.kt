@@ -2,11 +2,11 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 
 internal class DefaultExplorePaginationManager(
-    private val trendsRepository: TrendsRepository,
+    private val trendingRepository: TrendingRepository,
     private val userRepository: UserRepository,
 ) : ExplorePaginationManager {
     private var specification: ExplorePaginationSpecification? = null
@@ -26,17 +26,17 @@ internal class DefaultExplorePaginationManager(
         val results =
             when (specification) {
                 ExplorePaginationSpecification.Hashtags ->
-                    trendsRepository.getHashtags(offset).map {
+                    trendingRepository.getHashtags(offset).map {
                         ExploreItemModel.HashTag(it)
                     }
 
                 ExplorePaginationSpecification.Links ->
-                    trendsRepository.getLinks(offset).map {
+                    trendingRepository.getLinks(offset).map {
                         ExploreItemModel.Link(it)
                     }
 
                 ExplorePaginationSpecification.Posts ->
-                    trendsRepository.getEntries(offset).map {
+                    trendingRepository.getEntries(offset).map {
                         ExploreItemModel.Entry(it)
                     }
 

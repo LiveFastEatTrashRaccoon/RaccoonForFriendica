@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.StatusService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.TagsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
@@ -30,11 +31,12 @@ internal class DefaultServiceProvider(
 
     private var currentNode: String = ""
 
-    override lateinit var timeline: TimelineService
-    override lateinit var users: UserService
-    override lateinit var statuses: StatusService
     override lateinit var notifications: NotificationService
+    override lateinit var statuses: StatusService
+    override lateinit var tags: TagsService
+    override lateinit var timeline: TimelineService
     override lateinit var trends: TrendsService
+    override lateinit var users: UserService
 
     private val baseUrl: String get() = "https://$currentNode/api/"
 
@@ -99,10 +101,11 @@ internal class DefaultServiceProvider(
                 .baseUrl(baseUrl)
                 .httpClient(client)
                 .build()
-        timeline = ktorfit.create()
-        users = ktorfit.create()
-        statuses = ktorfit.create()
         notifications = ktorfit.create()
+        statuses = ktorfit.create()
+        tags = ktorfit.create()
+        timeline = ktorfit.create()
         trends = ktorfit.create()
+        users = ktorfit.create()
     }
 }
