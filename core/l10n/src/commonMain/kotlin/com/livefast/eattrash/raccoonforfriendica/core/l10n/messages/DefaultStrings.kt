@@ -100,5 +100,4 @@ internal open class DefaultStrings : Strings {
     override val bookmarksTitle = "Bookmarks"
     override val favoritesTitle = "Favorites"
     override val followedHashtagsTitle = "Followed hashtags"
-    override val followRequestsTitle = "Follow requests"
 }
