@@ -80,6 +80,9 @@ class DrawerContent : Screen {
                 DrawerShortcut(
                     title = LocalStrings.current.followedHashtagsTitle,
                     icon = Icons.Default.Tag,
+                    onSelected = {
+                        handleOpen { detailOpener.openFollowedHashtags() }
+                    },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.followRequestsTitle,
