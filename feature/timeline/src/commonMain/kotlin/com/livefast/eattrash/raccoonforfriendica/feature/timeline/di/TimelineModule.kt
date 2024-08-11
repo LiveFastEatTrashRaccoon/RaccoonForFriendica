@@ -10,6 +10,7 @@ val featureTimelineModule =
             TimelineViewModel(
                 paginationManager = get(),
                 apiConfigurationRepository = get(),
+                timelineEntryRepository = get(),
             )
         }
     }
