@@ -22,11 +22,6 @@ class TimelineViewModel(
     TimelineMviModel {
     init {
         screenModelScope.launch {
-            apiConfigurationRepository.node
-                .onEach { node ->
-                    updateState { it.copy(nodeName = node) }
-                }.launchIn(this)
-
             apiConfigurationRepository.isLogged
                 .onEach { isLogged ->
                     if (isLogged) {
