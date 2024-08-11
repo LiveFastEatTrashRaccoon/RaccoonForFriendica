@@ -2,12 +2,12 @@ package com.livefast.eattrash.raccoonforfriendica.feature.entrydetail
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import kotlinx.coroutines.launch
 
 class EntryDetailViewModel(
     private val id: String,
-    private val timelineRepository: TimelineRepository,
+    private val timelineEntryRepository: TimelineEntryRepository,
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
         initialState = EntryDetailMviModel.State(),
     ),
@@ -33,8 +33,8 @@ class EntryDetailViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        val entry = timelineRepository.getById(id)
-        val context = timelineRepository.getContext(id)
+        val entry = timelineEntryRepository.getById(id)
+        val context = timelineEntryRepository.getContext(id)
         val entries =
             buildList {
                 addAll(context?.ancestors.orEmpty())

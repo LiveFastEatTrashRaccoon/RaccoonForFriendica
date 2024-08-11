@@ -15,6 +15,7 @@ val domainContentPaginationModule =
         factory<TimelinePaginationManager> {
             DefaultTimelinePaginationManager(
                 timelineRepository = get(),
+                timelineEntryRepository = get(),
             )
         }
         factory<NotificationsPaginationManager> {

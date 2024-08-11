@@ -2,10 +2,12 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
 
 internal class DefaultTimelinePaginationManager(
     private val timelineRepository: TimelineRepository,
+    private val timelineEntryRepository: TimelineEntryRepository,
 ) : TimelinePaginationManager {
     private var specification: TimelinePaginationSpecification? = null
     private var pageCursor: String? = null
@@ -47,7 +49,7 @@ internal class DefaultTimelinePaginationManager(
                 }
 
                 is TimelinePaginationSpecification.User ->
-                    timelineRepository.getByUser(
+                    timelineEntryRepository.getByUser(
                         userId = specification.userId,
                         pageCursor = pageCursor,
                         excludeReplies = specification.excludeReplies,
