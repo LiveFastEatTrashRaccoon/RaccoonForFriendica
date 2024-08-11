@@ -64,16 +64,22 @@ class DrawerContent : Screen {
                 )
             } else {
                 DrawerShortcut(
-                    title = LocalStrings.current.followedHashtagsTitle,
-                    icon = Icons.Default.Tag,
-                )
-                DrawerShortcut(
                     title = LocalStrings.current.favoritesTitle,
                     icon = Icons.Default.Favorite,
+                    onSelected = {
+                        handleOpen { detailOpener.openFavorites() }
+                    },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.bookmarksTitle,
                     icon = Icons.Default.Bookmarks,
+                    onSelected = {
+                        handleOpen { detailOpener.openBookmarks() }
+                    },
+                )
+                DrawerShortcut(
+                    title = LocalStrings.current.followedHashtagsTitle,
+                    icon = Icons.Default.Tag,
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.followRequestsTitle,

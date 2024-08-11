@@ -91,4 +91,18 @@ interface UserService {
     suspend fun rejectFollowRequest(
         @Path("id") id: String,
     ): Relationship
+
+    @GET("v1/favourites")
+    suspend fun getFavorites(
+        @Query("max_id") maxId: String? = null,
+        @Query("min_id") minId: String? = null,
+        @Query("limit") limit: Int = 20,
+    ): List<Status>
+
+    @GET("v1/bookmarks")
+    suspend fun getBookmarks(
+        @Query("max_id") maxId: String? = null,
+        @Query("min_id") minId: String? = null,
+        @Query("limit") limit: Int = 20,
+    ): List<Status>
 }

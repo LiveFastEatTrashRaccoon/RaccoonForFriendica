@@ -108,4 +108,26 @@ internal class DefaultTimelineEntryRepository(
                 provider.statuses.unbookmark(id).toModel()
             }.getOrNull()
         }
+
+    override suspend fun getFavorites(pageCursor: String?): List<TimelineEntryModel> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.users
+                    .getFavorites(
+                        maxId = pageCursor,
+                        limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
+                    ).map { it.toModelWithReply() }
+            }
+        }.getOrElse { emptyList() }
+
+    override suspend fun getBookmarks(pageCursor: String?): List<TimelineEntryModel> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.users
+                    .getBookmarks(
+                        maxId = pageCursor,
+                        limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
+                    ).map { it.toModelWithReply() }
+            }
+        }.getOrElse { emptyList() }
 }

@@ -20,7 +20,7 @@ are related and share a common heritage.
 The app is under ongoing development, here is a list of the features that are being implemented:
 
 - [x] timeline view (Public/Local/Subscriptions) with ability to switch feed type
-- [x] post detail, i.e. opening a conversation or a reply in its context
+- [x] post detail, i.e. opening a conversation or reply in its context
 - [x] user detail with ability to see posts/post and replies/pinned/media posts
 - [x] login/logout to one's own instance
 - [x] view notification list
@@ -29,24 +29,24 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] see following recommendations
 - [x] view all the posts containing a given hashtag
 - [x] view followers and following of a given user
-- [x] follow/unfollow an account
+- [x] follow/unfollow other users
 - [x] post actions (re-share, favorite, bookmark)
 - [x] follow/unfollow hashtags
-- [ ] view list of pending follow request and accept/reject them
+- [x] view list of favorites
+- [x] view list of bookmarks
 - [ ] view list of followed hashtags
-- [ ] view list of favorites
-- [ ] view list of bookmarks
+- [ ] view list of pending follow request and accept/reject them
 - [ ] enable/disable notifications for an account
 - [ ] edit one's own profile
 - [ ] create a post/reply
 - [ ] block/unblock user and see list of blocked users
 - [ ] mute/unmute user and see list of muted users
-- [ ] open a user (group) detail in "forum mode"
-- [ ] manage one's own circles
+- [ ] open a user (group) detail in "forum mode" (Friendica-specific)
+- [ ] manage one's own circles (Friendica-specific)
+- [ ] manage one's own lists
 - [ ] see private conversations
 - [ ] advanced media visualization (videos, GIFs, etc.)
 - [ ] custom emojis
-- [ ] manage one's own lists (Mastodon)
 
 <div align="center">
   <img width="310" src="https://github.com/user-attachments/assets/6b01d961-4fe6-4a44-8c3f-2fb5185656fa" alt="timeline screen" />

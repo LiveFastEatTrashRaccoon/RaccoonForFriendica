@@ -3,8 +3,10 @@ package com.livefast.eattrash.raccoonforfriendica.navigation
 import com.livefast.eattrash.feature.userdetail.UserDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.HashtagScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.LoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
@@ -45,6 +47,16 @@ class DefaultDetailOpener(
 
     override fun openFollowing(userId: String) {
         val screen = UserListScreen(userId, UserListType.Following)
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openFavorites() {
+        val screen = FavoritesScreen(type = FavoritesType.Favorites)
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openBookmarks() {
+        val screen = FavoritesScreen(type = FavoritesType.Bookmarks)
         navigationCoordinator.push(screen)
     }
 }

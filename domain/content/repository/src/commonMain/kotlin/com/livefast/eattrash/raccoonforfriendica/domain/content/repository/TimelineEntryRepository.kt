@@ -32,4 +32,8 @@ interface TimelineEntryRepository {
     suspend fun bookmark(id: String): TimelineEntryModel?
 
     suspend fun unbookmark(id: String): TimelineEntryModel?
+
+    suspend fun getFavorites(pageCursor: String? = null): List<TimelineEntryModel>
+
+    suspend fun getBookmarks(pageCursor: String? = null): List<TimelineEntryModel>
 }

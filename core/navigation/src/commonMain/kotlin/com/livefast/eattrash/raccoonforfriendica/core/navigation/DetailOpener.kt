@@ -17,4 +17,8 @@ interface DetailOpener {
     fun openFollowers(userId: String)
 
     fun openFollowing(userId: String)
+
+    fun openFavorites()
+
+    fun openBookmarks()
 }
