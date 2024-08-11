@@ -10,6 +10,7 @@ internal class DefaultNavigationCoordinator : NavigationCoordinator {
     override val currentSection =
         MutableStateFlow<BottomNavigationSection?>(null)
     override val canPop = MutableStateFlow(false)
+    override val exitMessageVisible = MutableStateFlow(false)
 
     private var rootNavigator: Navigator? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
@@ -21,6 +22,10 @@ internal class DefaultNavigationCoordinator : NavigationCoordinator {
     override fun setRootNavigator(navigator: Navigator) {
         rootNavigator = navigator
         canPop.update { navigator.canPop }
+    }
+
+    override fun setExitMessageVisible(value: Boolean) {
+        exitMessageVisible.update { value }
     }
 
     override fun setBottomBarScrollConnection(connection: NestedScrollConnection?) {
@@ -41,5 +46,9 @@ internal class DefaultNavigationCoordinator : NavigationCoordinator {
         canPop.update {
             rootNavigator?.canPop == true
         }
+    }
+
+    override fun popUntilRoot() {
+        rootNavigator?.popUntilRoot()
     }
 }
