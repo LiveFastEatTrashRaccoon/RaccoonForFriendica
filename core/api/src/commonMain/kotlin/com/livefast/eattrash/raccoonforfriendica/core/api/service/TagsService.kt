@@ -1,14 +1,18 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
+import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
+import de.jensklingenberg.ktorfit.http.Query
 
 interface TagsService {
     @GET("v1/followed_tags")
-    suspend fun getFollowedTags(): List<Tag>
+    suspend fun getFollowedTags(
+        @Query("max_id") maxId: String? = null,
+    ): Response<List<Tag>>
 
     @POST("v1/tags/{id}/follow")
     @Headers("Content-Type: application/json")

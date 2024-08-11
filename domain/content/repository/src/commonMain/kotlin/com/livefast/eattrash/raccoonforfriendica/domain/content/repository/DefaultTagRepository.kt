@@ -9,12 +9,24 @@ import kotlinx.coroutines.withContext
 internal class DefaultTagRepository(
     private val provider: ServiceProvider,
 ) : TagRepository {
-    override suspend fun getFollowed(): List<TagModel> =
+    override suspend fun getFollowed(pageCursor: String?): Pair<List<TagModel>, String?> =
         runCatching {
             withContext(Dispatchers.IO) {
-                provider.tags.getFollowedTags().map { it.toModel() }
+                val response =
+                    provider.tags.getFollowedTags(
+                        maxId = pageCursor,
+                    )
+                val list: List<TagModel> = response.body()?.map { it.toModel() }.orEmpty()
+                val nextCursor: String? =
+                    response.headers["link"]
+                        .orEmpty()
+                        .let {
+                            val match = Regex("max_id=(?<maxId>\\d+)>").find(it)
+                            match?.groups?.get("maxId")?.value
+                        }
+                list to nextCursor
             }
-        }.getOrElse { emptyList() }
+        }.getOrElse { emptyList<TagModel>() to null }
 
     override suspend fun getBy(name: String): TagModel? =
         runCatching {
