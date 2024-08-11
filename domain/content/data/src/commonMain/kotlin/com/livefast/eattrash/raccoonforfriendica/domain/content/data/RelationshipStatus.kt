@@ -35,7 +35,7 @@ fun RelationshipStatus.toReadableName(): String =
         RelationshipStatus.MutualFollow -> LocalStrings.current.relationshipStatusMutual
         RelationshipStatus.RequestedToOther -> LocalStrings.current.relationshipStatusRequestedToOther
         RelationshipStatus.RequestedToYou -> LocalStrings.current.relationshipStatusRequestedToYou
-        RelationshipStatus.Undetermined -> LocalStrings.current.relationshipStatusGeneric
+        RelationshipStatus.Undetermined -> LocalStrings.current.actionFollow
     }
 
 @Composable

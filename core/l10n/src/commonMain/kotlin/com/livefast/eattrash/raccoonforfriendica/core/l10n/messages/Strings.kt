@@ -77,7 +77,7 @@ interface Strings {
     val fieldUsername: String
     val fieldPassword: String
     val actionLogout: String
-    val relationshipStatusGeneric: String
+    val actionFollow: String
     val relationshipStatusFollowing: String
     val relationshipStatusFollowsYou: String
     val relationshipStatusMutual: String

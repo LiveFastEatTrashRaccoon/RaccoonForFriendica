@@ -76,7 +76,6 @@ internal val ItStrings =
         override val relationshipStatusMutual = "Reciproci"
         override val relationshipStatusRequestedToOther = "Richiesta inviata"
         override val relationshipStatusRequestedToYou = "Richiesta in attesa"
-        override val relationshipStatusGeneric = "Segui"
         override val notificationTypeEntry = "ha pubblicato un post"
         override val notificationTypeFavorite = "ha aggiunto ai preferiti un tuo post"
         override val notificationTypeFollow = "ha iniziato a seguirti"
@@ -92,6 +91,7 @@ internal val ItStrings =
         override val feedTypeTitle = "Tipo di feed"
         override val followerTitle = "Seguaci"
         override val followingTitle = "Seguiti"
+        override val actionFollow = "Segui"
         override val actionUnfollow = "Non seguire più"
         override val actionDeleteFollowRequest = "Annulla richiesta di seguire"
     }

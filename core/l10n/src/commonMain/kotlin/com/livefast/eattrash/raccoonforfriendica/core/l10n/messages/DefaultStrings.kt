@@ -75,7 +75,6 @@ internal open class DefaultStrings : Strings {
     override val relationshipStatusMutual = "Mutuals"
     override val relationshipStatusRequestedToOther = "Request sent"
     override val relationshipStatusRequestedToYou = "Request pending"
-    override val relationshipStatusGeneric = "Follow"
     override val notificationTypeEntry = "published a post"
     override val notificationTypeFavorite = "added one of your posts to favorites"
     override val notificationTypeFollow = "started following you"
@@ -91,6 +90,7 @@ internal open class DefaultStrings : Strings {
     override val feedTypeTitle = "Feed type"
     override val followerTitle = "Followers"
     override val followingTitle = "Following"
+    override val actionFollow = "Follow"
     override val actionUnfollow = "Unfollow"
     override val actionDeleteFollowRequest = "Cancel follow request"
 }
