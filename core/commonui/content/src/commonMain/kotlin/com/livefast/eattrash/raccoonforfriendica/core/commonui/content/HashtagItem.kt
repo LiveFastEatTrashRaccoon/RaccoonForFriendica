@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
@@ -38,6 +39,7 @@ fun HashtagItem(
                     onOpen?.invoke(hashtag.name)
                 }.padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(
             modifier = Modifier.weight(1f),
