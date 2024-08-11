@@ -7,5 +7,6 @@ import kotlinx.serialization.Serializable
 data class Tag(
     @SerialName("name") val name: String,
     @SerialName("url") val url: String? = null,
+    @SerialName("following") val following: Boolean? = null,
     @SerialName("history") val history: List<HistoryItem>? = null,
 )

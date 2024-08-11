@@ -1,14 +1,16 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNotificationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTrendsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -35,8 +37,13 @@ val domainContentRepositoryModule =
                 provider = get(named("default")),
             )
         }
-        single<TrendsRepository> {
-            DefaultTrendsRepository(
+        single<TrendingRepository> {
+            DefaultTrendingRepository(
+                provider = get(named("default")),
+            )
+        }
+        single<TagRepository> {
+            DefaultTagRepository(
                 provider = get(named("default")),
             )
         }

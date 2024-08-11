@@ -26,7 +26,7 @@ val domainContentPaginationModule =
         }
         factory<ExplorePaginationManager> {
             DefaultExplorePaginationManager(
-                trendsRepository = get(),
+                trendingRepository = get(),
                 userRepository = get(),
             )
         }

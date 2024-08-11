@@ -5,9 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
-internal class DefaultTrendsRepository(
+internal class DefaultTrendingRepository(
     private val provider: ServiceProvider,
-) : TrendsRepository {
+) : TrendingRepository {
     override suspend fun getEntries(offset: Int): List<TimelineEntryModel> =
         runCatching {
             val response =
