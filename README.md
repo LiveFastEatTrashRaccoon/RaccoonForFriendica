@@ -30,7 +30,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] view all the posts containing a given hashtag
 - [x] view followers and following of a given user
 - [x] follow/unfollow an account
-- [ ] post actions (re-share, favorite, bookmark)
+- [x] post actions (re-share, favorite, bookmark)
 - [ ] follow/unfollow hashtags
 - [ ] view list of pending follow request and accept/reject them
 - [ ] view list of followed hashtags
@@ -39,10 +39,14 @@ The app is under ongoing development, here is a list of the features that are be
 - [ ] enable/disable notifications for an account
 - [ ] edit one's own profile
 - [ ] create a post/reply
+- [ ] block/unblock user and see list of blocked users
+- [ ] mute/unmute user and see list of muted users
 - [ ] open a user (group) detail in "forum mode"
 - [ ] manage one's own circles
+- [ ] see private conversations
 - [ ] advanced media visualization (videos, GIFs, etc.)
 - [ ] custom emojis
+- [ ] manage one's own lists (Mastodon)
 
 <div align="center">
   <img width="310" src="https://github.com/user-attachments/assets/6b01d961-4fe6-4a44-8c3f-2fb5185656fa" alt="timeline screen" />
