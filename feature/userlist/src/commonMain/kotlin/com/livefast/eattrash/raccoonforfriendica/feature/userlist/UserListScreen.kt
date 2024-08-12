@@ -49,13 +49,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListTyp
 import org.koin.core.parameter.parametersOf
 
 class UserListScreen(
-    private val userId: String,
     private val type: UserListType,
 ) : Screen {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        val model = getScreenModel<UserListMviModel>(parameters = { parametersOf(userId, type) })
+        val model = getScreenModel<UserListMviModel>(parameters = { parametersOf(type) })
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -74,12 +73,32 @@ class UserListScreen(
                             text =
                                 buildString {
                                     when (type) {
-                                        UserListType.Follower -> append(LocalStrings.current.followerTitle)
-                                        UserListType.Following -> append(LocalStrings.current.followingTitle)
+                                        is UserListType.Follower -> {
+                                            append(LocalStrings.current.followerTitle)
+                                            append(" (")
+                                            append(uiState.user?.handle.orEmpty())
+                                            append(")")
+                                        }
+
+                                        is UserListType.Following -> {
+                                            append(LocalStrings.current.followingTitle)
+                                            append(" (")
+                                            append(uiState.user?.handle.orEmpty())
+                                            append(")")
+                                        }
+
+                                        is UserListType.UsersFavorite -> {
+                                            append(type.count)
+                                            append(" ")
+                                            append(LocalStrings.current.extendedSocialInfoFavorites)
+                                        }
+
+                                        is UserListType.UsersReblog -> {
+                                            append(type.count)
+                                            append(" ")
+                                            append(LocalStrings.current.extendedSocialInfoReblogs)
+                                        }
                                     }
-                                    append(" (")
-                                    append(uiState.user?.handle.orEmpty())
-                                    append(")")
                                 },
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,

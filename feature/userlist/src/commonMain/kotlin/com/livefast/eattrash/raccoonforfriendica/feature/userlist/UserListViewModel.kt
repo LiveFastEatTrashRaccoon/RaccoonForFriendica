@@ -12,7 +12,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import kotlinx.coroutines.launch
 
 internal class UserListViewModel(
-    private val userId: String,
     private val type: UserListType,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
@@ -30,9 +29,17 @@ internal class UserListViewModel(
     }
 
     private suspend fun loadUser() {
-        val user = userRepository.getById(id = userId)
-        updateState {
-            it.copy(user = user)
+        val userId =
+            when (type) {
+                is UserListType.Follower -> type.userId
+                is UserListType.Following -> type.userId
+                else -> null
+            }
+        if (userId != null) {
+            val user = userRepository.getById(id = userId)
+            updateState {
+                it.copy(user = user)
+            }
         }
     }
 
@@ -59,8 +66,10 @@ internal class UserListViewModel(
         }
         paginationManager.reset(
             when (type) {
-                UserListType.Follower -> UserPaginationSpecification.Follower(userId)
-                UserListType.Following -> UserPaginationSpecification.Following(userId)
+                is UserListType.Follower -> UserPaginationSpecification.Follower(type.userId)
+                is UserListType.Following -> UserPaginationSpecification.Following(type.userId)
+                is UserListType.UsersFavorite -> UserPaginationSpecification.EntryUsersFavorite(type.entryId)
+                is UserListType.UsersReblog -> UserPaginationSpecification.EntryUsersReblog(type.entryId)
             },
         )
         loadNextPage()

@@ -8,8 +8,7 @@ val featureUserListModule =
     module {
         factory<UserListMviModel> { params ->
             UserListViewModel(
-                userId = params[0],
-                type = params[1],
+                type = params[0],
                 paginationManager = get(),
                 userRepository = get(),
             )
