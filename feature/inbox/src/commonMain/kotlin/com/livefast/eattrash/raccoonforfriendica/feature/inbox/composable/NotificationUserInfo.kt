@@ -116,7 +116,7 @@ fun NotificationUserInfo(
 
                 if (relationshipStatus != null) {
                     UserRelationshipButton(
-                        relationshipStatus = relationshipStatus,
+                        status = relationshipStatus,
                         pending = account.relationshipStatusPending,
                         onClick = onRelationshipClicked,
                     )

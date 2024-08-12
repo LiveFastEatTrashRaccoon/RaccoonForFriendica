@@ -80,7 +80,7 @@ fun UserItem(
 
         if (relationshipStatus != null) {
             UserRelationshipButton(
-                relationshipStatus = relationshipStatus,
+                status = relationshipStatus,
                 pending = user.relationshipStatusPending,
                 onClick = onRelationshipClicked,
             )

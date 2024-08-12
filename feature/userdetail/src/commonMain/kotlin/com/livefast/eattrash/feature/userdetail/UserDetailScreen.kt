@@ -61,6 +61,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.flow.launchIn
@@ -91,6 +92,7 @@ class UserDetailScreen(
         val lazyListState = rememberLazyListState()
         var confirmUnfollowDialogOpen by remember { mutableStateOf(false) }
         var confirmDeleteFollowRequestDialogOpen by remember { mutableStateOf(false) }
+        var confirmMuteNotificationsDialogOpen by remember { mutableStateOf(false) }
 
         LaunchedEffect(model) {
             model.effects
@@ -186,6 +188,17 @@ class UserDetailScreen(
 
                                             RelationshipStatusNextAction.Unfollow -> {
                                                 model.reduce(UserDetailMviModel.Intent.Unfollow)
+                                            }
+                                        }
+                                    },
+                                    onNotificationsClicked = { nextAction ->
+                                        when (nextAction) {
+                                            NotificationStatusNextAction.Disable -> {
+                                                confirmMuteNotificationsDialogOpen = true
+                                            }
+
+                                            NotificationStatusNextAction.Enable -> {
+                                                model.reduce(UserDetailMviModel.Intent.EnableNotifications)
                                             }
                                         }
                                     },
@@ -393,6 +406,42 @@ class UserDetailScreen(
                         onClick = {
                             confirmDeleteFollowRequestDialogOpen = false
                             model.reduce(UserDetailMviModel.Intent.Unfollow)
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmMuteNotificationsDialogOpen) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmMuteNotificationsDialogOpen = false
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionMuteNotifications,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmMuteNotificationsDialogOpen = false
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            confirmMuteNotificationsDialogOpen = false
+                            model.reduce(UserDetailMviModel.Intent.DisableNotifications)
                         },
                     ) {
                         Text(text = LocalStrings.current.buttonConfirm)

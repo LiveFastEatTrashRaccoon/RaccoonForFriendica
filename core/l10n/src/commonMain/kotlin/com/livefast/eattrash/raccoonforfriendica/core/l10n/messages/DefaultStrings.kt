@@ -103,4 +103,5 @@ internal open class DefaultStrings : Strings {
     override val infoEdited = "edited"
     override val extendedSocialInfoFavorites = "favorites"
     override val extendedSocialInfoReblogs = "re-shares"
+    override val actionMuteNotifications = "Mute notifications"
 }

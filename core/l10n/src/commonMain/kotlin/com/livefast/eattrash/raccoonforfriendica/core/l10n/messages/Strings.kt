@@ -109,6 +109,7 @@ interface Strings {
     val infoEdited: String
     val extendedSocialInfoFavorites: String
     val extendedSocialInfoReblogs: String
+    val actionMuteNotifications: String
 }
 
 object Locales {
