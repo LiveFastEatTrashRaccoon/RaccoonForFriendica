@@ -24,7 +24,7 @@ interface UserRepository {
 
     suspend fun follow(
         id: String,
-        reblogs: Boolean = false,
+        reblogs: Boolean = true,
         notifications: Boolean = false,
     ): RelationshipModel?
 
