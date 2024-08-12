@@ -37,7 +37,12 @@ internal fun ReblogInfo(
     val fullColor = MaterialTheme.colorScheme.onBackground
 
     Row(
-        modifier = modifier,
+        modifier =
+            modifier.clickable {
+                if (user != null) {
+                    onOpenUser?.invoke(user)
+                }
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
@@ -56,11 +61,7 @@ internal fun ReblogInfo(
             CustomImage(
                 modifier =
                     Modifier
-                        .clickable {
-                            if (user != null) {
-                                onOpenUser?.invoke(user)
-                            }
-                        }.padding(Spacing.xxxs)
+                        .padding(Spacing.xxxs)
                         .size(iconSize)
                         .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,

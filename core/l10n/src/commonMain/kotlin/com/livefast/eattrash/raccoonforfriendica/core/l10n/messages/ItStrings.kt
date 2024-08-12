@@ -101,4 +101,5 @@ internal val ItStrings =
         override val bookmarksTitle = "Segnalibri"
         override val favoritesTitle = "Preferiti"
         override val followedHashtagsTitle = "Hashtag che segui"
+        override val infoEdited = "modificato"
     }
