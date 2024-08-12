@@ -111,6 +111,7 @@ fun UserHeader(
 
                 Column(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                    horizontalAlignment = Alignment.End,
                 ) {
                     val followerDesc = LocalStrings.current.accountFollower
                     val followingDesc = LocalStrings.current.accountFollowing
