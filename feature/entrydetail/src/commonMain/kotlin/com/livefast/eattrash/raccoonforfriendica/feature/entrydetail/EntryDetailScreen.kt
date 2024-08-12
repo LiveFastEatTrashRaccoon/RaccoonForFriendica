@@ -134,8 +134,14 @@ class EntryDetailScreen(
                         ) { entry ->
                             TimelineItem(
                                 entry = entry,
+                                extendedSocialInfoEnabled = (entry.id == id),
                                 onOpenUrl = { url ->
                                     openUrl(url)
+                                },
+                                onClick = {
+                                    if (entry.id != id) {
+                                        detailOpener.openEntryDetail(entry.id)
+                                    }
                                 },
                                 onOpenUser = {
                                     detailOpener.openUserDetail(it.id)
@@ -148,6 +154,18 @@ class EntryDetailScreen(
                                 },
                                 onFavorite = {
                                     model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(entry.id))
+                                },
+                                onOpenUsersFavorite = {
+                                    detailOpener.openEntryUsersFavorite(
+                                        entryId = entry.id,
+                                        count = entry.favoriteCount,
+                                    )
+                                },
+                                onOpenUsersReblog = {
+                                    detailOpener.openEntryUsersReblog(
+                                        entryId = entry.id,
+                                        count = entry.reblogCount,
+                                    )
                                 },
                             )
                             HorizontalDivider(
