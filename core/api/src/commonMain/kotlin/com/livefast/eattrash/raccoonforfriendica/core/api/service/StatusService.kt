@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
@@ -8,6 +9,7 @@ import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
+import de.jensklingenberg.ktorfit.http.Query
 
 interface StatusService {
     @GET("v1/statuses/{id}")
@@ -68,4 +70,18 @@ interface StatusService {
     suspend fun unfavorite(
         @Path("id") id: String,
     ): Status
+
+    @GET("v1/statuses/{id}/favourited_by")
+    suspend fun getFavoritedBy(
+        @Path("id") id: String,
+        @Query("max_id") maxId: String? = null,
+        @Query("limit") limit: Int = 20,
+    ): List<Account>
+
+    @GET("v1/statuses/{id}/reblogged_by")
+    suspend fun getRebloggedBy(
+        @Path("id") id: String,
+        @Query("max_id") maxId: String? = null,
+        @Query("limit") limit: Int = 20,
+    ): List<Account>
 }

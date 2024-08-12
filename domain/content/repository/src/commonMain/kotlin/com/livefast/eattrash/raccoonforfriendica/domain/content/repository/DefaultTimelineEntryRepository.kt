@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -128,6 +129,36 @@ internal class DefaultTimelineEntryRepository(
                         maxId = pageCursor,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModelWithReply() }
+            }
+        }.getOrElse { emptyList() }
+
+    override suspend fun getUsersWhoFavorited(
+        id: String,
+        pageCursor: String?,
+    ): List<UserModel> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.statuses
+                    .getFavoritedBy(
+                        id = id,
+                        maxId = pageCursor,
+                        limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrElse { emptyList() }
+
+    override suspend fun getUsersWhoReblogged(
+        id: String,
+        pageCursor: String?,
+    ): List<UserModel> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.statuses
+                    .getRebloggedBy(
+                        id = id,
+                        maxId = pageCursor,
+                        limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
             }
         }.getOrElse { emptyList() }
 }

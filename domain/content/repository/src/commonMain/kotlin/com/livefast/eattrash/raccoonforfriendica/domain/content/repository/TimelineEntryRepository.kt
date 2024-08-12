@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 interface TimelineEntryRepository {
     suspend fun getByUser(
@@ -36,4 +37,14 @@ interface TimelineEntryRepository {
     suspend fun getFavorites(pageCursor: String? = null): List<TimelineEntryModel>
 
     suspend fun getBookmarks(pageCursor: String? = null): List<TimelineEntryModel>
+
+    suspend fun getUsersWhoFavorited(
+        id: String,
+        pageCursor: String? = null,
+    ): List<UserModel>
+
+    suspend fun getUsersWhoReblogged(
+        id: String,
+        pageCursor: String? = null,
+    ): List<UserModel>
 }
