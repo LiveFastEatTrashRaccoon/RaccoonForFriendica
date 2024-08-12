@@ -104,4 +104,5 @@ internal val ItStrings =
         override val infoEdited = "modificato"
         override val extendedSocialInfoFavorites = "preferiti"
         override val extendedSocialInfoReblogs = "ricondivisioni"
+        override val actionMuteNotifications = "Silenzia notifiche"
     }
