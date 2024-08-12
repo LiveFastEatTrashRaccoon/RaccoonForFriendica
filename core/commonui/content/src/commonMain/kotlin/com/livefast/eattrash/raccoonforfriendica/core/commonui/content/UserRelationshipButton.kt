@@ -23,7 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableN
 
 @Composable
 fun UserRelationshipButton(
-    relationshipStatus: RelationshipStatus,
+    status: RelationshipStatus,
     modifier: Modifier = Modifier,
     pending: Boolean = false,
     onClick: ((RelationshipStatusNextAction) -> Unit)? = null,
@@ -40,14 +40,14 @@ fun UserRelationshipButton(
                     color = MaterialTheme.colorScheme.onPrimary,
                 )
             }
-            Text(relationshipStatus.toReadableName())
+            Text(status.toReadableName())
         }
     }
     val buttonPadding =
         PaddingValues(horizontal = Spacing.l, vertical = 0.dp)
-    val nextAction = relationshipStatus.getNextAction()
+    val nextAction = status.getNextAction()
 
-    if (relationshipStatus.isProminent()) {
+    if (status.isProminent()) {
         Button(
             contentPadding = buttonPadding,
             onClick = {

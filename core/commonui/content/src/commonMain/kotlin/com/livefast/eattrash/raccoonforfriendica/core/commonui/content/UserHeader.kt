@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
@@ -30,7 +28,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withAnnotation
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -38,9 +35,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 
 private object AnnotationConstants {
     const val TAG = "action"
@@ -58,7 +55,7 @@ fun UserHeader(
     onOpenFollowing: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
     onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
-    onNotificationsClicked: (() -> Unit)? = null,
+    onNotificationsClicked: ((NotificationStatusNextAction) -> Unit)? = null,
 ) {
     val banner = user?.header.orEmpty()
     val avatar = user?.avatar.orEmpty()
@@ -163,28 +160,15 @@ fun UserHeader(
                         horizontalArrangement = Arrangement.spacedBy(Spacing.m),
                     ) {
                         if (notificationStatus != null) {
-                            Icon(
-                                modifier =
-                                    Modifier
-                                        .size(IconSize.l)
-                                        .clickable {
-                                            onNotificationsClicked?.invoke()
-                                        }.border(
-                                            width = Dp.Hairline,
-                                            color =
-                                                MaterialTheme.colorScheme.onBackground.copy(
-                                                    ancillaryTextAlpha,
-                                                ),
-                                            shape = CircleShape,
-                                        ).padding(5.dp),
-                                imageVector = notificationStatus.toIcon(),
-                                tint = MaterialTheme.colorScheme.onBackground,
-                                contentDescription = null,
+                            UserNotificationButton(
+                                status = notificationStatus,
+                                pending = user.notificationStatusPending,
+                                onClick = onNotificationsClicked,
                             )
                         }
                         if (relationshipStatus != null) {
                             UserRelationshipButton(
-                                relationshipStatus = relationshipStatus,
+                                status = relationshipStatus,
                                 pending = user.relationshipStatusPending,
                                 onClick = onRelationshipClicked,
                             )
