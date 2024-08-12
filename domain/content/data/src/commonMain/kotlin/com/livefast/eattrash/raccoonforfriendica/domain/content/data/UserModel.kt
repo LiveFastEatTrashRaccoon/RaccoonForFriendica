@@ -19,4 +19,5 @@ data class UserModel(
     val relationshipStatus: RelationshipStatus? = null,
     val notificationStatus: NotificationStatus? = null,
     val relationshipStatusPending: Boolean = false,
+    val notificationStatusPending: Boolean = false,
 )
