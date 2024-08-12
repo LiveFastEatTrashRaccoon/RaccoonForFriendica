@@ -19,6 +19,7 @@ fun TimelineItem(
     entry: TimelineEntryModel,
     modifier: Modifier = Modifier,
     actionsEnabled: Boolean = true,
+    extendedSocialInfoEnabled: Boolean = false,
     onOpenUrl: ((String) -> Unit)? = null,
     onClick: (() -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
@@ -26,6 +27,8 @@ fun TimelineItem(
     onReblog: (() -> Unit)? = null,
     onFavorite: (() -> Unit)? = null,
     onBookmark: (() -> Unit)? = null,
+    onOpenUsersFavorite: (() -> Unit)? = null,
+    onOpenUsersReblog: (() -> Unit)? = null,
 ) {
     val isReblog = entry.reblog != null
 
@@ -88,6 +91,16 @@ fun TimelineItem(
                 ContentImage(
                     url = imageUrl,
                     blurred = entryToDisplay.sensitive,
+                )
+            }
+
+            if (extendedSocialInfoEnabled) {
+                ContentExtendedSocialInfo(
+                    reblogCount = entryToDisplay.reblogCount,
+                    favoriteCount = entryToDisplay.favoriteCount,
+                    modifier = Modifier.padding(vertical = Spacing.xs),
+                    onOpenUsersReblog = onOpenUsersReblog,
+                    onOpenUsersFavorite = onOpenUsersFavorite,
                 )
             }
 

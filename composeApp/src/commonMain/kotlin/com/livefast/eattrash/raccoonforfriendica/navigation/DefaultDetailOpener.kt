@@ -42,12 +42,12 @@ class DefaultDetailOpener(
     }
 
     override fun openFollowers(userId: String) {
-        val screen = UserListScreen(userId, UserListType.Follower)
+        val screen = UserListScreen(UserListType.Follower(userId))
         navigationCoordinator.push(screen)
     }
 
     override fun openFollowing(userId: String) {
-        val screen = UserListScreen(userId, UserListType.Following)
+        val screen = UserListScreen(UserListType.Following(userId))
         navigationCoordinator.push(screen)
     }
 
@@ -63,6 +63,22 @@ class DefaultDetailOpener(
 
     override fun openFollowedHashtags() {
         val screen = FollowedHashtagsScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openEntryUsersFavorite(
+        entryId: String,
+        count: Int,
+    ) {
+        val screen = UserListScreen(UserListType.UsersFavorite(entryId, count))
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openEntryUsersReblog(
+        entryId: String,
+        count: Int,
+    ) {
+        val screen = UserListScreen(UserListType.UsersReblog(entryId, count))
         navigationCoordinator.push(screen)
     }
 }

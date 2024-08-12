@@ -102,4 +102,6 @@ internal val ItStrings =
         override val favoritesTitle = "Preferiti"
         override val followedHashtagsTitle = "Hashtag che segui"
         override val infoEdited = "modificato"
+        override val extendedSocialInfoFavorites = "preferiti"
+        override val extendedSocialInfoReblogs = "ricondivisioni"
     }

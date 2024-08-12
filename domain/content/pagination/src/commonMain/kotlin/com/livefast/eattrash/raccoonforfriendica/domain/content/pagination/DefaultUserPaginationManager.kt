@@ -3,10 +3,12 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 
 internal class DefaultUserPaginationManager(
     private val userRepository: UserRepository,
+    private val timelineEntryRepository: TimelineEntryRepository,
 ) : UserPaginationManager {
     private var specification: UserPaginationSpecification? = null
     private var pageCursor: String? = null
@@ -37,6 +39,18 @@ internal class DefaultUserPaginationManager(
                             id = specification.userId,
                             pageCursor = pageCursor,
                         )
+
+                is UserPaginationSpecification.EntryUsersFavorite ->
+                    timelineEntryRepository.getUsersWhoFavorited(
+                        id = specification.entryId,
+                        pageCursor = pageCursor,
+                    )
+
+                is UserPaginationSpecification.EntryUsersReblog ->
+                    timelineEntryRepository.getUsersWhoReblogged(
+                        id = specification.entryId,
+                        pageCursor = pageCursor,
+                    )
             }.determineRelationshipStatus()
                 .deduplicate()
 

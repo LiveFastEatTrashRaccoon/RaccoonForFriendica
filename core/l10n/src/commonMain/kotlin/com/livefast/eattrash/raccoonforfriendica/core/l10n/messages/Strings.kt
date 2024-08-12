@@ -107,6 +107,8 @@ interface Strings {
     val favoritesTitle: String
     val followedHashtagsTitle: String
     val infoEdited: String
+    val extendedSocialInfoFavorites: String
+    val extendedSocialInfoReblogs: String
 }
 
 object Locales {

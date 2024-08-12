@@ -1,7 +1,21 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
 sealed interface UserListType {
-    data object Follower : UserListType
+    data class Follower(
+        val userId: String,
+    ) : UserListType
 
-    data object Following : UserListType
+    data class Following(
+        val userId: String,
+    ) : UserListType
+
+    data class UsersReblog(
+        val entryId: String,
+        val count: Int,
+    ) : UserListType
+
+    data class UsersFavorite(
+        val entryId: String,
+        val count: Int,
+    ) : UserListType
 }

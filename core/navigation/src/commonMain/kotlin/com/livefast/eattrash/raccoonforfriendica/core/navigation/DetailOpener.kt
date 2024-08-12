@@ -23,4 +23,14 @@ interface DetailOpener {
     fun openBookmarks()
 
     fun openFollowedHashtags()
+
+    fun openEntryUsersFavorite(
+        entryId: String,
+        count: Int,
+    )
+
+    fun openEntryUsersReblog(
+        entryId: String,
+        count: Int,
+    )
 }

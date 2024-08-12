@@ -35,10 +35,11 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] view list of favorites
 - [x] view list of bookmarks
 - [x] view list of followed hashtags
-- [ ] view list of pending follow request and accept/reject them
+- [x] view people who added as favorite/re-shared a post
 - [ ] enable/disable notifications for an account
-- [ ] edit one's own profile
 - [ ] create a post/reply
+- [ ] global search
+- [ ] edit one's own profile
 - [ ] block/unblock user and see list of blocked users
 - [ ] mute/unmute user and see list of muted users
 - [ ] open a user (group) detail in "forum mode" (Friendica-specific)

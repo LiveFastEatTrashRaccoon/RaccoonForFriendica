@@ -37,6 +37,7 @@ val domainContentPaginationModule =
         factory<UserPaginationManager> {
             DefaultUserPaginationManager(
                 userRepository = get(),
+                timelineEntryRepository = get(),
             )
         }
         factory<FavoritesPaginationManager> {
