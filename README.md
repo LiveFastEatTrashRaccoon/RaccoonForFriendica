@@ -32,11 +32,11 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] follow/unfollow other users
 - [x] post actions (re-share, favorite, bookmark)
 - [x] follow/unfollow hashtags
-- [x] view list of favorites
-- [x] view list of bookmarks
-- [x] view list of followed hashtags
-- [x] view people who added as favorite/re-shared a post
-- [ ] enable/disable notifications for an account
+- [x] view list of one's own favorites
+- [x] view list of one's own bookmarks
+- [x] view list of one's own followed hashtags
+- [x] view people who added as favorite/re-shared a given post
+- [x] enable/disable notifications for other users
 - [ ] create a post/reply
 - [ ] global search
 - [ ] edit one's own profile
