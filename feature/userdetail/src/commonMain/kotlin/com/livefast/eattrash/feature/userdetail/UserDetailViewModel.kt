@@ -58,6 +58,8 @@ class UserDetailViewModel(
             is UserDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entryId)
             is UserDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entryId)
             is UserDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entryId)
+            UserDetailMviModel.Intent.DisableNotifications -> toggleNotifications(false)
+            UserDetailMviModel.Intent.EnableNotifications -> toggleNotifications(true)
         }
     }
 
@@ -242,6 +244,28 @@ class UserDetailViewModel(
                         bookmarked = newEntry.bookmarked,
                     )
                 }
+            }
+        }
+    }
+
+    private fun toggleNotifications(enabled: Boolean) {
+        screenModelScope.launch {
+            updateState { it.copy(user = it.user?.copy(notificationStatusPending = true)) }
+            val newRelationship =
+                userRepository.follow(
+                    id = id,
+                    notifications = enabled,
+                )
+            val newNotificationStatus =
+                newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
+            updateState {
+                it.copy(
+                    user =
+                        it.user?.copy(
+                            notificationStatus = newNotificationStatus,
+                            notificationStatusPending = false,
+                        ),
+                )
             }
         }
     }

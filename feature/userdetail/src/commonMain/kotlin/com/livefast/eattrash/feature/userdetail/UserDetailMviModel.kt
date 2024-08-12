@@ -37,6 +37,10 @@ interface UserDetailMviModel :
         data class ToggleBookmark(
             val entryId: String,
         ) : Intent
+
+        data object EnableNotifications : Intent
+
+        data object DisableNotifications : Intent
     }
 
     data class State(
