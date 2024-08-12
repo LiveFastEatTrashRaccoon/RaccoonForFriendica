@@ -47,6 +47,7 @@ internal fun Status.toModel() =
         bookmarked = bookmarked,
         created = createdAt,
         creator = account?.toModel(),
+        edited = editedAt,
         favorite = favourited,
         favoriteCount = favoritesCount,
         lang = lang,

@@ -106,6 +106,7 @@ interface Strings {
     val bookmarksTitle: String
     val favoritesTitle: String
     val followedHashtagsTitle: String
+    val infoEdited: String
 }
 
 object Locales {

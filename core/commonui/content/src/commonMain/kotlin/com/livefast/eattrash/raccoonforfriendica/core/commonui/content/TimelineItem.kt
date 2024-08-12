@@ -60,6 +60,8 @@ fun TimelineItem(
             ContentHeader(
                 modifier = Modifier.fillMaxWidth(),
                 user = entryToDisplay.creator,
+                date = entry.edited ?: entry.created,
+                isEdited = entry.edited != null,
                 onOpenUser = onOpenUser,
             )
 

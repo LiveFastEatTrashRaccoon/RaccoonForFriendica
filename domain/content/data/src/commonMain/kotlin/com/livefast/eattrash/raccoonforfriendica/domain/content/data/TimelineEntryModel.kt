@@ -6,6 +6,7 @@ data class TimelineEntryModel(
     val content: String,
     val created: String? = null,
     val creator: UserModel? = null,
+    val edited: String? = null,
     val favorite: Boolean = false,
     val favoriteCount: Int = 0,
     val id: String,
