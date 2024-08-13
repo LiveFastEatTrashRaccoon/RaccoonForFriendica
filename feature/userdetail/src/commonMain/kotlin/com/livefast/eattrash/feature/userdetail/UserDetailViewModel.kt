@@ -10,6 +10,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class UserDetailViewModel(
@@ -17,16 +21,23 @@ class UserDetailViewModel(
     private val userRepository: UserRepository,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val accountRepository: AccountRepository,
 ) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
         initialState = UserDetailMviModel.State(),
     ),
     UserDetailMviModel {
     init {
         screenModelScope.launch {
-            if (uiState.value.initial) {
-                loadUser()
-                refresh(initial = true)
-            }
+            apiConfigurationRepository.isLogged
+                .onEach {
+                    val currentUserHandle = accountRepository.getActive()?.handle.orEmpty()
+                    val currentUser = userRepository.getByHandle(currentUserHandle)
+                    updateState { it.copy(currentUserId = currentUser?.id) }
+
+                    loadUser()
+                    refresh(initial = true)
+                }.launchIn(this)
         }
     }
 
@@ -55,9 +66,9 @@ class UserDetailViewModel(
             UserDetailMviModel.Intent.AcceptFollowRequest -> acceptFollowRequest()
             UserDetailMviModel.Intent.Follow -> follow()
             UserDetailMviModel.Intent.Unfollow -> unfollow()
-            is UserDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entryId)
-            is UserDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entryId)
-            is UserDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entryId)
+            is UserDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is UserDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is UserDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             UserDetailMviModel.Intent.DisableNotifications -> toggleNotifications(false)
             UserDetailMviModel.Intent.EnableNotifications -> toggleNotifications(true)
         }
@@ -65,7 +76,12 @@ class UserDetailViewModel(
 
     private suspend fun loadUser() {
         val account = userRepository.getById(id)
-        val relationship = userRepository.getRelationships(listOf(id)).firstOrNull()
+        val relationship =
+            if (id != uiState.value.currentUserId) {
+                userRepository.getRelationships(listOf(id)).firstOrNull()
+            } else {
+                null
+        }
         updateState {
             it.copy(
                 user =
@@ -179,27 +195,34 @@ class UserDetailViewModel(
             it.copy(
                 entries =
                     it.entries.map { entry ->
-                        if (entry.id == entryId) {
-                            entry.let(block)
-                        } else {
-                            entry
+                        when {
+                            entry.id == entryId -> {
+                                entry.let(block)
+                            }
+
+                            entry.reblog?.id == entryId -> {
+                                entry.copy(reblog = entry.reblog?.let(block))
+                            }
+
+                            else -> {
+                                entry
+                            }
                         }
                     },
             )
         }
     }
 
-    private fun toggleReblog(entryId: String) {
-        val entry = uiState.value.entries.firstOrNull { it.id == entryId } ?: return
+    private fun toggleReblog(entry: TimelineEntryModel) {
         screenModelScope.launch {
             val newEntry =
                 if (entry.reblogged) {
-                    timelineEntryRepository.unreblog(entryId)
+                    timelineEntryRepository.unreblog(entry.id)
                 } else {
-                    timelineEntryRepository.reblog(entryId)
+                    timelineEntryRepository.reblog(entry.id)
                 }
             if (newEntry != null) {
-                updateEntryInState(entryId) {
+                updateEntryInState(entry.id) {
                     it.copy(
                         reblogged = newEntry.reblogged,
                         reblogCount = newEntry.reblogCount,
@@ -209,17 +232,16 @@ class UserDetailViewModel(
         }
     }
 
-    private fun toggleFavorite(entryId: String) {
-        val entry = uiState.value.entries.firstOrNull { it.id == entryId } ?: return
+    private fun toggleFavorite(entry: TimelineEntryModel) {
         screenModelScope.launch {
             val newEntry =
                 if (entry.favorite) {
-                    timelineEntryRepository.unfavorite(entryId)
+                    timelineEntryRepository.unfavorite(entry.id)
                 } else {
-                    timelineEntryRepository.favorite(entryId)
+                    timelineEntryRepository.favorite(entry.id)
                 }
             if (newEntry != null) {
-                updateEntryInState(entryId) {
+                updateEntryInState(entry.id) {
                     it.copy(
                         favorite = newEntry.favorite,
                         favoriteCount = newEntry.favoriteCount,
@@ -229,17 +251,16 @@ class UserDetailViewModel(
         }
     }
 
-    private fun toggleBookmark(entryId: String) {
-        val entry = uiState.value.entries.firstOrNull { it.id == entryId } ?: return
+    private fun toggleBookmark(entry: TimelineEntryModel) {
         screenModelScope.launch {
             val newEntry =
                 if (entry.bookmarked) {
-                    timelineEntryRepository.unbookmark(entryId)
+                    timelineEntryRepository.unbookmark(entry.id)
                 } else {
-                    timelineEntryRepository.bookmark(entryId)
+                    timelineEntryRepository.bookmark(entry.id)
                 }
             if (newEntry != null) {
-                updateEntryInState(entryId) {
+                updateEntryInState(entry.id) {
                     it.copy(
                         bookmarked = newEntry.bookmarked,
                     )
