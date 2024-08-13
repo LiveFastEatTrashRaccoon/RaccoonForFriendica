@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.StatusService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TagsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
@@ -32,6 +33,7 @@ internal class DefaultServiceProvider(
 
     private var currentNode: String = ""
 
+    override lateinit var photo: PhotoService
     override lateinit var notifications: NotificationService
     override lateinit var statuses: StatusService
     override lateinit var tags: TagsService
@@ -103,6 +105,7 @@ internal class DefaultServiceProvider(
                 .httpClient(client)
                 .converterFactories(ResponseConverterFactory())
                 .build()
+        photo = ktorfit.create()
         notifications = ktorfit.create()
         statuses = ktorfit.create()
         tags = ktorfit.create()

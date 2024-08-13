@@ -18,6 +18,12 @@ interface UserService {
         @Path("id") id: String,
     ): Account
 
+    @GET("v1/accounts/search")
+    suspend fun search(
+        @Query("q") query: String = "",
+        @Query("offset") offset: Int = 0,
+    ): List<Account>
+
     @GET("v1/accounts/{id}/statuses")
     suspend fun getStatuses(
         @Path("id") id: String,
