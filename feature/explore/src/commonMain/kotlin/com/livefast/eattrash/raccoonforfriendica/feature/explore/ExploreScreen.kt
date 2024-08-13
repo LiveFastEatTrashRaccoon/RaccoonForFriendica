@@ -52,6 +52,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.safeKey
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
@@ -204,14 +205,19 @@ class ExploreScreen : Screen {
 
                     items(
                         items = uiState.items,
-                        key = { it.id },
+                        key = {
+                            when (it) {
+                                is ExploreItemModel.Entry -> it.entry.safeKey
+                                else -> it.id
+                            }
+                        },
                     ) { item ->
                         when (item) {
                             is ExploreItemModel.Entry -> {
                                 TimelineItem(
                                     entry = item.entry,
-                                    onClick = {
-                                        detailOpener.openEntryDetail(item.entry.id)
+                                    onClick = { e ->
+                                        detailOpener.openEntryDetail(e.id)
                                     },
                                     onOpenUrl = { url ->
                                         openUrl(url)
@@ -219,14 +225,21 @@ class ExploreScreen : Screen {
                                     onOpenUser = {
                                         detailOpener.openUserDetail(it.id)
                                     },
-                                    onReblog = {
-                                        model.reduce(ExploreMviModel.Intent.ToggleReblog(item.entry.id))
+                                    onReblog = { e ->
+                                        model.reduce(ExploreMviModel.Intent.ToggleReblog(e))
                                     },
-                                    onBookmark = {
-                                        model.reduce(ExploreMviModel.Intent.ToggleBookmark(item.entry.id))
+                                    onBookmark = { e ->
+                                        model.reduce(ExploreMviModel.Intent.ToggleBookmark(e))
                                     },
-                                    onFavorite = {
-                                        model.reduce(ExploreMviModel.Intent.ToggleFavorite(item.entry.id))
+                                    onFavorite = { e ->
+                                        model.reduce(ExploreMviModel.Intent.ToggleFavorite(e))
+                                    },
+                                    onReply = { e ->
+                                        detailOpener.openComposer(
+                                            inReplyToId = e.id,
+                                            inReplyToHandle = e.creator?.handle,
+                                            inReplyToUsername = e.creator?.let { it.displayName ?: it.username },
+                                        )
                                     },
                                 )
 
