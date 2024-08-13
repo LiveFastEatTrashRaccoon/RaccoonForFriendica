@@ -23,6 +23,7 @@ internal class DefaultOpenUrlUseCase(
     override operator fun invoke(url: String) {
         val currentNode = apiConfigurationRepository.node.value
         val tagPrefix = "https://$currentNode/search?tag="
+        val profilePrefix = "https://$currentNode/profile/"
 
         when {
             url.startsWith(tagPrefix) -> {
@@ -30,14 +31,34 @@ internal class DefaultOpenUrlUseCase(
                 detailOpener.openHashtag(tag)
             }
 
-            USER_REGEX.matches(url) -> {
-                USER_REGEX.find(url)?.groups?.also { group ->
+            url.startsWith(profilePrefix) -> {
+                val currentNode = apiConfigurationRepository.node.value
+                val handle =
+                    buildString {
+                        append(url.replace(profilePrefix, ""))
+                        append("@")
+                        append(currentNode)
+                    }
+                scope.launch {
+                    val userId = userRepository.getByHandle(handle)
+                    if (userId != null) {
+                        detailOpener.openUserDetail(userId.id)
+                    } else {
+                        defaultHandler.openUri(url)
+                    }
+                }
+            }
+
+            EXTERNAL_USER_REGEX.matches(url) -> {
+                EXTERNAL_USER_REGEX.find(url)?.groups?.also { group ->
                     val (node, user) = group["instance"]?.value.orEmpty() to group["detail"]?.value.orEmpty()
                     scope.launch {
                         val handle = "$user@$node"
                         val userId = userRepository.getByHandle(handle)
                         if (userId != null) {
                             detailOpener.openUserDetail(userId.id)
+                        } else {
+                            defaultHandler.openUri(url)
                         }
                     }
                 }
@@ -53,7 +74,7 @@ internal class DefaultOpenUrlUseCase(
         private const val INSTANCE_FRAGMENT: String =
             "([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\\.)+[a-zA-Z]{2,}"
 
-        private val USER_REGEX =
+        private val EXTERNAL_USER_REGEX =
             Regex("https://(?<instance>$INSTANCE_FRAGMENT)/users/(?<detail>$DETAIL_FRAGMENT)")
     }
 }
