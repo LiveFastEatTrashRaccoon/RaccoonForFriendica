@@ -4,6 +4,9 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class EntryDetailViewModel(
@@ -28,9 +31,9 @@ class EntryDetailViewModel(
                     refresh()
                 }
 
-            is EntryDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entryId)
-            is EntryDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entryId)
-            is EntryDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entryId)
+            is EntryDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is EntryDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is EntryDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
         }
     }
 
@@ -38,20 +41,26 @@ class EntryDetailViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        val entry = timelineEntryRepository.getById(id)
+
         val context = timelineEntryRepository.getContext(id)
         val entries =
-            buildList {
-                addAll(context?.ancestors.orEmpty())
-                if (entry != null) {
-                    add(entry)
-                }
-                addAll(context?.descendants.orEmpty())
+            coroutineScope {
+                buildList {
+                    addAll(context?.ancestors.orEmpty().map { it.id })
+                    add(id)
+                    addAll(context?.descendants.orEmpty().map { it.id })
+                }.map { entryId ->
+                    async {
+                        timelineEntryRepository.getById(entryId)
+                    }
+                }.awaitAll()
+                    .filterNotNull()
             }
 
+        val currentEntry = entries.firstOrNull { e -> e.id == id }
         updateState {
             it.copy(
-                creator = entry?.creator,
+                creator = currentEntry?.creator,
                 entries = entries,
                 refreshing = false,
                 initial = false,
@@ -59,7 +68,7 @@ class EntryDetailViewModel(
         }
 
         if (initial) {
-            val index = entries.indexOf(entry)
+            val index = entries.indexOf(currentEntry).takeIf { it > 0 } ?: 0
             emitEffect(EntryDetailMviModel.Effect.ScrollToItem(index))
         }
     }
@@ -72,27 +81,34 @@ class EntryDetailViewModel(
             it.copy(
                 entries =
                     it.entries.map { entry ->
-                        if (entry.id == entryId) {
-                            entry.let(block)
-                        } else {
-                            entry
+                        when {
+                            entry.id == entryId -> {
+                                entry.let(block)
+                            }
+
+                            entry.reblog?.id == entryId -> {
+                                entry.copy(reblog = entry.reblog?.let(block))
+                            }
+
+                            else -> {
+                                entry
+                            }
                         }
                     },
             )
         }
     }
 
-    private fun toggleReblog(entryId: String) {
-        val entry = uiState.value.entries.firstOrNull { it.id == entryId } ?: return
+    private fun toggleReblog(entry: TimelineEntryModel) {
         screenModelScope.launch {
             val newEntry =
                 if (entry.reblogged) {
-                    timelineEntryRepository.unreblog(entryId)
+                    timelineEntryRepository.unreblog(entry.id)
                 } else {
-                    timelineEntryRepository.reblog(entryId)
+                    timelineEntryRepository.reblog(entry.id)
                 }
             if (newEntry != null) {
-                updateEntryInState(entryId) {
+                updateEntryInState(entry.id) {
                     it.copy(
                         reblogged = newEntry.reblogged,
                         reblogCount = newEntry.reblogCount,
@@ -102,17 +118,16 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun toggleFavorite(entryId: String) {
-        val entry = uiState.value.entries.firstOrNull { it.id == entryId } ?: return
+    private fun toggleFavorite(entry: TimelineEntryModel) {
         screenModelScope.launch {
             val newEntry =
                 if (entry.favorite) {
-                    timelineEntryRepository.unfavorite(entryId)
+                    timelineEntryRepository.unfavorite(entry.id)
                 } else {
-                    timelineEntryRepository.favorite(entryId)
+                    timelineEntryRepository.favorite(entry.id)
                 }
             if (newEntry != null) {
-                updateEntryInState(entryId) {
+                updateEntryInState(entry.id) {
                     it.copy(
                         favorite = newEntry.favorite,
                         favoriteCount = newEntry.favoriteCount,
@@ -122,17 +137,16 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun toggleBookmark(entryId: String) {
-        val entry = uiState.value.entries.firstOrNull { it.id == entryId } ?: return
+    private fun toggleBookmark(entry: TimelineEntryModel) {
         screenModelScope.launch {
             val newEntry =
                 if (entry.bookmarked) {
-                    timelineEntryRepository.unbookmark(entryId)
+                    timelineEntryRepository.unbookmark(entry.id)
                 } else {
-                    timelineEntryRepository.bookmark(entryId)
+                    timelineEntryRepository.bookmark(entry.id)
                 }
             if (newEntry != null) {
-                updateEntryInState(entryId) {
+                updateEntryInState(entry.id) {
                     it.copy(
                         bookmarked = newEntry.bookmarked,
                     )

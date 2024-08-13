@@ -14,15 +14,15 @@ interface EntryDetailMviModel :
         data object Refresh : Intent
 
         data class ToggleReblog(
-            val entryId: String,
+            val entry: TimelineEntryModel,
         ) : Intent
 
         data class ToggleFavorite(
-            val entryId: String,
+            val entry: TimelineEntryModel,
         ) : Intent
 
         data class ToggleBookmark(
-            val entryId: String,
+            val entry: TimelineEntryModel,
         ) : Intent
     }
 
