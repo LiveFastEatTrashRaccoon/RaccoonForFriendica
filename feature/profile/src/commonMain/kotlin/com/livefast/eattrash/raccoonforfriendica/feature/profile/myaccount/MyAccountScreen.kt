@@ -36,6 +36,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserHeaderPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.safeKey
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toAccountSection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toInt
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toReadableName
@@ -172,12 +173,12 @@ class MyAccountScreen : Screen {
 
                 items(
                     items = uiState.entries,
-                    key = { it.id },
+                    key = { it.safeKey },
                 ) { entry ->
                     TimelineItem(
                         entry = entry,
-                        onClick = {
-                            detailOpener.openEntryDetail(entry.id)
+                        onClick = { e ->
+                            detailOpener.openEntryDetail(e.id)
                         },
                         onOpenUrl = { url ->
                             openUrl(url)
@@ -185,14 +186,21 @@ class MyAccountScreen : Screen {
                         onOpenUser = {
                             detailOpener.openUserDetail(it.id)
                         },
-                        onReblog = {
-                            model.reduce(MyAccountMviModel.Intent.ToggleReblog(entry.id))
+                        onReblog = { e ->
+                            model.reduce(MyAccountMviModel.Intent.ToggleReblog(e))
                         },
-                        onBookmark = {
-                            model.reduce(MyAccountMviModel.Intent.ToggleBookmark(entry.id))
+                        onBookmark = { e ->
+                            model.reduce(MyAccountMviModel.Intent.ToggleBookmark(e))
                         },
-                        onFavorite = {
-                            model.reduce(MyAccountMviModel.Intent.ToggleFavorite(entry.id))
+                        onFavorite = { e ->
+                            model.reduce(MyAccountMviModel.Intent.ToggleFavorite(e))
+                        },
+                        onReply = { e ->
+                            detailOpener.openComposer(
+                                inReplyToId = e.id,
+                                inReplyToHandle = e.creator?.handle,
+                                inReplyToUsername = e.creator?.let { it.displayName ?: it.username },
+                            )
                         },
                     )
                     HorizontalDivider(
