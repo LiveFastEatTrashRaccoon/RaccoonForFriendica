@@ -37,8 +37,10 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] view list of one's own followed hashtags
 - [x] view people who added as favorite/re-shared a given post
 - [x] enable/disable notifications for other users
-- [ ] create a post/reply
+- [x] create a post/reply with image attachments and alt text
 - [ ] global search
+- [ ] edit a post of one's own
+- [ ] delete a post of one's own
 - [ ] edit one's own profile
 - [ ] block/unblock user and see list of blocked users
 - [ ] mute/unmute user and see list of muted users

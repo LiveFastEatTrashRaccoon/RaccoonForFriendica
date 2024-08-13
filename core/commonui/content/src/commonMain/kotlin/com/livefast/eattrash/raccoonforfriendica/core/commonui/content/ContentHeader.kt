@@ -62,12 +62,6 @@ fun ContentHeader(
             )
         } else {
             PlaceholderImage(
-                modifier =
-                    Modifier.clickable {
-                        if (user != null) {
-                            onOpenUser?.invoke(user)
-                        }
-                    },
                 size = iconSize,
                 title = creatorName,
             )

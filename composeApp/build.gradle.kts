@@ -57,6 +57,8 @@ kotlin {
             implementation(projects.core.api)
             implementation(projects.core.appearance)
             implementation(projects.core.architecture)
+            implementation(projects.core.commonui.components)
+            implementation(projects.core.commonui.content)
             implementation(projects.core.resources)
             implementation(projects.core.l10n)
             implementation(projects.core.navigation)
@@ -71,6 +73,7 @@ kotlin {
             implementation(projects.domain.identity.repository)
             implementation(projects.domain.identity.usecase)
 
+            implementation(projects.feature.composer)
             implementation(projects.feature.drawer)
             implementation(projects.feature.entrydetail)
             implementation(projects.feature.explore)

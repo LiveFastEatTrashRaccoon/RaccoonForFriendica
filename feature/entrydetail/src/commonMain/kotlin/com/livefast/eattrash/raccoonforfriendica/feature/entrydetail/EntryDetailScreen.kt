@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,6 +40,8 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.safeKey
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -128,9 +131,18 @@ class EntryDetailScreen(
                     LazyColumn(
                         state = lazyListState,
                     ) {
+                        if (uiState.initial) {
+                            items(5) {
+                                TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(vertical = Spacing.s),
+                                )
+                            }
+                        }
+
                         items(
                             items = uiState.entries,
-                            key = { it.id },
+                            key = { it.safeKey },
                         ) { entry ->
                             TimelineItem(
                                 entry = entry,
@@ -138,33 +150,43 @@ class EntryDetailScreen(
                                 onOpenUrl = { url ->
                                     openUrl(url)
                                 },
-                                onClick = {
-                                    if (entry.id != id) {
+                                onClick = { e ->
+                                    if (e.id != id) {
                                         detailOpener.openEntryDetail(entry.id)
                                     }
                                 },
                                 onOpenUser = {
                                     detailOpener.openUserDetail(it.id)
                                 },
-                                onReblog = {
-                                    model.reduce(EntryDetailMviModel.Intent.ToggleReblog(entry.id))
+                                onReblog = { e ->
+                                    model.reduce(EntryDetailMviModel.Intent.ToggleReblog(e))
                                 },
-                                onBookmark = {
-                                    model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(entry.id))
+                                onBookmark = { e ->
+                                    model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e))
                                 },
-                                onFavorite = {
-                                    model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(entry.id))
+                                onFavorite = { e ->
+                                    model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
                                 },
-                                onOpenUsersFavorite = {
+                                onOpenUsersFavorite = { e ->
                                     detailOpener.openEntryUsersFavorite(
-                                        entryId = entry.id,
-                                        count = entry.favoriteCount,
+                                        entryId = e.id,
+                                        count = e.favoriteCount,
                                     )
                                 },
-                                onOpenUsersReblog = {
+                                onOpenUsersReblog = { e ->
                                     detailOpener.openEntryUsersReblog(
-                                        entryId = entry.id,
-                                        count = entry.reblogCount,
+                                        entryId = e.id,
+                                        count = e.reblogCount,
+                                    )
+                                },
+                                onReply = { e ->
+                                    detailOpener.openComposer(
+                                        inReplyToId = e.id,
+                                        inReplyToHandle = e.creator?.handle,
+                                        inReplyToUsername =
+                                            e.creator?.let {
+                                                it.displayName ?: it.username
+                                            },
                                     )
                                 },
                             )

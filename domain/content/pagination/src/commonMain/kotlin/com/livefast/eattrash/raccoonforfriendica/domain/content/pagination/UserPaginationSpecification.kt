@@ -16,4 +16,8 @@ sealed interface UserPaginationSpecification {
     data class EntryUsersFavorite(
         val entryId: String,
     ) : UserPaginationSpecification
+
+    data class Search(
+        val query: String = "",
+    ) : UserPaginationSpecification
 }

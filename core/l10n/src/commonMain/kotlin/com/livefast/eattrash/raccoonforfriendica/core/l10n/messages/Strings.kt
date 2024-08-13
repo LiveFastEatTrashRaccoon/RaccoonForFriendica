@@ -110,6 +110,21 @@ interface Strings {
     val extendedSocialInfoFavorites: String
     val extendedSocialInfoReblogs: String
     val actionMuteNotifications: String
+    val createPostTitle: String
+    val messagePostEmptyText: String
+    val visibilityPublic: String
+    val visibilityPrivate: String
+    val visibilityDirect: String
+    val visibilityUnlisted: String
+    val createPostBodyPlaceholder: String
+    val createPostAttachmentsSection: String
+    val actionEdit: String
+    val pictureDescriptionPlaceholder: String
+    val insertLinkDialogTitle: String
+    val insertLinkFieldAnchor: String
+    val insertLinkFieldUrl: String
+    val selectUserDialogTitle: String
+    val selectUserSearchPlaceholder: String
 }
 
 object Locales {

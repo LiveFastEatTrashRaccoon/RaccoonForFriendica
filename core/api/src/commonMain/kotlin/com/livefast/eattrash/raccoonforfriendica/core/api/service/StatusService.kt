@@ -3,9 +3,11 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
+import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.Header
 import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
@@ -84,4 +86,11 @@ interface StatusService {
         @Query("max_id") maxId: String? = null,
         @Query("limit") limit: Int = 20,
     ): List<Account>
+
+    @POST("v1/statuses")
+    @Headers("Content-Type: application/json")
+    suspend fun create(
+        @Header("Idempotency-Key") key: String,
+        @Body data: CreateStatusForm,
+    ): Status
 }

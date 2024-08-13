@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Field
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.HistoryItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaAttachment
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.AUDIO
@@ -94,6 +95,14 @@ internal fun ContentVisibility.toModel(): Visibility =
         ContentVisibility.UNLISTED -> Visibility.Unlisted
         ContentVisibility.PRIVATE -> Visibility.Private
         ContentVisibility.DIRECT -> Visibility.Direct
+    }
+
+internal fun Visibility.toDto(): ContentVisibility =
+    when (this) {
+        Visibility.Direct -> ContentVisibility.DIRECT
+        Visibility.Private -> ContentVisibility.PRIVATE
+        Visibility.Public -> ContentVisibility.PUBLIC
+        Visibility.Unlisted -> ContentVisibility.UNLISTED
     }
 
 internal fun Account.toModel() =
@@ -192,4 +201,14 @@ internal fun TrendsLink.toModel() =
         authorName = authorName,
         description = description,
         image = image,
+    )
+
+internal fun FriendicaPhoto.toModel() =
+    AttachmentModel(
+        id = id,
+        mediaId = mediaId.orEmpty(),
+        url = link.firstOrNull().orEmpty(),
+        type = MediaType.Image,
+        description = desc,
+        album = album,
     )

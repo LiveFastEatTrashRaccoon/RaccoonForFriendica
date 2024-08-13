@@ -14,6 +14,28 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
+val TimelineEntryModel.safeKey: String get() =
+    buildString {
+        append(id)
+        append("-")
+        append(favorite)
+        append("-")
+        append(reblogged)
+        append("-")
+        append(bookmarked)
+        append("--")
+        reblog?.run {
+            append(id)
+            append("-")
+            append(favorite)
+            append("-")
+            append(reblogged)
+            append("-")
+            append(bookmarked)
+            append("--")
+        }
+    }
+
 @Composable
 fun TimelineItem(
     entry: TimelineEntryModel,
@@ -21,22 +43,23 @@ fun TimelineItem(
     actionsEnabled: Boolean = true,
     extendedSocialInfoEnabled: Boolean = false,
     onOpenUrl: ((String) -> Unit)? = null,
-    onClick: (() -> Unit)? = null,
+    onClick: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
-    onReply: (() -> Unit)? = null,
-    onReblog: (() -> Unit)? = null,
-    onFavorite: (() -> Unit)? = null,
-    onBookmark: (() -> Unit)? = null,
-    onOpenUsersFavorite: (() -> Unit)? = null,
-    onOpenUsersReblog: (() -> Unit)? = null,
+    onReply: ((TimelineEntryModel) -> Unit)? = null,
+    onReblog: ((TimelineEntryModel) -> Unit)? = null,
+    onFavorite: ((TimelineEntryModel) -> Unit)? = null,
+    onBookmark: ((TimelineEntryModel) -> Unit)? = null,
+    onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
+    onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val isReblog = entry.reblog != null
+    val entryToDisplay = entry.reblog ?: entry
 
     Box(
         modifier =
             modifier
                 .clickable {
-                    onClick?.invoke()
+                    onClick?.invoke(entryToDisplay)
                 }.padding(horizontal = 10.dp),
     ) {
         Column(
@@ -50,15 +73,15 @@ fun TimelineItem(
                         onOpenUser = onOpenUser,
                     )
                 }
+            } else {
+                entry.inReplyTo?.creator?.let {
+                    InReplyToInfo(
+                        modifier = Modifier.fillMaxWidth(),
+                        user = it,
+                        onOpenUser = onOpenUser,
+                    )
+                }
             }
-            entry.inReplyTo?.creator?.let {
-                InReplyToInfo(
-                    modifier = Modifier.fillMaxWidth(),
-                    user = it,
-                    onOpenUser = onOpenUser,
-                )
-            }
-            val entryToDisplay = entry.reblog ?: entry
 
             ContentHeader(
                 modifier = Modifier.fillMaxWidth(),
@@ -71,14 +94,14 @@ fun TimelineItem(
             entryToDisplay.title?.let { title ->
                 ContentTitle(
                     content = title,
-                    onClick = onClick,
+                    onClick = { onClick?.invoke(entryToDisplay) },
                     onOpenUrl = onOpenUrl,
                 )
             }
 
             ContentBody(
                 content = entryToDisplay.content,
-                onClick = onClick,
+                onClick = { onClick?.invoke(entryToDisplay) },
                 onOpenUrl = onOpenUrl,
             )
 
@@ -99,8 +122,12 @@ fun TimelineItem(
                     reblogCount = entryToDisplay.reblogCount,
                     favoriteCount = entryToDisplay.favoriteCount,
                     modifier = Modifier.padding(vertical = Spacing.xs),
-                    onOpenUsersReblog = onOpenUsersReblog,
-                    onOpenUsersFavorite = onOpenUsersFavorite,
+                    onOpenUsersReblog = {
+                        onOpenUsersReblog?.invoke(entryToDisplay)
+                    },
+                    onOpenUsersFavorite = {
+                        onOpenUsersFavorite?.invoke(entryToDisplay)
+                    },
                 )
             }
 
@@ -112,11 +139,19 @@ fun TimelineItem(
                     reblogCount = entryToDisplay.reblogCount,
                     reblogged = entryToDisplay.reblogged,
                     bookmarked = entryToDisplay.bookmarked,
-                    replyCount = entry.replyCount,
-                    onReply = onReply,
-                    onReblog = onReblog,
-                    onFavorite = onFavorite,
-                    onBookmark = onBookmark,
+                    replyCount = entryToDisplay.replyCount,
+                    onReply = {
+                        onReply?.invoke(entryToDisplay)
+                    },
+                    onReblog = {
+                        onReblog?.invoke(entryToDisplay)
+                    },
+                    onFavorite = {
+                        onFavorite?.invoke(entryToDisplay)
+                    },
+                    onBookmark = {
+                        onBookmark?.invoke(entryToDisplay)
+                    },
                 )
             }
         }

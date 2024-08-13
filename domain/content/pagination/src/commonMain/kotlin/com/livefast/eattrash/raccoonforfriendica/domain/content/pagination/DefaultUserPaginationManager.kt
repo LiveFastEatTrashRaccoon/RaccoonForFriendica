@@ -51,6 +51,16 @@ internal class DefaultUserPaginationManager(
                         id = specification.entryId,
                         pageCursor = pageCursor,
                     )
+
+                is UserPaginationSpecification.Search -> {
+                    userRepository.search(
+                        query = specification.query,
+                        offset =
+                            history
+                                .indexOfLast { it.id == pageCursor }
+                                .takeIf { it >= 0 } ?: 0,
+                    )
+                }
             }.determineRelationshipStatus()
                 .deduplicate()
 

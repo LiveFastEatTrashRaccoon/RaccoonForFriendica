@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 
 interface TimelineEntryRepository {
     suspend fun getByUser(
@@ -47,4 +48,15 @@ interface TimelineEntryRepository {
         id: String,
         pageCursor: String? = null,
     ): List<UserModel>
+
+    suspend fun create(
+        localId: String,
+        text: String,
+        spoilerText: String? = null,
+        inReplyTo: String? = null,
+        sensitive: Boolean = false,
+        mediaIds: List<String>? = null,
+        visibility: Visibility,
+        lang: String? = null,
+    ): TimelineEntryModel?
 }

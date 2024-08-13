@@ -27,15 +27,15 @@ interface UserDetailMviModel :
         data object Unfollow : Intent
 
         data class ToggleReblog(
-            val entryId: String,
+            val entry: TimelineEntryModel,
         ) : Intent
 
         data class ToggleFavorite(
-            val entryId: String,
+            val entry: TimelineEntryModel,
         ) : Intent
 
         data class ToggleBookmark(
-            val entryId: String,
+            val entry: TimelineEntryModel,
         ) : Intent
 
         data object EnableNotifications : Intent
@@ -44,6 +44,7 @@ interface UserDetailMviModel :
     }
 
     data class State(
+        val currentUserId: String? = null,
         val refreshing: Boolean = false,
         val loading: Boolean = false,
         val initial: Boolean = true,

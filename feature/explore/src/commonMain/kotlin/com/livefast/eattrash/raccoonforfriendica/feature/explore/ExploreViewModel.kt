@@ -55,9 +55,9 @@ class ExploreViewModel(
             is ExploreMviModel.Intent.AcceptFollowRequest -> acceptFollowRequest(intent.userId)
             is ExploreMviModel.Intent.Follow -> follow(intent.userId)
             is ExploreMviModel.Intent.Unfollow -> unfollow(intent.userId)
-            is ExploreMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entryId)
-            is ExploreMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entryId)
-            is ExploreMviModel.Intent.ToggleReblog -> toggleReblog(intent.entryId)
+            is ExploreMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is ExploreMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ExploreMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
         }
     }
 
@@ -186,32 +186,41 @@ class ExploreViewModel(
             it.copy(
                 items =
                     it.items.map { item ->
-                        if (item is ExploreItemModel.Entry && item.entry.id == entryId) {
-                            item.copy(
-                                entry = item.entry.let(block),
-                            )
-                        } else {
-                            item
+                        when {
+                            item is ExploreItemModel.Entry && item.entry.id == entryId -> {
+                                item.copy(
+                                    entry = item.entry.let(block),
+                                )
+                            }
+
+                            item is ExploreItemModel.Entry && item.entry.reblog?.id == entryId -> {
+                                item.copy(
+                                    entry =
+                                        item.entry.copy(
+                                            reblog = item.entry.reblog?.let(block),
+                                        ),
+                                )
+                            }
+
+                            else -> {
+                                item
+                            }
                         }
                     },
             )
         }
     }
 
-    private fun toggleReblog(entryId: String) {
-        val entry =
-            uiState.value.items
-                .firstOrNull { it is ExploreItemModel.Entry && it.entry.id == entryId }
-                ?.let { (it as? ExploreItemModel.Entry)?.entry } ?: return
+    private fun toggleReblog(entry: TimelineEntryModel) {
         screenModelScope.launch {
             val newEntry =
                 if (entry.reblogged) {
-                    timelineEntryRepository.unreblog(entryId)
+                    timelineEntryRepository.unreblog(entry.id)
                 } else {
-                    timelineEntryRepository.reblog(entryId)
+                    timelineEntryRepository.reblog(entry.id)
                 }
             if (newEntry != null) {
-                updateEntryInState(entryId) {
+                updateEntryInState(entry.id) {
                     it.copy(
                         reblogged = newEntry.reblogged,
                         reblogCount = newEntry.reblogCount,
@@ -221,20 +230,16 @@ class ExploreViewModel(
         }
     }
 
-    private fun toggleFavorite(entryId: String) {
-        val entry =
-            uiState.value.items
-                .firstOrNull { it is ExploreItemModel.Entry && it.entry.id == entryId }
-                ?.let { (it as? ExploreItemModel.Entry)?.entry } ?: return
+    private fun toggleFavorite(entry: TimelineEntryModel) {
         screenModelScope.launch {
             val newEntry =
                 if (entry.favorite) {
-                    timelineEntryRepository.unfavorite(entryId)
+                    timelineEntryRepository.unfavorite(entry.id)
                 } else {
-                    timelineEntryRepository.favorite(entryId)
+                    timelineEntryRepository.favorite(entry.id)
                 }
             if (newEntry != null) {
-                updateEntryInState(entryId) {
+                updateEntryInState(entry.id) {
                     it.copy(
                         favorite = newEntry.favorite,
                         favoriteCount = newEntry.favoriteCount,
@@ -244,20 +249,16 @@ class ExploreViewModel(
         }
     }
 
-    private fun toggleBookmark(entryId: String) {
-        val entry =
-            uiState.value.items
-                .firstOrNull { it is ExploreItemModel.Entry && it.entry.id == entryId }
-                ?.let { (it as? ExploreItemModel.Entry)?.entry } ?: return
+    private fun toggleBookmark(entry: TimelineEntryModel) {
         screenModelScope.launch {
             val newEntry =
                 if (entry.bookmarked) {
-                    timelineEntryRepository.unbookmark(entryId)
+                    timelineEntryRepository.unbookmark(entry.id)
                 } else {
-                    timelineEntryRepository.bookmark(entryId)
+                    timelineEntryRepository.bookmark(entry.id)
                 }
             if (newEntry != null) {
-                updateEntryInState(entryId) {
+                updateEntryInState(entry.id) {
                     it.copy(
                         bookmarked = newEntry.bookmarked,
                     )

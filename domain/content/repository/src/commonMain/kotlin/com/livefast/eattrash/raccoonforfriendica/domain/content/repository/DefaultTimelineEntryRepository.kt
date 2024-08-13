@@ -1,10 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusAddons
+import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -161,4 +164,39 @@ internal class DefaultTimelineEntryRepository(
                     ).map { it.toModel() }
             }
         }.getOrElse { emptyList() }
+
+    override suspend fun create(
+        localId: String,
+        text: String,
+        spoilerText: String?,
+        inReplyTo: String?,
+        sensitive: Boolean,
+        mediaIds: List<String>?,
+        visibility: Visibility,
+        lang: String?,
+    ): TimelineEntryModel? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val data =
+                    CreateStatusForm(
+                        status = text,
+                        addons = StatusAddons(title = ""),
+                        mediaIds = mediaIds,
+                        visibility = visibility.toDto().name.lowercase(),
+                        sensitive = sensitive,
+                        inReplyTo = inReplyTo,
+                        lang = lang,
+                        spoilerText = spoilerText,
+                    )
+                provider.statuses
+                    .create(
+                        key = localId,
+                        data = data,
+                    ).toModel()
+            }
+        }.apply {
+            exceptionOrNull()?.also {
+                it.printStackTrace()
+            }
+        }.getOrNull()
 }
