@@ -33,4 +33,10 @@ interface DetailOpener {
         entryId: String,
         count: Int,
     )
+
+    fun openComposer(
+        inReplyToId: String? = null,
+        inReplyToUsername: String? = null,
+        inReplyToHandle: String? = null,
+    )
 }
