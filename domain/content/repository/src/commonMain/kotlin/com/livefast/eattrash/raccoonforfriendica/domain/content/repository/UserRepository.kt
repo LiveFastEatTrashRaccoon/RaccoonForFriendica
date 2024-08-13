@@ -6,6 +6,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 interface UserRepository {
     suspend fun getById(id: String): UserModel?
 
+    suspend fun search(
+        query: String,
+        offset: Int,
+    ): List<UserModel>
+
     suspend fun getByHandle(handle: String): UserModel?
 
     suspend fun getRelationships(ids: List<String>): List<RelationshipModel>

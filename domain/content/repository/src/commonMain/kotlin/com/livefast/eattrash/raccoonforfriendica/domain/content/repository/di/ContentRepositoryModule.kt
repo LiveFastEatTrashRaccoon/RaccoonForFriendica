@@ -1,12 +1,14 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNotificationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
@@ -44,6 +46,11 @@ val domainContentRepositoryModule =
         }
         single<TagRepository> {
             DefaultTagRepository(
+                provider = get(named("default")),
+            )
+        }
+        single<PhotoRepository> {
+            DefaultPhotoRepository(
                 provider = get(named("default")),
             )
         }
