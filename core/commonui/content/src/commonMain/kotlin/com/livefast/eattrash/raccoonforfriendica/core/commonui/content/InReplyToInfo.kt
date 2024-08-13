@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -35,6 +36,7 @@ internal fun InReplyToInfo(
     val creatorName = user?.let { it.displayName ?: it.handle }.orEmpty()
     val creatorAvatar = user?.avatar.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
     Row(
         modifier = modifier,
@@ -45,12 +47,12 @@ internal fun InReplyToInfo(
             modifier = Modifier.size(iconSize),
             imageVector = Icons.AutoMirrored.Default.Reply,
             contentDescription = null,
-            tint = fullColor,
+            tint = ancillaryColor,
         )
         Text(
             text = LocalStrings.current.timelineEntryInReplyTo,
             style = MaterialTheme.typography.bodySmall,
-            color = fullColor,
+            color = ancillaryColor,
         )
         if (creatorAvatar.isNotEmpty()) {
             CustomImage(

@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Message
+import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Favorite
@@ -39,7 +39,7 @@ fun ContentFooter(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         FooterItem(
-            icon = Icons.AutoMirrored.Default.Message,
+            icon = Icons.AutoMirrored.Default.Reply,
             value = replyCount.takeIf { it > 0 },
             onClick = onReply,
         )
