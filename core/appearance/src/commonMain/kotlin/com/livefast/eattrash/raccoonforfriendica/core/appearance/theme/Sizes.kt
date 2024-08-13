@@ -33,5 +33,5 @@ object IconSize {
 }
 
 object Dimensions {
-    val maxTopBarInset = 28.dp
+    val floatingActionButtonBottomInset = 72.dp
 }
