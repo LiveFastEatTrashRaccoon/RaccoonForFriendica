@@ -35,6 +35,7 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.materialIconsExtended)
 
+                implementation(libs.koin.core)
                 implementation(libs.coil.compose)
 
                 implementation(projects.core.utils)
