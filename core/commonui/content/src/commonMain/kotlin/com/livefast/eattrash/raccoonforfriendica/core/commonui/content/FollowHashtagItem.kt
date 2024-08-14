@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.components
+package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,11 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TwoStateFollowButton
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 
 @Composable
-fun FollowedHashtagItem(
+fun FollowHashtagItem(
     hashtag: TagModel,
     modifier: Modifier = Modifier,
     onOpen: ((String) -> Unit)? = null,

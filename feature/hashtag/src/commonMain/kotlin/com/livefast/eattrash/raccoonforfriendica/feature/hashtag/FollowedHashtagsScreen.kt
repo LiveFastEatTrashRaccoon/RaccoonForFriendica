@@ -40,11 +40,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.FollowHashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.components.FollowedHashtagItem
 
 class FollowedHashtagsScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -122,7 +122,7 @@ class FollowedHashtagsScreen : Screen {
                         key = { it.name },
                     ) { tag ->
                         // use item with button
-                        FollowedHashtagItem(
+                        FollowHashtagItem(
                             hashtag = tag,
                             onOpen = {
                                 detailOpener.openHashtag(tag.name)
