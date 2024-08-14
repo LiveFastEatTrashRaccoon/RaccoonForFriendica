@@ -31,7 +31,7 @@ internal val ItStrings =
         override val timelineEntryRebloggedBy = "ricondiviso da"
         override val accountFollower = "seguaci"
         override val accountFollowing = "seguiti"
-        override val accountGroup = "questo account è un gruppo"
+        override val actionOpenInForumMode = "apri in modalità forum"
         override val accountAge = "età account"
         override val dateYearShort = "a"
         override val dateMonthShort = "m"
@@ -123,4 +123,5 @@ internal val ItStrings =
         override val searchSectionUsers = "Utenti"
         override val searchPlaceholder = "Cerca nel Fediverso"
         override val messageSearchInitialEmpty = "Inserisci una nuova espressione di ricerca 🔦"
+        override val groupForumTitle = "Gruppo"
     }

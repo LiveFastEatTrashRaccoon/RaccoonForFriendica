@@ -37,7 +37,7 @@ interface Strings {
     val timelineEntryInReplyTo: String
     val accountFollowing: String
     val accountFollower: String
-    val accountGroup: String
+    val actionOpenInForumMode: String
     val accountAge: String
     val dateYearShort: String
     val dateMonthShort: String
@@ -128,6 +128,7 @@ interface Strings {
     val messageSearchInitialEmpty: String
     val searchSectionUsers: String
     val searchPlaceholder: String
+    val groupForumTitle: String
 }
 
 object Locales {

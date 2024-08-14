@@ -30,7 +30,7 @@ internal open class DefaultStrings : Strings {
     override val timelineEntryRebloggedBy = "re-shared by"
     override val accountFollower = "follower"
     override val accountFollowing = "following"
-    override val accountGroup = "this account is a group"
+    override val actionOpenInForumMode = "open in forum mode"
     override val accountAge = "account age"
     override val dateYearShort = "y"
     override val dateMonthShort = "m"
@@ -122,4 +122,5 @@ internal open class DefaultStrings : Strings {
     override val searchSectionUsers = "Users"
     override val searchPlaceholder = "Search the Fediverse"
     override val messageSearchInitialEmpty = "Please enter a new query expression 🔦"
+    override val groupForumTitle = "Group"
 }
