@@ -42,6 +42,7 @@ kotlin {
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.architecture)
+                implementation(projects.core.commonui.components)
                 implementation(projects.core.commonui.content)
                 implementation(projects.core.l10n)
                 implementation(projects.core.navigation)

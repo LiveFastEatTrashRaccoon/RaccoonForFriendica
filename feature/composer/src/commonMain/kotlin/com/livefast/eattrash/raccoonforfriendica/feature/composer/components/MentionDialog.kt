@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SearchField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -111,7 +111,7 @@ fun MentionDialog(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center,
                         ) {
-                            CircularProgressIndicator()
+                            ListLoadingIndicator()
                         }
                     }
                 }

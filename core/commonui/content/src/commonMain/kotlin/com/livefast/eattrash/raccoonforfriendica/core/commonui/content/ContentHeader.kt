@@ -89,7 +89,7 @@ fun ContentHeader(
                             }
                             if (!date.isNullOrBlank()) {
                                 if (isNotEmpty()) {
-                                    append(" •")
+                                    append(" • ")
                                 }
                                 append(date.prettifyDate())
                                 if (isEdited) {

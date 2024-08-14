@@ -60,7 +60,7 @@ fun ContentExtendedSocialInfo(
             )
         }
         Text(
-            text = " •",
+            text = " • ",
             style = MaterialTheme.typography.labelSmall,
             color = ancillaryColor,
         )

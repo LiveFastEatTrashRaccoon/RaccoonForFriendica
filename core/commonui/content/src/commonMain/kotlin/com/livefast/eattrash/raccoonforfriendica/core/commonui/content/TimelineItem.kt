@@ -14,25 +14,29 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
-val TimelineEntryModel.safeKey: String get() =
-    buildString {
-        append(id)
-        append("-")
-        append(favorite)
-        append("-")
-        append(reblogged)
-        append("-")
-        append(bookmarked)
-        append("--")
-        reblog?.run {
-            append(id)
+val TimelineEntryModel.safeKey: String
+    get() {
+        fun StringBuilder.appendKeys(e: TimelineEntryModel) {
+            append(e.id)
             append("-")
-            append(favorite)
+            append(e.favorite)
             append("-")
-            append(reblogged)
+            append(e.favoriteLoading)
             append("-")
-            append(bookmarked)
-            append("--")
+            append(e.reblogged)
+            append("-")
+            append(e.reblogLoading)
+            append("-")
+            append(e.bookmarked)
+            append("-")
+            append(e.bookmarkLoading)
+        }
+        return buildString {
+            appendKeys(this@safeKey)
+            reblog?.run {
+                append("--")
+                appendKeys(this@run)
+            }
         }
     }
 
@@ -136,9 +140,12 @@ fun TimelineItem(
                     modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
                     favoriteCount = entryToDisplay.favoriteCount,
                     favorite = entryToDisplay.favorite,
+                    favoriteLoading = entryToDisplay.favoriteLoading,
                     reblogCount = entryToDisplay.reblogCount,
                     reblogged = entryToDisplay.reblogged,
+                    reblogLoading = entryToDisplay.reblogLoading,
                     bookmarked = entryToDisplay.bookmarked,
+                    bookmarkLoading = entryToDisplay.bookmarkLoading,
                     replyCount = entryToDisplay.replyCount,
                     onReply = {
                         onReply?.invoke(entryToDisplay)
