@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -56,6 +56,7 @@ fun UserHeader(
     onOpenUrl: ((String) -> Unit)? = null,
     onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
     onNotificationsClicked: ((NotificationStatusNextAction) -> Unit)? = null,
+    onOpenInForumMode: (() -> Unit)? = null,
 ) {
     val banner = user?.header.orEmpty()
     val avatar = user?.avatar.orEmpty()
@@ -175,25 +176,6 @@ fun UserHeader(
                             )
                         }
                     }
-
-                    if (user?.group == true) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(IconSize.s),
-                                imageVector = Icons.Default.Groups,
-                                contentDescription = null,
-                                tint = ancillaryColor,
-                            )
-                            Text(
-                                text = LocalStrings.current.accountGroup,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = ancillaryColor,
-                            )
-                        }
-                    }
                 }
             }
         }
@@ -202,16 +184,47 @@ fun UserHeader(
             modifier = Modifier.padding(horizontal = Spacing.m),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
-            Text(
-                text = user?.displayName ?: user?.username ?: "",
-                style = MaterialTheme.typography.titleMedium,
-                color = fullColor,
-            )
-            Text(
-                text = user?.handle ?: user?.username ?: "",
-                style = MaterialTheme.typography.titleSmall,
-                color = ancillaryColor,
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                ) {
+                    Text(
+                        text = user?.displayName ?: user?.username ?: "",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = fullColor,
+                    )
+                    Text(
+                        text = user?.handle ?: user?.username ?: "",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = ancillaryColor,
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                if (user?.group == true) {
+                    Row(
+                        modifier =
+                            Modifier.clickable {
+                                onOpenInForumMode?.invoke()
+                            },
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = LocalStrings.current.actionOpenInForumMode,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = ancillaryColor,
+                        )
+                        Icon(
+                            modifier = Modifier.size(IconSize.s),
+                            imageVector = Icons.AutoMirrored.Default.OpenInNew,
+                            contentDescription = null,
+                            tint = ancillaryColor,
+                        )
+                    }
+                }
+            }
             user?.bio?.takeIf { it.isNotEmpty() }?.let { bio ->
                 ContentBody(
                     content = bio,

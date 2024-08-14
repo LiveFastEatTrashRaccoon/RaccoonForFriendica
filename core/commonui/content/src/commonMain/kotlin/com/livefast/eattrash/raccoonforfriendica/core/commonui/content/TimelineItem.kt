@@ -46,6 +46,7 @@ fun TimelineItem(
     modifier: Modifier = Modifier,
     actionsEnabled: Boolean = true,
     extendedSocialInfoEnabled: Boolean = false,
+    reshareAndReplyVisible: Boolean = true,
     onOpenUrl: ((String) -> Unit)? = null,
     onClick: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
@@ -69,21 +70,23 @@ fun TimelineItem(
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
-            if (isReblog) {
-                entry.creator?.let {
-                    ReblogInfo(
-                        modifier = Modifier.fillMaxWidth(),
-                        user = it,
-                        onOpenUser = onOpenUser,
-                    )
-                }
-            } else {
-                entry.inReplyTo?.creator?.let {
-                    InReplyToInfo(
-                        modifier = Modifier.fillMaxWidth(),
-                        user = it,
-                        onOpenUser = onOpenUser,
-                    )
+            if (reshareAndReplyVisible) {
+                if (isReblog) {
+                    entry.creator?.let {
+                        ReblogInfo(
+                            modifier = Modifier.fillMaxWidth(),
+                            user = it,
+                            onOpenUser = onOpenUser,
+                        )
+                    }
+                } else {
+                    entry.inReplyTo?.creator?.let {
+                        InReplyToInfo(
+                            modifier = Modifier.fillMaxWidth(),
+                            user = it,
+                            onOpenUser = onOpenUser,
+                        )
+                    }
                 }
             }
 
