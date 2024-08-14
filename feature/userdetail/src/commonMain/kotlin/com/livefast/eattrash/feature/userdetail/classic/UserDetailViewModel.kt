@@ -1,4 +1,4 @@
-package com.livefast.eattrash.feature.userdetail
+package com.livefast.eattrash.feature.userdetail.classic
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
@@ -75,7 +75,7 @@ class UserDetailViewModel(
     }
 
     private suspend fun loadUser() {
-        val account = userRepository.getById(id)
+        val user = userRepository.getById(id)
         val relationship =
             if (id != uiState.value.currentUserId) {
                 userRepository.getRelationships(listOf(id)).firstOrNull()
@@ -85,7 +85,7 @@ class UserDetailViewModel(
         updateState {
             it.copy(
                 user =
-                    account?.copy(
+                    user?.copy(
                         relationshipStatus = relationship?.toStatus(),
                         notificationStatus = relationship?.toNotificationStatus(),
                     ),
