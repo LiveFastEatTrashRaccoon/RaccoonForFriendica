@@ -40,7 +40,5 @@ interface HashtagMviModel :
         val entries: List<TimelineEntryModel> = emptyList(),
     )
 
-    sealed interface Effect {
-        data object BackToTop : Effect
-    }
+    sealed interface Effect
 }

@@ -95,24 +95,27 @@ class UserDetailScreen(
         var confirmDeleteFollowRequestDialogOpen by remember { mutableStateOf(false) }
         var confirmMuteNotificationsDialogOpen by remember { mutableStateOf(false) }
 
+        suspend fun goBackToTop() {
+            runCatching {
+                if (lazyListState.firstVisibleItemIndex > 0) {
+                    if (uiState.entries.isEmpty()) {
+                        lazyListState.scrollToItem(1)
+                    } else {
+                        lazyListState.scrollToItem(2)
+                    }
+                } else {
+                    lazyListState.scrollToItem(0)
+                    topAppBarState.heightOffset = 0f
+                    topAppBarState.contentOffset = 0f
+                }
+            }
+        }
+
         LaunchedEffect(model) {
             model.effects
                 .onEach { event ->
                     when (event) {
-                        UserDetailMviModel.Effect.BackToTop ->
-                            runCatching {
-                                if (lazyListState.firstVisibleItemIndex > 0) {
-                                    if (uiState.entries.isEmpty()) {
-                                        lazyListState.scrollToItem(1)
-                                    } else {
-                                        lazyListState.scrollToItem(2)
-                                    }
-                                } else {
-                                    lazyListState.scrollToItem(0)
-                                    topAppBarState.heightOffset = 0f
-                                    topAppBarState.contentOffset = 0f
-                                }
-                            }
+                        UserDetailMviModel.Effect.BackToTop -> goBackToTop()
                     }
                 }.launchIn(this)
         }

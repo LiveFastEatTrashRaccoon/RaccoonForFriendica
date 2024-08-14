@@ -41,7 +41,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toAccount
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toInt
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
@@ -54,27 +56,39 @@ class MyAccountScreen : Screen {
     override fun Content() {
         val model = getScreenModel<MyAccountMviModel>()
         val uiState by model.uiState.collectAsState()
+        val navigationCoordinator = remember { getNavigationCoordinator() }
         val uriHandler = LocalUriHandler.current
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
 
+        suspend fun goBackToTop() {
+            runCatching {
+                if (lazyListState.firstVisibleItemIndex > 0) {
+                    if (uiState.entries.isEmpty()) {
+                        lazyListState.scrollToItem(1)
+                    } else {
+                        lazyListState.scrollToItem(2)
+                    }
+                } else {
+                    lazyListState.scrollToItem(0)
+                }
+            }
+        }
+
         LaunchedEffect(model) {
             model.effects
                 .onEach { event ->
                     when (event) {
-                        MyAccountMviModel.Effect.BackToTop ->
-                            runCatching {
-                                if (lazyListState.firstVisibleItemIndex > 0) {
-                                    if (uiState.entries.isEmpty()) {
-                                        lazyListState.scrollToItem(1)
-                                    } else {
-                                        lazyListState.scrollToItem(2)
-                                    }
-                                } else {
-                                    lazyListState.scrollToItem(0)
-                                }
-                            }
+                        MyAccountMviModel.Effect.BackToTop -> goBackToTop()
+                    }
+                }.launchIn(this)
+        }
+        LaunchedEffect(navigationCoordinator) {
+            navigationCoordinator.onDoubleTabSelection
+                .onEach { section ->
+                    if (section == BottomNavigationSection.Profile) {
+                        goBackToTop()
                     }
                 }.launchIn(this)
         }
