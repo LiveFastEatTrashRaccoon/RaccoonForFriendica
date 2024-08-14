@@ -13,6 +13,7 @@ internal class DefaultFollowedHashtagsPaginationManager(
     override suspend fun reset() {
         pageCursor = null
         history.clear()
+        canFetchMore = true
     }
 
     override suspend fun loadNextPage(): List<TagModel> {
