@@ -15,15 +15,15 @@ sealed interface ExploreSection {
 
 fun ExploreSection.toInt(): Int =
     when (this) {
-        ExploreSection.Posts -> 0
-        ExploreSection.Hashtags -> 1
+        ExploreSection.Hashtags -> 0
+        ExploreSection.Posts -> 1
         ExploreSection.Links -> 2
         ExploreSection.Suggestions -> 3
     }
 
 fun Int.toExploreSection(): ExploreSection =
     when (this) {
-        1 -> ExploreSection.Hashtags
+        0 -> ExploreSection.Hashtags
         2 -> ExploreSection.Links
         3 -> ExploreSection.Suggestions
         else -> ExploreSection.Posts

@@ -102,7 +102,7 @@ class ExploreViewModel(
             it.copy(
                 items =
                     it.items.map { item ->
-                        if (item is ExploreItemModel.Suggestion && item.user.id == userId) {
+                        if (item is ExploreItemModel.User && item.user.id == userId) {
                             item.copy(
                                 user = item.user.let(block),
                             )
@@ -119,8 +119,8 @@ class ExploreViewModel(
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
                 uiState.value.items
-                    .firstOrNull { it is ExploreItemModel.Suggestion && it.user.id == userId }
-                    ?.let { (it as? ExploreItemModel.Suggestion)?.user }
+                    .firstOrNull { it is ExploreItemModel.User && it.user.id == userId }
+                    ?.let { (it as? ExploreItemModel.User)?.user }
             userRepository.acceptFollowRequest(userId)
             val newRelationship = userRepository.getRelationships(listOf(userId)).firstOrNull()
             val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
@@ -141,8 +141,8 @@ class ExploreViewModel(
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
                 uiState.value.items
-                    .firstOrNull { it is ExploreItemModel.Suggestion && it.user.id == userId }
-                    ?.let { (it as? ExploreItemModel.Suggestion)?.user }
+                    .firstOrNull { it is ExploreItemModel.User && it.user.id == userId }
+                    ?.let { (it as? ExploreItemModel.User)?.user }
             val newRelationship = userRepository.follow(userId)
             val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
             val newNotificationStatus =
@@ -162,8 +162,8 @@ class ExploreViewModel(
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
                 uiState.value.items
-                    .firstOrNull { it is ExploreItemModel.Suggestion && it.user.id == userId }
-                    ?.let { (it as? ExploreItemModel.Suggestion)?.user }
+                    .firstOrNull { it is ExploreItemModel.User && it.user.id == userId }
+                    ?.let { (it as? ExploreItemModel.User)?.user }
             val newRelationship = userRepository.unfollow(userId)
             val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
             val newNotificationStatus =

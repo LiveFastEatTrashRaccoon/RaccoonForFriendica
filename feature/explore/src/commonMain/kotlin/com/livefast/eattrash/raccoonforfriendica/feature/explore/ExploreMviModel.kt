@@ -50,7 +50,7 @@ interface ExploreMviModel :
         val loading: Boolean = false,
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
-        val section: ExploreSection = ExploreSection.Posts,
+        val section: ExploreSection = ExploreSection.Hashtags,
         val items: List<ExploreItemModel> = emptyList(),
     )
 

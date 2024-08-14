@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -21,6 +22,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -140,6 +142,18 @@ class ExploreScreen : Screen {
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                         )
                     },
+                    actions = {
+                        Icon(
+                            modifier =
+                                Modifier
+                                    .padding(horizontal = Spacing.xs)
+                                    .clickable {
+                                        detailOpener.openSearch()
+                                    },
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                        )
+                    },
                 )
             },
         ) { padding ->
@@ -171,8 +185,8 @@ class ExploreScreen : Screen {
                             modifier = Modifier.padding(bottom = Spacing.s),
                             titles =
                                 listOf(
-                                    ExploreSection.Posts.toReadableName(),
                                     ExploreSection.Hashtags.toReadableName(),
+                                    ExploreSection.Posts.toReadableName(),
                                     ExploreSection.Links.toReadableName(),
                                     ExploreSection.Suggestions.toReadableName(),
                                 ),
@@ -254,7 +268,6 @@ class ExploreScreen : Screen {
                                         )
                                     },
                                 )
-
                                 HorizontalDivider(
                                     modifier = Modifier.padding(vertical = Spacing.s),
                                 )
@@ -280,7 +293,7 @@ class ExploreScreen : Screen {
                                 Spacer(modifier = Modifier.height(Spacing.interItem))
                             }
 
-                            is ExploreItemModel.Suggestion -> {
+                            is ExploreItemModel.User -> {
                                 UserItem(
                                     user = item.user,
                                     onClick = {

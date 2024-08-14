@@ -18,6 +18,7 @@ internal class DefaultExplorePaginationManager(
         this.specification = specification
         offset = 0
         history.clear()
+        canFetchMore = true
     }
 
     override suspend fun loadNextPage(): List<ExploreItemModel> {
@@ -42,7 +43,7 @@ internal class DefaultExplorePaginationManager(
 
                 ExplorePaginationSpecification.Suggestions ->
                     userRepository.getSuggestions().map {
-                        ExploreItemModel.Suggestion(
+                        ExploreItemModel.User(
                             it.copy(
                                 relationshipStatus = RelationshipStatus.Undetermined,
                             ),
