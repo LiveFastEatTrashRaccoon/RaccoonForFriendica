@@ -80,7 +80,7 @@ object MainScreen : Screen {
         val exitMessage = LocalStrings.current.messageConfirmExit
 
         LaunchedEffect(navigationCoordinator) {
-            if (navigationCoordinator.currentSection == null) {
+            if (navigationCoordinator.currentSection.value == null) {
                 navigationCoordinator.setCurrentSection(BottomNavigationSection.Home)
             }
 

@@ -27,7 +27,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,8 +50,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import org.koin.core.parameter.parametersOf
 
 class HashtagScreen(
@@ -75,20 +72,6 @@ class HashtagScreen(
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
         var confirmUnfollowHashtagDialogOpen by remember { mutableStateOf(false) }
-
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        HashtagMviModel.Effect.BackToTop ->
-                            runCatching {
-                                lazyListState.scrollToItem(0)
-                                topAppBarState.heightOffset = 0f
-                                topAppBarState.contentOffset = 0f
-                            }
-                    }
-                }.launchIn(this)
-        }
 
         Scaffold(
             topBar = {

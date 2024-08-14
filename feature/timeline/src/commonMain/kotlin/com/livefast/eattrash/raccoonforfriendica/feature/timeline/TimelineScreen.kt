@@ -56,6 +56,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.get
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.safeKey
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -90,16 +91,27 @@ class TimelineScreen : Screen {
                 WindowInsets.navigationBars.getBottom(this).toDp()
             }
 
+        suspend fun goBackToTop() {
+            runCatching {
+                lazyListState.scrollToItem(0)
+                topAppBarState.heightOffset = 0f
+                topAppBarState.contentOffset = 0f
+            }
+        }
+
         LaunchedEffect(model) {
             model.effects
                 .onEach { event ->
                     when (event) {
-                        TimelineMviModel.Effect.BackToTop ->
-                            runCatching {
-                                lazyListState.scrollToItem(0)
-                                topAppBarState.heightOffset = 0f
-                                topAppBarState.contentOffset = 0f
-                            }
+                        TimelineMviModel.Effect.BackToTop -> goBackToTop()
+                    }
+                }.launchIn(this)
+        }
+        LaunchedEffect(navigationCoordinator) {
+            navigationCoordinator.onDoubleTabSelection
+                .onEach { section ->
+                    if (section == BottomNavigationSection.Home) {
+                        goBackToTop()
                     }
                 }.launchIn(this)
         }

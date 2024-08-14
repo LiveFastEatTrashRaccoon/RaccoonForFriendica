@@ -4,11 +4,13 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 @Stable
 interface NavigationCoordinator {
     val currentSection: StateFlow<BottomNavigationSection?>
+    val onDoubleTabSelection: Flow<BottomNavigationSection>
     val canPop: StateFlow<Boolean>
     val exitMessageVisible: StateFlow<Boolean>
 

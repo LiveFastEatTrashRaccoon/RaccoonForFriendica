@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -26,6 +27,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +45,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -50,6 +53,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Relationshi
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItem
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItemPlaceholder
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class InboxScreen : Screen {
@@ -69,6 +74,24 @@ class InboxScreen : Screen {
         val drawerCoordinator = remember { getDrawerCoordinator() }
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
+        val lazyListState = rememberLazyListState()
+
+        suspend fun goBackToTop() {
+            runCatching {
+                lazyListState.scrollToItem(0)
+                topAppBarState.heightOffset = 0f
+                topAppBarState.contentOffset = 0f
+            }
+        }
+
+        LaunchedEffect(navigationCoordinator) {
+            navigationCoordinator.onDoubleTabSelection
+                .onEach { section ->
+                    if (section == BottomNavigationSection.Inbox) {
+                        goBackToTop()
+                    }
+                }.launchIn(this)
+        }
 
         Scaffold(
             topBar = {
@@ -116,7 +139,9 @@ class InboxScreen : Screen {
                         ).nestedScroll(scrollBehavior.nestedScrollConnection)
                         .pullRefresh(pullRefreshState),
             ) {
-                LazyColumn {
+                LazyColumn(
+                    state = lazyListState,
+                ) {
                     if (uiState.initial) {
                         items(5) {
                             NotificationItemPlaceholder(modifier = Modifier.fillMaxWidth())

@@ -54,6 +54,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.safeKey
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -91,16 +92,27 @@ class ExploreScreen : Screen {
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
 
+        suspend fun goBackToTop() {
+            runCatching {
+                lazyListState.scrollToItem(0)
+                topAppBarState.heightOffset = 0f
+                topAppBarState.contentOffset = 0f
+            }
+        }
+
         LaunchedEffect(model) {
             model.effects
                 .onEach { event ->
                     when (event) {
-                        ExploreMviModel.Effect.BackToTop ->
-                            runCatching {
-                                lazyListState.scrollToItem(0)
-                                topAppBarState.heightOffset = 0f
-                                topAppBarState.contentOffset = 0f
-                            }
+                        ExploreMviModel.Effect.BackToTop -> goBackToTop()
+                    }
+                }.launchIn(this)
+        }
+        LaunchedEffect(navigationCoordinator) {
+            navigationCoordinator.onDoubleTabSelection
+                .onEach { section ->
+                    if (section == BottomNavigationSection.Explore) {
+                        goBackToTop()
                     }
                 }.launchIn(this)
         }
