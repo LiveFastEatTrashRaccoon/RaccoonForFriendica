@@ -81,7 +81,7 @@ class UserDetailViewModel(
                 userRepository.getRelationships(listOf(id)).firstOrNull()
             } else {
                 null
-        }
+            }
         updateState {
             it.copy(
                 user =
@@ -215,6 +215,11 @@ class UserDetailViewModel(
 
     private fun toggleReblog(entry: TimelineEntryModel) {
         screenModelScope.launch {
+            updateEntryInState(entry.id) {
+                it.copy(
+                    reblogLoading = true,
+                )
+            }
             val newEntry =
                 if (entry.reblogged) {
                     timelineEntryRepository.unreblog(entry.id)
@@ -226,6 +231,13 @@ class UserDetailViewModel(
                     it.copy(
                         reblogged = newEntry.reblogged,
                         reblogCount = newEntry.reblogCount,
+                        reblogLoading = false,
+                    )
+                }
+            } else {
+                updateEntryInState(entry.id) {
+                    it.copy(
+                        reblogLoading = false,
                     )
                 }
             }
@@ -234,6 +246,11 @@ class UserDetailViewModel(
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
         screenModelScope.launch {
+            updateEntryInState(entry.id) {
+                it.copy(
+                    favoriteLoading = true,
+                )
+            }
             val newEntry =
                 if (entry.favorite) {
                     timelineEntryRepository.unfavorite(entry.id)
@@ -245,6 +262,13 @@ class UserDetailViewModel(
                     it.copy(
                         favorite = newEntry.favorite,
                         favoriteCount = newEntry.favoriteCount,
+                        favoriteLoading = false,
+                    )
+                }
+            } else {
+                updateEntryInState(entry.id) {
+                    it.copy(
+                        favoriteLoading = false,
                     )
                 }
             }
@@ -253,6 +277,11 @@ class UserDetailViewModel(
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
         screenModelScope.launch {
+            updateEntryInState(entry.id) {
+                it.copy(
+                    bookmarkLoading = true,
+                )
+            }
             val newEntry =
                 if (entry.bookmarked) {
                     timelineEntryRepository.unbookmark(entry.id)
@@ -263,6 +292,13 @@ class UserDetailViewModel(
                 updateEntryInState(entry.id) {
                     it.copy(
                         bookmarked = newEntry.bookmarked,
+                        bookmarkLoading = false,
+                    )
+                }
+            } else {
+                updateEntryInState(entry.id) {
+                    it.copy(
+                        bookmarkLoading = false,
                     )
                 }
             }

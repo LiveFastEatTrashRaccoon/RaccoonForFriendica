@@ -125,6 +125,11 @@ class MyAccountViewModel(
 
     private fun toggleReblog(entry: TimelineEntryModel) {
         screenModelScope.launch {
+            updateEntryInState(entry.id) {
+                it.copy(
+                    reblogLoading = true,
+                )
+            }
             val newEntry =
                 if (entry.reblogged) {
                     timelineEntryRepository.unreblog(entry.id)
@@ -136,6 +141,13 @@ class MyAccountViewModel(
                     it.copy(
                         reblogged = newEntry.reblogged,
                         reblogCount = newEntry.reblogCount,
+                        reblogLoading = false,
+                    )
+                }
+            } else {
+                updateEntryInState(entry.id) {
+                    it.copy(
+                        reblogLoading = false,
                     )
                 }
             }
@@ -144,6 +156,11 @@ class MyAccountViewModel(
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
         screenModelScope.launch {
+            updateEntryInState(entry.id) {
+                it.copy(
+                    favoriteLoading = true,
+                )
+            }
             val newEntry =
                 if (entry.favorite) {
                     timelineEntryRepository.unfavorite(entry.id)
@@ -155,6 +172,13 @@ class MyAccountViewModel(
                     it.copy(
                         favorite = newEntry.favorite,
                         favoriteCount = newEntry.favoriteCount,
+                        favoriteLoading = false,
+                    )
+                }
+            } else {
+                updateEntryInState(entry.id) {
+                    it.copy(
+                        favoriteLoading = false,
                     )
                 }
             }
@@ -163,6 +187,11 @@ class MyAccountViewModel(
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
         screenModelScope.launch {
+            updateEntryInState(entry.id) {
+                it.copy(
+                    bookmarkLoading = true,
+                )
+            }
             val newEntry =
                 if (entry.bookmarked) {
                     timelineEntryRepository.unbookmark(entry.id)
@@ -173,6 +202,13 @@ class MyAccountViewModel(
                 updateEntryInState(entry.id) {
                     it.copy(
                         bookmarked = newEntry.bookmarked,
+                        bookmarkLoading = false,
+                    )
+                }
+            } else {
+                updateEntryInState(entry.id) {
+                    it.copy(
+                        bookmarkLoading = false,
                     )
                 }
             }
