@@ -78,17 +78,18 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] enable/disable notifications for other users
 - [x] create a post/reply with image attachments and alt text
 - [x] global search
+- [ ] open a user (group) detail in "forum mode" (Friendica-specific) (partially done)
 - [ ] edit one's own posts
 - [ ] delete one's own posts
 - [ ] edit one's own profile
 - [ ] block/unblock user and see list of blocked users
 - [ ] mute/unmute user and see list of muted users
-- [ ] open a user (group) detail in "forum mode" (Friendica-specific)
 - [ ] manage one's own circles (Friendica-specific)
 - [ ] manage one's own lists
 - [ ] see private conversations
 - [ ] advanced media visualization (videos, GIFs, etc.)
 - [ ] custom emojis
+- [ ] switch from basic auth to OAuth
 
 #### Disclaimer
 
