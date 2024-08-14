@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.explore
+package com.livefast.eattrash.raccoonforfriendica.feaure.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -13,8 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -22,7 +21,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,43 +33,40 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SearchField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.FollowHashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.HashtagItem
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.LinkItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.safeKey
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toExploreSection
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toInt
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
+import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toInt
+import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toSearchSection
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
-class ExploreScreen : Screen {
+class SearchScreen : Screen {
     @OptIn(
         ExperimentalMaterial3Api::class,
         ExperimentalMaterialApi::class,
@@ -79,20 +74,18 @@ class ExploreScreen : Screen {
     )
     @Composable
     override fun Content() {
-        val model = getScreenModel<ExploreMviModel>()
+        val model = getScreenModel<SearchMviModel>()
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val connection = navigationCoordinator.getBottomBarScrollConnection()
         val uriHandler = LocalUriHandler.current
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
-        val scope = rememberCoroutineScope()
-        val drawerCoordinator = remember { getDrawerCoordinator() }
         val lazyListState = rememberLazyListState()
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
+        var confirmUnfollowHashtagName by remember { mutableStateOf<String?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -106,15 +99,7 @@ class ExploreScreen : Screen {
             model.effects
                 .onEach { event ->
                     when (event) {
-                        ExploreMviModel.Effect.BackToTop -> goBackToTop()
-                    }
-                }.launchIn(this)
-        }
-        LaunchedEffect(navigationCoordinator) {
-            navigationCoordinator.onDoubleTabSelection
-                .onEach { section ->
-                    if (section == BottomNavigationSection.Explore) {
-                        goBackToTop()
+                        SearchMviModel.Effect.BackToTop -> goBackToTop()
                     }
                 }.launchIn(this)
         }
@@ -124,35 +109,29 @@ class ExploreScreen : Screen {
                 TopAppBar(
                     scrollBehavior = scrollBehavior,
                     title = {
-                        Text(
-                            text = LocalStrings.current.sectionTitleExplore,
-                            style = MaterialTheme.typography.titleMedium,
+                        SearchField(
+                            value = uiState.query,
+                            hint = LocalStrings.current.searchPlaceholder,
+                            onClear = {
+                                model.reduce(SearchMviModel.Intent.SetSearch(""))
+                            },
+                            onValueChange = {
+                                model.reduce(SearchMviModel.Intent.SetSearch(it))
+                            },
                         )
                     },
                     navigationIcon = {
-                        Image(
-                            modifier =
-                                Modifier.clickable {
-                                    scope.launch {
-                                        drawerCoordinator.toggleDrawer()
-                                    }
-                                },
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                        )
-                    },
-                    actions = {
-                        Icon(
-                            modifier =
-                                Modifier
-                                    .padding(horizontal = Spacing.xs)
-                                    .clickable {
-                                        detailOpener.openSearch()
+                        if (navigationCoordinator.canPop.value) {
+                            Image(
+                                modifier =
+                                    Modifier.clickable {
+                                        navigationCoordinator.pop()
                                     },
-                            imageVector = Icons.Default.Search,
-                            contentDescription = null,
-                        )
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                            )
+                        }
                     },
                 )
             },
@@ -161,20 +140,14 @@ class ExploreScreen : Screen {
                 rememberPullRefreshState(
                     refreshing = uiState.refreshing,
                     onRefresh = {
-                        model.reduce(ExploreMviModel.Intent.Refresh)
+                        model.reduce(SearchMviModel.Intent.Refresh)
                     },
                 )
             Box(
                 modifier =
                     Modifier
                         .padding(padding)
-                        .then(
-                            if (connection != null) {
-                                Modifier.nestedScroll(connection)
-                            } else {
-                                Modifier
-                            },
-                        ).nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .pullRefresh(pullRefreshState),
             ) {
                 LazyColumn(
@@ -185,16 +158,15 @@ class ExploreScreen : Screen {
                             modifier = Modifier.padding(bottom = Spacing.s),
                             titles =
                                 listOf(
-                                    ExploreSection.Hashtags.toReadableName(),
-                                    ExploreSection.Posts.toReadableName(),
-                                    ExploreSection.Links.toReadableName(),
-                                    ExploreSection.Suggestions.toReadableName(),
+                                    SearchSection.Hashtags.toReadableName(),
+                                    SearchSection.Posts.toReadableName(),
+                                    SearchSection.Users.toReadableName(),
                                 ),
                             currentSection = uiState.section.toInt(),
                             onSectionSelected = {
-                                val section = it.toExploreSection()
+                                val section = it.toSearchSection()
                                 model.reduce(
-                                    ExploreMviModel.Intent.ChangeSection(section),
+                                    SearchMviModel.Intent.ChangeSection(section),
                                 )
                             },
                         )
@@ -204,28 +176,34 @@ class ExploreScreen : Screen {
                         items(20) {
                             val modifier = Modifier.fillMaxWidth()
                             when (uiState.section) {
-                                ExploreSection.Hashtags -> {
+                                SearchSection.Hashtags -> {
                                     GenericPlaceholder(modifier)
                                     Spacer(modifier = Modifier.height(Spacing.interItem))
                                 }
 
-                                ExploreSection.Links -> {
-                                    GenericPlaceholder(modifier)
-                                    Spacer(modifier = Modifier.height(Spacing.interItem))
-                                }
-
-                                ExploreSection.Posts -> {
+                                SearchSection.Posts -> {
                                     TimelineItemPlaceholder(modifier)
                                     HorizontalDivider(
                                         modifier = Modifier.padding(vertical = Spacing.s),
                                     )
                                 }
 
-                                ExploreSection.Suggestions -> {
+                                SearchSection.Users -> {
                                     UserItemPlaceholder(modifier)
                                     Spacer(modifier = Modifier.height(Spacing.interItem))
                                 }
                             }
+                        }
+                    }
+
+                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
+                        item {
+                            Text(
+                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                                text = LocalStrings.current.messageSearchInitialEmpty,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
                         }
                     }
 
@@ -252,19 +230,22 @@ class ExploreScreen : Screen {
                                         detailOpener.openUserDetail(it.id)
                                     },
                                     onReblog = { e ->
-                                        model.reduce(ExploreMviModel.Intent.ToggleReblog(e))
+                                        model.reduce(SearchMviModel.Intent.ToggleReblog(e))
                                     },
                                     onBookmark = { e ->
-                                        model.reduce(ExploreMviModel.Intent.ToggleBookmark(e))
+                                        model.reduce(SearchMviModel.Intent.ToggleBookmark(e))
                                     },
                                     onFavorite = { e ->
-                                        model.reduce(ExploreMviModel.Intent.ToggleFavorite(e))
+                                        model.reduce(SearchMviModel.Intent.ToggleFavorite(e))
                                     },
                                     onReply = { e ->
                                         detailOpener.openComposer(
                                             inReplyToId = e.id,
                                             inReplyToHandle = e.creator?.handle,
-                                            inReplyToUsername = e.creator?.let { it.displayName ?: it.username },
+                                            inReplyToUsername =
+                                                e.creator?.let {
+                                                    it.displayName ?: it.username
+                                                },
                                         )
                                     },
                                 )
@@ -274,20 +255,22 @@ class ExploreScreen : Screen {
                             }
 
                             is ExploreItemModel.HashTag -> {
-                                HashtagItem(
+                                FollowHashtagItem(
                                     hashtag = item.hashtag,
                                     onOpen = {
                                         detailOpener.openHashtag(it)
                                     },
-                                )
-                                Spacer(modifier = Modifier.height(Spacing.interItem))
-                            }
-
-                            is ExploreItemModel.Link -> {
-                                LinkItem(
-                                    link = item.link,
-                                    onOpen = { url ->
-                                        openUrl(url)
+                                    onToggleFollow = { newFollow ->
+                                        if (newFollow) {
+                                            model.reduce(
+                                                SearchMviModel.Intent.ToggleTagFollow(
+                                                    item.hashtag.name,
+                                                    newFollow,
+                                                ),
+                                            )
+                                        } else {
+                                            confirmUnfollowHashtagName = item.hashtag.name
+                                        }
                                     },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.interItem))
@@ -303,7 +286,7 @@ class ExploreScreen : Screen {
                                         when (nextAction) {
                                             RelationshipStatusNextAction.AcceptRequest -> {
                                                 model.reduce(
-                                                    ExploreMviModel.Intent.AcceptFollowRequest(
+                                                    SearchMviModel.Intent.AcceptFollowRequest(
                                                         item.user.id,
                                                     ),
                                                 )
@@ -319,23 +302,25 @@ class ExploreScreen : Screen {
                                             }
 
                                             RelationshipStatusNextAction.Follow -> {
-                                                model.reduce(ExploreMviModel.Intent.Follow(item.user.id))
+                                                model.reduce(SearchMviModel.Intent.Follow(item.user.id))
                                             }
 
                                             RelationshipStatusNextAction.Unfollow -> {
-                                                model.reduce(ExploreMviModel.Intent.Unfollow(item.user.id))
+                                                model.reduce(SearchMviModel.Intent.Unfollow(item.user.id))
                                             }
                                         }
                                     },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.interItem))
                             }
+
+                            else -> Unit
                         }
                     }
 
                     item {
                         if (!uiState.initial && !uiState.loading && uiState.canFetchMore) {
-                            model.reduce(ExploreMviModel.Intent.LoadNextPage)
+                            model.reduce(SearchMviModel.Intent.LoadNextPage)
                         }
                         if (uiState.loading) {
                             Box(
@@ -391,7 +376,7 @@ class ExploreScreen : Screen {
                             val userId = confirmUnfollowDialogUserId ?: ""
                             confirmUnfollowDialogUserId = null
                             if (userId.isNotEmpty()) {
-                                model.reduce(ExploreMviModel.Intent.Unfollow(userId))
+                                model.reduce(SearchMviModel.Intent.Unfollow(userId))
                             }
                         },
                     ) {
@@ -430,7 +415,51 @@ class ExploreScreen : Screen {
                             val userId = confirmUnfollowDialogUserId ?: ""
                             confirmUnfollowDialogUserId = null
                             if (userId.isNotEmpty()) {
-                                model.reduce(ExploreMviModel.Intent.Unfollow(userId))
+                                model.reduce(SearchMviModel.Intent.Unfollow(userId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmUnfollowHashtagName != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmUnfollowHashtagName = null
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionUnfollow,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmUnfollowHashtagName = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val oldtag = confirmUnfollowHashtagName
+                            confirmUnfollowHashtagName = null
+                            if (oldtag != null) {
+                                model.reduce(
+                                    SearchMviModel.Intent.ToggleTagFollow(
+                                        name = oldtag,
+                                        newValue = false,
+                                    ),
+                                )
                             }
                         },
                     ) {

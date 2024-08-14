@@ -1,23 +1,27 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.explore
+package com.livefast.eattrash.raccoonforfriendica.feaure.search
 
 import androidx.compose.runtime.Stable
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
+import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
 
 @Stable
-interface ExploreMviModel :
+interface SearchMviModel :
     ScreenModel,
-    MviModel<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect> {
+    MviModel<SearchMviModel.Intent, SearchMviModel.State, SearchMviModel.Effect> {
     sealed interface Intent {
+        data class SetSearch(
+            val query: String,
+        ) : Intent
+
         data object Refresh : Intent
 
         data object LoadNextPage : Intent
 
         data class ChangeSection(
-            val section: ExploreSection,
+            val section: SearchSection,
         ) : Intent
 
         data class AcceptFollowRequest(
@@ -43,14 +47,20 @@ interface ExploreMviModel :
         data class ToggleBookmark(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class ToggleTagFollow(
+            val name: String,
+            val newValue: Boolean,
+        ) : Intent
     }
 
     data class State(
+        val query: String = "",
         val refreshing: Boolean = false,
         val loading: Boolean = false,
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
-        val section: ExploreSection = ExploreSection.Hashtags,
+        val section: SearchSection = SearchSection.Hashtags,
         val items: List<ExploreItemModel> = emptyList(),
     )
 

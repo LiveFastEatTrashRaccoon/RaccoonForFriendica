@@ -15,6 +15,7 @@ internal class DefaultFavoritesPaginationManager(
         this.specification = specification
         pageCursor = null
         history.clear()
+        canFetchMore = true
     }
 
     override suspend fun loadNextPage(): List<TimelineEntryModel> {

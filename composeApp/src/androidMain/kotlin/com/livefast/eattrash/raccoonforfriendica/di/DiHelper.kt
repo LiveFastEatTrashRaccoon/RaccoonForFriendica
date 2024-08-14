@@ -27,6 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.profile.di.featureProfi
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.featureSettingsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.di.featureTimelineModule
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.featureUserListModule
+import com.livefast.eattrash.raccoonforfriendica.feaure.search.di.featureSearchModule
 import org.koin.dsl.module
 
 val sharedHelperModule =
@@ -61,5 +62,6 @@ val sharedHelperModule =
             featureUserListModule,
             featureDrawerModule,
             featureFavoritesModule,
+            featureSearchModule,
         )
     }

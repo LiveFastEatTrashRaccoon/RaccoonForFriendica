@@ -125,6 +125,9 @@ interface Strings {
     val insertLinkFieldUrl: String
     val selectUserDialogTitle: String
     val selectUserSearchPlaceholder: String
+    val messageSearchInitialEmpty: String
+    val searchSectionUsers: String
+    val searchPlaceholder: String
 }
 
 object Locales {

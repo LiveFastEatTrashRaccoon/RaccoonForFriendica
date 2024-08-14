@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.SearchService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.StatusService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TagsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
@@ -27,7 +28,7 @@ internal class DefaultServiceProvider(
     private val factory: HttpClientEngine = provideHttpClientEngine(),
 ) : ServiceProvider {
     companion object {
-        private const val ENABLE_LOGGING = false
+        private const val ENABLE_LOGGING = true
         private const val REAM_NAME = "Friendica"
     }
 
@@ -35,6 +36,7 @@ internal class DefaultServiceProvider(
 
     override lateinit var photo: PhotoService
     override lateinit var notifications: NotificationService
+    override lateinit var search: SearchService
     override lateinit var statuses: StatusService
     override lateinit var tags: TagsService
     override lateinit var timeline: TimelineService
@@ -107,6 +109,7 @@ internal class DefaultServiceProvider(
                 .build()
         photo = ktorfit.create()
         notifications = ktorfit.create()
+        search = ktorfit.create()
         statuses = ktorfit.create()
         tags = ktorfit.create()
         timeline = ktorfit.create()

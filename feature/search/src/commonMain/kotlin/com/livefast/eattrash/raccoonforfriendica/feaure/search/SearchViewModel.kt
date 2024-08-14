@@ -1,63 +1,92 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.explore
+package com.livefast.eattrash.raccoonforfriendica.feaure.search
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.ExplorePaginationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.ExplorePaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.SearchPaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.SearchPaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
+import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class ExploreViewModel(
-    private val paginationManager: ExplorePaginationManager,
+@OptIn(FlowPreview::class)
+class SearchViewModel(
+    private val paginationManager: SearchPaginationManager,
     private val userRepository: UserRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
-) : DefaultMviModel<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect>(
-        initialState = ExploreMviModel.State(),
+    private val tagRepository: TagRepository,
+) : DefaultMviModel<SearchMviModel.Intent, SearchMviModel.State, SearchMviModel.Effect>(
+        initialState = SearchMviModel.State(),
     ),
-    ExploreMviModel {
+    SearchMviModel {
     init {
         screenModelScope.launch {
+            uiState
+                .map { it.query }
+                .distinctUntilChanged()
+                .drop(1)
+                .debounce(1000)
+                .onEach {
+                    refresh()
+                }.launchIn(this)
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
         }
     }
 
-    override fun reduce(intent: ExploreMviModel.Intent) {
+    override fun reduce(intent: SearchMviModel.Intent) {
         when (intent) {
-            is ExploreMviModel.Intent.ChangeSection ->
+            is SearchMviModel.Intent.SetSearch ->
+                screenModelScope.launch {
+                    updateState { it.copy(query = intent.query) }
+                }
+
+            is SearchMviModel.Intent.ChangeSection ->
                 screenModelScope.launch {
                     if (uiState.value.loading) {
                         return@launch
                     }
                     updateState { it.copy(section = intent.section) }
-                    emitEffect(ExploreMviModel.Effect.BackToTop)
+                    emitEffect(SearchMviModel.Effect.BackToTop)
                     refresh(initial = true)
                 }
 
-            ExploreMviModel.Intent.LoadNextPage ->
+            SearchMviModel.Intent.LoadNextPage ->
                 screenModelScope.launch {
                     loadNextPage()
                 }
 
-            ExploreMviModel.Intent.Refresh ->
+            SearchMviModel.Intent.Refresh ->
                 screenModelScope.launch {
                     refresh()
                 }
 
-            is ExploreMviModel.Intent.AcceptFollowRequest -> acceptFollowRequest(intent.userId)
-            is ExploreMviModel.Intent.Follow -> follow(intent.userId)
-            is ExploreMviModel.Intent.Unfollow -> unfollow(intent.userId)
-            is ExploreMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
-            is ExploreMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
-            is ExploreMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is SearchMviModel.Intent.AcceptFollowRequest -> acceptFollowRequest(intent.userId)
+            is SearchMviModel.Intent.Follow -> follow(intent.userId)
+            is SearchMviModel.Intent.Unfollow -> unfollow(intent.userId)
+            is SearchMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is SearchMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is SearchMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is SearchMviModel.Intent.ToggleTagFollow ->
+                toggleTagFollow(
+                    intent.name,
+                    intent.newValue,
+                )
         }
     }
 
@@ -65,12 +94,12 @@ class ExploreViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
+        val query = uiState.value.query
         paginationManager.reset(
             when (uiState.value.section) {
-                ExploreSection.Hashtags -> ExplorePaginationSpecification.Hashtags
-                ExploreSection.Links -> ExplorePaginationSpecification.Links
-                ExploreSection.Posts -> ExplorePaginationSpecification.Posts
-                ExploreSection.Suggestions -> ExplorePaginationSpecification.Suggestions
+                SearchSection.Hashtags -> SearchPaginationSpecification.Hashtags(query)
+                SearchSection.Posts -> SearchPaginationSpecification.Entries(query)
+                SearchSection.Users -> SearchPaginationSpecification.Users(query)
             },
         )
         loadNextPage()
@@ -299,6 +328,43 @@ class ExploreViewModel(
                         bookmarkLoading = false,
                     )
                 }
+            }
+        }
+    }
+
+    private suspend fun updateHashtagInState(
+        name: String,
+        block: (TagModel) -> TagModel,
+    ) {
+        updateState {
+            it.copy(
+                items =
+                    it.items.map { item ->
+                        if (item is ExploreItemModel.HashTag && item.hashtag.name == name) {
+                            item.copy(
+                                hashtag = item.hashtag.let(block),
+                            )
+                        } else {
+                            item
+                        }
+                    },
+            )
+        }
+    }
+
+    private fun toggleTagFollow(
+        name: String,
+        follow: Boolean,
+    ) {
+        screenModelScope.launch {
+            val newTag =
+                if (!follow) {
+                    tagRepository.unfollow(name)
+                } else {
+                    tagRepository.follow(name)
+                }
+            if (newTag != null) {
+                updateHashtagInState(name) { newTag }
             }
         }
     }

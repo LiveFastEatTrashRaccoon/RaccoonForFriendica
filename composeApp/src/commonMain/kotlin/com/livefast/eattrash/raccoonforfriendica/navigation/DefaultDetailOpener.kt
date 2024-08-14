@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.HashtagScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.LoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
+import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
 
 class DefaultDetailOpener(
     private val navigationCoordinator: NavigationCoordinator,
@@ -93,7 +94,12 @@ class DefaultDetailOpener(
                 inReplyToId = inReplyToId,
                 inReplyToUsername = inReplyToUsername,
                 inReplyToHandle = inReplyToHandle,
-        )
+            )
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openSearch() {
+        val screen = SearchScreen()
         navigationCoordinator.push(screen)
     }
 }

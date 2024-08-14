@@ -39,4 +39,6 @@ interface DetailOpener {
         inReplyToUsername: String? = null,
         inReplyToHandle: String? = null,
     )
+
+    fun openSearch()
 }
