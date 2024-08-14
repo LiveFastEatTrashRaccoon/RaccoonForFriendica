@@ -17,12 +17,13 @@ This is why it retains part of its name, making clear that the two projects are 
 lot of common heritage.
 
 <div align="center">
-  <img width="310" src="https://github.com/user-attachments/assets/6b01d961-4fe6-4a44-8c3f-2fb5185656fa" alt="timeline screen" />
-  <img width="310" src="https://github.com/user-attachments/assets/3c6b96d2-58f7-42ae-9837-14d9ea9609c2" alt="account detail screen" />
-  <img width="310" src="https://github.com/user-attachments/assets/316b7a93-f46f-42f7-90fd-5efe223bbdd6" alt="post detail screen" />
-  <img width="310" src="https://github.com/user-attachments/assets/2920e28d-d3e1-4d43-b8a2-3023302575d2" alt="settings screen" />
-  <img width="310" src="https://github.com/user-attachments/assets/175fb882-9b66-4a5b-9b1f-220f1d9886ee" alt="explore screen (hashtags)" />
-  <img width="310" src="https://github.com/user-attachments/assets/1cfe3f3e-8725-4c3e-b583-8e8cf004d259" alt="notifications screen" />
+
+  <img width="310" src="https://github.com/user-attachments/assets/42bf2862-6afa-4f26-9061-d8294b28221b" alt="timeline screen" />
+  <img width="310" src="https://github.com/user-attachments/assets/124ce939-a86c-441f-a959-97b98b3819d5" alt="user detail screen" />
+  <img width="310" src="https://github.com/user-attachments/assets/b582f0ec-a4fc-4e3b-9bd0-fea705fa3729" alt="post detail screen" />
+  <img width="310" src="https://github.com/user-attachments/assets/08804e47-4143-4f2b-ade1-baa1f7839c17" alt="settings screen" />
+  <img width="310" src="https://github.com/user-attachments/assets/3b9473e5-75ce-4569-9d20-c2e4a4f9bed9" alt="explore screen (hashtags tab)" />
+  <img width="310" src="https://github.com/user-attachments/assets/40b2a112-2aa4-49ab-b3b0-227a5bb680d3" alt="notifications screen" />
 </div>
 
 ## Why was the project started?
@@ -48,7 +49,7 @@ and technically speaking a lot of it actually _is_ a Mastodon client, using the 
 Friendica), adding on top of it some Friendica specific features such as groups and circles
 management. With this respect, it takes a different approach compared to other existing solutions
 like the very feature-complete [Relatica](https://gitlab.com/mysocialportal/relatica) app, in trying
-to look familiar to users with some UI they are intuitively familiar with.
+to look familiar to users with some UI they are already accustomed to.
 
 This project is all about experimenting and learning, so please be _patient_ if you find some bugs
 or missing features.
