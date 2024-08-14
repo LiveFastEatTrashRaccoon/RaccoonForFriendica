@@ -32,12 +32,7 @@ internal fun ColorThemeBottomSheet(
     onSelected: ((ThemeColor) -> Unit)? = null,
 ) {
     Column(
-        modifier =
-            Modifier.padding(
-                start = Spacing.m,
-                end = Spacing.m,
-                bottom = Spacing.xl,
-            ),
+        modifier = Modifier.padding(bottom = Spacing.xl),
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Text(
@@ -54,7 +49,10 @@ internal fun ColorThemeBottomSheet(
                             .fillMaxWidth()
                             .clickable {
                                 onSelected?.invoke(theme)
-                            }.padding(vertical = Spacing.s),
+                            }.padding(
+                                horizontal = Spacing.m,
+                                vertical = Spacing.s,
+                            ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                 ) {
@@ -68,7 +66,7 @@ internal fun ColorThemeBottomSheet(
                     Text(
                         modifier = Modifier.weight(1f),
                         text = theme.toReadableName(),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                     Text(
                         text = theme.toEmoji(),

@@ -29,12 +29,7 @@ internal fun TimelineTypeBottomSheet(
     onSelected: ((TimelineType) -> Unit)? = null,
 ) {
     Column(
-        modifier =
-            Modifier.padding(
-                start = Spacing.m,
-                end = Spacing.m,
-                bottom = Spacing.xl,
-            ),
+        modifier = Modifier.padding(bottom = Spacing.xl),
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Text(
@@ -44,20 +39,23 @@ internal fun TimelineTypeBottomSheet(
             style = MaterialTheme.typography.titleMedium,
         )
         LazyColumn {
-            items(items = types) { lang ->
+            items(items = types) { type ->
                 Row(
                     modifier =
                         Modifier
                             .fillMaxWidth()
                             .clickable {
-                                onSelected?.invoke(lang)
-                            }.padding(vertical = Spacing.s),
+                                onSelected?.invoke(type)
+                            }.padding(
+                                horizontal = Spacing.m,
+                                vertical = Spacing.s,
+                            ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                 ) {
                     Text(
-                        text = lang.toReadableName(),
-                        style = MaterialTheme.typography.labelLarge,
+                        text = type.toReadableName(),
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }

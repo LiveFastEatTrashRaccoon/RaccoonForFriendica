@@ -30,12 +30,7 @@ internal fun FontFamilyBottomSheet(
     onSelected: ((UiFontFamily) -> Unit)? = null,
 ) {
     Column(
-        modifier =
-            Modifier.padding(
-                start = Spacing.m,
-                end = Spacing.m,
-                bottom = Spacing.xl,
-            ),
+        modifier = Modifier.padding(bottom = Spacing.xl),
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Text(
@@ -52,13 +47,16 @@ internal fun FontFamilyBottomSheet(
                             .fillMaxWidth()
                             .clickable {
                                 onSelected?.invoke(family)
-                            }.padding(vertical = Spacing.s),
+                            }.padding(
+                                horizontal = Spacing.m,
+                                vertical = Spacing.s,
+                            ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                 ) {
                     Text(
                         text = family.toReadableName(),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }

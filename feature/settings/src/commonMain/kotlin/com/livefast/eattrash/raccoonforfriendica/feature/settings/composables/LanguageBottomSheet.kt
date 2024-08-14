@@ -29,12 +29,7 @@ internal fun LanguageBottomSheet(
     onSelected: ((String) -> Unit)? = null,
 ) {
     Column(
-        modifier =
-            Modifier.padding(
-                start = Spacing.m,
-                end = Spacing.m,
-                bottom = Spacing.xl,
-            ),
+        modifier = Modifier.padding(bottom = Spacing.xl),
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Text(
@@ -51,13 +46,16 @@ internal fun LanguageBottomSheet(
                             .fillMaxWidth()
                             .clickable {
                                 onSelected?.invoke(lang)
-                            }.padding(vertical = Spacing.s),
+                            }.padding(
+                                horizontal = Spacing.m,
+                                vertical = Spacing.s,
+                            ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                 ) {
                     Text(
                         text = lang.toLanguageName().orEmpty(),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }
