@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Acco
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -40,8 +41,9 @@ class ComposerViewModel(
             refreshAuthor()
             uiState
                 .map { it.userSearchQuery }
+                .distinctUntilChanged()
                 .drop(1)
-                .debounce(500)
+                .debounce(750)
                 .onEach { query ->
                     refreshUsers(query)
                 }.launchIn(this)
