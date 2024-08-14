@@ -1,7 +1,9 @@
 package com.livefast.eattrash.feature.userdetail.di
 
-import com.livefast.eattrash.feature.userdetail.UserDetailMviModel
-import com.livefast.eattrash.feature.userdetail.UserDetailViewModel
+import com.livefast.eattrash.feature.userdetail.classic.UserDetailMviModel
+import com.livefast.eattrash.feature.userdetail.classic.UserDetailViewModel
+import com.livefast.eattrash.feature.userdetail.forum.ForumListMviModel
+import com.livefast.eattrash.feature.userdetail.forum.ForumListViewModel
 import org.koin.dsl.module
 
 val featureUserDetailModule =
@@ -14,6 +16,15 @@ val featureUserDetailModule =
                 timelineEntryRepository = get(),
                 apiConfigurationRepository = get(),
                 accountRepository = get(),
+            )
+        }
+        factory<ForumListMviModel> { params ->
+            ForumListViewModel(
+                id = params[0],
+                userRepository = get(),
+                paginationManager = get(),
+                timelineEntryRepository = get(),
+                apiConfigurationRepository = get(),
             )
         }
     }

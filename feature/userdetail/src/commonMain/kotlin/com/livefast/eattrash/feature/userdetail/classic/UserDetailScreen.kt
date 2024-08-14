@@ -1,4 +1,4 @@
-package com.livefast.eattrash.feature.userdetail
+package com.livefast.eattrash.feature.userdetail.classic
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -211,6 +211,9 @@ class UserDetailScreen(
                                     },
                                     onOpenFollowing = {
                                         detailOpener.openFollowing(id)
+                                    },
+                                    onOpenInForumMode = {
+                                        detailOpener.openInForumMode(id)
                                     },
                                 )
                             }

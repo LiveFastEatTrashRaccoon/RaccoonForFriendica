@@ -41,4 +41,6 @@ interface DetailOpener {
     )
 
     fun openSearch()
+
+    fun openInForumMode(groupId: String)
 }

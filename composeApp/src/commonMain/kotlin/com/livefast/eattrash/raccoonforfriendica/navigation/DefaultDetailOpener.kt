@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.navigation
 
-import com.livefast.eattrash.feature.userdetail.UserDetailScreen
+import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
+import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
@@ -100,6 +101,11 @@ class DefaultDetailOpener(
 
     override fun openSearch() {
         val screen = SearchScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openInForumMode(groupId: String) {
+        val screen = ForumListScreen(groupId)
         navigationCoordinator.push(screen)
     }
 }
