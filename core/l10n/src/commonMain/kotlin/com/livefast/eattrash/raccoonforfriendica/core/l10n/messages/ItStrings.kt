@@ -2,13 +2,13 @@ package com.livefast.eattrash.raccoonforfriendica.core.l10n.messages
 
 internal val ItStrings =
     object : DefaultStrings() {
-        override val messageConfirmExit = "Premi di nuovo \uD83D\uDD19 per uscire"
+        override val messageConfirmExit = "Premi di nuovo 🔙 per uscire"
         override val messageAreYouSure = "Sei sicuro/a di voler continuare"
         override val messageSuccess = "Operazione completata con successo!"
         override val messageGenericError = "Si è verificato un errore inaspettato"
         override val messageInvalidField = "Campo non valido"
         override val messageMissingField = "Campo obbligatorio"
-        override val messageEmptyList = "Qui non c'è nulla da visualizzare  \uD83E\uDD37\uD83C\uDFFD"
+        override val messageEmptyList = "Qui non c'è nulla da visualizzare 🗑️"
         override val buttonConfirm = "Conferma"
         override val buttonOk = "OK"
         override val buttonClose = "Chiudi"
@@ -120,4 +120,7 @@ internal val ItStrings =
         override val insertLinkFieldUrl = "URL"
         override val selectUserDialogTitle = "Seleziona utente"
         override val selectUserSearchPlaceholder = "nome utente or identificativo"
+        override val searchSectionUsers = "Utenti"
+        override val searchPlaceholder = "Cerca nel Fediverso"
+        override val messageSearchInitialEmpty = "Inserisci una nuova espressione di ricerca 🔦"
     }
