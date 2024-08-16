@@ -73,7 +73,11 @@ class TimelineViewModel(
                     }
 
                     updateState {
-                        it.copy(timelineType = intent.type)
+                        it.copy(
+                            timelineType = intent.type,
+                            entries = emptyList(),
+                            canFetchMore = false,
+                        )
                     }
                     emitEffect(TimelineMviModel.Effect.BackToTop)
                     refresh(initial = true)
