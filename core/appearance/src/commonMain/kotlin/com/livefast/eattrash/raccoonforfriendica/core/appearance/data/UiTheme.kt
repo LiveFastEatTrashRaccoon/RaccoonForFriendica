@@ -10,7 +10,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
 sealed interface UiTheme {
     data object Light : UiTheme
+
     data object Dark : UiTheme
+
     data object Black : UiTheme
 
     data object Default : UiTheme
