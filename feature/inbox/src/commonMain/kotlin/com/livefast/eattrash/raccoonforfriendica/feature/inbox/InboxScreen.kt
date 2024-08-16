@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -151,10 +151,10 @@ class InboxScreen : Screen {
                         }
                     }
 
-                    items(
+                    itemsIndexed(
                         items = uiState.notifications,
-                        key = { it.id },
-                    ) { notification ->
+                        key = { _, e -> e.id },
+                    ) { idx, notification ->
                         NotificationItem(
                             notification = notification,
                             onOpenEntry = { entry ->
@@ -193,12 +193,15 @@ class InboxScreen : Screen {
                         HorizontalDivider(
                             modifier = Modifier.padding(vertical = Spacing.interItem),
                         )
+
+                        val canFetchMore =
+                            !uiState.initial && !uiState.loading && uiState.canFetchMore
+                        if (idx == uiState.notifications.lastIndex - 5 && canFetchMore) {
+                            model.reduce(InboxMviModel.Intent.LoadNextPage)
+                        }
                     }
 
                     item {
-                        if (!uiState.initial && !uiState.loading && uiState.canFetchMore) {
-                            model.reduce(InboxMviModel.Intent.LoadNextPage)
-                        }
                         if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
                             Box(
                                 modifier = Modifier.fillMaxWidth(),

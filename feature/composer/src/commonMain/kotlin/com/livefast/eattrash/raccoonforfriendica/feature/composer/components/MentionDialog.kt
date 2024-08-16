@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -93,19 +93,20 @@ fun MentionDialog(
                     }
                 }
 
-                items(users) { user ->
+                itemsIndexed(users) { idx, user ->
                     UserResultItem(
                         user = user,
                         onClick = {
                             onClose?.invoke(user)
                         },
                     )
+
+                    if (idx == users.lastIndex - 5 && !loading && canFetchMore) {
+                        onLoadMoreUsers?.invoke()
+                    }
                 }
 
                 item {
-                    if (!loading && canFetchMore) {
-                        onLoadMoreUsers?.invoke()
-                    }
                     if (loading && canFetchMore) {
                         Box(
                             modifier = Modifier.fillMaxWidth(),

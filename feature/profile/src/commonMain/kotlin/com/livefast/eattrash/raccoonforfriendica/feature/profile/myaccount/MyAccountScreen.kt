@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -185,10 +185,10 @@ class MyAccountScreen : Screen {
                     }
                 }
 
-                items(
+                itemsIndexed(
                     items = uiState.entries,
-                    key = { it.safeKey },
-                ) { entry ->
+                    key = { _, e -> e.safeKey },
+                ) { idx, entry ->
                     TimelineItem(
                         entry = entry,
                         onClick = { e ->
@@ -220,6 +220,12 @@ class MyAccountScreen : Screen {
                     HorizontalDivider(
                         modifier = Modifier.padding(vertical = Spacing.s),
                     )
+
+                    val canFetchMore =
+                        !uiState.initial && !uiState.loading && uiState.canFetchMore
+                    if (idx == uiState.entries.lastIndex - 5 && canFetchMore) {
+                        model.reduce(MyAccountMviModel.Intent.LoadNextPage)
+                    }
                 }
                 if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
                     item {
@@ -233,9 +239,6 @@ class MyAccountScreen : Screen {
                 }
 
                 item {
-                    if (!uiState.initial && !uiState.loading && uiState.canFetchMore) {
-                        model.reduce(MyAccountMviModel.Intent.LoadNextPage)
-                    }
                     if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
