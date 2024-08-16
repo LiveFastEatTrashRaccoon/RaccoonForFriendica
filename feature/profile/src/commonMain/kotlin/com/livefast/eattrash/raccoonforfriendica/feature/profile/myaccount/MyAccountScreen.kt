@@ -166,6 +166,7 @@ class MyAccountScreen : Screen {
                                 UserSection.Pinned.toReadableName(),
                                 UserSection.Media.toReadableName(),
                             ),
+                        scrollable = true,
                         currentSection = uiState.section.toInt(),
                         onSectionSelected = {
                             val section = it.toAccountSection()
