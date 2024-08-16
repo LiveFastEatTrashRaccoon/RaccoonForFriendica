@@ -22,4 +22,7 @@ val featureProfileModule =
                 timelineEntryRepository = get(),
             )
         }
+        single<MyAccountCache> {
+            DefaultMyAccountCache()
+        }
     }
