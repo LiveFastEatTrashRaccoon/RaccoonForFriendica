@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer
 
+import androidx.compose.ui.text.TextRange
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
@@ -66,9 +67,9 @@ class ComposerViewModel(
 
     override fun reduce(intent: ComposerMviModel.Intent) {
         when (intent) {
-            is ComposerMviModel.Intent.SetText ->
+            is ComposerMviModel.Intent.SetBodyValue ->
                 screenModelScope.launch {
-                    updateState { it.copy(text = intent.text) }
+                    updateState { it.copy(bodyValue = intent.value) }
                 }
 
             is ComposerMviModel.Intent.SetSpoilerText ->
@@ -86,51 +87,9 @@ class ComposerViewModel(
                 updateAttachmentDescription(intent.attachment, intent.description)
 
             is ComposerMviModel.Intent.RemoveAttachment -> removeAttachment(intent.attachmentId)
-            is ComposerMviModel.Intent.AddLink ->
-                screenModelScope.launch {
-                    val (anchor, url) = intent.link
-                    val additionalPart = "<a href=\"$url\">$anchor</a>"
-                    val newText =
-                        buildString {
-                            append(uiState.value.text)
-                            if (isNotEmpty() && !endsWith(" ")) {
-                                append(" ")
-                            }
-                            append(additionalPart)
-                        }
-
-                    updateState { it.copy(text = newText) }
-                }
-
-            is ComposerMviModel.Intent.AddMention ->
-                screenModelScope.launch {
-                    val additionalPart = "@${intent.handle}"
-                    val newText =
-                        buildString {
-                            append(uiState.value.text)
-                            if (isNotEmpty() && !endsWith(" ")) {
-                                append(" ")
-                            }
-                            append(additionalPart)
-                        }
-
-                    updateState { it.copy(text = newText) }
-                }
-
-            is ComposerMviModel.Intent.AddGroupReference ->
-                screenModelScope.launch {
-                    val additionalPart = "!${intent.handle}"
-                    val newText =
-                        buildString {
-                            append(uiState.value.text)
-                            if (isNotEmpty() && !endsWith(" ")) {
-                                append(" ")
-                            }
-                            append(additionalPart)
-                        }
-
-                    updateState { it.copy(text = newText) }
-                }
+            is ComposerMviModel.Intent.AddLink -> addLink(intent.link)
+            is ComposerMviModel.Intent.AddMention -> addMention(intent.handle)
+            is ComposerMviModel.Intent.AddGroupReference -> addGroupReference(intent.handle)
 
             is ComposerMviModel.Intent.UserSearchSetQuery ->
                 screenModelScope.launch {
@@ -237,7 +196,7 @@ class ComposerViewModel(
             return
         }
 
-        val text = currentState.text
+        val text = currentState.bodyValue.text
         // use the mediaId for this call otherwise the backend returns a 500
         val attachmentIds = currentState.attachments.map { it.mediaId }
         val key = getUuid()
@@ -295,6 +254,56 @@ class ComposerViewModel(
                 userSearchCanFetchMore = userPaginationManager.canFetchMore,
                 userSearchLoading = false,
             )
+        }
+    }
+
+    private suspend fun updateBodyValue(additionalPart: String) {
+        val bodyValue = uiState.value.bodyValue
+        val (text, selection) = uiState.value.bodyValue.let { it.text to it.selection }
+        val newText =
+            buildString {
+                append(text.substring(0, selection.start))
+                append(additionalPart)
+                append(
+                    text.substring(
+                        selection.end,
+                        text.length,
+                    ),
+                )
+            }
+
+        val newSelection =
+            if (selection.collapsed) {
+                TextRange(index = selection.start + additionalPart.length)
+            } else {
+                TextRange(
+                    start = selection.start + additionalPart.length,
+                    end = selection.end + additionalPart.length,
+                )
+            }
+        val newValue = bodyValue.copy(text = newText, selection = newSelection)
+        updateState { it.copy(bodyValue = newValue) }
+    }
+
+    private fun addLink(link: Pair<String, String>) {
+        screenModelScope.launch {
+            val (anchor, url) = link
+            val additionalPart = "<a href=\"$url\">$anchor</a>"
+            updateBodyValue(additionalPart)
+        }
+    }
+
+    private fun addMention(handle: String) {
+        screenModelScope.launch {
+            val additionalPart = "@$handle"
+            updateBodyValue(additionalPart)
+        }
+    }
+
+    private fun addGroupReference(handle: String) {
+        screenModelScope.launch {
+            val additionalPart = "!$handle"
+            updateBodyValue(additionalPart)
         }
     }
 }

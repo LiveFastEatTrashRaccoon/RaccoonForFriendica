@@ -33,9 +33,21 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadabl
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InsertLinkDialog(onClose: ((Pair<String, String>?) -> Unit)? = null) {
+fun InsertLinkDialog(
+    initialAnchor: String? = null,
+    onClose: ((Pair<String, String>?) -> Unit)? = null,
+) {
     var anchorTextFieldValue by remember {
-        mutableStateOf(TextFieldValue(text = ""))
+        mutableStateOf(
+            TextFieldValue(
+                text =
+                    if (!initialAnchor.isNullOrBlank()) {
+                        initialAnchor
+                    } else {
+                        ""
+                    },
+            ),
+        )
     }
     var anchorError by remember { mutableStateOf<ValidationError?>(null) }
     var urlTextFieldValue by remember {

@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer
 
+import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
@@ -10,8 +11,8 @@ interface ComposerMviModel :
     ScreenModel,
     MviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect> {
     sealed interface Intent {
-        data class SetText(
-            val text: String,
+        data class SetBodyValue(
+            val value: TextFieldValue,
         ) : Intent
 
         data class SetSpoilerText(
@@ -74,7 +75,7 @@ interface ComposerMviModel :
     data class State(
         val author: UserModel? = null,
         val lang: String? = null,
-        val text: String = "",
+        val bodyValue: TextFieldValue = TextFieldValue(),
         val spoilerText: String? = null,
         val visibility: Visibility = Visibility.Public,
         val availableVisibilities: List<Visibility> =
