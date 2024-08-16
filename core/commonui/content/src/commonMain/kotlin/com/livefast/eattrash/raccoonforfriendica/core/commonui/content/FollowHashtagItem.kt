@@ -42,6 +42,7 @@ fun FollowHashtagItem(
         )
         TwoStateFollowButton(
             following = hashtag.following == true,
+            pending = hashtag.followingPending,
             onClick = onToggleFollow,
         )
     }
