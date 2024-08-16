@@ -122,5 +122,7 @@ internal open class DefaultStrings : Strings {
     override val searchSectionUsers = "Users"
     override val searchPlaceholder = "Search the Fediverse"
     override val messageSearchInitialEmpty = "Please enter a new query expression 🔦"
-    override val groupForumTitle = "Group"
+    override val topicTitle = "Topic"
+    override val threadTitle = "Thread"
+    override val buttonLoadMoreReplies = "Load more replies"
 }
