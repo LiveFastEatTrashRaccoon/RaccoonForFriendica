@@ -253,7 +253,7 @@ class TimelineScreen : Screen {
                         if (!uiState.initial && !uiState.loading && uiState.canFetchMore) {
                             model.reduce(TimelineMviModel.Intent.LoadNextPage)
                         }
-                        if (uiState.loading) {
+                        if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
                             Box(
                                 modifier = Modifier.fillMaxWidth(),
                                 contentAlignment = Alignment.Center,
