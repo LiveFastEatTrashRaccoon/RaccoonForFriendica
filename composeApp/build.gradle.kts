@@ -119,16 +119,28 @@ android {
                 .get()
                 .toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.0-alpha01"
     }
+    base.archivesName = "RaccoonForFriendica"
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
     buildTypes {
+        getByName("debug") {
+            resValue("string", "app_name", "Raccoon (dev)")
+            applicationIdSuffix = ".dev"
+        }
         getByName("release") {
+            resValue("string", "app_name", "Raccoon")
             isMinifyEnabled = false
+            setProguardFiles(
+                listOf(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro",
+                ),
+            )
         }
     }
     compileOptions {
