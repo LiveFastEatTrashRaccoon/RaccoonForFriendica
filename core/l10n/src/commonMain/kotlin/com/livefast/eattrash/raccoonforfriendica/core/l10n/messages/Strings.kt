@@ -128,7 +128,9 @@ interface Strings {
     val messageSearchInitialEmpty: String
     val searchSectionUsers: String
     val searchPlaceholder: String
-    val groupForumTitle: String
+    val topicTitle: String
+    val threadTitle: String
+    val buttonLoadMoreReplies: String
 }
 
 object Locales {

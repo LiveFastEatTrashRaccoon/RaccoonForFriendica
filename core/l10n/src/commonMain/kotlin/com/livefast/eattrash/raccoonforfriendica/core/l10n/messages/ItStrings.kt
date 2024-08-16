@@ -123,5 +123,7 @@ internal val ItStrings =
         override val searchSectionUsers = "Utenti"
         override val searchPlaceholder = "Cerca nel Fediverso"
         override val messageSearchInitialEmpty = "Inserisci una nuova espressione di ricerca 🔦"
-        override val groupForumTitle = "Gruppo"
+        override val topicTitle = "Argomento"
+        override val threadTitle = "Conversazione"
+        override val buttonLoadMoreReplies = "Carica altre risposte"
     }

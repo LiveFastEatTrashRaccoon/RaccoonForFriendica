@@ -43,4 +43,6 @@ interface DetailOpener {
     fun openSearch()
 
     fun openInForumMode(groupId: String)
+
+    fun openThread(entryId: String)
 }

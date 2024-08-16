@@ -1,91 +1,84 @@
-package com.livefast.eattrash.feature.userdetail.forum
+package com.livefast.eattrash.raccoonforfriendica.feature.thread
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import com.livefast.eattrash.raccoonforfriendica.feature.thread.usecase.PopulateThreadUseCase
 import kotlinx.coroutines.launch
 
-class ForumListViewModel(
-    private val id: String,
-    private val userRepository: UserRepository,
-    private val paginationManager: TimelinePaginationManager,
+class ThreadViewModel(
+    private val entryId: String,
+    private val populateThreadUseCase: PopulateThreadUseCase,
     private val timelineEntryRepository: TimelineEntryRepository,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
-) : DefaultMviModel<ForumListMviModel.Intent, ForumListMviModel.State, ForumListMviModel.Effect>(
-        initialState = ForumListMviModel.State(),
+) : DefaultMviModel<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>(
+        initialState = ThreadMviModel.State(),
     ),
-    ForumListMviModel {
+    ThreadMviModel {
     init {
         screenModelScope.launch {
-            apiConfigurationRepository.isLogged
-                .onEach {
-                    loadUser()
-                    refresh(initial = true)
-                }.launchIn(this)
+            if (uiState.value.initial) {
+                refresh(initial = true)
+            }
         }
     }
 
-    override fun reduce(intent: ForumListMviModel.Intent) {
+    override fun reduce(intent: ThreadMviModel.Intent) {
         when (intent) {
-            ForumListMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
-                    loadNextPage()
-                }
-
-            ForumListMviModel.Intent.Refresh ->
+            ThreadMviModel.Intent.Refresh ->
                 screenModelScope.launch {
                     refresh()
                 }
 
-            is ForumListMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
-            is ForumListMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
-            is ForumListMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
-        }
-    }
+            is ThreadMviModel.Intent.LoadMoreReplies ->
+                screenModelScope.launch {
+                    loadMoreReplies(intent.entry)
+                }
 
-    private suspend fun loadUser() {
-        val account = userRepository.getById(id)
-        updateState {
-            it.copy(user = account)
+            is ThreadMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is ThreadMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ThreadMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
         }
     }
 
     private suspend fun refresh(initial: Boolean = false) {
         updateState {
-            it.copy(initial = initial, refreshing = !initial)
+            it.copy(
+                initial = initial,
+                loading = true,
+                refreshing = !initial,
+                canFetchMore = true,
+            )
         }
-        paginationManager.reset(
-            TimelinePaginationSpecification.User(userId = id),
-        )
-        loadNextPage()
-    }
-
-    private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
-
-        updateState { it.copy(loading = true) }
-        val entries =
-            paginationManager
-                .loadNextPage()
-                // needed because otherwise replies are included
-                .filter { it.inReplyTo == null }
+        val result = populateThreadUseCase(entryId)
+        val originalEntry = result.firstOrNull { it.id == entryId }
+        val replies = result.filter { it.id != entryId }
         updateState {
             it.copy(
-                entries = entries,
-                canFetchMore = paginationManager.canFetchMore,
+                entry = originalEntry,
+                replies = replies,
                 loading = false,
                 initial = false,
                 refreshing = false,
+                canFetchMore = false,
             )
+        }
+    }
+
+    private suspend fun loadMoreReplies(entry: TimelineEntryModel) {
+        val result = populateThreadUseCase(entry.id)
+        val newReplies = result.filter { it.id != entry.id }
+        if (newReplies.isEmpty()) {
+            // abort and disable load more button
+            updateEntryInState(entry.id) { it.copy(loadMoreButtonVisible = false) }
+        } else {
+            val replies = uiState.value.replies.toMutableList()
+            val insertIndex = replies.indexOfFirst { it.id == entry.id }
+            replies[insertIndex] = replies[insertIndex].copy(loadMoreButtonVisible = false)
+            replies.addAll(index = insertIndex + 1, newReplies)
+            updateState {
+                it.copy(replies = replies)
+            }
         }
     }
 
@@ -93,25 +86,44 @@ class ForumListViewModel(
         entryId: String,
         block: (TimelineEntryModel) -> TimelineEntryModel,
     ) {
-        updateState {
-            it.copy(
-                entries =
-                    it.entries.map { entry ->
-                        when {
-                            entry.id == entryId -> {
-                                entry.let(block)
-                            }
+        val currentMainEntry = uiState.value.entry
+        when (entryId) {
+            currentMainEntry?.id -> {
+                updateState {
+                    it.copy(entry = currentMainEntry.let(block))
+                }
+            }
 
-                            entry.reblog?.id == entryId -> {
-                                entry.copy(reblog = entry.reblog?.let(block))
-                            }
+            currentMainEntry?.reblog?.id -> {
+                updateState {
+                    it.copy(
+                        entry = currentMainEntry.copy(reblog = currentMainEntry.reblog?.let(block)),
+                    )
+                }
+            }
 
-                            else -> {
-                                entry
-                            }
-                        }
-                    },
-            )
+            else -> {
+                updateState {
+                    it.copy(
+                        replies =
+                            it.replies.map { entry ->
+                                when {
+                                    entry.id == entryId -> {
+                                        entry.let(block)
+                                    }
+
+                                    entry.reblog?.id == entryId -> {
+                                        entry.copy(reblog = entry.reblog?.let(block))
+                                    }
+
+                                    else -> {
+                                        entry
+                                    }
+                                }
+                            },
+                    )
+                }
+            }
         }
     }
 

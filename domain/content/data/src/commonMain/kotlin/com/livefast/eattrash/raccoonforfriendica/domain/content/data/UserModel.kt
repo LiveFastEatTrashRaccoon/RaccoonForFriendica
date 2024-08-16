@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
+import kotlin.jvm.Transient
+
 data class UserModel(
     val avatar: String? = null,
     val bio: String? = null,
@@ -18,6 +20,8 @@ data class UserModel(
     val username: String? = null,
     val relationshipStatus: RelationshipStatus? = null,
     val notificationStatus: NotificationStatus? = null,
+    @Transient
     val relationshipStatusPending: Boolean = false,
+    @Transient
     val notificationStatusPending: Boolean = false,
 )
