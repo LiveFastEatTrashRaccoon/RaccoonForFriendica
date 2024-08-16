@@ -125,4 +125,5 @@ internal open class DefaultStrings : Strings {
     override val topicTitle = "Topic"
     override val threadTitle = "Thread"
     override val buttonLoadMoreReplies = "Load more replies"
+    override val postSensitive = "Sensitive content"
 }

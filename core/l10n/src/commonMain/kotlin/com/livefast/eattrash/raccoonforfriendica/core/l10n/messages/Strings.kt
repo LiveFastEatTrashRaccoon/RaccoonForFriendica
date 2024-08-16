@@ -131,6 +131,7 @@ interface Strings {
     val topicTitle: String
     val threadTitle: String
     val buttonLoadMoreReplies: String
+    val postSensitive: String
 }
 
 object Locales {
