@@ -208,14 +208,14 @@ class ComposerScreen(
                             placeholder = {
                                 Text(text = LocalStrings.current.createPostBodyPlaceholder)
                             },
-                            value = uiState.text,
+                            value = uiState.bodyValue,
                             keyboardOptions =
                                 KeyboardOptions(
                                     keyboardType = KeyboardType.Text,
                                     autoCorrect = true,
                                 ),
                             onValueChange = { value ->
-                                model.reduce(ComposerMviModel.Intent.SetText(value))
+                                model.reduce(ComposerMviModel.Intent.SetBodyValue(value))
                             },
                         )
 
@@ -273,6 +273,10 @@ class ComposerScreen(
 
         if (linkDialogOpen) {
             InsertLinkDialog(
+                initialAnchor =
+                    uiState.bodyValue.selection.takeIf { it.length > 0 }?.let { range ->
+                        uiState.bodyValue.text.substring(range.start, range.end)
+                    },
                 onClose = { link ->
                     linkDialogOpen = false
                     if (link != null) {
