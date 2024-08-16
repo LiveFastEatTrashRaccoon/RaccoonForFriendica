@@ -117,6 +117,21 @@ class ComposerViewModel(
                     updateState { it.copy(text = newText) }
                 }
 
+            is ComposerMviModel.Intent.AddGroupReference ->
+                screenModelScope.launch {
+                    val additionalPart = "!${intent.handle}"
+                    val newText =
+                        buildString {
+                            append(uiState.value.text)
+                            if (isNotEmpty() && !endsWith(" ")) {
+                                append(" ")
+                            }
+                            append(additionalPart)
+                        }
+
+                    updateState { it.copy(text = newText) }
+                }
+
             is ComposerMviModel.Intent.UserSearchSetQuery ->
                 screenModelScope.launch {
                     updateState { it.copy(userSearchQuery = intent.query) }
