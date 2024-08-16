@@ -34,6 +34,7 @@ class TimelineViewModel(
                                         TimelineType.Local,
                                     ),
                                 timelineType = TimelineType.Subscriptions,
+                                isLogged = isLogged,
                             )
                         }
                         refresh(initial = true)
