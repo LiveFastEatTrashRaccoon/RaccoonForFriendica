@@ -184,12 +184,9 @@ class ExploreScreen : Screen {
                         SectionSelector(
                             modifier = Modifier.padding(bottom = Spacing.s),
                             titles =
-                                listOf(
-                                    ExploreSection.Hashtags.toReadableName(),
-                                    ExploreSection.Posts.toReadableName(),
-                                    ExploreSection.Links.toReadableName(),
-                                    ExploreSection.Suggestions.toReadableName(),
-                                ),
+                                uiState.availableSections.map {
+                                    it.toReadableName()
+                                },
                             currentSection = uiState.section.toInt(),
                             onSectionSelected = {
                                 val section = it.toExploreSection()

@@ -11,19 +11,36 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Explo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.ExplorePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class ExploreViewModel(
     private val paginationManager: ExplorePaginationManager,
     private val userRepository: UserRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
 ) : DefaultMviModel<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect>(
         initialState = ExploreMviModel.State(),
     ),
     ExploreMviModel {
     init {
         screenModelScope.launch {
+            apiConfigurationRepository.isLogged
+                .onEach { isLogged ->
+                    val sections =
+                        buildList {
+                            this += ExploreSection.Hashtags
+                            this += ExploreSection.Posts
+                            this += ExploreSection.Links
+                            if (isLogged) {
+                                this += ExploreSection.Suggestions
+                            }
+                        }
+                    updateState { it.copy(availableSections = sections) }
+                }.launchIn(this)
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
