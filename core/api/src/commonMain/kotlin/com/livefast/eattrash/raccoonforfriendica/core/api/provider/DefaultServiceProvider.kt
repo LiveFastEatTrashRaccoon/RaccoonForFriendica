@@ -28,7 +28,7 @@ internal class DefaultServiceProvider(
     private val factory: HttpClientEngine = provideHttpClientEngine(),
 ) : ServiceProvider {
     companion object {
-        private const val ENABLE_LOGGING = true
+        private const val ENABLE_LOGGING = false
         private const val REAM_NAME = "Friendica"
     }
 
