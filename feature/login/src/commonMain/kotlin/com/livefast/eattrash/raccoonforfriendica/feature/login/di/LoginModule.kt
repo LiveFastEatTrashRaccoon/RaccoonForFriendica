@@ -9,6 +9,7 @@ val featureLoginModule =
         factory<LoginMviModel> {
             LoginViewModel(
                 credentialsRepository = get(),
+                apiConfigurationRepository = get(),
                 loginUseCase = get(),
             )
         }

@@ -3,17 +3,26 @@ package com.livefast.eattrash.raccoonforfriendica.feature.login
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val credentialsRepository: CredentialsRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
     private val loginUseCase: LoginUseCase,
 ) : DefaultMviModel<LoginMviModel.Intent, LoginMviModel.State, LoginMviModel.Effect>(
         initialState = LoginMviModel.State(),
     ),
     LoginMviModel {
+    init {
+        screenModelScope.launch {
+            val currentNode = apiConfigurationRepository.node.value
+            updateState { it.copy(nodeName = currentNode) }
+        }
+    }
+
     override fun reduce(intent: LoginMviModel.Intent) {
         when (intent) {
             is LoginMviModel.Intent.SetNodeName ->
