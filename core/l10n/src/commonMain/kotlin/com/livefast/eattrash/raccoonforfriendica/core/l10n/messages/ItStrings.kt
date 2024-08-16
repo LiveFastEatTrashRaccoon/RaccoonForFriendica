@@ -127,4 +127,5 @@ internal val ItStrings =
         override val threadTitle = "Conversazione"
         override val buttonLoadMoreReplies = "Carica altre risposte"
         override val postSensitive = "Contenuto sensibile"
+        override val actionCreateThreadInGroup = "Posta su"
     }

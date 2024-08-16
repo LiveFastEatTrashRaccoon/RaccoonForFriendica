@@ -132,6 +132,7 @@ interface Strings {
     val threadTitle: String
     val buttonLoadMoreReplies: String
     val postSensitive: String
+    val actionCreateThreadInGroup: String
 }
 
 object Locales {
