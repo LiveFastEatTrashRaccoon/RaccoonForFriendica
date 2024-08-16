@@ -67,8 +67,8 @@ internal fun Status.toModel() =
 
 internal fun StatusContext.toModel() =
     TimelineContextModel(
-        ancestors = ancestors.map { it.toModel() },
-        descendants = descendants.map { it.toModel() },
+        ancestors = ancestors.map { it.toModelWithReply() },
+        descendants = descendants.map { it.toModelWithReply() },
     )
 
 internal fun MediaAttachment.toModel() =
