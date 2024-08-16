@@ -38,6 +38,8 @@ interface DetailOpener {
         inReplyToId: String? = null,
         inReplyToUsername: String? = null,
         inReplyToHandle: String? = null,
+        groupUsername: String? = null,
+        groupHandle: String? = null,
     )
 
     fun openSearch()
