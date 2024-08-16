@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.FollowedHashtag
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.HashtagScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.LoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
 
@@ -106,6 +107,11 @@ class DefaultDetailOpener(
 
     override fun openInForumMode(groupId: String) {
         val screen = ForumListScreen(groupId)
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openThread(entryId: String) {
+        val screen = ThreadScreen(entryId)
         navigationCoordinator.push(screen)
     }
 }
