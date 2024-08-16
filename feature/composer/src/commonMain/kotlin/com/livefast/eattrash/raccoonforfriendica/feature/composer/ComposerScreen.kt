@@ -43,6 +43,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTextualInfoDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
@@ -201,6 +202,16 @@ class ComposerScreen(
                                 ),
                             onValueChange = { value ->
                                 model.reduce(ComposerMviModel.Intent.SetText(value))
+                            },
+                        )
+
+                        // sensitive switch
+                        SettingsSwitchRow(
+                            title = LocalStrings.current.settingsItemDynamicColors,
+                            subtitle = LocalStrings.current.postSensitive,
+                            value = uiState.sensitive,
+                            onValueChanged = {
+                                model.reduce(ComposerMviModel.Intent.SetSensitive(it))
                             },
                         )
 
