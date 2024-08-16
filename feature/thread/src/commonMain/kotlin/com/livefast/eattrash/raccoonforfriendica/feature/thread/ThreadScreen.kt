@@ -1,5 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.thread
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,12 +20,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,6 +49,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.safeKey
@@ -68,6 +75,8 @@ class ThreadScreen(
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
+        val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
+        val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
 
         Scaffold(
             topBar = {
@@ -94,6 +103,39 @@ class ThreadScreen(
                     },
                 )
             },
+            floatingActionButton = {
+                if (uiState.isLogged) {
+                    AnimatedVisibility(
+                        visible = isFabVisible,
+                        enter =
+                            slideInVertically(
+                                initialOffsetY = { it * 2 },
+                            ),
+                        exit =
+                            slideOutVertically(
+                                targetOffsetY = { it * 2 },
+                            ),
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                val entry = uiState.entry
+                                if (entry != null) {
+                                    detailOpener.openComposer(
+                                        inReplyToId = entry.id,
+                                        inReplyToUsername = entry.creator?.username,
+                                        inReplyToHandle = entry.creator?.handle,
+                                    )
+                                }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.Reply,
+                                contentDescription = null,
+                            )
+                        }
+                    }
+                }
+            },
             content = { padding ->
                 val pullRefreshState =
                     rememberPullRefreshState(
@@ -107,6 +149,7 @@ class ThreadScreen(
                         Modifier
                             .padding(padding)
                             .nestedScroll(scrollBehavior.nestedScrollConnection)
+                            .nestedScroll(fabNestedScrollConnection)
                             .pullRefresh(pullRefreshState),
                 ) {
                     LazyColumn(

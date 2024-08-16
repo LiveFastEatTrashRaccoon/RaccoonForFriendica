@@ -4,19 +4,29 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.usecase.PopulateThreadUseCase
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class ThreadViewModel(
     private val entryId: String,
     private val populateThreadUseCase: PopulateThreadUseCase,
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
 ) : DefaultMviModel<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>(
         initialState = ThreadMviModel.State(),
     ),
     ThreadMviModel {
     init {
         screenModelScope.launch {
+            apiConfigurationRepository.isLogged
+                .onEach { isLogged ->
+                    if (isLogged) {
+                        updateState { it.copy(isLogged = isLogged) }
+                    }
+                }.launchIn(this)
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
