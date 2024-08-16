@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
@@ -19,7 +20,10 @@ import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
 
 class DefaultDetailOpener(
     private val navigationCoordinator: NavigationCoordinator,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
 ) : DetailOpener {
+    private val isLogged: Boolean get() = apiConfigurationRepository.isLogged.value
+
     override fun openUserDetail(id: String) {
         val screen = UserDetailScreen(id)
         navigationCoordinator.push(screen)
@@ -56,16 +60,25 @@ class DefaultDetailOpener(
     }
 
     override fun openFavorites() {
+        if (!isLogged) {
+            return
+        }
         val screen = FavoritesScreen(type = FavoritesType.Favorites)
         navigationCoordinator.push(screen)
     }
 
     override fun openBookmarks() {
+        if (!isLogged) {
+            return
+        }
         val screen = FavoritesScreen(type = FavoritesType.Bookmarks)
         navigationCoordinator.push(screen)
     }
 
     override fun openFollowedHashtags() {
+        if (!isLogged) {
+            return
+        }
         val screen = FollowedHashtagsScreen()
         navigationCoordinator.push(screen)
     }
@@ -91,6 +104,9 @@ class DefaultDetailOpener(
         inReplyToUsername: String?,
         inReplyToHandle: String?,
     ) {
+        if (!isLogged) {
+            return
+        }
         val screen =
             ComposerScreen(
                 inReplyToId = inReplyToId,
