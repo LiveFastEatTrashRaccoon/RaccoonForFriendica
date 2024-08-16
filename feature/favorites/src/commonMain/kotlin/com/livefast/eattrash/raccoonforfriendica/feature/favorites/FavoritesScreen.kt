@@ -166,7 +166,7 @@ class FavoritesScreen(
                         if (!uiState.initial && !uiState.loading && uiState.canFetchMore) {
                             model.reduce(FavoritesMviModel.Intent.LoadNextPage)
                         }
-                        if (uiState.loading) {
+                        if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
                             Box(
                                 modifier = Modifier.fillMaxWidth(),
                                 contentAlignment = Alignment.Center,

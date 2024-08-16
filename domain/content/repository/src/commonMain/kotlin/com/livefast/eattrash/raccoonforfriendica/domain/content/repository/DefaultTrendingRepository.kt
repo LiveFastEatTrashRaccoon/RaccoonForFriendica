@@ -16,7 +16,7 @@ internal class DefaultTrendingRepository(
                         offset = offset,
                         limit = DEFAULT_PAGE_SIZE,
                     )
-            response.map { it.toModel() }
+            response.map { it.toModelWithReply() }
         }.getOrElse { emptyList() }
 
     override suspend fun getHashtags(offset: Int): List<TagModel> =

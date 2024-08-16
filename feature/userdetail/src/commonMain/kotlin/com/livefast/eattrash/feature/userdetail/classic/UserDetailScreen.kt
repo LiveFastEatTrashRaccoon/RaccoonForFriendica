@@ -257,6 +257,7 @@ class UserDetailScreen(
                                         UserSection.Pinned.toReadableName(),
                                         UserSection.Media.toReadableName(),
                                     ),
+                                scrollable = true,
                                 currentSection = uiState.section.toInt(),
                                 onSectionSelected = {
                                     val section = it.toAccountSection()
@@ -333,7 +334,7 @@ class UserDetailScreen(
                             if (!uiState.initial && !uiState.loading && uiState.canFetchMore) {
                                 model.reduce(UserDetailMviModel.Intent.LoadNextPage)
                             }
-                            if (uiState.loading) {
+                            if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
                                 Box(
                                     modifier = Modifier.fillMaxWidth(),
                                     contentAlignment = Alignment.Center,
