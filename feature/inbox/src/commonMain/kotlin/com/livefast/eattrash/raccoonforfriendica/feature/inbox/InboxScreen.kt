@@ -215,7 +215,12 @@ class InboxScreen : Screen {
                         item {
                             Text(
                                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
-                                text = LocalStrings.current.messageEmptyList,
+                                text =
+                                    if (uiState.isLogged) {
+                                        LocalStrings.current.messageEmptyList
+                                    } else {
+                                        LocalStrings.current.messageUserUnlogged
+                                    },
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.bodyLarge,
                             )

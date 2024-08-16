@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -27,9 +28,10 @@ internal class AnonymousScreen : Screen {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                modifier = Modifier.padding(horizontal = Spacing.m),
+                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
                 text = LocalStrings.current.messageUserUnlogged,
-                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyLarge,
             )
 
             Spacer(modifier = Modifier.height(Spacing.xl))
