@@ -123,7 +123,7 @@ fun TimelineItem(
                 ContentImage(
                     modifier = Modifier.fillMaxWidth(),
                     url = imageUrl,
-                    blurred = entryToDisplay.sensitive,
+                    sensitive = entryToDisplay.sensitive,
                 )
             }
 
