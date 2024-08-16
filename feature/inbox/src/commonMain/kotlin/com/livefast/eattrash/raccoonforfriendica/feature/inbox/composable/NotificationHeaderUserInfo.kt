@@ -23,12 +23,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 @Composable
 internal fun NotificationHeaderUserInfo(
     modifier: Modifier = Modifier,
-    account: UserModel,
+    user: UserModel,
     onOpenUser: ((UserModel) -> Unit)? = null,
 ) {
     val iconSize = IconSize.s
-    val creatorName = account?.let { it.displayName ?: it.handle }.orEmpty()
-    val creatorAvatar = account?.avatar.orEmpty()
+    val creatorName = user.let { it.displayName ?: it.handle }.orEmpty()
+    val creatorAvatar = user.avatar.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
 
     Row(
@@ -41,9 +41,7 @@ internal fun NotificationHeaderUserInfo(
                 modifier =
                     Modifier
                         .clickable {
-                            if (account != null) {
-                                onOpenUser?.invoke(account)
-                            }
+                            onOpenUser?.invoke(user)
                         }.padding(Spacing.xxxs)
                         .size(iconSize)
                         .clip(RoundedCornerShape(iconSize / 2)),
@@ -55,9 +53,7 @@ internal fun NotificationHeaderUserInfo(
             PlaceholderImage(
                 modifier =
                     Modifier.clickable {
-                        if (account != null) {
-                            onOpenUser?.invoke(account)
-                        }
+                        onOpenUser?.invoke(user)
                     },
                 size = iconSize,
                 title = creatorName,
@@ -66,7 +62,7 @@ internal fun NotificationHeaderUserInfo(
 
         Text(
             text = creatorName,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodySmall,
             color = fullColor,
         )
     }
