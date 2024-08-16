@@ -65,7 +65,7 @@ internal open class DefaultStrings : Strings {
     override val themeColorPink = "Unique Unicorn"
     override val themeColorGray = "Ravenous Raccoon"
     override val themeColorWhite = "Boisterous bear"
-    override val messageUserUnlogged = "You are currently not logged in"
+    override val messageUserUnlogged = "You need to be logged in in order to access this section 🪵"
     override val loginTitle = "Login"
     override val fieldNodeName = "Instance name"
     override val fieldUsername = "Username"

@@ -26,6 +26,7 @@ interface InboxMviModel :
     }
 
     data class State(
+        val isLogged: Boolean = false,
         val refreshing: Boolean = false,
         val loading: Boolean = false,
         val initial: Boolean = true,

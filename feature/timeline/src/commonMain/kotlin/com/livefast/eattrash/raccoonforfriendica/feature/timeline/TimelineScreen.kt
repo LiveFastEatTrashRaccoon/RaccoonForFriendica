@@ -148,30 +148,32 @@ class TimelineScreen : Screen {
                 )
             },
             floatingActionButton = {
-                AnimatedVisibility(
-                    visible = isFabVisible,
-                    enter =
-                        slideInVertically(
-                            initialOffsetY = { it * 2 },
-                        ),
-                    exit =
-                        slideOutVertically(
-                            targetOffsetY = { it * 2 },
-                        ),
-                ) {
-                    FloatingActionButton(
-                        modifier =
-                            Modifier.padding(
-                                bottom = Dimensions.floatingActionButtonBottomInset + bottomNavigationInset,
+                if (uiState.isLogged) {
+                    AnimatedVisibility(
+                        visible = isFabVisible,
+                        enter =
+                            slideInVertically(
+                                initialOffsetY = { it * 2 },
                             ),
-                        onClick = {
-                            detailOpener.openComposer()
-                        },
+                        exit =
+                            slideOutVertically(
+                                targetOffsetY = { it * 2 },
+                            ),
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Create,
-                            contentDescription = null,
-                        )
+                        FloatingActionButton(
+                            modifier =
+                                Modifier.padding(
+                                    bottom = Dimensions.floatingActionButtonBottomInset + bottomNavigationInset,
+                                ),
+                            onClick = {
+                                detailOpener.openComposer()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Create,
+                                contentDescription = null,
+                            )
+                        }
                     }
                 }
             },
