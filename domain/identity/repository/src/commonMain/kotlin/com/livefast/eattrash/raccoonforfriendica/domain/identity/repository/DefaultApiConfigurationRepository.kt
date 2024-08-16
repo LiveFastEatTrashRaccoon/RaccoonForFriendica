@@ -21,8 +21,10 @@ internal class DefaultApiConfigurationRepository(
         val nodeName = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
         changeNode(nodeName)
 
-        val credentials = keyStore[KEY_CRED_1, ""] to keyStore[KEY_CRED_2, ""]
-        setAuth(credentials.takeIf { it.first.isNotEmpty() && it.second.isNotEmpty() })
+        val credentials =
+            (keyStore[KEY_CRED_1, ""] to keyStore[KEY_CRED_2, ""])
+                .takeIf { it.first.isNotEmpty() && it.second.isNotEmpty() }
+        setAuth(credentials)
     }
 
     override fun changeNode(value: String) {
@@ -36,6 +38,9 @@ internal class DefaultApiConfigurationRepository(
         if (credentials != null) {
             keyStore.save(KEY_CRED_1, credentials.first)
             keyStore.save(KEY_CRED_2, credentials.second)
+        } else {
+            keyStore.remove(KEY_CRED_1)
+            keyStore.remove(KEY_CRED_2)
         }
         isLogged.update { credentials != null }
     }
