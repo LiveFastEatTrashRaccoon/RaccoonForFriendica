@@ -27,20 +27,16 @@ class DrawerViewModel(
                         )
                     }
                 }.launchIn(this)
-            apiConfigurationRepository.isLogged
-                .onEach { isLogged ->
-                    if (isLogged) {
-                        refreshUser()
-                    } else {
+            accountRepository
+                .getActiveAsFlow()
+                .onEach { activeAccount ->
+                    if (activeAccount == null) {
                         updateState { it.copy(user = null) }
+                    } else {
+                        val currentUser = userRepository.getByHandle(activeAccount.handle)
+                        updateState { it.copy(user = currentUser) }
                     }
                 }.launchIn(this)
         }
-    }
-
-    private suspend fun refreshUser() {
-        val handle = accountRepository.getActive()?.handle.orEmpty()
-        val currentAccount = userRepository.getByHandle(handle)
-        updateState { it.copy(user = currentAccount) }
     }
 }
