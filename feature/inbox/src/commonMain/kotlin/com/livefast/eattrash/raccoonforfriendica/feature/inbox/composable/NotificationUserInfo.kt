@@ -35,18 +35,18 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
 fun NotificationUserInfo(
-    account: UserModel,
+    user: UserModel,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
     onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
 ) {
-    val banner = account.header.orEmpty()
-    val avatar = account.avatar.orEmpty()
+    val banner = user.header.orEmpty()
+    val avatar = user.avatar.orEmpty()
     val avatarSize = 60.dp
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
-    val relationshipStatus = account.relationshipStatus
+    val relationshipStatus = user.relationshipStatus
 
     Column(
         modifier =
@@ -86,7 +86,7 @@ fun NotificationUserInfo(
                 } else {
                     PlaceholderImage(
                         size = avatarSize,
-                        title = account.displayName ?: account.handle ?: "?",
+                        title = user.displayName ?: user.handle ?: "?",
                     )
                 }
             }
@@ -101,12 +101,12 @@ fun NotificationUserInfo(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
                     Text(
-                        text = account.displayName ?: account.username ?: "",
+                        text = user.displayName ?: user.username ?: "",
                         style = MaterialTheme.typography.titleMedium,
                         color = fullColor,
                     )
                     Text(
-                        text = account.handle ?: account.username ?: "",
+                        text = user.handle ?: user.username ?: "",
                         style = MaterialTheme.typography.titleSmall,
                         color = ancillaryColor,
                     )
@@ -117,7 +117,7 @@ fun NotificationUserInfo(
                 if (relationshipStatus != null) {
                     UserRelationshipButton(
                         status = relationshipStatus,
-                        pending = account.relationshipStatusPending,
+                        pending = user.relationshipStatusPending,
                         onClick = onRelationshipClicked,
                     )
                 }
@@ -128,13 +128,13 @@ fun NotificationUserInfo(
             val annotatedContent =
                 buildAnnotatedString {
                     withStyle(SpanStyle(color = fullColor)) {
-                        append("${account.followers}")
+                        append("${user.followers}")
                     }
                     append(" ")
                     append(followerDesc)
                     append(" • ")
                     withStyle(SpanStyle(color = fullColor)) {
-                        append("${account.following}")
+                        append("${user.following}")
                     }
                     append(" ")
                     append(followingDesc)
@@ -144,7 +144,7 @@ fun NotificationUserInfo(
                 style = MaterialTheme.typography.labelSmall.copy(color = ancillaryColor),
             )
 
-            account.bio?.takeIf { it.isNotEmpty() }?.let { bio ->
+            user.bio?.takeIf { it.isNotEmpty() }?.let { bio ->
                 ContentBody(
                     modifier = Modifier.padding(top = Spacing.s),
                     content = bio,

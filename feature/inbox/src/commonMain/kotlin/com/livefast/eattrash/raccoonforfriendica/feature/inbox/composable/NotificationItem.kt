@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -70,14 +71,16 @@ internal fun NotificationItem(
             if (user != null) {
                 NotificationHeaderUserInfo(
                     modifier = Modifier.padding(start = Spacing.xs),
-                    account = user,
+                    user = user,
                     onOpenUser = onOpenUser,
                 )
             }
             Text(
                 modifier = Modifier.padding(horizontal = Spacing.xxs),
                 text = notification.type.toReadableName(),
-                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodySmall,
                 color = ancillaryColor,
             )
         }
@@ -92,6 +95,11 @@ internal fun NotificationItem(
         ) {
             if (entry != null) {
                 TimelineItem(
+                    modifier =
+                        Modifier.padding(
+                            top = Spacing.s,
+                            bottom = Spacing.s,
+                        ),
                     entry = entry,
                     actionsEnabled = false,
                     onClick = {
@@ -103,7 +111,7 @@ internal fun NotificationItem(
             } else if (user != null) {
                 NotificationUserInfo(
                     modifier = Modifier.padding(bottom = Spacing.m),
-                    account = user,
+                    user = user,
                     onOpenUrl = onOpenUrl,
                     onClick = {
                         onOpenUser?.invoke(user)
