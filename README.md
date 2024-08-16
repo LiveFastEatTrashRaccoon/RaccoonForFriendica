@@ -16,6 +16,24 @@ something like this can be achieved with this tech stack.
 This is why it retains part of its name, making clear that the two projects are related and share a
 lot of common heritage.
 
+## Want to try it?
+
+Here are some options to install the application on your device. The best way to install testing APKs
+is Obtainium, please insert this repository's URL as a source and make sure to check the
+"Include prerelease" option:
+
+```
+https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
+```
+
+<div align="center">
+  <div style="display: flex; flex-flow: row wrap; justify-content: center; align-items: center;">
+    <a href="https://github.com/ImranR98/Obtainium/releases"><img width="200" src="https://github.com/user-attachments/assets/1501ad39-c581-4760-96ce-6d5181ab6207" /></a>
+  </div>
+</div>
+
+## Screenshots
+
 <div align="center">
 
   <img width="310" src="https://github.com/user-attachments/assets/42bf2862-6afa-4f26-9061-d8294b28221b" alt="timeline screen" />
