@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Reply
+import androidx.compose.material.icons.filled.PostAdd
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,7 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
 @Composable
-internal fun InReplyToInfo(
+internal fun CreateInGroupInfo(
     modifier: Modifier = Modifier,
     username: String,
 ) {
@@ -33,14 +33,14 @@ internal fun InReplyToInfo(
     ) {
         Icon(
             modifier = Modifier.size(IconSize.s),
-            imageVector = Icons.AutoMirrored.Default.Reply,
+            imageVector = Icons.Default.PostAdd,
             contentDescription = null,
             tint = ancillaryColor,
         )
         Text(
             text =
                 buildAnnotatedString {
-                    append(LocalStrings.current.timelineEntryInReplyTo)
+                    append(LocalStrings.current.actionCreateThreadInGroup)
                     append(" ")
                     withStyle(SpanStyle(color = fullColor)) {
                         append(username)

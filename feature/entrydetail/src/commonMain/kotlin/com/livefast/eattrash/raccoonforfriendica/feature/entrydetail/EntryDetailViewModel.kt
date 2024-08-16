@@ -4,20 +4,30 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class EntryDetailViewModel(
     private val id: String,
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
         initialState = EntryDetailMviModel.State(),
     ),
     EntryDetailMviModel {
     init {
         screenModelScope.launch {
+            apiConfigurationRepository.isLogged
+                .onEach { isLogged ->
+                    if (isLogged) {
+                        updateState { it.copy(isLogged = isLogged) }
+                    }
+                }.launchIn(this)
             if (uiState.value.initial) {
                 refresh(initial = true)
             }

@@ -103,6 +103,8 @@ class DefaultDetailOpener(
         inReplyToId: String?,
         inReplyToUsername: String?,
         inReplyToHandle: String?,
+        groupUsername: String?,
+        groupHandle: String?,
     ) {
         if (!isLogged) {
             return
@@ -112,6 +114,8 @@ class DefaultDetailOpener(
                 inReplyToId = inReplyToId,
                 inReplyToUsername = inReplyToUsername,
                 inReplyToHandle = inReplyToHandle,
+                groupUsername = groupUsername,
+                groupHandle = groupHandle,
             )
         navigationCoordinator.push(screen)
     }

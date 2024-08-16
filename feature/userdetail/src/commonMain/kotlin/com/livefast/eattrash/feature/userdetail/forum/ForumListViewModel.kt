@@ -25,7 +25,8 @@ class ForumListViewModel(
     init {
         screenModelScope.launch {
             apiConfigurationRepository.isLogged
-                .onEach {
+                .onEach { isLogged ->
+                    updateState { it.copy(isLogged = isLogged) }
                     loadUser()
                     refresh(initial = true)
                 }.launchIn(this)

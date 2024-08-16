@@ -50,7 +50,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePaddi
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostHeader
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InReplyToInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InsertLinkDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.MentionDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
@@ -62,6 +64,8 @@ class ComposerScreen(
     private val inReplyToId: String? = null,
     private val inReplyToUsername: String? = null,
     private val inReplyToHandle: String? = null,
+    private val groupUsername: String? = null,
+    private val groupHandle: String? = null,
 ) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -87,9 +91,9 @@ class ComposerScreen(
 
         LaunchedEffect(model) {
             if (!inReplyToHandle.isNullOrEmpty()) {
-                model.reduce(
-                    ComposerMviModel.Intent.AddMention(inReplyToHandle),
-                )
+                model.reduce(ComposerMviModel.Intent.AddMention(inReplyToHandle))
+            } else if (!groupHandle.isNullOrEmpty()) {
+                model.reduce(ComposerMviModel.Intent.AddGroupReference(groupHandle))
             }
         }
 
@@ -173,9 +177,19 @@ class ComposerScreen(
                         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                     ) {
                         if (!inReplyToUsername.isNullOrBlank()) {
-                            InReplyToInfo(username = inReplyToUsername)
+                            InReplyToInfo(
+                                modifier = Modifier.padding(horizontal = Spacing.s),
+                                username = inReplyToUsername,
+                            )
+                        } else if (!groupUsername.isNullOrBlank()) {
+                            CreateInGroupInfo(
+                                modifier = Modifier.padding(horizontal = Spacing.s),
+                                username = groupUsername,
+                            )
                         }
+
                         CreatePostHeader(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             author = uiState.author,
                             visibility = uiState.visibility,
                             availableVisibilities = uiState.availableVisibilities,
@@ -188,7 +202,7 @@ class ComposerScreen(
                         OutlinedTextField(
                             modifier =
                                 Modifier
-                                    .padding(top = Spacing.s)
+                                    .padding(top = Spacing.s, start = Spacing.xs, end = Spacing.xs)
                                     .fillMaxWidth()
                                     .heightIn(200.dp, 300.dp),
                             placeholder = {
@@ -207,8 +221,7 @@ class ComposerScreen(
 
                         // sensitive switch
                         SettingsSwitchRow(
-                            title = LocalStrings.current.settingsItemDynamicColors,
-                            subtitle = LocalStrings.current.postSensitive,
+                            title = LocalStrings.current.postSensitive,
                             value = uiState.sensitive,
                             onValueChanged = {
                                 model.reduce(ComposerMviModel.Intent.SetSensitive(it))

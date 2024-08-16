@@ -64,6 +64,10 @@ interface ComposerMviModel :
             val handle: String,
         ) : Intent
 
+        data class AddGroupReference(
+            val handle: String,
+        ) : Intent
+
         data object Submit : Intent
     }
 

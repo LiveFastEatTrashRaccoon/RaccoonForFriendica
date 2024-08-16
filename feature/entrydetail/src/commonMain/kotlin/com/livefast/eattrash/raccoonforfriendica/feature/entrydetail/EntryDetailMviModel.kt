@@ -27,6 +27,7 @@ interface EntryDetailMviModel :
     }
 
     data class State(
+        val isLogged: Boolean = false,
         val refreshing: Boolean = false,
         val initial: Boolean = true,
         val creator: UserModel? = null,
