@@ -39,7 +39,7 @@ internal open class DefaultStrings : Strings {
     override val timeMinuteShort = "min"
     override val timeSecondShort = "s"
     override val accountSectionPosts = "Posts"
-    override val accountSectionAll = "Everything"
+    override val accountSectionAll = "Posts & Replies"
     override val accountSectionPinned = "Pinned"
     override val accountSectionMedia = "Media"
     override val postTitleBy = "Post by"
