@@ -12,7 +12,7 @@ internal class DefaultTimelinePaginationManager(
     private var specification: TimelinePaginationSpecification? = null
     private var pageCursor: String? = null
     override var canFetchMore: Boolean = true
-    private val history = mutableListOf<TimelineEntryModel>()
+    override val history = mutableListOf<TimelineEntryModel>()
 
     override suspend fun reset(specification: TimelinePaginationSpecification) {
         this.specification = specification
@@ -71,6 +71,24 @@ internal class DefaultTimelinePaginationManager(
 
         // return a copy
         return history.map { it }
+    }
+
+    override fun extractState(): TimelinePaginationManagerState =
+        DefaultTimelinePaginationManagerState(
+            specification = specification,
+            history = history,
+            pageCursor = pageCursor,
+            canFetchMore = canFetchMore,
+        )
+
+    override fun restoreState(state: TimelinePaginationManagerState) {
+        (state as? DefaultTimelinePaginationManagerState)?.also {
+            specification = it.specification
+            pageCursor = it.pageCursor
+            canFetchMore = it.canFetchMore
+            history.clear()
+            history.addAll(it.history)
+        }
     }
 
     private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> =

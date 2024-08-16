@@ -1,0 +1,3 @@
+package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
+
+interface TimelinePaginationManagerState
