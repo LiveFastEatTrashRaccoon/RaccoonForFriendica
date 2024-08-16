@@ -12,6 +12,7 @@ internal class DefaultColorSchemeProvider : ColorSchemeProvider {
         theme: UiTheme,
         dynamic: Boolean,
         customSeed: Color?,
+        isSystemInDarkTheme: Boolean,
     ): ColorScheme =
         when (theme) {
             UiTheme.Dark -> {
@@ -42,11 +43,15 @@ internal class DefaultColorSchemeProvider : ColorSchemeProvider {
                 if (customSeed != null) {
                     dynamicColorScheme(
                         seedColor = customSeed,
-                        isDark = false,
+                        isDark = isSystemInDarkTheme,
                         isAmoled = false,
                     )
                 } else {
-                    LightColors
+                    if (isSystemInDarkTheme) {
+                        DarkColors
+                    } else {
+                        LightColors
+                    }
                 }
             }
         }
