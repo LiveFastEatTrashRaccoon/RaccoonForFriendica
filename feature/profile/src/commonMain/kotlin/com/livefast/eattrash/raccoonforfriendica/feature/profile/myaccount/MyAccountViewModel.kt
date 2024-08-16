@@ -9,6 +9,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.MyAccountCache
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class MyAccountViewModel(
@@ -16,17 +20,56 @@ class MyAccountViewModel(
     private val accountRepository: AccountRepository,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val myAccountCache: MyAccountCache,
 ) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
         initialState = MyAccountMviModel.State(),
     ),
     MyAccountMviModel {
     init {
         screenModelScope.launch {
-            if (uiState.value.initial) {
-                loadUser()
-                refresh(initial = true)
-            }
+            accountRepository
+                .getActiveAsFlow()
+                .distinctUntilChanged()
+                .onEach { account ->
+                    val handle = account?.handle.orEmpty()
+                    val cachedUser = myAccountCache.retrieveUser()
+                    val cachedPaginationState = myAccountCache.retrievePaginationState()
+                    if (cachedUser?.handle != handle) {
+                        val currentAccount =
+                            userRepository
+                                .getByHandle(handle)
+                                // make sure the cache key is the same for subsequent restoration
+                                ?.copy(handle = handle)
+                        updateState { it.copy(user = currentAccount) }
+                        refresh(initial = true)
+                    } else {
+                        updateState { it.copy(user = cachedUser) }
+                        if (cachedPaginationState != null) {
+                            paginationManager.restoreState(cachedPaginationState)
+                            val cachedHistory = paginationManager.history
+                            updateState {
+                                it.copy(
+                                    entries = cachedHistory,
+                                    initial = false,
+                                    section = myAccountCache.retrieveSection(),
+                                )
+                            }
+                        } else {
+                            refresh(initial = true)
+                        }
+                    }
+                }.launchIn(this)
         }
+    }
+
+    override fun onDispose() {
+        super.onDispose()
+        val currentState = uiState.value
+        if (currentState.user != null) {
+            myAccountCache.store(currentState.user)
+        }
+        val paginationState = paginationManager.extractState()
+        myAccountCache.store(paginationState)
     }
 
     override fun reduce(intent: MyAccountMviModel.Intent) {
@@ -55,12 +98,6 @@ class MyAccountViewModel(
             is MyAccountMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is MyAccountMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
         }
-    }
-
-    private suspend fun loadUser() {
-        val handle = accountRepository.getActive()?.handle.orEmpty()
-        val currentAccount = userRepository.getByHandle(handle)
-        updateState { it.copy(user = currentAccount) }
     }
 
     private suspend fun refresh(initial: Boolean = false) {
