@@ -93,13 +93,14 @@ fun TimelineItem(
             ContentHeader(
                 modifier = Modifier.fillMaxWidth(),
                 user = entryToDisplay.creator,
-                date = entry.edited ?: entry.created,
-                isEdited = entry.edited != null,
+                date = entryToDisplay.edited ?: entryToDisplay.created,
+                isEdited = entryToDisplay.edited != null,
                 onOpenUser = onOpenUser,
             )
 
             entryToDisplay.title?.let { title ->
                 ContentTitle(
+                    modifier = Modifier.fillMaxWidth(),
                     content = title,
                     onClick = { onClick?.invoke(entryToDisplay) },
                     onOpenUrl = onOpenUrl,
@@ -107,6 +108,7 @@ fun TimelineItem(
             }
 
             ContentBody(
+                modifier = Modifier.fillMaxWidth(),
                 content = entryToDisplay.content,
                 onClick = { onClick?.invoke(entryToDisplay) },
                 onOpenUrl = onOpenUrl,
@@ -119,6 +121,7 @@ fun TimelineItem(
                     ?.takeIf { it.isNotBlank() }
             if (imageUrl != null) {
                 ContentImage(
+                    modifier = Modifier.fillMaxWidth(),
                     url = imageUrl,
                     blurred = entryToDisplay.sensitive,
                 )
