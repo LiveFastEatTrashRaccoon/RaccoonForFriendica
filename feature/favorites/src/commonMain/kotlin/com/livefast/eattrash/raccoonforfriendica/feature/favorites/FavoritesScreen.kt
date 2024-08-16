@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -122,10 +122,10 @@ class FavoritesScreen(
                         }
                     }
 
-                    items(
+                    itemsIndexed(
                         items = uiState.entries,
-                        key = { it.safeKey },
-                    ) { entry ->
+                        key = { _, e -> e.safeKey },
+                    ) { idx, entry ->
                         TimelineItem(
                             entry = entry,
                             onClick = { e ->
@@ -160,12 +160,15 @@ class FavoritesScreen(
                         HorizontalDivider(
                             modifier = Modifier.padding(vertical = Spacing.s),
                         )
+
+                        val canFetchMore =
+                            !uiState.initial && !uiState.loading && uiState.canFetchMore
+                        if (idx == uiState.entries.lastIndex - 5 && canFetchMore) {
+                            model.reduce(FavoritesMviModel.Intent.LoadNextPage)
+                        }
                     }
 
                     item {
-                        if (!uiState.initial && !uiState.loading && uiState.canFetchMore) {
-                            model.reduce(FavoritesMviModel.Intent.LoadNextPage)
-                        }
                         if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
                             Box(
                                 modifier = Modifier.fillMaxWidth(),

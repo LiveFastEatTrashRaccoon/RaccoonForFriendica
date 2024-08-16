@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -229,15 +229,15 @@ class ExploreScreen : Screen {
                         }
                     }
 
-                    items(
+                    itemsIndexed(
                         items = uiState.items,
-                        key = {
-                            when (it) {
-                                is ExploreItemModel.Entry -> it.entry.safeKey
-                                else -> it.id
+                        key = { _, e ->
+                            when (e) {
+                                is ExploreItemModel.Entry -> e.entry.safeKey
+                                else -> e.id
                             }
                         },
-                    ) { item ->
+                    ) { idx, item ->
                         when (item) {
                             is ExploreItemModel.Entry -> {
                                 TimelineItem(
@@ -331,12 +331,15 @@ class ExploreScreen : Screen {
                                 Spacer(modifier = Modifier.height(Spacing.interItem))
                             }
                         }
+
+                        val canFetchMore =
+                            !uiState.initial && !uiState.loading && uiState.canFetchMore
+                        if (idx == uiState.items.lastIndex - 5 && canFetchMore) {
+                            model.reduce(ExploreMviModel.Intent.LoadNextPage)
+                        }
                     }
 
                     item {
-                        if (!uiState.initial && !uiState.loading && uiState.canFetchMore) {
-                            model.reduce(ExploreMviModel.Intent.LoadNextPage)
-                        }
                         if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
                             Box(
                                 modifier = Modifier.fillMaxWidth(),
