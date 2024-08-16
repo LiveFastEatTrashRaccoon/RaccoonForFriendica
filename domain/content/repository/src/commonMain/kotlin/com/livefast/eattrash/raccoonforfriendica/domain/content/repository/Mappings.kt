@@ -177,7 +177,7 @@ internal fun Notification.toModel() =
         id = id,
         type = type.toModel(),
         user = account?.toModel(),
-        entry = status?.toModel(),
+        entry = status?.toModelWithReply(),
     )
 
 internal fun Relationship.toModel() =
