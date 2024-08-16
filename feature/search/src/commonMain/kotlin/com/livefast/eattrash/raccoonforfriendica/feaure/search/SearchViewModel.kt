@@ -357,6 +357,7 @@ class SearchViewModel(
         follow: Boolean,
     ) {
         screenModelScope.launch {
+            updateHashtagInState(name) { it.copy(followingPending = true) }
             val newTag =
                 if (!follow) {
                     tagRepository.unfollow(name)

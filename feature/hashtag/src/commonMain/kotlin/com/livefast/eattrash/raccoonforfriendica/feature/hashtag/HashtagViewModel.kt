@@ -199,6 +199,7 @@ class HashtagViewModel(
 
     private fun toggleTagFollow(newFollowing: Boolean) {
         screenModelScope.launch {
+            updateState { it.copy(followingPending = true) }
             val newModel =
                 if (newFollowing) {
                     tagRepository.follow(tag)
@@ -206,7 +207,10 @@ class HashtagViewModel(
                     tagRepository.unfollow(tag)
                 }
             updateState {
-                it.copy(following = newModel?.following == true)
+                it.copy(
+                    following = newModel?.following == true,
+                    followingPending = false,
+                )
             }
         }
     }

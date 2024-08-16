@@ -88,6 +88,7 @@ class HashtagScreen(
                             TwoStateFollowButton(
                                 modifier = Modifier.padding(horizontal = Spacing.xs),
                                 following = following,
+                                pending = uiState.followingPending,
                                 onClick = { newValue ->
                                     if (!newValue) {
                                         confirmUnfollowHashtagDialogOpen = true

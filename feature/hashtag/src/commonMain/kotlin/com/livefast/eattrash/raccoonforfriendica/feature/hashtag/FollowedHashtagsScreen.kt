@@ -197,12 +197,12 @@ class FollowedHashtagsScreen : Screen {
                 confirmButton = {
                     Button(
                         onClick = {
-                            val oldtag = confirmUnfollowHashtagName
+                            val oldTag = confirmUnfollowHashtagName
                             confirmUnfollowHashtagName = null
-                            if (oldtag != null) {
+                            if (oldTag != null) {
                                 model.reduce(
                                     FollowedHashtagsMviModel.Intent.ToggleTagFollow(
-                                        name = oldtag,
+                                        name = oldTag,
                                         newValue = false,
                                     ),
                                 )

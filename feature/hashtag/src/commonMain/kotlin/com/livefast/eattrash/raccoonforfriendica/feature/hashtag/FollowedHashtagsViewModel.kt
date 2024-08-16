@@ -100,6 +100,7 @@ class FollowedHashtagsViewModel(
         follow: Boolean,
     ) {
         screenModelScope.launch {
+            updateItemInState(name) { it.copy(followingPending = true) }
             val newTag =
                 if (!follow) {
                     tagRepository.unfollow(name)

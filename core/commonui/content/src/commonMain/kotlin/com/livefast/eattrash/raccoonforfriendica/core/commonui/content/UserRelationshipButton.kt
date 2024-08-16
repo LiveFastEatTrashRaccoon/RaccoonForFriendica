@@ -51,7 +51,9 @@ fun UserRelationshipButton(
         Button(
             contentPadding = buttonPadding,
             onClick = {
-                onClick?.invoke(nextAction)
+                if (!pending) {
+                    onClick?.invoke(nextAction)
+                }
             },
         ) {
             buttonContent()
@@ -60,7 +62,9 @@ fun UserRelationshipButton(
         OutlinedButton(
             contentPadding = buttonPadding,
             onClick = {
-                onClick?.invoke(nextAction)
+                if (!pending) {
+                    onClick?.invoke(nextAction)
+                }
             },
         ) {
             buttonContent()
