@@ -79,7 +79,7 @@ class ForumListScreen(
                         Text(
                             text =
                                 buildString {
-                                    append(LocalStrings.current.groupForumTitle)
+                                    append(LocalStrings.current.topicTitle)
                                     val name = uiState.user?.displayName ?: uiState.user?.username ?: ""
                                     if (name.isNotBlank()) {
                                         append(": ")
@@ -141,7 +141,7 @@ class ForumListScreen(
                                 entry = entry,
                                 reshareAndReplyVisible = false,
                                 onClick = { e ->
-                                    detailOpener.openEntryDetail(e.id)
+                                    detailOpener.openThread(e.id)
                                 },
                                 onOpenUrl = { url ->
                                     openUrl(url)

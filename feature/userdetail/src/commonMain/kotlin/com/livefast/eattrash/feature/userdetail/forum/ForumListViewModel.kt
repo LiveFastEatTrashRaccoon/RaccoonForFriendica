@@ -73,7 +73,11 @@ class ForumListViewModel(
         }
 
         updateState { it.copy(loading = true) }
-        val entries = paginationManager.loadNextPage()
+        val entries =
+            paginationManager
+                .loadNextPage()
+                // needed because otherwise replies are included
+                .filter { it.inReplyTo == null }
         updateState {
             it.copy(
                 entries = entries,
