@@ -127,6 +127,11 @@ class ComposerViewModel(
                     loadNextPageUsers()
                 }
 
+            is ComposerMviModel.Intent.SetSensitive ->
+                screenModelScope.launch {
+                    updateState { it.copy(sensitive = intent.sensitive) }
+                }
+
             ComposerMviModel.Intent.Submit -> submit()
         }
     }

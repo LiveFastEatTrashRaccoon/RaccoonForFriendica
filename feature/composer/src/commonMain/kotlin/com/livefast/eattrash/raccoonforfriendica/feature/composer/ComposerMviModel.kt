@@ -22,6 +22,10 @@ interface ComposerMviModel :
             val visibility: Visibility,
         ) : Intent
 
+        data class SetSensitive(
+            val sensitive: Boolean,
+        ) : Intent
+
         data class AddAttachment(
             val byteArray: ByteArray,
         ) : Intent {
