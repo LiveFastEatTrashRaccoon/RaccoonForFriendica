@@ -33,6 +33,7 @@ interface FavoritesMviModel :
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
         val entries: List<TimelineEntryModel> = emptyList(),
+        val blurNsfw: Boolean = true,
     )
 
     sealed interface Effect
