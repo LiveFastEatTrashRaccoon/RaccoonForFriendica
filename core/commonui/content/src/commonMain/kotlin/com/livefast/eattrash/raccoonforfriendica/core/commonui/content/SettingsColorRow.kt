@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 
 @Composable
 fun SettingsColorRow(
@@ -25,6 +26,9 @@ fun SettingsColorRow(
     subtitle: String? = null,
     onTap: (() -> Unit)? = null,
 ) {
+    val fullColor = MaterialTheme.colorScheme.onBackground
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+
     Row(
         modifier =
             modifier
@@ -36,16 +40,17 @@ fun SettingsColorRow(
         Column(
             modifier = Modifier.weight(1f),
         ) {
+
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = fullColor,
             )
             if (subtitle != null) {
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = ancillaryColor,
                 )
             }
         }
