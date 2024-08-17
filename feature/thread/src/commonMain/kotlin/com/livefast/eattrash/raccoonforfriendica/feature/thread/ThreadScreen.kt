@@ -31,6 +31,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -44,18 +47,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.composable.TimelineReplyItem
@@ -80,6 +88,10 @@ class ThreadScreen(
         val scope = rememberCoroutineScope()
         val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
         val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
+        val snackbarHostState = remember { SnackbarHostState() }
+        val shareHelper = remember { getShareHelper() }
+        val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
+        val clipboardManager = LocalClipboardManager.current
 
         fun goBackToTop() {
             runCatching {
@@ -148,6 +160,17 @@ class ThreadScreen(
                             )
                         }
                     }
+                }
+            },
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                ) { data ->
+                    Snackbar(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        snackbarData = data,
+                    )
                 }
             },
             content = { padding ->
@@ -232,6 +255,31 @@ class ThreadScreen(
                                                 },
                                         )
                                     },
+                                    options =
+                                        buildList {
+                                            if (!uiState.entry?.url.isNullOrBlank()) {
+                                                this += OptionId.Share.toOption()
+                                                this += OptionId.CopyUrl.toOption()
+                                            }
+                                        },
+                                    onOptionSelected = { optionId ->
+                                        when (optionId) {
+                                            OptionId.Share -> {
+                                                val urlString = uiState.entry?.url.orEmpty()
+                                                shareHelper.share(urlString)
+                                            }
+
+                                            OptionId.CopyUrl -> {
+                                                val urlString = uiState.entry?.url.orEmpty()
+                                                clipboardManager.setText(AnnotatedString(urlString))
+                                                scope.launch {
+                                                    snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                                                }
+                                            }
+
+                                            else -> Unit
+                                        }
+                                    },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.s))
                             }
@@ -268,6 +316,31 @@ class ThreadScreen(
                                                 it.displayName ?: it.username
                                             },
                                     )
+                                },
+                                options =
+                                    buildList {
+                                        if (!entry.url.isNullOrBlank()) {
+                                            this += OptionId.Share.toOption()
+                                            this += OptionId.CopyUrl.toOption()
+                                        }
+                                    },
+                                onOptionSelected = { optionId ->
+                                    when (optionId) {
+                                        OptionId.Share -> {
+                                            val urlString = entry.url.orEmpty()
+                                            shareHelper.share(urlString)
+                                        }
+
+                                        OptionId.CopyUrl -> {
+                                            val urlString = entry.url.orEmpty()
+                                            clipboardManager.setText(AnnotatedString(urlString))
+                                            scope.launch {
+                                                snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                                            }
+                                        }
+
+                                        else -> Unit
+                                    }
                                 },
                             )
 
