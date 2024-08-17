@@ -31,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +51,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
+import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
 class HashtagScreen(
@@ -71,11 +73,23 @@ class HashtagScreen(
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
+        val scope = rememberCoroutineScope()
         var confirmUnfollowHashtagDialogOpen by remember { mutableStateOf(false) }
+
+        fun goBackToTop() {
+            runCatching {
+                scope.launch {
+                    lazyListState.scrollToItem(0)
+                    topAppBarState.heightOffset = 0f
+                    topAppBarState.contentOffset = 0f
+                }
+            }
+        }
 
         Scaffold(
             topBar = {
                 TopAppBar(
+                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(

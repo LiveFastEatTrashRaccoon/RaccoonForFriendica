@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -45,6 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
+import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
 class FavoritesScreen(
@@ -63,10 +65,22 @@ class FavoritesScreen(
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
+        val scope = rememberCoroutineScope()
+
+        fun goBackToTop() {
+            runCatching {
+                scope.launch {
+                    lazyListState.scrollToItem(0)
+                    topAppBarState.heightOffset = 0f
+                    topAppBarState.contentOffset = 0f
+                }
+            }
+        }
 
         Scaffold(
             topBar = {
                 TopAppBar(
+                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(

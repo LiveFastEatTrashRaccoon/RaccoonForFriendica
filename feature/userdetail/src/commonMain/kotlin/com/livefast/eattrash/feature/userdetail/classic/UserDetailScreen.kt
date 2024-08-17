@@ -33,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,6 +68,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Relationshi
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
 class UserDetailScreen(
@@ -91,6 +93,7 @@ class UserDetailScreen(
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
+        val scope = rememberCoroutineScope()
         var confirmUnfollowDialogOpen by remember { mutableStateOf(false) }
         var confirmDeleteFollowRequestDialogOpen by remember { mutableStateOf(false) }
         var confirmMuteNotificationsDialogOpen by remember { mutableStateOf(false) }
@@ -123,6 +126,7 @@ class UserDetailScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
+                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
