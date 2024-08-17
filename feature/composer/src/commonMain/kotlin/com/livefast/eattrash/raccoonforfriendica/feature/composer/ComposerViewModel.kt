@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer
 
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.getSelectedText
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
@@ -87,9 +88,36 @@ class ComposerViewModel(
                 updateAttachmentDescription(intent.attachment, intent.description)
 
             is ComposerMviModel.Intent.RemoveAttachment -> removeAttachment(intent.attachmentId)
-            is ComposerMviModel.Intent.AddLink -> addLink(intent.link)
-            is ComposerMviModel.Intent.AddMention -> addMention(intent.handle)
-            is ComposerMviModel.Intent.AddGroupReference -> addGroupReference(intent.handle)
+            is ComposerMviModel.Intent.AddLink -> {
+                screenModelScope.launch {
+                    val (anchor, url) = intent.link
+                    val additionalPart = "<a href=\"$url\">$anchor</a>"
+                    updateBodyValue(
+                        additionalPart = additionalPart,
+                        offsetAfter = additionalPart.length,
+                    )
+                }
+            }
+
+            is ComposerMviModel.Intent.AddMention -> {
+                screenModelScope.launch {
+                    val additionalPart = "@${intent.handle}"
+                    updateBodyValue(
+                        additionalPart = additionalPart,
+                        offsetAfter = additionalPart.length,
+                    )
+                }
+            }
+
+            is ComposerMviModel.Intent.AddGroupReference -> {
+                screenModelScope.launch {
+                    val additionalPart = "!${intent.handle}"
+                    updateBodyValue(
+                        additionalPart = additionalPart,
+                        offsetAfter = additionalPart.length,
+                    )
+                }
+            }
 
             is ComposerMviModel.Intent.UserSearchSetQuery ->
                 screenModelScope.launch {
@@ -104,6 +132,45 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.SetSensitive ->
                 screenModelScope.launch {
                     updateState { it.copy(sensitive = intent.sensitive) }
+                }
+
+            ComposerMviModel.Intent.AddBoldFormat ->
+                screenModelScope.launch {
+                    val selectedText =
+                        uiState.value.bodyValue
+                            .getSelectedText()
+                            .text
+                    val additionalPart = "<b>$selectedText</b>"
+                    updateBodyValue(
+                        additionalPart = additionalPart,
+                        offsetAfter = 3,
+                    )
+                }
+
+            ComposerMviModel.Intent.AddItalicFormat ->
+                screenModelScope.launch {
+                    val selectedText =
+                        uiState.value.bodyValue
+                            .getSelectedText()
+                            .text
+                    val additionalPart = "<i>$selectedText</i>"
+                    updateBodyValue(
+                        additionalPart = additionalPart,
+                        offsetAfter = 3,
+                    )
+                }
+
+            ComposerMviModel.Intent.AddUnderlineFormat ->
+                screenModelScope.launch {
+                    val selectedText =
+                        uiState.value.bodyValue
+                            .getSelectedText()
+                            .text
+                    val additionalPart = "<u>$selectedText</u>"
+                    updateBodyValue(
+                        additionalPart = additionalPart,
+                        offsetAfter = 3,
+                    )
                 }
 
             ComposerMviModel.Intent.Submit -> submit()
@@ -257,7 +324,10 @@ class ComposerViewModel(
         }
     }
 
-    private suspend fun updateBodyValue(additionalPart: String) {
+    private suspend fun updateBodyValue(
+        additionalPart: String,
+        offsetAfter: Int
+    ) {
         val bodyValue = uiState.value.bodyValue
         val (text, selection) = uiState.value.bodyValue.let { it.text to it.selection }
         val newText =
@@ -274,36 +344,15 @@ class ComposerViewModel(
 
         val newSelection =
             if (selection.collapsed) {
-                TextRange(index = selection.start + additionalPart.length)
+                TextRange(index = selection.start + offsetAfter)
             } else {
                 TextRange(
-                    start = selection.start + additionalPart.length,
-                    end = selection.end + additionalPart.length,
+                    start = selection.start + offsetAfter,
+                    end = selection.end + offsetAfter,
                 )
             }
         val newValue = bodyValue.copy(text = newText, selection = newSelection)
         updateState { it.copy(bodyValue = newValue) }
     }
 
-    private fun addLink(link: Pair<String, String>) {
-        screenModelScope.launch {
-            val (anchor, url) = link
-            val additionalPart = "<a href=\"$url\">$anchor</a>"
-            updateBodyValue(additionalPart)
-        }
-    }
-
-    private fun addMention(handle: String) {
-        screenModelScope.launch {
-            val additionalPart = "@$handle"
-            updateBodyValue(additionalPart)
-        }
-    }
-
-    private fun addGroupReference(handle: String) {
-        screenModelScope.launch {
-            val additionalPart = "!$handle"
-            updateBodyValue(additionalPart)
-        }
-    }
 }

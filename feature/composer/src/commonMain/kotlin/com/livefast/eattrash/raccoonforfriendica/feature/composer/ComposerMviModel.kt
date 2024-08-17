@@ -69,6 +69,12 @@ interface ComposerMviModel :
             val handle: String,
         ) : Intent
 
+        data object AddBoldFormat : Intent
+
+        data object AddItalicFormat : Intent
+
+        data object AddUnderlineFormat : Intent
+
         data object Submit : Intent
     }
 

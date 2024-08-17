@@ -262,6 +262,15 @@ class ComposerScreen(
                         onMentionClicked = {
                             mentionDialogOpen = true
                         },
+                        onBoldClicked = {
+                            model.reduce(ComposerMviModel.Intent.AddBoldFormat)
+                        },
+                        onItalicClicked = {
+                            model.reduce(ComposerMviModel.Intent.AddItalicFormat)
+                        },
+                        onUnderlineClicked = {
+                            model.reduce(ComposerMviModel.Intent.AddUnderlineFormat)
+                        },
                     )
                 }
             },
