@@ -1,6 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Cottage
+import androidx.compose.material.icons.filled.Public
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
 sealed interface TimelineType {
@@ -31,4 +36,12 @@ fun Int.toTimelineType(): TimelineType =
         1 -> TimelineType.All
         2 -> TimelineType.Subscriptions
         else -> TimelineType.Local
+    }
+
+@Composable
+fun TimelineType.toIcon(): ImageVector =
+    when (this) {
+        TimelineType.All -> Icons.Default.Public
+        TimelineType.Local -> Icons.Default.Cottage
+        TimelineType.Subscriptions -> Icons.Default.Book
     }

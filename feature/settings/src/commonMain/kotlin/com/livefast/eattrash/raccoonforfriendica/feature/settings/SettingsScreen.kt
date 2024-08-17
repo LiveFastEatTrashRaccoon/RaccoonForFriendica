@@ -7,12 +7,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Explicit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -35,15 +37,18 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toColor
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsColorRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineTypeBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.ColorThemeBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.FontFamilyBottomSheet
@@ -257,18 +262,28 @@ class SettingsScreen : Screen {
         }
 
         if (defaultTimelineTypeBottomSheetOpened) {
-            ModalBottomSheet(
-                onDismissRequest = {
+            CustomModalBottomSheet(
+                title = LocalStrings.current.feedTypeTitle,
+                items =
+                    uiState.availableTimelineTypes.map {
+                        CustomModalBottomSheetItem(
+                            label = it.toReadableName(),
+                            trailingContent = {
+                                Icon(
+                                    modifier = Modifier.size(IconSize.m),
+                                    imageVector = it.toIcon(),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
                     defaultTimelineTypeBottomSheetOpened = false
-                },
-                content = {
-                    TimelineTypeBottomSheet(
-                        types = uiState.availableTimelineTypes,
-                        onSelected = { type ->
-                            defaultTimelineTypeBottomSheetOpened = false
-                            model.reduce(SettingsMviModel.Intent.ChangeDefaultTimelineType(type))
-                        },
-                    )
+                    if (index != null) {
+                        val type = uiState.availableTimelineTypes[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeDefaultTimelineType(type))
+                    }
                 },
             )
         }

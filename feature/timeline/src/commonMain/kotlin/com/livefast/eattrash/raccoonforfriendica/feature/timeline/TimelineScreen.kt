@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,7 +28,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -55,13 +55,15 @@ import androidx.compose.ui.text.AnnotatedString
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineTypeBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
@@ -70,6 +72,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoo
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.flow.launchIn
@@ -334,18 +337,28 @@ class TimelineScreen : Screen {
         }
 
         if (timelineTypeSelectorOpen) {
-            ModalBottomSheet(
-                onDismissRequest = {
+            CustomModalBottomSheet(
+                title = LocalStrings.current.feedTypeTitle,
+                items =
+                    uiState.availableTimelineTypes.map {
+                        CustomModalBottomSheetItem(
+                            label = it.toReadableName(),
+                            trailingContent = {
+                                Icon(
+                                    modifier = Modifier.size(IconSize.m),
+                                    imageVector = it.toIcon(),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
                     timelineTypeSelectorOpen = false
-                },
-                content = {
-                    TimelineTypeBottomSheet(
-                        types = uiState.availableTimelineTypes,
-                        onSelected = { type ->
-                            timelineTypeSelectorOpen = false
-                            model.reduce(TimelineMviModel.Intent.ChangeType(type))
-                        },
-                    )
+                    if (index != null) {
+                        val type = uiState.availableTimelineTypes[index]
+                        model.reduce(TimelineMviModel.Intent.ChangeType(type))
+                    }
                 },
             )
         }
