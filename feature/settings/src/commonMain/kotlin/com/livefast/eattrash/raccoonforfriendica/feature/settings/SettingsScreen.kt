@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.settings
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Explicit
@@ -36,6 +38,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toColor
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toEmoji
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -50,7 +53,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.ColorThemeBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.FontFamilyBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.LanguageBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.ThemeBottomSheet
@@ -244,19 +246,36 @@ class SettingsScreen : Screen {
                     state.expand()
                 }
             }
-            ModalBottomSheet(
+            CustomModalBottomSheet(
                 sheetState = state,
-                onDismissRequest = {
-                    themeColorBottomSheetOpened = false
+                title = LocalStrings.current.settingsItemTheme,
+                items =
+                    uiState.availableThemeColors.map { theme ->
+                        CustomModalBottomSheetItem(
+                            leadingContent = {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .padding(start = Spacing.xs)
+                                            .size(IconSize.m)
+                                            .background(color = theme.toColor(), shape = CircleShape),
+                                )
+                            },
+                            label = theme.toReadableName(),
+                            trailingContent = {
+                                Text(
+                                    text = theme.toEmoji(),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            },
+                        )
                 },
-                content = {
-                    ColorThemeBottomSheet(
-                        colors = uiState.availableThemeColors,
-                        onSelected = { value ->
-                            themeColorBottomSheetOpened = false
-                            model.reduce(SettingsMviModel.Intent.ChangeThemeColor(value.toColor()))
-                        },
-                    )
+                onSelected = { index ->
+                    themeColorBottomSheetOpened = false
+                    if (index != null) {
+                        val value = uiState.availableThemeColors[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeThemeColor(value.toColor()))
+                    }
                 },
             )
         }
