@@ -180,6 +180,7 @@ class ThreadScreen(
                                             ),
                                     entry = original,
                                     reshareAndReplyVisible = false,
+                                    blurNsfw = uiState.blurNsfw,
                                     onOpenUrl = { url ->
                                         openUrl(url)
                                     },

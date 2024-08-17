@@ -19,6 +19,7 @@ val featureThreadModule =
                 populateThreadUseCase = get(),
                 timelineEntryRepository = get(),
                 apiConfigurationRepository = get(),
+                settingsRepository = get(),
             )
         }
     }
