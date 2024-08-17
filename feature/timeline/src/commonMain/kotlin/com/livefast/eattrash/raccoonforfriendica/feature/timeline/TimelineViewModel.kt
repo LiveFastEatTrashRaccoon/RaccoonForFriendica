@@ -46,6 +46,7 @@ class TimelineViewModel(
                             settings?.defaultTimelineType?.toTimelineType()
                                 ?: TimelineType.Local,
                         blurNsfw = settings?.blurNsfw ?: true,
+                        isLogged = isLogged,
                     )
                 }
                 refresh(initial = true)
