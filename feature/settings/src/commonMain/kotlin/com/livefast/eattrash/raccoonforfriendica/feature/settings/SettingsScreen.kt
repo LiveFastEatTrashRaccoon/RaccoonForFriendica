@@ -38,6 +38,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toColor
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toEmoji
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toIcon
@@ -57,7 +58,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.LanguageBottomSheet
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.ThemeBottomSheet
 import kotlinx.coroutines.delay
 
 class SettingsScreen : Screen {
@@ -207,17 +207,29 @@ class SettingsScreen : Screen {
         }
 
         if (themeBottomSheetOpened) {
-            ModalBottomSheet(
-                onDismissRequest = {
+            val themes = listOf(UiTheme.Light, UiTheme.Dark, UiTheme.Black, UiTheme.Default)
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemTheme,
+                items =
+                    themes.map { theme ->
+                        CustomModalBottomSheetItem(
+                            label = theme.toReadableName(),
+                            trailingContent = {
+                                Icon(
+                                    modifier = Modifier.size(IconSize.m),
+                                    imageVector = theme.toIcon(),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
                     themeBottomSheetOpened = false
-                },
-                content = {
-                    ThemeBottomSheet(
-                        onSelected = { value ->
-                            themeBottomSheetOpened = false
-                            model.reduce(SettingsMviModel.Intent.ChangeTheme(value))
-                        },
-                    )
+                    if (index != null) {
+                        val value = themes[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeTheme(value))
+                    }
                 },
             )
         }

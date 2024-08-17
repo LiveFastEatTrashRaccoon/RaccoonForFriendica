@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.data
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -43,10 +44,10 @@ fun UiTheme?.toReadableName(): String =
         else -> LocalStrings.current.systemDefault
     }
 
-fun UiTheme.toIcon(): ImageVector? =
+fun UiTheme.toIcon(): ImageVector =
     when (this) {
         UiTheme.Black -> Icons.Default.DarkMode
         UiTheme.Dark -> Icons.Outlined.DarkMode
         UiTheme.Light -> Icons.Default.LightMode
-        UiTheme.Default -> null
+        else -> Icons.Default.Smartphone
     }
