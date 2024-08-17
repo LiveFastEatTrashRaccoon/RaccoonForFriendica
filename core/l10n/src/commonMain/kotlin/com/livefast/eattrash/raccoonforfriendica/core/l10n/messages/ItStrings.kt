@@ -133,4 +133,7 @@ internal val ItStrings =
         override val settingsItemBlurNsfw = "Offusca media NSFW"
         override val settingsItemDefaultTimelineType = "Tipo di feed predefinito"
         override val actionDelete = "Elimina"
+        override val actionShare = "Condividi"
+        override val actionCopyUrl = "Copia link"
+        override val messageTextCopiedToClipboard = "Copiato negli appunti! 📋"
     }

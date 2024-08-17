@@ -138,6 +138,9 @@ interface Strings {
     val settingsItemBlurNsfw: String
     val settingsItemDefaultTimelineType: String
     val actionDelete: String
+    val actionShare: String
+    val actionCopyUrl: String
+    val messageTextCopiedToClipboard: String
 }
 
 object Locales {
