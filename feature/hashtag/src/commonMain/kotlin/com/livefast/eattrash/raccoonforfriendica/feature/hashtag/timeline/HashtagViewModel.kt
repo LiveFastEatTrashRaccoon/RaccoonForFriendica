@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.hashtag
+package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
@@ -7,6 +7,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class HashtagViewModel(
@@ -14,12 +17,17 @@ class HashtagViewModel(
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val tagRepository: TagRepository,
+    private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>(
         initialState = HashtagMviModel.State(),
     ),
     HashtagMviModel {
     init {
         screenModelScope.launch {
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                }.launchIn(this)
             if (uiState.value.initial) {
                 val model = tagRepository.getBy(tag)
                 updateState {
@@ -56,7 +64,10 @@ class HashtagViewModel(
             it.copy(initial = initial, refreshing = !initial)
         }
         paginationManager.reset(
-            TimelinePaginationSpecification.Hashtag(tag),
+            TimelinePaginationSpecification.Hashtag(
+                hashtag = tag,
+                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+            ),
         )
         loadNextPage()
     }

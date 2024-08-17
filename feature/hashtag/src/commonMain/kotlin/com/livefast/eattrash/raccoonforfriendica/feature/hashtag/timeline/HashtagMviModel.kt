@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.hashtag
+package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline
 
 import androidx.compose.runtime.Stable
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -39,6 +39,7 @@ interface HashtagMviModel :
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
         val entries: List<TimelineEntryModel> = emptyList(),
+        val blurNsfw: Boolean = true,
     )
 
     sealed interface Effect

@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.hashtag
+package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -152,6 +152,7 @@ class HashtagScreen(
                     ) { idx, entry ->
                         TimelineItem(
                             entry = entry,
+                            blurNsfw = uiState.blurNsfw,
                             onClick = { e ->
                                 detailOpener.openEntryDetail(e.id)
                             },
