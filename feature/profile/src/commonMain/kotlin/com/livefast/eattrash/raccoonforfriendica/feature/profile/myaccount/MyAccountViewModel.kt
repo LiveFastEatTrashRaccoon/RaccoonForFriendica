@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.MyAccountCache
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -21,6 +22,7 @@ class MyAccountViewModel(
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val myAccountCache: MyAccountCache,
+    private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
         initialState = MyAccountMviModel.State(),
     ),
@@ -58,6 +60,10 @@ class MyAccountViewModel(
                             refresh(initial = true)
                         }
                     }
+                }.launchIn(this)
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
                 }.launchIn(this)
         }
     }
@@ -111,6 +117,7 @@ class MyAccountViewModel(
                 excludeReplies = uiState.value.section == UserSection.Posts,
                 onlyMedia = uiState.value.section == UserSection.Media,
                 pinned = uiState.value.section == UserSection.Pinned,
+                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
             ),
         )
         loadNextPage()

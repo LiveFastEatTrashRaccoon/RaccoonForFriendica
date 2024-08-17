@@ -41,6 +41,7 @@ interface MyAccountMviModel :
         val user: UserModel? = null,
         val section: UserSection = UserSection.Posts,
         val entries: List<TimelineEntryModel> = emptyList(),
+        val blurNsfw: Boolean = true,
     )
 
     sealed interface Effect {
