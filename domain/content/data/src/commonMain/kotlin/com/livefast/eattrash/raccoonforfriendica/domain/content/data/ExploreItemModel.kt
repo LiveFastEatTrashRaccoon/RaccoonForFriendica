@@ -27,3 +27,10 @@ sealed interface ExploreItemModel {
         override val id = user.id
     }
 }
+
+val ExploreItemModel.isNsfw: Boolean
+    get() =
+        when (this) {
+            is ExploreItemModel.Entry -> entry.isNsfw
+            else -> true
+        }
