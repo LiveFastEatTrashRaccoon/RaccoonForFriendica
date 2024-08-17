@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -145,7 +145,7 @@ class UserListScreen(
                             }
                         }
 
-                        items(uiState.users) { user ->
+                        itemsIndexed(uiState.users) { idx, user ->
                             UserItem(
                                 user = user,
                                 onClick = {
@@ -180,6 +180,10 @@ class UserListScreen(
                                 },
                             )
                             Spacer(modifier = Modifier.height(Spacing.interItem))
+
+                            if (idx == uiState.users.lastIndex - 5 && uiState.canFetchMore) {
+                                model.reduce(UserListMviModel.Intent.LoadNextPage)
+                            }
                         }
                     }
 
