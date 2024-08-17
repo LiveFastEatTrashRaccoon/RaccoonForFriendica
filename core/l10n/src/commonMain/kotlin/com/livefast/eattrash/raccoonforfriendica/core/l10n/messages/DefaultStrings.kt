@@ -132,4 +132,7 @@ internal open class DefaultStrings : Strings {
     override val settingsItemBlurNsfw = "Blur NSFW media"
     override val settingsItemDefaultTimelineType = "Default timeline type"
     override val actionDelete = "Delete"
+    override val actionShare = "Share"
+    override val actionCopyUrl = "Copy link"
+    override val messageTextCopiedToClipboard = "Copied to clipboard! 📋"
 }

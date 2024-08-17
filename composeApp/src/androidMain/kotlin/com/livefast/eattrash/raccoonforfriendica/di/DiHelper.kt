@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.preferences.di.corePrefere
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsFileSystemModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsGalleryModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsModule
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsShareModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.domainContentPaginationModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.domainContentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.domainIdentityRepositoryModule
@@ -45,6 +46,7 @@ val sharedHelperModule =
             coreResourceModule,
             coreUtilsFileSystemModule,
             coreUtilsGalleryModule,
+            coreUtilsShareModule,
             coreUtilsModule,
             domainContentPaginationModule,
             domainContentRepositoryModule,

@@ -5,6 +5,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.DefaultGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
+import com.livefast.eattrash.raccoonforfriendica.core.utils.share.DefaultShareHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.dsl.module
@@ -12,6 +14,8 @@ import org.koin.dsl.module
 actual fun getImageLoaderProvider(): ImageLoaderProvider = CoreUtilsDiHelper.imageLoaderProvider
 
 actual fun getGalleryHelper(): GalleryHelper = CoreUtilsDiHelper.galleryHelper
+
+actual fun getShareHelper(): ShareHelper = CoreUtilsDiHelper.shareHelper
 
 actual val coreUtilsFileSystemModule =
     module {
@@ -27,7 +31,15 @@ actual val coreUtilsGalleryModule =
         }
     }
 
+actual val coreUtilsShareModule =
+    module {
+        single<ShareHelper> {
+            DefaultShareHelper()
+        }
+    }
+
 internal object CoreUtilsDiHelper : KoinComponent {
     val imageLoaderProvider: ImageLoaderProvider by inject()
     val galleryHelper: GalleryHelper by inject()
+    val shareHelper: ShareHelper by inject()
 }

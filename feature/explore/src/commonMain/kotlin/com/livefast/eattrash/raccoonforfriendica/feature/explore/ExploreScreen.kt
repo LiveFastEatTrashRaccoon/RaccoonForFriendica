@@ -25,6 +25,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -41,7 +44,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.AnnotatedString
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -50,15 +55,18 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Sectio
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.HashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.LinkItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
@@ -91,6 +99,10 @@ class ExploreScreen : Screen {
         val scope = rememberCoroutineScope()
         val drawerCoordinator = remember { getDrawerCoordinator() }
         val lazyListState = rememberLazyListState()
+        val snackbarHostState = remember { SnackbarHostState() }
+        val shareHelper = remember { getShareHelper() }
+        val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
+        val clipboardManager = LocalClipboardManager.current
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
 
@@ -155,6 +167,17 @@ class ExploreScreen : Screen {
                         )
                     },
                 )
+            },
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                ) { data ->
+                    Snackbar(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        snackbarData = data,
+                    )
+                }
             },
         ) { padding ->
             val pullRefreshState =
@@ -264,6 +287,33 @@ class ExploreScreen : Screen {
                                             inReplyToHandle = e.creator?.handle,
                                             inReplyToUsername = e.creator?.let { it.displayName ?: it.username },
                                         )
+                                    },
+                                    options =
+                                        buildList {
+                                            if (!item.entry.url.isNullOrBlank()) {
+                                                this += OptionId.Share.toOption()
+                                                this += OptionId.CopyUrl.toOption()
+                                            }
+                                        },
+                                    onOptionSelected = { optionId ->
+                                        when (optionId) {
+                                            OptionId.Share -> {
+                                                val urlString = item.entry.url.orEmpty()
+                                                shareHelper.share(urlString)
+                                            }
+
+                                            OptionId.CopyUrl -> {
+                                                val urlString = item.entry.url.orEmpty()
+                                                clipboardManager.setText(AnnotatedString(urlString))
+                                                scope.launch {
+                                                    snackbarHostState.showSnackbar(
+                                                        copyToClipboardSuccess,
+                                                    )
+                                                }
+                                            }
+
+                                            else -> Unit
+                                        }
                                     },
                                 )
                                 HorizontalDivider(

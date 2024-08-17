@@ -27,10 +27,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -38,7 +41,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimension
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
@@ -48,17 +50,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserHeade
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toAccountSection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toInt
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class MyAccountScreen : Screen {
     @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -72,7 +77,11 @@ class MyAccountScreen : Screen {
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
         val snackbarHostState = remember { SnackbarHostState() }
+        val scope = rememberCoroutineScope()
+        val shareHelper = remember { getShareHelper() }
         val genericError = LocalStrings.current.messageGenericError
+        val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
+        val clipboardManager = LocalClipboardManager.current
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
 
         suspend fun goBackToTop() {
@@ -237,17 +246,29 @@ class MyAccountScreen : Screen {
                         },
                         options =
                             buildList {
+                                if (!entry.url.isNullOrBlank()) {
+                                    this += OptionId.Share.toOption()
+                                    this += OptionId.CopyUrl.toOption()
+                                }
                                 if (entry.reblog == null) {
-                                    this +=
-                                        Option(
-                                            id = OptionId.Delete,
-                                            label = LocalStrings.current.actionDelete,
-                                        )
+                                    this += OptionId.Delete.toOption()
                                 }
                             },
                         onOptionSelected = { optionId ->
                             when (optionId) {
                                 OptionId.Delete -> confirmDeleteEntryId = entry.id
+                                OptionId.Share -> {
+                                    val urlString = entry.url.orEmpty()
+                                    shareHelper.share(urlString)
+                                }
+
+                                OptionId.CopyUrl -> {
+                                    val urlString = entry.url.orEmpty()
+                                    clipboardManager.setText(AnnotatedString(urlString))
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                                    }
+                                }
                                 else -> Unit
                             }
                         },
