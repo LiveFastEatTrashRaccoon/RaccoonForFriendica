@@ -11,4 +11,7 @@ data class SettingsModel(
     val fontFamily: UiFontFamily = UiFontFamily.Default,
     val dynamicColors: Boolean = false,
     val customSeedColor: Int? = null,
+    val defaultTimelineType: Int = 0,
+    val includeNsfw: Boolean = false,
+    val blurNsfw: Boolean = true,
 )
