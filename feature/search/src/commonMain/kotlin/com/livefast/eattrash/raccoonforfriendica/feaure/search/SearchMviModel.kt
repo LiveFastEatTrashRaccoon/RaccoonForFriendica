@@ -62,6 +62,7 @@ interface SearchMviModel :
         val canFetchMore: Boolean = true,
         val section: SearchSection = SearchSection.Hashtags,
         val items: List<ExploreItemModel> = emptyList(),
+        val blurNsfw: Boolean = true,
     )
 
     sealed interface Effect {
