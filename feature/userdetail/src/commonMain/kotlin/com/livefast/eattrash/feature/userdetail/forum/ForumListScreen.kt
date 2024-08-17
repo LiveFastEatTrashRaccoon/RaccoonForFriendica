@@ -179,6 +179,7 @@ class ForumListScreen(
                             TimelineItem(
                                 entry = entry,
                                 reshareAndReplyVisible = false,
+                                blurNsfw = uiState.blurNsfw,
                                 onClick = { e ->
                                     detailOpener.openThread(e.id)
                                 },

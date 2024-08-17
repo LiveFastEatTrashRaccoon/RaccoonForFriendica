@@ -157,6 +157,7 @@ class InboxScreen : Screen {
                     ) { idx, notification ->
                         NotificationItem(
                             notification = notification,
+                            blurNsfw = uiState.blurNsfw,
                             onOpenEntry = { entry ->
                                 detailOpener.openEntryDetail(entry.id)
                             },

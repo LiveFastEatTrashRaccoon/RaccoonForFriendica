@@ -24,6 +24,7 @@ val featureProfileModule =
                 paginationManager = get(),
                 timelineEntryRepository = get(),
                 myAccountCache = get(),
+                settingsRepository = get(),
             )
         }
         single<MyAccountCache> {

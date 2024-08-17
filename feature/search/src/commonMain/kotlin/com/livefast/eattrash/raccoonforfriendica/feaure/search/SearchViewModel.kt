@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Searc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -29,12 +30,17 @@ class SearchViewModel(
     private val userRepository: UserRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val tagRepository: TagRepository,
+    private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<SearchMviModel.Intent, SearchMviModel.State, SearchMviModel.Effect>(
         initialState = SearchMviModel.State(),
     ),
     SearchMviModel {
     init {
         screenModelScope.launch {
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                }.launchIn(this)
             uiState
                 .map { it.query }
                 .distinctUntilChanged()
@@ -98,7 +104,11 @@ class SearchViewModel(
         paginationManager.reset(
             when (uiState.value.section) {
                 SearchSection.Hashtags -> SearchPaginationSpecification.Hashtags(query)
-                SearchSection.Posts -> SearchPaginationSpecification.Entries(query)
+                SearchSection.Posts ->
+                    SearchPaginationSpecification.Entries(
+                        query = query,
+                        includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                    )
                 SearchSection.Users -> SearchPaginationSpecification.Users(query)
             },
         )

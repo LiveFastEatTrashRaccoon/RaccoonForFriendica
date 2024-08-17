@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -16,6 +17,7 @@ class EntryDetailViewModel(
     private val id: String,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
         initialState = EntryDetailMviModel.State(),
     ),
@@ -27,6 +29,10 @@ class EntryDetailViewModel(
                     if (isLogged) {
                         updateState { it.copy(isLogged = isLogged) }
                     }
+                }.launchIn(this)
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
                 }.launchIn(this)
             if (uiState.value.initial) {
                 refresh(initial = true)

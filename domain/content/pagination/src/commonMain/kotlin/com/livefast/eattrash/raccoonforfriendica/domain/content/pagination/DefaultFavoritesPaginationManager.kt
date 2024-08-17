@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 
 internal class DefaultFavoritesPaginationManager(
@@ -23,11 +24,11 @@ internal class DefaultFavoritesPaginationManager(
 
         val results =
             when (specification) {
-                FavoritesPaginationSpecification.Bookmarks -> {
+                is FavoritesPaginationSpecification.Bookmarks -> {
                     timelineEntryRepository.getBookmarks(pageCursor = pageCursor)
                 }
 
-                FavoritesPaginationSpecification.Favorites -> {
+                is FavoritesPaginationSpecification.Favorites -> {
                     timelineEntryRepository.getFavorites(pageCursor = pageCursor)
                 }
             }.deduplicate()
@@ -49,4 +50,6 @@ internal class DefaultFavoritesPaginationManager(
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
         }
+
+    private fun List<TimelineEntryModel>.filterNsfw(included: Boolean): List<TimelineEntryModel> = filter { included || !it.isNsfw }
 }

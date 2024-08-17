@@ -12,6 +12,7 @@ val featureExploreModule =
                 userRepository = get(),
                 timelineEntryRepository = get(),
                 apiConfigurationRepository = get(),
+                settingsRepository = get(),
             )
         }
     }

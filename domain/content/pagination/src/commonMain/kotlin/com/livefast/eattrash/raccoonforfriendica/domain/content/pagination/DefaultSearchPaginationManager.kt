@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 
 internal class DefaultSearchPaginationManager(
@@ -28,7 +29,7 @@ internal class DefaultSearchPaginationManager(
                         query = specification.query,
                         pageCursor = pageCursor,
                         type = SearchResultType.Entries,
-                    )
+                    ).filterNsfw(specification.includeNsfw)
 
                 is SearchPaginationSpecification.Hashtags ->
                     searchRepository.search(
@@ -62,4 +63,6 @@ internal class DefaultSearchPaginationManager(
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
         }
+
+    private fun List<ExploreItemModel>.filterNsfw(included: Boolean): List<ExploreItemModel> = filter { included || !it.isNsfw }
 }

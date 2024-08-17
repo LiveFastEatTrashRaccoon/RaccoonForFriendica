@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
@@ -33,6 +34,7 @@ internal class DefaultNotificationsPaginationManager(
                             pageCursor = pageCursor,
                             types = specification.types,
                         ).determineRelationshipStatus()
+                        .filterNsfw(specification.includeNsfw)
             }.deduplicate()
 
         if (results.isNotEmpty()) {
@@ -69,4 +71,7 @@ internal class DefaultNotificationsPaginationManager(
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
         }
+
+    private fun List<NotificationModel>.filterNsfw(included: Boolean): List<NotificationModel> =
+        filter { included || it.entry?.isNsfw != true }
 }

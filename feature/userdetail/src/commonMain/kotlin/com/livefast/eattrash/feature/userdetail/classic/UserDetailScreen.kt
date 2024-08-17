@@ -285,6 +285,7 @@ class UserDetailScreen(
                         ) { idx, entry ->
                             TimelineItem(
                                 entry = entry,
+                                blurNsfw = uiState.blurNsfw,
                                 onClick = { e ->
                                     detailOpener.openEntryDetail(e.id)
                                 },

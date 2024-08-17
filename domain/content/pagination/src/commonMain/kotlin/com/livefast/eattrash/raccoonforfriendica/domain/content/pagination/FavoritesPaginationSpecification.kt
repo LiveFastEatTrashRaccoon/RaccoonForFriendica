@@ -1,7 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 sealed interface FavoritesPaginationSpecification {
-    data object Favorites : FavoritesPaginationSpecification
+    data class Favorites(
+        val includeNsfw: Boolean = true,
+    ) : FavoritesPaginationSpecification
 
-    data object Bookmarks : FavoritesPaginationSpecification
+    data class Bookmarks(
+        val includeNsfw: Boolean = true,
+    ) : FavoritesPaginationSpecification
 }

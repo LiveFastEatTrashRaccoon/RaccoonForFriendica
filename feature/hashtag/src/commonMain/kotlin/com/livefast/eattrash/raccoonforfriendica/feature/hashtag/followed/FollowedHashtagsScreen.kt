@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.hashtag
+package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

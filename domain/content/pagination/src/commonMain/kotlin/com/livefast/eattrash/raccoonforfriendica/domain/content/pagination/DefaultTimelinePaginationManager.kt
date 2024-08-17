@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
 
@@ -42,11 +43,13 @@ internal class DefaultTimelinePaginationManager(
                             timelineRepository.getLocal(
                                 pageCursor = pageCursor,
                             )
-                    }
+                    }.filterNsfw(specification.includeNsfw)
                 }
 
                 is TimelinePaginationSpecification.Hashtag -> {
-                    timelineRepository.getHashtag(specification.hashtag)
+                    timelineRepository
+                        .getHashtag(specification.hashtag)
+                        .filterNsfw(specification.includeNsfw)
                 }
 
                 is TimelinePaginationSpecification.User ->
@@ -57,7 +60,7 @@ internal class DefaultTimelinePaginationManager(
                         excludeReblogs = specification.excludeReblogs,
                         onlyMedia = specification.onlyMedia,
                         pinned = specification.pinned,
-                    )
+                    ).filterNsfw(specification.includeNsfw)
             }.deduplicate()
 
         if (results.isNotEmpty()) {
@@ -95,4 +98,6 @@ internal class DefaultTimelinePaginationManager(
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
         }
+
+    private fun List<TimelineEntryModel>.filterNsfw(included: Boolean): List<TimelineEntryModel> = filter { included || !it.isNsfw }
 }

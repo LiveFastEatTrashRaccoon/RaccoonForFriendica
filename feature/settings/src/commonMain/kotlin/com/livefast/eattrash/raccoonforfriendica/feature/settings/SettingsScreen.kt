@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Explicit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,9 +40,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsC
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineTypeBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.ColorThemeBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.FontFamilyBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.LanguageBottomSheet
@@ -61,6 +64,7 @@ class SettingsScreen : Screen {
         var themeBottomSheetOpened by remember { mutableStateOf(false) }
         var fontFamilyBottomSheetOpened by remember { mutableStateOf(false) }
         var themeColorBottomSheetOpened by remember { mutableStateOf(false) }
+        var defaultTimelineTypeBottomSheetOpened by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -107,6 +111,14 @@ class SettingsScreen : Screen {
                                 languageBottomSheetOpened = true
                             },
                         )
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemDefaultTimelineType,
+                            value = uiState.defaultTimelineType.toReadableName(),
+                            onTap = {
+                                defaultTimelineTypeBottomSheetOpened = true
+                            },
+                        )
+
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderLookAndFeel,
                             icon = Icons.Default.Style,
@@ -143,6 +155,25 @@ class SettingsScreen : Screen {
                                 },
                             )
                         }
+
+                        SettingsHeader(
+                            icon = Icons.Default.Explicit,
+                            title = LocalStrings.current.settingsHeaderNsfw,
+                        )
+                        SettingsSwitchRow(
+                            title = LocalStrings.current.settingsItemIncludeNsfw,
+                            value = uiState.includeNsfw,
+                            onValueChanged = {
+                                model.reduce(SettingsMviModel.Intent.ChangeIncludeNsfw(it))
+                            },
+                        )
+                        SettingsSwitchRow(
+                            title = LocalStrings.current.settingsItemBlurNsfw,
+                            value = uiState.blurNsfw,
+                            onValueChanged = {
+                                model.reduce(SettingsMviModel.Intent.ChangeBlurNsfw(it))
+                            },
+                        )
 
                         Spacer(modifier = Modifier.height(Spacing.xxxl))
                     }
@@ -219,6 +250,23 @@ class SettingsScreen : Screen {
                         onSelected = { value ->
                             themeColorBottomSheetOpened = false
                             model.reduce(SettingsMviModel.Intent.ChangeThemeColor(value.toColor()))
+                        },
+                    )
+                },
+            )
+        }
+
+        if (defaultTimelineTypeBottomSheetOpened) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    defaultTimelineTypeBottomSheetOpened = false
+                },
+                content = {
+                    TimelineTypeBottomSheet(
+                        types = uiState.availableTimelineTypes,
+                        onSelected = { type ->
+                            defaultTimelineTypeBottomSheetOpened = false
+                            model.reduce(SettingsMviModel.Intent.ChangeDefaultTimelineType(type))
                         },
                     )
                 },

@@ -41,6 +41,7 @@ interface TimelineMviModel :
         val timelineType: TimelineType = TimelineType.Local,
         val availableTimelineTypes: List<TimelineType> = emptyList(),
         val entries: List<TimelineEntryModel> = emptyList(),
+        val blurNsfw: Boolean = true,
     )
 
     sealed interface Effect {

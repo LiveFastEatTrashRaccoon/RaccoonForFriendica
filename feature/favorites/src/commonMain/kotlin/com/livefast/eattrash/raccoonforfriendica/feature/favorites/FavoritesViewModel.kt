@@ -7,18 +7,26 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
     private val type: FavoritesType,
     private val paginationManager: FavoritesPaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<FavoritesMviModel.Intent, FavoritesMviModel.State, FavoritesMviModel.Effect>(
         initialState = FavoritesMviModel.State(),
     ),
     FavoritesMviModel {
     init {
         screenModelScope.launch {
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                }.launchIn(this)
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
@@ -49,8 +57,14 @@ class FavoritesViewModel(
         }
         paginationManager.reset(
             when (type) {
-                FavoritesType.Bookmarks -> FavoritesPaginationSpecification.Bookmarks
-                FavoritesType.Favorites -> FavoritesPaginationSpecification.Favorites
+                FavoritesType.Bookmarks ->
+                    FavoritesPaginationSpecification.Bookmarks(
+                        includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                    )
+                FavoritesType.Favorites ->
+                    FavoritesPaginationSpecification.Favorites(
+                        includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                    )
             },
         )
         loadNextPage()

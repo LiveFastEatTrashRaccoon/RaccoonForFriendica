@@ -11,6 +11,7 @@ val featureFavoritesModule =
                 type = params[0],
                 paginationManager = get(),
                 timelineEntryRepository = get(),
-        )
+                settingsRepository = get(),
+            )
+        }
     }
-}

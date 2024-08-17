@@ -12,5 +12,6 @@ sealed interface NotificationsPaginationSpecification {
                 NotificationType.Entry,
                 NotificationType.Update,
             ),
+        val includeNsfw: Boolean = true,
     ) : NotificationsPaginationSpecification
 }

@@ -37,6 +37,7 @@ interface ThreadMviModel :
         val canFetchMore: Boolean = true,
         val entry: TimelineEntryModel? = null,
         val replies: List<TimelineEntryModel> = emptyList(),
+        val blurNsfw: Boolean = true,
     )
 
     sealed interface Effect

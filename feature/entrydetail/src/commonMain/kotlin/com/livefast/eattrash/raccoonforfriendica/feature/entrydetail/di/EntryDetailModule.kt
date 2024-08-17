@@ -11,6 +11,7 @@ val featureEntryDetailModule =
                 id = params[0],
                 timelineEntryRepository = get(),
                 apiConfigurationRepository = get(),
+                settingsRepository = get(),
             )
         }
     }

@@ -4,10 +4,13 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -16,42 +19,37 @@ class TimelineViewModel(
     private val paginationManager: TimelinePaginationManager,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
         initialState = TimelineMviModel.State(),
     ),
     TimelineMviModel {
     init {
         screenModelScope.launch {
-            apiConfigurationRepository.isLogged
-                .onEach { isLogged ->
-                    if (isLogged) {
-                        updateState {
-                            it.copy(
-                                availableTimelineTypes =
-                                    listOf(
-                                        TimelineType.All,
-                                        TimelineType.Subscriptions,
-                                        TimelineType.Local,
-                                    ),
-                                timelineType = TimelineType.Subscriptions,
-                                isLogged = isLogged,
-                            )
-                        }
-                        refresh(initial = true)
-                    } else {
-                        updateState {
-                            it.copy(
-                                availableTimelineTypes =
-                                    listOf(
-                                        TimelineType.All,
-                                        TimelineType.Local,
-                                    ),
-                                timelineType = TimelineType.Local,
-                            )
-                        }
-                        refresh(initial = true)
-                    }
-                }.launchIn(this)
+            combine(
+                settingsRepository.current,
+                apiConfigurationRepository.isLogged,
+            ) { settings, isLogged ->
+                settings to isLogged
+            }.onEach { (settings, isLogged) ->
+                updateState {
+                    it.copy(
+                        availableTimelineTypes =
+                            buildList {
+                                this += TimelineType.All
+                                if (isLogged) {
+                                    this += TimelineType.Subscriptions
+                                }
+                                this += TimelineType.Local
+                            },
+                        timelineType =
+                            settings?.defaultTimelineType?.toTimelineType()
+                                ?: TimelineType.Local,
+                        blurNsfw = settings?.blurNsfw ?: true,
+                    )
+                }
+                refresh(initial = true)
+            }.launchIn(this)
         }
     }
 
@@ -97,6 +95,7 @@ class TimelineViewModel(
         paginationManager.reset(
             TimelinePaginationSpecification.Feed(
                 timelineType = uiState.value.timelineType,
+                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
             ),
         )
         loadNextPage()

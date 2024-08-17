@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.timeline.composable
+package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineTyp
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 
 @Composable
-internal fun TimelineTypeBottomSheet(
+fun TimelineTypeBottomSheet(
     types: List<TimelineType> =
         listOf(
             TimelineType.All,

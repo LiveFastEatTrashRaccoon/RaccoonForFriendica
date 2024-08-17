@@ -18,3 +18,17 @@ fun TimelineType.toReadableName(): String =
         TimelineType.Subscriptions -> LocalStrings.current.timelineSubscriptions
         TimelineType.Local -> LocalStrings.current.timelineLocal
     }
+
+fun TimelineType.toInt(): Int =
+    when (this) {
+        TimelineType.All -> 1
+        TimelineType.Local -> 0
+        TimelineType.Subscriptions -> 2
+    }
+
+fun Int.toTimelineType(): TimelineType =
+    when (this) {
+        1 -> TimelineType.All
+        2 -> TimelineType.Subscriptions
+        else -> TimelineType.Local
+    }

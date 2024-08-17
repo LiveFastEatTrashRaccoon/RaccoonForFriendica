@@ -191,6 +191,7 @@ class EntryDetailScreen(
                             TimelineItem(
                                 entry = entry,
                                 extendedSocialInfoEnabled = (entry.id == id),
+                                blurNsfw = uiState.blurNsfw,
                                 onOpenUrl = { url ->
                                     openUrl(url)
                                 },

@@ -32,6 +32,7 @@ interface InboxMviModel :
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
         val notifications: List<NotificationModel> = emptyList(),
+        val blurNsfw: Boolean = true,
     )
 
     sealed interface Effect

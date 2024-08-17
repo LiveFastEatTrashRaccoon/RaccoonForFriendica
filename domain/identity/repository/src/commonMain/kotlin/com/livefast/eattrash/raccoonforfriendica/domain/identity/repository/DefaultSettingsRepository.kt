@@ -38,6 +38,9 @@ private fun SettingsEntity.toModel() =
         fontFamily = fontFamily.toUiFontFamily(),
         dynamicColors = dynamicColors,
         customSeedColor = customSeedColor,
+        defaultTimelineType = defaultTimelineType,
+        blurNsfw = blurNsfw,
+        includeNsfw = includeNsfw,
     )
 
 private fun SettingsModel.toEntity() =
@@ -49,4 +52,7 @@ private fun SettingsModel.toEntity() =
         fontFamily = fontFamily.toInt(),
         dynamicColors = dynamicColors,
         customSeedColor = customSeedColor,
+        defaultTimelineType = defaultTimelineType,
+        includeNsfw = includeNsfw,
+        blurNsfw = blurNsfw,
     )

@@ -38,3 +38,5 @@ data class TimelineEntryModel(
     @Transient
     val loadMoreButtonVisible: Boolean = false,
 )
+
+val TimelineEntryModel.isNsfw: Boolean get() = reblog?.sensitive ?: sensitive

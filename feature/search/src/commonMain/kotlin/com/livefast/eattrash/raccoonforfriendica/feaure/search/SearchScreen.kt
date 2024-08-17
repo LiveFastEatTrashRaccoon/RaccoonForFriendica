@@ -220,6 +220,7 @@ class SearchScreen : Screen {
                             is ExploreItemModel.Entry -> {
                                 TimelineItem(
                                     entry = item.entry,
+                                    blurNsfw = uiState.blurNsfw,
                                     onClick = { e ->
                                         detailOpener.openEntryDetail(e.id)
                                     },

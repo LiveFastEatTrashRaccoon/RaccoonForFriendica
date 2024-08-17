@@ -1,9 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.FollowedHashtagsMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.FollowedHashtagsViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.HashtagMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.HashtagViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.HashtagMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.HashtagViewModel
 import org.koin.dsl.module
 
 val featureHashtagModule =
@@ -14,6 +14,7 @@ val featureHashtagModule =
                 paginationManager = get(),
                 timelineEntryRepository = get(),
                 tagRepository = get(),
+                settingsRepository = get(),
             )
         }
         factory<FollowedHashtagsMviModel> {

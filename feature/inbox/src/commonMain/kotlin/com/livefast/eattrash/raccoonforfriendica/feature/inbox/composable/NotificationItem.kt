@@ -43,6 +43,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 internal fun NotificationItem(
     notification: NotificationModel,
     modifier: Modifier = Modifier,
+    blurNsfw: Boolean = false,
     onOpenUrl: ((String) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
@@ -101,6 +102,7 @@ internal fun NotificationItem(
                             bottom = Spacing.s,
                         ),
                     entry = entry,
+                    blurNsfw = blurNsfw,
                     actionsEnabled = false,
                     onClick = {
                         onOpenEntry?.invoke(entry)
