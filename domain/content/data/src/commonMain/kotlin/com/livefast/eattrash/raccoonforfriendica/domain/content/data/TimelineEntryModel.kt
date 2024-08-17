@@ -39,4 +39,30 @@ data class TimelineEntryModel(
     val loadMoreButtonVisible: Boolean = false,
 )
 
+val TimelineEntryModel.safeKey: String
+    get() {
+        fun StringBuilder.appendKeys(e: TimelineEntryModel) {
+            append(e.id)
+            append("-")
+            append(e.favorite)
+            append("-")
+            append(e.favoriteLoading)
+            append("-")
+            append(e.reblogged)
+            append("-")
+            append(e.reblogLoading)
+            append("-")
+            append(e.bookmarked)
+            append("-")
+            append(e.bookmarkLoading)
+        }
+        return buildString {
+            appendKeys(this@safeKey)
+            reblog?.run {
+                append("--")
+                appendKeys(this@run)
+            }
+        }
+    }
+
 val TimelineEntryModel.isNsfw: Boolean get() = reblog?.sensitive ?: sensitive

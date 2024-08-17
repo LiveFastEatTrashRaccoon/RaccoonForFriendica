@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
 import de.jensklingenberg.ktorfit.http.Body
+import de.jensklingenberg.ktorfit.http.DELETE
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Header
 import de.jensklingenberg.ktorfit.http.Headers
@@ -92,5 +93,10 @@ interface StatusService {
     suspend fun create(
         @Header("Idempotency-Key") key: String,
         @Body data: CreateStatusForm,
+    ): Status
+
+    @DELETE("v1/statuses/{id}")
+    suspend fun delete(
+        @Path("id") id: String,
     ): Status
 }

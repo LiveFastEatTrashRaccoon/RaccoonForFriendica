@@ -97,7 +97,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] create a post/reply with image attachments and alt text
 - [x] global search
 - [x] open groups in "forum mode" (Friendica-specific)
-- [ ] delete one's own posts
+- [x] delete one's own posts
 - [ ] edit one's own posts
 - [ ] edit one's own profile
 - [ ] block/unblock user and see list of blocked users

@@ -137,6 +137,7 @@ interface Strings {
     val settingsItemIncludeNsfw: String
     val settingsItemBlurNsfw: String
     val settingsItemDefaultTimelineType: String
+    val actionDelete: String
 }
 
 object Locales {

@@ -54,7 +54,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserHeaderPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.safeKey
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toAccountSection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toInt
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toReadableName
@@ -65,6 +64,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDat
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

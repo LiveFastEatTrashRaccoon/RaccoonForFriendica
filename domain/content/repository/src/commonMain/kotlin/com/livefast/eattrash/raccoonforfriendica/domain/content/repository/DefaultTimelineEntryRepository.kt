@@ -199,4 +199,11 @@ internal class DefaultTimelineEntryRepository(
                 it.printStackTrace()
             }
         }.getOrNull()
+
+    override suspend fun delete(id: String): Boolean =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.statuses.delete(id) != null
+            }
+        }.getOrElse { false }
 }

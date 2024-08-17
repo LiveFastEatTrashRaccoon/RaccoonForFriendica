@@ -103,6 +103,7 @@ class MyAccountViewModel(
             is MyAccountMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is MyAccountMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is MyAccountMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is MyAccountMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
         }
     }
 
@@ -163,6 +164,14 @@ class MyAccountViewModel(
                             }
                         }
                     },
+            )
+        }
+    }
+
+    private suspend fun removeEntryFromState(entryId: String) {
+        updateState {
+            it.copy(
+                entries = it.entries.filter { e -> e.id != entryId && e.reblog?.id != entryId },
             )
         }
     }
@@ -255,6 +264,17 @@ class MyAccountViewModel(
                         bookmarkLoading = false,
                     )
                 }
+            }
+        }
+    }
+
+    private fun deleteEntry(entryId: String) {
+        screenModelScope.launch {
+            val success = timelineEntryRepository.delete(entryId)
+            if (success) {
+                removeEntryFromState(entryId)
+            } else {
+                emitEffect(MyAccountMviModel.Effect.Failure)
             }
         }
     }

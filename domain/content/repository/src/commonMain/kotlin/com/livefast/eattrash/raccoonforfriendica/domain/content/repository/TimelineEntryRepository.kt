@@ -59,4 +59,6 @@ interface TimelineEntryRepository {
         visibility: Visibility,
         lang: String? = null,
     ): TimelineEntryModel?
+
+    suspend fun delete(id: String): Boolean
 }
