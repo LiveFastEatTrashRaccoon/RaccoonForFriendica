@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 
@@ -36,10 +37,12 @@ internal class DefaultExplorePaginationManager(
                         ExploreItemModel.Link(it)
                     }
 
-                ExplorePaginationSpecification.Posts ->
-                    trendingRepository.getEntries(offset).map {
-                        ExploreItemModel.Entry(it)
-                    }
+                is ExplorePaginationSpecification.Posts ->
+                    trendingRepository
+                        .getEntries(offset)
+                        .map {
+                            ExploreItemModel.Entry(it)
+                        }.filterNsfw(specification.includeNsfw)
 
                 ExplorePaginationSpecification.Suggestions ->
                     userRepository.getSuggestions().map {
@@ -68,4 +71,6 @@ internal class DefaultExplorePaginationManager(
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
         }
+
+    private fun List<ExploreItemModel>.filterNsfw(included: Boolean): List<ExploreItemModel> = filter { included || !it.isNsfw }
 }
