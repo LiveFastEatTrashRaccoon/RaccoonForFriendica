@@ -132,4 +132,5 @@ internal val ItStrings =
         override val settingsItemIncludeNsfw = "Includi contenuti NSFW"
         override val settingsItemBlurNsfw = "Offusca media NSFW"
         override val settingsItemDefaultTimelineType = "Tipo di feed predefinito"
+        override val actionDelete = "Elimina"
     }

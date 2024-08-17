@@ -131,4 +131,5 @@ internal open class DefaultStrings : Strings {
     override val settingsItemIncludeNsfw = "Include NSFW contents"
     override val settingsItemBlurNsfw = "Blur NSFW media"
     override val settingsItemDefaultTimelineType = "Default timeline type"
+    override val actionDelete = "Delete"
 }
