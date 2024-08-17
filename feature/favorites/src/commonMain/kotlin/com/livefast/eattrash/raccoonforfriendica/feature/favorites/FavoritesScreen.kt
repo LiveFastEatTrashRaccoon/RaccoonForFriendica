@@ -176,6 +176,9 @@ class FavoritesScreen(
                             onOpenUser = {
                                 detailOpener.openUserDetail(it.id)
                             },
+                            onOpenImage = { imageUrl ->
+                                detailOpener.openImageDetail(imageUrl)
+                            },
                             onReblog = { e ->
                                 model.reduce(FavoritesMviModel.Intent.ToggleReblog(e))
                             },

@@ -226,6 +226,9 @@ class ForumListScreen(
                                 onOpenUser = {
                                     detailOpener.openUserDetail(it.id)
                                 },
+                                onOpenImage = { imageUrl ->
+                                    detailOpener.openImageDetail(imageUrl)
+                                },
                                 onReblog = { e ->
                                     model.reduce(ForumListMviModel.Intent.ToggleReblog(e))
                                 },

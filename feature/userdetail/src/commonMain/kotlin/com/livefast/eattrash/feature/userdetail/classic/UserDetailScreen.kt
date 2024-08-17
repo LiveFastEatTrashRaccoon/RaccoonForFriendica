@@ -322,6 +322,9 @@ class UserDetailScreen(
                                 onOpenUser = {
                                     detailOpener.openUserDetail(it.id)
                                 },
+                                onOpenImage = { imageUrl ->
+                                    detailOpener.openImageDetail(imageUrl)
+                                },
                                 onReblog = { e ->
                                     model.reduce(UserDetailMviModel.Intent.ToggleReblog(e))
                                 },

@@ -224,6 +224,9 @@ class ThreadScreen(
                                     onOpenUser = {
                                         detailOpener.openUserDetail(it.id)
                                     },
+                                    onOpenImage = { imageUrl ->
+                                        detailOpener.openImageDetail(imageUrl)
+                                    },
                                     onReblog = { e ->
                                         model.reduce(ThreadMviModel.Intent.ToggleReblog(e))
                                     },
