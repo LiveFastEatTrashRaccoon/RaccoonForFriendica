@@ -33,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +66,7 @@ import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toReadableNa
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toSearchSection
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class SearchScreen : Screen {
     @OptIn(
@@ -83,6 +85,7 @@ class SearchScreen : Screen {
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
+        val scope = rememberCoroutineScope()
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmUnfollowHashtagName by remember { mutableStateOf<String?>(null) }
@@ -107,6 +110,7 @@ class SearchScreen : Screen {
         Scaffold(
             topBar = {
                 TopAppBar(
+                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
                     scrollBehavior = scrollBehavior,
                     title = {
                         SearchField(
