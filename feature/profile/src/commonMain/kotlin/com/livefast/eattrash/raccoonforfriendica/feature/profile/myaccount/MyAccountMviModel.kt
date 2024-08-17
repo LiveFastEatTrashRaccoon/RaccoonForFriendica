@@ -31,6 +31,10 @@ interface MyAccountMviModel :
         data class ToggleBookmark(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class DeleteEntry(
+            val entryId: String,
+        ) : Intent
     }
 
     data class State(
@@ -46,5 +50,7 @@ interface MyAccountMviModel :
 
     sealed interface Effect {
         data object BackToTop : Effect
+
+        data object Failure : Effect
     }
 }

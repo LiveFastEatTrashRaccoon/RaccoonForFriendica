@@ -13,23 +13,33 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserFields
@@ -61,6 +71,9 @@ class MyAccountScreen : Screen {
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
+        val snackbarHostState = remember { SnackbarHostState() }
+        val genericError = LocalStrings.current.messageGenericError
+        var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -81,6 +94,10 @@ class MyAccountScreen : Screen {
                 .onEach { event ->
                     when (event) {
                         MyAccountMviModel.Effect.BackToTop -> goBackToTop()
+                        MyAccountMviModel.Effect.Failure ->
+                            snackbarHostState.showSnackbar(
+                                message = genericError,
+                            )
                     }
                 }.launchIn(this)
         }
@@ -218,6 +235,22 @@ class MyAccountScreen : Screen {
                                 inReplyToUsername = e.creator?.let { it.displayName ?: it.username },
                             )
                         },
+                        options =
+                            buildList {
+                                if (entry.reblog == null) {
+                                    this +=
+                                        Option(
+                                            id = OptionId.Delete,
+                                            label = LocalStrings.current.actionDelete,
+                                        )
+                                }
+                            },
+                        onOptionSelected = { optionId ->
+                            when (optionId) {
+                                OptionId.Delete -> confirmDeleteEntryId = entry.id
+                                else -> Unit
+                            }
+                        },
                     )
                     HorizontalDivider(
                         modifier = Modifier.padding(vertical = Spacing.s),
@@ -262,6 +295,59 @@ class MyAccountScreen : Screen {
                 modifier = Modifier.align(Alignment.TopCenter),
                 backgroundColor = MaterialTheme.colorScheme.background,
                 contentColor = MaterialTheme.colorScheme.onBackground,
+            )
+
+            SnackbarHost(
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = Dimensions.floatingActionButtonBottomInset),
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
+                )
+            }
+        }
+
+        if (confirmDeleteEntryId != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmDeleteEntryId = null
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionDelete,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmDeleteEntryId = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmDeleteEntryId ?: ""
+                            confirmDeleteEntryId = null
+                            if (entryId.isNotEmpty()) {
+                                model.reduce(MyAccountMviModel.Intent.DeleteEntry(entryId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
             )
         }
     }
