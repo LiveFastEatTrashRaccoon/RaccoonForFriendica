@@ -79,6 +79,7 @@ kotlin {
             implementation(projects.feature.explore)
             implementation(projects.feature.favorites)
             implementation(projects.feature.hashtag)
+            implementation(projects.feature.imagedetail)
             implementation(projects.feature.inbox)
             implementation(projects.feature.login)
             implementation(projects.feature.profile)
