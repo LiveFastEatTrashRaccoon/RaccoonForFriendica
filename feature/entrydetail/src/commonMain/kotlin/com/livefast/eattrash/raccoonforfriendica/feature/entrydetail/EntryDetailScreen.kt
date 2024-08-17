@@ -239,6 +239,9 @@ class EntryDetailScreen(
                                 onOpenUser = {
                                     detailOpener.openUserDetail(it.id)
                                 },
+                                onOpenImage = { imageUrl ->
+                                    detailOpener.openImageDetail(imageUrl)
+                                },
                                 onReblog = { e ->
                                     model.reduce(EntryDetailMviModel.Intent.ToggleReblog(e))
                                 },

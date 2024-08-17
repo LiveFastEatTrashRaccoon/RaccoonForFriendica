@@ -136,4 +136,10 @@ internal val ItStrings =
         override val actionShare = "Condividi"
         override val actionCopyUrl = "Copia link"
         override val messageTextCopiedToClipboard = "Copiato negli appunti! 📋"
+        override val contentScaleFit = "Adatta alla dimensione"
+        override val contentScaleFillWidth = "Adatta alla larghezza"
+        override val contentScaleFillHeight = "Adatta alla altezza"
+        override val contentScaleTitle = "Modalità ridimensionamento"
+        override val shareAsUrl = "Condividi come URL"
+        override val shareAsFile = "Condividi come file"
     }

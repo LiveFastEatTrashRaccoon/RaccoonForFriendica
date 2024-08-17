@@ -135,4 +135,10 @@ internal open class DefaultStrings : Strings {
     override val actionShare = "Share"
     override val actionCopyUrl = "Copy link"
     override val messageTextCopiedToClipboard = "Copied to clipboard! 📋"
+    override val contentScaleFit = "Aspect fit"
+    override val contentScaleFillWidth = "Fill width"
+    override val contentScaleFillHeight = "Fill height"
+    override val contentScaleTitle = "Scale mode"
+    override val shareAsUrl = "Share as URL"
+    override val shareAsFile = "Share as file"
 }

@@ -52,6 +52,7 @@ fun TimelineItem(
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
+    onOpenImage: ((String) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
 ) {
     val isReblog = entry.reblog != null
@@ -175,6 +176,7 @@ fun TimelineItem(
                     modifier = Modifier.fillMaxWidth(),
                     url = imageUrl,
                     sensitive = blurNsfw && entryToDisplay.sensitive,
+                    onClick = { onOpenImage?.invoke(imageUrl) },
                 )
             }
 

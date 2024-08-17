@@ -141,6 +141,12 @@ interface Strings {
     val actionShare: String
     val actionCopyUrl: String
     val messageTextCopiedToClipboard: String
+    val contentScaleTitle: String
+    val contentScaleFillHeight: String
+    val contentScaleFillWidth: String
+    val contentScaleFit: String
+    val shareAsUrl: String
+    val shareAsFile: String
 }
 
 object Locales {

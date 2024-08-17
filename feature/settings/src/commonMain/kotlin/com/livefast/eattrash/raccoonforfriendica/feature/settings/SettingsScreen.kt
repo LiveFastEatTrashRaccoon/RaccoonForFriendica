@@ -1,20 +1,23 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.settings
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Explicit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -33,22 +36,28 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toColor
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toEmoji
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toTypography
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsColorRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineTypeBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Locales
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.ColorThemeBottomSheet
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.FontFamilyBottomSheet
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.LanguageBottomSheet
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.ThemeBottomSheet
 import kotlinx.coroutines.delay
 
 class SettingsScreen : Screen {
@@ -106,7 +115,12 @@ class SettingsScreen : Screen {
                         )
                         SettingsRow(
                             title = LocalStrings.current.settingsItemLanguage,
-                            value = uiState.lang.toLanguageName().orEmpty(),
+                            value =
+                                buildString {
+                                    append(uiState.lang.toLanguageName().orEmpty())
+                                    append("  ")
+                                    append(uiState.lang.toLanguageFlag().orEmpty())
+                                },
                             onTap = {
                                 languageBottomSheetOpened = true
                             },
@@ -182,49 +196,80 @@ class SettingsScreen : Screen {
         )
 
         if (languageBottomSheetOpened) {
-            ModalBottomSheet(
-                onDismissRequest = {
+            val languages =
+                listOf(
+                    Locales.EN,
+                    Locales.IT,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemLanguage,
+                items =
+                    languages.map { lang ->
+                        CustomModalBottomSheetItem(
+                            label = lang.toLanguageName().orEmpty(),
+                            trailingContent = {
+                                Text(
+                                    text = lang.toLanguageFlag().orEmpty(),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
                     languageBottomSheetOpened = false
-                },
-                content = {
-                    LanguageBottomSheet(
-                        onSelected = { lang ->
-                            languageBottomSheetOpened = false
-                            model.reduce(SettingsMviModel.Intent.ChangeLanguage(lang))
-                        },
-                    )
+                    if (index != null) {
+                        val value = languages[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeLanguage(value))
+                    }
                 },
             )
         }
 
         if (themeBottomSheetOpened) {
-            ModalBottomSheet(
-                onDismissRequest = {
+            val themes = listOf(UiTheme.Light, UiTheme.Dark, UiTheme.Black, UiTheme.Default)
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemTheme,
+                items =
+                    themes.map { theme ->
+                        CustomModalBottomSheetItem(
+                            label = theme.toReadableName(),
+                            trailingContent = {
+                                Icon(
+                                    modifier = Modifier.size(IconSize.m),
+                                    imageVector = theme.toIcon(),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
                     themeBottomSheetOpened = false
-                },
-                content = {
-                    ThemeBottomSheet(
-                        onSelected = { value ->
-                            themeBottomSheetOpened = false
-                            model.reduce(SettingsMviModel.Intent.ChangeTheme(value))
-                        },
-                    )
+                    if (index != null) {
+                        val value = themes[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeTheme(value))
+                    }
                 },
             )
         }
 
         if (fontFamilyBottomSheetOpened) {
-            ModalBottomSheet(
-                onDismissRequest = {
+            val fonts = listOf(UiFontFamily.Default, UiFontFamily.Exo2, UiFontFamily.NotoSans)
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemFontFamily,
+                items =
+                    fonts.map { family ->
+                        CustomModalBottomSheetItem(
+                            label = family.toReadableName(),
+                            customLabelStyle = family.toTypography().bodyLarge,
+                        )
+                    },
+                onSelected = { index ->
                     fontFamilyBottomSheetOpened = false
-                },
-                content = {
-                    FontFamilyBottomSheet(
-                        onSelected = { value ->
-                            fontFamilyBottomSheetOpened = false
-                            model.reduce(SettingsMviModel.Intent.ChangeFontFamily(value))
-                        },
-                    )
+                    if (index != null) {
+                        val value = fonts[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeFontFamily(value))
+                    }
                 },
             )
         }
@@ -239,36 +284,63 @@ class SettingsScreen : Screen {
                     state.expand()
                 }
             }
-            ModalBottomSheet(
+            CustomModalBottomSheet(
                 sheetState = state,
-                onDismissRequest = {
+                title = LocalStrings.current.settingsItemTheme,
+                items =
+                    uiState.availableThemeColors.map { theme ->
+                        CustomModalBottomSheetItem(
+                            leadingContent = {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .padding(start = Spacing.xs)
+                                            .size(IconSize.m)
+                                            .background(color = theme.toColor(), shape = CircleShape),
+                                )
+                            },
+                            label = theme.toReadableName(),
+                            trailingContent = {
+                                Text(
+                                    text = theme.toEmoji(),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
                     themeColorBottomSheetOpened = false
-                },
-                content = {
-                    ColorThemeBottomSheet(
-                        colors = uiState.availableThemeColors,
-                        onSelected = { value ->
-                            themeColorBottomSheetOpened = false
-                            model.reduce(SettingsMviModel.Intent.ChangeThemeColor(value.toColor()))
-                        },
-                    )
+                    if (index != null) {
+                        val value = uiState.availableThemeColors[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeThemeColor(value.toColor()))
+                    }
                 },
             )
         }
 
         if (defaultTimelineTypeBottomSheetOpened) {
-            ModalBottomSheet(
-                onDismissRequest = {
+            CustomModalBottomSheet(
+                title = LocalStrings.current.feedTypeTitle,
+                items =
+                    uiState.availableTimelineTypes.map {
+                        CustomModalBottomSheetItem(
+                            label = it.toReadableName(),
+                            trailingContent = {
+                                Icon(
+                                    modifier = Modifier.size(IconSize.m),
+                                    imageVector = it.toIcon(),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
                     defaultTimelineTypeBottomSheetOpened = false
-                },
-                content = {
-                    TimelineTypeBottomSheet(
-                        types = uiState.availableTimelineTypes,
-                        onSelected = { type ->
-                            defaultTimelineTypeBottomSheetOpened = false
-                            model.reduce(SettingsMviModel.Intent.ChangeDefaultTimelineType(type))
-                        },
-                    )
+                    if (index != null) {
+                        val type = uiState.availableTimelineTypes[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeDefaultTimelineType(type))
+                    }
                 },
             )
         }

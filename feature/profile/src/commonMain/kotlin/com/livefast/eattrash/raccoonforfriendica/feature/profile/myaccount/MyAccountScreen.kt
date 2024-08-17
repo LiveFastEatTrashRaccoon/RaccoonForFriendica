@@ -228,6 +228,9 @@ class MyAccountScreen : Screen {
                         onOpenUser = {
                             detailOpener.openUserDetail(it.id)
                         },
+                        onOpenImage = { imageUrl ->
+                            detailOpener.openImageDetail(imageUrl)
+                        },
                         onReblog = { e ->
                             model.reduce(MyAccountMviModel.Intent.ToggleReblog(e))
                         },

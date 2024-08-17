@@ -59,6 +59,7 @@ fun TimelineReplyItem(
     onReblog: ((TimelineEntryModel) -> Unit)? = null,
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
+    onOpenImage: ((String) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
 ) {
     val entryToDisplay = entry.reblog ?: entry
@@ -189,6 +190,7 @@ fun TimelineReplyItem(
                         modifier = Modifier.fillMaxWidth(),
                         url = imageUrl,
                         sensitive = blurNsfw && entryToDisplay.sensitive,
+                        onClick = { onOpenImage?.invoke(imageUrl) },
                     )
                 }
 
