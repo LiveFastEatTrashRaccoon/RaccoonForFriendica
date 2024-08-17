@@ -48,6 +48,7 @@ kotlin {
                 implementation(projects.core.navigation)
                 implementation(projects.core.utils)
 
+                implementation(projects.domain.content.data)
                 implementation(projects.domain.identity.data)
                 implementation(projects.domain.identity.repository)
             }

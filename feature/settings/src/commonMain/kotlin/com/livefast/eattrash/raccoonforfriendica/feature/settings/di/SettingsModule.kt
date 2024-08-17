@@ -13,6 +13,7 @@ val featureSettingsModule =
                 settingsRepository = get(),
                 colorSchemeProvider = get(),
                 themeColorRepository = get(),
+                apiConfigurationRepository = get(),
             )
         }
     }

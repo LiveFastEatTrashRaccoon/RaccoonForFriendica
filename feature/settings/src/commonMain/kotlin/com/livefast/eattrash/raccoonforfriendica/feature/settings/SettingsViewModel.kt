@@ -10,6 +10,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.Them
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSchemeProvider
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -21,12 +26,28 @@ class SettingsViewModel(
     private val themeRepository: ThemeRepository,
     private val colorSchemeProvider: ColorSchemeProvider,
     private val themeColorRepository: ThemeColorRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
     SettingsMviModel {
     init {
         screenModelScope.launch {
+            apiConfigurationRepository.isLogged
+                .onEach { isLogged ->
+                    updateState {
+                        it.copy(
+                            availableTimelineTypes =
+                                buildList {
+                                    this += TimelineType.All
+                                    if (isLogged) {
+                                        this += TimelineType.Subscriptions
+                                    }
+                                    this += TimelineType.Local
+                                },
+                        )
+                    }
+                }.launchIn(this)
             l10nManager.lyricist.state
                 .onEach { state ->
                     updateState {
@@ -57,6 +78,9 @@ class SettingsViewModel(
                         updateState {
                             it.copy(
                                 dynamicColors = settings.dynamicColors,
+                                defaultTimelineType = settings.defaultTimelineType.toTimelineType(),
+                                includeNsfw = settings.includeNsfw,
+                                blurNsfw = settings.blurNsfw,
                             )
                         }
                     }
@@ -98,40 +122,72 @@ class SettingsViewModel(
                 screenModelScope.launch {
                     changeThemeColor(intent.themeColor)
                 }
+            is SettingsMviModel.Intent.ChangeDefaultTimelineType ->
+                screenModelScope.launch {
+                    changeDefaultTimelineType(intent.type)
+                }
+
+            is SettingsMviModel.Intent.ChangeIncludeNsfw ->
+                screenModelScope.launch {
+                    changeIncludeNsfw(intent.value)
+                }
+
+            is SettingsMviModel.Intent.ChangeBlurNsfw ->
+                screenModelScope.launch {
+                    changeBlurNsfw(intent.value)
+                }
         }
     }
 
     private suspend fun changeLanguage(value: String) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(lang = value)
-        settingsRepository.update(newSettings)
-        settingsRepository.changeCurrent(newSettings)
+        saveSettings(newSettings)
     }
 
     private suspend fun changeTheme(value: UiTheme) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(theme = value)
-        settingsRepository.update(newSettings)
-        settingsRepository.changeCurrent(newSettings)
+        saveSettings(newSettings)
     }
 
     private suspend fun changeFontFamily(value: UiFontFamily) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(fontFamily = value)
-        settingsRepository.update(newSettings)
-        settingsRepository.changeCurrent(newSettings)
+        saveSettings(newSettings)
     }
 
     private suspend fun changeDynamicColors(value: Boolean) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(dynamicColors = value)
-        settingsRepository.update(newSettings)
-        settingsRepository.changeCurrent(newSettings)
+        saveSettings(newSettings)
     }
 
     private suspend fun changeThemeColor(value: Color?) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(customSeedColor = value?.toArgb())
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeDefaultTimelineType(type: TimelineType) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(defaultTimelineType = type.toInt())
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeIncludeNsfw(value: Boolean) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(includeNsfw = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeBlurNsfw(value: Boolean) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(blurNsfw = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun saveSettings(newSettings: SettingsModel) {
         settingsRepository.update(newSettings)
         settingsRepository.changeCurrent(newSettings)
     }
