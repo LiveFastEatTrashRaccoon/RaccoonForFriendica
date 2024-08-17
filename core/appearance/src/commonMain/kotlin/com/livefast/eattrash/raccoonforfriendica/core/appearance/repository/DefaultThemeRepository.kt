@@ -27,4 +27,23 @@ internal class DefaultThemeRepository : ThemeRepository {
     override fun changeCustomSeedColor(color: Color?) {
         customSeedColor.update { color }
     }
+
+    override fun getCommentBarColor(depth: Int): Color {
+        val colors = getCommentBarColors()
+        if (colors.isEmpty()) {
+            return Color.Transparent
+        }
+        val index = depth % colors.size
+        return colors[index]
+    }
+
+    private fun getCommentBarColors(): List<Color> =
+        buildList {
+            this += Color(0xFF9400D3)
+            this += Color(0xFF0000FF)
+            this += Color(0xFF00FF00)
+            this += Color(0xFFFFFF00)
+            this += Color(0xFFFF7F00)
+            this += Color(0xFFFF0000)
+    }
 }
