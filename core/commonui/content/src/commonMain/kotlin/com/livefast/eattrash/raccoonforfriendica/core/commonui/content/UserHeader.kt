@@ -50,7 +50,7 @@ private object AnnotationConstants {
 fun UserHeader(
     user: UserModel?,
     modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null,
+    onOpenImage: ((String) -> Unit)? = null,
     onOpenFollowers: (() -> Unit)? = null,
     onOpenFollowing: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
@@ -67,17 +67,19 @@ fun UserHeader(
     val notificationStatus = user?.notificationStatus
 
     Column(
-        modifier =
-            modifier.clickable {
-                onClick?.invoke()
-            },
+        modifier = modifier,
     ) {
         Box {
             CustomImage(
                 modifier =
                     Modifier
                         .padding(bottom = avatarSize * 0.8f)
-                        .aspectRatio(16 / 9f),
+                        .aspectRatio(16 / 9f)
+                        .clickable {
+                            if (banner.isNotBlank()) {
+                                onOpenImage?.invoke(banner)
+                            }
+                        },
                 url = banner,
                 contentScale = ContentScale.FillBounds,
             )
@@ -96,7 +98,10 @@ fun UserHeader(
                         modifier =
                             Modifier
                                 .size(avatarSize)
-                                .clip(RoundedCornerShape(avatarSize / 2)),
+                                .clip(RoundedCornerShape(avatarSize / 2))
+                                .clickable {
+                                    onOpenImage?.invoke(avatar)
+                                },
                         url = avatar,
                         quality = FilterQuality.Low,
                         contentScale = ContentScale.FillBounds,
@@ -229,7 +234,6 @@ fun UserHeader(
                 ContentBody(
                     content = bio,
                     onOpenUrl = onOpenUrl,
-                    onClick = onClick,
                 )
             }
         }

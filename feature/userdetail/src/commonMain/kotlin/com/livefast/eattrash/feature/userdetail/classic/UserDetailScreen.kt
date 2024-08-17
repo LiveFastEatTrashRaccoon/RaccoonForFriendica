@@ -199,6 +199,9 @@ class UserDetailScreen(
                                     onOpenUrl = { url ->
                                         openUrl(url)
                                     },
+                                    onOpenImage = { url ->
+                                        detailOpener.openImageDetail(url)
+                                    },
                                     onRelationshipClicked = { nextAction ->
                                         when (nextAction) {
                                             RelationshipStatusNextAction.AcceptRequest -> {
