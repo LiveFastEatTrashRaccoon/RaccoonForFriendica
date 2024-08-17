@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -23,6 +24,7 @@ class UserDetailViewModel(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val accountRepository: AccountRepository,
+    private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
         initialState = UserDetailMviModel.State(),
     ),
@@ -36,8 +38,16 @@ class UserDetailViewModel(
                     updateState { it.copy(currentUserId = currentUser?.id) }
 
                     loadUser()
-                    refresh(initial = true)
                 }.launchIn(this)
+
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                }.launchIn(this)
+
+            if (uiState.value.initial) {
+                refresh(initial = true)
+            }
         }
     }
 
@@ -103,6 +113,7 @@ class UserDetailViewModel(
                 excludeReplies = uiState.value.section == UserSection.Posts,
                 onlyMedia = uiState.value.section == UserSection.Media,
                 pinned = uiState.value.section == UserSection.Pinned,
+                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
             ),
         )
         loadNextPage()

@@ -16,6 +16,7 @@ val featureUserDetailModule =
                 timelineEntryRepository = get(),
                 apiConfigurationRepository = get(),
                 accountRepository = get(),
+                settingsRepository = get(),
             )
         }
         factory<ForumListMviModel> { params ->
@@ -25,6 +26,7 @@ val featureUserDetailModule =
                 paginationManager = get(),
                 timelineEntryRepository = get(),
                 apiConfigurationRepository = get(),
+                settingsRepository = get(),
             )
         }
     }
