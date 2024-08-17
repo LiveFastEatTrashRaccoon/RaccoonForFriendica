@@ -37,11 +37,14 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toColor
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toEmoji
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toTypography
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsColorRow
@@ -53,7 +56,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.FontFamilyBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.LanguageBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.ThemeBottomSheet
 import kotlinx.coroutines.delay
@@ -221,17 +223,22 @@ class SettingsScreen : Screen {
         }
 
         if (fontFamilyBottomSheetOpened) {
-            ModalBottomSheet(
-                onDismissRequest = {
+            val fonts = listOf(UiFontFamily.Default, UiFontFamily.Exo2, UiFontFamily.NotoSans)
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemFontFamily,
+                items =
+                    fonts.map { family ->
+                        CustomModalBottomSheetItem(
+                            label = family.toReadableName(),
+                            customLabelStyle = family.toTypography().bodyLarge,
+                        )
+                    },
+                onSelected = { index ->
                     fontFamilyBottomSheetOpened = false
-                },
-                content = {
-                    FontFamilyBottomSheet(
-                        onSelected = { value ->
-                            fontFamilyBottomSheetOpened = false
-                            model.reduce(SettingsMviModel.Intent.ChangeFontFamily(value))
-                        },
-                    )
+                    if (index != null) {
+                        val value = fonts[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeFontFamily(value))
+                    }
                 },
             )
         }
@@ -269,7 +276,7 @@ class SettingsScreen : Screen {
                                 )
                             },
                         )
-                },
+                    },
                 onSelected = { index ->
                     themeColorBottomSheetOpened = false
                     if (index != null) {
