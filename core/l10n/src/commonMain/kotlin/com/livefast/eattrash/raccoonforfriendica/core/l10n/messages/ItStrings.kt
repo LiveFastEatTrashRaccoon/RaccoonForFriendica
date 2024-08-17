@@ -128,4 +128,8 @@ internal val ItStrings =
         override val buttonLoadMoreReplies = "Carica altre risposte"
         override val postSensitive = "Contenuto sensibile"
         override val actionCreateThreadInGroup = "Posta su"
+        override val settingsHeaderNsfw = "NSFW"
+        override val settingsItemIncludeNsfw = "Includi contenuti NSFW"
+        override val settingsItemBlurNsfw = "Offusca media NSFW"
+        override val settingsItemDefaultTimelineType = "Tipo di feed predefinito"
     }

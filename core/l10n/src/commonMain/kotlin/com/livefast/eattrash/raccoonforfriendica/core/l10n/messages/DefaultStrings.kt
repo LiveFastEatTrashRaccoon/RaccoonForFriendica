@@ -127,4 +127,8 @@ internal open class DefaultStrings : Strings {
     override val buttonLoadMoreReplies = "Load more replies"
     override val postSensitive = "Sensitive content"
     override val actionCreateThreadInGroup = "Post to"
+    override val settingsHeaderNsfw = "NSFW"
+    override val settingsItemIncludeNsfw = "Include NSFW contents"
+    override val settingsItemBlurNsfw = "Blur NSFW media"
+    override val settingsItemDefaultTimelineType = "Default timeline type"
 }

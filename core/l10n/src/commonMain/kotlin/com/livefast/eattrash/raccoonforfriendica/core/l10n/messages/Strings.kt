@@ -133,6 +133,10 @@ interface Strings {
     val buttonLoadMoreReplies: String
     val postSensitive: String
     val actionCreateThreadInGroup: String
+    val settingsHeaderNsfw: String
+    val settingsItemIncludeNsfw: String
+    val settingsItemBlurNsfw: String
+    val settingsItemDefaultTimelineType: String
 }
 
 object Locales {
