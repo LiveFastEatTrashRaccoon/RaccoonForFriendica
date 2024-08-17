@@ -32,6 +32,7 @@ interface EntryDetailMviModel :
         val initial: Boolean = true,
         val creator: UserModel? = null,
         val entries: List<TimelineEntryModel> = emptyList(),
+        val blurNsfw: Boolean = true,
     )
 
     sealed interface Effect {
