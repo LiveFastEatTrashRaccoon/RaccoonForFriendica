@@ -36,6 +36,7 @@ interface ForumListMviModel :
         val canFetchMore: Boolean = true,
         val user: UserModel? = null,
         val entries: List<TimelineEntryModel> = emptyList(),
+        val blurNsfw: Boolean = true,
     )
 
     sealed interface Effect

@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -18,6 +19,7 @@ class ForumListViewModel(
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<ForumListMviModel.Intent, ForumListMviModel.State, ForumListMviModel.Effect>(
         initialState = ForumListMviModel.State(),
     ),
@@ -28,8 +30,15 @@ class ForumListViewModel(
                 .onEach { isLogged ->
                     updateState { it.copy(isLogged = isLogged) }
                     loadUser()
-                    refresh(initial = true)
                 }.launchIn(this)
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                }.launchIn(this)
+
+            if (uiState.value.initial) {
+                refresh(initial = true)
+            }
         }
     }
 
@@ -63,7 +72,10 @@ class ForumListViewModel(
             it.copy(initial = initial, refreshing = !initial)
         }
         paginationManager.reset(
-            TimelinePaginationSpecification.User(userId = id),
+            TimelinePaginationSpecification.User(
+                userId = id,
+                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+            ),
         )
         loadNextPage()
     }
