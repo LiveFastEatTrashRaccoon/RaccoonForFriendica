@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -53,11 +52,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsH
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Locales
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.composables.LanguageBottomSheet
 import kotlinx.coroutines.delay
 
 class SettingsScreen : Screen {
@@ -115,7 +115,12 @@ class SettingsScreen : Screen {
                         )
                         SettingsRow(
                             title = LocalStrings.current.settingsItemLanguage,
-                            value = uiState.lang.toLanguageName().orEmpty(),
+                            value =
+                                buildString {
+                                    append(uiState.lang.toLanguageName().orEmpty())
+                                    append("  ")
+                                    append(uiState.lang.toLanguageFlag().orEmpty())
+                                },
                             onTap = {
                                 languageBottomSheetOpened = true
                             },
@@ -191,17 +196,31 @@ class SettingsScreen : Screen {
         )
 
         if (languageBottomSheetOpened) {
-            ModalBottomSheet(
-                onDismissRequest = {
+            val languages =
+                listOf(
+                    Locales.EN,
+                    Locales.IT,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemLanguage,
+                items =
+                    languages.map { lang ->
+                        CustomModalBottomSheetItem(
+                            label = lang.toLanguageName().orEmpty(),
+                            trailingContent = {
+                                Text(
+                                    text = lang.toLanguageFlag().orEmpty(),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
                     languageBottomSheetOpened = false
-                },
-                content = {
-                    LanguageBottomSheet(
-                        onSelected = { lang ->
-                            languageBottomSheetOpened = false
-                            model.reduce(SettingsMviModel.Intent.ChangeLanguage(lang))
-                        },
-                    )
+                    if (index != null) {
+                        val value = languages[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeLanguage(value))
+                    }
                 },
             )
         }

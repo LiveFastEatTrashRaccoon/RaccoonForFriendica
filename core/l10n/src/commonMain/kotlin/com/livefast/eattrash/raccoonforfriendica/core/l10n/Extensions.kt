@@ -11,3 +11,10 @@ fun String?.toLanguageName(): String? =
         Locales.EN -> LocalStrings.current.languageEn
         else -> null
     }
+
+fun String?.toLanguageFlag(): String? =
+    when (this) {
+        Locales.IT -> "🇮🇹"
+        Locales.EN -> "🇬🇧"
+        else -> null
+    }
