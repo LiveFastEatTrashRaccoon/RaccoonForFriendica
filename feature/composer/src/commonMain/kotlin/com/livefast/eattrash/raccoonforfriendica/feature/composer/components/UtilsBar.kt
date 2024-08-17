@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
+import androidx.compose.material.icons.filled.FormatBold
+import androidx.compose.material.icons.filled.FormatItalic
+import androidx.compose.material.icons.filled.FormatUnderlined
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.Icon
@@ -23,6 +26,9 @@ internal fun UtilsBar(
     onLinkClicked: (() -> Unit)? = null,
     onMentionClicked: (() -> Unit)? = null,
     onAttachmentClicked: (() -> Unit)? = null,
+    onBoldClicked: (() -> Unit)? = null,
+    onItalicClicked: (() -> Unit)? = null,
+    onUnderlineClicked: (() -> Unit)? = null,
 ) {
     Row(
         modifier =
@@ -64,6 +70,39 @@ internal fun UtilsBar(
                     }.padding(Spacing.xs)
                     .size(IconSize.m),
             imageVector = Icons.Default.AlternateEmail,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Icon(
+            modifier =
+                Modifier
+                    .clickable {
+                        onBoldClicked?.invoke()
+                    }.padding(Spacing.xs)
+                    .size(IconSize.m),
+            imageVector = Icons.Default.FormatBold,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Icon(
+            modifier =
+                Modifier
+                    .clickable {
+                        onItalicClicked?.invoke()
+                    }.padding(Spacing.xs)
+                    .size(IconSize.m),
+            imageVector = Icons.Default.FormatItalic,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Icon(
+            modifier =
+                Modifier
+                    .clickable {
+                        onUnderlineClicked?.invoke()
+                    }.padding(Spacing.xs)
+                    .size(IconSize.m),
+            imageVector = Icons.Default.FormatUnderlined,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
