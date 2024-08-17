@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Notif
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ class InboxViewModel(
     private val paginationManager: NotificationsPaginationManager,
     private val userRepository: UserRepository,
     private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>(
         initialState = InboxMviModel.State(),
     ),
@@ -29,6 +31,11 @@ class InboxViewModel(
                         it.copy(isLogged = isLogged)
                     }
                 }.launchIn(this)
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                }.launchIn(this)
+
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
@@ -58,7 +65,9 @@ class InboxViewModel(
             it.copy(initial = initial, refreshing = !initial)
         }
         paginationManager.reset(
-            NotificationsPaginationSpecification.Default(),
+            NotificationsPaginationSpecification.Default(
+                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+            ),
         )
         loadNextPage()
     }

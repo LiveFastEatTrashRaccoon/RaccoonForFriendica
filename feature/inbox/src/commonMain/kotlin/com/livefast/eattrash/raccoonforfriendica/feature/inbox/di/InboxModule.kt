@@ -11,6 +11,7 @@ val featureInboxModule =
                 paginationManager = get(),
                 userRepository = get(),
                 apiConfigurationRepository = get(),
+                settingsRepository = get(),
             )
         }
     }
