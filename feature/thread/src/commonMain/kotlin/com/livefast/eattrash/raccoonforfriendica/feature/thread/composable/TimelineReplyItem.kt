@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
@@ -61,9 +62,12 @@ fun TimelineReplyItem(
     onOptionSelected: ((OptionId) -> Unit)? = null,
 ) {
     val entryToDisplay = entry.reblog ?: entry
+    val depthZeroBased = entry.depth - 1
+    val themeRepository = remember { getThemeRepository() }
     val barWidth = 3.dp
+    val barColor = themeRepository.getCommentBarColor(depthZeroBased)
     var barHeight by remember { mutableStateOf(0.dp) }
-    val indentAmount = Spacing.s + (barWidth + Spacing.s) * (entry.depth - 1)
+    val indentAmount = Spacing.s + (barWidth + Spacing.s) * depthZeroBased
     val localDensity = LocalDensity.current
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
@@ -78,16 +82,19 @@ fun TimelineReplyItem(
         Row(
             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         ) {
+            // comment bar
             Box(
                 modifier =
                     Modifier
                         .padding(start = indentAmount)
                         .size(width = barWidth, height = barHeight)
                         .background(
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = barColor,
                             shape = RoundedCornerShape(barWidth / 2),
                         ),
             )
+
+            // comment content
             Column(
                 modifier =
                     Modifier.onGloballyPositioned {
