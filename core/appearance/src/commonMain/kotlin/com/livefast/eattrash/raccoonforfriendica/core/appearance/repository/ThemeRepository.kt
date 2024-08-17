@@ -20,4 +20,6 @@ interface ThemeRepository {
     fun changeDynamicColors(enabled: Boolean)
 
     fun changeCustomSeedColor(color: Color?)
+
+    fun getCommentBarColor(depth: Int): Color
 }

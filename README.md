@@ -42,6 +42,8 @@ https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
   <img width="310" src="https://github.com/user-attachments/assets/08804e47-4143-4f2b-ade1-baa1f7839c17" alt="settings screen" />
   <img width="310" src="https://github.com/user-attachments/assets/3b9473e5-75ce-4569-9d20-c2e4a4f9bed9" alt="explore screen (hashtags tab)" />
   <img width="310" src="https://github.com/user-attachments/assets/40b2a112-2aa4-49ab-b3b0-227a5bb680d3" alt="notifications screen" />
+  <img width="310" src="https://github.com/user-attachments/assets/ca54f189-fcc0-4bd5-ab4f-79c796741ea8" alt="group opened in forum mode" />
+  <img width="310" src="https://github.com/user-attachments/assets/08a9d437-d4af-48fa-b2de-efb56c21d0be" alt="thread screen within a group with replies" />
 </div>
 
 ## Why was the project started?
