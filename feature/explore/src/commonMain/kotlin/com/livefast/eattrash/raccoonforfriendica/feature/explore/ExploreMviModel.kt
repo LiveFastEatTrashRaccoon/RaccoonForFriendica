@@ -53,6 +53,7 @@ interface ExploreMviModel :
         val section: ExploreSection = ExploreSection.Hashtags,
         val availableSections: List<ExploreSection> = emptyList(),
         val items: List<ExploreItemModel> = emptyList(),
+        val blurNsfw: Boolean = true,
     )
 
     sealed interface Effect {
