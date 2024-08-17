@@ -47,6 +47,7 @@ fun TimelineItem(
     actionsEnabled: Boolean = true,
     extendedSocialInfoEnabled: Boolean = false,
     reshareAndReplyVisible: Boolean = true,
+    blurNsfw: Boolean = true,
     onOpenUrl: ((String) -> Unit)? = null,
     onClick: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
@@ -123,7 +124,7 @@ fun TimelineItem(
                 ContentImage(
                     modifier = Modifier.fillMaxWidth(),
                     url = imageUrl,
-                    sensitive = entryToDisplay.sensitive,
+                    sensitive = blurNsfw && entryToDisplay.sensitive,
                 )
             }
 
