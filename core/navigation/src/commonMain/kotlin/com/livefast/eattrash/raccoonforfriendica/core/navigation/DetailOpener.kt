@@ -47,4 +47,6 @@ interface DetailOpener {
     fun openInForumMode(groupId: String)
 
     fun openThread(entryId: String)
+
+    fun openImageDetail(url: String)
 }
