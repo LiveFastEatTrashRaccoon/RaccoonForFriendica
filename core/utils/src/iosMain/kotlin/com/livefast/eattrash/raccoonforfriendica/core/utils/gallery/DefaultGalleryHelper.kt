@@ -42,7 +42,7 @@ fun ImageBytes.toByteArray(): ByteArray =
         }
     }
 
-class DefaultGalleryHelper : GalleryHelper {
+internal class DefaultGalleryHelper : GalleryHelper {
     override val supportsCustomPath: Boolean = false
 
     @OptIn(ExperimentalForeignApi::class)

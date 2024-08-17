@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 private const val DEFAULT_BASE_PATH = "RaccoonForLemmy"
 
-class DefaultGalleryHelper(
+internal class DefaultGalleryHelper(
     private val context: Context,
 ) : GalleryHelper {
     override val supportsCustomPath: Boolean = true
@@ -43,6 +43,7 @@ class DefaultGalleryHelper(
                 put(MediaStore.Images.Media.DISPLAY_NAME, name)
                 put(MediaStore.Images.Media.IS_PENDING, 1)
                 put(MediaStore.Images.Media.RELATIVE_PATH, relativePath)
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
             }
 
         val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, details)
