@@ -40,6 +40,7 @@ kotlin {
                 implementation(projects.core.preferences)
                 implementation(projects.core.utils)
 
+                implementation(projects.domain.content.data)
                 implementation(projects.domain.identity.data)
             }
         }

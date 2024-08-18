@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.StateFlow
 @Stable
 interface ApiConfigurationRepository {
     val node: StateFlow<String>
-    val isLogged: StateFlow<Boolean>
 
     fun changeNode(value: String)
 
