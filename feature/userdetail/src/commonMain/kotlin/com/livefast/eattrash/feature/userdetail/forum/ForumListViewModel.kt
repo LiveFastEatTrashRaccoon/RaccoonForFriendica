@@ -7,7 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -18,7 +18,7 @@ class ForumListViewModel(
     private val userRepository: UserRepository,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<ForumListMviModel.Intent, ForumListMviModel.State, ForumListMviModel.Effect>(
         initialState = ForumListMviModel.State(),
@@ -26,10 +26,9 @@ class ForumListViewModel(
     ForumListMviModel {
     init {
         screenModelScope.launch {
-            apiConfigurationRepository.isLogged
-                .onEach { isLogged ->
-                    updateState { it.copy(isLogged = isLogged) }
-                    loadUser()
+            identityRepository.currentUser
+                .onEach { currentUser ->
+                    updateState { it.copy(currentUserId = currentUser?.id) }
                 }.launchIn(this)
             settingsRepository.current
                 .onEach { settings ->
@@ -37,6 +36,7 @@ class ForumListViewModel(
                 }.launchIn(this)
 
             if (uiState.value.initial) {
+                loadUser()
                 refresh(initial = true)
             }
         }
@@ -57,6 +57,7 @@ class ForumListViewModel(
             is ForumListMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is ForumListMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is ForumListMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is ForumListMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
         }
     }
 
@@ -124,6 +125,14 @@ class ForumListViewModel(
                             }
                         }
                     },
+            )
+        }
+    }
+
+    private suspend fun removeEntryFromState(entryId: String) {
+        updateState {
+            it.copy(
+                entries = it.entries.filter { e -> e.id != entryId && e.reblog?.id != entryId },
             )
         }
     }
@@ -216,6 +225,15 @@ class ForumListViewModel(
                         bookmarkLoading = false,
                     )
                 }
+            }
+        }
+    }
+
+    private fun deleteEntry(entryId: String) {
+        screenModelScope.launch {
+            val success = timelineEntryRepository.delete(entryId)
+            if (success) {
+                removeEntryFromState(entryId)
             }
         }
     }

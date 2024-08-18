@@ -26,10 +26,14 @@ interface ForumListMviModel :
         data class ToggleBookmark(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class DeleteEntry(
+            val entryId: String,
+        ) : Intent
     }
 
     data class State(
-        val isLogged: Boolean = false,
+        val currentUserId: String? = null,
         val refreshing: Boolean = false,
         val loading: Boolean = false,
         val initial: Boolean = true,
