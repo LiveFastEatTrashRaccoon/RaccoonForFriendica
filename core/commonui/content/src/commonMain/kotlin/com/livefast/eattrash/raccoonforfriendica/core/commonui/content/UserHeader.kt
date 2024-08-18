@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material3.Icon
@@ -23,11 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withAnnotation
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -39,13 +33,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
-private object AnnotationConstants {
-    const val TAG = "action"
-    const val ACTION_OPEN_FOLLOWER = "followers"
-    const val ACTION_OPEN_FOLLOWING = "following"
-}
-
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun UserHeader(
     user: UserModel?,
@@ -119,48 +106,41 @@ fun UserHeader(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                     horizontalAlignment = Alignment.End,
                 ) {
-                    val followerDesc = LocalStrings.current.accountFollower
-                    val followingDesc = LocalStrings.current.accountFollowing
-                    val annotatedContent =
-                        buildAnnotatedString {
-                            withAnnotation(
-                                tag = AnnotationConstants.TAG,
-                                annotation = AnnotationConstants.ACTION_OPEN_FOLLOWER,
-                            ) {
-                                withStyle(SpanStyle(color = fullColor)) {
-                                    append("${user?.followers ?: 0}")
-                                }
-                                append(" ")
-                                append(followerDesc)
-                            }
-                            append(" • ")
-                            withAnnotation(
-                                tag = AnnotationConstants.TAG,
-                                annotation = AnnotationConstants.ACTION_OPEN_FOLLOWING,
-                            ) {
-                                withStyle(SpanStyle(color = fullColor)) {
-                                    append("${user?.following ?: 0}")
-                                }
-                                append(" ")
-                                append(followingDesc)
-                            }
-                        }
-                    ClickableText(
-                        text = annotatedContent,
-                        style = MaterialTheme.typography.labelMedium.copy(color = ancillaryColor),
-                        onClick = { offset ->
-                            val annotation =
-                                annotatedContent
-                                    .getStringAnnotations(start = offset, end = offset)
-                                    .firstOrNull()
-
-                            when (annotation?.item) {
-                                AnnotationConstants.ACTION_OPEN_FOLLOWER -> onOpenFollowers?.invoke()
-                                AnnotationConstants.ACTION_OPEN_FOLLOWING -> onOpenFollowing?.invoke()
-                                else -> Unit
-                            }
-                        },
-                    )
+                    Row(
+                        modifier = modifier,
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        val followers = user?.followers ?: 0
+                        val following = user?.following ?: 0
+                        Text(
+                            modifier = Modifier.clickable { onOpenFollowers?.invoke() },
+                            text =
+                                buildString {
+                                    append(followers)
+                                    append(" ")
+                                    append(LocalStrings.current.accountFollower(followers))
+                                },
+                            style = MaterialTheme.typography.labelSmall,
+                            color = ancillaryColor,
+                        )
+                        Text(
+                            text = " • ",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = ancillaryColor,
+                        )
+                        Text(
+                            modifier = Modifier.clickable { onOpenFollowing?.invoke() },
+                            text =
+                                buildString {
+                                    append(following)
+                                    append(" ")
+                                    append(LocalStrings.current.accountFollowing(following))
+                                },
+                            style = MaterialTheme.typography.labelSmall,
+                            color = ancillaryColor,
+                        )
+                    }
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

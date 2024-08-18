@@ -28,8 +28,15 @@ internal open class DefaultStrings : Strings {
     override val nodeVia = "via"
     override val timelineEntryInReplyTo = "in reply to"
     override val timelineEntryRebloggedBy = "re-shared by"
-    override val accountFollower = "follower"
-    override val accountFollowing = "following"
+
+    override fun accountFollower(count: Int) =
+        when (count) {
+            1 -> "follower"
+            else -> "followers"
+        }
+
+    override fun accountFollowing(count: Int) = "following"
+
     override val actionOpenInForumMode = "open in forum mode"
     override val accountAge = "account age"
     override val dateYearShort = "y"
@@ -73,7 +80,7 @@ internal open class DefaultStrings : Strings {
     override val actionLogout = "Logout"
     override val relationshipStatusFollowing = "Following"
     override val relationshipStatusFollowsYou = "Follows you"
-    override val relationshipStatusMutual = "Mutuals"
+    override val relationshipStatusMutual = "Mutual"
     override val relationshipStatusRequestedToOther = "Request sent"
     override val relationshipStatusRequestedToYou = "Request pending"
     override val notificationTypeEntry = "published a post"
@@ -87,7 +94,13 @@ internal open class DefaultStrings : Strings {
     override val exploreSectionHashtags = "Hashtags"
     override val exploreSectionLinks = "Links"
     override val exploreSectionSuggestions = "For you"
-    override val hashtagPeopleUsing = "people are talking about it"
+
+    override fun hashtagPeopleUsing(count: Int) =
+        when (count) {
+            1 -> "person is talking about it"
+            else -> "people are talking about it"
+    }
+
     override val feedTypeTitle = "Feed type"
     override val followerTitle = "Followers"
     override val followingTitle = "Following"
@@ -101,8 +114,19 @@ internal open class DefaultStrings : Strings {
     override val favoritesTitle = "Favorites"
     override val followedHashtagsTitle = "Followed hashtags"
     override val infoEdited = "edited"
-    override val extendedSocialInfoFavorites = "favorites"
-    override val extendedSocialInfoReblogs = "re-shares"
+
+    override fun extendedSocialInfoFavorites(count: Int) =
+        when (count) {
+            1 -> "favorite"
+            else -> "favorites"
+        }
+
+    override fun extendedSocialInfoReblogs(count: Int) =
+        when (count) {
+            1 -> "re-share"
+        else -> "re-shares"
+    }
+
     override val actionMuteNotifications = "Mute notifications"
     override val createPostTitle = "Create post"
     override val messagePostEmptyText = "Please provide either an attachment or some text"

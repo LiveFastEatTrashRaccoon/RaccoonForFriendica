@@ -35,8 +35,11 @@ interface Strings {
     val nodeVia: String
     val timelineEntryRebloggedBy: String
     val timelineEntryInReplyTo: String
-    val accountFollowing: String
-    val accountFollower: String
+
+    fun accountFollowing(count: Int): String
+
+    fun accountFollower(count: Int): String
+
     val actionOpenInForumMode: String
     val accountAge: String
     val dateYearShort: String
@@ -95,7 +98,9 @@ interface Strings {
     val exploreSectionHashtags: String
     val exploreSectionLinks: String
     val exploreSectionSuggestions: String
-    val hashtagPeopleUsing: String
+
+    fun hashtagPeopleUsing(count: Int): String
+
     val feedTypeTitle: String
     val followerTitle: String
     val followingTitle: String
@@ -107,8 +112,10 @@ interface Strings {
     val favoritesTitle: String
     val followedHashtagsTitle: String
     val infoEdited: String
-    val extendedSocialInfoFavorites: String
-    val extendedSocialInfoReblogs: String
+
+    fun extendedSocialInfoFavorites(count: Int): String
+
+    fun extendedSocialInfoReblogs(count: Int): String
     val actionMuteNotifications: String
     val createPostTitle: String
     val messagePostEmptyText: String

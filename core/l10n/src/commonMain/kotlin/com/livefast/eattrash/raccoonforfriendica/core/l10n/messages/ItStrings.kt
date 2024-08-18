@@ -29,8 +29,19 @@ internal val ItStrings =
         override val nodeVia = "via"
         override val timelineEntryInReplyTo = "in risposta a"
         override val timelineEntryRebloggedBy = "ricondiviso da"
-        override val accountFollower = "seguaci"
-        override val accountFollowing = "seguiti"
+
+        override fun accountFollower(count: Int) =
+            when (count) {
+                1 -> "seguace"
+                else -> "seguaci"
+            }
+
+        override fun accountFollowing(count: Int) =
+            when (count) {
+                1 -> "seguito"
+                else -> "seguiti"
+            }
+
         override val actionOpenInForumMode = "apri in modalità forum"
         override val accountAge = "età account"
         override val dateYearShort = "a"
@@ -88,7 +99,13 @@ internal val ItStrings =
         override val exploreSectionHashtags = "Hashtag"
         override val exploreSectionLinks = "Link"
         override val exploreSectionSuggestions = "Per te"
-        override val hashtagPeopleUsing = "persone ne stanno parlando"
+
+        override fun hashtagPeopleUsing(count: Int) =
+            when (count) {
+                1 -> "persona ne sta parlando"
+                else -> "persone ne stanno parlando"
+            }
+
         override val feedTypeTitle = "Tipo di feed"
         override val followerTitle = "Seguaci"
         override val followingTitle = "Seguiti"
@@ -102,8 +119,19 @@ internal val ItStrings =
         override val favoritesTitle = "Preferiti"
         override val followedHashtagsTitle = "Hashtag che segui"
         override val infoEdited = "modificato"
-        override val extendedSocialInfoFavorites = "preferiti"
-        override val extendedSocialInfoReblogs = "ricondivisioni"
+
+        override fun extendedSocialInfoFavorites(count: Int) =
+            when (count) {
+                1 -> "preferito"
+                else -> "preferiti"
+            }
+
+        override fun extendedSocialInfoReblogs(count: Int) =
+            when (count) {
+                1 -> "ricondivisione"
+                else -> "ricondivisioni"
+            }
+
         override val actionMuteNotifications = "Silenzia notifiche"
         override val createPostTitle = "Nuovo post"
         override val messagePostEmptyText = "È necessario postare almeno un allegato o del testo"

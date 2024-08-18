@@ -104,13 +104,13 @@ class UserListScreen(
                                         is UserListType.UsersFavorite -> {
                                             append(type.count)
                                             append(" ")
-                                            append(LocalStrings.current.extendedSocialInfoFavorites)
+                                            append(LocalStrings.current.extendedSocialInfoFavorites(type.count))
                                         }
 
                                         is UserListType.UsersReblog -> {
                                             append(type.count)
                                             append(" ")
-                                            append(LocalStrings.current.extendedSocialInfoReblogs)
+                                            append(LocalStrings.current.extendedSocialInfoReblogs(type.count))
                                         }
                                     }
                                 },
