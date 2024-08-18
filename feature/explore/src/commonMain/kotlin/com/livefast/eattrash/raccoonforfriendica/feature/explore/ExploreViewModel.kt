@@ -33,10 +33,10 @@ class ExploreViewModel(
         screenModelScope.launch {
             combine(
                 settingsRepository.current,
-                identityRepository.isLogged,
-            ) { settings, isLogged ->
-                settings to isLogged
-            }.onEach { (settings, isLogged) ->
+                identityRepository.currentUser,
+            ) { settings, currentUser ->
+                settings to currentUser
+            }.onEach { (settings, currentUser) ->
                 updateState {
                     it.copy(
                         availableSections =
@@ -44,11 +44,12 @@ class ExploreViewModel(
                                 this += ExploreSection.Hashtags
                                 this += ExploreSection.Posts
                                 this += ExploreSection.Links
-                                if (isLogged) {
+                                if (currentUser != null) {
                                     this += ExploreSection.Suggestions
                                 }
                             },
                         blurNsfw = settings?.blurNsfw ?: true,
+                        currentUserId = currentUser?.id,
                     )
                 }
             }.launchIn(this)
@@ -86,6 +87,12 @@ class ExploreViewModel(
             is ExploreMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is ExploreMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is ExploreMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is ExploreMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is ExploreMviModel.Intent.MuteUser ->
+                mute(
+                    userId = intent.userId,
+                    entryId = intent.entryId,
+                )
         }
     }
 
@@ -242,6 +249,21 @@ class ExploreViewModel(
         }
     }
 
+    private suspend fun removeEntryFromState(entryId: String) {
+        updateState {
+            it.copy(
+                items =
+                    it.items.filter { item ->
+                        when {
+                            item is ExploreItemModel.Entry && item.entry.id == entryId -> false
+                            item is ExploreItemModel.Entry && item.entry.reblog?.id == entryId -> false
+                            else -> true
+                        }
+                    },
+            )
+        }
+    }
+
     private fun toggleReblog(entry: TimelineEntryModel) {
         screenModelScope.launch {
             updateEntryInState(entry.id) {
@@ -330,6 +352,27 @@ class ExploreViewModel(
                         bookmarkLoading = false,
                     )
                 }
+            }
+        }
+    }
+
+    private fun deleteEntry(entryId: String) {
+        screenModelScope.launch {
+            val success = timelineEntryRepository.delete(entryId)
+            if (success) {
+                removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun mute(
+        userId: String,
+        entryId: String,
+    ) {
+        screenModelScope.launch {
+            val res = userRepository.mute(userId)
+            if (res != null) {
+                removeEntryFromState(entryId)
             }
         }
     }
