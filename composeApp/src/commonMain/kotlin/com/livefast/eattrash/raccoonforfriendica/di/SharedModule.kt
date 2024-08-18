@@ -14,7 +14,7 @@ internal val sharedModule =
         single<DetailOpener> {
             DefaultDetailOpener(
                 navigationCoordinator = get(),
-                apiConfigurationRepository = get(),
+                identityRepository = get(),
             )
         }
     }
