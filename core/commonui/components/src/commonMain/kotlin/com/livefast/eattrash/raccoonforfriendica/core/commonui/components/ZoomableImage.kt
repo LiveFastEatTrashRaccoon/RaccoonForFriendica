@@ -5,8 +5,9 @@ import androidx.compose.animation.core.InfiniteRepeatableSpec
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +31,7 @@ import kotlinx.coroutines.delay
 
 private const val LOADING_ANIMATION_DURATION = 1000
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ZoomableImage(
     contentScale: ContentScale = ContentScale.Fit,
@@ -63,15 +65,17 @@ fun ZoomableImage(
             CustomImage(
                 modifier =
                     Modifier
-                        .pointerInput(Unit) {
-                            detectTapGestures(onDoubleTap = {
+                        .combinedClickable(
+                            onClick = {},
+                            onDoubleClick = {
                                 if (scale > 1f) {
                                     scale = 1f
                                     offset = Offset.Zero
                                 } else {
                                     scale *= 2.5f
                                 }
-                            })
+                            },
+                        ).pointerInput(Unit) {
                             detectTransformGestures(
                                 onGesture = { _, pan, gestureZoom, _ ->
                                     val extraWidth = (scale - 1) * constraints.maxWidth
