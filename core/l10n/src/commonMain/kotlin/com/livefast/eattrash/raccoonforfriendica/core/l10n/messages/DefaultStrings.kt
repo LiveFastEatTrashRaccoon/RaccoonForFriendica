@@ -99,7 +99,7 @@ internal open class DefaultStrings : Strings {
         when (count) {
             1 -> "person is talking about it"
             else -> "people are talking about it"
-    }
+        }
 
     override val feedTypeTitle = "Feed type"
     override val followerTitle = "Followers"
@@ -124,8 +124,8 @@ internal open class DefaultStrings : Strings {
     override fun extendedSocialInfoReblogs(count: Int) =
         when (count) {
             1 -> "re-share"
-        else -> "re-shares"
-    }
+            else -> "re-shares"
+        }
 
     override val actionMuteNotifications = "Mute notifications"
     override val createPostTitle = "Create post"
@@ -165,4 +165,9 @@ internal open class DefaultStrings : Strings {
     override val contentScaleTitle = "Scale mode"
     override val shareAsUrl = "Share as URL"
     override val shareAsFile = "Share as file"
+    override val actionMute = "Mute"
+    override val actionUnmute = "Unmute"
+    override val settingsItemBlockedAndMuted = "Manage filters"
+    override val manageBlocksSectionMuted = "Muted"
+    override val manageBlocksSectionBlocked = "Blocked"
 }

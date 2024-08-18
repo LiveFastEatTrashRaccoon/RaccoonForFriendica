@@ -170,4 +170,9 @@ internal val ItStrings =
         override val contentScaleTitle = "Modalità ridimensionamento"
         override val shareAsUrl = "Condividi come URL"
         override val shareAsFile = "Condividi come file"
+        override val actionMute = "Silenzia"
+        override val actionUnmute = "Riattiva"
+        override val settingsItemBlockedAndMuted = "Gestione filtri"
+        override val manageBlocksSectionMuted = "Silenziati"
+        override val manageBlocksSectionBlocked = "Bloccati"
     }
