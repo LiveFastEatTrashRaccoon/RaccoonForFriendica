@@ -45,6 +45,7 @@ class SettingsViewModel(
                                     }
                                     this += TimelineType.Local
                                 },
+                            isLogged = isLogged,
                         )
                     }
                 }.launchIn(this)

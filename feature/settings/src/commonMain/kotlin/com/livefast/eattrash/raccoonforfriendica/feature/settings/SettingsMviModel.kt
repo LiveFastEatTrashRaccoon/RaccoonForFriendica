@@ -48,6 +48,7 @@ interface SettingsMviModel :
     }
 
     data class State(
+        val isLogged: Boolean = false,
         val theme: UiTheme = UiTheme.Default,
         val lang: String? = null,
         val supportsDynamicColors: Boolean = false,
