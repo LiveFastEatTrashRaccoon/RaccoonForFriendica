@@ -14,6 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.Follow
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.HashtagScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.LoginScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.ManageBlocksScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
@@ -144,6 +145,11 @@ class DefaultDetailOpener(
 
     override fun openImageDetail(url: String) {
         val screen = ImageDetailScreen(url)
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openBlockedAndMuted() {
+        val screen = ManageBlocksScreen()
         navigationCoordinator.push(screen)
     }
 }

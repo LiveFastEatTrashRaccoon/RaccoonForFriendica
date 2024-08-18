@@ -50,4 +50,6 @@ interface DetailOpener {
     fun openThread(entryId: String)
 
     fun openImageDetail(url: String)
+
+    fun openBlockedAndMuted()
 }
