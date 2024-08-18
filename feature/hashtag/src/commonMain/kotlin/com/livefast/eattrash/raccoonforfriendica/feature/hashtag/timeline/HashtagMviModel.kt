@@ -29,9 +29,19 @@ interface HashtagMviModel :
         data class ToggleBookmark(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class DeleteEntry(
+            val entryId: String,
+        ) : Intent
+
+        data class MuteUser(
+            val userId: String,
+            val entryId: String,
+        ) : Intent
     }
 
     data class State(
+        val currentUserId: String? = null,
         val following: Boolean? = null,
         val followingPending: Boolean = false,
         val refreshing: Boolean = false,
