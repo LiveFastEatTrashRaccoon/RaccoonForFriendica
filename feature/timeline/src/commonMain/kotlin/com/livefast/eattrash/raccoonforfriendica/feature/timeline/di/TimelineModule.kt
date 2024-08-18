@@ -9,7 +9,7 @@ val featureTimelineModule =
         factory<TimelineMviModel> {
             TimelineViewModel(
                 paginationManager = get(),
-                apiConfigurationRepository = get(),
+                identityRepository = get(),
                 timelineEntryRepository = get(),
                 settingsRepository = get(),
             )

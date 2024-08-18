@@ -8,7 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineT
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class TimelineViewModel(
     private val paginationManager: TimelinePaginationManager,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
@@ -28,16 +28,16 @@ class TimelineViewModel(
         screenModelScope.launch {
             combine(
                 settingsRepository.current,
-                apiConfigurationRepository.isLogged,
-            ) { settings, isLogged ->
-                settings to isLogged
-            }.onEach { (settings, isLogged) ->
+                identityRepository.currentUser,
+            ) { settings, currentUser ->
+                settings to currentUser
+            }.onEach { (settings, currentUser) ->
                 updateState {
                     it.copy(
                         availableTimelineTypes =
                             buildList {
                                 this += TimelineType.All
-                                if (isLogged) {
+                                if (currentUser != null) {
                                     this += TimelineType.Subscriptions
                                 }
                                 this += TimelineType.Local
@@ -46,7 +46,7 @@ class TimelineViewModel(
                             settings?.defaultTimelineType?.toTimelineType()
                                 ?: TimelineType.Local,
                         blurNsfw = settings?.blurNsfw ?: true,
-                        isLogged = isLogged,
+                        currentUserId = currentUser?.id,
                     )
                 }
                 refresh(initial = true)
@@ -86,6 +86,7 @@ class TimelineViewModel(
             is TimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is TimelineMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is TimelineMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is TimelineMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
         }
     }
 
@@ -142,6 +143,14 @@ class TimelineViewModel(
                             }
                         }
                     },
+            )
+        }
+    }
+
+    private suspend fun removeEntryFromState(entryId: String) {
+        updateState {
+            it.copy(
+                entries = it.entries.filter { e -> e.id != entryId && e.reblog?.id != entryId },
             )
         }
     }
@@ -234,6 +243,15 @@ class TimelineViewModel(
                         bookmarkLoading = false,
                     )
                 }
+            }
+        }
+    }
+
+    private fun deleteEntry(entryId: String) {
+        screenModelScope.launch {
+            val success = timelineEntryRepository.delete(entryId)
+            if (success) {
+                removeEntryFromState(entryId)
             }
         }
     }

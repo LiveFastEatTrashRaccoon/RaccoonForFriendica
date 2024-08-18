@@ -13,9 +13,9 @@ private const val DEFAULT_NODE = "poliverso.org"
 internal class DefaultApiConfigurationRepository(
     private val serviceProvider: ServiceProvider,
     private val keyStore: TemporaryKeyStore,
+    private val identityRepository: MutableIdentityRepository,
 ) : ApiConfigurationRepository {
     override val node = MutableStateFlow("")
-    override val isLogged = MutableStateFlow(false)
 
     init {
         val nodeName = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
@@ -35,6 +35,7 @@ internal class DefaultApiConfigurationRepository(
 
     override fun setAuth(credentials: Pair<String, String>?) {
         serviceProvider.setAuth(credentials)
+
         if (credentials != null) {
             keyStore.save(KEY_CRED_1, credentials.first)
             keyStore.save(KEY_CRED_2, credentials.second)
@@ -42,6 +43,7 @@ internal class DefaultApiConfigurationRepository(
             keyStore.remove(KEY_CRED_1)
             keyStore.remove(KEY_CRED_2)
         }
-        isLogged.update { credentials != null }
+
+        identityRepository.changeIsLogged(credentials != null)
     }
 }

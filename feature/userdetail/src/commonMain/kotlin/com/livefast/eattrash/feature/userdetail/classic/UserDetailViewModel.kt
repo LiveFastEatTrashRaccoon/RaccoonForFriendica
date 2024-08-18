@@ -11,7 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -22,7 +22,7 @@ class UserDetailViewModel(
     private val userRepository: UserRepository,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val identityRepository: IdentityRepository,
     private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
@@ -31,12 +31,9 @@ class UserDetailViewModel(
     UserDetailMviModel {
     init {
         screenModelScope.launch {
-            apiConfigurationRepository.isLogged
-                .onEach {
-                    val currentUserHandle = accountRepository.getActive()?.handle.orEmpty()
-                    val currentUser = userRepository.getByHandle(currentUserHandle)
-                    updateState { it.copy(currentUserId = currentUser?.id) }
-
+            identityRepository.currentUser
+                .onEach { user ->
+                    updateState { it.copy(currentUserId = user?.id) }
                     loadUser()
                 }.launchIn(this)
 

@@ -23,6 +23,8 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -92,7 +94,6 @@ class TimelineScreen : Screen {
         val uriHandler = LocalUriHandler.current
         val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
-        var timelineTypeSelectorOpen by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
         val drawerCoordinator = remember { getDrawerCoordinator() }
         val lazyListState = rememberLazyListState()
@@ -106,6 +107,8 @@ class TimelineScreen : Screen {
         val shareHelper = remember { getShareHelper() }
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
+        var timelineTypeSelectorOpen by remember { mutableStateOf(false) }
+        var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -164,7 +167,7 @@ class TimelineScreen : Screen {
                 )
             },
             floatingActionButton = {
-                if (uiState.isLogged) {
+                if (uiState.currentUserId != null) {
                     AnimatedVisibility(
                         visible = isFabVisible,
                         enter =
@@ -282,6 +285,14 @@ class TimelineScreen : Screen {
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
+                                    val isByCurrentUser =
+                                        entry.creator?.id == uiState.currentUserId && entry.reblog == null
+                                    val isReblogByCurrentUser =
+                                        entry.reblog?.creator?.id == uiState.currentUserId
+                                    if (isByCurrentUser || isReblogByCurrentUser) {
+                                        this += OptionId.Edit.toOption()
+                                        this += OptionId.Delete.toOption()
+                                    }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -297,6 +308,19 @@ class TimelineScreen : Screen {
                                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                                         }
                                     }
+
+                                    OptionId.Edit -> {
+                                        (entry.reblog ?: entry).also { entryToEdit ->
+                                            detailOpener.openComposer(
+                                                inReplyToId = entryToEdit.inReplyTo?.id,
+                                                inReplyToHandle = entryToEdit.inReplyTo?.creator?.handle,
+                                                inReplyToUsername = entryToEdit.inReplyTo?.creator?.username,
+                                                editedPostId = entryToEdit.id,
+                                            )
+                                        }
+                                    }
+
+                                    OptionId.Delete -> confirmDeleteEntryId = entry.id
 
                                     else -> Unit
                                 }
@@ -361,6 +385,45 @@ class TimelineScreen : Screen {
                     if (index != null) {
                         val type = uiState.availableTimelineTypes[index]
                         model.reduce(TimelineMviModel.Intent.ChangeType(type))
+                    }
+                },
+            )
+        }
+
+        if (confirmDeleteEntryId != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmDeleteEntryId = null
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionDelete,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmDeleteEntryId = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmDeleteEntryId ?: ""
+                            confirmDeleteEntryId = null
+                            if (entryId.isNotEmpty()) {
+                                model.reduce(TimelineMviModel.Intent.DeleteEntry(entryId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
                     }
                 },
             )

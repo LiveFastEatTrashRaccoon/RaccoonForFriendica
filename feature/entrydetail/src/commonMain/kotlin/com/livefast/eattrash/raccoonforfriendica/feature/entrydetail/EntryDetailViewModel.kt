@@ -4,7 +4,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 class EntryDetailViewModel(
     private val id: String,
     private val timelineEntryRepository: TimelineEntryRepository,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
         initialState = EntryDetailMviModel.State(),
@@ -24,11 +24,9 @@ class EntryDetailViewModel(
     EntryDetailMviModel {
     init {
         screenModelScope.launch {
-            apiConfigurationRepository.isLogged
-                .onEach { isLogged ->
-                    if (isLogged) {
-                        updateState { it.copy(isLogged = isLogged) }
-                    }
+            identityRepository.currentUser
+                .onEach { currentUser ->
+                    updateState { it.copy(currentUserId = currentUser?.id) }
                 }.launchIn(this)
             settingsRepository.current
                 .onEach { settings ->
@@ -50,6 +48,7 @@ class EntryDetailViewModel(
             is EntryDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is EntryDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is EntryDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is EntryDetailMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
         }
     }
 
@@ -111,6 +110,14 @@ class EntryDetailViewModel(
                             }
                         }
                     },
+            )
+        }
+    }
+
+    private suspend fun removeEntryFromState(entryId: String) {
+        updateState {
+            it.copy(
+                entries = it.entries.filter { e -> e.id != entryId && e.reblog?.id != entryId },
             )
         }
     }
@@ -203,6 +210,15 @@ class EntryDetailViewModel(
                         bookmarkLoading = false,
                     )
                 }
+            }
+        }
+    }
+
+    private fun deleteEntry(entryId: String) {
+        screenModelScope.launch {
+            val success = timelineEntryRepository.delete(entryId)
+            if (success) {
+                removeEntryFromState(entryId)
             }
         }
     }

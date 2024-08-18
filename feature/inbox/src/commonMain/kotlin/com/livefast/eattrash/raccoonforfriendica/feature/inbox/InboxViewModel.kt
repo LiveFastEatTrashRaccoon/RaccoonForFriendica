@@ -8,7 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class InboxViewModel(
     private val paginationManager: NotificationsPaginationManager,
     private val userRepository: UserRepository,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>(
         initialState = InboxMviModel.State(),
@@ -25,7 +25,7 @@ class InboxViewModel(
     InboxMviModel {
     init {
         screenModelScope.launch {
-            apiConfigurationRepository.isLogged
+            identityRepository.isLogged
                 .onEach { isLogged ->
                     updateState {
                         it.copy(isLogged = isLogged)

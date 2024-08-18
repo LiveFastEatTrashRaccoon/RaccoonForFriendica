@@ -6,7 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
@@ -21,11 +21,15 @@ import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
 
 class DefaultDetailOpener(
     private val navigationCoordinator: NavigationCoordinator,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val identityRepository: IdentityRepository,
 ) : DetailOpener {
-    private val isLogged: Boolean get() = apiConfigurationRepository.isLogged.value
+    private val isLogged: Boolean get() = identityRepository.isLogged.value
+    private val currentUserId: String? get() = identityRepository.currentUser.value?.id
 
     override fun openUserDetail(id: String) {
+        if (id == currentUserId) {
+            return
+        }
         val screen = UserDetailScreen(id)
         navigationCoordinator.push(screen)
     }

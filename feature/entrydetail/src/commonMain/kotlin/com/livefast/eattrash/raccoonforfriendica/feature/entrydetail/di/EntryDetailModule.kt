@@ -10,7 +10,7 @@ val featureEntryDetailModule =
             EntryDetailViewModel(
                 id = params[0],
                 timelineEntryRepository = get(),
-                apiConfigurationRepository = get(),
+                identityRepository = get(),
                 settingsRepository = get(),
             )
         }

@@ -10,7 +10,7 @@ val featureInboxModule =
             InboxViewModel(
                 paginationManager = get(),
                 userRepository = get(),
-                apiConfigurationRepository = get(),
+                identityRepository = get(),
                 settingsRepository = get(),
             )
         }

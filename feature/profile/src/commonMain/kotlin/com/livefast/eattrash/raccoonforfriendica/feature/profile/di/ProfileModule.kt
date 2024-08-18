@@ -12,7 +12,7 @@ val featureProfileModule =
     module {
         factory<ProfileMviModel> {
             ProfileViewModel(
-                apiConfigurationRepository = get(),
+                identityRepository = get(),
                 logoutUseCase = get(),
                 myAccountCache = get(),
             )
