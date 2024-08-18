@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Searc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
 import kotlinx.coroutines.FlowPreview
@@ -31,6 +32,7 @@ class SearchViewModel(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val tagRepository: TagRepository,
     private val settingsRepository: SettingsRepository,
+    private val identityRepository: IdentityRepository,
 ) : DefaultMviModel<SearchMviModel.Intent, SearchMviModel.State, SearchMviModel.Effect>(
         initialState = SearchMviModel.State(),
     ),
@@ -40,6 +42,10 @@ class SearchViewModel(
             settingsRepository.current
                 .onEach { settings ->
                     updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                }.launchIn(this)
+            identityRepository.currentUser
+                .onEach { currentUser ->
+                    updateState { it.copy(currentUserId = currentUser?.id) }
                 }.launchIn(this)
             uiState
                 .map { it.query }
@@ -92,6 +98,13 @@ class SearchViewModel(
                 toggleTagFollow(
                     intent.name,
                     intent.newValue,
+                )
+
+            is SearchMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is SearchMviModel.Intent.MuteUser ->
+                mute(
+                    userId = intent.userId,
+                    entryId = intent.entryId,
                 )
         }
     }
@@ -250,6 +263,21 @@ class SearchViewModel(
         }
     }
 
+    private suspend fun removeEntryFromState(entryId: String) {
+        updateState {
+            it.copy(
+                items =
+                    it.items.filter { item ->
+                        when {
+                            item is ExploreItemModel.Entry && item.entry.id == entryId -> false
+                            item is ExploreItemModel.Entry && item.entry.reblog?.id == entryId -> false
+                            else -> true
+                        }
+                    },
+            )
+        }
+    }
+
     private fun toggleReblog(entry: TimelineEntryModel) {
         screenModelScope.launch {
             updateEntryInState(entry.id) {
@@ -376,6 +404,27 @@ class SearchViewModel(
                 }
             if (newTag != null) {
                 updateHashtagInState(name) { newTag }
+            }
+        }
+    }
+
+    private fun deleteEntry(entryId: String) {
+        screenModelScope.launch {
+            val success = timelineEntryRepository.delete(entryId)
+            if (success) {
+                removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun mute(
+        userId: String,
+        entryId: String,
+    ) {
+        screenModelScope.launch {
+            val res = userRepository.mute(userId)
+            if (res != null) {
+                removeEntryFromState(entryId)
             }
         }
     }

@@ -52,9 +52,19 @@ interface SearchMviModel :
             val name: String,
             val newValue: Boolean,
         ) : Intent
+
+        data class DeleteEntry(
+            val entryId: String,
+        ) : Intent
+
+        data class MuteUser(
+            val userId: String,
+            val entryId: String,
+        ) : Intent
     }
 
     data class State(
+        val currentUserId: String? = null,
         val query: String = "",
         val refreshing: Boolean = false,
         val loading: Boolean = false,

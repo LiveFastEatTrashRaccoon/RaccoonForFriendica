@@ -66,6 +66,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
@@ -101,6 +102,8 @@ class SearchScreen : Screen {
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmUnfollowHashtagName by remember { mutableStateOf<String?>(null) }
+        var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
+        var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -285,6 +288,18 @@ class SearchScreen : Screen {
                                                 this += OptionId.Share.toOption()
                                                 this += OptionId.CopyUrl.toOption()
                                             }
+                                            val currentUserId = uiState.currentUserId
+                                            val creatorId =
+                                                item.entry.reblog
+                                                    ?.creator
+                                                    ?.id
+                                                    ?: item.entry.creator?.id
+                                            if (currentUserId == creatorId) {
+                                                this += OptionId.Edit.toOption()
+                                                this += OptionId.Delete.toOption()
+                                            } else if (currentUserId != null) {
+                                                this += OptionId.Mute.toOption()
+                                            }
                                         },
                                     onOptionSelected = { optionId ->
                                         when (optionId) {
@@ -301,6 +316,22 @@ class SearchScreen : Screen {
                                                 }
                                             }
 
+                                            OptionId.Edit -> {
+                                                (
+                                                    item.entry.reblog
+                                                        ?: item.entry
+                                                ).also { entryToEdit ->
+                                                    detailOpener.openComposer(
+                                                        inReplyToId = entryToEdit.inReplyTo?.id,
+                                                        inReplyToHandle = entryToEdit.inReplyTo?.creator?.handle,
+                                                        inReplyToUsername = entryToEdit.inReplyTo?.creator?.username,
+                                                        editedPostId = entryToEdit.id,
+                                                    )
+                                                }
+                                            }
+
+                                            OptionId.Delete -> confirmDeleteEntryId = item.entry.id
+                                            OptionId.Mute -> confirmMuteEntry = item.entry
                                             else -> Unit
                                         }
                                     },
@@ -517,6 +548,98 @@ class SearchScreen : Screen {
                                     SearchMviModel.Intent.ToggleTagFollow(
                                         name = oldtag,
                                         newValue = false,
+                                    ),
+                                )
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmDeleteEntryId != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmDeleteEntryId = null
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionDelete,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmDeleteEntryId = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmDeleteEntryId ?: ""
+                            confirmDeleteEntryId = null
+                            if (entryId.isNotEmpty()) {
+                                model.reduce(SearchMviModel.Intent.DeleteEntry(entryId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmMuteEntry != null) {
+            val creator = confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator
+            AlertDialog(
+                onDismissRequest = {
+                    confirmMuteEntry = null
+                },
+                title = {
+                    Text(
+                        text =
+                            buildString {
+                                append(LocalStrings.current.actionMute)
+                                val handle = creator?.handle ?: ""
+                                if (handle.isNotEmpty()) {
+                                    append(" @$handle")
+                                }
+                            },
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmMuteEntry = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmMuteEntry?.id
+                            val creatorId = creator?.id
+                            confirmMuteEntry = null
+                            if (entryId != null && creatorId != null) {
+                                model.reduce(
+                                    SearchMviModel.Intent.MuteUser(
+                                        userId = creatorId,
+                                        entryId = entryId,
                                     ),
                                 )
                             }
