@@ -11,6 +11,10 @@ sealed interface OptionId {
     data object Share : OptionId
 
     data object CopyUrl : OptionId
+
+    data object Mute : OptionId
+
+    data object Unmute : OptionId
 }
 
 @Composable
@@ -20,6 +24,8 @@ private fun OptionId.toReadableName(): String =
         OptionId.Delete -> LocalStrings.current.actionDelete
         OptionId.Share -> LocalStrings.current.actionShare
         OptionId.CopyUrl -> LocalStrings.current.actionCopyUrl
+        OptionId.Mute -> LocalStrings.current.actionMute
+        OptionId.Unmute -> LocalStrings.current.actionUnmute
     }
 
 @Composable
