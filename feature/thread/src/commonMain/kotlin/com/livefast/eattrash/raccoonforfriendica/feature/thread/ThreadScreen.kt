@@ -24,6 +24,7 @@ import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -41,8 +42,10 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -92,6 +95,7 @@ class ThreadScreen(
         val shareHelper = remember { getShareHelper() }
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
+        var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -130,7 +134,7 @@ class ThreadScreen(
                 )
             },
             floatingActionButton = {
-                if (uiState.isLogged) {
+                if (uiState.currentUserId != null) {
                     AnimatedVisibility(
                         visible = isFabVisible,
                         enter =
@@ -173,9 +177,9 @@ class ThreadScreen(
                     )
                 }
             },
-            content = { padding ->
-                val pullRefreshState =
-                    rememberPullRefreshState(
+        ) { padding ->
+            val pullRefreshState =
+                rememberPullRefreshState(
                         refreshing = uiState.refreshing,
                         onRefresh = {
                             model.reduce(ThreadMviModel.Intent.Refresh)
@@ -329,10 +333,14 @@ class ThreadScreen(
                                             this += OptionId.Share.toOption()
                                             this += OptionId.CopyUrl.toOption()
                                         }
-                                    },
-                                onOptionSelected = { optionId ->
-                                    when (optionId) {
-                                        OptionId.Share -> {
+                                        if (entry.reblog?.creator?.id == uiState.currentUserId) {
+                                        this += OptionId.Edit.toOption()
+                                        this += OptionId.Delete.toOption()
+                                    }
+                                },
+                            onOptionSelected = { optionId ->
+                                when (optionId) {
+                                    OptionId.Share -> {
                                             val urlString = entry.url.orEmpty()
                                             shareHelper.share(urlString)
                                         }
@@ -345,13 +353,23 @@ class ThreadScreen(
                                             }
                                         }
 
-                                        else -> Unit
+                                        OptionId.Edit -> {
+                                        detailOpener.openComposer(
+                                            groupHandle = entry.creator?.handle,
+                                            groupUsername = entry.creator?.username,
+                                            editedPostId = entry.reblog?.id,
+                                        )
                                     }
-                                },
-                            )
 
-                            // load more button
-                            if (entry.loadMoreButtonVisible) {
+                                    OptionId.Delete -> confirmDeleteEntryId = entry.id
+
+                                    else -> Unit
+                                }
+                            },
+                        )
+
+                        // load more button
+                        if (entry.loadMoreButtonVisible) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Center,
@@ -398,7 +416,45 @@ class ThreadScreen(
                         contentColor = MaterialTheme.colorScheme.onBackground,
                     )
                 }
-            },
-        )
+        }
+
+        if (confirmDeleteEntryId != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmDeleteEntryId = null
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionDelete,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmDeleteEntryId = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmDeleteEntryId ?: ""
+                            confirmDeleteEntryId = null
+                            if (entryId.isNotEmpty()) {
+                                model.reduce(ThreadMviModel.Intent.DeleteEntry(entryId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
     }
 }
