@@ -34,6 +34,11 @@ interface TimelineMviModel :
         data class DeleteEntry(
             val entryId: String,
         ) : Intent
+
+        data class MuteUser(
+            val userId: String,
+            val entryId: String,
+        ) : Intent
     }
 
     data class State(

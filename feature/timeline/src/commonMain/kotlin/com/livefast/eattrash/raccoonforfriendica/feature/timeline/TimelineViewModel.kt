@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineT
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.combine
@@ -20,6 +21,7 @@ class TimelineViewModel(
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
+    private val userRepository: UserRepository,
 ) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
         initialState = TimelineMviModel.State(),
     ),
@@ -87,6 +89,11 @@ class TimelineViewModel(
             is TimelineMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is TimelineMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is TimelineMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is TimelineMviModel.Intent.MuteUser ->
+                mute(
+                    userId = intent.userId,
+                    entryId = intent.entryId,
+                )
         }
     }
 
@@ -251,6 +258,18 @@ class TimelineViewModel(
         screenModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
+                removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun mute(
+        userId: String,
+        entryId: String,
+    ) {
+        screenModelScope.launch {
+            val res = userRepository.mute(userId)
+            if (res != null) {
                 removeEntryFromState(entryId)
             }
         }
