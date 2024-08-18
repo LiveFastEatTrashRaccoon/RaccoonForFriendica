@@ -40,6 +40,7 @@ interface DetailOpener {
         inReplyToHandle: String? = null,
         groupUsername: String? = null,
         groupHandle: String? = null,
+        editedPostId: String? = null,
     )
 
     fun openSearch()
