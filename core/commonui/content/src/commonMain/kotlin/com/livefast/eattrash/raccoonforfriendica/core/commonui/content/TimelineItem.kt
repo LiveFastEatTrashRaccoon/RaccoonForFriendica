@@ -173,7 +173,7 @@ fun TimelineItem(
                     ?.takeIf { it.isNotBlank() }
             if (imageUrl != null) {
                 ContentImage(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
                     url = imageUrl,
                     sensitive = blurNsfw && entryToDisplay.sensitive,
                     onClick = { onOpenImage?.invoke(imageUrl) },
