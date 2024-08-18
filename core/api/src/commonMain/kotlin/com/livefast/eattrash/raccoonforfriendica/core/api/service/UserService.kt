@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
@@ -111,4 +112,28 @@ interface UserService {
         @Query("min_id") minId: String? = null,
         @Query("limit") limit: Int = 20,
     ): List<Status>
+
+    @POST("v1/accounts/{id}/mute")
+    @Headers("Content-Type: application/json")
+    suspend fun mute(
+        @Path("id") id: String,
+        @Body data: MuteUserForm,
+    ): Relationship
+
+    @POST("v1/accounts/{id}/unmute")
+    suspend fun unmute(
+        @Path("id") id: String,
+    ): Relationship
+
+    @GET("v1/mutes")
+    suspend fun getMuted(
+        @Query("max_id") maxId: String? = null,
+        @Query("limit") limit: Int = 20,
+    ): List<Account>
+
+    @GET("v1/blocks")
+    suspend fun getBlocked(
+        @Query("max_id") maxId: String? = null,
+        @Query("limit") limit: Int = 20,
+    ): List<Account>
 }
