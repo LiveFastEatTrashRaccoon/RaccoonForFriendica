@@ -7,6 +7,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -17,6 +19,8 @@ class FavoritesViewModel(
     private val paginationManager: FavoritesPaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
+    private val identityRepository: IdentityRepository,
+    private val userRepository: UserRepository,
 ) : DefaultMviModel<FavoritesMviModel.Intent, FavoritesMviModel.State, FavoritesMviModel.Effect>(
         initialState = FavoritesMviModel.State(),
     ),
@@ -26,6 +30,10 @@ class FavoritesViewModel(
             settingsRepository.current
                 .onEach { settings ->
                     updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                }.launchIn(this)
+            identityRepository.currentUser
+                .onEach { currentUser ->
+                    updateState { it.copy(currentUserId = currentUser?.id) }
                 }.launchIn(this)
             if (uiState.value.initial) {
                 refresh(initial = true)
@@ -48,6 +56,12 @@ class FavoritesViewModel(
             is FavoritesMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is FavoritesMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is FavoritesMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is FavoritesMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is FavoritesMviModel.Intent.MuteUser ->
+                mute(
+                    userId = intent.userId,
+                    entryId = intent.entryId,
+            )
         }
     }
 
@@ -218,6 +232,27 @@ class FavoritesViewModel(
                         bookmarkLoading = false,
                     )
                 }
+            }
+        }
+    }
+
+    private fun deleteEntry(entryId: String) {
+        screenModelScope.launch {
+            val success = timelineEntryRepository.delete(entryId)
+            if (success) {
+                removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun mute(
+        userId: String,
+        entryId: String,
+    ) {
+        screenModelScope.launch {
+            val res = userRepository.mute(userId)
+            if (res != null) {
+                removeEntryFromState(entryId)
             }
         }
     }
