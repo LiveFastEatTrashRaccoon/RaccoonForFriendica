@@ -11,6 +11,10 @@ interface ComposerMviModel :
     ScreenModel,
     MviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect> {
     sealed interface Intent {
+        data class LoadEditedPost(
+            val id: String,
+        ) : Intent
+
         data class SetBodyValue(
             val value: TextFieldValue,
         ) : Intent

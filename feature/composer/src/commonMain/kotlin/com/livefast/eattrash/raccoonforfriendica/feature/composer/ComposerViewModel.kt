@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer
 
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
@@ -37,6 +38,7 @@ class ComposerViewModel(
     ),
     ComposerMviModel {
     private var uploadJobs = mutableMapOf<String, Job>()
+    private var editedPostId: String? = null
 
     init {
         screenModelScope.launch {
@@ -68,6 +70,10 @@ class ComposerViewModel(
 
     override fun reduce(intent: ComposerMviModel.Intent) {
         when (intent) {
+            is ComposerMviModel.Intent.LoadEditedPost -> {
+                editedPostId = intent.id
+                loadEditedPost()
+            }
             is ComposerMviModel.Intent.SetBodyValue ->
                 screenModelScope.launch {
                     updateState { it.copy(bodyValue = intent.value) }
@@ -257,49 +263,6 @@ class ComposerViewModel(
         }
     }
 
-    private fun submit() {
-        val currentState = uiState.value
-        if (currentState.loading) {
-            return
-        }
-
-        val text = currentState.bodyValue.text
-        // use the mediaId for this call otherwise the backend returns a 500
-        val attachmentIds = currentState.attachments.map { it.mediaId }
-        val key = getUuid()
-
-        screenModelScope.launch {
-            if (text.isBlank() && attachmentIds.isEmpty()) {
-                emitEffect(ComposerMviModel.Effect.ValidationError.TextOrImagesMandatory)
-                return@launch
-            }
-
-            updateState { it.copy(loading = true) }
-            try {
-                val res =
-                    timelineEntryRepository.create(
-                        localId = key,
-                        text = text,
-                        inReplyTo = inReplyToId,
-                        spoilerText = currentState.spoilerText,
-                        sensitive = currentState.sensitive,
-                        visibility = currentState.visibility,
-                        lang = currentState.lang,
-                        mediaIds = attachmentIds,
-                    )
-                updateState { it.copy(loading = false) }
-                if (res != null) {
-                    emitEffect(ComposerMviModel.Effect.Success)
-                } else {
-                    emitEffect(ComposerMviModel.Effect.Failure(null))
-                }
-            } catch (e: Throwable) {
-                updateState { it.copy(loading = false) }
-                emitEffect(ComposerMviModel.Effect.Failure(message = e.message))
-            }
-        }
-    }
-
     private suspend fun refreshUsers(query: String) {
         if (query.isEmpty()) {
             return
@@ -326,7 +289,7 @@ class ComposerViewModel(
 
     private suspend fun updateBodyValue(
         additionalPart: String,
-        offsetAfter: Int
+        offsetAfter: Int,
     ) {
         val bodyValue = uiState.value.bodyValue
         val (text, selection) = uiState.value.bodyValue.let { it.text to it.selection }
@@ -355,4 +318,74 @@ class ComposerViewModel(
         updateState { it.copy(bodyValue = newValue) }
     }
 
+    private fun loadEditedPost() {
+        val id = editedPostId ?: return
+        screenModelScope.launch {
+            val entry = timelineEntryRepository.getById(id)
+            updateState {
+                it.copy(
+                    bodyValue = TextFieldValue(text = entry?.content.orEmpty()),
+                    sensitive = entry?.sensitive ?: false,
+                    attachments = entry?.attachments.orEmpty(),
+                )
+            }
+        }
+    }
+
+    private fun submit() {
+        val currentState = uiState.value
+        if (currentState.loading) {
+            return
+        }
+
+        val text = currentState.bodyValue.text
+        // use the mediaId for this call otherwise the backend returns a 500
+        val attachmentIds = currentState.attachments.map { it.mediaId }
+        val key = getUuid()
+
+        screenModelScope.launch {
+            if (text.isBlank() && attachmentIds.isEmpty()) {
+                emitEffect(ComposerMviModel.Effect.ValidationError.TextOrImagesMandatory)
+                return@launch
+            }
+
+            updateState { it.copy(loading = true) }
+            val editId = editedPostId
+            try {
+                val res =
+                    if (editId != null) {
+                        timelineEntryRepository.update(
+                            id = editId,
+                            text = text,
+                            inReplyTo = inReplyToId,
+                            spoilerText = currentState.spoilerText,
+                            sensitive = currentState.sensitive,
+                            visibility = currentState.visibility,
+                            lang = currentState.lang,
+                            mediaIds = attachmentIds,
+                        )
+                    } else {
+                        timelineEntryRepository.create(
+                            localId = key,
+                            text = text,
+                            inReplyTo = inReplyToId,
+                            spoilerText = currentState.spoilerText,
+                            sensitive = currentState.sensitive,
+                            visibility = currentState.visibility,
+                            lang = currentState.lang,
+                            mediaIds = attachmentIds,
+                        )
+                    }
+                updateState { it.copy(loading = false) }
+                if (res != null) {
+                    emitEffect(ComposerMviModel.Effect.Success)
+                } else {
+                    emitEffect(ComposerMviModel.Effect.Failure(null))
+                }
+            } catch (e: Throwable) {
+                updateState { it.copy(loading = false) }
+                emitEffect(ComposerMviModel.Effect.Failure(message = e.message))
+            }
+        }
+    }
 }
