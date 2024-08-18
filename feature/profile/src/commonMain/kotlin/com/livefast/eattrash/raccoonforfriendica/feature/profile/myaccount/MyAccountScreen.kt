@@ -253,12 +253,30 @@ class MyAccountScreen : Screen {
                                     this += OptionId.Share.toOption()
                                     this += OptionId.CopyUrl.toOption()
                                 }
-                                if (entry.reblog == null) {
+                                if (entry.reblog == null || entry.creator?.group == true) {
+                                    this += OptionId.Edit.toOption()
                                     this += OptionId.Delete.toOption()
                                 }
                             },
                         onOptionSelected = { optionId ->
                             when (optionId) {
+                                OptionId.Edit -> {
+                                    if (entry.creator?.group == true) {
+                                        // edit the original post reblogged by the group
+                                        detailOpener.openComposer(
+                                            groupHandle = entry.creator?.handle,
+                                            groupUsername = entry.creator?.username,
+                                            editedPostId = entry.reblog?.id,
+                                        )
+                                    } else {
+                                        detailOpener.openComposer(
+                                            inReplyToId = entry.inReplyTo?.id,
+                                            inReplyToHandle = entry.inReplyTo?.creator?.handle,
+                                            inReplyToUsername = entry.inReplyTo?.creator?.username,
+                                            editedPostId = entry.id,
+                                        )
+                                    }
+                                }
                                 OptionId.Delete -> confirmDeleteEntryId = entry.id
                                 OptionId.Share -> {
                                     val urlString = entry.url.orEmpty()

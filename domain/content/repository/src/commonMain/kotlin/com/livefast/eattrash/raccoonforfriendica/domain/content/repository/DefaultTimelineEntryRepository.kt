@@ -200,10 +200,46 @@ internal class DefaultTimelineEntryRepository(
             }
         }.getOrNull()
 
+    override suspend fun update(
+        id: String,
+        text: String,
+        spoilerText: String?,
+        inReplyTo: String?,
+        sensitive: Boolean,
+        mediaIds: List<String>?,
+        visibility: Visibility,
+        lang: String?,
+    ): TimelineEntryModel? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val data =
+                    CreateStatusForm(
+                        status = text,
+                        addons = StatusAddons(title = ""),
+                        mediaIds = mediaIds,
+                        visibility = visibility.toDto().name.lowercase(),
+                        sensitive = sensitive,
+                        inReplyTo = inReplyTo,
+                        lang = lang,
+                        spoilerText = spoilerText,
+                    )
+                provider.statuses
+                    .update(
+                        id = id,
+                        data = data,
+                    ).toModel()
+            }
+        }.apply {
+            exceptionOrNull()?.also {
+                it.printStackTrace()
+            }
+        }.getOrNull()
+
     override suspend fun delete(id: String): Boolean =
         withContext(Dispatchers.IO) {
             runCatching {
-                provider.statuses.delete(id) != null
+                provider.statuses.delete(id)
+                true
             }
         }.getOrElse { false }
 }

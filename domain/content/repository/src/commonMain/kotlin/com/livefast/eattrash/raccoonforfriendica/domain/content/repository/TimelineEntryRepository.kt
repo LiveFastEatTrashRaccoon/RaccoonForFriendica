@@ -60,5 +60,16 @@ interface TimelineEntryRepository {
         lang: String? = null,
     ): TimelineEntryModel?
 
+    suspend fun update(
+        id: String,
+        text: String,
+        spoilerText: String? = null,
+        inReplyTo: String? = null,
+        sensitive: Boolean = false,
+        mediaIds: List<String>? = null,
+        visibility: Visibility,
+        lang: String? = null,
+    ): TimelineEntryModel?
+
     suspend fun delete(id: String): Boolean
 }

@@ -66,6 +66,7 @@ class ComposerScreen(
     private val inReplyToHandle: String? = null,
     private val groupUsername: String? = null,
     private val groupHandle: String? = null,
+    private val editedPostId: String? = null,
 ) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -90,10 +91,14 @@ class ComposerScreen(
         var attachmentWithDescriptionBeingEdited by remember { mutableStateOf<AttachmentModel?>(null) }
 
         LaunchedEffect(model) {
-            if (!inReplyToHandle.isNullOrEmpty()) {
-                model.reduce(ComposerMviModel.Intent.AddMention(inReplyToHandle))
-            } else if (!groupHandle.isNullOrEmpty()) {
-                model.reduce(ComposerMviModel.Intent.AddGroupReference(groupHandle))
+            if (editedPostId == null) {
+                if (!inReplyToHandle.isNullOrEmpty()) {
+                    model.reduce(ComposerMviModel.Intent.AddMention(inReplyToHandle))
+                } else if (!groupHandle.isNullOrEmpty()) {
+                    model.reduce(ComposerMviModel.Intent.AddGroupReference(groupHandle))
+                }
+            } else {
+                model.reduce(ComposerMviModel.Intent.LoadEditedPost(editedPostId))
             }
         }
 

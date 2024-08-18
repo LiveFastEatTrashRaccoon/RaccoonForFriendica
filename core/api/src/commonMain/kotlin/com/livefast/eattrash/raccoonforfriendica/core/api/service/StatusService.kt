@@ -11,6 +11,7 @@ import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Header
 import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.POST
+import de.jensklingenberg.ktorfit.http.PUT
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
 
@@ -92,6 +93,13 @@ interface StatusService {
     @Headers("Content-Type: application/json")
     suspend fun create(
         @Header("Idempotency-Key") key: String,
+        @Body data: CreateStatusForm,
+    ): Status
+
+    @PUT("v1/statuses/{id}")
+    @Headers("Content-Type: application/json")
+    suspend fun update(
+        @Path("id") id: String,
         @Body data: CreateStatusForm,
     ): Status
 
