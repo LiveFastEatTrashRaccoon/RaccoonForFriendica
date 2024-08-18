@@ -19,9 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
@@ -123,21 +121,17 @@ fun NotificationUserInfo(
                 }
             }
 
-            val followerDesc = LocalStrings.current.accountFollower
-            val followingDesc = LocalStrings.current.accountFollowing
+            val followers = user.followers
+            val following = user.following
             val annotatedContent =
                 buildAnnotatedString {
-                    withStyle(SpanStyle(color = fullColor)) {
-                        append("${user.followers}")
-                    }
+                    append("$followers")
                     append(" ")
-                    append(followerDesc)
+                    append(LocalStrings.current.accountFollower(followers))
                     append(" • ")
-                    withStyle(SpanStyle(color = fullColor)) {
-                        append("${user.following}")
-                    }
+                    append("$following")
                     append(" ")
-                    append(followingDesc)
+                    append(LocalStrings.current.accountFollowing(following))
                 }
             Text(
                 text = annotatedContent,

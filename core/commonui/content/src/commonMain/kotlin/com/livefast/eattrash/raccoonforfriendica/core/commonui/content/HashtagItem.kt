@@ -57,9 +57,14 @@ fun HashtagItem(
             Text(
                 text =
                     buildString {
-                        append(hashtag.history.first().users)
+                        val count =
+                            hashtag.history
+                                .first()
+                                .users
+                                .toInt()
+                        append(count)
                         append(" ")
-                        append(LocalStrings.current.hashtagPeopleUsing)
+                        append(LocalStrings.current.hashtagPeopleUsing(count))
                     },
                 style = MaterialTheme.typography.labelMedium,
                 color = ancillaryColor,
