@@ -14,7 +14,7 @@ val featureUserDetailModule =
                 userRepository = get(),
                 paginationManager = get(),
                 timelineEntryRepository = get(),
-                apiConfigurationRepository = get(),
+                identityRepository = get(),
                 accountRepository = get(),
                 settingsRepository = get(),
             )
@@ -25,7 +25,7 @@ val featureUserDetailModule =
                 userRepository = get(),
                 paginationManager = get(),
                 timelineEntryRepository = get(),
-                apiConfigurationRepository = get(),
+                identityRepository = get(),
                 settingsRepository = get(),
             )
         }

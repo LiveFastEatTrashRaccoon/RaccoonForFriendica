@@ -14,7 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineTyp
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -26,14 +26,14 @@ class SettingsViewModel(
     private val themeRepository: ThemeRepository,
     private val colorSchemeProvider: ColorSchemeProvider,
     private val themeColorRepository: ThemeColorRepository,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val identityRepository: IdentityRepository,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
     SettingsMviModel {
     init {
         screenModelScope.launch {
-            apiConfigurationRepository.isLogged
+            identityRepository.isLogged
                 .onEach { isLogged ->
                     updateState {
                         it.copy(

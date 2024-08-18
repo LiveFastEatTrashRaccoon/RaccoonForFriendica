@@ -11,7 +11,7 @@ val featureExploreModule =
                 paginationManager = get(),
                 userRepository = get(),
                 timelineEntryRepository = get(),
-                apiConfigurationRepository = get(),
+                identityRepository = get(),
                 settingsRepository = get(),
             )
         }

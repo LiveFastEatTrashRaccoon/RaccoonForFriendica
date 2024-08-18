@@ -11,7 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Explo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.ExplorePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
 import kotlinx.coroutines.flow.combine
@@ -23,7 +23,7 @@ class ExploreViewModel(
     private val paginationManager: ExplorePaginationManager,
     private val userRepository: UserRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect>(
         initialState = ExploreMviModel.State(),
@@ -33,7 +33,7 @@ class ExploreViewModel(
         screenModelScope.launch {
             combine(
                 settingsRepository.current,
-                apiConfigurationRepository.isLogged,
+                identityRepository.isLogged,
             ) { settings, isLogged ->
                 settings to isLogged
             }.onEach { (settings, isLogged) ->
