@@ -67,6 +67,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.composable.TimelineReplyItem
@@ -96,6 +97,7 @@ class ThreadScreen(
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
+        var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -327,15 +329,17 @@ class ThreadScreen(
                                             },
                                     )
                                 },
-                                options =
-                                    buildList {
-                                        if (!entry.url.isNullOrBlank()) {
-                                            this += OptionId.Share.toOption()
-                                            this += OptionId.CopyUrl.toOption()
-                                        }
-                                        if (entry.reblog?.creator?.id == uiState.currentUserId) {
+                            options =
+                                buildList {
+                                    if (!entry.url.isNullOrBlank()) {
+                                        this += OptionId.Share.toOption()
+                                        this += OptionId.CopyUrl.toOption()
+                                    }
+                                    if (entry.reblog?.creator?.id == uiState.currentUserId) {
                                         this += OptionId.Edit.toOption()
                                         this += OptionId.Delete.toOption()
+                                    } else if (uiState.currentUserId != null) {
+                                        this += OptionId.Mute.toOption()
                                     }
                                 },
                             onOptionSelected = { optionId ->
@@ -448,6 +452,59 @@ class ThreadScreen(
                             confirmDeleteEntryId = null
                             if (entryId.isNotEmpty()) {
                                 model.reduce(ThreadMviModel.Intent.DeleteEntry(entryId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmMuteEntry != null) {
+            val creator = confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator
+            AlertDialog(
+                onDismissRequest = {
+                    confirmMuteEntry = null
+                },
+                title = {
+                    Text(
+                        text =
+                            buildString {
+                                append(LocalStrings.current.actionMute)
+                                val handle = creator?.handle ?: ""
+                                if (handle.isNotEmpty()) {
+                                    append(" @$handle")
+                                }
+                            },
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmMuteEntry = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmMuteEntry?.id
+                            val creatorId = creator?.id
+                            confirmMuteEntry = null
+                            if (entryId != null && creatorId != null) {
+                                model.reduce(
+                                    ThreadMviModel.Intent.MuteUser(
+                                        userId = creatorId,
+                                        entryId = entryId,
+                                    ),
+                                )
                             }
                         },
                     ) {

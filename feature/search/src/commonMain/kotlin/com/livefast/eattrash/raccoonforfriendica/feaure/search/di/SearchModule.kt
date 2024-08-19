@@ -13,6 +13,7 @@ val featureSearchModule =
                 timelineEntryRepository = get(),
                 tagRepository = get(),
                 settingsRepository = get(),
+                identityRepository = get(),
             )
         }
     }

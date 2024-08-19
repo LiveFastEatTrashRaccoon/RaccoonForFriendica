@@ -73,6 +73,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
@@ -109,6 +110,7 @@ class TimelineScreen : Screen {
         val clipboardManager = LocalClipboardManager.current
         var timelineTypeSelectorOpen by remember { mutableStateOf(false) }
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
+        var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -285,13 +287,13 @@ class TimelineScreen : Screen {
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
-                                    val isByCurrentUser =
-                                        entry.creator?.id == uiState.currentUserId && entry.reblog == null
-                                    val isReblogByCurrentUser =
-                                        entry.reblog?.creator?.id == uiState.currentUserId
-                                    if (isByCurrentUser || isReblogByCurrentUser) {
+                                    val currentUserId = uiState.currentUserId
+                                    val creatorId = entry.reblog?.creator?.id ?: entry.creator?.id
+                                    if (creatorId == currentUserId) {
                                         this += OptionId.Edit.toOption()
                                         this += OptionId.Delete.toOption()
+                                    } else if (currentUserId != null) {
+                                        this += OptionId.Mute.toOption()
                                     }
                                 },
                             onOptionSelected = { optionId ->
@@ -321,7 +323,7 @@ class TimelineScreen : Screen {
                                     }
 
                                     OptionId.Delete -> confirmDeleteEntryId = entry.id
-
+                                    OptionId.Mute -> confirmMuteEntry = entry
                                     else -> Unit
                                 }
                             },
@@ -420,6 +422,59 @@ class TimelineScreen : Screen {
                             confirmDeleteEntryId = null
                             if (entryId.isNotEmpty()) {
                                 model.reduce(TimelineMviModel.Intent.DeleteEntry(entryId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmMuteEntry != null) {
+            val creator = confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator
+            AlertDialog(
+                onDismissRequest = {
+                    confirmMuteEntry = null
+                },
+                title = {
+                    Text(
+                        text =
+                            buildString {
+                                append(LocalStrings.current.actionMute)
+                                val handle = creator?.handle ?: ""
+                                if (handle.isNotEmpty()) {
+                                    append(" @$handle")
+                                }
+                            },
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmMuteEntry = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmMuteEntry?.id
+                            val creatorId = creator?.id
+                            confirmMuteEntry = null
+                            if (entryId != null && creatorId != null) {
+                                model.reduce(
+                                    TimelineMviModel.Intent.MuteUser(
+                                        userId = creatorId,
+                                        entryId = entryId,
+                                    ),
+                                )
                             }
                         },
                     ) {

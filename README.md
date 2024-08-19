@@ -101,8 +101,8 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] open groups in "forum mode" (Friendica-specific)
 - [x] delete one's own posts
 - [x] edit one's own posts
-- [ ] block/unblock user and see list of blocked users
-- [ ] mute/unmute user and see list of muted users
+- [x] mute/unmute user and see list of muted users
+- [ ] block/unblock user and see list of blocked users (partial)
 - [ ] switch from basic auth to OAuth
 - [ ] edit one's own profile
 - [ ] manage one's own circles (Friendica-specific)

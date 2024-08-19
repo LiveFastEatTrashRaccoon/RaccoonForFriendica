@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.async
@@ -18,6 +19,7 @@ class EntryDetailViewModel(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
+    private val userRepository: UserRepository,
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
         initialState = EntryDetailMviModel.State(),
     ),
@@ -49,6 +51,11 @@ class EntryDetailViewModel(
             is EntryDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is EntryDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is EntryDetailMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is EntryDetailMviModel.Intent.MuteUser ->
+                mute(
+                    entryId = intent.entryId,
+                    userId = intent.entryId,
+            )
         }
     }
 
@@ -218,6 +225,18 @@ class EntryDetailViewModel(
         screenModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
+                removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun mute(
+        userId: String,
+        entryId: String,
+    ) {
+        screenModelScope.launch {
+            val res = userRepository.mute(userId)
+            if (res != null) {
                 removeEntryFromState(entryId)
             }
         }

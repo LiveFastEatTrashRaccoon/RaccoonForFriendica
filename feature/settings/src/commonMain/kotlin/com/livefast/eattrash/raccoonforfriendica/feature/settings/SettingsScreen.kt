@@ -55,6 +55,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
@@ -69,6 +70,7 @@ class SettingsScreen : Screen {
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val navigationCoordinator = remember { getNavigationCoordinator() }
+        val detailOpener = remember { getDetailOpener() }
         var languageBottomSheetOpened by remember { mutableStateOf(false) }
         var themeBottomSheetOpened by remember { mutableStateOf(false) }
         var fontFamilyBottomSheetOpened by remember { mutableStateOf(false) }
@@ -174,6 +176,15 @@ class SettingsScreen : Screen {
                             icon = Icons.Default.Explicit,
                             title = LocalStrings.current.settingsHeaderNsfw,
                         )
+                        if (uiState.isLogged) {
+                            SettingsRow(
+                                title = LocalStrings.current.settingsItemBlockedAndMuted,
+                                disclosureIndicator = true,
+                                onTap = {
+                                    detailOpener.openBlockedAndMuted()
+                                },
+                            )
+                        }
                         SettingsSwitchRow(
                             title = LocalStrings.current.settingsItemIncludeNsfw,
                             value = uiState.includeNsfw,

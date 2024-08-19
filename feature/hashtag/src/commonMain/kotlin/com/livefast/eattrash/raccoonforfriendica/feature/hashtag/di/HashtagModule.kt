@@ -15,6 +15,8 @@ val featureHashtagModule =
                 timelineEntryRepository = get(),
                 tagRepository = get(),
                 settingsRepository = get(),
+                identityRepository = get(),
+                userRepository = get(),
             )
         }
         factory<FollowedHashtagsMviModel> {

@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -141,6 +142,53 @@ internal class DefaultUserRepository(
                 true
             }
         }.getOrElse { false }
+
+    override suspend fun mute(
+        id: String,
+        durationSeconds: Long,
+    ): RelationshipModel? =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                val data =
+                    MuteUserForm(
+                        duration = durationSeconds,
+                    )
+                provider.users
+                    .mute(
+                        id = id,
+                        data = data,
+                    ).toModel()
+            }
+        }.getOrNull()
+
+    override suspend fun unmute(id: String): RelationshipModel? =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users.unmute(id).toModel()
+            }
+        }.getOrNull()
+
+    override suspend fun getMuted(pageCursor: String?): List<UserModel> =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .getMuted(
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrElse { emptyList() }
+
+    override suspend fun getBlocked(pageCursor: String?): List<UserModel> =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .getBlocked(
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrElse { emptyList() }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20

@@ -40,4 +40,15 @@ interface UserRepository {
     suspend fun acceptFollowRequest(id: String): Boolean
 
     suspend fun rejectFollowRequest(id: String): Boolean
+
+    suspend fun mute(
+        id: String,
+        durationSeconds: Long = 0,
+    ): RelationshipModel?
+
+    suspend fun unmute(id: String): RelationshipModel?
+
+    suspend fun getMuted(pageCursor: String? = null): List<UserModel>
+
+    suspend fun getBlocked(pageCursor: String? = null): List<UserModel>
 }

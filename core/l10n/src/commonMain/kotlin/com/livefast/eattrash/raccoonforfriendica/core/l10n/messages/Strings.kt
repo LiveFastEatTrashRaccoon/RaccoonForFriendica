@@ -116,6 +116,7 @@ interface Strings {
     fun extendedSocialInfoFavorites(count: Int): String
 
     fun extendedSocialInfoReblogs(count: Int): String
+
     val actionMuteNotifications: String
     val createPostTitle: String
     val messagePostEmptyText: String
@@ -154,6 +155,11 @@ interface Strings {
     val contentScaleFit: String
     val shareAsUrl: String
     val shareAsFile: String
+    val actionMute: String
+    val actionUnmute: String
+    val settingsItemBlockedAndMuted: String
+    val manageBlocksSectionMuted: String
+    val manageBlocksSectionBlocked: String
 }
 
 object Locales {

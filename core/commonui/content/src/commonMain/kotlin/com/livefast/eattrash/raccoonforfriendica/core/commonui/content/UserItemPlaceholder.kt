@@ -22,7 +22,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.shimmerEffect
 
 @Composable
-fun UserItemPlaceholder(modifier: Modifier = Modifier) {
+fun UserItemPlaceholder(
+    modifier: Modifier = Modifier,
+    withRelationshipButton: Boolean = true,
+) {
     Row(
         modifier = modifier.padding(horizontal = Spacing.xs),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
@@ -58,13 +61,15 @@ fun UserItemPlaceholder(modifier: Modifier = Modifier) {
             )
         }
 
-        Box(
-            modifier =
-                Modifier
-                    .height(35.dp)
-                    .width(60.dp)
-                    .clip(RoundedCornerShape(CornerSize.xl))
-                    .shimmerEffect(),
-        )
+        if (withRelationshipButton) {
+            Box(
+                modifier =
+                    Modifier
+                        .height(35.dp)
+                        .width(60.dp)
+                        .clip(RoundedCornerShape(CornerSize.xl))
+                        .shimmerEffect(),
+            )
+        }
     }
 }

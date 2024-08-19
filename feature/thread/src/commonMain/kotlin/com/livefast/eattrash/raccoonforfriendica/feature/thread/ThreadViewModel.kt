@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.usecase.PopulateThreadUseCase
@@ -17,6 +18,7 @@ class ThreadViewModel(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
+    private val userRepository: UserRepository,
 ) : DefaultMviModel<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>(
         initialState = ThreadMviModel.State(),
     ),
@@ -54,6 +56,11 @@ class ThreadViewModel(
             is ThreadMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is ThreadMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is ThreadMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is ThreadMviModel.Intent.MuteUser ->
+                mute(
+                    userId = intent.userId,
+                    entryId = intent.entryId,
+            )
         }
     }
 
@@ -247,6 +254,18 @@ class ThreadViewModel(
         screenModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
+                removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun mute(
+        userId: String,
+        entryId: String,
+    ) {
+        screenModelScope.launch {
+            val res = userRepository.mute(userId)
+            if (res != null) {
                 removeEntryFromState(entryId)
             }
         }

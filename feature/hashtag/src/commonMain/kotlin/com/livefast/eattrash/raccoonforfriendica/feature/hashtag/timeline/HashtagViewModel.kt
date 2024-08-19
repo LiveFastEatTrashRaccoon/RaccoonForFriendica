@@ -7,6 +7,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -18,6 +20,8 @@ class HashtagViewModel(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val tagRepository: TagRepository,
     private val settingsRepository: SettingsRepository,
+    private val identityRepository: IdentityRepository,
+    private val userRepository: UserRepository,
 ) : DefaultMviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>(
         initialState = HashtagMviModel.State(),
     ),
@@ -27,6 +31,10 @@ class HashtagViewModel(
             settingsRepository.current
                 .onEach { settings ->
                     updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                }.launchIn(this)
+            identityRepository.currentUser
+                .onEach { currentUser ->
+                    updateState { it.copy(currentUserId = currentUser?.id) }
                 }.launchIn(this)
             if (uiState.value.initial) {
                 val model = tagRepository.getBy(tag)
@@ -56,6 +64,12 @@ class HashtagViewModel(
             is HashtagMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is HashtagMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is HashtagMviModel.Intent.ToggleTagFollow -> toggleTagFollow(intent.newValue)
+            is HashtagMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is HashtagMviModel.Intent.MuteUser ->
+                mute(
+                    userId = intent.userId,
+                    entryId = intent.entryId,
+            )
         }
     }
 
@@ -112,6 +126,14 @@ class HashtagViewModel(
                             }
                         }
                     },
+            )
+        }
+    }
+
+    private suspend fun removeEntryFromState(entryId: String) {
+        updateState {
+            it.copy(
+                entries = it.entries.filter { e -> e.id != entryId && e.reblog?.id != entryId },
             )
         }
     }
@@ -222,6 +244,27 @@ class HashtagViewModel(
                     following = newModel?.following == true,
                     followingPending = false,
                 )
+            }
+        }
+    }
+
+    private fun deleteEntry(entryId: String) {
+        screenModelScope.launch {
+            val success = timelineEntryRepository.delete(entryId)
+            if (success) {
+                removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun mute(
+        userId: String,
+        entryId: String,
+    ) {
+        screenModelScope.launch {
+            val res = userRepository.mute(userId)
+            if (res != null) {
+                removeEntryFromState(entryId)
             }
         }
     }

@@ -16,6 +16,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -30,8 +32,10 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -52,6 +56,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
@@ -79,6 +84,8 @@ class FavoritesScreen(
         val shareHelper = remember { getShareHelper() }
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
+        var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
+        var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -204,6 +211,14 @@ class FavoritesScreen(
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
+                                    val currentUserId = uiState.currentUserId
+                                    val creatorId = entry.reblog?.creator?.id ?: entry.creator?.id
+                                    if (creatorId == currentUserId) {
+                                        this += OptionId.Edit.toOption()
+                                        this += OptionId.Delete.toOption()
+                                    } else if (currentUserId != null) {
+                                        this += OptionId.Mute.toOption()
+                                    }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -220,6 +235,19 @@ class FavoritesScreen(
                                         }
                                     }
 
+                                    OptionId.Edit -> {
+                                        (entry.reblog ?: entry).also { entryToEdit ->
+                                            detailOpener.openComposer(
+                                                inReplyToId = entryToEdit.inReplyTo?.id,
+                                                inReplyToHandle = entryToEdit.inReplyTo?.creator?.handle,
+                                                inReplyToUsername = entryToEdit.inReplyTo?.creator?.username,
+                                                editedPostId = entryToEdit.id,
+                                            )
+                                        }
+                                    }
+
+                                    OptionId.Delete -> confirmDeleteEntryId = entry.id
+                                    OptionId.Mute -> confirmMuteEntry = entry
                                     else -> Unit
                                 }
                             },
@@ -259,6 +287,98 @@ class FavoritesScreen(
                     contentColor = MaterialTheme.colorScheme.onBackground,
                 )
             }
+        }
+
+        if (confirmDeleteEntryId != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmDeleteEntryId = null
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionDelete,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmDeleteEntryId = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmDeleteEntryId ?: ""
+                            confirmDeleteEntryId = null
+                            if (entryId.isNotEmpty()) {
+                                model.reduce(FavoritesMviModel.Intent.DeleteEntry(entryId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmMuteEntry != null) {
+            val creator = confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator
+            AlertDialog(
+                onDismissRequest = {
+                    confirmMuteEntry = null
+                },
+                title = {
+                    Text(
+                        text =
+                            buildString {
+                                append(LocalStrings.current.actionMute)
+                                val handle = creator?.handle ?: ""
+                                if (handle.isNotEmpty()) {
+                                    append(" @$handle")
+                                }
+                            },
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmMuteEntry = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmMuteEntry?.id
+                            val creatorId = creator?.id
+                            confirmMuteEntry = null
+                            if (entryId != null && creatorId != null) {
+                                model.reduce(
+                                    FavoritesMviModel.Intent.MuteUser(
+                                        userId = creatorId,
+                                        entryId = entryId,
+                                    ),
+                                )
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
         }
     }
 }

@@ -32,38 +32,46 @@ internal class DefaultUserPaginationManager(
                         .getFollowers(
                             id = specification.userId,
                             pageCursor = pageCursor,
-                        )
+                        ).determineRelationshipStatus()
 
                 is UserPaginationSpecification.Following ->
                     userRepository
                         .getFollowing(
                             id = specification.userId,
                             pageCursor = pageCursor,
-                        )
+                        ).determineRelationshipStatus()
 
                 is UserPaginationSpecification.EntryUsersFavorite ->
                     timelineEntryRepository.getUsersWhoFavorited(
                         id = specification.entryId,
                         pageCursor = pageCursor,
-                    )
+                    ).determineRelationshipStatus()
 
                 is UserPaginationSpecification.EntryUsersReblog ->
                     timelineEntryRepository.getUsersWhoReblogged(
                         id = specification.entryId,
                         pageCursor = pageCursor,
-                    )
+                    ).determineRelationshipStatus()
 
-                is UserPaginationSpecification.Search -> {
+                is UserPaginationSpecification.Search ->
                     userRepository.search(
                         query = specification.query,
                         offset =
                             history
                                 .indexOfLast { it.id == pageCursor }
                                 .takeIf { it >= 0 } ?: 0,
+                    ).determineRelationshipStatus()
+
+                UserPaginationSpecification.Blocked ->
+                    userRepository.getBlocked(
+                        pageCursor = pageCursor,
                     )
-                }
-            }.determineRelationshipStatus()
-                .deduplicate()
+
+                UserPaginationSpecification.Muted ->
+                    userRepository.getMuted(
+                        pageCursor = pageCursor,
+                    )
+            }.deduplicate()
 
         if (results.isNotEmpty()) {
             pageCursor = results.last().id

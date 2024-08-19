@@ -20,6 +20,7 @@ val featureThreadModule =
                 timelineEntryRepository = get(),
                 identityRepository = get(),
                 settingsRepository = get(),
+                userRepository = get(),
             )
         }
     }
