@@ -257,6 +257,13 @@ class MyAccountScreen : Screen {
                                     this += OptionId.Edit.toOption()
                                     this += OptionId.Delete.toOption()
                                 }
+                                if (entry.reblog == null) {
+                                    if (entry.pinned) {
+                                        this += OptionId.Unpin.toOption()
+                                    } else {
+                                        this += OptionId.Pin.toOption()
+                                    }
+                                }
                             },
                         onOptionSelected = { optionId ->
                             when (optionId) {
@@ -290,6 +297,10 @@ class MyAccountScreen : Screen {
                                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                                     }
                                 }
+                                OptionId.Pin, OptionId.Unpin ->
+                                    model.reduce(
+                                        MyAccountMviModel.Intent.TogglePin(entry),
+                                    )
                                 else -> Unit
                             }
                         },

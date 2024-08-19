@@ -310,6 +310,13 @@ class ExploreScreen : Screen {
                                             if (currentUserId == creatorId) {
                                                 this += OptionId.Edit.toOption()
                                                 this += OptionId.Delete.toOption()
+                                                if (item.entry.reblog == null) {
+                                                    if (item.entry.pinned) {
+                                                        this += OptionId.Unpin.toOption()
+                                                    } else {
+                                                        this += OptionId.Pin.toOption()
+                                                    }
+                                                }
                                             } else if (currentUserId != null) {
                                                 this += OptionId.Mute.toOption()
                                                 this += OptionId.Block.toOption()
@@ -346,6 +353,10 @@ class ExploreScreen : Screen {
                                             OptionId.Delete -> confirmDeleteEntryId = item.entry.id
                                             OptionId.Mute -> confirmMuteEntry = item.entry
                                             OptionId.Block -> confirmBlockEntry = item.entry
+                                            OptionId.Pin, OptionId.Unpin ->
+                                                model.reduce(
+                                                    ExploreMviModel.Intent.TogglePin(item.entry),
+                                                )
                                             else -> Unit
                                         }
                                     },

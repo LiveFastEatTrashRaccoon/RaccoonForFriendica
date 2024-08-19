@@ -35,6 +35,10 @@ interface MyAccountMviModel :
         data class DeleteEntry(
             val entryId: String,
         ) : Intent
+
+        data class TogglePin(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(

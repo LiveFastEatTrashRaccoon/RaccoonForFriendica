@@ -104,7 +104,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] mute/unmute user and see list of muted users
 - [x] block/unblock user and see list of blocked users
 - [x] OAuth and HTTP basic authentication modes
-- [ ] pin/unpin status to profile
+- [x] pin/unpin status to profile
 - [ ] support post spoiler text
 - [ ] edit one's own profile
 - [ ] manage one's own circles (Friendica-specific)

@@ -55,12 +55,13 @@ class EntryDetailViewModel(
                 mute(
                     entryId = intent.entryId,
                     userId = intent.entryId,
-            )
+                )
             is EntryDetailMviModel.Intent.BlockUser ->
                 block(
                     entryId = intent.entryId,
                     userId = intent.entryId,
                 )
+            is EntryDetailMviModel.Intent.TogglePin -> togglePin(intent.entry)
         }
     }
 
@@ -255,6 +256,24 @@ class EntryDetailViewModel(
             val res = userRepository.block(userId)
             if (res != null) {
                 removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun togglePin(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val newEntry =
+                if (entry.pinned) {
+                    timelineEntryRepository.unpin(entry.id)
+                } else {
+                    timelineEntryRepository.pin(entry.id)
+                }
+            if (newEntry != null) {
+                updateEntryInState(entry.id) {
+                    it.copy(
+                        pinned = newEntry.pinned,
+                    )
+                }
             }
         }
     }

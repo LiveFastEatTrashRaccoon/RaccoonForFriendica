@@ -180,4 +180,6 @@ internal val ItStrings =
         override val messageLoginOAuth = "Login con OAuth2 (consigliato)"
         override val or = "oppure"
         override val messageLoginLegacy = "Login con username e password (legacy)"
+        override val actionPin = "Fissa sul profilo"
+        override val actionUnpin = "Togli dal profilo"
     }

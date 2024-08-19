@@ -175,4 +175,6 @@ internal open class DefaultStrings : Strings {
     override val messageLoginOAuth = "Login with OAuth2 (recommended)"
     override val or = "or"
     override val messageLoginLegacy = "Login with username and password (legacy)"
+    override val actionPin = "Pin to profile"
+    override val actionUnpin = "Unpin from profile"
 }
