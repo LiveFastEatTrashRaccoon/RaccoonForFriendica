@@ -177,4 +177,7 @@ internal val ItStrings =
         override val manageBlocksSectionBlocked = "Bloccati"
         override val actionBlock = "Blocca"
         override val actionUnblock = "Sblocca"
+        override val messageLoginOAuth = "Login con OAuth2 (consigliato)"
+        override val or = "oppure"
+        override val messageLoginLegacy = "Login con username e password (legacy)"
     }

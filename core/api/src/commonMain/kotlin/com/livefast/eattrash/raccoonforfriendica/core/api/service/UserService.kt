@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
@@ -14,6 +15,9 @@ import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
 
 interface UserService {
+    @GET("v1/accounts/verify_credentials")
+    suspend fun verifyCredentials(): CredentialAccount
+
     @GET("v1/accounts/{id}")
     suspend fun getById(
         @Path("id") id: String,
@@ -36,11 +40,6 @@ interface UserService {
         @Query("pinned") pinned: Boolean = false,
         @Query("limit") limit: Int = 20,
     ): List<Status>
-
-    @GET("v1/accounts/lookup")
-    suspend fun lookup(
-        @Query("acct") acct: String,
-    ): Account
 
     @GET("v1/accounts/relationships")
     suspend fun getRelationships(

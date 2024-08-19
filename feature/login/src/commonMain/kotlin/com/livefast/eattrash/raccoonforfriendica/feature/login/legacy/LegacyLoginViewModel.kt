@@ -1,21 +1,22 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.login
+package com.livefast.eattrash.raccoonforfriendica.feature.login.legacy
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
 import kotlinx.coroutines.launch
 
-class LoginViewModel(
+class LegacyLoginViewModel(
     private val credentialsRepository: CredentialsRepository,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val loginUseCase: LoginUseCase,
-) : DefaultMviModel<LoginMviModel.Intent, LoginMviModel.State, LoginMviModel.Effect>(
-        initialState = LoginMviModel.State(),
+) : DefaultMviModel<LegacyLoginMviModel.Intent, LegacyLoginMviModel.State, LegacyLoginMviModel.Effect>(
+        initialState = LegacyLoginMviModel.State(),
     ),
-    LoginMviModel {
+    LegacyLoginMviModel {
     init {
         screenModelScope.launch {
             val currentNode = apiConfigurationRepository.node.value
@@ -23,24 +24,24 @@ class LoginViewModel(
         }
     }
 
-    override fun reduce(intent: LoginMviModel.Intent) {
+    override fun reduce(intent: LegacyLoginMviModel.Intent) {
         when (intent) {
-            is LoginMviModel.Intent.SetNodeName ->
+            is LegacyLoginMviModel.Intent.SetNodeName ->
                 screenModelScope.launch {
                     updateState { it.copy(nodeName = intent.name) }
                 }
 
-            is LoginMviModel.Intent.SetUsername ->
+            is LegacyLoginMviModel.Intent.SetUsername ->
                 screenModelScope.launch {
                     updateState { it.copy(username = intent.username) }
                 }
 
-            is LoginMviModel.Intent.SetPassword ->
+            is LegacyLoginMviModel.Intent.SetPassword ->
                 screenModelScope.launch {
                     updateState { it.copy(password = intent.password) }
                 }
 
-            LoginMviModel.Intent.Submit -> submit()
+            LegacyLoginMviModel.Intent.Submit -> submit()
         }
     }
 
@@ -93,18 +94,18 @@ class LoginViewModel(
 
             // submit data
             updateState { it.copy(loading = true) }
+
             try {
+                val credentials = ApiCredentials.HttpBasic(user = user, pass = pass)
                 loginUseCase(
                     node = node,
-                    user = user,
-                    pass = pass,
+                    credentials = credentials,
                 )
                 updateState { it.copy(loading = false) }
-                emitEffect(LoginMviModel.Effect.Success)
+                emitEffect(LegacyLoginMviModel.Effect.Success)
             } catch (e: Throwable) {
                 updateState { it.copy(loading = false) }
-                val message = e.message
-                emitEffect(LoginMviModel.Effect.Failure(message))
+                emitEffect(LegacyLoginMviModel.Effect.Failure(e.message))
             }
         }
     }

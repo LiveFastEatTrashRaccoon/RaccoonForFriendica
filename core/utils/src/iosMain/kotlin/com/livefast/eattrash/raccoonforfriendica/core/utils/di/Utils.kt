@@ -7,6 +7,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelpe
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.DefaultShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.url.DefaultCustomTabsHelper
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.dsl.module
@@ -35,6 +37,13 @@ actual val coreUtilsShareModule =
     module {
         single<ShareHelper> {
             DefaultShareHelper()
+        }
+    }
+
+actual val coreUtilsUrlModule =
+    module {
+        single<CustomTabsHelper> {
+            DefaultCustomTabsHelper()
         }
     }
 

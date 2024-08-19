@@ -6,6 +6,7 @@ android-targetSdk = "34"
 
 androidx-activity = "1.9.0"
 androidx-appcompat = "1.7.0"
+androidx-browser = "1.8.0"
 androidx-core-ktx = "1.13.1"
 androidx-crypto = "1.0.0"
 androidx-material = "1.12.0"
@@ -36,6 +37,7 @@ voyager = "1.0.0"
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "androidx-browser" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 androidx-material = { group = "com.google.android.material", name = "material", version.ref = "androidx-material" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidx-crypto" }

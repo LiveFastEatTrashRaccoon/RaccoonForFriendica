@@ -2,6 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.di
 
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.AnonymousMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.AnonymousViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.DefaultMyAccountCache
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.MyAccountCache
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
@@ -25,6 +27,11 @@ val featureProfileModule =
                 timelineEntryRepository = get(),
                 myAccountCache = get(),
                 settingsRepository = get(),
+            )
+        }
+        factory<AnonymousMviModel> {
+            AnonymousViewModel(
+                authManager = get(),
             )
         }
         single<MyAccountCache> {

@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsFileSyst
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsGalleryModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsShareModule
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsUrlModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.domainContentPaginationModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.domainContentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.domainIdentityRepositoryModule
@@ -32,45 +33,49 @@ import com.livefast.eattrash.raccoonforfriendica.feature.thread.di.featureThread
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.di.featureTimelineModule
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.featureUserListModule
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.di.featureSearchModule
+import org.koin.core.Koin
 import org.koin.core.context.startKoin
 
-fun initKoin() {
-    startKoin {
-        modules(
-            sharedModule,
-            coreApiModule,
-            coreAppearanceModule,
-            coreCommonUiComponentsModule,
-            coreL10nModule,
-            corePersistenceModule,
-            corePreferencesModule,
-            coreNavigationModule,
-            coreResourceModule,
-            coreUtilsFileSystemModule,
-            coreUtilsGalleryModule,
-            coreUtilsShareModule,
-            coreUtilsModule,
-            domainContentPaginationModule,
-            domainContentRepositoryModule,
-            domainIdentityRepositoryModule,
-            domainIdentityUseCaseModule,
-            featureComposerModule,
-            featureTimelineModule,
-            featureEntryDetailModule,
-            featureExploreModule,
-            featureHashtagModule,
-            featureImageDetailModule,
-            featureInboxModule,
-            featureLoginModule,
-            featureManageBlocksModule,
-            featureProfileModule,
-            featureSettingsModule,
-            featureUserDetailModule,
-            featureUserListModule,
-            featureDrawerModule,
-            featureFavoritesModule,
-            featureSearchModule,
-            featureThreadModule,
-        )
-    }
+fun initKoin(): Koin {
+    val koinApp =
+        startKoin {
+            modules(
+                sharedModule,
+                coreApiModule,
+                coreAppearanceModule,
+                coreCommonUiComponentsModule,
+                coreL10nModule,
+                corePersistenceModule,
+                corePreferencesModule,
+                coreNavigationModule,
+                coreResourceModule,
+                coreUtilsFileSystemModule,
+                coreUtilsGalleryModule,
+                coreUtilsModule,
+                coreUtilsShareModule,
+                coreUtilsUrlModule,
+                domainContentPaginationModule,
+                domainContentRepositoryModule,
+                domainIdentityRepositoryModule,
+                domainIdentityUseCaseModule,
+                featureComposerModule,
+                featureTimelineModule,
+                featureEntryDetailModule,
+                featureExploreModule,
+                featureHashtagModule,
+                featureImageDetailModule,
+                featureInboxModule,
+                featureLoginModule,
+                featureManageBlocksModule,
+                featureProfileModule,
+                featureSettingsModule,
+                featureUserDetailModule,
+                featureUserListModule,
+                featureDrawerModule,
+                featureFavoritesModule,
+                featureSearchModule,
+                featureThreadModule,
+            )
+        }
+    return koinApp.koin
 }

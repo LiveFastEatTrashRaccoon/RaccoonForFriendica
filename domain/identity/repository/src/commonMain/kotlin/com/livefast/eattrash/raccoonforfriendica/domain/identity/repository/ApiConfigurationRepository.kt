@@ -9,5 +9,5 @@ interface ApiConfigurationRepository {
 
     fun changeNode(value: String)
 
-    fun setAuth(credentials: Pair<String, String>? = null)
+    fun setAuth(credentials: ApiCredentials? = null)
 }

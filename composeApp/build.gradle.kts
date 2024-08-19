@@ -44,9 +44,10 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
-            implementation(libs.koin.core)
-            implementation(libs.lyricist)
             implementation(libs.coil)
+            implementation(libs.koin.core)
+            implementation(libs.ktor.client.core)
+            implementation(libs.lyricist)
 
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenmodel)

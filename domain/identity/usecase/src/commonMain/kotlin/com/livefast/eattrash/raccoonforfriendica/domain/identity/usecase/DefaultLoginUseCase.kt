@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountMod
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 
@@ -15,17 +16,14 @@ internal class DefaultLoginUseCase(
 ) : LoginUseCase {
     override suspend fun invoke(
         node: String,
-        user: String,
-        pass: String,
+        credentials: ApiCredentials,
     ) {
-        val isValid =
-            credentialsRepository.validate(node = node, user = user, pass = pass)
-        check(isValid) { "Invalid credentials" }
-
         apiConfigurationRepository.changeNode(node)
-        apiConfigurationRepository.setAuth(user to pass)
+        apiConfigurationRepository.setAuth(credentials)
+        val user = credentialsRepository.validate(node, credentials)
+        checkNotNull(user) { "Invalid credentials" }
 
-        val handle = "$user@$node".lowercase()
+        val handle = user.handle ?: user.username ?: ""
         val oldAccount = accountRepository.getBy(handle)
         if (oldAccount == null) {
             accountRepository.create(AccountModel(handle = handle))

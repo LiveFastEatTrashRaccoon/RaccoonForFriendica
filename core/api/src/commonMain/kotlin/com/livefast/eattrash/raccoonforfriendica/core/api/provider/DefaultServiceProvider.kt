@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.SearchService
@@ -16,7 +17,9 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
+import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.basic
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -34,6 +37,7 @@ internal class DefaultServiceProvider(
 
     private var currentNode: String = ""
 
+    override lateinit var apps: AppService
     override lateinit var photo: PhotoService
     override lateinit var notifications: NotificationService
     override lateinit var search: SearchService
@@ -52,20 +56,11 @@ internal class DefaultServiceProvider(
         }
     }
 
-    override fun setAuth(credentials: Pair<String, String>?) {
-        val basicAuthCredentials =
-            if (credentials == null) {
-                null
-            } else {
-                BasicAuthCredentials(
-                    username = credentials.first,
-                    password = credentials.second,
-                )
-            }
-        reinitialize(basicAuthCredentials)
+    override fun setAuth(credentials: ServiceCredentials?) {
+        reinitialize(credentials)
     }
 
-    private fun reinitialize(basicCredentials: BasicAuthCredentials?) {
+    private fun reinitialize(credentials: ServiceCredentials?) {
         val client =
             HttpClient(factory) {
                 defaultRequest {
@@ -79,10 +74,33 @@ internal class DefaultServiceProvider(
                     socketTimeoutMillis = 30_000
                 }
                 install(Auth) {
-                    basic {
-                        credentials { basicCredentials }
-                        realm = REAM_NAME
-                        sendWithoutRequest { true }
+                    when (credentials) {
+                        is ServiceCredentials.Basic -> {
+                            basic {
+                                credentials {
+                                    BasicAuthCredentials(
+                                        username = credentials.user,
+                                        password = credentials.pass,
+                                    )
+                                }
+                                realm = REAM_NAME
+                                sendWithoutRequest { true }
+                            }
+                        }
+
+                        is ServiceCredentials.OAuth2 -> {
+                            bearer {
+                                loadTokens {
+                                    BearerTokens(
+                                        accessToken = credentials.accessToken,
+                                        refreshToken = credentials.refreshToken,
+                                    )
+                                }
+                                sendWithoutRequest { true }
+                            }
+                        }
+
+                        else -> Unit
                     }
                 }
                 if (ENABLE_LOGGING) {
@@ -107,6 +125,7 @@ internal class DefaultServiceProvider(
                 .httpClient(client)
                 .converterFactories(ResponseConverterFactory())
                 .build()
+        apps = ktorfit.create()
         photo = ktorfit.create()
         notifications = ktorfit.create()
         search = ktorfit.create()

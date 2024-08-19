@@ -16,3 +16,5 @@ expect val coreUtilsFileSystemModule: Module
 expect val coreUtilsGalleryModule: Module
 
 expect val coreUtilsShareModule: Module
+
+expect val coreUtilsUrlModule: Module
