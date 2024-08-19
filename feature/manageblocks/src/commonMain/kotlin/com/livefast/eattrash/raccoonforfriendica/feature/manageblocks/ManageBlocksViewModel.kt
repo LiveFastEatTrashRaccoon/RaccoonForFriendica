@@ -37,6 +37,7 @@ class ManageBlocksViewModel(
             ManageBlocksMviModel.Intent.LoadNextPage -> screenModelScope.launch { loadNextPage() }
             ManageBlocksMviModel.Intent.Refresh -> screenModelScope.launch { refresh() }
             is ManageBlocksMviModel.Intent.ToggleMute -> unmute(intent.userId)
+            is ManageBlocksMviModel.Intent.ToggleBlock -> unblock(intent.userId)
         }
     }
 
@@ -82,6 +83,15 @@ class ManageBlocksViewModel(
     private fun unmute(userId: String) {
         screenModelScope.launch {
             val res = userRepository.unmute(userId)
+            if (res != null) {
+                removeUserFromState(userId)
+            }
+        }
+    }
+
+    private fun unblock(userId: String) {
+        screenModelScope.launch {
+            val res = userRepository.unblock(userId)
             if (res != null) {
                 removeUserFromState(userId)
             }

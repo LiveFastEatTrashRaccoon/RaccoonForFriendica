@@ -81,6 +81,7 @@ class ManageBlocksScreen : Screen {
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
         var confirmUnmuteUserId by remember { mutableStateOf<String?>(null) }
+        var confirmUnblockUserId by remember { mutableStateOf<String?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -212,13 +213,20 @@ class ManageBlocksScreen : Screen {
                             },
                             options =
                                 buildList {
-                                    if (uiState.section == ManageBlocksSection.Muted) {
-                                        this += OptionId.Unmute.toOption()
+                                    when (uiState.section) {
+                                        ManageBlocksSection.Muted -> {
+                                            this += OptionId.Unmute.toOption()
+                                        }
+
+                                        ManageBlocksSection.Blocked -> {
+                                            this += OptionId.Unblock.toOption()
+                                        }
                                     }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
                                     OptionId.Unmute -> confirmUnmuteUserId = item.id
+                                    OptionId.Unblock -> confirmUnblockUserId = item.id
                                     else -> Unit
                                 }
                             },
@@ -287,6 +295,45 @@ class ManageBlocksScreen : Screen {
                             confirmUnmuteUserId = null
                             if (userId.isNotEmpty()) {
                                 model.reduce(ManageBlocksMviModel.Intent.ToggleMute(userId))
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmUnblockUserId != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    confirmUnblockUserId = null
+                },
+                title = {
+                    Text(
+                        text = LocalStrings.current.actionUnblock,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmUnblockUserId = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val userId = confirmUnblockUserId ?: ""
+                            confirmUnblockUserId = null
+                            if (userId.isNotEmpty()) {
+                                model.reduce(ManageBlocksMviModel.Intent.ToggleBlock(userId))
                             }
                         },
                     ) {

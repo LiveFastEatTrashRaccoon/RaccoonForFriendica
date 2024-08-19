@@ -20,6 +20,10 @@ interface ManageBlocksMviModel :
         data class ToggleMute(
             val userId: String,
         ) : Intent
+
+        data class ToggleBlock(
+            val userId: String,
+        ) : Intent
     }
 
     data class State(
