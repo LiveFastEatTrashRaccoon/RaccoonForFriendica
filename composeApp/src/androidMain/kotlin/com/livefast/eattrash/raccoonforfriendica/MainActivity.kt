@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -9,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getAuthManager
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -72,6 +74,15 @@ class MainActivity : ComponentActivity() {
                     loadingFinished = true
                 },
             )
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val authManager = getAuthManager()
+        val uri = intent.data.toString()
+        lifecycleScope.launch {
+            authManager.performTokenExchange(uri)
         }
     }
 }
