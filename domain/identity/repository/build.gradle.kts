@@ -33,6 +33,7 @@ kotlin {
                 implementation(compose.runtime)
 
                 implementation(libs.koin.core)
+                implementation(libs.ktor.client.core)
 
                 implementation(projects.core.api)
                 implementation(projects.core.appearance)
