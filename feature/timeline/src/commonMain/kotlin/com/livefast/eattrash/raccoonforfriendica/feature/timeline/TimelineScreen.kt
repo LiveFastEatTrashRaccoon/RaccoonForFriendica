@@ -150,7 +150,7 @@ class TimelineScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            text = uiState.timelineType.toReadableName(),
+                            text = uiState.timelineType?.toReadableName().orEmpty(),
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },

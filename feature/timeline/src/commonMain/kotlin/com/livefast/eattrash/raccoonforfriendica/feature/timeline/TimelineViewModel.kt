@@ -44,9 +44,7 @@ class TimelineViewModel(
                                 }
                                 this += TimelineType.Local
                             },
-                        timelineType =
-                            settings?.defaultTimelineType?.toTimelineType()
-                                ?: TimelineType.Local,
+                        timelineType = settings?.defaultTimelineType?.toTimelineType(),
                         blurNsfw = settings?.blurNsfw ?: true,
                         currentUserId = currentUser?.id,
                     )
@@ -108,7 +106,7 @@ class TimelineViewModel(
         }
         paginationManager.reset(
             TimelinePaginationSpecification.Feed(
-                timelineType = uiState.value.timelineType,
+                timelineType = uiState.value.timelineType ?: TimelineType.Local,
                 includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
             ),
         )
