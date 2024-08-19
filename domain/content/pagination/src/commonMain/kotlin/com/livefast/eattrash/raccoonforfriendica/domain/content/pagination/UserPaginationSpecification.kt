@@ -20,4 +20,8 @@ sealed interface UserPaginationSpecification {
     data class Search(
         val query: String = "",
     ) : UserPaginationSpecification
+
+    data object Muted : UserPaginationSpecification
+
+    data object Blocked : UserPaginationSpecification
 }
