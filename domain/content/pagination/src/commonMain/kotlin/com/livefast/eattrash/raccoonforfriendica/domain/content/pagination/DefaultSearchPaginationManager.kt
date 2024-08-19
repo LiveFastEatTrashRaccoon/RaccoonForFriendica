@@ -25,34 +25,44 @@ internal class DefaultSearchPaginationManager(
         val results =
             when (specification) {
                 is SearchPaginationSpecification.Entries ->
-                    searchRepository.search(
-                        query = specification.query,
-                        pageCursor = pageCursor,
-                        type = SearchResultType.Entries,
-                    ).filterNsfw(specification.includeNsfw)
+                    searchRepository
+                        .search(
+                            query = specification.query,
+                            pageCursor = pageCursor,
+                            type = SearchResultType.Entries,
+                        ).apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }.filterNsfw(specification.includeNsfw)
 
                 is SearchPaginationSpecification.Hashtags ->
-                    searchRepository.search(
-                        query = specification.query,
-                        pageCursor = pageCursor,
-                        type = SearchResultType.Hashtags,
-                    )
+                    searchRepository
+                        .search(
+                            query = specification.query,
+                            pageCursor = pageCursor,
+                            type = SearchResultType.Hashtags,
+                        ).apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }
 
                 is SearchPaginationSpecification.Users ->
-                    searchRepository.search(
-                        query = specification.query,
-                        pageCursor = pageCursor,
-                        type = SearchResultType.Users,
-                    )
+                    searchRepository
+                        .search(
+                            query = specification.query,
+                            pageCursor = pageCursor,
+                            type = SearchResultType.Users,
+                        ).apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }
             }.deduplicate()
-
-        if (results.isNotEmpty()) {
-            pageCursor = results.last().id
-            canFetchMore = true
-        } else {
-            canFetchMore = false
-        }
-
         history.addAll(results)
 
         // return an object containing copies

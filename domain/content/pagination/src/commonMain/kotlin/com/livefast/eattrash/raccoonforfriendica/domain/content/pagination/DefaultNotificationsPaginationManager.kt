@@ -34,16 +34,13 @@ internal class DefaultNotificationsPaginationManager(
                             pageCursor = pageCursor,
                             types = specification.types,
                         ).determineRelationshipStatus()
-                        .filterNsfw(specification.includeNsfw)
+                        .apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }.filterNsfw(specification.includeNsfw)
             }.deduplicate()
-
-        if (results.isNotEmpty()) {
-            pageCursor = results.last().id
-            canFetchMore = true
-        } else {
-            canFetchMore = false
-        }
-
         history.addAll(results)
 
         // return a copy

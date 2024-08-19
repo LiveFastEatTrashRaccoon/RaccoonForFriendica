@@ -43,33 +43,41 @@ internal class DefaultTimelinePaginationManager(
                             timelineRepository.getLocal(
                                 pageCursor = pageCursor,
                             )
+                    }.apply {
+                        lastOrNull()?.also {
+                            pageCursor = it.id
+                        }
+                        canFetchMore = isNotEmpty()
                     }.filterNsfw(specification.includeNsfw)
                 }
 
                 is TimelinePaginationSpecification.Hashtag -> {
                     timelineRepository
                         .getHashtag(specification.hashtag)
-                        .filterNsfw(specification.includeNsfw)
+                        .apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }.filterNsfw(specification.includeNsfw)
                 }
 
                 is TimelinePaginationSpecification.User ->
-                    timelineEntryRepository.getByUser(
-                        userId = specification.userId,
-                        pageCursor = pageCursor,
-                        excludeReplies = specification.excludeReplies,
-                        excludeReblogs = specification.excludeReblogs,
-                        onlyMedia = specification.onlyMedia,
-                        pinned = specification.pinned,
-                    ).filterNsfw(specification.includeNsfw)
+                    timelineEntryRepository
+                        .getByUser(
+                            userId = specification.userId,
+                            pageCursor = pageCursor,
+                            excludeReplies = specification.excludeReplies,
+                            excludeReblogs = specification.excludeReblogs,
+                            onlyMedia = specification.onlyMedia,
+                            pinned = specification.pinned,
+                        ).apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }.filterNsfw(specification.includeNsfw)
             }.deduplicate()
-
-        if (results.isNotEmpty()) {
-            pageCursor = results.last().id
-            canFetchMore = true
-        } else {
-            canFetchMore = false
-        }
-
         history.addAll(results)
 
         // return a copy
