@@ -63,6 +63,11 @@ class ForumListViewModel(
                     userId = intent.userId,
                     entryId = intent.entryId,
             )
+            is ForumListMviModel.Intent.BlockUser ->
+                block(
+                    userId = intent.userId,
+                    entryId = intent.entryId,
+                )
         }
     }
 
@@ -249,6 +254,18 @@ class ForumListViewModel(
     ) {
         screenModelScope.launch {
             val res = userRepository.mute(userId)
+            if (res != null) {
+                removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun block(
+        userId: String,
+        entryId: String,
+    ) {
+        screenModelScope.launch {
+            val res = userRepository.block(userId)
             if (res != null) {
                 removeEntryFromState(entryId)
             }
