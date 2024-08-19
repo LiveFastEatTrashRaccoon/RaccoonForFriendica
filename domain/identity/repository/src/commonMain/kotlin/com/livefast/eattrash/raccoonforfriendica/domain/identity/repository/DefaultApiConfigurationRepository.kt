@@ -5,11 +5,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeySt
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
-private const val KEY_LAST_NODE = "lastInstance"
-private const val KEY_CRED_1 = "lastCred1"
-private const val KEY_CRED_2 = "lastCred2"
-private const val DEFAULT_NODE = "poliverso.org"
-
 internal class DefaultApiConfigurationRepository(
     private val serviceProvider: ServiceProvider,
     private val keyStore: TemporaryKeyStore,
@@ -21,9 +16,7 @@ internal class DefaultApiConfigurationRepository(
         val nodeName = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
         changeNode(nodeName)
 
-        val credentials =
-            (keyStore[KEY_CRED_1, ""] to keyStore[KEY_CRED_2, ""])
-                .takeIf { it.first.isNotEmpty() && it.second.isNotEmpty() }
+        val credentials = retrieveFromKeyStore()
         setAuth(credentials)
     }
 
@@ -33,17 +26,75 @@ internal class DefaultApiConfigurationRepository(
         keyStore.save(KEY_LAST_NODE, value)
     }
 
-    override fun setAuth(credentials: Pair<String, String>?) {
-        serviceProvider.setAuth(credentials)
+    override fun setAuth(credentials: ApiCredentials?) {
+        val serviceCredentials = credentials?.toServiceCredentials()
+        serviceProvider.setAuth(serviceCredentials)
 
         if (credentials != null) {
-            keyStore.save(KEY_CRED_1, credentials.first)
-            keyStore.save(KEY_CRED_2, credentials.second)
+            saveInKeyStore(credentials)
         } else {
-            keyStore.remove(KEY_CRED_1)
-            keyStore.remove(KEY_CRED_2)
+            clearKeyStore()
         }
 
         identityRepository.changeIsLogged(credentials != null)
+    }
+
+    private fun retrieveFromKeyStore(): ApiCredentials? {
+        val method = keyStore[KEY_METHOD, DEFAULT_METHOD]
+        return when (method) {
+            METHOD_BASIC -> {
+                val user = keyStore[KEY_CRED_1, ""]
+                val pass = keyStore[KEY_CRED_2, ""]
+                if (user.isNotEmpty() && pass.isNotEmpty()) {
+                    ApiCredentials.HttpBasic(user, pass)
+                } else {
+                    null
+                }
+            }
+
+            METHOD_OAUTH_2 -> {
+                val accessToken = keyStore[KEY_CRED_1, ""]
+                val refreshToken = keyStore[KEY_CRED_2, ""]
+                if (accessToken.isNotEmpty()) {
+                    ApiCredentials.OAuth2(accessToken, refreshToken)
+                } else {
+                    null
+                }
+            }
+
+            else -> null
+        }
+    }
+
+    private fun saveInKeyStore(credentials: ApiCredentials) {
+        when (credentials) {
+            is ApiCredentials.HttpBasic -> {
+                keyStore.save(KEY_CRED_1, credentials.user)
+                keyStore.save(KEY_CRED_2, credentials.pass)
+                keyStore.save(KEY_METHOD, METHOD_BASIC)
+            }
+
+            is ApiCredentials.OAuth2 -> {
+                keyStore.save(KEY_CRED_1, credentials.accessToken)
+                keyStore.save(KEY_CRED_2, credentials.refreshToken)
+                keyStore.save(KEY_METHOD, METHOD_OAUTH_2)
+            }
+        }
+    }
+
+    private fun clearKeyStore() {
+        keyStore.remove(KEY_CRED_1)
+        keyStore.remove(KEY_CRED_2)
+    }
+
+    companion object {
+        private const val KEY_LAST_NODE = "lastInstance"
+        private const val KEY_CRED_1 = "lastCred1"
+        private const val KEY_CRED_2 = "lastCred2"
+        private const val KEY_METHOD = "lastMethod"
+        private const val METHOD_BASIC = "HTTPBasic"
+        private const val METHOD_OAUTH_2 = "OAuth2"
+        private const val DEFAULT_NODE = "poliverso.org"
+        private const val DEFAULT_METHOD = METHOD_BASIC
     }
 }
