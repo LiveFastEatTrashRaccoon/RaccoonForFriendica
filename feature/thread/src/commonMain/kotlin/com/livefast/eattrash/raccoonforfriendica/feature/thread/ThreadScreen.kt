@@ -98,6 +98,7 @@ class ThreadScreen(
         val clipboardManager = LocalClipboardManager.current
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -182,133 +183,56 @@ class ThreadScreen(
         ) { padding ->
             val pullRefreshState =
                 rememberPullRefreshState(
-                        refreshing = uiState.refreshing,
-                        onRefresh = {
-                            model.reduce(ThreadMviModel.Intent.Refresh)
-                        },
-                    )
-                Box(
-                    modifier =
-                        Modifier
-                            .padding(padding)
-                            .nestedScroll(scrollBehavior.nestedScrollConnection)
-                            .nestedScroll(fabNestedScrollConnection)
-                            .pullRefresh(pullRefreshState),
+                    refreshing = uiState.refreshing,
+                    onRefresh = {
+                        model.reduce(ThreadMviModel.Intent.Refresh)
+                    },
+                )
+            Box(
+                modifier =
+                    Modifier
+                        .padding(padding)
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .nestedScroll(fabNestedScrollConnection)
+                        .pullRefresh(pullRefreshState),
+            ) {
+                LazyColumn(
+                    state = lazyListState,
                 ) {
-                    LazyColumn(
-                        state = lazyListState,
-                    ) {
-                        if (uiState.initial) {
-                            items(5) {
-                                TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = Spacing.s),
-                                )
-                            }
+                    if (uiState.initial) {
+                        items(5) {
+                            TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = Spacing.s),
+                            )
                         }
+                    }
 
-                        // original entry
-                        uiState.entry?.also { original ->
-                            item {
-                                TimelineItem(
-                                    modifier =
-                                        Modifier
-                                            .border(
-                                                width = 1.dp,
-                                                color = MaterialTheme.colorScheme.onBackground,
-                                                shape = RoundedCornerShape(CornerSize.l),
-                                            ).padding(
-                                                vertical = Spacing.s,
-                                                horizontal = Spacing.xxxs,
-                                            ),
-                                    entry = original,
-                                    reshareAndReplyVisible = false,
-                                    blurNsfw = uiState.blurNsfw,
-                                    onOpenUrl = { url ->
-                                        openUrl(url)
-                                    },
-                                    onOpenUser = {
-                                        detailOpener.openUserDetail(it.id)
-                                    },
-                                    onOpenImage = { imageUrl ->
-                                        detailOpener.openImageDetail(imageUrl)
-                                    },
-                                    onReblog = { e ->
-                                        model.reduce(ThreadMviModel.Intent.ToggleReblog(e))
-                                    },
-                                    onBookmark = { e ->
-                                        model.reduce(ThreadMviModel.Intent.ToggleBookmark(e))
-                                    },
-                                    onFavorite = { e ->
-                                        model.reduce(ThreadMviModel.Intent.ToggleFavorite(e))
-                                    },
-                                    onOpenUsersFavorite = { e ->
-                                        detailOpener.openEntryUsersFavorite(
-                                            entryId = e.id,
-                                            count = e.favoriteCount,
-                                        )
-                                    },
-                                    onOpenUsersReblog = { e ->
-                                        detailOpener.openEntryUsersReblog(
-                                            entryId = e.id,
-                                            count = e.reblogCount,
-                                        )
-                                    },
-                                    onReply = { e ->
-                                        detailOpener.openComposer(
-                                            inReplyToId = e.id,
-                                            inReplyToHandle = e.creator?.handle,
-                                            inReplyToUsername =
-                                                e.creator?.let {
-                                                    it.displayName ?: it.username
-                                                },
-                                        )
-                                    },
-                                    options =
-                                        buildList {
-                                            if (!uiState.entry?.url.isNullOrBlank()) {
-                                                this += OptionId.Share.toOption()
-                                                this += OptionId.CopyUrl.toOption()
-                                            }
-                                        },
-                                    onOptionSelected = { optionId ->
-                                        when (optionId) {
-                                            OptionId.Share -> {
-                                                val urlString = uiState.entry?.url.orEmpty()
-                                                shareHelper.share(urlString)
-                                            }
-
-                                            OptionId.CopyUrl -> {
-                                                val urlString = uiState.entry?.url.orEmpty()
-                                                clipboardManager.setText(AnnotatedString(urlString))
-                                                scope.launch {
-                                                    snackbarHostState.showSnackbar(copyToClipboardSuccess)
-                                                }
-                                            }
-
-                                            else -> Unit
-                                        }
-                                    },
-                                )
-                                Spacer(modifier = Modifier.height(Spacing.s))
-                            }
-                        }
-
-                        // replies
-                        items(
-                            items = uiState.replies,
-                            key = { it.safeKey },
-                        ) { entry ->
-                            TimelineReplyItem(
-                                entry = entry,
+                    // original entry
+                    uiState.entry?.also { original ->
+                        item {
+                            TimelineItem(
+                                modifier =
+                                    Modifier
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                            shape = RoundedCornerShape(CornerSize.l),
+                                        ).padding(
+                                            vertical = Spacing.s,
+                                            horizontal = Spacing.xxxs,
+                                        ),
+                                entry = original,
+                                reshareAndReplyVisible = false,
+                                blurNsfw = uiState.blurNsfw,
                                 onOpenUrl = { url ->
                                     openUrl(url)
                                 },
                                 onOpenUser = {
                                     detailOpener.openUserDetail(it.id)
                                 },
-                                onOpenImage = { url ->
-                                    detailOpener.openImageDetail(url)
+                                onOpenImage = { imageUrl ->
+                                    detailOpener.openImageDetail(imageUrl)
                                 },
                                 onReblog = { e ->
                                     model.reduce(ThreadMviModel.Intent.ToggleReblog(e))
@@ -318,6 +242,18 @@ class ThreadScreen(
                                 },
                                 onFavorite = { e ->
                                     model.reduce(ThreadMviModel.Intent.ToggleFavorite(e))
+                                },
+                                onOpenUsersFavorite = { e ->
+                                    detailOpener.openEntryUsersFavorite(
+                                        entryId = e.id,
+                                        count = e.favoriteCount,
+                                    )
+                                },
+                                onOpenUsersReblog = { e ->
+                                    detailOpener.openEntryUsersReblog(
+                                        entryId = e.id,
+                                        count = e.reblogCount,
+                                    )
                                 },
                                 onReply = { e ->
                                     detailOpener.openComposer(
@@ -329,6 +265,71 @@ class ThreadScreen(
                                             },
                                     )
                                 },
+                                options =
+                                    buildList {
+                                        if (!uiState.entry?.url.isNullOrBlank()) {
+                                            this += OptionId.Share.toOption()
+                                            this += OptionId.CopyUrl.toOption()
+                                        }
+                                    },
+                                onOptionSelected = { optionId ->
+                                    when (optionId) {
+                                        OptionId.Share -> {
+                                            val urlString = uiState.entry?.url.orEmpty()
+                                            shareHelper.share(urlString)
+                                        }
+
+                                        OptionId.CopyUrl -> {
+                                            val urlString = uiState.entry?.url.orEmpty()
+                                            clipboardManager.setText(AnnotatedString(urlString))
+                                            scope.launch {
+                                                snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                                            }
+                                        }
+
+                                        else -> Unit
+                                    }
+                                },
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.s))
+                        }
+                    }
+
+                    // replies
+                    items(
+                        items = uiState.replies,
+                        key = { it.safeKey },
+                    ) { entry ->
+                        TimelineReplyItem(
+                            entry = entry,
+                            onOpenUrl = { url ->
+                                openUrl(url)
+                            },
+                            onOpenUser = {
+                                detailOpener.openUserDetail(it.id)
+                            },
+                            onOpenImage = { url ->
+                                detailOpener.openImageDetail(url)
+                            },
+                            onReblog = { e ->
+                                model.reduce(ThreadMviModel.Intent.ToggleReblog(e))
+                            },
+                            onBookmark = { e ->
+                                model.reduce(ThreadMviModel.Intent.ToggleBookmark(e))
+                            },
+                            onFavorite = { e ->
+                                model.reduce(ThreadMviModel.Intent.ToggleFavorite(e))
+                            },
+                            onReply = { e ->
+                                detailOpener.openComposer(
+                                    inReplyToId = e.id,
+                                    inReplyToHandle = e.creator?.handle,
+                                    inReplyToUsername =
+                                        e.creator?.let {
+                                            it.displayName ?: it.username
+                                        },
+                                )
+                            },
                             options =
                                 buildList {
                                     if (!entry.url.isNullOrBlank()) {
@@ -340,24 +341,25 @@ class ThreadScreen(
                                         this += OptionId.Delete.toOption()
                                     } else if (uiState.currentUserId != null) {
                                         this += OptionId.Mute.toOption()
+                                        this += OptionId.Block.toOption()
                                     }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
                                     OptionId.Share -> {
-                                            val urlString = entry.url.orEmpty()
-                                            shareHelper.share(urlString)
-                                        }
+                                        val urlString = entry.url.orEmpty()
+                                        shareHelper.share(urlString)
+                                    }
 
-                                        OptionId.CopyUrl -> {
-                                            val urlString = entry.url.orEmpty()
-                                            clipboardManager.setText(AnnotatedString(urlString))
-                                            scope.launch {
-                                                snackbarHostState.showSnackbar(copyToClipboardSuccess)
-                                            }
+                                    OptionId.CopyUrl -> {
+                                        val urlString = entry.url.orEmpty()
+                                        clipboardManager.setText(AnnotatedString(urlString))
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(copyToClipboardSuccess)
                                         }
+                                    }
 
-                                        OptionId.Edit -> {
+                                    OptionId.Edit -> {
                                         detailOpener.openComposer(
                                             groupHandle = entry.creator?.handle,
                                             groupUsername = entry.creator?.username,
@@ -366,7 +368,8 @@ class ThreadScreen(
                                     }
 
                                     OptionId.Delete -> confirmDeleteEntryId = entry.id
-
+                                    OptionId.Mute -> confirmMuteEntry = entry
+                                    OptionId.Block -> confirmBlockEntry = entry
                                     else -> Unit
                                 }
                             },
@@ -374,52 +377,52 @@ class ThreadScreen(
 
                         // load more button
                         if (entry.loadMoreButtonVisible) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center,
-                                ) {
-                                    Button(
-                                        onClick = {
-                                            model.reduce(
-                                                ThreadMviModel.Intent.LoadMoreReplies(entry),
-                                            )
-                                        },
-                                    ) {
-                                        Text(
-                                            text =
-                                                buildString {
-                                                    append(LocalStrings.current.buttonLoadMoreReplies)
-                                                    entry.replyCount
-                                                        .takeIf { it > 0 }
-                                                        ?.also { count ->
-                                                            append(" (")
-                                                            append(count)
-                                                            append(")")
-                                                        }
-                                                },
-                                            style = MaterialTheme.typography.labelSmall,
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Button(
+                                    onClick = {
+                                        model.reduce(
+                                            ThreadMviModel.Intent.LoadMoreReplies(entry),
                                         )
-                                    }
+                                    },
+                                ) {
+                                    Text(
+                                        text =
+                                            buildString {
+                                                append(LocalStrings.current.buttonLoadMoreReplies)
+                                                entry.replyCount
+                                                    .takeIf { it > 0 }
+                                                    ?.also { count ->
+                                                        append(" (")
+                                                        append(count)
+                                                        append(")")
+                                                    }
+                                            },
+                                        style = MaterialTheme.typography.labelSmall,
+                                    )
                                 }
                             }
+                        }
 
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = Spacing.s),
-                            )
-                        }
-                        item {
-                            Spacer(modifier = Modifier.height(Spacing.xxxl))
-                        }
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = Spacing.s),
+                        )
                     }
-
-                    PullRefreshIndicator(
-                        refreshing = uiState.refreshing,
-                        state = pullRefreshState,
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        backgroundColor = MaterialTheme.colorScheme.background,
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                    )
+                    item {
+                        Spacer(modifier = Modifier.height(Spacing.xxxl))
+                    }
                 }
+
+                PullRefreshIndicator(
+                    refreshing = uiState.refreshing,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    backgroundColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                )
+            }
         }
 
         if (confirmDeleteEntryId != null) {
@@ -501,6 +504,59 @@ class ThreadScreen(
                             if (entryId != null && creatorId != null) {
                                 model.reduce(
                                     ThreadMviModel.Intent.MuteUser(
+                                        userId = creatorId,
+                                        entryId = entryId,
+                                    ),
+                                )
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmBlockEntry != null) {
+            val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
+            AlertDialog(
+                onDismissRequest = {
+                    confirmBlockEntry = null
+                },
+                title = {
+                    Text(
+                        text =
+                            buildString {
+                                append(LocalStrings.current.actionBlock)
+                                val handle = creator?.handle ?: ""
+                                if (handle.isNotEmpty()) {
+                                    append(" @$handle")
+                                }
+                            },
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmBlockEntry = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmBlockEntry?.id
+                            val creatorId = creator?.id
+                            confirmBlockEntry = null
+                            if (entryId != null && creatorId != null) {
+                                model.reduce(
+                                    ThreadMviModel.Intent.BlockUser(
                                         userId = creatorId,
                                         entryId = entryId,
                                     ),
