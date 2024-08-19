@@ -20,7 +20,7 @@ lot of common heritage.
 
 Here are some options to install the application on your device. The best way to install testing APKs
 is Obtainium, please insert this repository's URL as a source and make sure to check the
-"Include prerelease" option:
+"Include pre-releases" option (in order to receive all alpha and beta builds):
 
 ```
 https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
