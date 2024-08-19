@@ -33,6 +33,12 @@ internal class DefaultUserPaginationManager(
                             id = specification.userId,
                             pageCursor = pageCursor,
                         ).determineRelationshipStatus()
+                        .apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }
 
                 is UserPaginationSpecification.Following ->
                     userRepository
@@ -40,46 +46,77 @@ internal class DefaultUserPaginationManager(
                             id = specification.userId,
                             pageCursor = pageCursor,
                         ).determineRelationshipStatus()
+                        .apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }
 
                 is UserPaginationSpecification.EntryUsersFavorite ->
-                    timelineEntryRepository.getUsersWhoFavorited(
-                        id = specification.entryId,
-                        pageCursor = pageCursor,
-                    ).determineRelationshipStatus()
+                    timelineEntryRepository
+                        .getUsersWhoFavorited(
+                            id = specification.entryId,
+                            pageCursor = pageCursor,
+                        ).determineRelationshipStatus()
+                        .apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }
 
                 is UserPaginationSpecification.EntryUsersReblog ->
-                    timelineEntryRepository.getUsersWhoReblogged(
-                        id = specification.entryId,
-                        pageCursor = pageCursor,
-                    ).determineRelationshipStatus()
+                    timelineEntryRepository
+                        .getUsersWhoReblogged(
+                            id = specification.entryId,
+                            pageCursor = pageCursor,
+                        ).determineRelationshipStatus()
+                        .apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }
 
                 is UserPaginationSpecification.Search ->
-                    userRepository.search(
-                        query = specification.query,
-                        offset =
-                            history
-                                .indexOfLast { it.id == pageCursor }
-                                .takeIf { it >= 0 } ?: 0,
-                    ).determineRelationshipStatus()
+                    userRepository
+                        .search(
+                            query = specification.query,
+                            offset =
+                                history
+                                    .indexOfLast { it.id == pageCursor }
+                                    .takeIf { it >= 0 } ?: 0,
+                        ).determineRelationshipStatus()
+                        .apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }
 
                 UserPaginationSpecification.Blocked ->
-                    userRepository.getBlocked(
-                        pageCursor = pageCursor,
-                    )
+                    userRepository
+                        .getBlocked(
+                            pageCursor = pageCursor,
+                        ).apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }
 
                 UserPaginationSpecification.Muted ->
-                    userRepository.getMuted(
-                        pageCursor = pageCursor,
-                    )
+                    userRepository
+                        .getMuted(
+                            pageCursor = pageCursor,
+                        ).apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }
             }.deduplicate()
-
-        if (results.isNotEmpty()) {
-            pageCursor = results.last().id
-            canFetchMore = true
-        } else {
-            canFetchMore = false
-        }
-
         history.addAll(results)
 
         // return a copy

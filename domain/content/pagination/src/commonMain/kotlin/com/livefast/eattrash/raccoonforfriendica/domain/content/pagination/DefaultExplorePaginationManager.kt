@@ -52,15 +52,10 @@ internal class DefaultExplorePaginationManager(
                             ),
                         )
                     }
+            }.apply {
+                offset = size
+                canFetchMore = isNotEmpty()
             }.deduplicate()
-
-        if (results.isNotEmpty()) {
-            offset = results.size
-            canFetchMore = true
-        } else {
-            canFetchMore = false
-        }
-
         history.addAll(results)
 
         // return a copy

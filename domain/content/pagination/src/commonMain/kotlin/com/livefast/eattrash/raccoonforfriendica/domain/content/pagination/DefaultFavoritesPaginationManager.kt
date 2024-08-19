@@ -24,22 +24,24 @@ internal class DefaultFavoritesPaginationManager(
 
         val results =
             when (specification) {
-                is FavoritesPaginationSpecification.Bookmarks -> {
+                is FavoritesPaginationSpecification.Bookmarks ->
                     timelineEntryRepository.getBookmarks(pageCursor = pageCursor)
-                }
+                        .apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }.filterNsfw(specification.includeNsfw)
 
-                is FavoritesPaginationSpecification.Favorites -> {
+                is FavoritesPaginationSpecification.Favorites ->
                     timelineEntryRepository.getFavorites(pageCursor = pageCursor)
-                }
+                        .apply {
+                            lastOrNull()?.also {
+                                pageCursor = it.id
+                            }
+                            canFetchMore = isNotEmpty()
+                        }.filterNsfw(specification.includeNsfw)
             }.deduplicate()
-
-        if (results.isNotEmpty()) {
-            pageCursor = results.last().id
-            canFetchMore = true
-        } else {
-            canFetchMore = false
-        }
-
         history.addAll(results)
 
         // return a copy
