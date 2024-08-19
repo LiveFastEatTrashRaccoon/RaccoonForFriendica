@@ -111,6 +111,7 @@ class TimelineScreen : Screen {
         var timelineTypeSelectorOpen by remember { mutableStateOf(false) }
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -294,6 +295,7 @@ class TimelineScreen : Screen {
                                         this += OptionId.Delete.toOption()
                                     } else if (currentUserId != null) {
                                         this += OptionId.Mute.toOption()
+                                        this += OptionId.Block.toOption()
                                     }
                                 },
                             onOptionSelected = { optionId ->
@@ -324,6 +326,7 @@ class TimelineScreen : Screen {
 
                                     OptionId.Delete -> confirmDeleteEntryId = entry.id
                                     OptionId.Mute -> confirmMuteEntry = entry
+                                    OptionId.Block -> confirmBlockEntry = entry
                                     else -> Unit
                                 }
                             },
@@ -471,6 +474,59 @@ class TimelineScreen : Screen {
                             if (entryId != null && creatorId != null) {
                                 model.reduce(
                                     TimelineMviModel.Intent.MuteUser(
+                                        userId = creatorId,
+                                        entryId = entryId,
+                                    ),
+                                )
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmBlockEntry != null) {
+            val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
+            AlertDialog(
+                onDismissRequest = {
+                    confirmBlockEntry = null
+                },
+                title = {
+                    Text(
+                        text =
+                            buildString {
+                                append(LocalStrings.current.actionBlock)
+                                val handle = creator?.handle ?: ""
+                                if (handle.isNotEmpty()) {
+                                    append(" @$handle")
+                                }
+                            },
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmBlockEntry = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmBlockEntry?.id
+                            val creatorId = creator?.id
+                            confirmBlockEntry = null
+                            if (entryId != null && creatorId != null) {
+                                model.reduce(
+                                    TimelineMviModel.Intent.BlockUser(
                                         userId = creatorId,
                                         entryId = entryId,
                                     ),
