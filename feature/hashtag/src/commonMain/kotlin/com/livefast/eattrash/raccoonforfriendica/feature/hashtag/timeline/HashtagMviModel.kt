@@ -43,6 +43,10 @@ interface HashtagMviModel :
             val userId: String,
             val entryId: String,
         ) : Intent
+
+        data class TogglePin(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
