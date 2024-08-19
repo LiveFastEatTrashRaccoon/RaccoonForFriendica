@@ -100,6 +100,7 @@ class MyAccountViewModel(
             is MyAccountMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is MyAccountMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is MyAccountMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is MyAccountMviModel.Intent.TogglePin -> togglePin(intent.entry)
         }
     }
 
@@ -271,6 +272,28 @@ class MyAccountViewModel(
                 removeEntryFromState(entryId)
             } else {
                 emitEffect(MyAccountMviModel.Effect.Failure)
+            }
+        }
+    }
+
+    private fun togglePin(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val newEntry =
+                if (entry.pinned) {
+                    timelineEntryRepository.unpin(entry.id)
+                } else {
+                    timelineEntryRepository.pin(entry.id)
+                }
+            if (newEntry != null) {
+                if (uiState.value.section == UserSection.Pinned && !newEntry.pinned) {
+                    removeEntryFromState(entry.id)
+                } else {
+                    updateEntryInState(entry.id) {
+                        it.copy(
+                            pinned = newEntry.pinned,
+                        )
+                    }
+                }
             }
         }
     }
