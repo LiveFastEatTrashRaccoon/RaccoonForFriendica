@@ -10,8 +10,6 @@ interface DetailOpener {
 
     fun openSettings()
 
-    fun openLogin()
-
     fun openHashtag(tag: String)
 
     fun openFollowers(userId: String)
