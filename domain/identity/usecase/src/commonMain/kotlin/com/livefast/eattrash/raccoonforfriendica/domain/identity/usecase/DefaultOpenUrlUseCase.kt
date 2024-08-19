@@ -2,7 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import androidx.compose.ui.platform.UriHandler
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -16,11 +18,15 @@ internal class DefaultOpenUrlUseCase(
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val userRepository: UserRepository,
     private val detailOpener: DetailOpener,
+    private val customTabsHelper: CustomTabsHelper,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : OpenUrlUseCase {
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
-    override operator fun invoke(url: String) {
+    override operator fun invoke(
+        url: String,
+        mode: UrlOpeningMode,
+    ) {
         val currentNode = apiConfigurationRepository.node.value
         val tagPrefix = "https://$currentNode/search?tag="
         val profilePrefix = "https://$currentNode/profile/"
@@ -32,7 +38,6 @@ internal class DefaultOpenUrlUseCase(
             }
 
             url.startsWith(profilePrefix) -> {
-                val currentNode = apiConfigurationRepository.node.value
                 val handle =
                     buildString {
                         append(url.replace(profilePrefix, ""))
@@ -44,7 +49,7 @@ internal class DefaultOpenUrlUseCase(
                     if (userId != null) {
                         detailOpener.openUserDetail(userId.id)
                     } else {
-                        defaultHandler.openUri(url)
+                        openUrl(url = url, mode = mode)
                     }
                 }
             }
@@ -58,11 +63,23 @@ internal class DefaultOpenUrlUseCase(
                         if (userId != null) {
                             detailOpener.openUserDetail(userId.id)
                         } else {
-                            defaultHandler.openUri(url)
+                            openUrl(url = url, mode = mode)
                         }
                     }
                 }
             }
+
+            else -> openUrl(url = url, mode = mode)
+        }
+    }
+
+    private fun openUrl(
+        url: String,
+        mode: UrlOpeningMode,
+    ) {
+        when {
+            customTabsHelper.isSupported && mode == UrlOpeningMode.CustomTabs ->
+                customTabsHelper.handle(url)
 
             else -> defaultHandler.openUri(url)
         }

@@ -41,6 +41,7 @@ val domainIdentityUseCaseModule =
                 apiConfigurationRepository = get(),
                 detailOpener = get(),
                 userRepository = get(),
+                customTabsHelper = get(),
             )
         }
     }
