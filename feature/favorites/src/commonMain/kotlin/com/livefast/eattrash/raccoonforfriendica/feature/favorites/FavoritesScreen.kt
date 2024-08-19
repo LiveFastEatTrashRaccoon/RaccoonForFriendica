@@ -217,6 +217,13 @@ class FavoritesScreen(
                                     if (creatorId == currentUserId) {
                                         this += OptionId.Edit.toOption()
                                         this += OptionId.Delete.toOption()
+                                        if (entry.reblog == null) {
+                                            if (entry.pinned) {
+                                                this += OptionId.Unpin.toOption()
+                                            } else {
+                                                this += OptionId.Pin.toOption()
+                                            }
+                                        }
                                     } else if (currentUserId != null) {
                                         this += OptionId.Mute.toOption()
                                         this += OptionId.Block.toOption()
@@ -251,6 +258,10 @@ class FavoritesScreen(
                                     OptionId.Delete -> confirmDeleteEntryId = entry.id
                                     OptionId.Mute -> confirmMuteEntry = entry
                                     OptionId.Block -> confirmBlockEntry = entry
+                                    OptionId.Pin, OptionId.Unpin ->
+                                        model.reduce(
+                                            FavoritesMviModel.Intent.TogglePin(entry),
+                                        )
                                     else -> Unit
                                 }
                             },
