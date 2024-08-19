@@ -21,5 +21,5 @@ interface ServiceProvider {
 
     fun changeNode(value: String)
 
-    fun setAuth(credentials: Pair<String, String>? = null)
+    fun setAuth(credentials: ServiceCredentials? = null)
 }

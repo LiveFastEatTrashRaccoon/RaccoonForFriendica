@@ -16,7 +16,9 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
+import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.basic
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -52,20 +54,11 @@ internal class DefaultServiceProvider(
         }
     }
 
-    override fun setAuth(credentials: Pair<String, String>?) {
-        val basicAuthCredentials =
-            if (credentials == null) {
-                null
-            } else {
-                BasicAuthCredentials(
-                    username = credentials.first,
-                    password = credentials.second,
-                )
-            }
-        reinitialize(basicAuthCredentials)
+    override fun setAuth(credentials: ServiceCredentials?) {
+        reinitialize(credentials)
     }
 
-    private fun reinitialize(basicCredentials: BasicAuthCredentials?) {
+    private fun reinitialize(credentials: ServiceCredentials?) {
         val client =
             HttpClient(factory) {
                 defaultRequest {
@@ -79,10 +72,33 @@ internal class DefaultServiceProvider(
                     socketTimeoutMillis = 30_000
                 }
                 install(Auth) {
-                    basic {
-                        credentials { basicCredentials }
-                        realm = REAM_NAME
-                        sendWithoutRequest { true }
+                    when (credentials) {
+                        is ServiceCredentials.Basic -> {
+                            basic {
+                                credentials {
+                                    BasicAuthCredentials(
+                                        username = credentials.user,
+                                        password = credentials.pass,
+                                    )
+                                }
+                                realm = REAM_NAME
+                                sendWithoutRequest { true }
+                            }
+                        }
+
+                        is ServiceCredentials.OAuth2 -> {
+                            bearer {
+                                loadTokens {
+                                    BearerTokens(
+                                        accessToken = credentials.accessToken,
+                                        refreshToken = credentials.refreshToken,
+                                    )
+                                }
+                                sendWithoutRequest { true }
+                            }
+                        }
+
+                        else -> Unit
                     }
                 }
                 if (ENABLE_LOGGING) {
