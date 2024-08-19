@@ -40,7 +40,7 @@ internal class DefaultIdentityRepository(
             }
 
             try {
-                val user = provider.users.lookup(handle)
+                val user = provider.users.getById(handle)
                 currentUser.update {
                     UserModel(
                         id = user.id,

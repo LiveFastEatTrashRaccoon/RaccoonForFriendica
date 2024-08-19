@@ -37,11 +37,7 @@ class MyAccountViewModel(
                     val cachedUser = myAccountCache.retrieveUser()
                     val cachedPaginationState = myAccountCache.retrievePaginationState()
                     if (cachedUser?.handle != handle) {
-                        val currentAccount =
-                            userRepository
-                                .getByHandle(handle)
-                                // make sure the cache key is the same for subsequent restoration
-                                ?.copy(handle = handle)
+                        val currentAccount = userRepository.getByHandle(handle)
                         updateState { it.copy(user = currentAccount) }
                         refresh(initial = true)
                     } else {

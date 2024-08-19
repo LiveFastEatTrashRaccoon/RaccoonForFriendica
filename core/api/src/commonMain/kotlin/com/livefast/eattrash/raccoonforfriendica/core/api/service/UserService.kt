@@ -41,11 +41,6 @@ interface UserService {
         @Query("limit") limit: Int = 20,
     ): List<Status>
 
-    @GET("v1/accounts/lookup")
-    suspend fun lookup(
-        @Query("acct") acct: String,
-    ): Account
-
     @GET("v1/accounts/relationships")
     suspend fun getRelationships(
         @Query("id[]") id: List<String>,
