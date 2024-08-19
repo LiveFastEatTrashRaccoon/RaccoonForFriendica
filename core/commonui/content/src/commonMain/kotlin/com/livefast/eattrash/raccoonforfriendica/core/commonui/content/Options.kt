@@ -15,6 +15,10 @@ sealed interface OptionId {
     data object Mute : OptionId
 
     data object Unmute : OptionId
+
+    data object Block : OptionId
+
+    data object Unblock : OptionId
 }
 
 @Composable
@@ -26,6 +30,8 @@ private fun OptionId.toReadableName(): String =
         OptionId.CopyUrl -> LocalStrings.current.actionCopyUrl
         OptionId.Mute -> LocalStrings.current.actionMute
         OptionId.Unmute -> LocalStrings.current.actionUnmute
+        OptionId.Block -> LocalStrings.current.actionBlock
+        OptionId.Unblock -> LocalStrings.current.actionUnblock
     }
 
 @Composable
