@@ -175,4 +175,6 @@ internal val ItStrings =
         override val settingsItemBlockedAndMuted = "Gestione filtri"
         override val manageBlocksSectionMuted = "Silenziati"
         override val manageBlocksSectionBlocked = "Bloccati"
+        override val actionBlock = "Blocca"
+        override val actionUnblock = "Sblocca"
     }

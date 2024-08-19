@@ -170,4 +170,6 @@ internal open class DefaultStrings : Strings {
     override val settingsItemBlockedAndMuted = "Manage filters"
     override val manageBlocksSectionMuted = "Muted"
     override val manageBlocksSectionBlocked = "Blocked"
+    override val actionBlock = "Block"
+    override val actionUnblock = "Unblock"
 }

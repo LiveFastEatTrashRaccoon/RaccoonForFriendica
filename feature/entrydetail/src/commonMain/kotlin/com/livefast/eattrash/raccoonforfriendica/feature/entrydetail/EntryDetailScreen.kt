@@ -99,6 +99,7 @@ class EntryDetailScreen(
         val clipboardManager = LocalClipboardManager.current
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -293,6 +294,7 @@ class EntryDetailScreen(
                                         this += OptionId.Delete.toOption()
                                     } else if (creatorId != null) {
                                         this += OptionId.Mute.toOption()
+                                        this += OptionId.Block.toOption()
                                     }
                                 },
                             onOptionSelected = { optionId ->
@@ -323,6 +325,7 @@ class EntryDetailScreen(
 
                                     OptionId.Delete -> confirmDeleteEntryId = entry.id
                                     OptionId.Mute -> confirmMuteEntry = entry
+                                    OptionId.Block -> confirmBlockEntry = entry
                                     else -> Unit
                                 }
                             },
@@ -425,6 +428,59 @@ class EntryDetailScreen(
                             if (entryId != null && creatorId != null) {
                                 model.reduce(
                                     EntryDetailMviModel.Intent.MuteUser(
+                                        userId = creatorId,
+                                        entryId = entryId,
+                                    ),
+                                )
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (confirmBlockEntry != null) {
+            val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
+            AlertDialog(
+                onDismissRequest = {
+                    confirmBlockEntry = null
+                },
+                title = {
+                    Text(
+                        text =
+                            buildString {
+                                append(LocalStrings.current.actionBlock)
+                                val handle = creator?.handle ?: ""
+                                if (handle.isNotEmpty()) {
+                                    append(" @$handle")
+                                }
+                            },
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                text = {
+                    Text(text = LocalStrings.current.messageAreYouSure)
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            confirmBlockEntry = null
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val entryId = confirmBlockEntry?.id
+                            val creatorId = creator?.id
+                            confirmBlockEntry = null
+                            if (entryId != null && creatorId != null) {
+                                model.reduce(
+                                    EntryDetailMviModel.Intent.BlockUser(
                                         userId = creatorId,
                                         entryId = entryId,
                                     ),

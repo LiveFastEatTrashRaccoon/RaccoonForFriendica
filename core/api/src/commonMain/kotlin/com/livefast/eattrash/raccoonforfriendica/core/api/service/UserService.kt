@@ -125,6 +125,17 @@ interface UserService {
         @Path("id") id: String,
     ): Relationship
 
+    @POST("v1/accounts/{id}/block")
+    @Headers("Content-Type: application/json")
+    suspend fun block(
+        @Path("id") id: String,
+    ): Relationship
+
+    @POST("v1/accounts/{id}/unblock")
+    suspend fun unblock(
+        @Path("id") id: String,
+    ): Relationship
+
     @GET("v1/mutes")
     suspend fun getMuted(
         @Query("max_id") maxId: String? = null,

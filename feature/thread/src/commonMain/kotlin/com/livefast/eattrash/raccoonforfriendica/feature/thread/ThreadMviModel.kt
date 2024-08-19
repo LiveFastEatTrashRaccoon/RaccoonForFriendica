@@ -36,6 +36,11 @@ interface ThreadMviModel :
             val userId: String,
             val entryId: String,
         ) : Intent
+
+        data class BlockUser(
+            val userId: String,
+            val entryId: String,
+        ) : Intent
     }
 
     data class State(

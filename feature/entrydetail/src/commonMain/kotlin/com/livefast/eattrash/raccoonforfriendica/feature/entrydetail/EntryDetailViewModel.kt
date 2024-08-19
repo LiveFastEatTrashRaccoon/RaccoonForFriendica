@@ -56,6 +56,11 @@ class EntryDetailViewModel(
                     entryId = intent.entryId,
                     userId = intent.entryId,
             )
+            is EntryDetailMviModel.Intent.BlockUser ->
+                block(
+                    entryId = intent.entryId,
+                    userId = intent.entryId,
+                )
         }
     }
 
@@ -236,6 +241,18 @@ class EntryDetailViewModel(
     ) {
         screenModelScope.launch {
             val res = userRepository.mute(userId)
+            if (res != null) {
+                removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun block(
+        userId: String,
+        entryId: String,
+    ) {
+        screenModelScope.launch {
+            val res = userRepository.block(userId)
             if (res != null) {
                 removeEntryFromState(entryId)
             }

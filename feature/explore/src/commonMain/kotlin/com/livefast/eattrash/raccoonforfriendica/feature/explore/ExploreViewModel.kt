@@ -93,6 +93,11 @@ class ExploreViewModel(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
+            is ExploreMviModel.Intent.BlockUser ->
+                block(
+                    userId = intent.userId,
+                    entryId = intent.entryId,
+                )
         }
     }
 
@@ -371,6 +376,18 @@ class ExploreViewModel(
     ) {
         screenModelScope.launch {
             val res = userRepository.mute(userId)
+            if (res != null) {
+                removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun block(
+        userId: String,
+        entryId: String,
+    ) {
+        screenModelScope.launch {
+            val res = userRepository.unblock(userId)
             if (res != null) {
                 removeEntryFromState(entryId)
             }
