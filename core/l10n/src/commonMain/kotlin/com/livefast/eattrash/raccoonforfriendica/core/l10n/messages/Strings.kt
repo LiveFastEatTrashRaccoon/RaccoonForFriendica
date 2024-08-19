@@ -160,6 +160,8 @@ interface Strings {
     val settingsItemBlockedAndMuted: String
     val manageBlocksSectionMuted: String
     val manageBlocksSectionBlocked: String
+    val actionBlock: String
+    val actionUnblock: String
 }
 
 object Locales {
