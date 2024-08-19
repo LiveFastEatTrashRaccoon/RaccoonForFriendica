@@ -98,6 +98,9 @@ interface Strings {
     val exploreSectionHashtags: String
     val exploreSectionLinks: String
     val exploreSectionSuggestions: String
+    val messageLoginOAuth: String
+    val or: String
+    val messageLoginLegacy: String
 
     fun hashtagPeopleUsing(count: Int): String
 

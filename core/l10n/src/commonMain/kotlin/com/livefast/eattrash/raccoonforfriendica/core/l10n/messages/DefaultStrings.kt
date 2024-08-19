@@ -72,7 +72,7 @@ internal open class DefaultStrings : Strings {
     override val themeColorPink = "Unique Unicorn"
     override val themeColorGray = "Ravenous Raccoon"
     override val themeColorWhite = "Boisterous bear"
-    override val messageUserUnlogged = "You need to be logged in in order to access this section 🪵"
+    override val messageUserUnlogged = "You need to be logged in to access this section 🪵"
     override val loginTitle = "Login"
     override val fieldNodeName = "Instance name"
     override val fieldUsername = "Username"
@@ -172,4 +172,7 @@ internal open class DefaultStrings : Strings {
     override val manageBlocksSectionBlocked = "Blocked"
     override val actionBlock = "Block"
     override val actionUnblock = "Unblock"
+    override val messageLoginOAuth = "Login with OAuth2 (recommended)"
+    override val or = "or"
+    override val messageLoginLegacy = "Login with username and password (legacy)"
 }
