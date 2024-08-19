@@ -165,6 +165,8 @@ interface Strings {
     val manageBlocksSectionBlocked: String
     val actionBlock: String
     val actionUnblock: String
+    val actionPin: String
+    val actionUnpin: String
 }
 
 object Locales {
