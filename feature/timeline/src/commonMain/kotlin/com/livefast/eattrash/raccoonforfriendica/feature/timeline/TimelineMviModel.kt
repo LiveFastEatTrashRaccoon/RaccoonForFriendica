@@ -52,7 +52,7 @@ interface TimelineMviModel :
         val loading: Boolean = false,
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
-        val timelineType: TimelineType = TimelineType.Local,
+        val timelineType: TimelineType? = null,
         val availableTimelineTypes: List<TimelineType> = emptyList(),
         val entries: List<TimelineEntryModel> = emptyList(),
         val blurNsfw: Boolean = true,
