@@ -96,11 +96,15 @@ internal class DefaultUserRepository(
     override suspend fun follow(
         id: String,
         reblogs: Boolean,
-        notify: Boolean,
+        notifications: Boolean,
     ): RelationshipModel? =
         runCatching {
             withContext(Dispatchers.IO) {
-                val data = FollowUserForm(reblogs = reblogs, notify = notify)
+                val data =
+                    FollowUserForm(
+                        reblogs = reblogs,
+                        notify = notifications,
+                    )
                 provider.users
                     .follow(
                         id = id,
@@ -165,6 +169,20 @@ internal class DefaultUserRepository(
         runCatching {
             withContext(Dispatchers.IO) {
                 provider.users.unmute(id).toModel()
+            }
+        }.getOrNull()
+
+    override suspend fun block(id: String): RelationshipModel? =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users.block(id).toModel()
+            }
+        }.getOrNull()
+
+    override suspend fun unblock(id: String): RelationshipModel? =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users.unblock(id).toModel()
             }
         }.getOrNull()
 

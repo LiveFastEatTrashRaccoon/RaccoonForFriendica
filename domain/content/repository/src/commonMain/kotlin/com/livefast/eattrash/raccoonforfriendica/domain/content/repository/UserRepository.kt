@@ -48,6 +48,10 @@ interface UserRepository {
 
     suspend fun unmute(id: String): RelationshipModel?
 
+    suspend fun block(id: String): RelationshipModel?
+
+    suspend fun unblock(id: String): RelationshipModel?
+
     suspend fun getMuted(pageCursor: String? = null): List<UserModel>
 
     suspend fun getBlocked(pageCursor: String? = null): List<UserModel>
