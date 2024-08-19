@@ -98,6 +98,7 @@ class ExploreViewModel(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
+            is ExploreMviModel.Intent.TogglePin -> togglePin(intent.entry)
         }
     }
 
@@ -390,6 +391,24 @@ class ExploreViewModel(
             val res = userRepository.unblock(userId)
             if (res != null) {
                 removeEntryFromState(entryId)
+            }
+        }
+    }
+
+    private fun togglePin(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val newEntry =
+                if (entry.pinned) {
+                    timelineEntryRepository.unpin(entry.id)
+                } else {
+                    timelineEntryRepository.pin(entry.id)
+                }
+            if (newEntry != null) {
+                updateEntryInState(entry.id) {
+                    it.copy(
+                        pinned = newEntry.pinned,
+                    )
+                }
             }
         }
     }
