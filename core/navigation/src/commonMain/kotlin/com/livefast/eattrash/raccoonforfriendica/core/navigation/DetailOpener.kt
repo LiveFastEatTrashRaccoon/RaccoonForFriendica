@@ -50,4 +50,8 @@ interface DetailOpener {
     fun openImageDetail(url: String)
 
     fun openBlockedAndMuted()
+
+    fun openCircles()
+
+    fun openCircle(groupId: String)
 }
