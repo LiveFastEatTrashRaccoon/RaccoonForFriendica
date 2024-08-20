@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 interface ApiConfigurationRepository {
     val node: StateFlow<String>
 
+    suspend fun initialize()
+
     fun changeNode(value: String)
 
     fun setAuth(credentials: ApiCredentials? = null)

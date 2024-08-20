@@ -9,15 +9,24 @@ internal class DefaultApiConfigurationRepository(
     private val serviceProvider: ServiceProvider,
     private val keyStore: TemporaryKeyStore,
     private val identityRepository: MutableIdentityRepository,
+    private val credentialsRepository: CredentialsRepository,
 ) : ApiConfigurationRepository {
     override val node = MutableStateFlow("")
 
-    init {
+    override suspend fun initialize() {
         val nodeName = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
         changeNode(nodeName)
 
         val credentials = retrieveFromKeyStore()
-        setAuth(credentials)
+        val isValid =
+            credentials != null &&
+                credentialsRepository.validateApplicationCredentials(
+                    node = nodeName,
+                    credentials = credentials,
+                )
+        if (isValid) {
+            setAuth(credentials)
+        }
     }
 
     override fun changeNode(value: String) {

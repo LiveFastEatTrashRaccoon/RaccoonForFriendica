@@ -19,6 +19,11 @@ interface CredentialsRepository {
         scopes: String,
     ): ClientApplicationModel?
 
+    suspend fun validateApplicationCredentials(
+        node: String,
+        credentials: ApiCredentials,
+    ): Boolean
+
     suspend fun exchangeToken(
         node: String,
         path: String,
