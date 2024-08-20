@@ -54,7 +54,7 @@ internal fun ReblogInfo(
         )
         Text(
             text = LocalStrings.current.timelineEntryRebloggedBy,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = fullColor,
         )
         if (creatorAvatar.isNotEmpty()) {
@@ -84,7 +84,7 @@ internal fun ReblogInfo(
         Text(
             modifier = Modifier.weight(1f),
             text = creatorName,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = fullColor,
         )
     }

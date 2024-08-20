@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -179,7 +178,6 @@ class ComposerScreen(
                 ) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                     ) {
                         if (!inReplyToUsername.isNullOrBlank()) {
                             InReplyToInfo(

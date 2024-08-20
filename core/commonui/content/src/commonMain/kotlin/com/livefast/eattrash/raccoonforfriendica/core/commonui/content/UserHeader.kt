@@ -121,12 +121,12 @@ fun UserHeader(
                                     append(" ")
                                     append(LocalStrings.current.accountFollower(followers))
                                 },
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.labelMedium,
                             color = ancillaryColor,
                         )
                         Text(
                             text = " • ",
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.labelMedium,
                             color = ancillaryColor,
                         )
                         Text(
@@ -137,7 +137,7 @@ fun UserHeader(
                                     append(" ")
                                     append(LocalStrings.current.accountFollowing(following))
                                 },
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.labelMedium,
                             color = ancillaryColor,
                         )
                     }
@@ -182,7 +182,7 @@ fun UserHeader(
                     )
                     Text(
                         text = user?.handle ?: user?.username ?: "",
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleMedium,
                         color = ancillaryColor,
                     )
                 }

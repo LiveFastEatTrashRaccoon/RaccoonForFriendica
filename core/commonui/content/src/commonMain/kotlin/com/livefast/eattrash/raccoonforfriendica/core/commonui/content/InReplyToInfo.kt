@@ -51,7 +51,7 @@ internal fun InReplyToInfo(
         )
         Text(
             text = LocalStrings.current.timelineEntryInReplyTo,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = ancillaryColor,
         )
         if (creatorAvatar.isNotEmpty()) {
@@ -85,7 +85,7 @@ internal fun InReplyToInfo(
         Text(
             modifier = Modifier.weight(1f),
             text = creatorName,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = fullColor,
         )
     }

@@ -92,7 +92,6 @@ fun NotificationUserInfo(
 
         Column(
             modifier = Modifier.padding(horizontal = Spacing.m),
-            verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             Row {
                 Column(
@@ -105,7 +104,7 @@ fun NotificationUserInfo(
                     )
                     Text(
                         text = user.handle ?: user.username ?: "",
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleMedium,
                         color = ancillaryColor,
                     )
                 }
@@ -135,7 +134,7 @@ fun NotificationUserInfo(
                 }
             Text(
                 text = annotatedContent,
-                style = MaterialTheme.typography.labelSmall.copy(color = ancillaryColor),
+                style = MaterialTheme.typography.labelMedium.copy(color = ancillaryColor),
             )
 
             user.bio?.takeIf { it.isNotEmpty() }?.let { bio ->

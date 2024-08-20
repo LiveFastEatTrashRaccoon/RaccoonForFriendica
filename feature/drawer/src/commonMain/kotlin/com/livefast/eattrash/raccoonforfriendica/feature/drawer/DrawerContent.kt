@@ -59,7 +59,7 @@ class DrawerContent : Screen {
                 Text(
                     modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.s),
                     text = LocalStrings.current.sidebarAnonymousMessage,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             } else {
                 DrawerShortcut(

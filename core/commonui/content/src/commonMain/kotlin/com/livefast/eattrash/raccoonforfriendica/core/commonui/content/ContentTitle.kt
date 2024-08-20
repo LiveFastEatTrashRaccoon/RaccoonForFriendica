@@ -21,7 +21,7 @@ fun ContentTitle(
                 linkColor = MaterialTheme.colorScheme.primary,
             )
         ClickableText(
-            style = MaterialTheme.typography.titleSmall.copy(color = fullColor),
+            style = MaterialTheme.typography.titleMedium.copy(color = fullColor),
             text = annotatedContent,
             onClick = { offset ->
                 val url =

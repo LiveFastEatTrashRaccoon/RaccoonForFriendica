@@ -83,7 +83,7 @@ internal fun NotificationItem(
                 text = notification.type.toReadableName(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = ancillaryColor,
             )
             Spacer(modifier = Modifier.weight(1f))

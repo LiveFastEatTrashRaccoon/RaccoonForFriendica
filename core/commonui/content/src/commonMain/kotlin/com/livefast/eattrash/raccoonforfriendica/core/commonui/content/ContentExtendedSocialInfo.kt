@@ -55,13 +55,13 @@ fun ContentExtendedSocialInfo(
                         append(" ")
                         append(LocalStrings.current.extendedSocialInfoReblogs(reblogCount))
                     },
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelMedium,
                 color = ancillaryColor,
             )
         }
         Text(
             text = " • ",
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.labelMedium,
             color = ancillaryColor,
         )
         Row(
@@ -87,7 +87,7 @@ fun ContentExtendedSocialInfo(
                         append(" ")
                         append(LocalStrings.current.extendedSocialInfoFavorites(favoriteCount))
                     },
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelMedium,
                 color = ancillaryColor,
             )
         }

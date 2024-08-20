@@ -83,7 +83,6 @@ fun UserItem(
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             Text(
                 text = user.displayName ?: user.username ?: "",
@@ -92,7 +91,7 @@ fun UserItem(
             )
             Text(
                 text = user.handle ?: user.username ?: "",
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.titleMedium,
                 color = ancillaryColor,
             )
         }
