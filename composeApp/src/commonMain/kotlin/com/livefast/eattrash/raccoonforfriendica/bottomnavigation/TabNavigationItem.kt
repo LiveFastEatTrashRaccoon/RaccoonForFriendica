@@ -2,19 +2,26 @@ package com.livefast.eattrash.raccoonforfriendica.bottomnavigation
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Inbox
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 
@@ -33,10 +40,26 @@ internal fun RowScope.BottomNavigationItem(
         selected = selected,
         interactionSource = interactionSource,
         icon = {
-            Icon(
-                imageVector = section.toIcon(),
-                contentDescription = null,
-            )
+            BadgedBox(
+                badge = {
+                    val unreadCount = (section as? BottomNavigationSection.Inbox)?.unreadItems ?: 0
+                    if (unreadCount > 0) {
+                        Badge(
+                            modifier = Modifier.align(Alignment.TopEnd).offset(x = (-5).dp),
+                        ) {
+                            Text(
+                                text = if (unreadCount <= 10) "$unreadCount" else "10+",
+                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp),
+                            )
+                        }
+                    }
+                },
+            ) {
+                Icon(
+                    imageVector = section.toIcon(),
+                    contentDescription = null,
+                )
+            }
         },
         label = {
             Text(
@@ -53,7 +76,7 @@ private fun BottomNavigationSection.toIcon(): ImageVector =
     when (this) {
         BottomNavigationSection.Explore -> Icons.Default.Explore
         BottomNavigationSection.Home -> Icons.Default.Home
-        BottomNavigationSection.Inbox -> Icons.Default.Inbox
+        is BottomNavigationSection.Inbox -> Icons.Default.Inbox
         BottomNavigationSection.Profile -> Icons.Default.AccountCircle
     }
 
@@ -62,6 +85,6 @@ private fun BottomNavigationSection.toReadableName(): String =
     when (this) {
         BottomNavigationSection.Explore -> LocalStrings.current.sectionTitleExplore
         BottomNavigationSection.Home -> LocalStrings.current.sectionTitleHome
-        BottomNavigationSection.Inbox -> LocalStrings.current.sectionTitleInbox
+        is BottomNavigationSection.Inbox -> LocalStrings.current.sectionTitleInbox
         BottomNavigationSection.Profile -> LocalStrings.current.sectionTitleProfile
     }
