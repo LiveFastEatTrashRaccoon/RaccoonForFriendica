@@ -33,7 +33,7 @@ fun PlaceholderImage(
                 ),
         contentAlignment = Alignment.Center,
     ) {
-        val translationAmount = with(LocalDensity.current) { 2.dp.toPx() }
+        val translationAmount = with(LocalDensity.current) { 1.dp.toPx() }
         Text(
             modifier =
                 Modifier.graphicsLayer {
