@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.CircleService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.SearchService
@@ -38,6 +39,7 @@ internal class DefaultServiceProvider(
     private var currentNode: String = ""
 
     override lateinit var apps: AppService
+    override lateinit var circles: CircleService
     override lateinit var photo: PhotoService
     override lateinit var notifications: NotificationService
     override lateinit var search: SearchService
@@ -126,6 +128,7 @@ internal class DefaultServiceProvider(
                 .converterFactories(ResponseConverterFactory())
                 .build()
         apps = ktorfit.create()
+        circles = ktorfit.create()
         photo = ktorfit.create()
         notifications = ktorfit.create()
         search = ktorfit.create()
