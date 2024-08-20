@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
@@ -53,6 +54,35 @@ import org.koin.core.parameter.parametersOf
 class UserListScreen(
     private val type: UserListType,
 ) : Screen {
+    override val key: ScreenKey
+        get() =
+            super.key +
+                when (type) {
+                    is UserListType.Follower ->
+                        buildString {
+                            append("follower-")
+                            append(type.userId)
+                        }
+
+                    is UserListType.Following ->
+                        buildString {
+                            append("following-")
+                            append(type.userId)
+                        }
+
+                    is UserListType.UsersFavorite ->
+                        buildString {
+                            append("favorites-")
+                            append(type.entryId)
+                        }
+
+                    is UserListType.UsersReblog ->
+                        buildString {
+                            append("reblogs-")
+                            append(type.entryId)
+                        }
+                }
+
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
