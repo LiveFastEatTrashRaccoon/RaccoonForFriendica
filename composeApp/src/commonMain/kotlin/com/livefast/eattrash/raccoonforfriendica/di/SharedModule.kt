@@ -11,7 +11,10 @@ import org.koin.dsl.module
 internal val sharedModule =
     module {
         factory<MainMviModel> {
-            MainViewModel()
+            MainViewModel(
+                identityRepository = get(),
+                inboxManager = get(),
+            )
         }
         single<DetailOpener> {
             DefaultDetailOpener(

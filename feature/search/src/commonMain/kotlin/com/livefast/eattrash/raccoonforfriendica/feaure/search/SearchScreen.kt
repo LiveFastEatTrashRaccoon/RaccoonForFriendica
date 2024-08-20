@@ -178,6 +178,7 @@ class SearchScreen : Screen {
                 modifier =
                     Modifier
                         .padding(padding)
+                        .fillMaxWidth()
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .pullRefresh(pullRefreshState),
             ) {
