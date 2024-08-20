@@ -23,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.ProvideStrin
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
@@ -40,6 +41,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
     val setupAccountUseCase = remember { getSetupAccountUseCase() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val drawerCoordinator = remember { getDrawerCoordinator() }
+    val apiConfigurationRepository = remember { getApiConfigurationRepository() }
     val drawerGesturesEnabled by drawerCoordinator.gesturesEnabled.collectAsState()
 
     LaunchedEffect(settingsRepository) {
@@ -61,6 +63,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                 }
             }.launchIn(this)
 
+        apiConfigurationRepository.initialize()
         setupAccountUseCase()
     }
 
