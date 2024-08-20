@@ -74,6 +74,7 @@ kotlin {
             implementation(projects.domain.identity.repository)
             implementation(projects.domain.identity.usecase)
 
+            implementation(projects.feature.circles)
             implementation(projects.feature.composer)
             implementation(projects.feature.drawer)
             implementation(projects.feature.entrydetail)

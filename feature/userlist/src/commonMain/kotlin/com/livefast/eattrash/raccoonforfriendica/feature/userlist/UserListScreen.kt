@@ -164,8 +164,8 @@ class UserListScreen(
                     },
                 )
             },
-            content = { padding ->
-                val pullRefreshState =
+        ) { padding ->
+            val pullRefreshState =
                     rememberPullRefreshState(
                         refreshing = uiState.refreshing,
                         onRefresh = {
@@ -240,8 +240,7 @@ class UserListScreen(
                         contentColor = MaterialTheme.colorScheme.onBackground,
                     )
                 }
-            },
-        )
+        }
 
         if (confirmUnfollowDialogUserId != null) {
             AlertDialog(

@@ -7,6 +7,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoord
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.detail.CircleDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
@@ -144,6 +146,16 @@ class DefaultDetailOpener(
 
     override fun openBlockedAndMuted() {
         val screen = ManageBlocksScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openCircles() {
+        val screen = CirclesScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openCircle(groupId: String) {
+        val screen = CircleDetailScreen(groupId)
         navigationCoordinator.push(screen)
     }
 }

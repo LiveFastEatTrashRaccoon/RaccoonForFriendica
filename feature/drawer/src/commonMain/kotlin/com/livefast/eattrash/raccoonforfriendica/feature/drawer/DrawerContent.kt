@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material.icons.filled.Workspaces
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -83,7 +84,17 @@ class DrawerContent : Screen {
                         handleOpen { detailOpener.openFollowedHashtags() }
                     },
                 )
+
+                DrawerShortcut(
+                    title = LocalStrings.current.manageCirclesTitle,
+                    icon = Icons.Default.Workspaces,
+                    onSelected = {
+                        handleOpen { detailOpener.openCircles() }
+                    },
+                )
             }
+
+            HorizontalDivider()
 
             DrawerShortcut(
                 title = LocalStrings.current.settingsTitle,

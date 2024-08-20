@@ -189,4 +189,5 @@ internal val ItStrings =
         override val settingsAboutViewGithub = "Vedi su GitHub"
         override val settingsAboutReportIssue = "Apri una segnalazione"
         override val settingsAboutViewFriendica = "Vedi su Friendica"
+        override val manageCirclesTitle = "Cerchie"
     }

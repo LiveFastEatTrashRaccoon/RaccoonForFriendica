@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.CircleService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.SearchService
@@ -12,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 
 interface ServiceProvider {
     val apps: AppService
+    val circles: CircleService
     val photo: PhotoService
     val notifications: NotificationService
     val search: SearchService
