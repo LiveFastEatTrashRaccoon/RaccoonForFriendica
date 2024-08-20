@@ -18,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.do
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.domainContentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.domainIdentityRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.domainIdentityUseCaseModule
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.featureCirclesModule
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.featureComposerModule
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.di.featureDrawerModule
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.featureEntryDetailModule
@@ -60,6 +61,7 @@ fun initKoin(): Koin {
                 domainContentRepositoryModule,
                 domainIdentityRepositoryModule,
                 domainIdentityUseCaseModule,
+                featureCirclesModule,
                 featureComposerModule,
                 featureTimelineModule,
                 featureEntryDetailModule,
