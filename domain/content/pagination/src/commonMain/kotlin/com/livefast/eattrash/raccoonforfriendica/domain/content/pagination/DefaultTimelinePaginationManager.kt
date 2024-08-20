@@ -43,23 +43,14 @@ internal class DefaultTimelinePaginationManager(
                             timelineRepository.getLocal(
                                 pageCursor = pageCursor,
                             )
-                    }.apply {
-                        lastOrNull()?.also {
-                            pageCursor = it.id
-                        }
-                        canFetchMore = isNotEmpty()
-                    }.filterNsfw(specification.includeNsfw)
+                    }.updatePaginationData().filterNsfw(specification.includeNsfw)
                 }
 
                 is TimelinePaginationSpecification.Hashtag -> {
                     timelineRepository
                         .getHashtag(specification.hashtag)
-                        .apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }.filterNsfw(specification.includeNsfw)
+                        .updatePaginationData()
+                        .filterNsfw(specification.includeNsfw)
                 }
 
                 is TimelinePaginationSpecification.User ->
@@ -71,12 +62,8 @@ internal class DefaultTimelinePaginationManager(
                             excludeReblogs = specification.excludeReblogs,
                             onlyMedia = specification.onlyMedia,
                             pinned = specification.pinned,
-                        ).apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }.filterNsfw(specification.includeNsfw)
+                        ).updatePaginationData()
+                        .filterNsfw(specification.includeNsfw)
             }.deduplicate()
         history.addAll(results)
 
@@ -101,6 +88,14 @@ internal class DefaultTimelinePaginationManager(
             history.addAll(it.history)
         }
     }
+
+    private fun List<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> =
+        apply {
+            lastOrNull()?.also {
+                pageCursor = it.id
+            }
+            canFetchMore = isNotEmpty()
+        }
 
     private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> =
         filter { e1 ->

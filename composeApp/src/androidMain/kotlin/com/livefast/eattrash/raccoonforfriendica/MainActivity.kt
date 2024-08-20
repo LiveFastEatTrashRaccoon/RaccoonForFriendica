@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -79,10 +80,19 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        val authManager = getAuthManager()
-        val uri = intent.data.toString()
-        lifecycleScope.launch {
-            authManager.performTokenExchange(uri)
+        intent.data?.also {
+            handleIncomingUrl(it)
+        }
+    }
+
+    private fun handleIncomingUrl(uri: Uri) {
+        if (uri.scheme == "raccoonforfriendica" && uri.host == "auth") {
+            val authManager = getAuthManager()
+            lifecycleScope.launch {
+                kotlin.runCatching {
+                    authManager.performTokenExchange(uri.toString())
+                }
+            }
         }
     }
 }
