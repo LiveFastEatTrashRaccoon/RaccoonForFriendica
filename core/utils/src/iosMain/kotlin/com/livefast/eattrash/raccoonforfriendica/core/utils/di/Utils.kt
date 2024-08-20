@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.DefaultAppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.DefaultFileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.DefaultGalleryHelper
@@ -18,6 +20,8 @@ actual fun getImageLoaderProvider(): ImageLoaderProvider = CoreUtilsDiHelper.ima
 actual fun getGalleryHelper(): GalleryHelper = CoreUtilsDiHelper.galleryHelper
 
 actual fun getShareHelper(): ShareHelper = CoreUtilsDiHelper.shareHelper
+
+actual fun getAppInfoRepository(): AppInfoRepository = CoreUtilsDiHelper.appInfoRepository
 
 actual val coreUtilsFileSystemModule =
     module {
@@ -47,8 +51,16 @@ actual val coreUtilsUrlModule =
         }
     }
 
+actual val coreUtilsDebugModule =
+    module {
+        single<AppInfoRepository> {
+            DefaultAppInfoRepository()
+        }
+    }
+
 internal object CoreUtilsDiHelper : KoinComponent {
     val imageLoaderProvider: ImageLoaderProvider by inject()
     val galleryHelper: GalleryHelper by inject()
     val shareHelper: ShareHelper by inject()
+    val appInfoRepository: AppInfoRepository by inject()
 }

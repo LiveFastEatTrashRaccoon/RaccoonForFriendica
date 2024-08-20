@@ -182,4 +182,11 @@ internal val ItStrings =
         override val messageLoginLegacy = "Login con username e password (legacy)"
         override val actionPin = "Fissa sul profilo"
         override val actionUnpin = "Togli dal profilo"
+        override val settingsSectionDebug = "Debug"
+        override val settingsAbout = "Informazioni app"
+        override val settingsAboutAppVersion = "Versione"
+        override val settingsAboutChangelog = "Elenco modifiche"
+        override val settingsAboutViewGithub = "Vedi su GitHub"
+        override val settingsAboutReportIssue = "Apri una segnalazione"
+        override val settingsAboutViewFriendica = "Vedi su Friendica"
     }

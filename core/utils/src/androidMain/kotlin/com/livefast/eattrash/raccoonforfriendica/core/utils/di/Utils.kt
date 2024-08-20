@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.DefaultAppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.DefaultFileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.DefaultGalleryHelper
@@ -25,6 +27,11 @@ actual fun getGalleryHelper(): GalleryHelper {
 
 actual fun getShareHelper(): ShareHelper {
     val res: ShareHelper by KoinJavaComponent.inject(ShareHelper::class.java)
+    return res
+}
+
+actual fun getAppInfoRepository(): AppInfoRepository {
+    val res: AppInfoRepository by KoinJavaComponent.inject(AppInfoRepository::class.java)
     return res
 }
 
@@ -59,6 +66,15 @@ actual val coreUtilsUrlModule =
     module {
         single<CustomTabsHelper> {
             DefaultCustomTabsHelper(
+                context = get(),
+            )
+        }
+    }
+
+actual val coreUtilsDebugModule =
+    module {
+        single<AppInfoRepository> {
+            DefaultAppInfoRepository(
                 context = get(),
             )
         }

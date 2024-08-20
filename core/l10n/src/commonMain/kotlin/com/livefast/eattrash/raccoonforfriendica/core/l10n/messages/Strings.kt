@@ -167,6 +167,13 @@ interface Strings {
     val actionUnblock: String
     val actionPin: String
     val actionUnpin: String
+    val settingsSectionDebug: String
+    val settingsAbout: String
+    val settingsAboutAppVersion: String
+    val settingsAboutChangelog: String
+    val settingsAboutViewGithub: String
+    val settingsAboutReportIssue: String
+    val settingsAboutViewFriendica: String
 }
 
 object Locales {
