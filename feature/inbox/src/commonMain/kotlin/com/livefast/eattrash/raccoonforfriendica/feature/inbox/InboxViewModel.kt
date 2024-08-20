@@ -7,6 +7,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificat
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -19,6 +21,8 @@ class InboxViewModel(
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
+    private val notificationRepository: NotificationRepository,
+    private val inboxManager: InboxManager,
 ) : DefaultMviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>(
         initialState = InboxMviModel.State(),
     ),
@@ -51,6 +55,7 @@ class InboxViewModel(
 
             InboxMviModel.Intent.Refresh ->
                 screenModelScope.launch {
+                    markAllAsRead()
                     refresh()
                 }
 
@@ -172,5 +177,12 @@ class InboxViewModel(
                 )
             }
         }
+    }
+
+    private suspend fun markAllAsRead() {
+        for (item in uiState.value.notifications) {
+            notificationRepository.markAsRead(item.id)
+        }
+        inboxManager.refreshUnreadCount()
     }
 }

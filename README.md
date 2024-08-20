@@ -82,7 +82,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] post detail, i.e. opening a conversation or reply in its context
 - [x] user detail with ability to see posts/post and replies/pinned/media posts
 - [x] login/logout to one's own instance
-- [x] view notification list
+- [x] view notifications and check for unread items
 - [x] view one's own profile
 - [x] see trending posts/hashtags/news
 - [x] see following recommendations

@@ -12,6 +12,8 @@ val featureInboxModule =
                 userRepository = get(),
                 identityRepository = get(),
                 settingsRepository = get(),
+                notificationRepository = get(),
+                inboxManager = get(),
             )
         }
     }

@@ -167,6 +167,7 @@ class HashtagScreen(
                 modifier =
                     Modifier
                         .padding(padding)
+                        .fillMaxWidth()
                         .then(
                             if (connection != null) {
                                 Modifier.nestedScroll(connection)

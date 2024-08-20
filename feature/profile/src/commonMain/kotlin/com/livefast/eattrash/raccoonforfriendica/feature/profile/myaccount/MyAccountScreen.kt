@@ -127,7 +127,10 @@ class MyAccountScreen : Screen {
                 },
             )
         Box(
-            modifier = Modifier.pullRefresh(pullRefreshState),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .pullRefresh(pullRefreshState),
         ) {
             LazyColumn(
                 state = lazyListState,

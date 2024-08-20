@@ -5,7 +5,9 @@ sealed interface BottomNavigationSection {
 
     data object Explore : BottomNavigationSection
 
-    data object Inbox : BottomNavigationSection
+    data class Inbox(
+        val unreadItems: Int = 0,
+    ) : BottomNavigationSection
 
     data object Profile : BottomNavigationSection
 }

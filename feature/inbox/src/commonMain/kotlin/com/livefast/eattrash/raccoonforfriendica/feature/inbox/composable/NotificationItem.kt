@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
@@ -84,6 +86,21 @@ internal fun NotificationItem(
                 style = MaterialTheme.typography.bodySmall,
                 color = ancillaryColor,
             )
+            Spacer(modifier = Modifier.weight(1f))
+
+            // unread indicator
+            if (!notification.read) {
+                Box(
+                    modifier =
+                        Modifier
+                            .size(IconSize.xs)
+                            .padding(2.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.onBackground,
+                                shape = CircleShape,
+                            ),
+                )
+            }
         }
 
         Box(

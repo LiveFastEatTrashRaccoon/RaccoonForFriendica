@@ -33,6 +33,7 @@ internal class DefaultNotificationsPaginationManager(
                         .getAll(
                             pageCursor = pageCursor,
                             types = specification.types,
+                            includeUnread = true,
                         ).determineRelationshipStatus()
                         .updatePaginationData()
                         .filterNsfw(specification.includeNsfw)
@@ -43,7 +44,7 @@ internal class DefaultNotificationsPaginationManager(
         return history.map { it }
     }
 
-    private suspend fun List<NotificationModel>.updatePaginationData(): List<NotificationModel> =
+    private fun List<NotificationModel>.updatePaginationData(): List<NotificationModel> =
         apply {
             lastOrNull()?.also {
                 pageCursor = it.id

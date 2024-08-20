@@ -212,6 +212,7 @@ class EntryDetailScreen(
                 modifier =
                     Modifier
                         .padding(padding)
+                        .fillMaxWidth()
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .nestedScroll(fabNestedScrollConnection)
                         .pullRefresh(pullRefreshState),

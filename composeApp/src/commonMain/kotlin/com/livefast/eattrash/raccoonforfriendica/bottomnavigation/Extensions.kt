@@ -6,7 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 fun BottomNavigationSection.toTab(): Tab =
     when (this) {
         BottomNavigationSection.Explore -> ExploreTab
-        BottomNavigationSection.Inbox -> InboxTab
+        is BottomNavigationSection.Inbox -> InboxTab
         BottomNavigationSection.Profile -> ProfileTab
         else -> HomeTab
     }

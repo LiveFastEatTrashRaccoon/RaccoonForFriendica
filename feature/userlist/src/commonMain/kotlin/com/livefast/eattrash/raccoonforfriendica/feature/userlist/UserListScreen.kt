@@ -176,6 +176,7 @@ class UserListScreen(
                     modifier =
                         Modifier
                             .padding(padding)
+                            .fillMaxWidth()
                             .nestedScroll(scrollBehavior.nestedScrollConnection)
                             .pullRefresh(pullRefreshState),
                 ) {

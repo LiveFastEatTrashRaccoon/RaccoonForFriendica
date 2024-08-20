@@ -222,6 +222,7 @@ class TimelineScreen : Screen {
                 modifier =
                     Modifier
                         .padding(padding)
+                        .fillMaxWidth()
                         .then(
                             if (connection != null) {
                                 Modifier.nestedScroll(connection)

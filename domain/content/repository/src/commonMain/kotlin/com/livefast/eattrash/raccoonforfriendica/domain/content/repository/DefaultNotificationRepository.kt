@@ -11,6 +11,7 @@ internal class DefaultNotificationRepository(
 ) : NotificationRepository {
     override suspend fun getAll(
         types: List<NotificationType>,
+        includeUnread: Boolean,
         pageCursor: String?,
     ) = withContext(Dispatchers.IO) {
         runCatching {
@@ -18,11 +19,28 @@ internal class DefaultNotificationRepository(
                 provider.notifications.get(
                     types = types.mapNotNull { it.toDto() },
                     maxId = pageCursor,
+                    includeAll = includeUnread,
                     limit = DEFAULT_PAGE_SIZE,
                 )
             response.map { it.toModel() }
         }
     }.getOrElse { emptyList() }
+
+    override suspend fun markAsRead(id: String): Boolean =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.notifications.dismiss(id)
+                true
+            }.getOrElse { false }
+        }
+
+    override suspend fun markAllAsRead(): Boolean =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.notifications.dismissAll()
+                true
+            }.getOrElse { false }
+        }
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20
