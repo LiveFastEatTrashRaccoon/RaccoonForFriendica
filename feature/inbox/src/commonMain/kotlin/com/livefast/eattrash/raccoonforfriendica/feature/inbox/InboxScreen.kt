@@ -87,7 +87,7 @@ class InboxScreen : Screen {
         LaunchedEffect(navigationCoordinator) {
             navigationCoordinator.onDoubleTabSelection
                 .onEach { section ->
-                    if (section == BottomNavigationSection.Inbox) {
+                    if (section is BottomNavigationSection.Inbox) {
                         goBackToTop()
                     }
                 }.launchIn(this)
@@ -130,6 +130,7 @@ class InboxScreen : Screen {
                 modifier =
                     Modifier
                         .padding(padding)
+                        .fillMaxWidth()
                         .then(
                             if (connection != null) {
                                 Modifier.nestedScroll(connection)
