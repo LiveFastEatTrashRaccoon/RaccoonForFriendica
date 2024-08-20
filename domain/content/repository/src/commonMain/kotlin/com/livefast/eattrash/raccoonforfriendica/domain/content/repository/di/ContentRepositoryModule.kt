@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultInboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultSearchRepository
@@ -8,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
@@ -59,6 +61,11 @@ val domainContentRepositoryModule =
         single<SearchRepository> {
             DefaultSearchRepository(
                 provider = get(named("default")),
+            )
+        }
+        single<InboxManager> {
+            DefaultInboxManager(
+                notificationRepository = get(),
             )
         }
     }
