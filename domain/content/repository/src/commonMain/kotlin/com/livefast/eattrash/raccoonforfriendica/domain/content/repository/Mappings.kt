@@ -176,6 +176,7 @@ internal fun Notification.toModel() =
     NotificationModel(
         id = id,
         type = type.toModel(),
+        read = dismissed,
         user = account?.toModel(),
         entry = status?.toModelWithReply(),
     )

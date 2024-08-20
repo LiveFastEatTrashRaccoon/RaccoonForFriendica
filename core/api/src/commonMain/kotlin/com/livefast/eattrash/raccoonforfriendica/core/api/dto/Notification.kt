@@ -8,6 +8,7 @@ data class Notification(
     @SerialName("id") val id: String,
     @SerialName("type") val type: NotificationType,
     @SerialName("created_at") val createdAt: String? = null,
+    @SerialName("dismissed") val dismissed: Boolean = false,
     @SerialName("account") val account: Account? = null,
     @SerialName("status") val status: Status? = null,
 )
