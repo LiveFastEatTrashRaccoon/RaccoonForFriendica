@@ -177,4 +177,11 @@ internal open class DefaultStrings : Strings {
     override val messageLoginLegacy = "Login with username and password (legacy)"
     override val actionPin = "Pin to profile"
     override val actionUnpin = "Unpin from profile"
+    override val settingsSectionDebug = "Debug"
+    override val settingsAbout = "App information"
+    override val settingsAboutAppVersion = "Version"
+    override val settingsAboutChangelog = "Changelog"
+    override val settingsAboutViewGithub = "View on GitHub"
+    override val settingsAboutReportIssue = "Report an issue"
+    override val settingsAboutViewFriendica = "View on Friendica"
 }
