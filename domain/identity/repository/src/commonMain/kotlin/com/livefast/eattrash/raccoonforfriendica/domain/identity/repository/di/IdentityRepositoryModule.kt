@@ -22,6 +22,7 @@ val domainIdentityRepositoryModule =
                 serviceProvider = get(named("default")),
                 keyStore = get(),
                 identityRepository = get(),
+                credentialsRepository = get(),
             )
         }
 
