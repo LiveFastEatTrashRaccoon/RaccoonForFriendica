@@ -33,7 +33,7 @@ fun UserFields(
                     modifier = Modifier.weight(0.4f),
                     text = field.key.uppercase(),
                     color = ancillaryColor,
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Light),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Light),
                 )
                 ContentBody(
                     modifier = Modifier.weight(1f),

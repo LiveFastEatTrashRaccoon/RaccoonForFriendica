@@ -62,7 +62,7 @@ internal fun NotificationHeaderUserInfo(
 
         Text(
             text = creatorName,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = fullColor,
         )
     }

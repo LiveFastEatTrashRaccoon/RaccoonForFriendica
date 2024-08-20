@@ -46,7 +46,7 @@ internal fun CreateInGroupInfo(
                         append(username)
                     }
                 },
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = ancillaryColor,
         )
     }

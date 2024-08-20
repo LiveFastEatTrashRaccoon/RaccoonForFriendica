@@ -91,7 +91,7 @@ internal fun DrawerHeader(
                             },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleMedium,
                         color = ancillaryColor,
                     )
                 }
@@ -122,7 +122,7 @@ internal fun DrawerHeader(
                 Row {
                     Text(
                         text = node.orEmpty(),
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleMedium,
                         color = ancillaryColor,
                     )
                     Spacer(modifier = Modifier.weight(1f))

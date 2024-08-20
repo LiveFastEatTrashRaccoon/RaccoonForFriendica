@@ -401,7 +401,7 @@ class ThreadScreen(
                                                         append(")")
                                                     }
                                             },
-                                        style = MaterialTheme.typography.labelSmall,
+                                        style = MaterialTheme.typography.labelMedium,
                                     )
                                 }
                             }

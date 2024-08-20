@@ -69,11 +69,10 @@ fun ContentHeader(
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             Text(
                 text = creatorName,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = fullColor,
             )
 
@@ -99,7 +98,7 @@ fun ContentHeader(
                                 }
                             }
                         },
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = ancillaryColor,
                 )
             }

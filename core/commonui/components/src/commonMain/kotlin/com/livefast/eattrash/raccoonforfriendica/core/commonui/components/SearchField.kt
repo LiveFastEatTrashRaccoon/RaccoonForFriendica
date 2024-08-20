@@ -41,7 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 @Composable
 fun SearchField(
     hint: String? = null,
-    hintTextStyle: TextStyle = MaterialTheme.typography.bodySmall,
+    hintTextStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     value: String,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     onValueChange: (String) -> Unit,

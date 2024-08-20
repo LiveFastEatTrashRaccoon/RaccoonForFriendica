@@ -84,16 +84,15 @@ internal fun CreatePostHeader(
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             Text(
                 text = creatorName,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = fullColor,
             )
             Text(
                 text = author?.handle.orEmpty(),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = ancillaryColor,
             )
         }
