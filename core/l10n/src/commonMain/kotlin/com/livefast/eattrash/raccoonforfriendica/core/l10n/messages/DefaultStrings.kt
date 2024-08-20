@@ -184,4 +184,5 @@ internal open class DefaultStrings : Strings {
     override val settingsAboutViewGithub = "View on GitHub"
     override val settingsAboutReportIssue = "Report an issue"
     override val settingsAboutViewFriendica = "View on Friendica"
+    override val manageCirclesTitle = "Circles"
 }

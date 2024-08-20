@@ -174,6 +174,7 @@ interface Strings {
     val settingsAboutViewGithub: String
     val settingsAboutReportIssue: String
     val settingsAboutViewFriendica: String
+    val manageCirclesTitle: String
 }
 
 object Locales {
