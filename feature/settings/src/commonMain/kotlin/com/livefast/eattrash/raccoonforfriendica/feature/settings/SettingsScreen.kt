@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Explicit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
@@ -59,6 +60,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.about.AboutDialog
 import kotlinx.coroutines.delay
 
 class SettingsScreen : Screen {
@@ -76,6 +78,7 @@ class SettingsScreen : Screen {
         var fontFamilyBottomSheetOpened by remember { mutableStateOf(false) }
         var themeColorBottomSheetOpened by remember { mutableStateOf(false) }
         var defaultTimelineTypeBottomSheetOpened by remember { mutableStateOf(false) }
+        var aboutDialogOpened by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -197,6 +200,18 @@ class SettingsScreen : Screen {
                             value = uiState.blurNsfw,
                             onValueChanged = {
                                 model.reduce(SettingsMviModel.Intent.ChangeBlurNsfw(it))
+                            },
+                        )
+
+                        SettingsHeader(
+                            icon = Icons.Default.BugReport,
+                            title = LocalStrings.current.settingsSectionDebug,
+                        )
+                        SettingsRow(
+                            title = LocalStrings.current.settingsAbout,
+                            disclosureIndicator = true,
+                            onTap = {
+                                aboutDialogOpened = true
                             },
                         )
 
@@ -352,6 +367,14 @@ class SettingsScreen : Screen {
                         val type = uiState.availableTimelineTypes[index]
                         model.reduce(SettingsMviModel.Intent.ChangeDefaultTimelineType(type))
                     }
+                },
+            )
+        }
+
+        if (aboutDialogOpened) {
+            AboutDialog(
+                onClose = {
+                    aboutDialogOpened = false
                 },
             )
         }
