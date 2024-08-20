@@ -33,12 +33,6 @@ internal class DefaultUserPaginationManager(
                             id = specification.userId,
                             pageCursor = pageCursor,
                         ).determineRelationshipStatus()
-                        .apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }
 
                 is UserPaginationSpecification.Following ->
                     userRepository
@@ -46,12 +40,6 @@ internal class DefaultUserPaginationManager(
                             id = specification.userId,
                             pageCursor = pageCursor,
                         ).determineRelationshipStatus()
-                        .apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }
 
                 is UserPaginationSpecification.EntryUsersFavorite ->
                     timelineEntryRepository
@@ -59,12 +47,6 @@ internal class DefaultUserPaginationManager(
                             id = specification.entryId,
                             pageCursor = pageCursor,
                         ).determineRelationshipStatus()
-                        .apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }
 
                 is UserPaginationSpecification.EntryUsersReblog ->
                     timelineEntryRepository
@@ -72,12 +54,6 @@ internal class DefaultUserPaginationManager(
                             id = specification.entryId,
                             pageCursor = pageCursor,
                         ).determineRelationshipStatus()
-                        .apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }
 
                 is UserPaginationSpecification.Search ->
                     userRepository
@@ -88,40 +64,32 @@ internal class DefaultUserPaginationManager(
                                     .indexOfLast { it.id == pageCursor }
                                     .takeIf { it >= 0 } ?: 0,
                         ).determineRelationshipStatus()
-                        .apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }
 
                 UserPaginationSpecification.Blocked ->
                     userRepository
                         .getBlocked(
                             pageCursor = pageCursor,
-                        ).apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }
+                        )
 
                 UserPaginationSpecification.Muted ->
                     userRepository
                         .getMuted(
                             pageCursor = pageCursor,
-                        ).apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }
-            }.deduplicate()
+                        )
+            }.deduplicate().updatePaginationData()
         history.addAll(results)
 
         // return a copy
         return history.map { it }
     }
+
+    private fun List<UserModel>.updatePaginationData(): List<UserModel> =
+        apply {
+            lastOrNull()?.also {
+                pageCursor = it.id
+            }
+            canFetchMore = isNotEmpty()
+        }
 
     private suspend fun List<UserModel>.determineRelationshipStatus(): List<UserModel> =
         run {

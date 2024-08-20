@@ -52,15 +52,18 @@ internal class DefaultExplorePaginationManager(
                             ),
                         )
                     }
-            }.apply {
-                offset = size
-                canFetchMore = isNotEmpty()
-            }.deduplicate()
+            }.deduplicate().updatePaginationData()
         history.addAll(results)
 
         // return a copy
         return history.map { it }
     }
+
+    private fun List<ExploreItemModel>.updatePaginationData(): List<ExploreItemModel> =
+        apply {
+            offset = size
+            canFetchMore = isNotEmpty()
+        }
 
     private fun List<ExploreItemModel>.deduplicate(): List<ExploreItemModel> =
         filter { e1 ->

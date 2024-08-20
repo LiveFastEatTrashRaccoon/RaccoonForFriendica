@@ -25,28 +25,30 @@ internal class DefaultFavoritesPaginationManager(
         val results =
             when (specification) {
                 is FavoritesPaginationSpecification.Bookmarks ->
-                    timelineEntryRepository.getBookmarks(pageCursor = pageCursor)
-                        .apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }.filterNsfw(specification.includeNsfw)
+                    timelineEntryRepository
+                        .getBookmarks(pageCursor = pageCursor)
+                        .updatePaginationData()
+                        .filterNsfw(specification.includeNsfw)
 
                 is FavoritesPaginationSpecification.Favorites ->
-                    timelineEntryRepository.getFavorites(pageCursor = pageCursor)
-                        .apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }.filterNsfw(specification.includeNsfw)
+                    timelineEntryRepository
+                        .getFavorites(pageCursor = pageCursor)
+                        .updatePaginationData()
+                        .filterNsfw(specification.includeNsfw)
             }.deduplicate()
         history.addAll(results)
 
         // return a copy
         return history.map { it }
     }
+
+    private fun List<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> =
+        apply {
+            lastOrNull()?.also {
+                pageCursor = it.id
+            }
+            canFetchMore = isNotEmpty()
+        }
 
     private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> =
         filter { e1 ->

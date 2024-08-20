@@ -30,12 +30,7 @@ internal class DefaultSearchPaginationManager(
                             query = specification.query,
                             pageCursor = pageCursor,
                             type = SearchResultType.Entries,
-                        ).apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }.filterNsfw(specification.includeNsfw)
+                        ).filterNsfw(specification.includeNsfw)
 
                 is SearchPaginationSpecification.Hashtags ->
                     searchRepository
@@ -43,12 +38,7 @@ internal class DefaultSearchPaginationManager(
                             query = specification.query,
                             pageCursor = pageCursor,
                             type = SearchResultType.Hashtags,
-                        ).apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }
+                        )
 
                 is SearchPaginationSpecification.Users ->
                     searchRepository
@@ -56,18 +46,21 @@ internal class DefaultSearchPaginationManager(
                             query = specification.query,
                             pageCursor = pageCursor,
                             type = SearchResultType.Users,
-                        ).apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }
-            }.deduplicate()
+                        )
+            }.deduplicate().updatePaginationData()
         history.addAll(results)
 
         // return an object containing copies
         return history.map { it }
     }
+
+    private fun List<ExploreItemModel>.updatePaginationData(): List<ExploreItemModel> =
+        apply {
+            lastOrNull()?.also {
+                pageCursor = it.id
+            }
+            canFetchMore = isNotEmpty()
+        }
 
     private fun List<ExploreItemModel>.deduplicate(): List<ExploreItemModel> =
         filter { e1 ->

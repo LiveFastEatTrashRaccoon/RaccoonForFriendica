@@ -34,18 +34,22 @@ internal class DefaultNotificationsPaginationManager(
                             pageCursor = pageCursor,
                             types = specification.types,
                         ).determineRelationshipStatus()
-                        .apply {
-                            lastOrNull()?.also {
-                                pageCursor = it.id
-                            }
-                            canFetchMore = isNotEmpty()
-                        }.filterNsfw(specification.includeNsfw)
+                        .updatePaginationData()
+                        .filterNsfw(specification.includeNsfw)
             }.deduplicate()
         history.addAll(results)
 
         // return a copy
         return history.map { it }
     }
+
+    private suspend fun List<NotificationModel>.updatePaginationData(): List<NotificationModel> =
+        apply {
+            lastOrNull()?.also {
+                pageCursor = it.id
+            }
+            canFetchMore = isNotEmpty()
+        }
 
     private suspend fun List<NotificationModel>.determineRelationshipStatus(): List<NotificationModel> =
         run {

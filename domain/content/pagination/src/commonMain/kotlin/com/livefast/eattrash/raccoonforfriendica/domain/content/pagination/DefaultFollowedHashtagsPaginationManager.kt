@@ -18,17 +18,18 @@ internal class DefaultFollowedHashtagsPaginationManager(
 
     override suspend fun loadNextPage(): List<TagModel> {
         val (tags, cursor) = tagRepository.getFollowed()
-        val results =
-            tags
-                .apply {
-                    pageCursor = cursor
-                    canFetchMore = isNotEmpty()
-                }.deduplicate()
+        val results = tags.deduplicate().updatePaginationData(cursor)
         history.addAll(results)
 
         // return a copy
         return history.map { it }
     }
+
+    private fun List<TagModel>.updatePaginationData(cursor: String?): List<TagModel> =
+        apply {
+            pageCursor = cursor
+            canFetchMore = isNotEmpty()
+        }
 
     private fun List<TagModel>.deduplicate(): List<TagModel> =
         filter { e1 ->
