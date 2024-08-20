@@ -71,6 +71,24 @@ internal class DefaultCredentialsRepository(
             }.getOrElse { null }
         }
 
+    override suspend fun validateApplicationCredentials(
+        node: String,
+        credentials: ApiCredentials,
+    ): Boolean =
+        withContext(Dispatchers.IO) {
+            when (credentials) {
+                is ApiCredentials.HttpBasic -> true
+                is ApiCredentials.OAuth2 -> {
+                    runCatching {
+                        provider.changeNode(node)
+                        provider.setAuth(credentials.toServiceCredentials())
+                        provider.apps.verifyCredentials().toModel()
+                        true
+                    }.getOrElse { false }
+                }
+            }
+        }
+
     override suspend fun exchangeToken(
         node: String,
         path: String,
