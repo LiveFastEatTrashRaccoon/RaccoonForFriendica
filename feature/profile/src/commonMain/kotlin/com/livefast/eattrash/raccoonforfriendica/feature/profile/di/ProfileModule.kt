@@ -27,6 +27,7 @@ val featureProfileModule =
                 timelineEntryRepository = get(),
                 myAccountCache = get(),
                 settingsRepository = get(),
+                hapticFeedback = get(),
             )
         }
         factory<AnonymousMviModel> {

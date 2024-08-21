@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.inbox
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
@@ -23,6 +24,7 @@ class InboxViewModel(
     private val settingsRepository: SettingsRepository,
     private val notificationRepository: NotificationRepository,
     private val inboxManager: InboxManager,
+    private val hapticFeedback: HapticFeedback,
 ) : DefaultMviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>(
         initialState = InboxMviModel.State(),
     ),
@@ -116,6 +118,7 @@ class InboxViewModel(
     }
 
     private fun acceptFollowRequest(userId: String) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
@@ -138,6 +141,7 @@ class InboxViewModel(
     }
 
     private fun follow(userId: String) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
@@ -159,6 +163,7 @@ class InboxViewModel(
     }
 
     private fun unfollow(userId: String) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =

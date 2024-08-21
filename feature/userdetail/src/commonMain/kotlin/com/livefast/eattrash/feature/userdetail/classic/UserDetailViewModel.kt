@@ -3,6 +3,7 @@ package com.livefast.eattrash.feature.userdetail.classic
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
+import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
@@ -10,7 +11,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
@@ -23,8 +23,8 @@ class UserDetailViewModel(
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
-    private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
+    private val hapticFeedback: HapticFeedback,
 ) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
         initialState = UserDetailMviModel.State(),
     ),
@@ -135,6 +135,7 @@ class UserDetailViewModel(
     }
 
     private fun acceptFollowRequest() {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
             userRepository.acceptFollowRequest(id)
@@ -156,6 +157,7 @@ class UserDetailViewModel(
     }
 
     private fun follow() {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
             val newRelationship = userRepository.follow(id)
@@ -176,6 +178,7 @@ class UserDetailViewModel(
     }
 
     private fun unfollow() {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
             val newRelationship = userRepository.unfollow(id)
@@ -222,6 +225,7 @@ class UserDetailViewModel(
     }
 
     private fun toggleReblog(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -253,6 +257,7 @@ class UserDetailViewModel(
     }
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -284,6 +289,7 @@ class UserDetailViewModel(
     }
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -314,6 +320,7 @@ class UserDetailViewModel(
     }
 
     private fun toggleNotifications(enabled: Boolean) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateState { it.copy(user = it.user?.copy(notificationStatusPending = true)) }
             val newRelationship =

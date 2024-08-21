@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.thread
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -19,6 +20,7 @@ class ThreadViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository,
+    private val hapticFeedback: HapticFeedback,
 ) : DefaultMviModel<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>(
         initialState = ThreadMviModel.State(),
     ),
@@ -60,7 +62,7 @@ class ThreadViewModel(
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
-            )
+                )
             is ThreadMviModel.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
@@ -164,6 +166,7 @@ class ThreadViewModel(
     }
 
     private fun toggleReblog(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -195,6 +198,7 @@ class ThreadViewModel(
     }
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -226,6 +230,7 @@ class ThreadViewModel(
     }
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(

@@ -17,12 +17,14 @@ val featureHashtagModule =
                 settingsRepository = get(),
                 identityRepository = get(),
                 userRepository = get(),
+                hapticFeedback = get(),
             )
         }
         factory<FollowedHashtagsMviModel> {
             FollowedHashtagsViewModel(
                 paginationManager = get(),
                 tagRepository = get(),
+                hapticFeedback = get(),
             )
         }
     }

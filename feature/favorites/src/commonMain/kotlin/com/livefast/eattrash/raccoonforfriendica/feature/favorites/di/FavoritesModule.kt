@@ -14,6 +14,7 @@ val featureFavoritesModule =
                 settingsRepository = get(),
                 identityRepository = get(),
                 userRepository = get(),
+                hapticFeedback = get(),
             )
         }
     }

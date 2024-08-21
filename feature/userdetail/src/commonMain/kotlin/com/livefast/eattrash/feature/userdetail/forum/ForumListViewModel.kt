@@ -2,6 +2,7 @@ package com.livefast.eattrash.feature.userdetail.forum
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
@@ -20,6 +21,7 @@ class ForumListViewModel(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
+    private val hapticFeedback: HapticFeedback,
 ) : DefaultMviModel<ForumListMviModel.Intent, ForumListMviModel.State, ForumListMviModel.Effect>(
         initialState = ForumListMviModel.State(),
     ),
@@ -62,7 +64,7 @@ class ForumListViewModel(
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
-            )
+                )
             is ForumListMviModel.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
@@ -148,6 +150,7 @@ class ForumListViewModel(
     }
 
     private fun toggleReblog(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -179,6 +182,7 @@ class ForumListViewModel(
     }
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -210,6 +214,7 @@ class ForumListViewModel(
     }
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
