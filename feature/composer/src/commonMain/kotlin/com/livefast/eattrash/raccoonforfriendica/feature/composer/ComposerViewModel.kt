@@ -130,6 +130,11 @@ class ComposerViewModel(
                     updateState { it.copy(userSearchQuery = intent.query) }
                 }
 
+            ComposerMviModel.Intent.UserSearchClear ->
+                screenModelScope.launch {
+                    updateState { it.copy(userSearchUsers = emptyList()) }
+                }
+
             ComposerMviModel.Intent.UserSearchLoadNextPage ->
                 screenModelScope.launch {
                     loadNextPageUsers()

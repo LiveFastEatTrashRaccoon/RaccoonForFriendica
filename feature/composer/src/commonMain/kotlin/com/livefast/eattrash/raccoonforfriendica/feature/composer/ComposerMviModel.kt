@@ -65,6 +65,8 @@ interface ComposerMviModel :
             val query: String,
         ) : Intent
 
+        data object UserSearchClear : Intent
+
         data class AddMention(
             val handle: String,
         ) : Intent
