@@ -3,12 +3,14 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 
 internal class DefaultUserPaginationManager(
     private val userRepository: UserRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val circlesRepository: CirclesRepository,
 ) : UserPaginationManager {
     private var specification: UserPaginationSpecification? = null
     private var pageCursor: String? = null
@@ -33,6 +35,8 @@ internal class DefaultUserPaginationManager(
                             id = specification.userId,
                             pageCursor = pageCursor,
                         ).determineRelationshipStatus()
+                        .deduplicate()
+                        .updatePaginationData()
 
                 is UserPaginationSpecification.Following ->
                     userRepository
@@ -40,6 +44,8 @@ internal class DefaultUserPaginationManager(
                             id = specification.userId,
                             pageCursor = pageCursor,
                         ).determineRelationshipStatus()
+                        .deduplicate()
+                        .updatePaginationData()
 
                 is UserPaginationSpecification.EntryUsersFavorite ->
                     timelineEntryRepository
@@ -47,6 +53,8 @@ internal class DefaultUserPaginationManager(
                             id = specification.entryId,
                             pageCursor = pageCursor,
                         ).determineRelationshipStatus()
+                        .deduplicate()
+                        .updatePaginationData()
 
                 is UserPaginationSpecification.EntryUsersReblog ->
                     timelineEntryRepository
@@ -54,6 +62,8 @@ internal class DefaultUserPaginationManager(
                             id = specification.entryId,
                             pageCursor = pageCursor,
                         ).determineRelationshipStatus()
+                        .deduplicate()
+                        .updatePaginationData()
 
                 is UserPaginationSpecification.Search ->
                     userRepository
@@ -64,19 +74,31 @@ internal class DefaultUserPaginationManager(
                                     .indexOfLast { it.id == pageCursor }
                                     .takeIf { it >= 0 } ?: 0,
                         ).determineRelationshipStatus()
+                        .deduplicate()
+                        .updatePaginationData()
 
                 UserPaginationSpecification.Blocked ->
                     userRepository
                         .getBlocked(
                             pageCursor = pageCursor,
-                        )
+                        ).deduplicate()
+                        .updatePaginationData()
 
                 UserPaginationSpecification.Muted ->
                     userRepository
                         .getMuted(
                             pageCursor = pageCursor,
-                        )
-            }.deduplicate().updatePaginationData()
+                        ).deduplicate()
+                        .updatePaginationData()
+
+                is UserPaginationSpecification.CircleMembers ->
+                    circlesRepository.getMembers(
+                        id = specification.id,
+                        pageCursor = pageCursor,
+                    ).deduplicate()
+                        .updatePaginationData()
+                        .filter(specification.query)
+            }
         history.addAll(results)
 
         // return a copy
@@ -107,5 +129,12 @@ internal class DefaultUserPaginationManager(
     private fun List<UserModel>.deduplicate(): List<UserModel> =
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
+        }
+
+    private fun List<UserModel>.filter(query: String): List<UserModel> =
+        filter {
+            query.isEmpty() ||
+                it.displayName?.contains(query, ignoreCase = true) == true ||
+                it.username?.contains(query, ignoreCase = true) == true
         }
 }
