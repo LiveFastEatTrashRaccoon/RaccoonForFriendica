@@ -15,4 +15,11 @@ internal class DefaultCirclesRepository(
                 provider.circles.getAll().map { it.toModel() }
             }.getOrElse { emptyList() }
         }
+
+    override suspend fun get(id: String): CircleModel? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.circles.getBy(id).toModel()
+            }.getOrNull()
+        }
 }
