@@ -3,8 +3,6 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Field
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaContact
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.HistoryItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaAttachment
@@ -19,8 +17,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserListReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHistoryItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
@@ -217,22 +218,24 @@ internal fun FriendicaPhoto.toModel() =
         album = album,
     )
 
-internal fun FriendicaCircle.toModel() =
-    CircleModel(
-        name = name,
-        id = "$id",
-        users = users.map { it.toModel() },
-    )
+internal fun UserListReplyPolicy.toModel(): CircleReplyPolicy =
+    when (this) {
+        UserListReplyPolicy.FOLLOW -> CircleReplyPolicy.Follow
+        UserListReplyPolicy.LIST -> CircleReplyPolicy.List
+        UserListReplyPolicy.NONE -> CircleReplyPolicy.None
+    }
 
-internal fun FriendicaContact.toModel() =
-    UserModel(
-        avatar = avatar,
-        bio = note,
-        created = createdAt,
-        displayName = displayName,
-        entryCount = statusesCount,
-        followers = followersCount,
+internal fun CircleReplyPolicy.toDto(): String =
+    when (this) {
+        CircleReplyPolicy.Follow -> "follow"
+        CircleReplyPolicy.List -> "list"
+        CircleReplyPolicy.None -> "none"
+}
+
+internal fun UserList.toModel() =
+    CircleModel(
+        name = title,
         id = id,
-        locked = locked,
-        username = username,
+        exclusive = exclusive,
+        replyPolicy = repliesPolicy?.toModel() ?: CircleReplyPolicy.List,
     )

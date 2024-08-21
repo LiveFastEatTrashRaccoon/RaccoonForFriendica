@@ -1,7 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.EditListForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.EditListMembersForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -12,14 +16,99 @@ internal class DefaultCirclesRepository(
     override suspend fun getAll(): List<CircleModel> =
         withContext(Dispatchers.IO) {
             runCatching {
-                provider.circles.getAll().map { it.toModel() }
+                provider.lists.getAll().map { it.toModel() }
             }.getOrElse { emptyList() }
         }
 
     override suspend fun get(id: String): CircleModel? =
         withContext(Dispatchers.IO) {
             runCatching {
-                provider.circles.getBy(id).toModel()
+                provider.lists.getBy(id).toModel()
             }.getOrNull()
+        }
+
+    override suspend fun getMembers(
+        id: String,
+        pageCursor: String?,
+    ): List<UserModel> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.lists
+                    .getMembers(
+                        id = id,
+                        maxId = pageCursor,
+                    ).map { it.toModel() }
+            }.getOrElse { emptyList() }
+        }
+
+    override suspend fun create(
+        title: String,
+        replyPolicy: CircleReplyPolicy,
+        exclusive: Boolean,
+    ): CircleModel? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val data =
+                    EditListForm(
+                        title = title,
+                        replyPolicy = replyPolicy.toDto(),
+                        exclusive = exclusive,
+                    )
+                provider.lists.create(data).toModel()
+            }.getOrNull()
+        }
+
+    override suspend fun update(
+        id: String,
+        title: String,
+        replyPolicy: CircleReplyPolicy,
+        exclusive: Boolean,
+    ): CircleModel? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val data =
+                    EditListForm(
+                        title = title,
+                        replyPolicy = replyPolicy.toDto(),
+                        exclusive = exclusive,
+                    )
+                provider.lists
+                    .update(
+                        id = id,
+                        data = data,
+                    ).toModel()
+            }.getOrNull()
+        }
+
+    override suspend fun delete(id: String): Boolean =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.lists.delete(id)
+                true
+            }.getOrElse { false }
+        }
+
+    override suspend fun addMembers(
+        id: String,
+        userIds: List<String>,
+    ): Boolean =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val data = EditListMembersForm(accountIds = userIds)
+                provider.lists.addMembers(id = id, data = data)
+                true
+            }.getOrElse { false }
+        }
+
+    override suspend fun removeMembers(
+        id: String,
+        userIds: List<String>,
+    ): Boolean =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val data = EditListMembersForm(accountIds = userIds)
+                provider.lists.removeMembers(id = id, data = data)
+                true
+            }.getOrElse { false }
         }
 }
