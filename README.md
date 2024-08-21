@@ -105,14 +105,13 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] block/unblock user and see list of blocked users
 - [x] OAuth and HTTP basic authentication modes
 - [x] pin/unpin status to profile
-- [ ] manage one's own circles (Friendica-specific)
+- [x] manage one's own circles/following lists
+- [ ] polls
 - [ ] support post spoiler text
 - [ ] edit one's own profile
-- [ ] manage one's own lists
-- [ ] see private conversations
+- [ ] private conversations
 - [ ] advanced media visualization (videos, GIFs, etc.)
 - [ ] custom emojis
-- [ ] polls
 - [ ] scheduled posts
 
 #### Disclaimer
