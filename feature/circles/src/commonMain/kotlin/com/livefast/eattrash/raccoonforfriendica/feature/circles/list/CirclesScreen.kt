@@ -53,6 +53,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleEditorDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItem
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItemPlaceholder
 import kotlinx.coroutines.launch
@@ -123,7 +124,7 @@ class CirclesScreen : Screen {
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            // open editor to create (coming soon)
+                            model.reduce(CirclesMviModel.Intent.OpenEditor())
                         },
                     ) {
                         Icon(
@@ -171,10 +172,14 @@ class CirclesScreen : Screen {
                             },
                             options =
                                 buildList {
+                                    this += OptionId.Edit.toOption()
                                     this += OptionId.Delete.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
+                                    OptionId.Edit -> {
+                                        model.reduce(CirclesMviModel.Intent.OpenEditor(circle))
+                                    }
                                     OptionId.Delete -> confirmDeleteItemId = circle.id
                                     else -> Unit
                                 }
@@ -193,7 +198,7 @@ class CirclesScreen : Screen {
                             }
                         }
                     }
-                    if (!uiState.initial && !uiState.loading && uiState.items.isEmpty()) {
+                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
                         item {
                             Text(
                                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
@@ -248,11 +253,28 @@ class CirclesScreen : Screen {
                             val itemId = confirmDeleteItemId ?: ""
                             confirmDeleteItemId = null
                             if (itemId.isNotEmpty()) {
-                                // remove circle (coming soon)
+                                model.reduce(CirclesMviModel.Intent.Delete(itemId))
                             }
                         },
                     ) {
                         Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        val editorData = uiState.editorData
+        if (editorData != null) {
+            CircleEditorDialog(
+                data = editorData,
+                onDataChanged = { newData ->
+                    model.reduce(CirclesMviModel.Intent.UpdateEditorData(newData))
+                },
+                onClose = { success ->
+                    if (success) {
+                        model.reduce(CirclesMviModel.Intent.SubmitEditorData)
+                    } else {
+                        model.reduce(CirclesMviModel.Intent.DismissEditor)
                     }
                 },
             )
