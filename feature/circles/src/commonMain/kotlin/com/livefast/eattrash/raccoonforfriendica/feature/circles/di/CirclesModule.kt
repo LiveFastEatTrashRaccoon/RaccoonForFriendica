@@ -22,6 +22,8 @@ val featureCirclesModule =
         factory<CircleDetailMviModel> { params ->
             CircleDetailViewModel(
                 id = params[0],
+                circlesRepository = get(),
+                circlesCache = get(),
             )
         }
     }
