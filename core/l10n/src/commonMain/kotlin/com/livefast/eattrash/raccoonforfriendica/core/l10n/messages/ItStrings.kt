@@ -190,4 +190,7 @@ internal val ItStrings =
         override val settingsAboutReportIssue = "Apri una segnalazione"
         override val settingsAboutViewFriendica = "Vedi su Friendica"
         override val manageCirclesTitle = "Cerchie"
+        override val createCircleTitle = "Crea cerchia"
+        override val editCircleTitle = "Modifica cerchia"
+        override val circleEditFieldName = "Nome"
     }

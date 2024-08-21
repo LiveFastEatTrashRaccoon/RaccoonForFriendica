@@ -175,6 +175,9 @@ interface Strings {
     val settingsAboutReportIssue: String
     val settingsAboutViewFriendica: String
     val manageCirclesTitle: String
+    val createCircleTitle: String
+    val editCircleTitle: String
+    val circleEditFieldName: String
 }
 
 object Locales {

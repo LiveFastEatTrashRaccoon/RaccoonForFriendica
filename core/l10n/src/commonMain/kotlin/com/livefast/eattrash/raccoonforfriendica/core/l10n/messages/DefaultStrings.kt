@@ -185,4 +185,7 @@ internal open class DefaultStrings : Strings {
     override val settingsAboutReportIssue = "Report an issue"
     override val settingsAboutViewFriendica = "View on Friendica"
     override val manageCirclesTitle = "Circles"
+    override val createCircleTitle = "Create circle"
+    override val editCircleTitle = "Edit circle"
+    override val circleEditFieldName = "Name"
 }
