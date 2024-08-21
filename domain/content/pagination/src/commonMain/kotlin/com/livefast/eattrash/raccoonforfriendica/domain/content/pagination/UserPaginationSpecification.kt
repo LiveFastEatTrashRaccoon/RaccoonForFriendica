@@ -24,4 +24,9 @@ sealed interface UserPaginationSpecification {
     data object Muted : UserPaginationSpecification
 
     data object Blocked : UserPaginationSpecification
+
+    data class CircleMembers(
+        val id: String,
+        val query: String = "",
+    ) : UserPaginationSpecification
 }

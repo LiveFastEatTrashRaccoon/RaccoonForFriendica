@@ -1,8 +1,9 @@
-package com.livefast.eattrash.raccoonforfriendica.core.commonui.components
+package com.livefast.eattrash.raccoonforfriendica.feature.circles.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,37 +19,29 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CircleEditorData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditTextualInfoDialog(
-    title: String = LocalStrings.current.actionEdit,
-    label: String = "",
-    value: String = "",
-    onClose: ((String?) -> Unit)? = null,
+internal fun CircleEditorDialog(
+    data: CircleEditorData,
+    onDataChanged: ((CircleEditorData) -> Unit)? = null,
+    onClose: ((Boolean) -> Unit)? = null,
 ) {
-    var textFieldValue by remember {
-        mutableStateOf(TextFieldValue(text = value))
-    }
-
     BasicAlertDialog(
         modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
-            onClose?.invoke(null)
+            onClose?.invoke(false)
         },
     ) {
         Column(
@@ -60,7 +53,12 @@ fun EditTextualInfoDialog(
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
             Text(
-                text = title,
+                text =
+                    if (data.id == null) {
+                        LocalStrings.current.createCircleTitle
+                    } else {
+                        LocalStrings.current.editCircleTitle
+                    },
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground,
             )
@@ -76,29 +74,53 @@ fun EditTextualInfoDialog(
                     ),
                 label = {
                     Text(
-                        text = label,
+                        text = LocalStrings.current.circleEditFieldName,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 },
                 textStyle = MaterialTheme.typography.bodyMedium,
-                value = textFieldValue,
+                value = data.title,
                 keyboardOptions =
                     KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         autoCorrect = true,
                     ),
+                isError = data.titleError != null,
+                supportingText = {
+                    val error = data.titleError
+                    if (error != null) {
+                        Text(
+                            text = error.toReadableMessage(),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                },
                 onValueChange = { value ->
-                    textFieldValue = value
+                    val newData = data.copy(title = value)
+                    onDataChanged?.invoke(newData)
                 },
             )
 
             Spacer(modifier = Modifier.height(Spacing.xs))
-            Button(
-                onClick = {
-                    onClose?.invoke(textFieldValue.text)
-                },
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Spacing.s),
             ) {
-                Text(text = LocalStrings.current.buttonConfirm)
+                Spacer(modifier = Modifier.weight(1f))
+                Button(
+                    onClick = {
+                        onClose?.invoke(false)
+                    },
+                ) {
+                    Text(text = LocalStrings.current.buttonCancel)
+                }
+                Button(
+                    onClick = {
+                        onClose?.invoke(true)
+                    },
+                ) {
+                    Text(text = LocalStrings.current.buttonConfirm)
+                }
             }
         }
     }

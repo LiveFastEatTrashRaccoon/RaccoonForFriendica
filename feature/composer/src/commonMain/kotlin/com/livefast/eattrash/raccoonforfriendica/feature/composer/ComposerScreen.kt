@@ -310,6 +310,8 @@ class ComposerScreen(
                     model.reduce(ComposerMviModel.Intent.UserSearchLoadNextPage)
                 },
                 onClose = { user ->
+                    model.reduce(ComposerMviModel.Intent.UserSearchSetQuery(""))
+                    model.reduce(ComposerMviModel.Intent.UserSearchClear)
                     mentionDialogOpen = false
                     val handle = user?.handle
                     if (handle != null) {

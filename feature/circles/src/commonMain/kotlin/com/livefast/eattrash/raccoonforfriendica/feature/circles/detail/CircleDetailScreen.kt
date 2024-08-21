@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -69,7 +69,6 @@ class CircleDetailScreen(
     override fun Content() {
         val model = getScreenModel<CircleDetailMviModel>(parameters = { parametersOf(id) })
         val uiState by model.uiState.collectAsState()
-
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val navigationCoordinator = remember { getNavigationCoordinator() }
@@ -159,7 +158,6 @@ class CircleDetailScreen(
                 LazyColumn(
                     state = lazyListState,
                 ) {
-                    val users = uiState.circle?.users.orEmpty()
                     if (uiState.initial) {
                         items(20) {
                             UserItemPlaceholder(
@@ -170,10 +168,10 @@ class CircleDetailScreen(
                         }
                     }
 
-                    items(
-                        items = users,
-                        key = { e -> e.id },
-                    ) { user ->
+                    itemsIndexed(
+                        items = uiState.users,
+                        key = { _, e -> e.id },
+                    ) { idx, user ->
                         UserItem(
                             user = user,
                             options =
@@ -188,6 +186,10 @@ class CircleDetailScreen(
                             },
                         )
                         Spacer(modifier = Modifier.height(Spacing.interItem))
+
+                        if (idx == uiState.users.lastIndex - 5 && uiState.canFetchMore) {
+                            model.reduce(CircleDetailMviModel.Intent.LoadNextPage)
+                        }
                     }
 
                     item {
@@ -200,7 +202,7 @@ class CircleDetailScreen(
                             }
                         }
                     }
-                    if (!uiState.initial && !uiState.loading && users.isEmpty()) {
+                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.users.isEmpty()) {
                         item {
                             Text(
                                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),

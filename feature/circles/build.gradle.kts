@@ -49,6 +49,7 @@ kotlin {
                 implementation(projects.core.utils)
 
                 implementation(projects.domain.content.data)
+                implementation(projects.domain.content.pagination)
                 implementation(projects.domain.content.repository)
             }
         }

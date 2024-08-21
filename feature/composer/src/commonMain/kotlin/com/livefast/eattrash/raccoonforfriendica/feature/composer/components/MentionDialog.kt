@@ -18,6 +18,7 @@ import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
@@ -37,7 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MentionDialog(
+internal fun MentionDialog(
     query: String = "",
     users: List<UserModel> = emptyList(),
     loading: Boolean = false,
@@ -47,6 +49,7 @@ fun MentionDialog(
     onClose: ((UserModel?) -> Unit)? = null,
 ) {
     BasicAlertDialog(
+        modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onClose?.invoke(null)
         },
@@ -54,8 +57,8 @@ fun MentionDialog(
         Column(
             modifier =
                 Modifier
-                    .background(color = MaterialTheme.colorScheme.surface)
-                    .padding(Spacing.s),
+                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                    .padding(Spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
