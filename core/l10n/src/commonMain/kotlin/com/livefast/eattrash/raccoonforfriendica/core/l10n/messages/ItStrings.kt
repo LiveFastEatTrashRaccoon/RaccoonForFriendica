@@ -193,4 +193,5 @@ internal val ItStrings =
         override val createCircleTitle = "Crea cerchia"
         override val editCircleTitle = "Modifica cerchia"
         override val circleEditFieldName = "Nome"
+        override val circleAddUsersDialogTitle = "Seleziona utenti da aggiungere"
     }

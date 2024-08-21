@@ -178,6 +178,7 @@ interface Strings {
     val createCircleTitle: String
     val editCircleTitle: String
     val circleEditFieldName: String
+    val circleAddUsersDialogTitle: String
 }
 
 object Locales {
