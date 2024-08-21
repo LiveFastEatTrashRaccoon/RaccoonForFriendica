@@ -190,13 +190,16 @@ class UserListScreen(
                             }
                         }
 
-                        itemsIndexed(uiState.users) { idx, user ->
-                            UserItem(
-                                user = user,
-                                onClick = {
-                                    detailOpener.openUserDetail(user.id)
-                                },
-                                onRelationshipClicked = { nextAction ->
+                    itemsIndexed(
+                        items = uiState.users,
+                        key = { _, e -> e.id },
+                    ) { idx, user ->
+                        UserItem(
+                            user = user,
+                            onClick = {
+                                detailOpener.openUserDetail(user.id)
+                            },
+                            onRelationshipClicked = { nextAction ->
                                     when (nextAction) {
                                         RelationshipStatusNextAction.AcceptRequest -> {
                                             model.reduce(
