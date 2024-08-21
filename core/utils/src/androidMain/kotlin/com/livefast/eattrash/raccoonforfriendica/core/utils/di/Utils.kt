@@ -11,6 +11,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.share.DefaultShareHe
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.url.DefaultCustomTabsHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.DefaultHapticFeedback
+import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
 
@@ -75,6 +77,15 @@ actual val coreUtilsDebugModule =
     module {
         single<AppInfoRepository> {
             DefaultAppInfoRepository(
+                context = get(),
+            )
+        }
+    }
+
+actual val coreHapticFeedbackModule =
+    module {
+        single<HapticFeedback> {
+            DefaultHapticFeedback(
                 context = get(),
             )
         }
