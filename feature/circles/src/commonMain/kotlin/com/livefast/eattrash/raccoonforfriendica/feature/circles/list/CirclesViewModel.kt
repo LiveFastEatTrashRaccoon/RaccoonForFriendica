@@ -3,10 +3,12 @@ package com.livefast.eattrash.raccoonforfriendica.feature.circles.list
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.domain.CirclesCache
 import kotlinx.coroutines.launch
 
 class CirclesViewModel(
     private val circlesRepository: CirclesRepository,
+    private val circlesCache: CirclesCache,
 ) : DefaultMviModel<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect>(
         initialState = CirclesMviModel.State(),
     ),
@@ -32,7 +34,13 @@ class CirclesViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        val items = circlesRepository.getAll()
+        val items =
+            if (initial) {
+                val cached = circlesCache.get()
+                cached ?: circlesRepository.getAll().also { circlesCache.put(it) }
+            } else {
+                circlesRepository.getAll().also { circlesCache.put(it) }
+            }
         updateState {
             it.copy(
                 initial = false,
