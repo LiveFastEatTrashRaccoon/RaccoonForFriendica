@@ -27,11 +27,15 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +59,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemP
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleAddUserDialog
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
@@ -76,7 +83,9 @@ class CircleDetailScreen(
         val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
         val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
         val scope = rememberCoroutineScope()
-        var confirmDeleteUserId by remember { mutableStateOf<String?>(null) }
+        val snackbarHostState = remember { SnackbarHostState() }
+        val genericError = LocalStrings.current.messageGenericError
+        var confirmRemoveUserId by remember { mutableStateOf<String?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -86,6 +95,16 @@ class CircleDetailScreen(
                     topAppBarState.contentOffset = 0f
                 }
             }
+        }
+
+        LaunchedEffect(model) {
+            model.effects
+                .onEach { event ->
+                    when (event) {
+                        CircleDetailMviModel.Effect.Failure ->
+                            snackbarHostState.showSnackbar(genericError)
+                    }
+                }.launchIn(this)
         }
 
         Scaffold(
@@ -128,7 +147,7 @@ class CircleDetailScreen(
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            // open dialog to add user (coming soon)
+                            model.reduce(CircleDetailMviModel.Intent.ToggleAddUsersDialog(true))
                         },
                     ) {
                         Icon(
@@ -136,6 +155,17 @@ class CircleDetailScreen(
                             contentDescription = null,
                         )
                     }
+                }
+            },
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                ) { data ->
+                    Snackbar(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        snackbarData = data,
+                    )
                 }
             },
         ) { padding ->
@@ -171,7 +201,7 @@ class CircleDetailScreen(
                     itemsIndexed(
                         items = uiState.users,
                         key = { _, e -> e.id },
-                    ) { idx, user ->
+                    ) { _, user ->
                         UserItem(
                             user = user,
                             options =
@@ -180,16 +210,12 @@ class CircleDetailScreen(
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
-                                    OptionId.Delete -> confirmDeleteUserId = user.id
+                                    OptionId.Delete -> confirmRemoveUserId = user.id
                                     else -> Unit
                                 }
                             },
                         )
                         Spacer(modifier = Modifier.height(Spacing.interItem))
-
-                        if (idx == uiState.users.lastIndex - 5 && uiState.canFetchMore) {
-                            model.reduce(CircleDetailMviModel.Intent.LoadNextPage)
-                        }
                     }
 
                     item {
@@ -228,10 +254,10 @@ class CircleDetailScreen(
             }
         }
 
-        if (confirmDeleteUserId != null) {
+        if (confirmRemoveUserId != null) {
             AlertDialog(
                 onDismissRequest = {
-                    confirmDeleteUserId = null
+                    confirmRemoveUserId = null
                 },
                 title = {
                     Text(
@@ -245,7 +271,7 @@ class CircleDetailScreen(
                 dismissButton = {
                     Button(
                         onClick = {
-                            confirmDeleteUserId = null
+                            confirmRemoveUserId = null
                         },
                     ) {
                         Text(text = LocalStrings.current.buttonCancel)
@@ -254,14 +280,30 @@ class CircleDetailScreen(
                 confirmButton = {
                     Button(
                         onClick = {
-                            val userId = confirmDeleteUserId ?: ""
-                            confirmDeleteUserId = null
+                            val userId = confirmRemoveUserId ?: ""
+                            confirmRemoveUserId = null
                             if (userId.isNotEmpty()) {
-                                // remove user (coming soon)
+                                model.reduce(CircleDetailMviModel.Intent.Remove(userId))
                             }
                         },
                     ) {
                         Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (uiState.addUsersDialogOpened) {
+            CircleAddUserDialog(
+                query = uiState.searchUsersQuery,
+                users = uiState.searchUsers,
+                onSearchChanged = {
+                    model.reduce(CircleDetailMviModel.Intent.SetSearchUserQuery(it))
+                },
+                onClose = { values ->
+                    model.reduce(CircleDetailMviModel.Intent.ToggleAddUsersDialog(false))
+                    if (values != null) {
+                        model.reduce(CircleDetailMviModel.Intent.Add(values))
                     }
                 },
             )

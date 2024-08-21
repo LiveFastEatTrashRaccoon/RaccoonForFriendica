@@ -11,17 +11,35 @@ interface CircleDetailMviModel :
     sealed interface Intent {
         data object Refresh : Intent
 
-        data object LoadNextPage : Intent
+        data class Remove(
+            val userId: String,
+        ) : Intent
+
+        data class SetSearchUserQuery(
+            val text: String,
+        ) : Intent
+
+        data class ToggleAddUsersDialog(
+            val opened: Boolean,
+        ) : Intent
+
+        data class Add(
+            val users: List<UserModel>,
+        ) : Intent
     }
 
     data class State(
         val initial: Boolean = true,
         val refreshing: Boolean = false,
         val loading: Boolean = false,
-        val canFetchMore: Boolean = true,
         val circle: CircleModel? = null,
         val users: List<UserModel> = emptyList(),
+        val addUsersDialogOpened: Boolean = false,
+        val searchUsersQuery: String = "",
+        val searchUsers: List<UserModel> = emptyList(),
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object Failure : Effect
+    }
 }

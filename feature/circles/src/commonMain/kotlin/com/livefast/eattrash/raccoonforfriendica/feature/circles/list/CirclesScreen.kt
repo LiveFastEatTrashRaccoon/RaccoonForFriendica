@@ -27,11 +27,15 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +60,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleEditorDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItem
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItemPlaceholder
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CirclesScreen : Screen {
@@ -73,6 +79,8 @@ class CirclesScreen : Screen {
         val scope = rememberCoroutineScope()
         val detailOpener = remember { getDetailOpener() }
         var confirmDeleteItemId by remember { mutableStateOf<String?>(null) }
+        val snackbarHostState = remember { SnackbarHostState() }
+        val genericError = LocalStrings.current.messageGenericError
 
         fun goBackToTop() {
             runCatching {
@@ -82,6 +90,16 @@ class CirclesScreen : Screen {
                     topAppBarState.contentOffset = 0f
                 }
             }
+        }
+
+        LaunchedEffect(model) {
+            model.effects
+                .onEach { event ->
+                    when (event) {
+                        CirclesMviModel.Effect.Failure ->
+                            snackbarHostState.showSnackbar(genericError)
+                    }
+                }.launchIn(this)
         }
 
         Scaffold(
@@ -132,6 +150,17 @@ class CirclesScreen : Screen {
                             contentDescription = null,
                         )
                     }
+                }
+            },
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                ) { data ->
+                    Snackbar(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        snackbarData = data,
+                    )
                 }
             },
         ) { padding ->
