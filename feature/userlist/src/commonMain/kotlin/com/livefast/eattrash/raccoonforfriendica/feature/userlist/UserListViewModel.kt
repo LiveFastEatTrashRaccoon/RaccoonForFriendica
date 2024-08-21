@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.userlist
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
@@ -15,6 +16,7 @@ internal class UserListViewModel(
     private val type: UserListType,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
+    private val hapticFeedback: HapticFeedback,
 ) : DefaultMviModel<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>(
         initialState = UserListMviModel.State(),
     ),
@@ -112,6 +114,7 @@ internal class UserListViewModel(
     }
 
     private fun acceptFollowRequest(userId: String) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser = uiState.value.users.firstOrNull { it.id == userId }
@@ -131,6 +134,7 @@ internal class UserListViewModel(
     }
 
     private fun follow(userId: String) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser = uiState.value.users.firstOrNull { it.id == userId }
@@ -149,6 +153,7 @@ internal class UserListViewModel(
     }
 
     private fun unfollow(userId: String) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser = uiState.value.users.firstOrNull { it.id == userId }

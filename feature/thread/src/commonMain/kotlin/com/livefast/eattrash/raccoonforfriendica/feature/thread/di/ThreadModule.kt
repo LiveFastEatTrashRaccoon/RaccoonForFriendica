@@ -21,6 +21,7 @@ val featureThreadModule =
                 identityRepository = get(),
                 settingsRepository = get(),
                 userRepository = get(),
+                hapticFeedback = get(),
             )
         }
     }

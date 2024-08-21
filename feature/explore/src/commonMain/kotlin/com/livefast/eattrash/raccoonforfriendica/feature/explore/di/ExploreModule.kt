@@ -13,6 +13,7 @@ val featureExploreModule =
                 timelineEntryRepository = get(),
                 identityRepository = get(),
                 settingsRepository = get(),
+                hapticFeedback = get(),
             )
         }
     }

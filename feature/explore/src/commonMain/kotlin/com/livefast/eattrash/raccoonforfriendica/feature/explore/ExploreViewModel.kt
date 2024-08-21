@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.explore
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -25,6 +26,7 @@ class ExploreViewModel(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
+    private val hapticFeedback: HapticFeedback,
 ) : DefaultMviModel<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect>(
         initialState = ExploreMviModel.State(),
     ),
@@ -159,6 +161,7 @@ class ExploreViewModel(
     }
 
     private fun acceptFollowRequest(userId: String) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
@@ -181,6 +184,7 @@ class ExploreViewModel(
     }
 
     private fun follow(userId: String) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
@@ -202,6 +206,7 @@ class ExploreViewModel(
     }
 
     private fun unfollow(userId: String) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
@@ -271,6 +276,7 @@ class ExploreViewModel(
     }
 
     private fun toggleReblog(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -302,6 +308,7 @@ class ExploreViewModel(
     }
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -333,6 +340,7 @@ class ExploreViewModel(
     }
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(

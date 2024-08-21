@@ -14,6 +14,7 @@ val featureSearchModule =
                 tagRepository = get(),
                 settingsRepository = get(),
                 identityRepository = get(),
+                hapticFeedback = get(),
             )
         }
     }

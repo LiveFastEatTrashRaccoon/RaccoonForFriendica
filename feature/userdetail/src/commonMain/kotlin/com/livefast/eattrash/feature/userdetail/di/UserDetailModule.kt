@@ -15,8 +15,8 @@ val featureUserDetailModule =
                 paginationManager = get(),
                 timelineEntryRepository = get(),
                 identityRepository = get(),
-                accountRepository = get(),
                 settingsRepository = get(),
+                hapticFeedback = get(),
             )
         }
         factory<ForumListMviModel> { params ->
@@ -27,6 +27,7 @@ val featureUserDetailModule =
                 timelineEntryRepository = get(),
                 identityRepository = get(),
                 settingsRepository = get(),
+                hapticFeedback = get(),
             )
         }
     }

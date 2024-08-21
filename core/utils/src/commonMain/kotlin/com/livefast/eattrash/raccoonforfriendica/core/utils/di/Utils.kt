@@ -23,3 +23,5 @@ expect val coreUtilsShareModule: Module
 expect val coreUtilsUrlModule: Module
 
 expect val coreUtilsDebugModule: Module
+
+expect val coreHapticFeedbackModule: Module

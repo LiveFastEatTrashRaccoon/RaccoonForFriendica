@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowedHashtagsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
@@ -10,6 +11,7 @@ import kotlinx.coroutines.launch
 class FollowedHashtagsViewModel(
     private val paginationManager: FollowedHashtagsPaginationManager,
     private val tagRepository: TagRepository,
+    private val hapticFeedback: HapticFeedback,
 ) : DefaultMviModel<FollowedHashtagsMviModel.Intent, FollowedHashtagsMviModel.State, FollowedHashtagsMviModel.Effect>(
         initialState = FollowedHashtagsMviModel.State(),
     ),
@@ -99,6 +101,7 @@ class FollowedHashtagsViewModel(
         name: String,
         follow: Boolean,
     ) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateItemInState(name) { it.copy(followingPending = true) }
             val newTag =

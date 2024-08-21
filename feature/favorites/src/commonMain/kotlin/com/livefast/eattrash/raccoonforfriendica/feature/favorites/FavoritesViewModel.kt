@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.favorites
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationManager
@@ -21,6 +22,7 @@ class FavoritesViewModel(
     private val settingsRepository: SettingsRepository,
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
+    private val hapticFeedback: HapticFeedback,
 ) : DefaultMviModel<FavoritesMviModel.Intent, FavoritesMviModel.State, FavoritesMviModel.Effect>(
         initialState = FavoritesMviModel.State(),
     ),
@@ -143,6 +145,7 @@ class FavoritesViewModel(
     }
 
     private fun toggleReblog(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -174,6 +177,7 @@ class FavoritesViewModel(
     }
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -209,6 +213,7 @@ class FavoritesViewModel(
     }
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(

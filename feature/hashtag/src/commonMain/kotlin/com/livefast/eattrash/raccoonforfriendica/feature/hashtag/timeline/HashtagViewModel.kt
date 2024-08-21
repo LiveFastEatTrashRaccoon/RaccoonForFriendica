@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
@@ -22,6 +23,7 @@ class HashtagViewModel(
     private val settingsRepository: SettingsRepository,
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
+    private val hapticFeedback: HapticFeedback,
 ) : DefaultMviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>(
         initialState = HashtagMviModel.State(),
     ),
@@ -145,6 +147,7 @@ class HashtagViewModel(
     }
 
     private fun toggleReblog(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -176,6 +179,7 @@ class HashtagViewModel(
     }
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -207,6 +211,7 @@ class HashtagViewModel(
     }
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
@@ -237,6 +242,7 @@ class HashtagViewModel(
     }
 
     private fun toggleTagFollow(newFollowing: Boolean) {
+        hapticFeedback.vibrate()
         screenModelScope.launch {
             updateState { it.copy(followingPending = true) }
             val newModel =
