@@ -27,6 +27,7 @@ val featureCirclesModule =
                 id = params[0],
                 paginationManager = get(),
                 circlesRepository = get(),
+                contactCache = get(),
             )
         }
     }

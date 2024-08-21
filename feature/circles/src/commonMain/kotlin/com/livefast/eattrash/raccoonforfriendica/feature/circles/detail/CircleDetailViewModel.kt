@@ -2,21 +2,42 @@ package com.livefast.eattrash.raccoonforfriendica.feature.circles.detail
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.domain.ContactCache
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 class CircleDetailViewModel(
     private val id: String,
     private val paginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
+    private val contactCache: ContactCache,
 ) : DefaultMviModel<CircleDetailMviModel.Intent, CircleDetailMviModel.State, CircleDetailMviModel.Effect>(
         initialState = CircleDetailMviModel.State(),
     ),
     CircleDetailMviModel {
     init {
         screenModelScope.launch {
+            uiState
+                .map { it.searchUsersQuery }
+                .distinctUntilChanged()
+                .drop(1)
+                .debounce(750)
+                .onEach { query ->
+                    if (uiState.value.addUsersDialogOpened) {
+                        refreshSearchUsers(query)
+                    }
+                }.launchIn(this)
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
@@ -29,10 +50,30 @@ class CircleDetailViewModel(
                 screenModelScope.launch {
                     refresh()
                 }
-            CircleDetailMviModel.Intent.LoadNextPage ->
+
+            is CircleDetailMviModel.Intent.ToggleAddUsersDialog ->
                 screenModelScope.launch {
-                    loadNextPage()
+                    if (intent.opened) {
+                        refreshSearchUsers("")
+                        updateState { it.copy(addUsersDialogOpened = true) }
+                    } else {
+                        updateState {
+                            it.copy(
+                                searchUsersQuery = "",
+                                searchUsers = emptyList(),
+                                addUsersDialogOpened = false,
+                            )
+                        }
+                    }
                 }
+
+            is CircleDetailMviModel.Intent.SetSearchUserQuery ->
+                screenModelScope.launch {
+                    updateState { it.copy(searchUsersQuery = intent.text) }
+                }
+
+            is CircleDetailMviModel.Intent.Add -> add(intent.users)
+            is CircleDetailMviModel.Intent.Remove -> remove(intent.userId)
         }
     }
 
@@ -43,24 +84,74 @@ class CircleDetailViewModel(
         paginationManager.reset(UserPaginationSpecification.CircleMembers(id))
         val circle = circlesRepository.get(id = id)
         updateState { it.copy(circle = circle) }
-        loadNextPage()
-    }
-
-    private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
 
         updateState { it.copy(loading = true) }
-        val users = paginationManager.loadNextPage()
+        while (paginationManager.canFetchMore) {
+            val users = paginationManager.loadNextPage()
+            updateState {
+                it.copy(
+                    users = users,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+        }
+        updateState {
+            it.copy(loading = false)
+        }
+    }
+
+    private suspend fun removeItemFromState(id: String) {
         updateState {
             it.copy(
-                users = users,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
+                users = it.users.filter { item -> item.id != id },
             )
+        }
+    }
+
+    private suspend fun insertItemsInState(items: List<UserModel>) {
+        updateState {
+            it.copy(
+                users = it.users + items,
+            )
+        }
+    }
+
+    private fun refreshSearchUsers(query: String) {
+        screenModelScope.launch {
+            val currentCircleUserIds = uiState.value.users.map { it.id }
+            val newUsers =
+                contactCache
+                    .getContacts(excludeIds = currentCircleUserIds)
+                    .filter {
+                        query.isEmpty() ||
+                        it.username?.contains(other = query, ignoreCase = true) == true ||
+                        it.displayName?.contains(other = query, ignoreCase = true) == true
+                }
+            updateState { it.copy(searchUsers = newUsers) }
+        }
+    }
+
+    private fun add(users: List<UserModel>) {
+        screenModelScope.launch {
+            val userIds = users.map { it.id }
+            val success = circlesRepository.addMembers(id = id, userIds = userIds)
+            if (success) {
+                insertItemsInState(users)
+            } else {
+                emitEffect(CircleDetailMviModel.Effect.Failure)
+            }
+        }
+    }
+
+    private fun remove(userId: String) {
+        screenModelScope.launch {
+            val success = circlesRepository.removeMembers(id = id, userIds = listOf(userId))
+            if (success) {
+                removeItemFromState(userId)
+            } else {
+                emitEffect(CircleDetailMviModel.Effect.Failure)
+            }
         }
     }
 }
