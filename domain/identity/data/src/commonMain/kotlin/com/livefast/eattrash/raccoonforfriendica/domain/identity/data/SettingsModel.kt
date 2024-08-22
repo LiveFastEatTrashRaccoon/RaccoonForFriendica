@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.data
 
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 
 data class SettingsModel(
@@ -9,7 +10,7 @@ data class SettingsModel(
     val lang: String = "en",
     val theme: UiTheme = UiTheme.Default,
     val fontFamily: UiFontFamily = UiFontFamily.Default,
-    val fontScale: Float = 1f,
+    val fontScale: UiFontScale = UiFontScale.Normal,
     val dynamicColors: Boolean = false,
     val customSeedColor: Int? = null,
     val defaultTimelineType: Int = 0,

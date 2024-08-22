@@ -25,6 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoo
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getSettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ProvideCustomFontScale
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ProvideCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
@@ -53,6 +54,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                     l10nManager.changeLanguage(settings.lang)
                     themeRepository.changeTheme(settings.theme)
                     themeRepository.changeFontFamily(settings.fontFamily)
+                    themeRepository.changeFontScale(settings.fontScale)
                     themeRepository.changeCustomSeedColor(
                         color = settings.customSeedColor?.let { c -> Color(color = c) },
                     )
@@ -111,46 +113,48 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
         useDynamicColors = currentSettings?.dynamicColors ?: false,
     ) {
         ProvideCustomUriHandler {
-            ProvideStrings(
-                lyricist = l10nManager.lyricist,
-            ) {
-                ModalNavigationDrawer(
-                    modifier = Modifier.fillMaxSize(),
-                    drawerState = drawerState,
-                    gesturesEnabled = drawerGesturesEnabled,
-                    drawerContent = {
-                        ModalDrawerSheet {
-                            Navigator(DrawerContent())
-                        }
-                    },
+            ProvideCustomFontScale {
+                ProvideStrings(
+                    lyricist = l10nManager.lyricist,
                 ) {
-                    Navigator(
-                        screen = MainScreen,
-                        onBackPressed = {
-                            // if the drawer is open, closes it
-                            if (drawerCoordinator.drawerOpened.value) {
-                                scope.launch {
-                                    drawerCoordinator.toggleDrawer()
+                    ModalNavigationDrawer(
+                        modifier = Modifier.fillMaxSize(),
+                        drawerState = drawerState,
+                        gesturesEnabled = drawerGesturesEnabled,
+                        drawerContent = {
+                            ModalDrawerSheet {
+                                Navigator(DrawerContent())
+                            }
+                        },
+                    ) {
+                        Navigator(
+                            screen = MainScreen,
+                            onBackPressed = {
+                                // if the drawer is open, closes it
+                                if (drawerCoordinator.drawerOpened.value) {
+                                    scope.launch {
+                                        drawerCoordinator.toggleDrawer()
+                                    }
+                                    return@Navigator false
                                 }
-                                return@Navigator false
+
+                                true
+                            },
+                        ) { navigator ->
+                            LaunchedEffect(navigationCoordinator) {
+                                navigationCoordinator.setRootNavigator(navigator)
                             }
 
-                            true
-                        },
-                    ) { navigator ->
-                        LaunchedEffect(navigationCoordinator) {
-                            navigationCoordinator.setRootNavigator(navigator)
-                        }
-
-                        ModalNavigationDrawer(
-                            modifier = Modifier.fillMaxSize(),
-                            drawerState = drawerState,
-                            gesturesEnabled = drawerGesturesEnabled,
-                            drawerContent = {
-                                Navigator(DrawerContent())
-                            },
-                        ) {
-                            CurrentScreen()
+                            ModalNavigationDrawer(
+                                modifier = Modifier.fillMaxSize(),
+                                drawerState = drawerState,
+                                gesturesEnabled = drawerGesturesEnabled,
+                                drawerContent = {
+                                    Navigator(DrawerContent())
+                                },
+                            ) {
+                                CurrentScreen()
+                            }
                         }
                     }
                 }

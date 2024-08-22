@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeColorRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
@@ -14,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineTyp
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
@@ -67,6 +69,12 @@ class SettingsViewModel(
                         it.copy(fontFamily = fontFamily)
                     }
                 }.launchIn(this)
+            themeRepository.fontScale
+                .onEach { fontScale ->
+                    updateState {
+                        it.copy(fontScale = fontScale)
+                    }
+                }.launchIn(this)
             themeRepository.customSeedColor
                 .onEach { seedColor ->
                     updateState {
@@ -82,6 +90,7 @@ class SettingsViewModel(
                                 defaultTimelineType = settings.defaultTimelineType.toTimelineType(),
                                 includeNsfw = settings.includeNsfw,
                                 blurNsfw = settings.blurNsfw,
+                                urlOpeningMode = settings.urlOpeningMode,
                             )
                         }
                     }
@@ -119,6 +128,11 @@ class SettingsViewModel(
                     changeFontFamily(intent.fontFamily)
                 }
 
+            is SettingsMviModel.Intent.ChangeFontScale ->
+                screenModelScope.launch {
+                    changeFontScale(intent.scale)
+                }
+
             is SettingsMviModel.Intent.ChangeThemeColor ->
                 screenModelScope.launch {
                     changeThemeColor(intent.themeColor)
@@ -136,6 +150,11 @@ class SettingsViewModel(
             is SettingsMviModel.Intent.ChangeBlurNsfw ->
                 screenModelScope.launch {
                     changeBlurNsfw(intent.value)
+                }
+
+            is SettingsMviModel.Intent.ChangeUrlOpeningMode ->
+                screenModelScope.launch {
+                    changeUrlOpeningMode(intent.mode)
                 }
         }
     }
@@ -155,6 +174,12 @@ class SettingsViewModel(
     private suspend fun changeFontFamily(value: UiFontFamily) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(fontFamily = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeFontScale(value: UiFontScale) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(fontScale = value)
         saveSettings(newSettings)
     }
 
@@ -185,6 +210,12 @@ class SettingsViewModel(
     private suspend fun changeBlurNsfw(value: Boolean) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(blurNsfw = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeUrlOpeningMode(value: UrlOpeningMode) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(urlOpeningMode = value)
         saveSettings(newSettings)
     }
 

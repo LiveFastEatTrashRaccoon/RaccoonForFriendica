@@ -197,4 +197,13 @@ internal val ItStrings =
         override val visibilityCircle = "Cerchia"
         override val selectCircleDialogTitle = "Seleziona una cerchia"
         override val messagePostInvalidVisibility = "Selezionare un'opzione di visibilità valida"
+        override val settingsItemFontScale = "Dimensione font"
+        override val fontScaleNormal = "Normale"
+        override val fontScaleSmaller = "Più piccolo"
+        override val fontScaleSmallest = "Piccolissimo"
+        override val fontScaleLarger = "Più grande"
+        override val fontScaleLargest = "Grandissimo"
+        override val settingsItemUrlOpeningMode = "Modalità apertura URL"
+        override val urlOpeningModeExternal = "Browser esterno"
+        override val urlOpeningModeCustomTabs = "Schede personalizzate"
     }

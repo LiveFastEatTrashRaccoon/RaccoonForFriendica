@@ -192,4 +192,13 @@ internal open class DefaultStrings : Strings {
     override val visibilityCircle = "Circle"
     override val selectCircleDialogTitle = "Select a circle"
     override val messagePostInvalidVisibility = "Please select a valid visibility option"
+    override val settingsItemFontScale = "Font size"
+    override val fontScaleNormal = "Normal"
+    override val fontScaleSmaller = "Smaller"
+    override val fontScaleSmallest = "Smallest"
+    override val fontScaleLarger = "Larger"
+    override val fontScaleLargest = "Largest"
+    override val settingsItemUrlOpeningMode = "URL opening mode"
+    override val urlOpeningModeExternal = "External"
+    override val urlOpeningModeCustomTabs = "Custom tabs"
 }

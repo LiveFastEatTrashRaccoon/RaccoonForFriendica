@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.repository
 
 import androidx.compose.ui.graphics.Color
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.update
 internal class DefaultThemeRepository : ThemeRepository {
     override val theme = MutableStateFlow<UiTheme>(UiTheme.Default)
     override val fontFamily = MutableStateFlow<UiFontFamily>(UiFontFamily.Default)
+    override val fontScale = MutableStateFlow<UiFontScale>(UiFontScale.Normal)
     override val dynamicColors = MutableStateFlow(false)
     override val customSeedColor = MutableStateFlow<Color?>(null)
 
@@ -18,6 +20,10 @@ internal class DefaultThemeRepository : ThemeRepository {
 
     override fun changeFontFamily(family: UiFontFamily) {
         fontFamily.update { family }
+    }
+
+    override fun changeFontScale(scale: UiFontScale) {
+        fontScale.update { scale }
     }
 
     override fun changeDynamicColors(enabled: Boolean) {
@@ -45,5 +51,5 @@ internal class DefaultThemeRepository : ThemeRepository {
             this += Color(0xFFFFFF00)
             this += Color(0xFFFF7F00)
             this += Color(0xFFFF0000)
-    }
+        }
 }
