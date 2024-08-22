@@ -67,6 +67,7 @@ internal fun CircleAddUserDialog(
             )
             Spacer(modifier = Modifier.height(Spacing.s))
             SearchField(
+                backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(20.dp),
                 hint = LocalStrings.current.selectUserSearchPlaceholder,
                 value = query,
                 onValueChange = {
@@ -77,8 +78,9 @@ internal fun CircleAddUserDialog(
                 },
             )
             Spacer(modifier = Modifier.height(Spacing.xs))
+
             LazyColumn(
-                modifier = Modifier.fillMaxWidth().height(200.dp),
+                modifier = Modifier.fillMaxWidth().height(300.dp),
             ) {
                 items(users) { user ->
                     val isSelected = selectedUsers.any { it.id == user.id }
@@ -96,6 +98,7 @@ internal fun CircleAddUserDialog(
                 }
             }
 
+            Spacer(modifier = Modifier.height(Spacing.xs))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(Spacing.s),
             ) {
