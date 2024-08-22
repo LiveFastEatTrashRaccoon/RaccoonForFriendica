@@ -189,4 +189,7 @@ internal open class DefaultStrings : Strings {
     override val editCircleTitle = "Edit circle"
     override val circleEditFieldName = "Name"
     override val circleAddUsersDialogTitle = "Select users to add"
+    override val visibilityCircle = "Circle"
+    override val selectCircleDialogTitle = "Select a circle"
+    override val messagePostInvalidVisibility = "Please select a valid visibility option"
 }
