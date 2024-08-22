@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di
 
 import androidx.compose.ui.platform.UriHandler
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.OpenUrlUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.CustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
 import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent
@@ -11,12 +11,12 @@ actual fun getSetupAccountUseCase(): SetupAccountUseCase {
     return res
 }
 
-actual fun getOpenUrlUseCase(default: UriHandler): OpenUrlUseCase {
+actual fun getCustomUriHandler(fallback: UriHandler): CustomUriHandler {
     val inject =
-        KoinJavaComponent.inject<OpenUrlUseCase>(
-            OpenUrlUseCase::class.java,
+        KoinJavaComponent.inject<CustomUriHandler>(
+            CustomUriHandler::class.java,
             parameters = {
-                parametersOf(default)
+                parametersOf(fallback)
             },
         )
     val res by inject
