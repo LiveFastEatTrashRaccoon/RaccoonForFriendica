@@ -5,9 +5,11 @@ import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.ThemeColor
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 
 @Stable
 interface SettingsMviModel :
@@ -24,6 +26,10 @@ interface SettingsMviModel :
 
         data class ChangeFontFamily(
             val fontFamily: UiFontFamily,
+        ) : Intent
+
+        data class ChangeFontScale(
+            val scale: UiFontScale,
         ) : Intent
 
         data class ChangeDynamicColors(
@@ -45,6 +51,10 @@ interface SettingsMviModel :
         data class ChangeBlurNsfw(
             val value: Boolean,
         ) : Intent
+
+        data class ChangeUrlOpeningMode(
+            val mode: UrlOpeningMode,
+        ) : Intent
     }
 
     data class State(
@@ -54,12 +64,14 @@ interface SettingsMviModel :
         val supportsDynamicColors: Boolean = false,
         val dynamicColors: Boolean = false,
         val fontFamily: UiFontFamily = UiFontFamily.Default,
+        val fontScale: UiFontScale = UiFontScale.Normal,
         val themeColor: Color? = null,
         val availableThemeColors: List<ThemeColor> = emptyList(),
         val availableTimelineTypes: List<TimelineType> = emptyList(),
         val defaultTimelineType: TimelineType = TimelineType.Local,
         val includeNsfw: Boolean = true,
         val blurNsfw: Boolean = true,
+        val urlOpeningMode: UrlOpeningMode = UrlOpeningMode.External,
     )
 
     sealed interface Effect

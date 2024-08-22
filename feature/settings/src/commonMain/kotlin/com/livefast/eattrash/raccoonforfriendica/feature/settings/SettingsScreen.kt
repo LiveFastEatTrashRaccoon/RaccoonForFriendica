@@ -38,11 +38,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toColor
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toEmoji
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toScaleFactor
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toTypography
@@ -61,6 +63,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.about.AboutDialog
 import kotlinx.coroutines.delay
 
@@ -77,8 +81,10 @@ class SettingsScreen : Screen {
         var languageBottomSheetOpened by remember { mutableStateOf(false) }
         var themeBottomSheetOpened by remember { mutableStateOf(false) }
         var fontFamilyBottomSheetOpened by remember { mutableStateOf(false) }
+        var fontScaleBottomSheetOpened by remember { mutableStateOf(false) }
         var themeColorBottomSheetOpened by remember { mutableStateOf(false) }
         var defaultTimelineTypeBottomSheetOpened by remember { mutableStateOf(false) }
+        var urlOpeningModeBottomSheetOpened by remember { mutableStateOf(false) }
         var aboutDialogOpened by remember { mutableStateOf(false) }
 
         Scaffold(
@@ -139,6 +145,13 @@ class SettingsScreen : Screen {
                                 defaultTimelineTypeBottomSheetOpened = true
                             },
                         )
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemUrlOpeningMode,
+                            value = uiState.urlOpeningMode.toReadableName(),
+                            onTap = {
+                                urlOpeningModeBottomSheetOpened = true
+                            },
+                        )
 
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderLookAndFeel,
@@ -156,6 +169,13 @@ class SettingsScreen : Screen {
                             value = uiState.fontFamily.toReadableName(),
                             onTap = {
                                 fontFamilyBottomSheetOpened = true
+                            },
+                        )
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemFontScale,
+                            value = uiState.fontScale.toReadableName(),
+                            onTap = {
+                                fontScaleBottomSheetOpened = true
                             },
                         )
                         SettingsColorRow(
@@ -302,6 +322,37 @@ class SettingsScreen : Screen {
             )
         }
 
+        if (fontScaleBottomSheetOpened) {
+            val fontScales =
+                listOf(
+                    UiFontScale.Largest,
+                    UiFontScale.Larger,
+                    UiFontScale.Normal,
+                    UiFontScale.Smaller,
+                    UiFontScale.Smallest,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemFontScale,
+                items =
+                    fontScales.map {
+                        CustomModalBottomSheetItem(
+                            label = it.toReadableName(),
+                            customLabelStyle =
+                                MaterialTheme.typography.bodyLarge.let { s ->
+                                    s.copy(fontSize = s.fontSize * it.toScaleFactor())
+                                },
+                        )
+                    },
+                onSelected = { index ->
+                    fontScaleBottomSheetOpened = false
+                    if (index != null) {
+                        val scale = fontScales[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeFontScale(scale))
+                    }
+                },
+            )
+        }
+
         if (themeColorBottomSheetOpened) {
             val state = rememberModalBottomSheetState()
 
@@ -368,6 +419,25 @@ class SettingsScreen : Screen {
                     if (index != null) {
                         val type = uiState.availableTimelineTypes[index]
                         model.reduce(SettingsMviModel.Intent.ChangeDefaultTimelineType(type))
+                    }
+                },
+            )
+        }
+
+        if (urlOpeningModeBottomSheetOpened) {
+            val types =
+                listOf(
+                    UrlOpeningMode.External,
+                    UrlOpeningMode.CustomTabs,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemUrlOpeningMode,
+                items = types.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+                onSelected = { index ->
+                    urlOpeningModeBottomSheetOpened = false
+                    if (index != null) {
+                        val type = types[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeUrlOpeningMode(type))
                     }
                 },
             )
