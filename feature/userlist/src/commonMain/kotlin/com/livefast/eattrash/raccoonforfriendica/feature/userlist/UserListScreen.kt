@@ -41,6 +41,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -111,6 +112,7 @@ class UserListScreen(
             topBar = {
                 TopAppBar(
                     modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                    windowInsets = topAppBarState.toWindowInsets(),
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
@@ -166,29 +168,29 @@ class UserListScreen(
             },
         ) { padding ->
             val pullRefreshState =
-                    rememberPullRefreshState(
-                        refreshing = uiState.refreshing,
-                        onRefresh = {
-                            model.reduce(UserListMviModel.Intent.Refresh)
-                        },
-                    )
-                Box(
-                    modifier =
-                        Modifier
-                            .padding(padding)
-                            .fillMaxWidth()
-                            .nestedScroll(scrollBehavior.nestedScrollConnection)
-                            .pullRefresh(pullRefreshState),
+                rememberPullRefreshState(
+                    refreshing = uiState.refreshing,
+                    onRefresh = {
+                        model.reduce(UserListMviModel.Intent.Refresh)
+                    },
+                )
+            Box(
+                modifier =
+                    Modifier
+                        .padding(padding)
+                        .fillMaxWidth()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .pullRefresh(pullRefreshState),
+            ) {
+                LazyColumn(
+                    state = lazyListState,
                 ) {
-                    LazyColumn(
-                        state = lazyListState,
-                    ) {
-                        if (uiState.initial) {
-                            items(20) {
-                                UserItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                                Spacer(modifier = Modifier.height(Spacing.interItem))
-                            }
+                    if (uiState.initial) {
+                        items(20) {
+                            UserItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                            Spacer(modifier = Modifier.height(Spacing.interItem))
                         }
+                    }
 
                     itemsIndexed(
                         items = uiState.users,
@@ -200,49 +202,49 @@ class UserListScreen(
                                 detailOpener.openUserDetail(user.id)
                             },
                             onRelationshipClicked = { nextAction ->
-                                    when (nextAction) {
-                                        RelationshipStatusNextAction.AcceptRequest -> {
-                                            model.reduce(
-                                                UserListMviModel.Intent.AcceptFollowRequest(
-                                                    user.id,
-                                                ),
-                                            )
-                                        }
-
-                                        RelationshipStatusNextAction.ConfirmUnfollow -> {
-                                            confirmUnfollowDialogUserId = user.id
-                                        }
-
-                                        RelationshipStatusNextAction.ConfirmDeleteFollowRequest -> {
-                                            confirmDeleteFollowRequestDialogUserId = user.id
-                                        }
-
-                                        RelationshipStatusNextAction.Follow -> {
-                                            model.reduce(UserListMviModel.Intent.Follow(user.id))
-                                        }
-
-                                        RelationshipStatusNextAction.Unfollow -> {
-                                            model.reduce(UserListMviModel.Intent.Unfollow(user.id))
-                                        }
+                                when (nextAction) {
+                                    RelationshipStatusNextAction.AcceptRequest -> {
+                                        model.reduce(
+                                            UserListMviModel.Intent.AcceptFollowRequest(
+                                                user.id,
+                                            ),
+                                        )
                                     }
-                                },
-                            )
-                            Spacer(modifier = Modifier.height(Spacing.interItem))
 
-                            if (idx == uiState.users.lastIndex - 5 && uiState.canFetchMore) {
-                                model.reduce(UserListMviModel.Intent.LoadNextPage)
-                            }
+                                    RelationshipStatusNextAction.ConfirmUnfollow -> {
+                                        confirmUnfollowDialogUserId = user.id
+                                    }
+
+                                    RelationshipStatusNextAction.ConfirmDeleteFollowRequest -> {
+                                        confirmDeleteFollowRequestDialogUserId = user.id
+                                    }
+
+                                    RelationshipStatusNextAction.Follow -> {
+                                        model.reduce(UserListMviModel.Intent.Follow(user.id))
+                                    }
+
+                                    RelationshipStatusNextAction.Unfollow -> {
+                                        model.reduce(UserListMviModel.Intent.Unfollow(user.id))
+                                    }
+                                }
+                            },
+                        )
+                        Spacer(modifier = Modifier.height(Spacing.interItem))
+
+                        if (idx == uiState.users.lastIndex - 5 && uiState.canFetchMore) {
+                            model.reduce(UserListMviModel.Intent.LoadNextPage)
                         }
                     }
-
-                    PullRefreshIndicator(
-                        refreshing = uiState.refreshing,
-                        state = pullRefreshState,
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        backgroundColor = MaterialTheme.colorScheme.background,
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                    )
                 }
+
+                PullRefreshIndicator(
+                    refreshing = uiState.refreshing,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    backgroundColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                )
+            }
         }
 
         if (confirmUnfollowDialogUserId != null) {
