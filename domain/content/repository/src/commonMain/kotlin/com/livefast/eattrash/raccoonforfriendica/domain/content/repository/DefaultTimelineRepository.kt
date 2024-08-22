@@ -62,6 +62,22 @@ internal class DefaultTimelineRepository(
             }.getOrElse { emptyList() }
         }
 
+    override suspend fun getCircle(
+        id: String,
+        pageCursor: String?,
+    ): List<TimelineEntryModel> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val response =
+                    provider.timeline.getList(
+                        id = id,
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    )
+                response.map { it.toModelWithReply() }
+            }.getOrElse { emptyList() }
+        }
+
     companion object {
         const val DEFAULT_PAGE_SIZE = 20
     }
