@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -19,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 
 data class CustomModalBottomSheetItem(
@@ -44,7 +47,6 @@ fun CustomModalBottomSheet(
         content = {
             Column(
                 modifier = Modifier.padding(bottom = Spacing.xl),
-                verticalArrangement = Arrangement.spacedBy(Spacing.s),
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
@@ -54,26 +56,32 @@ fun CustomModalBottomSheet(
                 )
                 LazyColumn {
                     itemsIndexed(items = items) { idx, item ->
-                        Row(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        onSelected?.invoke(idx)
-                                    }.padding(
-                                        horizontal = Spacing.s,
-                                        vertical = Spacing.s,
-                                    ),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                        Surface(
+                            shape = RoundedCornerShape(CornerSize.xl),
                         ) {
-                            item.leadingContent?.invoke()
-                            Text(
-                                modifier = Modifier.weight(1f),
-                                text = item.label,
-                                style = item.customLabelStyle ?: MaterialTheme.typography.bodyLarge,
-                            )
-                            item.trailingContent?.invoke()
+                            Row(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            onSelected?.invoke(idx)
+                                        }.padding(
+                                            horizontal = Spacing.s,
+                                            vertical = Spacing.s,
+                                        ),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                            ) {
+                                item.leadingContent?.invoke()
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = item.label,
+                                    style =
+                                        item.customLabelStyle
+                                            ?: MaterialTheme.typography.bodyLarge,
+                                )
+                                item.trailingContent?.invoke()
+                            }
                         }
                     }
                 }
