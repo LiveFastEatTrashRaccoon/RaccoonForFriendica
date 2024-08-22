@@ -182,6 +182,15 @@ interface Strings {
     val visibilityCircle: String
     val selectCircleDialogTitle: String
     val messagePostInvalidVisibility: String
+    val settingsItemFontScale: String
+    val fontScaleNormal: String
+    val fontScaleSmaller: String
+    val fontScaleSmallest: String
+    val fontScaleLarger: String
+    val fontScaleLargest: String
+    val settingsItemUrlOpeningMode: String
+    val urlOpeningModeExternal: String
+    val urlOpeningModeCustomTabs: String
 }
 
 object Locales {
