@@ -69,7 +69,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toReadableName
@@ -92,7 +91,6 @@ class SearchScreen : Screen {
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val uriHandler = LocalUriHandler.current
-        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
         val scope = rememberCoroutineScope()
@@ -259,7 +257,7 @@ class SearchScreen : Screen {
                                         detailOpener.openEntryDetail(e.id)
                                     },
                                     onOpenUrl = { url ->
-                                        openUrl(url)
+                                        uriHandler.openUri(url)
                                     },
                                     onOpenUser = {
                                         detailOpener.openUserDetail(it.id)

@@ -72,7 +72,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toExploreSection
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toInt
@@ -96,7 +95,6 @@ class ExploreScreen : Screen {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val connection = navigationCoordinator.getBottomBarScrollConnection()
         val uriHandler = LocalUriHandler.current
-        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val scope = rememberCoroutineScope()
         val drawerCoordinator = remember { getDrawerCoordinator() }
@@ -274,7 +272,7 @@ class ExploreScreen : Screen {
                                         detailOpener.openEntryDetail(e.id)
                                     },
                                     onOpenUrl = { url ->
-                                        openUrl(url)
+                                        uriHandler.openUri(url)
                                     },
                                     onOpenUser = {
                                         detailOpener.openUserDetail(it.id)
@@ -383,7 +381,7 @@ class ExploreScreen : Screen {
                                 LinkItem(
                                     link = item.link,
                                     onOpen = { url ->
-                                        openUrl(url)
+                                        uriHandler.openUri(url)
                                     },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.interItem))

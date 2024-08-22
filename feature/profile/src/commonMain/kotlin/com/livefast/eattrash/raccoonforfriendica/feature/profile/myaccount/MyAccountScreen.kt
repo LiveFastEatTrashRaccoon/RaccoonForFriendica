@@ -60,7 +60,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDat
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -73,7 +72,6 @@ class MyAccountScreen : Screen {
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val uriHandler = LocalUriHandler.current
-        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
         val snackbarHostState = remember { SnackbarHostState() }
@@ -140,7 +138,7 @@ class MyAccountScreen : Screen {
                         UserHeader(
                             user = uiState.user,
                             onOpenUrl = { url ->
-                                openUrl(url)
+                                uriHandler.openUri(url)
                             },
                             onOpenFollowers = {
                                 uiState.user?.id?.also { userId ->
@@ -180,7 +178,7 @@ class MyAccountScreen : Screen {
                                 addAll(uiState.user?.fields.orEmpty())
                             },
                         onOpenUrl = { url ->
-                            openUrl(url)
+                            uriHandler.openUri(url)
                         },
                     )
                 }
@@ -226,7 +224,7 @@ class MyAccountScreen : Screen {
                             detailOpener.openEntryDetail(e.id)
                         },
                         onOpenUrl = { url ->
-                            openUrl(url)
+                            uriHandler.openUri(url)
                         },
                         onOpenUser = {
                             detailOpener.openUserDetail(it.id)

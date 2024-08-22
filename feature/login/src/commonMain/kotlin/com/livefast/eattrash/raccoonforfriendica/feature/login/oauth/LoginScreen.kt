@@ -50,8 +50,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -66,7 +64,6 @@ class LoginScreen : Screen {
         val snackbarHostState = remember { SnackbarHostState() }
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val uriHandler = LocalUriHandler.current
-        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val focusManager = LocalFocusManager.current
         val genericError = LocalStrings.current.messageGenericError
         val successMessage = LocalStrings.current.messageSuccess
@@ -76,10 +73,7 @@ class LoginScreen : Screen {
                 .onEach { event ->
                     when (event) {
                         is LoginMviModel.Effect.OpenUrl -> {
-                            openUrl(
-                                url = event.url,
-                                mode = UrlOpeningMode.CustomTabs,
-                            )
+                            uriHandler.openUri(event.url)
                         }
                         is LoginMviModel.Effect.Failure -> {
                             snackbarHostState.showSnackbar(

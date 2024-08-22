@@ -70,7 +70,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.composable.TimelineReplyItem
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parameterArrayOf
@@ -87,7 +86,6 @@ class ThreadScreen(
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val uriHandler = LocalUriHandler.current
-        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
         val scope = rememberCoroutineScope()
@@ -229,7 +227,7 @@ class ThreadScreen(
                                 reshareAndReplyVisible = false,
                                 blurNsfw = uiState.blurNsfw,
                                 onOpenUrl = { url ->
-                                    openUrl(url)
+                                    uriHandler.openUri(url)
                                 },
                                 onOpenUser = {
                                     detailOpener.openUserDetail(it.id)
@@ -306,7 +304,7 @@ class ThreadScreen(
                         TimelineReplyItem(
                             entry = entry,
                             onOpenUrl = { url ->
-                                openUrl(url)
+                                uriHandler.openUri(url)
                             },
                             onOpenUser = {
                                 detailOpener.openUserDetail(it.id)
