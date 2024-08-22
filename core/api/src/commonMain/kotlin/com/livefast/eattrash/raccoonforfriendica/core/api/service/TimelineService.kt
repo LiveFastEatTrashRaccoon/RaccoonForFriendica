@@ -28,4 +28,12 @@ interface TimelineService {
         @Query("min_id") minId: String? = null,
         @Query("limit") limit: Int = 20,
     ): List<Status>
+
+    @GET("v1/timelines/list/{list_id}")
+    suspend fun getList(
+        @Path("list_id") id: String,
+        @Query("max_id") maxId: String? = null,
+        @Query("min_id") minId: String? = null,
+        @Query("limit") limit: Int = 20,
+    ): List<Status>
 }

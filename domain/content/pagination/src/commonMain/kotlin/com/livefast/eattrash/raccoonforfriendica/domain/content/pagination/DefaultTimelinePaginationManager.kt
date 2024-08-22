@@ -43,6 +43,12 @@ internal class DefaultTimelinePaginationManager(
                             timelineRepository.getLocal(
                                 pageCursor = pageCursor,
                             )
+
+                        is TimelineType.Circle ->
+                            timelineRepository.getCircle(
+                                id = specification.timelineType.id,
+                                pageCursor = pageCursor,
+                            )
                     }.updatePaginationData().filterNsfw(specification.includeNsfw)
                 }
 

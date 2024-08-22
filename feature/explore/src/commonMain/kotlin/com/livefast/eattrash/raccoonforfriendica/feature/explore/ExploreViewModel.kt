@@ -15,7 +15,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -33,28 +32,31 @@ class ExploreViewModel(
     ExploreMviModel {
     init {
         screenModelScope.launch {
-            combine(
-                settingsRepository.current,
-                identityRepository.currentUser,
-            ) { settings, currentUser ->
-                settings to currentUser
-            }.onEach { (settings, currentUser) ->
-                updateState {
-                    it.copy(
-                        availableSections =
-                            buildList {
-                                this += ExploreSection.Hashtags
-                                this += ExploreSection.Posts
-                                this += ExploreSection.Links
-                                if (currentUser != null) {
-                                    this += ExploreSection.Suggestions
-                                }
-                            },
-                        blurNsfw = settings?.blurNsfw ?: true,
-                        currentUserId = currentUser?.id,
-                    )
-                }
-            }.launchIn(this)
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            blurNsfw = settings?.blurNsfw ?: true,
+                        )
+                    }
+                }.launchIn(this)
+            identityRepository.currentUser
+                .onEach { currentUser ->
+                    updateState {
+                        it.copy(
+                            availableSections =
+                                buildList {
+                                    this += ExploreSection.Hashtags
+                                    this += ExploreSection.Posts
+                                    this += ExploreSection.Links
+                                    if (currentUser != null) {
+                                        this += ExploreSection.Suggestions
+                                    }
+                                },
+                            currentUserId = currentUser?.id,
+                        )
+                    }
+                }.launchIn(this)
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
