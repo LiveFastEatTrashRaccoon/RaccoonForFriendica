@@ -2,10 +2,13 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiFontFamily
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.SettingsEntity
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toInt
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toUrlOpeningMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -36,11 +39,13 @@ private fun SettingsEntity.toModel() =
         lang = lang,
         theme = theme.toUiTheme(),
         fontFamily = fontFamily.toUiFontFamily(),
+        fontScale = fontScale.toUiFontScale(),
         dynamicColors = dynamicColors,
         customSeedColor = customSeedColor,
         defaultTimelineType = defaultTimelineType,
         blurNsfw = blurNsfw,
         includeNsfw = includeNsfw,
+        urlOpeningMode = urlOpeningMode.toUrlOpeningMode(),
     )
 
 private fun SettingsModel.toEntity() =
@@ -50,9 +55,11 @@ private fun SettingsModel.toEntity() =
         lang = lang,
         theme = theme.toInt(),
         fontFamily = fontFamily.toInt(),
+        fontScale = fontScale.toInt(),
         dynamicColors = dynamicColors,
         customSeedColor = customSeedColor,
         defaultTimelineType = defaultTimelineType,
         includeNsfw = includeNsfw,
         blurNsfw = blurNsfw,
+        urlOpeningMode = urlOpeningMode.toInt(),
     )
