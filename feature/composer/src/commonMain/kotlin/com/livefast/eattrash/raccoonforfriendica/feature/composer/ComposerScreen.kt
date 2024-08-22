@@ -51,12 +51,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InReplyToInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InsertLinkDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.MentionDialog
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SelectCircleDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -82,6 +84,7 @@ class ComposerScreen(
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val galleryHelper = remember { getGalleryHelper() }
         val missingDataError = LocalStrings.current.messagePostEmptyText
+        val invalidVisibilityError = LocalStrings.current.messagePostInvalidVisibility
         val genericError = LocalStrings.current.messageGenericError
         var openImagePicker by remember { mutableStateOf(false) }
         if (openImagePicker) {
@@ -92,6 +95,7 @@ class ComposerScreen(
         }
         var linkDialogOpen by remember { mutableStateOf(false) }
         var mentionDialogOpen by remember { mutableStateOf(false) }
+        var selectCircleDialogOpen by remember { mutableStateOf(false) }
         var attachmentWithDescriptionBeingEdited by remember { mutableStateOf<AttachmentModel?>(null) }
 
         LaunchedEffect(model) {
@@ -116,6 +120,10 @@ class ComposerScreen(
 
                         ComposerMviModel.Effect.ValidationError.TextOrImagesMandatory -> {
                             snackbarHostState.showSnackbar(message = missingDataError)
+                        }
+
+                        ComposerMviModel.Effect.ValidationError.InvalidVisibility -> {
+                            snackbarHostState.showSnackbar(message = invalidVisibilityError)
                         }
 
                         ComposerMviModel.Effect.Success -> {
@@ -203,8 +211,12 @@ class ComposerScreen(
                             author = uiState.author,
                             visibility = uiState.visibility,
                             availableVisibilities = uiState.availableVisibilities,
-                            onChangeVisibility = {
-                                model.reduce(ComposerMviModel.Intent.SetVisibility(it))
+                            onChangeVisibility = { visibility ->
+                                if (visibility is Visibility.Circle) {
+                                    selectCircleDialogOpen = true
+                                } else {
+                                    model.reduce(ComposerMviModel.Intent.SetVisibility(visibility))
+                                }
                             },
                         )
 
@@ -343,6 +355,25 @@ class ComposerScreen(
                         )
                     }
                     attachmentWithDescriptionBeingEdited = null
+                },
+            )
+        }
+
+        if (selectCircleDialogOpen) {
+            SelectCircleDialog(
+                circles = uiState.availableCircles,
+                onClose = { circle ->
+                    selectCircleDialogOpen = false
+                    if (circle != null) {
+                        model.reduce(
+                            ComposerMviModel.Intent.SetVisibility(
+                                Visibility.Circle(
+                                    id = circle.id,
+                                    name = circle.name,
+                                ),
+                            ),
+                        )
+                    }
                 },
             )
         }
