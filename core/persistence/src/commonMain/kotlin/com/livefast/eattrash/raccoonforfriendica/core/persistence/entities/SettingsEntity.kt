@@ -11,9 +11,11 @@ data class SettingsEntity(
     @ColumnInfo(defaultValue = "en") val lang: String = "en",
     @ColumnInfo(defaultValue = "0") val theme: Int = 0,
     @ColumnInfo(defaultValue = "0") val fontFamily: Int = 0,
+    @ColumnInfo(defaultValue = "0") val fontScale: Int = 0,
     @ColumnInfo(defaultValue = "0") val dynamicColors: Boolean = false,
     val customSeedColor: Int? = null,
     @ColumnInfo(defaultValue = "0") val defaultTimelineType: Int = 0,
     @ColumnInfo(defaultValue = "0") val includeNsfw: Boolean = false,
     @ColumnInfo(defaultValue = "0") val blurNsfw: Boolean = true,
+    @ColumnInfo(defaultValue = "0") val urlOpeningMode: Int = 0,
 )
