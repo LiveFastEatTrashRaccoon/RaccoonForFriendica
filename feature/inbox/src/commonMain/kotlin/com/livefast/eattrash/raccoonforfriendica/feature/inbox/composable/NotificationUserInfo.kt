@@ -30,6 +30,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Placeh
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserRelationshipButton
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
@@ -108,7 +109,7 @@ fun NotificationUserInfo(
                         color = fullColor,
                     )
                     Text(
-                        text = user.handle ?: user.username ?: "",
+                        text = (user.handle ?: user.username ?: "").ellipsize(25),
                         style = MaterialTheme.typography.titleMedium,
                         color = ancillaryColor,
                     )
@@ -138,6 +139,7 @@ fun NotificationUserInfo(
                     append(LocalStrings.current.accountFollowing(following))
                 }
             Text(
+                modifier = Modifier.padding(top = Spacing.s),
                 text = annotatedContent,
                 style = MaterialTheme.typography.labelMedium.copy(color = ancillaryColor),
             )
