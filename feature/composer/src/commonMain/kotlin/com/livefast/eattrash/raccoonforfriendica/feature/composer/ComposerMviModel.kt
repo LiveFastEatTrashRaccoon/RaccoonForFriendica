@@ -4,6 +4,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 
@@ -95,6 +96,7 @@ interface ComposerMviModel :
                 Visibility.Public,
                 Visibility.Unlisted,
                 Visibility.Private,
+                Visibility.Circle(),
             ),
         val sensitive: Boolean = false,
         val attachments: List<AttachmentModel> = emptyList(),
@@ -103,11 +105,14 @@ interface ComposerMviModel :
         val userSearchLoading: Boolean = false,
         val userSearchCanFetchMore: Boolean = true,
         val userSearchQuery: String = "",
+        val availableCircles: List<CircleModel> = emptyList(),
     )
 
     sealed interface Effect {
         sealed interface ValidationError : Effect {
             data object TextOrImagesMandatory : ValidationError
+
+            data object InvalidVisibility : ValidationError
         }
 
         data object Success : Effect

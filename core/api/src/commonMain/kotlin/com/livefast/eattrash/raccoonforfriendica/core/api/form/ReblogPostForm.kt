@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ReblogPostForm(
-    @SerialName("visibility") val visibility: ContentVisibility = ContentVisibility.PUBLIC,
+    @SerialName("visibility") val visibility: String = ContentVisibility.PUBLIC,
 )

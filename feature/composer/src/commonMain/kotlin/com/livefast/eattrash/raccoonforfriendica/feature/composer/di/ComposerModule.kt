@@ -14,6 +14,7 @@ val featureComposerModule =
                 accountRepository = get(),
                 userRepository = get(),
                 userPaginationManager = get(),
+                circlesRepository = get(),
             )
         }
     }

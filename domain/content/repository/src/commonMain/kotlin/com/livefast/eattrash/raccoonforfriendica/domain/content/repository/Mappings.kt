@@ -65,7 +65,7 @@ internal fun Status.toModel() =
         tags = tags.map { it.toModel() },
         updated = editedAt,
         url = url,
-        visibility = visibility.toModel(),
+        visibility = visibility.toVisibility(),
         title = addons?.title?.takeIf { it.isNotBlank() },
     )
 
@@ -93,20 +93,22 @@ internal fun MediaTypeDto.toModel(): MediaType =
         UNKNOWN -> MediaType.Unknown
     }
 
-internal fun ContentVisibility.toModel(): Visibility =
+internal fun String.toVisibility(): Visibility =
     when (this) {
         ContentVisibility.PUBLIC -> Visibility.Public
         ContentVisibility.UNLISTED -> Visibility.Unlisted
         ContentVisibility.PRIVATE -> Visibility.Private
         ContentVisibility.DIRECT -> Visibility.Direct
+        else -> Visibility.Circle(id = this)
     }
 
-internal fun Visibility.toDto(): ContentVisibility =
+internal fun Visibility.toDto(): String =
     when (this) {
         Visibility.Direct -> ContentVisibility.DIRECT
         Visibility.Private -> ContentVisibility.PRIVATE
         Visibility.Public -> ContentVisibility.PUBLIC
         Visibility.Unlisted -> ContentVisibility.UNLISTED
+        is Visibility.Circle -> id.orEmpty()
     }
 
 internal fun Account.toModel() =
@@ -230,7 +232,7 @@ internal fun CircleReplyPolicy.toDto(): String =
         CircleReplyPolicy.Follow -> "follow"
         CircleReplyPolicy.List -> "list"
         CircleReplyPolicy.None -> "none"
-}
+    }
 
 internal fun UserList.toModel() =
     CircleModel(

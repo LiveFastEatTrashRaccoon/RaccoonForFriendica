@@ -7,8 +7,10 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -33,6 +35,7 @@ class ComposerViewModel(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val photoRepository: PhotoRepository,
     private val userPaginationManager: UserPaginationManager,
+    private val circlesRepository: CirclesRepository,
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
         initialState = ComposerMviModel.State(),
     ),
@@ -42,7 +45,6 @@ class ComposerViewModel(
 
     init {
         screenModelScope.launch {
-            refreshAuthor()
             uiState
                 .map { it.userSearchQuery }
                 .distinctUntilChanged()
@@ -51,6 +53,9 @@ class ComposerViewModel(
                 .onEach { query ->
                     refreshUsers(query)
                 }.launchIn(this)
+
+            refreshAuthor()
+            loadAvailableCircles()
         }
     }
 
@@ -66,6 +71,11 @@ class ComposerViewModel(
         val handle = accountRepository.getActive()?.handle.orEmpty()
         val currentAccount = userRepository.getByHandle(handle)
         updateState { it.copy(author = currentAccount) }
+    }
+
+    private suspend fun loadAvailableCircles() {
+        val circles = circlesRepository.getAll()
+        updateState { it.copy(availableCircles = circles) }
     }
 
     override fun reduce(intent: ComposerMviModel.Intent) {
@@ -327,11 +337,28 @@ class ComposerViewModel(
         val id = editedPostId ?: return
         screenModelScope.launch {
             val entry = timelineEntryRepository.getById(id)
+            val visibility =
+                entry?.visibility.let { visibility ->
+                    when (visibility) {
+                        is Visibility.Circle ->
+                            visibility.id
+                                ?.let { circleId -> circlesRepository.get(circleId) }
+                                ?.let { circle ->
+                                    Visibility.Circle(id = circle.id, name = circle.name)
+                                }
+
+                        else -> {
+                            visibility
+                        }
+                    }
+                } ?: Visibility.Public
+
             updateState {
                 it.copy(
                     bodyValue = TextFieldValue(text = entry?.content.orEmpty()),
                     sensitive = entry?.sensitive ?: false,
                     attachments = entry?.attachments.orEmpty(),
+                    visibility = visibility,
                 )
             }
         }
@@ -346,11 +373,17 @@ class ComposerViewModel(
         val text = currentState.bodyValue.text
         // use the mediaId for this call otherwise the backend returns a 500
         val attachmentIds = currentState.attachments.map { it.mediaId }
+        val visibility = currentState.visibility
         val key = getUuid()
 
         screenModelScope.launch {
             if (text.isBlank() && attachmentIds.isEmpty()) {
                 emitEffect(ComposerMviModel.Effect.ValidationError.TextOrImagesMandatory)
+                return@launch
+            }
+
+            if (visibility is Visibility.Circle && visibility.id == null) {
+                emitEffect(ComposerMviModel.Effect.ValidationError.InvalidVisibility)
                 return@launch
             }
 
@@ -365,7 +398,7 @@ class ComposerViewModel(
                             inReplyTo = inReplyToId,
                             spoilerText = currentState.spoilerText,
                             sensitive = currentState.sensitive,
-                            visibility = currentState.visibility,
+                            visibility = visibility,
                             lang = currentState.lang,
                             mediaIds = attachmentIds,
                         )

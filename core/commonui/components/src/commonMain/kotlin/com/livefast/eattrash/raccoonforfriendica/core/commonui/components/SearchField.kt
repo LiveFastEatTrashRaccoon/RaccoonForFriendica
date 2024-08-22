@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -44,6 +45,7 @@ fun SearchField(
     hintTextStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     value: String,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    backgroundColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
     onValueChange: (String) -> Unit,
     onClear: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
@@ -81,7 +83,7 @@ fun SearchField(
                     modifier =
                         Modifier
                             .background(
-                                color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
+                                color = backgroundColor,
                                 shape =
                                     with(LocalDensity.current) {
                                         RoundedCornerShape((height / 2).toDp())

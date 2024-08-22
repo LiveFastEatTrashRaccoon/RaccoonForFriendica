@@ -30,6 +30,6 @@ data class Status(
     @SerialName("spoiler_text") val spoiler: String? = null,
     @SerialName("tags") val tags: List<Tag> = emptyList(),
     @SerialName("url") val url: String? = null,
-    @SerialName("visibility") val visibility: ContentVisibility = ContentVisibility.PUBLIC,
+    @SerialName("visibility") val visibility: String = ContentVisibility.PUBLIC,
     @SerialName("friendica") val addons: StatusAddons? = null,
 )
