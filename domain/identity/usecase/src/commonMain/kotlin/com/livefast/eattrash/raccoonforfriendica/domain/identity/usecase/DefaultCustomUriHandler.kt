@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,34 +14,34 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-internal class DefaultOpenUrlUseCase(
+internal class DefaultCustomUriHandler(
     private val defaultHandler: UriHandler,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val userRepository: UserRepository,
     private val detailOpener: DetailOpener,
     private val customTabsHelper: CustomTabsHelper,
+    private val settingsRepository: SettingsRepository,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : OpenUrlUseCase {
+) : CustomUriHandler {
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
-    override operator fun invoke(
-        url: String,
-        mode: UrlOpeningMode,
-    ) {
+    override fun openUri(uri: String) {
         val currentNode = apiConfigurationRepository.node.value
         val tagPrefix = "https://$currentNode/search?tag="
         val profilePrefix = "https://$currentNode/profile/"
+        val urlOpeningMode =
+            settingsRepository.current.value?.urlOpeningMode ?: UrlOpeningMode.External
 
         when {
-            url.startsWith(tagPrefix) -> {
-                val tag = url.replace(tagPrefix, "")
+            uri.startsWith(tagPrefix) -> {
+                val tag = uri.replace(tagPrefix, "")
                 detailOpener.openHashtag(tag)
             }
 
-            url.startsWith(profilePrefix) -> {
+            uri.startsWith(profilePrefix) -> {
                 val handle =
                     buildString {
-                        append(url.replace(profilePrefix, ""))
+                        append(uri.replace(profilePrefix, ""))
                         append("@")
                         append(currentNode)
                     }
@@ -49,13 +50,13 @@ internal class DefaultOpenUrlUseCase(
                     if (userId != null) {
                         detailOpener.openUserDetail(userId.id)
                     } else {
-                        openUrl(url = url, mode = mode)
+                        openUrl(url = uri, mode = urlOpeningMode)
                     }
                 }
             }
 
-            EXTERNAL_USER_REGEX.matches(url) -> {
-                EXTERNAL_USER_REGEX.find(url)?.groups?.also { group ->
+            EXTERNAL_USER_REGEX.matches(uri) -> {
+                EXTERNAL_USER_REGEX.find(uri)?.groups?.also { group ->
                     val (node, user) = group["instance"]?.value.orEmpty() to group["detail"]?.value.orEmpty()
                     scope.launch {
                         val handle = "$user@$node"
@@ -63,13 +64,13 @@ internal class DefaultOpenUrlUseCase(
                         if (userId != null) {
                             detailOpener.openUserDetail(userId.id)
                         } else {
-                            openUrl(url = url, mode = mode)
+                            openUrl(url = uri, mode = urlOpeningMode)
                         }
                     }
                 }
             }
 
-            else -> openUrl(url = url, mode = mode)
+            else -> openUrl(url = uri, mode = urlOpeningMode)
         }
     }
 

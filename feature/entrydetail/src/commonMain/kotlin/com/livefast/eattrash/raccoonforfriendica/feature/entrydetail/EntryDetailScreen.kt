@@ -67,7 +67,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -88,7 +87,6 @@ class EntryDetailScreen(
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val uriHandler = LocalUriHandler.current
-        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
         val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
@@ -240,7 +238,7 @@ class EntryDetailScreen(
                             extendedSocialInfoEnabled = (entry.id == id),
                             blurNsfw = uiState.blurNsfw,
                             onOpenUrl = { url ->
-                                openUrl(url)
+                                uriHandler.openUri(url)
                             },
                             onClick = { e ->
                                 if (e.id != id) {

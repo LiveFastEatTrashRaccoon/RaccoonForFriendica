@@ -78,7 +78,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -94,7 +93,6 @@ class TimelineScreen : Screen {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val connection = navigationCoordinator.getBottomBarScrollConnection()
         val uriHandler = LocalUriHandler.current
-        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val scope = rememberCoroutineScope()
         val drawerCoordinator = remember { getDrawerCoordinator() }
@@ -258,7 +256,7 @@ class TimelineScreen : Screen {
                                 detailOpener.openEntryDetail(e.id)
                             },
                             onOpenUrl = { url ->
-                                openUrl(url)
+                                uriHandler.openUri(url)
                             },
                             onOpenUser = {
                                 detailOpener.openUserDetail(it.id)

@@ -68,7 +68,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
@@ -90,7 +89,6 @@ class ForumListScreen(
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val uriHandler = LocalUriHandler.current
-        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
         val scope = rememberCoroutineScope()
@@ -232,7 +230,7 @@ class ForumListScreen(
                                 detailOpener.openThread(e.id)
                             },
                             onOpenUrl = { url ->
-                                openUrl(url)
+                                uriHandler.openUri(url)
                             },
                             onOpenUser = {
                                 detailOpener.openUserDetail(it.id)

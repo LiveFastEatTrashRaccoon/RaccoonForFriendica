@@ -34,13 +34,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getAppInfoRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutDialog(onClose: (() -> Unit)? = null) {
     val uriHandler = LocalUriHandler.current
-    val openUrl = remember { getOpenUrlUseCase(uriHandler) }
     val appInfoRepository = remember { getAppInfoRepository() }
     val appInfo by appInfoRepository.appInfo.collectAsState()
 
@@ -82,14 +80,14 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                         icon = Icons.AutoMirrored.Default.Article,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
-                            openUrl(AboutConstants.CHANGELOG_URL)
+                            uriHandler.openUri(AboutConstants.CHANGELOG_URL)
                         },
                     )
                 }
                 item {
                     Button(
                         onClick = {
-                            openUrl(AboutConstants.REPORT_URL)
+                            uriHandler.openUri(AboutConstants.REPORT_URL)
                         },
                     ) {
                         Text(
@@ -105,7 +103,7 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                         text = LocalStrings.current.settingsAboutViewGithub,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
-                            openUrl(AboutConstants.WEBSITE_URL)
+                            uriHandler.openUri(AboutConstants.WEBSITE_URL)
                         },
                     )
                 }
@@ -115,7 +113,7 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                         text = LocalStrings.current.settingsAboutViewFriendica,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
-                            openUrl(AboutConstants.GROUP_URL)
+                            uriHandler.openUri(AboutConstants.GROUP_URL)
                         },
                     )
                 }

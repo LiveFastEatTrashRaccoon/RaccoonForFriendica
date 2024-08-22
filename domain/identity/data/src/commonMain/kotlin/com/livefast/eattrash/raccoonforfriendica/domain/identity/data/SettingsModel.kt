@@ -9,9 +9,11 @@ data class SettingsModel(
     val lang: String = "en",
     val theme: UiTheme = UiTheme.Default,
     val fontFamily: UiFontFamily = UiFontFamily.Default,
+    val fontScale: Float = 1f,
     val dynamicColors: Boolean = false,
     val customSeedColor: Int? = null,
     val defaultTimelineType: Int = 0,
     val includeNsfw: Boolean = false,
     val blurNsfw: Boolean = true,
+    val urlOpeningMode: UrlOpeningMode = UrlOpeningMode.External,
 )

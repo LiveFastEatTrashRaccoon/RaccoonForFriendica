@@ -51,7 +51,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getOpenUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItem
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItemPlaceholder
 import kotlinx.coroutines.flow.launchIn
@@ -69,7 +68,6 @@ class InboxScreen : Screen {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val connection = navigationCoordinator.getBottomBarScrollConnection()
         val uriHandler = LocalUriHandler.current
-        val openUrl = remember { getOpenUrlUseCase(uriHandler) }
         val detailOpener = remember { getDetailOpener() }
         val scope = rememberCoroutineScope()
         val drawerCoordinator = remember { getDrawerCoordinator() }
@@ -165,7 +163,7 @@ class InboxScreen : Screen {
                                 detailOpener.openEntryDetail(entry.id)
                             },
                             onOpenUrl = { url ->
-                                openUrl(url)
+                                uriHandler.openUri(url)
                             },
                             onOpenUser = {
                                 detailOpener.openUserDetail(it.id)

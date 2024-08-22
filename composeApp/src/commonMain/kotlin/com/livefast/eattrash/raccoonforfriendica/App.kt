@@ -25,6 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoo
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getSettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ProvideCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
 import com.livefast.eattrash.raccoonforfriendica.main.MainScreen
@@ -109,47 +110,48 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
     AppTheme(
         useDynamicColors = currentSettings?.dynamicColors ?: false,
     ) {
-        ProvideStrings(
+        ProvideCustomUriHandler {
+            ProvideStrings(
                 lyricist = l10nManager.lyricist,
             ) {
                 ModalNavigationDrawer(
-                modifier =
-                    Modifier.fillMaxSize(),
-                drawerState = drawerState,
-                gesturesEnabled = drawerGesturesEnabled,
-                drawerContent = {
-                    ModalDrawerSheet {
-                        Navigator(DrawerContent())
-                    }
-                },
-            ) {
-                Navigator(
-                    screen = MainScreen,
-                    onBackPressed = {
-                        // if the drawer is open, closes it
-                        if (drawerCoordinator.drawerOpened.value) {
-                            scope.launch {
-                                drawerCoordinator.toggleDrawer()
+                    modifier = Modifier.fillMaxSize(),
+                    drawerState = drawerState,
+                    gesturesEnabled = drawerGesturesEnabled,
+                    drawerContent = {
+                        ModalDrawerSheet {
+                            Navigator(DrawerContent())
+                        }
+                    },
+                ) {
+                    Navigator(
+                        screen = MainScreen,
+                        onBackPressed = {
+                            // if the drawer is open, closes it
+                            if (drawerCoordinator.drawerOpened.value) {
+                                scope.launch {
+                                    drawerCoordinator.toggleDrawer()
+                                }
+                                return@Navigator false
                             }
-                            return@Navigator false
+
+                            true
+                        },
+                    ) { navigator ->
+                        LaunchedEffect(navigationCoordinator) {
+                            navigationCoordinator.setRootNavigator(navigator)
                         }
 
-                        true
-                    },
-                ) { navigator ->
-                    LaunchedEffect(navigationCoordinator) {
-                        navigationCoordinator.setRootNavigator(navigator)
-                    }
-
-                    ModalNavigationDrawer(
-                        modifier = Modifier.fillMaxSize(),
-                        drawerState = drawerState,
-                        gesturesEnabled = drawerGesturesEnabled,
-                        drawerContent = {
-                            Navigator(DrawerContent())
-                        },
-                    ) {
-                        CurrentScreen()
+                        ModalNavigationDrawer(
+                            modifier = Modifier.fillMaxSize(),
+                            drawerState = drawerState,
+                            gesturesEnabled = drawerGesturesEnabled,
+                            drawerContent = {
+                                Navigator(DrawerContent())
+                            },
+                        ) {
+                            CurrentScreen()
+                        }
                     }
                 }
             }
