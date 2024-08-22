@@ -29,6 +29,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -181,7 +182,7 @@ fun UserHeader(
                         color = fullColor,
                     )
                     Text(
-                        text = user?.handle ?: user?.username ?: "",
+                        text = (user?.handle ?: user?.username ?: "").ellipsize(25),
                         style = MaterialTheme.typography.titleMedium,
                         color = ancillaryColor,
                     )
