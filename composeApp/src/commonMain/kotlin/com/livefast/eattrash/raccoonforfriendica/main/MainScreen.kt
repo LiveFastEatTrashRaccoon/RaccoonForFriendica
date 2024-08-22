@@ -34,6 +34,7 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigationItem
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.HomeTab
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.toTab
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -49,6 +50,7 @@ object MainScreen : Screen {
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val currentSection by navigationCoordinator.currentSection.collectAsState()
         val snackbarHostState = remember { SnackbarHostState() }
+        val maxTopInsetPx = with(LocalDensity.current) { Dimensions.maxTopBarInset.toPx() }
         var bottomBarHeightPx by remember { mutableStateOf(0f) }
         val bottomNavigationInsetPx =
             with(LocalDensity.current) {
@@ -68,7 +70,7 @@ object MainScreen : Screen {
                         val delta = available.y
                         val newOffset =
                             (uiState.bottomBarOffsetHeightPx + delta).coerceIn(
-                                -(bottomBarHeightPx + bottomNavigationInsetPx),
+                                -(bottomBarHeightPx + bottomNavigationInsetPx + maxTopInsetPx),
                                 0f,
                             )
                         model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(newOffset))

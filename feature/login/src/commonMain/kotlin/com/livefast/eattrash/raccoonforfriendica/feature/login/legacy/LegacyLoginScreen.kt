@@ -33,6 +33,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -56,6 +58,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.autofill
@@ -70,6 +73,8 @@ class LegacyLoginScreen : Screen {
     override fun Content() {
         val model = getScreenModel<LegacyLoginMviModel>()
         val uiState by model.uiState.collectAsState()
+        val topAppBarState = rememberTopAppBarState()
+        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val snackbarHostState = remember { SnackbarHostState() }
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val genericError = LocalStrings.current.messageGenericError
@@ -103,6 +108,8 @@ class LegacyLoginScreen : Screen {
             modifier = Modifier.navigationBarsPadding(),
             topBar = {
                 TopAppBar(
+                    windowInsets = topAppBarState.toWindowInsets(),
+                    scrollBehavior = scrollBehavior,
                     title = {
                         Text(
                             text = LocalStrings.current.loginTitle,

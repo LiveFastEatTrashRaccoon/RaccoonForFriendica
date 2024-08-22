@@ -94,7 +94,9 @@ class DrawerContent : Screen {
                 )
             }
 
-            HorizontalDivider()
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = Spacing.xs),
+            )
 
             DrawerShortcut(
                 title = LocalStrings.current.settingsTitle,

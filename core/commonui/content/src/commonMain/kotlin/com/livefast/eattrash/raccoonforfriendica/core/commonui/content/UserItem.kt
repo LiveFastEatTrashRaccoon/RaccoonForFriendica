@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,7 +59,10 @@ fun UserItem(
     Row(
         modifier =
             modifier
-                .clickable {
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) {
                     onClick?.invoke()
                 }.padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
