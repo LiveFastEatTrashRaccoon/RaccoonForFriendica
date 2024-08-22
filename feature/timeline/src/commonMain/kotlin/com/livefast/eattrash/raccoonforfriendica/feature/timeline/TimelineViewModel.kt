@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineTyp
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -23,6 +24,7 @@ class TimelineViewModel(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository,
+    private val circlesRepository: CirclesRepository,
     private val hapticFeedback: HapticFeedback,
 ) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
         initialState = TimelineMviModel.State(),
@@ -30,27 +32,39 @@ class TimelineViewModel(
     TimelineMviModel {
     init {
         screenModelScope.launch {
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            timelineType = settings?.defaultTimelineType?.toTimelineType(),
+                            blurNsfw = settings?.blurNsfw ?: true,
+                        )
+                    }
+                }.launchIn(this)
+            identityRepository.currentUser
+                .onEach { currentUser ->
+                    val circles = circlesRepository.getAll()
+                    val timelineTypes =
+                        buildList {
+                            this += TimelineType.All
+                            if (currentUser != null) {
+                                this += TimelineType.Subscriptions
+                            }
+                            this += TimelineType.Local
+                            this.addAll(circles.map { TimelineType.Circle(it.id, it.name) })
+                        }
+                    updateState {
+                        it.copy(
+                            availableTimelineTypes = timelineTypes,
+                            currentUserId = currentUser?.id,
+                        )
+                    }
+                }.launchIn(this)
+
             combine(
                 settingsRepository.current,
                 identityRepository.currentUser,
-            ) { settings, currentUser ->
-                settings to currentUser
-            }.onEach { (settings, currentUser) ->
-                updateState {
-                    it.copy(
-                        availableTimelineTypes =
-                            buildList {
-                                this += TimelineType.All
-                                if (currentUser != null) {
-                                    this += TimelineType.Subscriptions
-                                }
-                                this += TimelineType.Local
-                            },
-                        timelineType = settings?.defaultTimelineType?.toTimelineType(),
-                        blurNsfw = settings?.blurNsfw ?: true,
-                        currentUserId = currentUser?.id,
-                    )
-                }
+            ) { _, _ ->
                 refresh(initial = true)
             }.launchIn(this)
         }
