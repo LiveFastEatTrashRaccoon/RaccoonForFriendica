@@ -1,5 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.data
 
+import androidx.compose.runtime.Composable
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+
 sealed interface UrlOpeningMode {
     data object External : UrlOpeningMode
 
@@ -10,10 +13,17 @@ fun Int.toUrlOpeningMode(): UrlOpeningMode =
     when (this) {
         1 -> UrlOpeningMode.CustomTabs
         else -> UrlOpeningMode.External
-}
+    }
 
 fun UrlOpeningMode.toInt(): Int =
     when (this) {
         UrlOpeningMode.CustomTabs -> 1
         UrlOpeningMode.External -> 0
-}
+    }
+
+@Composable
+fun UrlOpeningMode.toReadableName(): String =
+    when (this) {
+        UrlOpeningMode.CustomTabs -> LocalStrings.current.urlOpeningModeCustomTabs
+        UrlOpeningMode.External -> LocalStrings.current.urlOpeningModeExternal
+    }
