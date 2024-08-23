@@ -70,6 +70,11 @@ interface SearchMviModel :
         data class TogglePin(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class SubmitPollVote(
+            val entry: TimelineEntryModel,
+            val choices: List<Int>,
+        ) : Intent
     }
 
     data class State(
@@ -86,5 +91,7 @@ interface SearchMviModel :
 
     sealed interface Effect {
         data object BackToTop : Effect
+
+        data object PollVoteFailure : Effect
     }
 }

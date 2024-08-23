@@ -56,6 +56,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Sectio
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.FollowHashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
@@ -104,6 +105,7 @@ class SearchScreen : Screen {
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var pollErrorDialogOpened by remember { mutableStateOf(false) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -118,6 +120,7 @@ class SearchScreen : Screen {
                 .onEach { event ->
                     when (event) {
                         SearchMviModel.Effect.BackToTop -> goBackToTop()
+                        SearchMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
                     }
                 }.launchIn(this)
         }
@@ -282,6 +285,14 @@ class SearchScreen : Screen {
                                                 e.creator?.let {
                                                     it.displayName ?: it.username
                                                 },
+                                        )
+                                    },
+                                    onPollVote = { e, choices ->
+                                        model.reduce(
+                                            SearchMviModel.Intent.SubmitPollVote(
+                                                entry = e,
+                                                choices = choices,
+                                            ),
                                         )
                                     },
                                     options =
@@ -715,6 +726,14 @@ class SearchScreen : Screen {
                     ) {
                         Text(text = LocalStrings.current.buttonConfirm)
                     }
+                },
+            )
+        }
+
+        if (pollErrorDialogOpened) {
+            PollVoteErrorDialog(
+                onDismissRequest = {
+                    pollErrorDialogOpened = false
                 },
             )
         }
