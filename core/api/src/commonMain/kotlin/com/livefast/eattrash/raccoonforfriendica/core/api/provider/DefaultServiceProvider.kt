@@ -4,12 +4,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.PollService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.SearchService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.StatusService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TagsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.converter.ResponseConverterFactory
@@ -30,9 +32,9 @@ import kotlinx.serialization.json.Json
 
 internal class DefaultServiceProvider(
     private val factory: HttpClientEngine = provideHttpClientEngine(),
+    private val appInfoRepository: AppInfoRepository,
 ) : ServiceProvider {
     companion object {
-        private const val ENABLE_LOGGING = false
         private const val REAM_NAME = "Friendica"
     }
 
@@ -42,6 +44,7 @@ internal class DefaultServiceProvider(
     override lateinit var lists: ListService
     override lateinit var photo: PhotoService
     override lateinit var notifications: NotificationService
+    override lateinit var polls: PollService
     override lateinit var search: SearchService
     override lateinit var statuses: StatusService
     override lateinit var tags: TagsService
@@ -105,7 +108,7 @@ internal class DefaultServiceProvider(
                         else -> Unit
                     }
                 }
-                if (ENABLE_LOGGING) {
+                if (appInfoRepository.appInfo.value?.isDebug == true) {
                     install(Logging) {
                         logger = defaultLogger
                         level = LogLevel.ALL
@@ -131,6 +134,7 @@ internal class DefaultServiceProvider(
         lists = ktorfit.create()
         photo = ktorfit.create()
         notifications = ktorfit.create()
+        polls = ktorfit.create()
         search = ktorfit.create()
         statuses = ktorfit.create()
         tags = ktorfit.create()

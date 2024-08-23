@@ -41,6 +41,11 @@ interface ThreadMviModel :
             val userId: String,
             val entryId: String,
         ) : Intent
+
+        data class SubmitPollVote(
+            val entry: TimelineEntryModel,
+            val choices: List<Int>,
+        ) : Intent
     }
 
     data class State(
@@ -54,5 +59,7 @@ interface ThreadMviModel :
         val blurNsfw: Boolean = true,
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object PollVoteFailure : Effect
+    }
 }

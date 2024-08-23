@@ -58,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
@@ -99,6 +100,7 @@ class EntryDetailScreen(
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var pollErrorDialogOpened by remember { mutableStateOf(false) }
 
         fun goBackToTop() {
             runCatching {
@@ -115,9 +117,9 @@ class EntryDetailScreen(
                 .onEach { event ->
                     when (event) {
                         is EntryDetailMviModel.Effect.ScrollToItem ->
-                            runCatching {
-                                lazyListState.scrollToItem(event.index)
-                            }
+                            runCatching { lazyListState.scrollToItem(event.index) }
+
+                        EntryDetailMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
                     }
                 }.launchIn(this)
         }
@@ -280,6 +282,14 @@ class EntryDetailScreen(
                                         e.creator?.let {
                                             it.displayName ?: it.username
                                         },
+                                )
+                            },
+                            onPollVote = { e, choices ->
+                                model.reduce(
+                                    EntryDetailMviModel.Intent.SubmitPollVote(
+                                        entry = e,
+                                        choices = choices,
+                                    ),
                                 )
                             },
                             options =
@@ -502,6 +512,14 @@ class EntryDetailScreen(
                     ) {
                         Text(text = LocalStrings.current.buttonConfirm)
                     }
+                },
+            )
+        }
+
+        if (pollErrorDialogOpened) {
+            PollVoteErrorDialog(
+                onDismissRequest = {
+                    pollErrorDialogOpened = false
                 },
             )
         }

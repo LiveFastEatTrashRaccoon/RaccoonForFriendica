@@ -1,14 +1,28 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.datetime
 
+import kotlin.time.Duration
+
+/**
+ * Get the timestamp (in millis) for the current moment from the beginning of the epoch.
+ */
 expect fun epochMillis(): Long
 
+/**
+ * Convert from a timestamp (in milliseconds) to an ISO-8601 string date.
+ */
 expect fun Long.toIso8601Timestamp(): String?
 
+/**
+ * Represents a date with a given format.
+ */
 expect fun getFormattedDate(
     iso8601Timestamp: String,
     format: String,
 ): String
 
+/**
+ * Format the amount of type elapsed from a date until now.
+ */
 expect fun getPrettyDate(
     iso8601Timestamp: String,
     yearLabel: String,
@@ -18,3 +32,8 @@ expect fun getPrettyDate(
     minuteLabel: String,
     secondLabel: String,
 ): String
+
+/**
+ * Get the time from now to a future date.
+ */
+expect fun getDurationSinceDate(iso8601Timestamp: String): Duration?

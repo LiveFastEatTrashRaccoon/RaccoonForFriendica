@@ -12,6 +12,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.IMAGE
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.UNKNOWN
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.VIDEO
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Poll
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PollOption
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
@@ -28,6 +30,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
@@ -67,6 +71,7 @@ internal fun Status.toModel() =
         url = url,
         visibility = visibility.toVisibility(),
         title = addons?.title?.takeIf { it.isNotBlank() },
+        poll = poll?.toModel(),
     )
 
 internal fun StatusContext.toModel() =
@@ -240,4 +245,23 @@ internal fun UserList.toModel() =
         id = id,
         exclusive = exclusive,
         replyPolicy = repliesPolicy?.toModel() ?: CircleReplyPolicy.List,
+    )
+
+internal fun Poll.toModel() =
+    PollModel(
+        id = id,
+        expiresAt = expiresAt,
+        expired = expired,
+        multiple = multiple,
+        votes = votesCount ?: 0,
+        voters = votersCount ?: 0,
+        options = options.map { it.toModel() },
+        voted = voted,
+        ownVotes = ownVotes,
+    )
+
+internal fun PollOption.toModel() =
+    PollOptionModel(
+        title = title,
+        votes = votesCount,
     )

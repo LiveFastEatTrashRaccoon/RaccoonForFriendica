@@ -42,6 +42,11 @@ interface EntryDetailMviModel :
         data class TogglePin(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class SubmitPollVote(
+            val entry: TimelineEntryModel,
+            val choices: List<Int>,
+        ) : Intent
     }
 
     data class State(
@@ -57,5 +62,7 @@ interface EntryDetailMviModel :
         data class ScrollToItem(
             val index: Int,
         ) : Effect
+
+        data object PollVoteFailure : Effect
     }
 }

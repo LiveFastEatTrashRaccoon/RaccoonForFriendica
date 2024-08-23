@@ -70,6 +70,7 @@ class FavoritesViewModel(
                     entryId = intent.entryId,
                 )
             is FavoritesMviModel.Intent.TogglePin -> togglePin(intent.entry)
+            is FavoritesMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
         }
     }
 
@@ -294,6 +295,27 @@ class FavoritesViewModel(
                         pinned = newEntry.pinned,
                     )
                 }
+            }
+        }
+    }
+
+    private fun submitPoll(
+        entry: TimelineEntryModel,
+        choices: List<Int>,
+    ) {
+        val poll = entry.poll ?: return
+        screenModelScope.launch {
+            updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
+            val newPoll =
+                timelineEntryRepository.submitPoll(
+                    pollId = poll.id,
+                    choices = choices,
+                )
+            if (newPoll != null) {
+                updateEntryInState(entry.id) { it.copy(poll = newPoll) }
+            } else {
+                updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
+                emitEffect(FavoritesMviModel.Effect.PollVoteFailure)
             }
         }
     }

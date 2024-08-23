@@ -16,6 +16,10 @@ import platform.Foundation.NSTimeZone
 import platform.Foundation.autoupdatingCurrentLocale
 import platform.Foundation.localTimeZone
 import platform.Foundation.timeIntervalSince1970
+import platform.Foundation.timeIntervalSinceDate
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 actual fun epochMillis(): Long = (NSDate().timeIntervalSince1970 * 1000).toLong()
 
@@ -106,6 +110,12 @@ actual fun getPrettyDate(
                 append(" ${delta.second}$secondLabel")
             }
     }
+}
+
+actual fun getDurationSinceDate(iso8601Timestamp: String): Duration? {
+    val date = getDateFromIso8601Timestamp(iso8601Timestamp)
+    val interval = date?.timeIntervalSinceDate(NSDate())
+    return interval?.toDuration(DurationUnit.SECONDS)
 }
 
 private fun getDateFromIso8601Timestamp(string: String): NSDate? = NSISO8601DateFormatter().dateFromString(string)

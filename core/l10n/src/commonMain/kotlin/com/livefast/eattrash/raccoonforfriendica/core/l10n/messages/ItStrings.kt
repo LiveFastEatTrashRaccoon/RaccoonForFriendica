@@ -206,4 +206,21 @@ internal val ItStrings =
         override val settingsItemUrlOpeningMode = "Modalità apertura URL"
         override val urlOpeningModeExternal = "Browser esterno"
         override val urlOpeningModeCustomTabs = "Schede personalizzate"
+        override val dialogErrorTitle = "Ops... "
+        override val messagePollVoteErrorBody =
+            "Purtroppo sono solo uno sviluppatore mobile e non posso aggiungere metodi mancanti al back-end!\nDai un'occhiata alla segnalazione e metti un 👍 in modo che gli sviluppatori sappiano che può valere la pena di implementarlo."
+        override val buttonPollErrorOpenIssue = "Vedi su GitHub"
+        override val actionVote = "Vota"
+        override val pollExpired = "Chiuso"
+        override val shortUnavailable = "N/D"
+
+        override fun pollVote(count: Int): String =
+            when (count) {
+                1 -> "voto"
+                else -> "voti"
+            }
+
+        override val pollExpiresIn = "Si chiude tra"
+        override val actionHideResults = "Mostra risultati"
+        override val actionShowResults = "Nascondi risultati"
     }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -12,17 +13,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
 @Composable
-fun TwoStateFollowButton(
-    following: Boolean,
+fun TwoStateButton(
+    label: String,
+    prominentLabel: String = label,
     modifier: Modifier = Modifier,
+    isProminent: Boolean = false,
     pending: Boolean = false,
-    onClick: ((Boolean) -> Unit)? = null,
+    prominentColor: Color = ButtonDefaults.buttonColors().contentColor,
+    onValueChange: ((Boolean) -> Unit)? = null,
 ) {
     val buttonContent = @Composable {
         Row(
@@ -37,24 +41,23 @@ fun TwoStateFollowButton(
                 )
             }
             Text(
-                if (following) {
-                    LocalStrings.current.actionUnfollow
-                } else {
-                    LocalStrings.current.actionFollow
-                },
+                text =
+                    if (isProminent) {
+                        prominentLabel
+                    } else {
+                        label
+                    },
             )
         }
     }
     val buttonPadding =
         PaddingValues(horizontal = Spacing.l, vertical = 0.dp)
-    val isProminent = !following
     if (isProminent) {
         Button(
+            colors = ButtonDefaults.buttonColors().copy(contentColor = prominentColor),
             contentPadding = buttonPadding,
             onClick = {
-                if (!pending) {
-                    onClick?.invoke(!following)
-                }
+                onValueChange?.invoke(!isProminent)
             },
         ) {
             buttonContent()
@@ -63,9 +66,7 @@ fun TwoStateFollowButton(
         OutlinedButton(
             contentPadding = buttonPadding,
             onClick = {
-                if (!pending) {
-                    onClick?.invoke(!following)
-                }
+                onValueChange?.invoke(!isProminent)
             },
         ) {
             buttonContent()

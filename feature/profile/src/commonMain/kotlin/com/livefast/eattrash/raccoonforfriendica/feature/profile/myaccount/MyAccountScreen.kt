@@ -220,6 +220,7 @@ class MyAccountScreen : Screen {
                     TimelineItem(
                         entry = entry,
                         blurNsfw = uiState.blurNsfw,
+                        pollEnabled = false,
                         onClick = { e ->
                             detailOpener.openEntryDetail(e.id)
                         },

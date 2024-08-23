@@ -201,4 +201,21 @@ internal open class DefaultStrings : Strings {
     override val settingsItemUrlOpeningMode = "URL opening mode"
     override val urlOpeningModeExternal = "External"
     override val urlOpeningModeCustomTabs = "Custom tabs"
+    override val dialogErrorTitle = "Oops..."
+    override val messagePollVoteErrorBody =
+        "Unfortunately, I'm just a mobile dev and I can't add missing back-end methods!\nCheck out this issue and put a 👍 so that the devs know it may be worth implementing it."
+    override val buttonPollErrorOpenIssue = "View on GitHub"
+    override val actionVote = "Vote"
+    override val pollExpired = "Expired"
+    override val shortUnavailable = "N/A"
+
+    override fun pollVote(count: Int): String =
+        when (count) {
+            1 -> "vote"
+            else -> "votes"
+        }
+
+    override val pollExpiresIn = "Expires in"
+    override val actionHideResults = "Show results"
+    override val actionShowResults = "Hide results"
 }

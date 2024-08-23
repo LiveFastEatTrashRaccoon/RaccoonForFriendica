@@ -40,6 +40,7 @@ fun TimelineItem(
     entry: TimelineEntryModel,
     modifier: Modifier = Modifier,
     actionsEnabled: Boolean = true,
+    pollEnabled: Boolean = true,
     extendedSocialInfoEnabled: Boolean = false,
     reshareAndReplyVisible: Boolean = true,
     blurNsfw: Boolean = true,
@@ -55,6 +56,7 @@ fun TimelineItem(
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
     onOpenImage: ((String) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
+    onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
 ) {
     val isReblog = entry.reblog != null
     val entryToDisplay = entry.reblog ?: entry
@@ -181,6 +183,16 @@ fun TimelineItem(
                     url = imageUrl,
                     sensitive = blurNsfw && entryToDisplay.sensitive,
                     onClick = { onOpenImage?.invoke(imageUrl) },
+                )
+            }
+            entryToDisplay.poll?.also { poll ->
+                PollCard(
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
+                    poll = poll,
+                    enabled = pollEnabled,
+                    onVote = { choices ->
+                        onPollVote?.invoke(entryToDisplay, choices)
+                    },
                 )
             }
 

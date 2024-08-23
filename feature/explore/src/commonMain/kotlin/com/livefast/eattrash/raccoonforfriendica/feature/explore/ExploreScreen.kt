@@ -57,6 +57,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPl
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.HashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.LinkItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
@@ -108,6 +109,7 @@ class ExploreScreen : Screen {
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var pollErrorDialogOpened by remember { mutableStateOf(false) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -122,6 +124,7 @@ class ExploreScreen : Screen {
                 .onEach { event ->
                     when (event) {
                         ExploreMviModel.Effect.BackToTop -> goBackToTop()
+                        ExploreMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
                     }
                 }.launchIn(this)
         }
@@ -215,6 +218,7 @@ class ExploreScreen : Screen {
                                 uiState.availableSections.map {
                                     it.toReadableName()
                                 },
+                            scrollable = true,
                             currentSection = uiState.section.toInt(),
                             onSectionSelected = {
                                 val section = it.toExploreSection()
@@ -294,6 +298,14 @@ class ExploreScreen : Screen {
                                             inReplyToId = e.id,
                                             inReplyToHandle = e.creator?.handle,
                                             inReplyToUsername = e.creator?.let { it.displayName ?: it.username },
+                                        )
+                                    },
+                                    onPollVote = { e, choices ->
+                                        model.reduce(
+                                            ExploreMviModel.Intent.SubmitPollVote(
+                                                entry = e,
+                                                choices = choices,
+                                            ),
                                         )
                                     },
                                     options =
@@ -678,6 +690,14 @@ class ExploreScreen : Screen {
                     ) {
                         Text(text = LocalStrings.current.buttonConfirm)
                     }
+                },
+            )
+        }
+
+        if (pollErrorDialogOpened) {
+            PollVoteErrorDialog(
+                onDismissRequest = {
+                    pollErrorDialogOpened = false
                 },
             )
         }

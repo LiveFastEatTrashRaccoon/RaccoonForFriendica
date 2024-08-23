@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.datetime
 
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.time.Period
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -8,6 +9,9 @@ import java.util.Date
 import java.util.GregorianCalendar
 import java.util.Locale
 import java.util.TimeZone
+import kotlin.time.Duration
+import kotlin.time.toKotlinDuration
+import java.time.Duration as JavaDuration
 
 actual fun epochMillis(): Long = System.currentTimeMillis()
 
@@ -88,6 +92,13 @@ actual fun getPrettyDate(
                 append(" ${seconds}$secondLabel")
             }
     }
+}
+
+actual fun getDurationSinceDate(iso8601Timestamp: String): Duration? {
+    val date = getDateFromIso8601Timestamp(iso8601Timestamp).toLocalDateTime()
+    val now = LocalDateTime.now()
+    val duration = JavaDuration.between(date, now)
+    return duration.toKotlinDuration()
 }
 
 private fun getDateFromIso8601Timestamp(string: String): ZonedDateTime = ZonedDateTime.parse(string)
