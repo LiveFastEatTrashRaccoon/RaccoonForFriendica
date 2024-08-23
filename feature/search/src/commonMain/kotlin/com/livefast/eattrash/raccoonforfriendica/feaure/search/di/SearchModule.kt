@@ -11,7 +11,6 @@ val featureSearchModule =
                 paginationManager = get(),
                 userRepository = get(),
                 timelineEntryRepository = get(),
-                tagRepository = get(),
                 settingsRepository = get(),
                 identityRepository = get(),
                 hapticFeedback = get(),
