@@ -65,6 +65,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
@@ -111,6 +112,7 @@ class TimelineScreen : Screen {
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var pollErrorDialogOpened by remember { mutableStateOf(false) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -125,6 +127,7 @@ class TimelineScreen : Screen {
                 .onEach { event ->
                     when (event) {
                         TimelineMviModel.Effect.BackToTop -> goBackToTop()
+                        TimelineMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
                     }
                 }.launchIn(this)
         }
@@ -272,6 +275,14 @@ class TimelineScreen : Screen {
                             },
                             onFavorite = { e ->
                                 model.reduce(TimelineMviModel.Intent.ToggleFavorite(e))
+                            },
+                            onPollVote = { e, choices ->
+                                model.reduce(
+                                    TimelineMviModel.Intent.SubmitPollVote(
+                                        entry = e,
+                                        choices = choices,
+                                    ),
+                                )
                             },
                             onReply = { e ->
                                 detailOpener.openComposer(
@@ -548,6 +559,14 @@ class TimelineScreen : Screen {
                     ) {
                         Text(text = LocalStrings.current.buttonConfirm)
                     }
+                },
+            )
+        }
+
+        if (pollErrorDialogOpened) {
+            PollVoteErrorDialog(
+                onDismissRequest = {
+                    pollErrorDialogOpened = false
                 },
             )
         }
