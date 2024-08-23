@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
@@ -33,7 +34,7 @@ internal class DefaultNotificationsPaginationManager(
                         .getAll(
                             pageCursor = pageCursor,
                             types = specification.types,
-                            includeUnread = true,
+                            includeAll = specification.types.toSet() == NotificationType.ALL.toSet(),
                         ).determineRelationshipStatus()
                         .updatePaginationData()
                         .filterNsfw(specification.includeNsfw)
