@@ -9,5 +9,5 @@ data class TrendsLink(
     @SerialName("description") val description: String? = null,
     @SerialName("image") val image: String? = null,
     @SerialName("title") val title: String? = null,
-    @SerialName("url") val url: String,
+    @SerialName("url") val url: String?,
 )

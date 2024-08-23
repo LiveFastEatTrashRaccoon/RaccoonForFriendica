@@ -203,7 +203,7 @@ internal fun Relationship.toModel() =
 
 internal fun TrendsLink.toModel() =
     LinkModel(
-        url = url,
+        url = url.orEmpty(),
         title = title.orEmpty(),
         authorName = authorName,
         description = description,

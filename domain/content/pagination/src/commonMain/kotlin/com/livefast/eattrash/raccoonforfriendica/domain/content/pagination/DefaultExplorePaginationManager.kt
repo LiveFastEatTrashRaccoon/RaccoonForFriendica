@@ -33,8 +33,12 @@ internal class DefaultExplorePaginationManager(
                     }
 
                 ExplorePaginationSpecification.Links ->
-                    trendingRepository.getLinks(offset).map {
-                        ExploreItemModel.Link(it)
+                    trendingRepository.getLinks(offset).mapNotNull {
+                        if (it.url.isBlank()) {
+                            null
+                        } else {
+                            ExploreItemModel.Link(it)
+                        }
                     }
 
                 is ExplorePaginationSpecification.Posts ->
