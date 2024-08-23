@@ -55,6 +55,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserFields
@@ -108,6 +109,7 @@ class UserDetailScreen(
         var confirmUnfollowDialogOpen by remember { mutableStateOf(false) }
         var confirmDeleteFollowRequestDialogOpen by remember { mutableStateOf(false) }
         var confirmMuteNotificationsDialogOpen by remember { mutableStateOf(false) }
+        var pollErrorDialogOpened by remember { mutableStateOf(false) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -130,6 +132,7 @@ class UserDetailScreen(
                 .onEach { event ->
                     when (event) {
                         UserDetailMviModel.Effect.BackToTop -> goBackToTop()
+                        UserDetailMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
                     }
                 }.launchIn(this)
         }
@@ -348,6 +351,14 @@ class UserDetailScreen(
                                             },
                                     )
                                 },
+                                onPollVote = { e, choices ->
+                                    model.reduce(
+                                        UserDetailMviModel.Intent.SubmitPollVote(
+                                            entry = e,
+                                            choices = choices,
+                                        ),
+                                    )
+                                },
                                 options =
                                     buildList {
                                         if (!entry.url.isNullOrBlank()) {
@@ -529,6 +540,14 @@ class UserDetailScreen(
                     ) {
                         Text(text = LocalStrings.current.buttonConfirm)
                     }
+                },
+            )
+        }
+
+        if (pollErrorDialogOpened) {
+            PollVoteErrorDialog(
+                onDismissRequest = {
+                    pollErrorDialogOpened = false
                 },
             )
         }
