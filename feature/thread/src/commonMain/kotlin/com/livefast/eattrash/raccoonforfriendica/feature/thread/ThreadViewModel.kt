@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.thread.usecase.Populate
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 class ThreadViewModel(
     private val entryId: String,
@@ -62,6 +63,8 @@ class ThreadViewModel(
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
+                    duration = intent.duration,
+                    disableNotifications = intent.disableNotifications,
                 )
             is ThreadMviModel.Intent.BlockUser ->
                 block(
@@ -273,9 +276,16 @@ class ThreadViewModel(
     private fun mute(
         userId: String,
         entryId: String,
+        duration: Duration,
+        disableNotifications: Boolean,
     ) {
         screenModelScope.launch {
-            val res = userRepository.mute(userId)
+            val res =
+                userRepository.mute(
+                    id = userId,
+                    durationSeconds = if (duration.isInfinite()) 0 else duration.inWholeSeconds,
+                    notifications = disableNotifications,
+                )
             if (res != null) {
                 removeEntryFromState(entryId)
             }

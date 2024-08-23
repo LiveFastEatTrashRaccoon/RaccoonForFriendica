@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import kotlin.time.Duration
 
 @Stable
 interface HashtagMviModel :
@@ -37,6 +38,8 @@ interface HashtagMviModel :
         data class MuteUser(
             val userId: String,
             val entryId: String,
+            val duration: Duration = Duration.INFINITE,
+            val disableNotifications: Boolean = true,
         ) : Intent
 
         data class BlockUser(

@@ -6,6 +6,7 @@ import com.livefast.eattrash.feature.userdetail.classic.UserDetailMviModel.Inten
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import kotlin.time.Duration
 
 @Stable
 interface ForumListMviModel :
@@ -35,6 +36,8 @@ interface ForumListMviModel :
         data class MuteUser(
             val userId: String,
             val entryId: String,
+            val duration: Duration = Duration.INFINITE,
+            val disableNotifications: Boolean = true,
         ) : Intent
 
         data class BlockUser(

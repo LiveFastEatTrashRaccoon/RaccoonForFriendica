@@ -14,6 +14,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 class EntryDetailViewModel(
     private val id: String,
@@ -57,6 +58,8 @@ class EntryDetailViewModel(
                 mute(
                     entryId = intent.entryId,
                     userId = intent.entryId,
+                    duration = intent.duration,
+                    disableNotifications = intent.disableNotifications,
                 )
             is EntryDetailMviModel.Intent.BlockUser ->
                 block(
@@ -245,9 +248,16 @@ class EntryDetailViewModel(
     private fun mute(
         userId: String,
         entryId: String,
+        duration: Duration,
+        disableNotifications: Boolean,
     ) {
         screenModelScope.launch {
-            val res = userRepository.mute(userId)
+            val res =
+                userRepository.mute(
+                    id = userId,
+                    durationSeconds = if (duration.isInfinite()) 0 else duration.inWholeSeconds,
+                    notifications = disableNotifications,
+                )
             if (res != null) {
                 removeEntryFromState(entryId)
             }
