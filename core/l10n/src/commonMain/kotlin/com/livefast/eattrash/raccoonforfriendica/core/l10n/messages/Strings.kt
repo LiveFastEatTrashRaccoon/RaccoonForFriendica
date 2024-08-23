@@ -191,6 +191,18 @@ interface Strings {
     val settingsItemUrlOpeningMode: String
     val urlOpeningModeExternal: String
     val urlOpeningModeCustomTabs: String
+    val dialogErrorTitle: String
+    val messagePollVoteErrorBody: String
+    val buttonPollErrorOpenIssue: String
+    val actionVote: String
+    val pollExpired: String
+    val shortUnavailable: String
+
+    fun pollVote(count: Int): String
+
+    val pollExpiresIn: String
+    val actionShowResults: String
+    val actionHideResults: String
 }
 
 object Locales {
