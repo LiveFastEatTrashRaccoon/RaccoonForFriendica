@@ -2,6 +2,7 @@ package com.livefast.eattrash.feature.userdetail.forum
 
 import androidx.compose.runtime.Stable
 import cafe.adriel.voyager.core.model.ScreenModel
+import com.livefast.eattrash.feature.userdetail.classic.UserDetailMviModel.Intent
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -40,6 +41,11 @@ interface ForumListMviModel :
             val userId: String,
             val entryId: String,
         ) : Intent
+
+        data class SubmitPollVote(
+            val entry: TimelineEntryModel,
+            val choices: List<Int>,
+        ) : Intent
     }
 
     data class State(
@@ -53,5 +59,7 @@ interface ForumListMviModel :
         val blurNsfw: Boolean = true,
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object PollVoteFailure : Effect
+    }
 }
