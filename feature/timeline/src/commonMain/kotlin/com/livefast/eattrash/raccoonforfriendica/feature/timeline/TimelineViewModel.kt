@@ -43,22 +43,8 @@ class TimelineViewModel(
                 }.launchIn(this)
             identityRepository.currentUser
                 .onEach { currentUser ->
-                    val circles = circlesRepository.getAll()
-                    val timelineTypes =
-                        buildList {
-                            this += TimelineType.All
-                            if (currentUser != null) {
-                                this += TimelineType.Subscriptions
-                            }
-                            this += TimelineType.Local
-                            this.addAll(circles.map { TimelineType.Circle(it.id, it.name) })
-                        }
-                    updateState {
-                        it.copy(
-                            availableTimelineTypes = timelineTypes,
-                            currentUserId = currentUser?.id,
-                        )
-                    }
+                    updateState { it.copy(currentUserId = currentUser?.id) }
+                    refreshCirclesInTimelineTypes()
                 }.launchIn(this)
 
             combine(
@@ -117,7 +103,44 @@ class TimelineViewModel(
         }
     }
 
+    private suspend fun refreshCirclesInTimelineTypes() {
+        val isLogged = uiState.value.currentUserId != null
+        val circles = circlesRepository.getAll()
+        val settings = settingsRepository.current.value
+        val defaultTimelineTypes =
+            buildList {
+                this += TimelineType.All
+                if (isLogged) {
+                    this += TimelineType.Subscriptions
+                }
+                this += TimelineType.Local
+            }
+        val newTimelineTypes =
+            defaultTimelineTypes + circles.map { TimelineType.Circle(it.id, it.name) }
+        val currentTimelineType = uiState.value.timelineType
+        val newTimelineType =
+            if (currentTimelineType is TimelineType.Circle) {
+                val newCircle = circles.firstOrNull { it.id == currentTimelineType.id }
+                if (newCircle == null) {
+                    // circle has been deleted
+                    settings?.defaultTimelineType?.toTimelineType()
+                } else {
+                    // circle has been renamed
+                    TimelineType.Circle(id = currentTimelineType.id, name = newCircle.name)
+                }
+            } else {
+                currentTimelineType
+            }
+        updateState {
+            it.copy(
+                availableTimelineTypes = newTimelineTypes,
+                timelineType = newTimelineType,
+            )
+        }
+    }
+
     private suspend fun refresh(initial: Boolean = false) {
+        refreshCirclesInTimelineTypes()
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
