@@ -106,11 +106,11 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] OAuth and HTTP basic authentication modes
 - [x] pin/unpin status to profile
 - [x] manage one's own circles/following lists
-- [ ] polls
+- [x] polls (read-only, since the submit vote method is unimplemented in the backend)
 - [ ] support post spoiler text
 - [ ] edit one's own profile
 - [ ] private conversations
-- [ ] advanced media visualization (videos, GIFs, etc.)
+- [ ] advanced media visualization (image carousels, videos, GIFs, etc.)
 - [ ] custom emojis
 - [ ] scheduled posts
 
