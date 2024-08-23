@@ -53,7 +53,6 @@ fun String.parseHtml(
                     else -> println("onCloseTag: Unhandled span $name")
                 }
             }.onText { text ->
-                println("text=$text")
                 string.append(text)
             }.build()
 
