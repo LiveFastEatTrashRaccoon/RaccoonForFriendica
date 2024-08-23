@@ -234,4 +234,8 @@ internal val ItStrings =
         override val notificationTypePollName = "Sondaggi"
         override val notificationTypeReblogName = "Ricondivisioni"
         override val notificationTypeUpdateName = "Modifiche post"
+        override val muteDurationIndefinite = "Indefinita"
+        override val selectDurationDialogTitle = "Seleziona durata"
+        override val muteDurationItem = "Non vedrai più post da questo utente per"
+        override val muteDisableNotificationsItem = "Disabilita notifiche"
     }
