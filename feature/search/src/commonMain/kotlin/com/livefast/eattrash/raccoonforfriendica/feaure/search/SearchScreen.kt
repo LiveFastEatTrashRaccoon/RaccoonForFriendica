@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feaure.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -48,13 +49,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SearchField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.FollowHashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.HashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -101,7 +103,6 @@ class SearchScreen : Screen {
         val clipboardManager = LocalClipboardManager.current
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
-        var confirmUnfollowHashtagName by remember { mutableStateOf<String?>(null) }
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
@@ -190,8 +191,14 @@ class SearchScreen : Screen {
                 ) {
                     stickyHeader {
                         SectionSelector(
-                            modifier = Modifier.padding(bottom = Spacing.s),
-                            titles =
+                            modifier =
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .padding(
+                                        top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
+                                        bottom = Spacing.s,
+                                ),
+                                titles =
                                 listOf(
                                     SearchSection.Hashtags.toReadableName(),
                                     SearchSection.Posts.toReadableName(),
@@ -368,22 +375,10 @@ class SearchScreen : Screen {
                             }
 
                             is ExploreItemModel.HashTag -> {
-                                FollowHashtagItem(
+                                HashtagItem(
                                     hashtag = item.hashtag,
                                     onOpen = {
                                         detailOpener.openHashtag(it)
-                                    },
-                                    onToggleFollow = { newFollow ->
-                                        if (newFollow) {
-                                            model.reduce(
-                                                SearchMviModel.Intent.ToggleTagFollow(
-                                                    item.hashtag.name,
-                                                    newFollow,
-                                                ),
-                                            )
-                                        } else {
-                                            confirmUnfollowHashtagName = item.hashtag.name
-                                        }
                                     },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.interItem))
@@ -532,50 +527,6 @@ class SearchScreen : Screen {
                             confirmUnfollowDialogUserId = null
                             if (userId.isNotEmpty()) {
                                 model.reduce(SearchMviModel.Intent.Unfollow(userId))
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
-                    }
-                },
-            )
-        }
-
-        if (confirmUnfollowHashtagName != null) {
-            AlertDialog(
-                onDismissRequest = {
-                    confirmUnfollowHashtagName = null
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionUnfollow,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmUnfollowHashtagName = null
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            val oldtag = confirmUnfollowHashtagName
-                            confirmUnfollowHashtagName = null
-                            if (oldtag != null) {
-                                model.reduce(
-                                    SearchMviModel.Intent.ToggleTagFollow(
-                                        name = oldtag,
-                                        newValue = false,
-                                    ),
-                                )
                             }
                         },
                     ) {

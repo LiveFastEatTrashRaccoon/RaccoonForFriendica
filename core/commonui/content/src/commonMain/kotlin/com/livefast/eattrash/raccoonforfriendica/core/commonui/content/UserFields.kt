@@ -30,7 +30,7 @@ fun UserFields(
         for (field in fields) {
             Row {
                 Text(
-                    modifier = Modifier.weight(0.4f),
+                    modifier = Modifier.weight(0.5f),
                     text = field.key.uppercase(),
                     color = ancillaryColor,
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Light),

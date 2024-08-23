@@ -16,8 +16,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,62 +52,70 @@ class ProfileScreen : Screen {
         val drawerCoordinator = remember { getDrawerCoordinator() }
         var confirmLogoutDialogOpened by remember { mutableStateOf(false) }
 
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.sectionTitleProfile,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        Image(
-                            modifier =
-                                Modifier.clickable {
-                                    scope.launch {
-                                        drawerCoordinator.toggleDrawer()
-                                    }
-                                },
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                        )
-                    },
-                    actions = {
-                        if (uiState.isLogged) {
-                            Icon(
-                                modifier =
-                                    Modifier
-                                        .padding(horizontal = Spacing.xs)
-                                        .clickable {
-                                            confirmLogoutDialogOpened = true
-                                        },
-                                imageVector = Icons.AutoMirrored.Default.Logout,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground,
+        CompositionLocalProvider(
+            LocalProfileTopAppBarStateWrapper provides
+                object : ProfileTopAppBarStateWrapper {
+                    override val topAppBarState: TopAppBarState
+                        get() = topAppBarState
+                },
+        ) {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        windowInsets = topAppBarState.toWindowInsets(),
+                        scrollBehavior = scrollBehavior,
+                        title = {
+                            Text(
+                                text = LocalStrings.current.sectionTitleProfile,
+                                style = MaterialTheme.typography.titleMedium,
                             )
+                        },
+                        navigationIcon = {
+                            Image(
+                                modifier =
+                                    Modifier.clickable {
+                                        scope.launch {
+                                            drawerCoordinator.toggleDrawer()
+                                        }
+                                    },
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                            )
+                        },
+                        actions = {
+                            if (uiState.isLogged) {
+                                Icon(
+                                    modifier =
+                                        Modifier
+                                            .padding(horizontal = Spacing.xs)
+                                            .clickable {
+                                                confirmLogoutDialogOpened = true
+                                            },
+                                    imageVector = Icons.AutoMirrored.Default.Logout,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                )
+                            }
+                        },
+                    )
+                },
+                content = { padding ->
+                    Box(
+                        modifier =
+                            Modifier
+                                .padding(padding)
+                                .nestedScroll(scrollBehavior.nestedScrollConnection),
+                    ) {
+                        if (!uiState.isLogged) {
+                            Navigator(AnonymousScreen())
+                        } else {
+                            Navigator(MyAccountScreen())
                         }
-                    },
-                )
-            },
-            content = { padding ->
-                Box(
-                    modifier =
-                        Modifier
-                            .padding(padding)
-                            .nestedScroll(scrollBehavior.nestedScrollConnection),
-                ) {
-                    if (!uiState.isLogged) {
-                        Navigator(AnonymousScreen())
-                    } else {
-                        Navigator(MyAccountScreen())
                     }
-                }
-            },
-        )
+                },
+            )
+        }
 
         if (confirmLogoutDialogOpened) {
             AlertDialog(
