@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feaure.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -48,6 +49,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -189,8 +191,14 @@ class SearchScreen : Screen {
                 ) {
                     stickyHeader {
                         SectionSelector(
-                            modifier = Modifier.padding(bottom = Spacing.s),
-                            titles =
+                            modifier =
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .padding(
+                                        top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
+                                        bottom = Spacing.s,
+                                ),
+                                titles =
                                 listOf(
                                     SearchSection.Hashtags.toReadableName(),
                                     SearchSection.Posts.toReadableName(),

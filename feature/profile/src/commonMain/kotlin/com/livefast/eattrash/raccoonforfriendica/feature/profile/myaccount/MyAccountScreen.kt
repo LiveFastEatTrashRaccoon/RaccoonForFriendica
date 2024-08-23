@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
@@ -60,12 +62,17 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDat
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.LocalProfileTopAppBarStateWrapper
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class MyAccountScreen : Screen {
-    @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+    @OptIn(
+        ExperimentalFoundationApi::class,
+        ExperimentalMaterialApi::class,
+        ExperimentalMaterial3Api::class,
+    )
     @Composable
     override fun Content() {
         val model = getScreenModel<MyAccountMviModel>()
@@ -81,6 +88,7 @@ class MyAccountScreen : Screen {
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
+        val topAppBarState = LocalProfileTopAppBarStateWrapper.current.topAppBarState
 
         suspend fun goBackToTop() {
             runCatching {
@@ -185,7 +193,13 @@ class MyAccountScreen : Screen {
 
                 stickyHeader {
                     SectionSelector(
-                        modifier = Modifier.padding(bottom = Spacing.s),
+                        modifier =
+                            Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .padding(
+                                    top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
+                                    bottom = Spacing.s,
+                                ),
                         titles =
                             listOf(
                                 UserSection.Posts.toReadableName(),
