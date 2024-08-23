@@ -48,11 +48,6 @@ interface SearchMviModel :
             val entry: TimelineEntryModel,
         ) : Intent
 
-        data class ToggleTagFollow(
-            val name: String,
-            val newValue: Boolean,
-        ) : Intent
-
         data class DeleteEntry(
             val entryId: String,
         ) : Intent

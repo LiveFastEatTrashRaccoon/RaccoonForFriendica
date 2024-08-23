@@ -53,8 +53,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SearchField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.FollowHashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.HashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -101,7 +101,6 @@ class SearchScreen : Screen {
         val clipboardManager = LocalClipboardManager.current
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
-        var confirmUnfollowHashtagName by remember { mutableStateOf<String?>(null) }
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
@@ -368,22 +367,10 @@ class SearchScreen : Screen {
                             }
 
                             is ExploreItemModel.HashTag -> {
-                                FollowHashtagItem(
+                                HashtagItem(
                                     hashtag = item.hashtag,
                                     onOpen = {
                                         detailOpener.openHashtag(it)
-                                    },
-                                    onToggleFollow = { newFollow ->
-                                        if (newFollow) {
-                                            model.reduce(
-                                                SearchMviModel.Intent.ToggleTagFollow(
-                                                    item.hashtag.name,
-                                                    newFollow,
-                                                ),
-                                            )
-                                        } else {
-                                            confirmUnfollowHashtagName = item.hashtag.name
-                                        }
                                     },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.interItem))
@@ -532,50 +519,6 @@ class SearchScreen : Screen {
                             confirmUnfollowDialogUserId = null
                             if (userId.isNotEmpty()) {
                                 model.reduce(SearchMviModel.Intent.Unfollow(userId))
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
-                    }
-                },
-            )
-        }
-
-        if (confirmUnfollowHashtagName != null) {
-            AlertDialog(
-                onDismissRequest = {
-                    confirmUnfollowHashtagName = null
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionUnfollow,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmUnfollowHashtagName = null
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            val oldtag = confirmUnfollowHashtagName
-                            confirmUnfollowHashtagName = null
-                            if (oldtag != null) {
-                                model.reduce(
-                                    SearchMviModel.Intent.ToggleTagFollow(
-                                        name = oldtag,
-                                        newValue = false,
-                                    ),
-                                )
                             }
                         },
                     ) {

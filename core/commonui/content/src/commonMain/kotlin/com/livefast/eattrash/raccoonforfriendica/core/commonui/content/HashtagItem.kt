@@ -59,31 +59,31 @@ fun HashtagItem(
                 style = MaterialTheme.typography.bodyLarge,
                 color = fullColor,
             )
-            Text(
-                text =
-                    buildString {
-                        val count =
-                            hashtag.history
-                                .first()
-                                .users
-                                .toInt()
-                        append(count)
-                        append(" ")
-                        append(LocalStrings.current.hashtagPeopleUsing(count))
-                    },
-                style = MaterialTheme.typography.labelMedium,
-                color = ancillaryColor,
-            )
+            if (hashtag.history.isNotEmpty()) {
+                val count = hashtag.history.run { first().users.toInt() }
+                Text(
+                    text =
+                        buildString {
+                            append(count)
+                            append(" ")
+                            append(LocalStrings.current.hashtagPeopleUsing(count))
+                        },
+                    style = MaterialTheme.typography.labelMedium,
+                    color = ancillaryColor,
+                )
+            }
         }
 
-        HashtagChart(
-            modifier =
-                Modifier
-                    .weight(0.25f)
-                    .padding(end = Spacing.s)
-                    .aspectRatio(3f),
-            dataset = hashtag.history,
-        )
+        if (hashtag.history.isNotEmpty()) {
+            HashtagChart(
+                modifier =
+                    Modifier
+                        .weight(0.25f)
+                        .padding(end = Spacing.s)
+                        .aspectRatio(3f),
+                dataset = hashtag.history,
+            )
+        }
     }
 }
 

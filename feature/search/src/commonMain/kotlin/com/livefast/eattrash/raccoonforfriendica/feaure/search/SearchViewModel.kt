@@ -4,14 +4,12 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.SearchPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.SearchPaginationSpecification
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -31,7 +29,6 @@ class SearchViewModel(
     private val paginationManager: SearchPaginationManager,
     private val userRepository: UserRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
-    private val tagRepository: TagRepository,
     private val settingsRepository: SettingsRepository,
     private val identityRepository: IdentityRepository,
     private val hapticFeedback: HapticFeedback,
@@ -96,12 +93,6 @@ class SearchViewModel(
             is SearchMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is SearchMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is SearchMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
-            is SearchMviModel.Intent.ToggleTagFollow ->
-                toggleTagFollow(
-                    intent.name,
-                    intent.newValue,
-                )
-
             is SearchMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is SearchMviModel.Intent.MuteUser ->
                 mute(
@@ -381,45 +372,6 @@ class SearchViewModel(
                         bookmarkLoading = false,
                     )
                 }
-            }
-        }
-    }
-
-    private suspend fun updateHashtagInState(
-        name: String,
-        block: (TagModel) -> TagModel,
-    ) {
-        updateState {
-            it.copy(
-                items =
-                    it.items.map { item ->
-                        if (item is ExploreItemModel.HashTag && item.hashtag.name == name) {
-                            item.copy(
-                                hashtag = item.hashtag.let(block),
-                            )
-                        } else {
-                            item
-                        }
-                    },
-            )
-        }
-    }
-
-    private fun toggleTagFollow(
-        name: String,
-        follow: Boolean,
-    ) {
-        hapticFeedback.vibrate()
-        screenModelScope.launch {
-            updateHashtagInState(name) { it.copy(followingPending = true) }
-            val newTag =
-                if (!follow) {
-                    tagRepository.unfollow(name)
-                } else {
-                    tagRepository.follow(name)
-                }
-            if (newTag != null) {
-                updateHashtagInState(name) { newTag }
             }
         }
     }
