@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -72,4 +73,9 @@ interface TimelineEntryRepository {
     ): TimelineEntryModel?
 
     suspend fun delete(id: String): Boolean
+
+    suspend fun submitPoll(
+        pollId: String,
+        choices: List<Int>,
+    ): PollModel?
 }

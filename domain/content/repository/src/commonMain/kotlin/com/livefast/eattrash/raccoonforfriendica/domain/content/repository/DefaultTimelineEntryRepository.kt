@@ -3,7 +3,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusAddons
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.form.SubmitPollVoteForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -242,4 +244,22 @@ internal class DefaultTimelineEntryRepository(
                 true
             }
         }.getOrElse { false }
+
+    override suspend fun submitPoll(
+        pollId: String,
+        choices: List<Int>,
+    ): PollModel? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val data =
+                    SubmitPollVoteForm(
+                        choices = choices,
+                    )
+                provider.polls
+                    .vote(
+                        id = pollId,
+                        data = data,
+                    ).toModel()
+            }.getOrNull()
+        }
 }
