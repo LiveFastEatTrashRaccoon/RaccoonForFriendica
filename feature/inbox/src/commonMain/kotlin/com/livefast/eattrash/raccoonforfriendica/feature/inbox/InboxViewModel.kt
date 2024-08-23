@@ -61,6 +61,15 @@ class InboxViewModel(
                     refresh()
                 }
 
+            is InboxMviModel.Intent.ChangeSelectedNotificationTypes ->
+                screenModelScope.launch {
+                    updateState {
+                        it.copy(selectedNotificationTypes = intent.types)
+                    }
+                    emitEffect(InboxMviModel.Effect.BackToTop)
+                    refresh(initial = true)
+                }
+
             is InboxMviModel.Intent.AcceptFollowRequest -> acceptFollowRequest(intent.userId)
             is InboxMviModel.Intent.Follow -> follow(intent.userId)
             is InboxMviModel.Intent.Unfollow -> unfollow(intent.userId)
@@ -73,6 +82,7 @@ class InboxViewModel(
         }
         paginationManager.reset(
             NotificationsPaginationSpecification.Default(
+                types = uiState.value.selectedNotificationTypes,
                 includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
             ),
         )
