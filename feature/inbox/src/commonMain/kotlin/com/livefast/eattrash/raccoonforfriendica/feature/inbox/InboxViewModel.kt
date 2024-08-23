@@ -184,10 +184,12 @@ class InboxViewModel(
         }
     }
 
-    private suspend fun markAllAsRead() {
-        for (item in uiState.value.notifications) {
-            notificationRepository.markAsRead(item.id)
+    private fun markAllAsRead() {
+        screenModelScope.launch {
+            for (item in uiState.value.notifications) {
+                notificationRepository.markAsRead(item.id)
+            }
+            inboxManager.refreshUnreadCount()
         }
-        inboxManager.refreshUnreadCount()
     }
 }
