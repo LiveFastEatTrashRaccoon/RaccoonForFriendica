@@ -121,6 +121,7 @@ internal fun NotificationItem(
                     entry = entry,
                     blurNsfw = blurNsfw,
                     actionsEnabled = false,
+                    pollEnabled = false,
                     onClick = {
                         onOpenEntry?.invoke(entry)
                     },
