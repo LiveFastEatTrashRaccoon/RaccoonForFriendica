@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 
 @Composable
@@ -45,10 +46,14 @@ fun FollowHashtagItem(
             style = MaterialTheme.typography.bodyLarge,
             color = fullColor,
         )
-        TwoStateFollowButton(
-            following = hashtag.following == true,
+        TwoStateButton(
+            isProminent = hashtag.following != true,
+            label = LocalStrings.current.actionUnfollow,
+            prominentLabel = LocalStrings.current.actionFollow,
             pending = hashtag.followingPending,
-            onClick = onToggleFollow,
+            onValueChange = { notFollowing ->
+                onToggleFollow?.invoke(!notFollowing)
+            },
         )
     }
 }

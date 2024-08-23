@@ -52,7 +52,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TwoStateFollowButton
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TwoStateButton
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
@@ -115,15 +115,17 @@ class HashtagScreen(
                     },
                     actions = {
                         uiState.following?.also { following ->
-                            TwoStateFollowButton(
+                            TwoStateButton(
                                 modifier = Modifier.padding(horizontal = Spacing.xs),
-                                following = following,
+                                isProminent = !following,
+                                label = LocalStrings.current.actionUnfollow,
+                                prominentLabel = LocalStrings.current.actionFollow,
                                 pending = uiState.followingPending,
-                                onClick = { newValue ->
-                                    if (!newValue) {
+                                onValueChange = { notFollowing ->
+                                    if (notFollowing) {
                                         confirmUnfollowHashtagDialogOpen = true
                                     } else {
-                                        model.reduce(HashtagMviModel.Intent.ToggleTagFollow(newValue))
+                                        model.reduce(HashtagMviModel.Intent.ToggleTagFollow(true))
                                     }
                                 },
                             )
