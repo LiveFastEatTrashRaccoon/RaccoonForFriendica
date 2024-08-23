@@ -223,4 +223,15 @@ internal val ItStrings =
         override val pollExpiresIn = "Si chiude tra"
         override val actionHideResults = "Mostra risultati"
         override val actionShowResults = "Nascondi risultati"
+        override val inboxConfigureFilterDialogTitle = "Configura filtri"
+        override val inboxConfigureFilterDialogSubtitle =
+            "Se un valore qualsiasi viene deselezionato, il filtro si applicherà solo agli elementi non letti"
+        override val notificationTypeEntryName = "Notifiche post"
+        override val notificationTypeFavoriteName = "Preferiti"
+        override val notificationTypeFollowName = "Nuovi seguaci"
+        override val notificationTypeFollowRequestName = "Richieste di seguirti"
+        override val notificationTypeMentionName = "Menzioni & Risposte"
+        override val notificationTypePollName = "Sondaggi"
+        override val notificationTypeReblogName = "Ricondivisioni"
+        override val notificationTypeUpdateName = "Modifiche post"
     }

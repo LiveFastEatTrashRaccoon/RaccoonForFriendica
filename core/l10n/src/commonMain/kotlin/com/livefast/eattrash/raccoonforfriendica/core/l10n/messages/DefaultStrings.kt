@@ -218,4 +218,15 @@ internal open class DefaultStrings : Strings {
     override val pollExpiresIn = "Expires in"
     override val actionHideResults = "Show results"
     override val actionShowResults = "Hide results"
+    override val inboxConfigureFilterDialogTitle = "Configure filters"
+    override val inboxConfigureFilterDialogSubtitle =
+        "If any value is deselected, the filter will only return unread items"
+    override val notificationTypeEntryName = "Post notifications"
+    override val notificationTypeFavoriteName = "Favorites"
+    override val notificationTypeFollowName = "New followers"
+    override val notificationTypeFollowRequestName = "Follow requests"
+    override val notificationTypeMentionName = "Mentions & Replies"
+    override val notificationTypePollName = "Polls"
+    override val notificationTypeReblogName = "Re-shares"
+    override val notificationTypeUpdateName = "Post updates"
 }
