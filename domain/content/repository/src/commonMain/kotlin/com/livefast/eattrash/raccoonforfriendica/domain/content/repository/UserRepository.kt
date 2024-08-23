@@ -44,6 +44,7 @@ interface UserRepository {
     suspend fun mute(
         id: String,
         durationSeconds: Long = 0,
+        notifications: Boolean = true,
     ): RelationshipModel?
 
     suspend fun unmute(id: String): RelationshipModel?
