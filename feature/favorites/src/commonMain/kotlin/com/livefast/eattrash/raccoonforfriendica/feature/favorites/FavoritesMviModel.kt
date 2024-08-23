@@ -43,6 +43,11 @@ interface FavoritesMviModel :
         data class TogglePin(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class SubmitPollVote(
+            val entry: TimelineEntryModel,
+            val choices: List<Int>,
+        ) : Intent
     }
 
     data class State(
@@ -55,5 +60,7 @@ interface FavoritesMviModel :
         val blurNsfw: Boolean = true,
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object PollVoteFailure : Effect
+    }
 }

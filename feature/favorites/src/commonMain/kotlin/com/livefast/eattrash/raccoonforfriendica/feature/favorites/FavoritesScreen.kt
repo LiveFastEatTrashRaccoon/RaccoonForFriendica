@@ -30,6 +30,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +50,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
@@ -60,6 +62,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesTy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
@@ -86,6 +90,7 @@ class FavoritesScreen(
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var pollErrorDialogOpened by remember { mutableStateOf(false) }
 
         fun goBackToTop() {
             runCatching {
@@ -95,6 +100,15 @@ class FavoritesScreen(
                     topAppBarState.contentOffset = 0f
                 }
             }
+        }
+
+        LaunchedEffect(model) {
+            model.effects
+                .onEach { event ->
+                    when (event) {
+                        FavoritesMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    }
+                }.launchIn(this)
         }
 
         Scaffold(
@@ -205,6 +219,14 @@ class FavoritesScreen(
                                         e.creator?.let {
                                             it.displayName ?: it.username
                                         },
+                                )
+                            },
+                            onPollVote = { e, choices ->
+                                model.reduce(
+                                    FavoritesMviModel.Intent.SubmitPollVote(
+                                        entry = e,
+                                        choices = choices,
+                                    ),
                                 )
                             },
                             options =
@@ -445,6 +467,14 @@ class FavoritesScreen(
                     ) {
                         Text(text = LocalStrings.current.buttonConfirm)
                     }
+                },
+            )
+        }
+
+        if (pollErrorDialogOpened) {
+            PollVoteErrorDialog(
+                onDismissRequest = {
+                    pollErrorDialogOpened = false
                 },
             )
         }
