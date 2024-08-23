@@ -77,7 +77,7 @@ internal fun ConfigureNotificationTypeDialog(
                 items(availableTypes) { type ->
                     val selected = currentSelection.contains(type)
                     Row(
-                        modifier = Modifier.padding(vertical = Spacing.xs),
+                        modifier = Modifier.padding(vertical = Spacing.s, horizontal = Spacing.s),
                     ) {
                         Text(
                             text = type.toReadableName(),
@@ -98,7 +98,6 @@ internal fun ConfigureNotificationTypeDialog(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(Spacing.xs))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(Spacing.s),
             ) {
