@@ -37,6 +37,7 @@ data class TimelineEntryModel(
     val depth: Int = 0,
     @Transient
     val loadMoreButtonVisible: Boolean = false,
+    val poll: PollModel? = null,
 )
 
 val TimelineEntryModel.safeKey: String
