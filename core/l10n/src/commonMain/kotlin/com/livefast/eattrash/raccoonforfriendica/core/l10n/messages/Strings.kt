@@ -203,6 +203,16 @@ interface Strings {
     val pollExpiresIn: String
     val actionShowResults: String
     val actionHideResults: String
+    val inboxConfigureFilterDialogTitle: String
+    val inboxConfigureFilterDialogSubtitle: String
+    val notificationTypeEntryName: String
+    val notificationTypeFavoriteName: String
+    val notificationTypeFollowName: String
+    val notificationTypeFollowRequestName: String
+    val notificationTypeMentionName: String
+    val notificationTypePollName: String
+    val notificationTypeReblogName: String
+    val notificationTypeUpdateName: String
 }
 
 object Locales {

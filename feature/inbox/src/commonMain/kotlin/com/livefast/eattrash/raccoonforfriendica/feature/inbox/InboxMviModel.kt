@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.inbox
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 
 interface InboxMviModel :
     ScreenModel,
@@ -23,6 +24,10 @@ interface InboxMviModel :
         data class Unfollow(
             val userId: String,
         ) : Intent
+
+        data class ChangeSelectedNotificationTypes(
+            val types: List<NotificationType>,
+        ) : Intent
     }
 
     data class State(
@@ -33,7 +38,10 @@ interface InboxMviModel :
         val canFetchMore: Boolean = true,
         val notifications: List<NotificationModel> = emptyList(),
         val blurNsfw: Boolean = true,
+        val selectedNotificationTypes: List<NotificationType> = NotificationType.ALL,
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object BackToTop : Effect
+    }
 }

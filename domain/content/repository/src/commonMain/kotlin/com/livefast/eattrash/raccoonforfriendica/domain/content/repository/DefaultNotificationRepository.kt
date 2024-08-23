@@ -11,7 +11,7 @@ internal class DefaultNotificationRepository(
 ) : NotificationRepository {
     override suspend fun getAll(
         types: List<NotificationType>,
-        includeUnread: Boolean,
+        includeAll: Boolean,
         pageCursor: String?,
     ) = withContext(Dispatchers.IO) {
         runCatching {
@@ -19,7 +19,7 @@ internal class DefaultNotificationRepository(
                 provider.notifications.get(
                     types = types.mapNotNull { it.toDto() },
                     maxId = pageCursor,
-                    includeAll = includeUnread,
+                    includeAll = includeAll,
                     limit = DEFAULT_PAGE_SIZE,
                 )
             response.map { it.toModel() }

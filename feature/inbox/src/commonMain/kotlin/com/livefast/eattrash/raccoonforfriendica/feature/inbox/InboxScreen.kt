@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -20,6 +21,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,7 +52,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.ConfigureNotificationTypeDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItem
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItemPlaceholder
 import kotlinx.coroutines.flow.launchIn
@@ -71,9 +75,10 @@ class InboxScreen : Screen {
         val detailOpener = remember { getDetailOpener() }
         val scope = rememberCoroutineScope()
         val drawerCoordinator = remember { getDrawerCoordinator() }
+        val lazyListState = rememberLazyListState()
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
-        val lazyListState = rememberLazyListState()
+        var configureSelectedTypesDialogOpen by remember { mutableStateOf(false) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -88,6 +93,14 @@ class InboxScreen : Screen {
                 .onEach { section ->
                     if (section is BottomNavigationSection.Inbox) {
                         goBackToTop()
+                    }
+                }.launchIn(this)
+        }
+        LaunchedEffect(model) {
+            model.effects
+                .onEach { event ->
+                    when (event) {
+                        InboxMviModel.Effect.BackToTop -> goBackToTop()
                     }
                 }.launchIn(this)
         }
@@ -114,6 +127,18 @@ class InboxScreen : Screen {
                             imageVector = Icons.Default.Menu,
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                        )
+                    },
+                    actions = {
+                        Icon(
+                            modifier =
+                                Modifier
+                                    .padding(horizontal = Spacing.xs)
+                                    .clickable {
+                                        configureSelectedTypesDialogOpen = true
+                                    },
+                            imageVector = Icons.Default.FilterList,
+                            contentDescription = null,
                         )
                     },
                 )
@@ -317,6 +342,19 @@ class InboxScreen : Screen {
                         },
                     ) {
                         Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+            )
+        }
+
+        if (configureSelectedTypesDialogOpen) {
+            ConfigureNotificationTypeDialog(
+                initialSelection = uiState.selectedNotificationTypes,
+                availableTypes = NotificationType.ALL,
+                onClose = { values ->
+                    configureSelectedTypesDialogOpen = false
+                    if (values != null) {
+                        model.reduce(InboxMviModel.Intent.ChangeSelectedNotificationTypes(values))
                     }
                 },
             )

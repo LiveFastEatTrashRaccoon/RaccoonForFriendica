@@ -6,7 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 interface NotificationRepository {
     suspend fun getAll(
         types: List<NotificationType> = emptyList(),
-        includeUnread: Boolean = false,
+        includeAll: Boolean = false,
         pageCursor: String? = null,
     ): List<NotificationModel>
 
