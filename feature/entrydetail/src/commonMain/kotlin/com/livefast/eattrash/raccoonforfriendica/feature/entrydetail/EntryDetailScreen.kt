@@ -135,9 +135,13 @@ class EntryDetailScreen(
                         Text(
                             text =
                                 buildString {
-                                    append(LocalStrings.current.postTitleBy)
-                                    append(" ")
-                                    append(uiState.creator?.username.orEmpty())
+                                    append(LocalStrings.current.postTitle)
+                                    uiState.creator?.username?.also { username ->
+                                        append(" ")
+                                        append(LocalStrings.current.postBy)
+                                        append(" ")
+                                        append(username)
+                                    }
                                 },
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
