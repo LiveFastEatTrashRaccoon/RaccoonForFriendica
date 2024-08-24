@@ -12,4 +12,6 @@ interface ApiConfigurationRepository {
     fun changeNode(value: String)
 
     fun setAuth(credentials: ApiCredentials? = null)
+
+    suspend fun hasCachedAuthCredentials(): Boolean
 }

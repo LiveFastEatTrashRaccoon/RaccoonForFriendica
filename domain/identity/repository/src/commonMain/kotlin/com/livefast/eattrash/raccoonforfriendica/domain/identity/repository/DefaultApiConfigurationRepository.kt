@@ -14,16 +14,11 @@ internal class DefaultApiConfigurationRepository(
     override val node = MutableStateFlow("")
 
     override suspend fun initialize() {
-        val nodeName = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
-        changeNode(nodeName)
+        val node = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
+        changeNode(node)
 
         val credentials = retrieveFromKeyStore()
-        val isValid =
-            credentials != null &&
-                credentialsRepository.validateApplicationCredentials(
-                    node = nodeName,
-                    credentials = credentials,
-                )
+        val isValid = validateCredentials(credentials = credentials, node = node)
         if (isValid) {
             setAuth(credentials)
         }
@@ -47,6 +42,22 @@ internal class DefaultApiConfigurationRepository(
 
         identityRepository.changeIsLogged(credentials != null)
     }
+
+    override suspend fun hasCachedAuthCredentials(): Boolean {
+        val credentials = retrieveFromKeyStore()
+        val node = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
+        return validateCredentials(credentials = credentials, node = node)
+    }
+
+    private suspend fun validateCredentials(
+        credentials: ApiCredentials?,
+        node: String,
+    ): Boolean =
+        credentials != null &&
+            credentialsRepository.validateApplicationCredentials(
+                node = node,
+                credentials = credentials,
+            )
 
     private fun retrieveFromKeyStore(): ApiCredentials? {
         val method = keyStore[KEY_METHOD, DEFAULT_METHOD]
