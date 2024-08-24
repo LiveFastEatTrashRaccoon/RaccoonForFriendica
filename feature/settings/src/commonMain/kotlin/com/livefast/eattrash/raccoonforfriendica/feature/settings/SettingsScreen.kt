@@ -26,7 +26,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +48,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toTypography
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomColorPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsColorRow
@@ -66,7 +66,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableN
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.about.AboutDialog
-import kotlinx.coroutines.delay
 
 class SettingsScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -86,6 +85,7 @@ class SettingsScreen : Screen {
         var defaultTimelineTypeBottomSheetOpened by remember { mutableStateOf(false) }
         var urlOpeningModeBottomSheetOpened by remember { mutableStateOf(false) }
         var aboutDialogOpened by remember { mutableStateOf(false) }
+        var customColorPickerDialogOpened by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -354,44 +354,84 @@ class SettingsScreen : Screen {
         }
 
         if (themeColorBottomSheetOpened) {
-            val state = rememberModalBottomSheetState()
-
-            // workaround needed for bottom sheets with many values
-            LaunchedEffect(themeColorBottomSheetOpened) {
-                if (themeColorBottomSheetOpened) {
-                    delay(50)
-                    state.expand()
-                }
-            }
+            val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
             CustomModalBottomSheet(
                 sheetState = state,
                 title = LocalStrings.current.settingsItemTheme,
                 items =
-                    uiState.availableThemeColors.map { theme ->
-                        CustomModalBottomSheetItem(
-                            leadingContent = {
-                                Box(
-                                    modifier =
-                                        Modifier
-                                            .padding(start = Spacing.xs)
-                                            .size(IconSize.m)
-                                            .background(color = theme.toColor(), shape = CircleShape),
+                    buildList {
+                        this +=
+                            uiState.availableThemeColors.map { theme ->
+                                CustomModalBottomSheetItem(
+                                    leadingContent = {
+                                        Box(
+                                            modifier =
+                                                Modifier
+                                                    .padding(start = Spacing.xs)
+                                                    .size(IconSize.m)
+                                                    .background(
+                                                        color = theme.toColor(),
+                                                        shape = CircleShape,
+                                                    ),
+                                        )
+                                    },
+                                    label = theme.toReadableName(),
+                                    trailingContent = {
+                                        Text(
+                                            text = theme.toEmoji(),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                        )
+                                    },
                                 )
-                            },
-                            label = theme.toReadableName(),
-                            trailingContent = {
+                            }
+                        this +=
+                            CustomModalBottomSheetItem(
+                                leadingContent = {
+                                    Box(
+                                        modifier =
+                                            Modifier
+                                                .padding(start = Spacing.xs)
+                                                .size(IconSize.m)
+                                                .background(
+                                                    color =
+                                                        uiState.themeColor
+                                                            ?: MaterialTheme.colorScheme.primary,
+                                                    shape = CircleShape,
+                                                ),
+                                    )
+                                },
+                                label = LocalStrings.current.customOption,
+                                trailingContent = {
                                 Text(
-                                    text = theme.toEmoji(),
+                                    text = "🎨",
                                     style = MaterialTheme.typography.bodyLarge,
-                                )
-                            },
-                        )
+                                    )
+                                },
+                            )
                     },
                 onSelected = { index ->
                     themeColorBottomSheetOpened = false
                     if (index != null) {
-                        val value = uiState.availableThemeColors[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeThemeColor(value.toColor()))
+                        if (index in uiState.availableThemeColors.indices) {
+                            // theme color selected
+                            val value = uiState.availableThemeColors[index]
+                            model.reduce(SettingsMviModel.Intent.ChangeThemeColor(value.toColor()))
+                        } else {
+                            // custom color selected
+                            customColorPickerDialogOpened = true
+                        }
+                    }
+                },
+            )
+        }
+
+        if (customColorPickerDialogOpened) {
+            CustomColorPickerDialog(
+                initialValue = uiState.themeColor ?: MaterialTheme.colorScheme.primary,
+                onClose = { newColor ->
+                    customColorPickerDialogOpened = false
+                    if (newColor != null) {
+                        model.reduce(SettingsMviModel.Intent.ChangeThemeColor(newColor))
                     }
                 },
             )
