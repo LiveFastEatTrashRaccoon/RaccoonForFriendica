@@ -17,7 +17,7 @@ internal class DefaultFollowedHashtagsPaginationManager(
     }
 
     override suspend fun loadNextPage(): List<TagModel> {
-        val (tags, cursor) = tagRepository.getFollowed()
+        val (tags, cursor) = tagRepository.getFollowed(pageCursor)
         val results = tags.deduplicate().updatePaginationData(cursor)
         history.addAll(results)
 
