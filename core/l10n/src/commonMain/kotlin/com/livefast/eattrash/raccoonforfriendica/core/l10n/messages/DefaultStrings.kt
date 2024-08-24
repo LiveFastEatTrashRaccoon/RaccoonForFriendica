@@ -229,4 +229,8 @@ internal open class DefaultStrings : Strings {
     override val notificationTypePollName = "Polls"
     override val notificationTypeReblogName = "Re-shares"
     override val notificationTypeUpdateName = "Post updates"
+    override val muteDurationIndefinite = "Indefinite"
+    override val selectDurationDialogTitle = "Select duration"
+    override val muteDurationItem = "You will not see any posts by this user for"
+    override val muteDisableNotificationsItem = "Disable notifications"
 }

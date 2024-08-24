@@ -213,6 +213,10 @@ interface Strings {
     val notificationTypePollName: String
     val notificationTypeReblogName: String
     val notificationTypeUpdateName: String
+    val muteDurationIndefinite: String
+    val selectDurationDialogTitle: String
+    val muteDurationItem: String
+    val muteDisableNotificationsItem: String
 }
 
 object Locales {

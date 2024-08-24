@@ -18,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSec
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 class ExploreViewModel(
     private val paginationManager: ExplorePaginationManager,
@@ -96,6 +97,8 @@ class ExploreViewModel(
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
+                    duration = intent.duration,
+                    disableNotifications = intent.disableNotifications,
                 )
             is ExploreMviModel.Intent.BlockUser ->
                 block(
@@ -385,9 +388,16 @@ class ExploreViewModel(
     private fun mute(
         userId: String,
         entryId: String,
+        duration: Duration,
+        disableNotifications: Boolean,
     ) {
         screenModelScope.launch {
-            val res = userRepository.mute(userId)
+            val res =
+                userRepository.mute(
+                    id = userId,
+                    durationSeconds = if (duration.isInfinite()) 0 else duration.inWholeSeconds,
+                    notifications = disableNotifications,
+                )
             if (res != null) {
                 removeEntryFromState(entryId)
             }

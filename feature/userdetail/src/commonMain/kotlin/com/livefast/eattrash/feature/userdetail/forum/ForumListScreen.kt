@@ -59,6 +59,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -411,56 +412,28 @@ class ForumListScreen(
         }
 
         if (confirmMuteEntry != null) {
-            val creator = confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator
-            AlertDialog(
-                onDismissRequest = {
-                    confirmMuteEntry = null
-                },
-                title = {
-                    Text(
-                        text =
-                            buildString {
-                                append(LocalStrings.current.actionMute)
-                                val handle = creator?.handle ?: ""
-                                if (handle.isNotEmpty()) {
-                                    append(" @$handle")
-                                }
-                            },
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmMuteEntry = null
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            val entryId = confirmMuteEntry?.id
-                            val creatorId = creator?.id
-                            confirmMuteEntry = null
-                            if (entryId != null && creatorId != null) {
+            (confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator)?.also { user ->
+                ConfirmMuteUserBottomSheet(
+                    userHandle = user.handle.orEmpty(),
+                    onClose = { pair ->
+                        val entryId = confirmMuteEntry?.id
+                        confirmMuteEntry = null
+                        if (pair != null) {
+                            val (duration, disableNotifications) = pair
+                            if (entryId != null) {
                                 model.reduce(
                                     ForumListMviModel.Intent.MuteUser(
-                                        userId = creatorId,
+                                        userId = user.id,
                                         entryId = entryId,
+                                        duration = duration,
+                                        disableNotifications = disableNotifications,
                                     ),
                                 )
                             }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
-                    }
-                },
-            )
+                        }
+                    },
+                )
+            }
         }
 
         if (confirmBlockEntry != null) {

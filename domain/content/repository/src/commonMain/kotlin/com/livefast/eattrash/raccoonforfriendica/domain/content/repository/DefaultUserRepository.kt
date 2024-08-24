@@ -150,12 +150,14 @@ internal class DefaultUserRepository(
     override suspend fun mute(
         id: String,
         durationSeconds: Long,
+        notifications: Boolean,
     ): RelationshipModel? =
         runCatching {
             withContext(Dispatchers.IO) {
                 val data =
                     MuteUserForm(
                         duration = durationSeconds,
+                        notifications = notifications,
                     )
                 provider.users
                     .mute(

@@ -18,8 +18,14 @@ data class UserModel(
     val id: String,
     val locked: Boolean = false,
     val username: String? = null,
+    @Transient
     val relationshipStatus: RelationshipStatus? = null,
+    @Transient
     val notificationStatus: NotificationStatus? = null,
+    @Transient
+    val muted: Boolean = false,
+    @Transient
+    val blocked: Boolean = false,
     @Transient
     val relationshipStatusPending: Boolean = false,
     @Transient

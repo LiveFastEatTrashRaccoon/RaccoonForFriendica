@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
+import kotlin.time.Duration
 
 @Stable
 interface ExploreMviModel :
@@ -51,6 +52,8 @@ interface ExploreMviModel :
         data class MuteUser(
             val userId: String,
             val entryId: String,
+            val duration: Duration = Duration.INFINITE,
+            val disableNotifications: Boolean = true,
         ) : Intent
 
         data class BlockUser(

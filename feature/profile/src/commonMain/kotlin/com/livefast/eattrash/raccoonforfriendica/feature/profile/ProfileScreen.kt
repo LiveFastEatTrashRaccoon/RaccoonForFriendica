@@ -11,6 +11,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,7 +33,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.Navigator
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
@@ -85,17 +85,16 @@ class ProfileScreen : Screen {
                         },
                         actions = {
                             if (uiState.isLogged) {
-                                Icon(
-                                    modifier =
-                                        Modifier
-                                            .padding(horizontal = Spacing.xs)
-                                            .clickable {
-                                                confirmLogoutDialogOpened = true
-                                            },
-                                    imageVector = Icons.AutoMirrored.Default.Logout,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onBackground,
-                                )
+                                IconButton(
+                                    onClick = {
+                                        confirmLogoutDialogOpened = true
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Default.Logout,
+                                        contentDescription = null,
+                                    )
+                                }
                             }
                         },
                     )
