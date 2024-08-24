@@ -49,7 +49,7 @@ internal open class DefaultStrings : Strings {
     override val accountSectionAll = "Posts & Replies"
     override val accountSectionPinned = "Pinned"
     override val accountSectionMedia = "Media"
-    override val postTitleBy = "Post by"
+    override val postTitle = "Post"
     override val languageEn = "English"
     override val languageIt = "Italiano"
     override val settingsTitle = "Settings"
@@ -234,4 +234,5 @@ internal open class DefaultStrings : Strings {
     override val muteDurationItem = "You will not see any posts by this user for"
     override val muteDisableNotificationsItem = "Disable notifications"
     override val actionSendFollowRequest = "Send request"
+    override val postBy = "by"
 }

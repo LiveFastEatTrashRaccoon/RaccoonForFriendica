@@ -52,7 +52,7 @@ interface Strings {
     val accountSectionAll: String
     val accountSectionPinned: String
     val accountSectionMedia: String
-    val postTitleBy: String
+    val postTitle: String
     val languageEn: String
     val languageIt: String
     val settingsTitle: String
@@ -218,6 +218,7 @@ interface Strings {
     val muteDurationItem: String
     val muteDisableNotificationsItem: String
     val actionSendFollowRequest: String
+    val postBy: String
 }
 
 object Locales {

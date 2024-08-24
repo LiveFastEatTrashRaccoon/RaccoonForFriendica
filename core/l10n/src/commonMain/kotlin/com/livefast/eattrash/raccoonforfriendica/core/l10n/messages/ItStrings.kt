@@ -54,7 +54,7 @@ internal val ItStrings =
         override val accountSectionAll = "Post & risposte"
         override val accountSectionPinned = "Fissati"
         override val accountSectionMedia = "Media"
-        override val postTitleBy = "Post di"
+        override val postTitle = "Post"
         override val settingsTitle = "Impostazioni"
         override val settingsHeaderGeneral = "Generali"
         override val settingsItemLanguage = "Lingua"
@@ -239,4 +239,5 @@ internal val ItStrings =
         override val muteDurationItem = "Non vedrai più post da questo utente per"
         override val muteDisableNotificationsItem = "Disabilita notifiche"
         override val actionSendFollowRequest = "Invia richiesta"
+        override val postBy = "di"
     }
