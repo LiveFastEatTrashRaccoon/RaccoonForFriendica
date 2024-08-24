@@ -16,7 +16,7 @@ internal open class DefaultStrings : Strings {
     override val settingsThemeLight = "Light"
     override val settingsThemeDark = "Dark"
     override val settingsThemeBlack = "Black (AMOLED)"
-    override val sectionTitleHome = "Home"
+    override val sectionTitleHome = "Timeline"
     override val sectionTitleExplore = "Explore"
     override val sectionTitleInbox = "Inbox"
     override val sectionTitleProfile = "Profile"

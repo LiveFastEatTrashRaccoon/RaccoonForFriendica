@@ -4,9 +4,9 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -75,7 +75,7 @@ internal fun RowScope.BottomNavigationItem(
 private fun BottomNavigationSection.toIcon(): ImageVector =
     when (this) {
         BottomNavigationSection.Explore -> Icons.Default.Explore
-        BottomNavigationSection.Home -> Icons.Default.Home
+        BottomNavigationSection.Home -> Icons.AutoMirrored.Default.Article
         is BottomNavigationSection.Inbox -> Icons.Default.Inbox
         BottomNavigationSection.Profile -> Icons.Default.AccountCircle
     }
