@@ -26,7 +26,5 @@ internal fun ApiCredentials.toServiceCredentials() =
             ServiceCredentials.OAuth2(
                 accessToken = accessToken,
                 refreshToken = refreshToken,
-        )
-
-    else -> null
-}
+            )
+    }

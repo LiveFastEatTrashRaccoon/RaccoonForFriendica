@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.core.api.provider
+package com.livefast.eattrash.raccoonforfriendica.core.api.utils
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.logDebug
 import io.ktor.client.plugins.logging.Logger
