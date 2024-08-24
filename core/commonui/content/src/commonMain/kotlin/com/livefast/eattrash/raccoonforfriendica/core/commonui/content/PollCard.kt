@@ -44,8 +44,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDuration
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
+import kotlin.math.roundToInt
 
-private fun PollOptionModel.getPercentage(total: Int) = if (total == 0) 0f else votes / total.toFloat()
+private fun PollOptionModel.getPercentage(total: Int): Float =
+    if (total == 0) {
+        0f
+    } else {
+        ((votes / total.toFloat()) * 1000).roundToInt() / 10f
+    }
 
 @Composable
 fun PollCard(
@@ -92,8 +98,10 @@ fun PollCard(
         }
 
         PollCardFooter(
+            modifier = Modifier.padding(horizontal = Spacing.xxs),
             expired = poll.expired,
             expirationDate = poll.expiresAt,
+            votes = poll.votes,
             isShowingResults = showingResults,
             onChangeShowingResults = { newValue ->
                 showingResults = newValue
@@ -200,11 +208,11 @@ private fun PollCardOption(
                                 shape = CircleShape,
                             ),
                 )
-            } else if (isOwnVote) {
+            } else if (isOwnVote || (!enabled && isScoreHigher)) {
                 Icon(
                     modifier =
                         Modifier
-                            .padding(Spacing.xxxs)
+                            .padding(Spacing.xxs)
                             .fillMaxSize(),
                     imageVector = Icons.Default.Check,
                     contentDescription = null,
