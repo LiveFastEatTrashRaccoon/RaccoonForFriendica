@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://img.shields.io/badge/Kotlin-2.0.0-7F52FF?logo=kotlin" />
+  <img src="https://img.shields.io/badge/Kotlin-2.0.10-7F52FF?logo=kotlin" />
   <img src="https://img.shields.io/badge/Gradle-8.7-02303A?logo=gradle" />
   <img src="https://img.shields.io/badge/Android-26+-34A853?logo=android" />
   <img src="https://img.shields.io/badge/Compose-1.6.7-4285F4?logo=jetpackcompose" />
@@ -19,8 +19,11 @@ lot of common heritage.
 ## Want to try it?
 
 Here are some options to install the application on your device. The best way to install testing APKs
-is Obtainium, please insert this repository's URL as a source and make sure to check the
-"Include pre-releases" option (in order to receive all alpha and beta builds):
+is Obtainium, please insert this repository's URL as a source.
+
+> [!TIP]
+> Make sure to check the "Include pre-releases" option (in order to receive all alpha and beta
+> builds):
 
 ```
 https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
@@ -46,7 +49,7 @@ https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
   <img width="310" src="https://github.com/user-attachments/assets/08a9d437-d4af-48fa-b2de-efb56c21d0be" alt="thread screen within a group with replies" />
 </div>
 
-## Why was the project started?
+## Why was the project started and why is it called like that?
 
 Because raccoons are so adorable, aren't they? 🦝🦝🦝
 
@@ -114,13 +117,27 @@ The app is under ongoing development, here is a list of the features that are be
 - [ ] custom emojis
 - [ ] scheduled posts
 
-#### Disclaimer
+## Technologies used
 
-This is an experimental project and some technologies it is build upon are still in pre-production
-stage, moreover this is a side-project developed by volunteers in their spare time, so use _at your
-own risk_, please don't expect a full-fledged and fully functional app and be prepared to occasional
-failures and yet-to-implement features.
+- [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform) for UI
+- [Room](https://developer.android.com/kotlin/multiplatform/room) for local persistence
+- [Koin](https://insert-koin.io/) for dependency injection
+- [Voyager](https://voyager.adriel.cafe/) for navigation
+- [Ktor](https://ktor.io/) and [Ktorfit](https://foso.github.io/Ktorfit) for networking
+- [Lyricist](https://github.com/adrielcafe/lyricist) for l10n
+- [Multiplatform settings](https://github.com/russhwolf/multiplatform-settings) for encrypted
+  preferences
+- [MaterialKolor](https://github.com/jordond/MaterialKolor) for custom theme generation
+- [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing
 
-Please be willing to contribute if you can, requests and reports will be evaluated depending on the
-time available.
+## Disclaimer
 
+> [!WARNING]
+> This is an experimental project and some technologies it is build upon are still in pre-production
+> stage, moreover this is a side-project developed by volunteers in their spare time, so use
+> _at your own risk_.
+
+You shouldn't expect a full-fledged and fully functional app; you should be prepared to occasional
+failures, yet-to-implement features and areas where (a lot of) polish is needed. Contributions are
+welcome and new feature requests (outside the agreed roadmap) will be evaluated depending on the
+available time.
