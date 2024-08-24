@@ -104,6 +104,7 @@ fun UserItem(
             UserRelationshipButton(
                 status = relationshipStatus,
                 pending = user.relationshipStatusPending,
+                locked = user.locked,
                 onClick = onRelationshipClicked,
             )
         }
