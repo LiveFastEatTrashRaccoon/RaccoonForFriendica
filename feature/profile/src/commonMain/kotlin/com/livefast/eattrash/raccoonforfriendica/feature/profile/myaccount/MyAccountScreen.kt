@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
@@ -89,6 +91,13 @@ class MyAccountScreen : Screen {
         val clipboardManager = LocalClipboardManager.current
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         val topAppBarState = LocalProfileTopAppBarStateWrapper.current.topAppBarState
+        val stickyHeaderTopOffset by animateDpAsState(
+            if (lazyListState.firstVisibleItemIndex >= 2) {
+                Dimensions.maxTopBarInset * topAppBarState.collapsedFraction
+            } else {
+                0.dp
+            },
+        )
 
         suspend fun goBackToTop() {
             runCatching {
@@ -197,7 +206,7 @@ class MyAccountScreen : Screen {
                             Modifier
                                 .background(MaterialTheme.colorScheme.background)
                                 .padding(
-                                    top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
+                                    top = stickyHeaderTopOffset,
                                     bottom = Spacing.s,
                                 ),
                         titles =
