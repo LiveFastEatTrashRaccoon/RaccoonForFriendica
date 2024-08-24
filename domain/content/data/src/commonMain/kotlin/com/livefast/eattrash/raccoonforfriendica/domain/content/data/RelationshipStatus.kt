@@ -28,14 +28,15 @@ fun RelationshipModel.toStatus(): RelationshipStatus =
     }
 
 @Composable
-fun RelationshipStatus.toReadableName(): String =
-    when (this) {
-        RelationshipStatus.Following -> LocalStrings.current.relationshipStatusFollowing
-        RelationshipStatus.FollowsYou -> LocalStrings.current.relationshipStatusFollowsYou
-        RelationshipStatus.MutualFollow -> LocalStrings.current.relationshipStatusMutual
-        RelationshipStatus.RequestedToOther -> LocalStrings.current.relationshipStatusRequestedToOther
-        RelationshipStatus.RequestedToYou -> LocalStrings.current.relationshipStatusRequestedToYou
-        RelationshipStatus.Undetermined -> LocalStrings.current.actionFollow
+fun RelationshipStatus.toReadableName(userLocked: Boolean = false): String =
+    when {
+        this == RelationshipStatus.Following -> LocalStrings.current.relationshipStatusFollowing
+        this == RelationshipStatus.FollowsYou -> LocalStrings.current.relationshipStatusFollowsYou
+        this == RelationshipStatus.MutualFollow -> LocalStrings.current.relationshipStatusMutual
+        this == RelationshipStatus.RequestedToOther -> LocalStrings.current.relationshipStatusRequestedToOther
+        this == RelationshipStatus.RequestedToYou -> LocalStrings.current.relationshipStatusRequestedToYou
+        userLocked -> LocalStrings.current.actionSendFollowRequest
+        else -> LocalStrings.current.actionFollow
     }
 
 @Composable

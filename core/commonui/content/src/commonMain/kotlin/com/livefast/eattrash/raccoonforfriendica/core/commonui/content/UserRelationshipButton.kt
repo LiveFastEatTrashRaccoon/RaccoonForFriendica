@@ -25,6 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableN
 fun UserRelationshipButton(
     status: RelationshipStatus,
     modifier: Modifier = Modifier,
+    locked: Boolean = false,
     pending: Boolean = false,
     onClick: ((RelationshipStatusNextAction) -> Unit)? = null,
 ) {
@@ -40,7 +41,7 @@ fun UserRelationshipButton(
                     color = MaterialTheme.colorScheme.onPrimary,
                 )
             }
-            Text(status.toReadableName())
+            Text(status.toReadableName(userLocked = locked))
         }
     }
     val buttonPadding =
