@@ -35,7 +35,7 @@ interface UserRepository {
 
     suspend fun unfollow(id: String): RelationshipModel?
 
-    suspend fun getFollowRequests(pageCursor: String?): List<UserModel>
+    suspend fun getFollowRequests(pageCursor: String? = null): Pair<List<UserModel>, String?>
 
     suspend fun acceptFollowRequest(id: String): Boolean
 

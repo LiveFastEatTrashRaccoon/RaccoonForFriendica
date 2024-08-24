@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -17,13 +18,7 @@ internal class DefaultTagRepository(
                         maxId = pageCursor,
                     )
                 val list: List<TagModel> = response.body()?.map { it.toModel() }.orEmpty()
-                val nextCursor: String? =
-                    response.headers["link"]
-                        .orEmpty()
-                        .let {
-                            val match = Regex("max_id=(?<maxId>\\d+)>").find(it)
-                            match?.groups?.get("maxId")?.value
-                        }
+                val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
                 list to nextCursor
             }
         }.getOrElse { emptyList<TagModel>() to null }

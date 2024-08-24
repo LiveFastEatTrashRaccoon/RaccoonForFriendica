@@ -80,24 +80,6 @@ interface UserService {
         @Path("id") id: String,
     ): Relationship
 
-    @GET("v1/follow_requests/")
-    suspend fun getFollowRequests(
-        @Query("max_id") maxId: String? = null,
-        @Query("limit") limit: Int = 20,
-    ): List<Account>
-
-    @POST("v1/follow_requests/{id}/authorize")
-    @Headers("Content-Type: application/json")
-    suspend fun acceptFollowRequest(
-        @Path("id") id: String,
-    ): Relationship
-
-    @POST("v1/follow_requests/{id}/reject")
-    @Headers("Content-Type: application/json")
-    suspend fun rejectFollowRequest(
-        @Path("id") id: String,
-    ): Relationship
-
     @GET("v1/favourites")
     suspend fun getFavorites(
         @Query("max_id") maxId: String? = null,

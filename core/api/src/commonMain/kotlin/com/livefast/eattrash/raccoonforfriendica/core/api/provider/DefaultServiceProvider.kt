@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
@@ -12,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineServic
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createAppService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createFollowRequestService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createNotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoService
@@ -53,9 +55,10 @@ internal class DefaultServiceProvider(
     private var currentNode: String = ""
 
     override lateinit var apps: AppService
+    override lateinit var followRequests: FollowRequestService
     override lateinit var lists: ListService
-    override lateinit var photo: PhotoService
     override lateinit var notifications: NotificationService
+    override lateinit var photo: PhotoService
     override lateinit var polls: PollService
     override lateinit var search: SearchService
     override lateinit var statuses: StatusService
@@ -143,9 +146,10 @@ internal class DefaultServiceProvider(
                 .converterFactories(ResponseConverterFactory())
                 .build()
         apps = ktorfit.createAppService()
+        followRequests = ktorfit.createFollowRequestService()
         lists = ktorfit.createListService()
-        photo = ktorfit.createPhotoService()
         notifications = ktorfit.createNotificationService()
+        photo = ktorfit.createPhotoService()
         polls = ktorfit.createPollService()
         search = ktorfit.createSearchService()
         statuses = ktorfit.createStatusService()
