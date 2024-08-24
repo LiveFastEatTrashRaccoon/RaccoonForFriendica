@@ -320,7 +320,7 @@ class UserDetailScreen(
                                     onRelationshipClicked = { nextAction ->
                                         when (nextAction) {
                                             RelationshipStatusNextAction.AcceptRequest -> {
-                                                model.reduce(UserDetailMviModel.Intent.AcceptFollowRequest)
+                                                detailOpener.openFollowRequests()
                                             }
 
                                             RelationshipStatusNextAction.ConfirmUnfollow -> {

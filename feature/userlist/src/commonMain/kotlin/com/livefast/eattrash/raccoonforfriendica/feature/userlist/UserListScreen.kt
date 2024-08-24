@@ -204,11 +204,7 @@ class UserListScreen(
                             onRelationshipClicked = { nextAction ->
                                 when (nextAction) {
                                     RelationshipStatusNextAction.AcceptRequest -> {
-                                        model.reduce(
-                                            UserListMviModel.Intent.AcceptFollowRequest(
-                                                user.id,
-                                            ),
-                                        )
+                                        detailOpener.openFollowRequests()
                                     }
 
                                     RelationshipStatusNextAction.ConfirmUnfollow -> {

@@ -394,11 +394,7 @@ class SearchScreen : Screen {
                                     onRelationshipClicked = { nextAction ->
                                         when (nextAction) {
                                             RelationshipStatusNextAction.AcceptRequest -> {
-                                                model.reduce(
-                                                    SearchMviModel.Intent.AcceptFollowRequest(
-                                                        item.user.id,
-                                                    ),
-                                                )
+                                                detailOpener.openFollowRequests()
                                             }
 
                                             RelationshipStatusNextAction.ConfirmUnfollow -> {

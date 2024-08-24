@@ -70,7 +70,6 @@ class InboxViewModel(
                     refresh(initial = true)
                 }
 
-            is InboxMviModel.Intent.AcceptFollowRequest -> acceptFollowRequest(intent.userId)
             is InboxMviModel.Intent.Follow -> follow(intent.userId)
             is InboxMviModel.Intent.Unfollow -> unfollow(intent.userId)
         }
@@ -133,29 +132,6 @@ class InboxViewModel(
                         }
                     },
             )
-        }
-    }
-
-    private fun acceptFollowRequest(userId: String) {
-        hapticFeedback.vibrate()
-        screenModelScope.launch {
-            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
-            val currentUser =
-                uiState.value.notifications
-                    .firstOrNull { it.user?.id == userId }
-                    ?.user
-            userRepository.acceptFollowRequest(userId)
-            val newRelationship = userRepository.getRelationships(listOf(userId)).firstOrNull()
-            val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
-            val newNotificationStatus =
-                newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
-            updateUserInState(userId) {
-                it.copy(
-                    relationshipStatus = newStatus,
-                    notificationStatus = newNotificationStatus,
-                    relationshipStatusPending = false,
-                )
-            }
         }
     }
 

@@ -197,7 +197,7 @@ class InboxScreen : Screen {
                             onUserRelationshipClicked = { userId, nextAction ->
                                 when (nextAction) {
                                     RelationshipStatusNextAction.AcceptRequest -> {
-                                        model.reduce(InboxMviModel.Intent.AcceptFollowRequest(userId))
+                                        detailOpener.openFollowRequests()
                                     }
 
                                     RelationshipStatusNextAction.ConfirmUnfollow -> {

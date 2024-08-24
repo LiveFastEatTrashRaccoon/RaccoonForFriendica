@@ -417,11 +417,7 @@ class ExploreScreen : Screen {
                                     onRelationshipClicked = { nextAction ->
                                         when (nextAction) {
                                             RelationshipStatusNextAction.AcceptRequest -> {
-                                                model.reduce(
-                                                    ExploreMviModel.Intent.AcceptFollowRequest(
-                                                        item.user.id,
-                                                    ),
-                                                )
+                                                detailOpener.openFollowRequests()
                                             }
 
                                             RelationshipStatusNextAction.ConfirmUnfollow -> {
