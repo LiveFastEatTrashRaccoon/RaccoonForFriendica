@@ -4,31 +4,32 @@ android-compileSdk = "34"
 android-minSdk = "26"
 android-targetSdk = "34"
 
-androidx-activity = "1.9.0"
+androidx-activity = "1.9.1"
 androidx-appcompat = "1.7.0"
 androidx-browser = "1.8.0"
 androidx-core-ktx = "1.13.1"
 androidx-crypto = "1.0.0"
 androidx-material = "1.12.0"
 androidx-splashscreen = "1.0.1"
-androidx-sqlite = "2.5.0-alpha5"
+androidx-sqlite = "2.5.0-alpha07"
 androidx-test-junit = "1.2.1"
 coil = "3.0.0-alpha09"
 compose-plugin = "1.6.11"
 koin = "3.5.6"
-kotlin = "2.0.0"
+kotlin = "2.0.10"
 kotlincrypto = "0.5.1"
 kotlinx-coroutines = "1.8.1"
 kotlinx-serialization-json = "1.7.1"
 ksoup = "0.4.0"
-ksp = "2.0.0-1.0.23"
+ksp = "2.0.10-1.0.24"
 ktor = "2.3.12"
-ktorfit = "2.0.0-rc01"
+ktorfit = "2.0.1"
+ktorfit-ksp = "2.0.1-1.0.24"
 lyricist = "1.7.0"
 materialKolor = "1.7.0"
 mockk = "1.13.12"
 multiplatform-settings = "1.1.1"
-room = "2.7.0-alpha05"
+room = "2.7.0-alpha07"
 stately = "2.0.7"
 turbine = "1.1.0"
 voyager = "1.0.0"
@@ -69,7 +70,7 @@ ktor-contentnegotiation = { module = "io.ktor:ktor-client-content-negotiation", 
 ktor-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
-ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "ktorfit" }
+ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "ktorfit-ksp" }
 ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfit" }
 ktorfit-converters-response = { module = "de.jensklingenberg.ktorfit:ktorfit-converters-response", version.ref = "ktorfit" }
 

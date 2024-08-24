@@ -11,6 +11,18 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TagsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createAppService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createListService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createNotificationService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPollService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createSearchService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createStatusService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createTagsService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createTimelineService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createTrendsService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createUserService
+import com.livefast.eattrash.raccoonforfriendica.core.api.utils.defaultLogger
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import de.jensklingenberg.ktorfit.Ktorfit
@@ -130,16 +142,16 @@ internal class DefaultServiceProvider(
                 .httpClient(client)
                 .converterFactories(ResponseConverterFactory())
                 .build()
-        apps = ktorfit.create()
-        lists = ktorfit.create()
-        photo = ktorfit.create()
-        notifications = ktorfit.create()
-        polls = ktorfit.create()
-        search = ktorfit.create()
-        statuses = ktorfit.create()
-        tags = ktorfit.create()
-        timeline = ktorfit.create()
-        trends = ktorfit.create()
-        users = ktorfit.create()
+        apps = ktorfit.createAppService()
+        lists = ktorfit.createListService()
+        photo = ktorfit.createPhotoService()
+        notifications = ktorfit.createNotificationService()
+        polls = ktorfit.createPollService()
+        search = ktorfit.createSearchService()
+        statuses = ktorfit.createStatusService()
+        tags = ktorfit.createTagsService()
+        timeline = ktorfit.createTimelineService()
+        trends = ktorfit.createTrendsService()
+        users = ktorfit.createUserService()
     }
 }

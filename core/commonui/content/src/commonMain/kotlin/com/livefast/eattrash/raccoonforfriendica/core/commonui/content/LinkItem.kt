@@ -43,7 +43,7 @@ fun LinkItem(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) {
-                    if (url != null) {
+                    if (url.isNotEmpty()) {
                         onOpen?.invoke(url)
                     }
                 }.border(
