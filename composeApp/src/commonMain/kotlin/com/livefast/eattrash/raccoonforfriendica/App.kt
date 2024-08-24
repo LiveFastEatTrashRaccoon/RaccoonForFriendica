@@ -60,13 +60,12 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                     )
 
                     if (!isInitialized) {
+                        apiConfigurationRepository.initialize()
                         isInitialized = true
                         onLoadingFinished?.invoke()
                     }
                 }
             }.launchIn(this)
-
-        apiConfigurationRepository.initialize()
         setupAccountUseCase()
     }
 
