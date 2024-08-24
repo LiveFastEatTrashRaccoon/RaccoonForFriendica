@@ -37,6 +37,7 @@ kotlin {
 
                 implementation(libs.koin.core)
                 implementation(libs.coil.compose)
+                implementation(libs.compose.colorpicker)
 
                 implementation(projects.core.utils)
                 implementation(projects.core.appearance)
