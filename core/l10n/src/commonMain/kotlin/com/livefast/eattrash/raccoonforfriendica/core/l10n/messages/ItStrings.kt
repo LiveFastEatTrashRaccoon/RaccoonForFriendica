@@ -240,4 +240,6 @@ internal val ItStrings =
         override val muteDisableNotificationsItem = "Disabilita notifiche"
         override val actionSendFollowRequest = "Invia richiesta"
         override val postBy = "di"
+        override val customOption = "Personalizzato"
+        override val colorPickerDialogTitle = "Seleziona un colore"
     }

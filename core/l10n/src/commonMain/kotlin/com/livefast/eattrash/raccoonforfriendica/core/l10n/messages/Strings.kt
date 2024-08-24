@@ -219,6 +219,8 @@ interface Strings {
     val muteDisableNotificationsItem: String
     val actionSendFollowRequest: String
     val postBy: String
+    val customOption: String
+    val colorPickerDialogTitle: String
 }
 
 object Locales {

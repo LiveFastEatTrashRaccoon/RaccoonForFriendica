@@ -235,4 +235,6 @@ internal open class DefaultStrings : Strings {
     override val muteDisableNotificationsItem = "Disable notifications"
     override val actionSendFollowRequest = "Send request"
     override val postBy = "by"
+    override val customOption = "Custom"
+    override val colorPickerDialogTitle = "Select a color"
 }
