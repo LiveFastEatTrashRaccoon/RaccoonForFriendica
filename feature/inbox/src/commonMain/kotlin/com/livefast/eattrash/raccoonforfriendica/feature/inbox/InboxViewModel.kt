@@ -96,9 +96,18 @@ class InboxViewModel(
 
         updateState { it.copy(loading = true) }
         val notifications = paginationManager.loadNextPage()
+        val isRefreshing = uiState.value.refreshing
         updateState {
             it.copy(
-                notifications = notifications,
+                notifications =
+                    notifications.map { notification ->
+                        if (isRefreshing) {
+                            // when refreshing they have all been marked as read
+                            notification.copy(read = true)
+                        } else {
+                            notification
+                        }
+                    },
                 canFetchMore = paginationManager.canFetchMore,
                 loading = false,
                 initial = false,
