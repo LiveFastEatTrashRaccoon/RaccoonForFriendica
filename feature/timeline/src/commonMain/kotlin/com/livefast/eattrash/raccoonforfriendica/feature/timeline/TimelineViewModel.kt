@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.combine
@@ -22,6 +23,7 @@ import kotlin.time.Duration
 class TimelineViewModel(
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository,
@@ -51,8 +53,11 @@ class TimelineViewModel(
             combine(
                 settingsRepository.current,
                 identityRepository.currentUser,
-            ) { _, _ ->
-                refresh(initial = true)
+            ) { _, user ->
+                // wait until either there is a logged user if there are valid credentials stored
+                if (user != null || !apiConfigurationRepository.hasCachedAuthCredentials()) {
+                    refresh(initial = true)
+                }
             }.launchIn(this)
         }
     }
