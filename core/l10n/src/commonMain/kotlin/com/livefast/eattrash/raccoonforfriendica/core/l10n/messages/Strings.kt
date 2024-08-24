@@ -217,6 +217,7 @@ interface Strings {
     val selectDurationDialogTitle: String
     val muteDurationItem: String
     val muteDisableNotificationsItem: String
+    val actionSendFollowRequest: String
 }
 
 object Locales {

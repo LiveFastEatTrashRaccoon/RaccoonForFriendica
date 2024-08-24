@@ -233,4 +233,5 @@ internal open class DefaultStrings : Strings {
     override val selectDurationDialogTitle = "Select duration"
     override val muteDurationItem = "You will not see any posts by this user for"
     override val muteDisableNotificationsItem = "Disable notifications"
+    override val actionSendFollowRequest = "Send request"
 }

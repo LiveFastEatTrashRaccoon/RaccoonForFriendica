@@ -238,4 +238,5 @@ internal val ItStrings =
         override val selectDurationDialogTitle = "Seleziona durata"
         override val muteDurationItem = "Non vedrai più post da questo utente per"
         override val muteDisableNotificationsItem = "Disabilita notifiche"
+        override val actionSendFollowRequest = "Invia richiesta"
     }
