@@ -14,6 +14,7 @@ androidx-splashscreen = "1.0.1"
 androidx-sqlite = "2.5.0-alpha07"
 androidx-test-junit = "1.2.1"
 coil = "3.0.0-alpha09"
+compose-colorpicker = "1.1.2"
 compose-plugin = "1.6.11"
 koin = "3.5.6"
 kotlin = "2.0.10"
@@ -78,6 +79,7 @@ ksoup-html = { module = "com.mohamedrejeb.ksoup:ksoup-html", version.ref = "ksou
 ksoup-entities = { module = "com.mohamedrejeb.ksoup:ksoup-entities", version.ref = "ksoup" }
 
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", version.ref = "compose-colorpicker" }
 
 lyricist = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
 
