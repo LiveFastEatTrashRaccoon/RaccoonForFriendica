@@ -234,7 +234,11 @@ private fun PollCardOption(
                 modifier = Modifier.widthIn(min = 40.dp),
                 text =
                     buildString {
-                        append(percentage)
+                        if ((percentage * 10).roundToInt() % 10 == 0) {
+                            append(percentage.roundToInt())
+                        } else {
+                            append(percentage)
+                        }
                         append("%")
                     },
                 textAlign = TextAlign.End,
