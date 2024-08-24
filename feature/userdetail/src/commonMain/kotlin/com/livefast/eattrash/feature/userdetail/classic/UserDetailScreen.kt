@@ -1,5 +1,6 @@
 package com.livefast.eattrash.feature.userdetail.classic
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -57,6 +58,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
@@ -117,6 +119,13 @@ class UserDetailScreen(
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
         val shareHelper = remember { getShareHelper() }
+        val stickyHeaderTopOffset by animateDpAsState(
+            if (lazyListState.firstVisibleItemIndex >= 2) {
+                Dimensions.maxTopBarInset * topAppBarState.collapsedFraction
+            } else {
+                0.dp
+            },
+        )
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
         var confirmUnfollowDialogOpen by remember { mutableStateOf(false) }
@@ -389,7 +398,7 @@ class UserDetailScreen(
                                     Modifier
                                         .background(MaterialTheme.colorScheme.background)
                                         .padding(
-                                            top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
+                                            top = stickyHeaderTopOffset,
                                             bottom = Spacing.s,
                                         ),
                                 titles =
