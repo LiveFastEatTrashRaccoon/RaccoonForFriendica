@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import kotlin.time.Duration
 
 @Stable
 interface UserDetailMviModel :
@@ -45,6 +46,16 @@ interface UserDetailMviModel :
         data class SubmitPollVote(
             val entry: TimelineEntryModel,
             val choices: List<Int>,
+        ) : Intent
+
+        data class ToggleMute(
+            val muted: Boolean,
+            val duration: Duration = Duration.INFINITE,
+            val disableNotifications: Boolean = true,
+        ) : Intent
+
+        data class ToggleBlock(
+            val blocked: Boolean,
         ) : Intent
     }
 

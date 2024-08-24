@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 class UserDetailViewModel(
     private val id: String,
@@ -76,9 +77,16 @@ class UserDetailViewModel(
             is UserDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is UserDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is UserDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
-            UserDetailMviModel.Intent.DisableNotifications -> toggleNotifications(false)
-            UserDetailMviModel.Intent.EnableNotifications -> toggleNotifications(true)
+            UserDetailMviModel.Intent.DisableNotifications -> toggleNotifications(enabled = false)
+            UserDetailMviModel.Intent.EnableNotifications -> toggleNotifications(enabled = true)
             is UserDetailMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is UserDetailMviModel.Intent.ToggleBlock -> toggleBlock(intent.blocked)
+            is UserDetailMviModel.Intent.ToggleMute ->
+                toggleMute(
+                    muted = intent.muted,
+                    duration = intent.duration,
+                    disableNotifications = intent.disableNotifications,
+                )
         }
     }
 
@@ -96,6 +104,8 @@ class UserDetailViewModel(
                     user?.copy(
                         relationshipStatus = relationship?.toStatus(),
                         notificationStatus = relationship?.toNotificationStatus(),
+                        muted = relationship?.muting == true,
+                        blocked = relationship?.blocking == true,
                     ),
             )
         }
@@ -360,6 +370,62 @@ class UserDetailViewModel(
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(UserDetailMviModel.Effect.PollVoteFailure)
+            }
+        }
+    }
+
+    private fun toggleMute(
+        muted: Boolean,
+        duration: Duration = Duration.INFINITE,
+        disableNotifications: Boolean,
+    ) {
+        screenModelScope.launch {
+            val relationship =
+                if (muted) {
+                    userRepository.mute(
+                        id = id,
+                        durationSeconds = duration.inWholeSeconds,
+                        notifications = disableNotifications,
+                    )
+                } else {
+                    userRepository.unmute(id)
+                }
+            if (relationship != null) {
+                updateState {
+                    it.copy(
+                        user =
+                            it.user?.copy(
+                                relationshipStatus = relationship.toStatus(),
+                                notificationStatus = relationship.toNotificationStatus(),
+                                muted = relationship.muting,
+                                blocked = relationship.blocking,
+                            ),
+                    )
+                }
+            }
+        }
+    }
+
+    private fun toggleBlock(blocked: Boolean) {
+        screenModelScope.launch {
+            val relationship =
+                if (blocked) {
+                    userRepository.block(id)
+                } else {
+                    userRepository.unblock(id)
+                }
+            if (relationship != null) {
+                updateState {
+                    it.copy(
+                        user =
+                            it.user?.copy(
+                                relationshipStatus = relationship.toStatus(),
+                                notificationStatus = relationship.toNotificationStatus(),
+                                muted = relationship.muting,
+                                blocked = relationship.blocking,
+                            ),
+                    )
+                }
             }
         }
     }
