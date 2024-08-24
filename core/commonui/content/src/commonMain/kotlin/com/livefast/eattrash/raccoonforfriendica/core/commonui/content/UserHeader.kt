@@ -157,6 +157,7 @@ fun UserHeader(
                         if (relationshipStatus != null) {
                             UserRelationshipButton(
                                 status = relationshipStatus,
+                                locked = user.locked,
                                 pending = user.relationshipStatusPending,
                                 onClick = onRelationshipClicked,
                             )
