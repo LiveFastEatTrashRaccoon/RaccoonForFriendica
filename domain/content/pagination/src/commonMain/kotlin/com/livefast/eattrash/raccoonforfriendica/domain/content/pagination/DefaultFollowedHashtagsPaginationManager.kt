@@ -34,5 +34,5 @@ internal class DefaultFollowedHashtagsPaginationManager(
     private fun List<TagModel>.deduplicate(): List<TagModel> =
         filter { e1 ->
             history.none { e2 -> e1.name == e2.name }
-        }
+        }.distinctBy { it.name }
 }
