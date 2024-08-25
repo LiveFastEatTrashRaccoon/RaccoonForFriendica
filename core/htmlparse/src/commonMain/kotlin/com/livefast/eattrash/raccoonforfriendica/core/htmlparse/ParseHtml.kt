@@ -33,9 +33,9 @@ fun String.parseHtml(
                         )
                     }
 
-                    "b" -> string.pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
+                    "b", "strong" -> string.pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
                     "u" -> string.pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
-                    "i" -> string.pushStyle(SpanStyle(fontStyle = FontStyle.Italic))
+                    "i", "em" -> string.pushStyle(SpanStyle(fontStyle = FontStyle.Italic))
                     "s" -> string.pushStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
 
                     else -> println("onOpenTag: Unhandled span $name")
@@ -44,7 +44,7 @@ fun String.parseHtml(
                 when (name) {
                     "p" -> string.append(' ')
                     "span", "br" -> {}
-                    "b", "u", "i", "s" -> string.pop()
+                    "b", "strong", "u", "i", "em", "s" -> string.pop()
                     "a" -> {
                         string.pop() // corresponds to pushStyle
                         string.pop() // corresponds to pushStringAnnotation
