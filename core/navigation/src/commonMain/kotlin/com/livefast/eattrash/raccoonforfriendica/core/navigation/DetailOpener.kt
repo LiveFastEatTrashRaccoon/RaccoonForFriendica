@@ -54,4 +54,6 @@ interface DetailOpener {
     fun openCircles()
 
     fun openCircle(groupId: String)
+
+    fun openFollowRequests()
 }
