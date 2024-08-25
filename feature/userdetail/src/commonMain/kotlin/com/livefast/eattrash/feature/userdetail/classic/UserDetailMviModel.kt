@@ -21,8 +21,6 @@ interface UserDetailMviModel :
             val section: UserSection,
         ) : Intent
 
-        data object AcceptFollowRequest : Intent
-
         data object Follow : Intent
 
         data object Unfollow : Intent

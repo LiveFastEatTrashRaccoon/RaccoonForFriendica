@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScr
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.HashtagScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailScreen
@@ -156,6 +157,11 @@ class DefaultDetailOpener(
 
     override fun openCircle(groupId: String) {
         val screen = CircleDetailScreen(groupId)
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openFollowRequests() {
+        val screen = FollowRequestsScreen()
         navigationCoordinator.push(screen)
     }
 }

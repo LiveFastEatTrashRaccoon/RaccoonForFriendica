@@ -13,10 +13,6 @@ interface InboxMviModel :
 
         data object LoadNextPage : Intent
 
-        data class AcceptFollowRequest(
-            val userId: String,
-        ) : Intent
-
         data class Follow(
             val userId: String,
         ) : Intent

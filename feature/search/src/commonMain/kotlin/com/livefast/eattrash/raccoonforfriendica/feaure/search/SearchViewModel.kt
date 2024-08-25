@@ -88,7 +88,6 @@ class SearchViewModel(
                     refresh()
                 }
 
-            is SearchMviModel.Intent.AcceptFollowRequest -> acceptFollowRequest(intent.userId)
             is SearchMviModel.Intent.Follow -> follow(intent.userId)
             is SearchMviModel.Intent.Unfollow -> unfollow(intent.userId)
             is SearchMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
@@ -166,29 +165,6 @@ class SearchViewModel(
                         }
                     },
             )
-        }
-    }
-
-    private fun acceptFollowRequest(userId: String) {
-        hapticFeedback.vibrate()
-        screenModelScope.launch {
-            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
-            val currentUser =
-                uiState.value.items
-                    .firstOrNull { it is ExploreItemModel.User && it.user.id == userId }
-                    ?.let { (it as? ExploreItemModel.User)?.user }
-            userRepository.acceptFollowRequest(userId)
-            val newRelationship = userRepository.getRelationships(listOf(userId)).firstOrNull()
-            val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
-            val newNotificationStatus =
-                newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
-            updateUserInState(userId) {
-                it.copy(
-                    relationshipStatus = newStatus,
-                    notificationStatus = newNotificationStatus,
-                    relationshipStatusPending = false,
-                )
-            }
         }
     }
 

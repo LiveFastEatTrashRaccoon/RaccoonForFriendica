@@ -21,10 +21,6 @@ lot of common heritage.
 Here are some options to install the application on your device. The best way to install testing APKs
 is Obtainium, please insert this repository's URL as a source.
 
-> [!TIP]
-> Make sure to check the "Include pre-releases" option (in order to receive all alpha and beta
-> builds):
-
 ```
 https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
 ```
@@ -34,6 +30,10 @@ https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
     <a href="https://github.com/ImranR98/Obtainium/releases"><img width="200" src="https://github.com/user-attachments/assets/1501ad39-c581-4760-96ce-6d5181ab6207" /></a>
   </div>
 </div>
+
+> [!TIP]
+> Make sure to check the "Include pre-releases" option (in order to receive all alpha and beta
+> builds):
 
 ## Screenshots
 
@@ -110,7 +110,9 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] pin/unpin status to profile
 - [x] manage one's own circles/following lists
 - [x] polls (read-only, since the submit vote method is unimplemented in the backend)
-- [ ] support post spoiler text
+- [ ] manage follow requests
+- [ ] support post spoiler text (both in creation and in timeline)
+- [ ] support post title (in creation, in timeline it is already included)
 - [ ] edit one's own profile
 - [ ] private conversations
 - [ ] advanced media visualization (image carousels, videos, GIFs, etc.)

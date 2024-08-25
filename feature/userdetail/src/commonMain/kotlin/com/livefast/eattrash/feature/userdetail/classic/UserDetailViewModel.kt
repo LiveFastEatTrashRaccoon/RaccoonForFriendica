@@ -71,7 +71,6 @@ class UserDetailViewModel(
                     refresh()
                 }
 
-            UserDetailMviModel.Intent.AcceptFollowRequest -> acceptFollowRequest()
             UserDetailMviModel.Intent.Follow -> follow()
             UserDetailMviModel.Intent.Unfollow -> unfollow()
             is UserDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
@@ -142,28 +141,6 @@ class UserDetailViewModel(
                 initial = false,
                 refreshing = false,
             )
-        }
-    }
-
-    private fun acceptFollowRequest() {
-        hapticFeedback.vibrate()
-        screenModelScope.launch {
-            updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
-            userRepository.acceptFollowRequest(id)
-            val newRelationship = userRepository.getRelationships(listOf(id)).firstOrNull()
-            val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
-            val newNotificationStatus =
-                newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
-            updateState {
-                it.copy(
-                    user =
-                        it.user?.copy(
-                            relationshipStatus = newStatus,
-                            notificationStatus = newNotificationStatus,
-                            relationshipStatusPending = false,
-                        ),
-                )
-            }
         }
     }
 

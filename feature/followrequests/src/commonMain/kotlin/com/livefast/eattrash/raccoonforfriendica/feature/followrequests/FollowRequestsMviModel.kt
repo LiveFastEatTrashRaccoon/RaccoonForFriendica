@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.userlist
+package com.livefast.eattrash.raccoonforfriendica.feature.followrequests
 
 import androidx.compose.runtime.Stable
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -6,20 +6,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Stable
-interface UserListMviModel :
+interface FollowRequestsMviModel :
     ScreenModel,
-    MviModel<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect> {
+    MviModel<FollowRequestsMviModel.Intent, FollowRequestsMviModel.State, FollowRequestsMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 
         data object LoadNextPage : Intent
 
-        data class Follow(
-            val userId: String,
+        data class Accept(
+            val id: String,
         ) : Intent
 
-        data class Unfollow(
-            val userId: String,
+        data class Reject(
+            val id: String,
         ) : Intent
     }
 
@@ -28,9 +28,10 @@ interface UserListMviModel :
         val loading: Boolean = false,
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
-        val user: UserModel? = null,
-        val users: List<UserModel> = emptyList(),
+        val items: List<UserModel> = emptyList(),
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object Failure : Effect
+    }
 }

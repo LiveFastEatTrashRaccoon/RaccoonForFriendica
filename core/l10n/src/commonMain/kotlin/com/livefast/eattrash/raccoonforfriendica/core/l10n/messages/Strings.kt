@@ -221,6 +221,9 @@ interface Strings {
     val postBy: String
     val customOption: String
     val colorPickerDialogTitle: String
+    val followRequestsTitle: String
+    val actionAccept: String
+    val actionReject: String
 }
 
 object Locales {

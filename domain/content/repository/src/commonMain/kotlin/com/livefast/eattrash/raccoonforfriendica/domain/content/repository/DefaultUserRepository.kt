@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -120,21 +121,24 @@ internal class DefaultUserRepository(
             }
         }.getOrNull()
 
-    override suspend fun getFollowRequests(pageCursor: String?): List<UserModel> =
+    override suspend fun getFollowRequests(pageCursor: String?): Pair<List<UserModel>, String?> =
         runCatching {
             withContext(Dispatchers.IO) {
-                provider.users
-                    .getFollowRequests(
+                val response =
+                    provider.followRequests.getAll(
                         maxId = pageCursor,
                         limit = DEFAULT_PAGE_SIZE,
-                    ).map { it.toModel() }
+                    )
+                val list: List<UserModel> = response.body()?.map { it.toModel() }.orEmpty()
+                val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
+                list to nextCursor
             }
-        }.getOrElse { emptyList() }
+        }.getOrElse { emptyList<UserModel>() to null }
 
     override suspend fun acceptFollowRequest(id: String) =
         runCatching {
             withContext(Dispatchers.IO) {
-                provider.users.acceptFollowRequest(id)
+                provider.followRequests.accept(id)
                 true
             }
         }.getOrElse { false }
@@ -142,7 +146,7 @@ internal class DefaultUserRepository(
     override suspend fun rejectFollowRequest(id: String) =
         runCatching {
             withContext(Dispatchers.IO) {
-                provider.users.rejectFollowRequest(id)
+                provider.followRequests.reject(id)
                 true
             }
         }.getOrElse { false }

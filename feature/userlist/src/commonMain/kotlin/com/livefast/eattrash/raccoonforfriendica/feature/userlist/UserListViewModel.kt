@@ -56,7 +56,6 @@ internal class UserListViewModel(
                 screenModelScope.launch {
                     refresh()
                 }
-            is UserListMviModel.Intent.AcceptFollowRequest -> acceptFollowRequest(intent.userId)
             is UserListMviModel.Intent.Follow -> follow(intent.userId)
             is UserListMviModel.Intent.Unfollow -> unfollow(intent.userId)
         }
@@ -110,26 +109,6 @@ internal class UserListViewModel(
                         }
                     },
             )
-        }
-    }
-
-    private fun acceptFollowRequest(userId: String) {
-        hapticFeedback.vibrate()
-        screenModelScope.launch {
-            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
-            val currentUser = uiState.value.users.firstOrNull { it.id == userId }
-            userRepository.acceptFollowRequest(userId)
-            val newRelationship = userRepository.getRelationships(listOf(userId)).firstOrNull()
-            val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
-            val newNotificationStatus =
-                newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
-            updateUserInState(userId) {
-                it.copy(
-                    relationshipStatus = newStatus,
-                    notificationStatus = newNotificationStatus,
-                    relationshipStatusPending = false,
-                )
-            }
         }
     }
 

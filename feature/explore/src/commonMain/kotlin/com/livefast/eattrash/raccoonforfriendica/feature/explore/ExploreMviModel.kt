@@ -21,10 +21,6 @@ interface ExploreMviModel :
             val section: ExploreSection,
         ) : Intent
 
-        data class AcceptFollowRequest(
-            val userId: String,
-        ) : Intent
-
         data class Follow(
             val userId: String,
         ) : Intent
