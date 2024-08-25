@@ -73,7 +73,7 @@ internal class DefaultNotificationsPaginationManager(
     private fun List<NotificationModel>.deduplicate(): List<NotificationModel> =
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
-        }
+        }.distinctBy { it.id }
 
     private fun List<NotificationModel>.filterNsfw(included: Boolean): List<NotificationModel> =
         filter { included || it.entry?.isNsfw != true }

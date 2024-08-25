@@ -34,8 +34,8 @@ internal class DefaultUserPaginationManager(
                         .getFollowers(
                             id = specification.userId,
                             pageCursor = pageCursor,
-                        ).determineRelationshipStatus()
-                        .deduplicate()
+                        ).deduplicate()
+                        .determineRelationshipStatus()
                         .updatePaginationData()
 
                 is UserPaginationSpecification.Following ->
@@ -43,8 +43,8 @@ internal class DefaultUserPaginationManager(
                         .getFollowing(
                             id = specification.userId,
                             pageCursor = pageCursor,
-                        ).determineRelationshipStatus()
-                        .deduplicate()
+                        ).deduplicate()
+                        .determineRelationshipStatus()
                         .updatePaginationData()
 
                 is UserPaginationSpecification.EntryUsersFavorite ->
@@ -61,8 +61,8 @@ internal class DefaultUserPaginationManager(
                         .getUsersWhoReblogged(
                             id = specification.entryId,
                             pageCursor = pageCursor,
-                        ).determineRelationshipStatus()
-                        .deduplicate()
+                        ).deduplicate()
+                        .determineRelationshipStatus()
                         .updatePaginationData()
 
                 is UserPaginationSpecification.Search ->
@@ -73,8 +73,8 @@ internal class DefaultUserPaginationManager(
                                 history
                                     .indexOfLast { it.id == pageCursor }
                                     .takeIf { it >= 0 } ?: 0,
-                        ).determineRelationshipStatus()
-                        .deduplicate()
+                        ).deduplicate()
+                        .determineRelationshipStatus()
                         .updatePaginationData()
 
                 UserPaginationSpecification.Blocked ->
@@ -92,10 +92,11 @@ internal class DefaultUserPaginationManager(
                         .updatePaginationData()
 
                 is UserPaginationSpecification.CircleMembers ->
-                    circlesRepository.getMembers(
-                        id = specification.id,
-                        pageCursor = pageCursor,
-                    ).deduplicate()
+                    circlesRepository
+                        .getMembers(
+                            id = specification.id,
+                            pageCursor = pageCursor,
+                        ).deduplicate()
                         .updatePaginationData()
                         .filter(specification.query)
             }
@@ -129,7 +130,7 @@ internal class DefaultUserPaginationManager(
     private fun List<UserModel>.deduplicate(): List<UserModel> =
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
-        }
+        }.distinctBy { it.id }
 
     private fun List<UserModel>.filter(query: String): List<UserModel> =
         filter {

@@ -34,5 +34,5 @@ internal class DefaultFollowRequestPaginationManager(
     private fun List<UserModel>.deduplicate(): List<UserModel> =
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
-        }
+        }.distinctBy { it.id }
 }

@@ -65,7 +65,7 @@ internal class DefaultSearchPaginationManager(
     private fun List<ExploreItemModel>.deduplicate(): List<ExploreItemModel> =
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
-        }
+        }.distinctBy { it.id }
 
     private fun List<ExploreItemModel>.filterNsfw(included: Boolean): List<ExploreItemModel> = filter { included || !it.isNsfw }
 }
