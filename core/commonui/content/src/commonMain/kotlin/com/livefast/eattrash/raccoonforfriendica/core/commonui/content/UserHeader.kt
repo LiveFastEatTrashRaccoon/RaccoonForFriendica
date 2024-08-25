@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,9 +11,10 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -147,6 +150,26 @@ fun UserHeader(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(Spacing.m),
                     ) {
+                        if (user?.group == true) {
+                            Icon(
+                                modifier =
+                                    Modifier
+                                        .size(IconSize.l)
+                                        .clickable {
+                                            onOpenInForumMode?.invoke()
+                                        }.border(
+                                            width = Dp.Hairline,
+                                            color =
+                                                MaterialTheme.colorScheme.onBackground.copy(
+                                                    ancillaryTextAlpha,
+                                                ),
+                                            shape = CircleShape,
+                                        ).padding(5.dp),
+                                imageVector = Icons.Default.Groups,
+                                tint = MaterialTheme.colorScheme.onBackground,
+                                contentDescription = null,
+                            )
+                        }
                         if (notificationStatus != null) {
                             UserNotificationButton(
                                 status = notificationStatus,
@@ -187,29 +210,6 @@ fun UserHeader(
                         style = MaterialTheme.typography.titleMedium,
                         color = ancillaryColor,
                     )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                if (user?.group == true) {
-                    Row(
-                        modifier =
-                            Modifier.clickable {
-                                onOpenInForumMode?.invoke()
-                            },
-                        horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = LocalStrings.current.actionOpenInForumMode,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = ancillaryColor,
-                        )
-                        Icon(
-                            modifier = Modifier.size(IconSize.s),
-                            imageVector = Icons.AutoMirrored.Default.OpenInNew,
-                            contentDescription = null,
-                            tint = ancillaryColor,
-                        )
-                    }
                 }
             }
             user?.bio?.takeIf { it.isNotEmpty() }?.let { bio ->
