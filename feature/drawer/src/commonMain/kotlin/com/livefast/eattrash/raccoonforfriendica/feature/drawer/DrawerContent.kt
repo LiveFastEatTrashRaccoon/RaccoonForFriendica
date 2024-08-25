@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Flaky
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material.icons.filled.Workspaces
@@ -84,7 +85,13 @@ class DrawerContent : Screen {
                         handleOpen { detailOpener.openFollowedHashtags() }
                     },
                 )
-
+                DrawerShortcut(
+                    title = LocalStrings.current.followRequestsTitle,
+                    icon = Icons.Default.Flaky,
+                    onSelected = {
+                        handleOpen { detailOpener.openFollowRequests() }
+                    },
+                )
                 DrawerShortcut(
                     title = LocalStrings.current.manageCirclesTitle,
                     icon = Icons.Default.Workspaces,
