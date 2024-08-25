@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.appearance.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
@@ -13,13 +14,20 @@ class DefaultBarColorProvider : BarColorProvider {
     @Composable
     override fun setBarColorAccordingToTheme(
         theme: UiTheme,
-        transparent: UiBarTheme,
+        barTheme: UiBarTheme,
     ) {
-        LaunchedEffect(theme) {
+        val isSystemInDarkTheme = isSystemInDarkTheme()
+        LaunchedEffect(theme, isSystemInDarkTheme) {
             val style =
-                when {
-                    theme == UiTheme.Light -> UIStatusBarStyleLightContent
-                    else -> UIStatusBarStyleDarkContent
+                when (theme) {
+                    UiTheme.Light -> UIStatusBarStyleLightContent
+                    UiTheme.Dark, UiTheme.Black -> UIStatusBarStyleDarkContent
+                    UiTheme.Default ->
+                        if (isSystemInDarkTheme) {
+                            UIStatusBarStyleDarkContent
+                        } else {
+                            UIStatusBarStyleLightContent
+                        }
                 }
             UIApplication.sharedApplication().setStatusBarStyle(style)
         }

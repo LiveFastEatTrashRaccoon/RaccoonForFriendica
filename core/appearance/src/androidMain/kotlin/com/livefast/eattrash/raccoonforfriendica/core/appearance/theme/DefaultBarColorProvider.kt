@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.theme
 
 import android.app.Activity
 import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
@@ -18,12 +19,19 @@ class DefaultBarColorProvider : BarColorProvider {
         barTheme: UiBarTheme,
     ) {
         val view = LocalView.current
-        LaunchedEffect(theme, barTheme) {
+        val isSystemInDarkTheme = isSystemInDarkTheme()
+        LaunchedEffect(theme, barTheme, isSystemInDarkTheme) {
             (view.context as? Activity)?.window?.apply {
                 val baseColor =
                     when (theme) {
                         UiTheme.Light -> Color.White
-                        else -> Color.Black
+                        UiTheme.Black, UiTheme.Dark -> Color.Black
+                        UiTheme.Default ->
+                            if (isSystemInDarkTheme) {
+                                Color.Black
+                            } else {
+                                Color.White
+                            }
                     }
                 val barColor =
                     when (barTheme) {
@@ -48,12 +56,14 @@ class DefaultBarColorProvider : BarColorProvider {
                     isAppearanceLightStatusBars =
                         when (theme) {
                             UiTheme.Light -> true
-                            else -> false
+                            UiTheme.Dark, UiTheme.Black -> false
+                            UiTheme.Default -> !isSystemInDarkTheme
                         }
                     isAppearanceLightNavigationBars =
                         when (theme) {
                             UiTheme.Light -> true
-                            else -> false
+                            UiTheme.Dark, UiTheme.Black -> false
+                            UiTheme.Default -> !isSystemInDarkTheme
                         }
                 }
             }
