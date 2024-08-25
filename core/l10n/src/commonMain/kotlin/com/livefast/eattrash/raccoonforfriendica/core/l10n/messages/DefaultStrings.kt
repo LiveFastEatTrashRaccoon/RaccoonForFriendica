@@ -237,4 +237,7 @@ internal open class DefaultStrings : Strings {
     override val postBy = "by"
     override val customOption = "Custom"
     override val colorPickerDialogTitle = "Select a color"
+    override val followRequestsTitle = "Follow requests"
+    override val actionAccept = "Accept"
+    override val actionReject = "Reject"
 }

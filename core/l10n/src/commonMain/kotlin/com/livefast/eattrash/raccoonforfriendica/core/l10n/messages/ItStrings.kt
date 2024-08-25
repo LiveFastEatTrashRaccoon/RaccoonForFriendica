@@ -242,4 +242,7 @@ internal val ItStrings =
         override val postBy = "di"
         override val customOption = "Personalizzato"
         override val colorPickerDialogTitle = "Seleziona un colore"
+        override val followRequestsTitle = "Richieste di seguirti"
+        override val actionAccept = "Accetta"
+        override val actionReject = "Rifiuta"
     }
