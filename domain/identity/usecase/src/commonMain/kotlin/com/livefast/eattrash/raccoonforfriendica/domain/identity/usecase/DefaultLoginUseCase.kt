@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Acco
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 
 internal class DefaultLoginUseCase(
@@ -13,6 +14,7 @@ internal class DefaultLoginUseCase(
     private val credentialsRepository: CredentialsRepository,
     private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
+    private val identityRepository: IdentityRepository,
 ) : LoginUseCase {
     override suspend fun invoke(
         node: String,
@@ -46,6 +48,8 @@ internal class DefaultLoginUseCase(
 
             val settings = settingsRepository.get(accountId) ?: defaultSettings
             settingsRepository.changeCurrent(settings)
+
+            identityRepository.refreshCurrentUser()
         }
     }
 }
