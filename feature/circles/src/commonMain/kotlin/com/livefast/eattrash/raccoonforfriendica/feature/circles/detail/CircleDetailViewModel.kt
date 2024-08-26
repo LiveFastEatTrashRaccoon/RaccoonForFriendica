@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
 @OptIn(FlowPreview::class)
 class CircleDetailViewModel(
@@ -95,6 +96,7 @@ class CircleDetailViewModel(
                     refreshing = false,
                 )
             }
+            yield()
         }
         updateState {
             it.copy(loading = false)

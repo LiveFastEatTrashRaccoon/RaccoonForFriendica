@@ -13,6 +13,7 @@ import io.ktor.utils.io.core.readBytes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
 @Stable
 interface GalleryHelper {
@@ -45,6 +46,7 @@ suspend fun GalleryHelper.download(url: String): ByteArray =
                     val bytes = packet.readBytes()
                     result += bytes
                     println("Received ${result.size} bytes / ${httpResponse.contentLength()}")
+                    yield()
                 }
             }
             result
