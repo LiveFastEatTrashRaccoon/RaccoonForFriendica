@@ -65,7 +65,12 @@ class SearchViewModel(
         when (intent) {
             is SearchMviModel.Intent.SetSearch ->
                 screenModelScope.launch {
-                    updateState { it.copy(query = intent.query) }
+                    updateState {
+                        it.copy(
+                            earlyLoading = true,
+                            query = intent.query,
+                        )
+                    }
                 }
 
             is SearchMviModel.Intent.ChangeSection ->
@@ -142,6 +147,7 @@ class SearchViewModel(
                 items = entries,
                 canFetchMore = paginationManager.canFetchMore,
                 loading = false,
+                earlyLoading = false,
                 initial = false,
                 refreshing = false,
             )

@@ -41,6 +41,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -77,9 +79,12 @@ import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSectio
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toSearchSection
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
+import kotlin.math.roundToLong
 
 class SearchScreen : Screen {
     @OptIn(
@@ -100,6 +105,7 @@ class SearchScreen : Screen {
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
         val shareHelper = remember { getShareHelper() }
+        val searchFieldFocusRequester = remember { FocusRequester() }
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
@@ -126,6 +132,9 @@ class SearchScreen : Screen {
                     }
                 }.launchIn(this)
         }
+        LaunchedEffect(Unit) {
+            searchFieldFocusRequester.requestFocus()
+        }
 
         Scaffold(
             topBar = {
@@ -135,6 +144,7 @@ class SearchScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         SearchField(
+                            modifier = Modifier.focusRequester(searchFieldFocusRequester),
                             value = uiState.query,
                             hint = LocalStrings.current.searchPlaceholder,
                             onClear = {
@@ -239,14 +249,35 @@ class SearchScreen : Screen {
                         }
                     }
 
-                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
+                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && !uiState.earlyLoading && uiState.items.isEmpty()) {
                         item {
-                            Text(
-                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
-                                text = LocalStrings.current.messageSearchInitialEmpty,
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
+                            if (uiState.query.isEmpty()) {
+                                val animatingPart = getAnimatedDots()
+                                Text(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(
+                                                top = Spacing.m,
+                                                start = Spacing.s,
+                                            ),
+                                    text =
+                                        buildString {
+                                            append("🔦")
+                                            append(" ")
+                                            append(LocalStrings.current.messageSearchInitialEmpty)
+                                            append(animatingPart)
+                                        },
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            } else {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                                    text = LocalStrings.current.messageEmptyList,
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            }
                         }
                     }
 
@@ -658,4 +689,19 @@ class SearchScreen : Screen {
             )
         }
     }
+}
+
+@Composable
+private fun getAnimatedDots(durationMillis: Long = 2500): String {
+    val maxStep = 4
+    val interval = (durationMillis / maxStep.toFloat()).roundToLong()
+    var step by remember { mutableStateOf(0) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(interval)
+            step = (step + 1) % maxStep
+            yield()
+        }
+    }
+    return ".".repeat(step)
 }
