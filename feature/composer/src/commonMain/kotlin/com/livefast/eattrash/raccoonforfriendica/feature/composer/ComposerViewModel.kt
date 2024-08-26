@@ -107,10 +107,16 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.AddLink -> {
                 screenModelScope.launch {
                     val (anchor, url) = intent.link
-                    val additionalPart = "<a href=\"$url\">$anchor</a>"
+                    val before = "<a href=\"$url\">"
+                    val after = "</a>"
                     updateBodyValue(
-                        additionalPart = additionalPart,
-                        offsetAfter = additionalPart.length,
+                        additionalPart =
+                            buildString {
+                                append(before)
+                                append(anchor)
+                                append(after)
+                            },
+                        offsetAfter = before.length,
                     )
                 }
             }
