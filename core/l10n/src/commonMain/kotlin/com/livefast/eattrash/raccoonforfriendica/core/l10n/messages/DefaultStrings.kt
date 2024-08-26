@@ -145,7 +145,7 @@ internal open class DefaultStrings : Strings {
     override val selectUserSearchPlaceholder = "username or handle"
     override val searchSectionUsers = "Users"
     override val searchPlaceholder = "Search the Fediverse"
-    override val messageSearchInitialEmpty = "Please enter a new query expression 🔦"
+    override val messageSearchInitialEmpty = "Start typing something to search"
     override val topicTitle = "Topic"
     override val threadTitle = "Thread"
     override val buttonLoadMoreReplies = "Load more replies"

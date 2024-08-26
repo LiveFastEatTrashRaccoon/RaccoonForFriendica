@@ -75,6 +75,7 @@ interface SearchMviModel :
         val currentUserId: String? = null,
         val query: String = "",
         val refreshing: Boolean = false,
+        val earlyLoading: Boolean = false,
         val loading: Boolean = false,
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
