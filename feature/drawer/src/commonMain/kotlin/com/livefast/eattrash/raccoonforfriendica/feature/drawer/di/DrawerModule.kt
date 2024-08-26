@@ -9,8 +9,7 @@ val featureDrawerModule =
         single<DrawerMviModel> {
             DrawerViewModel(
                 apiConfigurationRepository = get(),
-                accountRepository = get(),
-                userRepository = get(),
+                identityRepository = get(),
             )
         }
     }

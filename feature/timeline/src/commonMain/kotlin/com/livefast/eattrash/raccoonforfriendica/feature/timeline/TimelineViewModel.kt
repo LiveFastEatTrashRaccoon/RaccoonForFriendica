@@ -117,7 +117,7 @@ class TimelineViewModel(
     }
 
     private suspend fun refreshCirclesInTimelineTypes() {
-        val isLogged = uiState.value.currentUserId != null
+        val isLogged = identityRepository.isLogged.value
         val circles = circlesRepository.getAll()
         val settings = settingsRepository.current.value
         val defaultTimelineTypes =
@@ -153,6 +153,7 @@ class TimelineViewModel(
     }
 
     private suspend fun refresh(initial: Boolean = false) {
+        // needed as a last-resort to update circles if edited elsewhere
         refreshCirclesInTimelineTypes()
         updateState {
             it.copy(initial = initial, refreshing = !initial)
