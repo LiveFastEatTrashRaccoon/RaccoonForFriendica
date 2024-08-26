@@ -60,6 +60,7 @@ class InboxViewModel(
                 screenModelScope.launch {
                     markAllAsRead()
                     refresh()
+                    inboxManager.refreshUnreadCount()
                 }
 
             is InboxMviModel.Intent.ChangeSelectedNotificationTypes ->
@@ -97,18 +98,9 @@ class InboxViewModel(
 
         updateState { it.copy(loading = true) }
         val notifications = paginationManager.loadNextPage()
-        val isRefreshing = uiState.value.refreshing
         updateState {
             it.copy(
-                notifications =
-                    notifications.map { notification ->
-                        if (isRefreshing) {
-                            // when refreshing they have all been marked as read
-                            notification.copy(read = true)
-                        } else {
-                            notification
-                        }
-                    },
+                notifications = notifications,
                 canFetchMore = paginationManager.canFetchMore,
                 loading = false,
                 initial = false,
@@ -199,12 +191,9 @@ class InboxViewModel(
         }
     }
 
-    private fun markAllAsRead() {
-        screenModelScope.launch {
-            for (item in uiState.value.notifications) {
-                notificationRepository.markAsRead(item.id)
-            }
-            inboxManager.refreshUnreadCount()
+    private suspend fun markAllAsRead() {
+        for (item in uiState.value.notifications.filterNot { it.read }) {
+            notificationRepository.markAsRead(item.id)
         }
     }
 
