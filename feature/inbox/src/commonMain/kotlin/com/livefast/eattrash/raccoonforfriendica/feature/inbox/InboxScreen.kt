@@ -239,7 +239,7 @@ class InboxScreen : Screen {
                             }
                         }
                     }
-                    if (!uiState.initial && !uiState.loading && uiState.notifications.isEmpty()) {
+                    if (!uiState.initial && !uiState.loading && !uiState.refreshing && uiState.notifications.isEmpty()) {
                         item {
                             Text(
                                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
