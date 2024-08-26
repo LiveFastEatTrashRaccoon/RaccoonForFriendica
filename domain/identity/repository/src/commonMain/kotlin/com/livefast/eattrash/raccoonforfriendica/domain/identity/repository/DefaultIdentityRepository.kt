@@ -24,14 +24,9 @@ internal class DefaultIdentityRepository(
 
     override fun changeIsLogged(value: Boolean) {
         isLogged.update { value }
-        if (value) {
-            refreshUser()
-        } else {
-            currentUser.update { null }
-        }
     }
 
-    private fun refreshUser() {
+    override fun refreshCurrentUser() {
         scope.launch {
             val handle = accountRepository.getActive()?.handle.orEmpty()
             if (handle.isEmpty()) {
@@ -46,6 +41,7 @@ internal class DefaultIdentityRepository(
                         id = user.id,
                         handle = user.acct,
                         username = user.username,
+                        avatar = user.avatar,
                     )
                 }
             } catch (e: Throwable) {

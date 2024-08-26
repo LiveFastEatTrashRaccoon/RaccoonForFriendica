@@ -41,6 +41,7 @@ internal class DefaultApiConfigurationRepository(
         }
 
         identityRepository.changeIsLogged(credentials != null)
+        identityRepository.refreshCurrentUser()
     }
 
     override suspend fun hasCachedAuthCredentials(): Boolean {
