@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.inbox
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
@@ -72,6 +73,7 @@ class InboxViewModel(
 
             is InboxMviModel.Intent.Follow -> follow(intent.userId)
             is InboxMviModel.Intent.Unfollow -> unfollow(intent.userId)
+            is InboxMviModel.Intent.MarkAsRead -> markAsRead(intent.notification)
         }
     }
 
@@ -135,6 +137,24 @@ class InboxViewModel(
         }
     }
 
+    private suspend fun updateItemInState(
+        id: String,
+        block: (NotificationModel) -> NotificationModel,
+    ) {
+        updateState {
+            it.copy(
+                notifications =
+                    it.notifications.map { notification ->
+                        if (notification.id == id) {
+                            notification.let(block)
+                        } else {
+                            notification
+                        }
+                    },
+            )
+        }
+    }
+
     private fun follow(userId: String) {
         hapticFeedback.vibrate()
         screenModelScope.launch {
@@ -185,6 +205,19 @@ class InboxViewModel(
                 notificationRepository.markAsRead(item.id)
             }
             inboxManager.refreshUnreadCount()
+        }
+    }
+
+    private fun markAsRead(notification: NotificationModel) {
+        if (notification.read) {
+            return
+        }
+        screenModelScope.launch {
+            val success = notificationRepository.markAsRead(notification.id)
+            if (success) {
+                updateItemInState(notification.id) { it.copy(read = true) }
+                inboxManager.decrementUnreadCount()
+            }
         }
     }
 }

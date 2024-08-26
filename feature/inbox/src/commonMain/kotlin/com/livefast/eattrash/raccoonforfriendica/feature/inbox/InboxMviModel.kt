@@ -24,6 +24,10 @@ interface InboxMviModel :
         data class ChangeSelectedNotificationTypes(
             val types: List<NotificationType>,
         ) : Intent
+
+        data class MarkAsRead(
+            val notification: NotificationModel,
+        ) : Intent
     }
 
     data class State(
