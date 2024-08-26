@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
 class DefaultContactCache(
     private val identityRepository: IdentityRepository,
@@ -25,6 +26,7 @@ class DefaultContactCache(
             userPaginationManager.reset(UserPaginationSpecification.Following(currentUserId))
             while (userPaginationManager.canFetchMore) {
                 userCache = userPaginationManager.loadNextPage()
+                yield()
             }
         }
     }
