@@ -37,7 +37,12 @@ internal class DefaultUserRepository(
     override suspend fun getByHandle(handle: String): UserModel? =
         runCatching {
             withContext(Dispatchers.IO) {
-                provider.users.getById(handle).toModel()
+                provider.users
+                    .search(
+                        query = handle,
+                        resolve = true,
+                    ).first()
+                    .toModel()
             }
         }.getOrNull()
 

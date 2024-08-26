@@ -5,17 +5,17 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.OAuthToken
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.toOauthToken
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateAppForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.form.ExchangeTokenForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.form.toJson
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ClientApplicationModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.preparePost
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.Parameters
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
@@ -100,15 +100,16 @@ internal class DefaultCredentialsRepository(
     ): ApiCredentials? =
         withContext(Dispatchers.IO) {
             runCatching {
-                val json =
-                    ExchangeTokenForm(
-                        clientId = clientId,
-                        clientSecret = clientSecret,
-                        redirectUri = redirectUri,
-                        grantType = grantType,
-                        code = code,
-                    ).toJson()
-
+                val data =
+                    FormDataContent(
+                        Parameters.build {
+                            append("client_id", clientId)
+                            append("client_secret", clientSecret)
+                            append("redirect_uri", redirectUri)
+                            append("grant_type", grantType)
+                            append("code", code)
+                        },
+                    )
                 val url =
                     URLBuilder()
                         .apply {
@@ -119,7 +120,7 @@ internal class DefaultCredentialsRepository(
                 val responseBody =
                     httpClient
                         .preparePost(url) {
-                            setBody(json)
+                            setBody(data)
                         }.execute()
                         .bodyAsText()
                 responseBody.toOauthToken().toModel()
