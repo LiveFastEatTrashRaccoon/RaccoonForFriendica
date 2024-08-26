@@ -35,7 +35,12 @@ internal class DefaultIdentityRepository(
             }
 
             try {
-                val user = provider.users.getById(handle)
+                val user =
+                    provider.users
+                        .search(
+                            query = handle,
+                            resolve = true,
+                        ).first()
                 currentUser.update {
                     UserModel(
                         id = user.id,
