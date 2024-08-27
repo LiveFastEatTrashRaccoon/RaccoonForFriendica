@@ -225,6 +225,7 @@ interface Strings {
     val actionAccept: String
     val actionReject: String
     val actionHideContent: String
+    val messageEmptyInbox: String
 }
 
 object Locales {
