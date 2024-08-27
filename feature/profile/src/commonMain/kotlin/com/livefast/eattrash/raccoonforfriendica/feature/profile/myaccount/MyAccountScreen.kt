@@ -272,6 +272,9 @@ class MyAccountScreen : Screen {
                                 inReplyToUsername = e.creator?.let { it.displayName ?: it.username },
                             )
                         },
+                        onToggleSpoilerActive = { e ->
+                            model.reduce(MyAccountMviModel.Intent.ToggleSpoilerActive(e))
+                        },
                         options =
                             buildList {
                                 if (!entry.url.isNullOrBlank()) {

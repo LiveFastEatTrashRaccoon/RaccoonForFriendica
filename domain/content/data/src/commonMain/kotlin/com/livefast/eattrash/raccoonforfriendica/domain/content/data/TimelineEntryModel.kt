@@ -58,8 +58,6 @@ val TimelineEntryModel.safeKey: String
             append(e.bookmarked)
             append("-")
             append(e.bookmarkLoading)
-            append("-")
-            append(isSpoilerActive)
         }
         return buildString {
             appendKeys(this@safeKey)

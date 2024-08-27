@@ -86,6 +86,7 @@ class UserDetailViewModel(
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
+            is UserDetailMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
         }
     }
 
@@ -404,6 +405,12 @@ class UserDetailViewModel(
                     )
                 }
             }
+        }
+    }
+
+    private fun toggleSpoiler(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 }

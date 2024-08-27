@@ -68,6 +68,7 @@ class EntryDetailViewModel(
                 )
             is EntryDetailMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is EntryDetailMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is EntryDetailMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
         }
     }
 
@@ -312,6 +313,12 @@ class EntryDetailViewModel(
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(EntryDetailMviModel.Effect.PollVoteFailure)
             }
+        }
+    }
+
+    private fun toggleSpoiler(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 }

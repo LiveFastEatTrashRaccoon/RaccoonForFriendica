@@ -222,6 +222,9 @@ class FavoritesScreen(
                                         },
                                 )
                             },
+                            onToggleSpoilerActive = { e ->
+                                model.reduce(FavoritesMviModel.Intent.ToggleSpoilerActive(e))
+                            },
                             onPollVote = { e, choices ->
                                 model.reduce(
                                     FavoritesMviModel.Intent.SubmitPollVote(

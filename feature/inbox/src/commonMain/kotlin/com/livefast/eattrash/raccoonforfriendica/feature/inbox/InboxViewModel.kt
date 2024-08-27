@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
@@ -75,6 +76,7 @@ class InboxViewModel(
             is InboxMviModel.Intent.Follow -> follow(intent.userId)
             is InboxMviModel.Intent.Unfollow -> unfollow(intent.userId)
             is InboxMviModel.Intent.MarkAsRead -> markAsRead(intent.notification)
+            is InboxMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
         }
     }
 
@@ -125,6 +127,36 @@ class InboxViewModel(
                             notification
                         }
                     },
+            )
+        }
+    }
+
+    private suspend fun updateEntryInState(
+        userId: String,
+        block: (TimelineEntryModel) -> TimelineEntryModel,
+    ) {
+        updateState {
+            it.copy(
+                notifications =
+                    it.notifications.map { notification ->
+                        if (notification.entry?.reblog?.id == userId) {
+                            notification.copy(
+                                entry =
+                                    notification.entry?.copy(
+                                        reblog =
+                                            notification.entry?.reblog?.let(
+                                                block,
+                                            ),
+                                    ),
+                            )
+                        } else if (notification.entry?.id == userId) {
+                            notification.copy(
+                                entry = notification.entry?.let(block),
+                            )
+                        } else {
+                            notification
+                    }
+                },
             )
         }
     }
@@ -207,6 +239,12 @@ class InboxViewModel(
                 updateItemInState(notification.id) { it.copy(read = true) }
                 inboxManager.decrementUnreadCount()
             }
+        }
+    }
+
+    private fun toggleSpoiler(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 }

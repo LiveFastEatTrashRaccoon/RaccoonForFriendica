@@ -334,6 +334,9 @@ class SearchScreen : Screen {
                                             ),
                                         )
                                     },
+                                    onToggleSpoilerActive = { e ->
+                                        model.reduce(SearchMviModel.Intent.ToggleSpoilerActive(e))
+                                    },
                                     options =
                                         buildList {
                                             if (!item.entry.url.isNullOrBlank()) {

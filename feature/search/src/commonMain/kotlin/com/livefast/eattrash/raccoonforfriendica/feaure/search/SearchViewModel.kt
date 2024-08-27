@@ -113,6 +113,7 @@ class SearchViewModel(
                 )
             is SearchMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is SearchMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is SearchMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
         }
     }
 
@@ -437,6 +438,12 @@ class SearchViewModel(
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(SearchMviModel.Effect.PollVoteFailure)
             }
+        }
+    }
+
+    private fun toggleSpoiler(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 }

@@ -69,6 +69,10 @@ interface SearchMviModel :
             val entry: TimelineEntryModel,
             val choices: List<Int>,
         ) : Intent
+
+        data class ToggleSpoilerActive(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(

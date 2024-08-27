@@ -307,6 +307,9 @@ class TimelineScreen : Screen {
                                     inReplyToHandle = e.creator?.handle,
                                 )
                             },
+                            onToggleSpoilerActive = { e ->
+                                model.reduce(TimelineMviModel.Intent.ToggleSpoilerActive(e))
+                            },
                             options =
                                 buildList {
                                     if (!entry.url.isNullOrBlank()) {
