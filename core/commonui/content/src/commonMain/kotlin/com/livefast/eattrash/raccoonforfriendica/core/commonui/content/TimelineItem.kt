@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -57,13 +58,15 @@ fun TimelineItem(
     onOpenImage: ((String) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
     onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
+    onToggleSpoilerActive: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val isReblog = entry.reblog != null
     val entryToDisplay = entry.reblog ?: entry
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
+    val spoiler = entryToDisplay.spoiler.orEmpty()
 
-    Box(
+    Column(
         modifier =
             modifier
                 .clickable(
@@ -71,171 +74,189 @@ fun TimelineItem(
                     indication = null,
                 ) {
                     onClick?.invoke(entryToDisplay)
-                }.padding(horizontal = 10.dp),
+                },
+        verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Column(
+            modifier = Modifier.padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    if (reshareAndReplyVisible) {
-                        if (isReblog) {
-                            entry.creator?.let {
-                                ReblogInfo(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    user = it,
-                                    onOpenUser = onOpenUser,
-                                )
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                    ) {
+                        if (reshareAndReplyVisible) {
+                            if (isReblog) {
+                                entry.creator?.let {
+                                    ReblogInfo(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        user = it,
+                                        onOpenUser = onOpenUser,
+                                    )
+                                }
+                            } else {
+                                entry.inReplyTo?.creator?.let {
+                                    InReplyToInfo(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        user = it,
+                                        onOpenUser = onOpenUser,
+                                    )
+                                }
                             }
-                        } else {
-                            entry.inReplyTo?.creator?.let {
-                                InReplyToInfo(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    user = it,
-                                    onOpenUser = onOpenUser,
-                                )
+                        }
+
+                        ContentHeader(
+                            modifier = Modifier.fillMaxWidth(),
+                            user = entryToDisplay.creator,
+                            date = entryToDisplay.edited ?: entryToDisplay.created,
+                            isEdited = entryToDisplay.edited != null,
+                            onOpenUser = onOpenUser,
+                        )
+                    }
+                    if (options.isNotEmpty()) {
+                        Box {
+                            Icon(
+                                modifier =
+                                    Modifier
+                                        .size(IconSize.m)
+                                        .padding(Spacing.xs)
+                                        .onGloballyPositioned {
+                                            optionsOffset = it.positionInParent()
+                                        }.clickable {
+                                            optionsMenuOpen = true
+                                        },
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                            CustomDropDown(
+                                expanded = optionsMenuOpen,
+                                onDismiss = {
+                                    optionsMenuOpen = false
+                                },
+                                offset =
+                                    with(LocalDensity.current) {
+                                        DpOffset(
+                                            x = optionsOffset.x.toDp(),
+                                            y = optionsOffset.y.toDp(),
+                                        )
+                                    },
+                            ) {
+                                options.forEach { option ->
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(option.label)
+                                        },
+                                        onClick = {
+                                            optionsMenuOpen = false
+                                            onOptionSelected?.invoke(option.id)
+                                        },
+                                    )
+                                }
                             }
                         }
                     }
+                }
 
-                    ContentHeader(
+            if (spoiler.isNotEmpty()) {
+                SpoilerCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    content =
+                        if (entryToDisplay.isSpoilerActive) {
+                            LocalStrings.current.actionHideContent
+                        } else {
+                            spoiler
+                        },
+                    onClick = {
+                        onToggleSpoilerActive?.invoke(entryToDisplay)
+                    },
+                )
+            }
+            if (entryToDisplay.isSpoilerActive || spoiler.isEmpty()) {
+                entryToDisplay.title?.let { title ->
+                    ContentTitle(
                         modifier = Modifier.fillMaxWidth(),
-                        user = entryToDisplay.creator,
-                        date = entryToDisplay.edited ?: entryToDisplay.created,
-                        isEdited = entryToDisplay.edited != null,
-                        onOpenUser = onOpenUser,
+                        content = title,
+                        onClick = { onClick?.invoke(entryToDisplay) },
+                        onOpenUrl = onOpenUrl,
                     )
                 }
-                if (options.isNotEmpty()) {
-                    Box {
-                        Icon(
-                            modifier =
-                                Modifier
-                                    .size(IconSize.m)
-                                    .padding(Spacing.xs)
-                                    .onGloballyPositioned {
-                                        optionsOffset = it.positionInParent()
-                                    }.clickable {
-                                        optionsMenuOpen = true
-                                    },
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                        )
-                        CustomDropDown(
-                            expanded = optionsMenuOpen,
-                            onDismiss = {
-                                optionsMenuOpen = false
-                            },
-                            offset =
-                                with(LocalDensity.current) {
-                                    DpOffset(
-                                        x = optionsOffset.x.toDp(),
-                                        y = optionsOffset.y.toDp(),
-                                    )
-                                },
-                        ) {
-                            options.forEach { option ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(option.label)
-                                    },
-                                    onClick = {
-                                        optionsMenuOpen = false
-                                        onOptionSelected?.invoke(option.id)
-                                    },
-                                )
-                            }
-                        }
-                    }
-                }
-            }
 
-            entryToDisplay.title?.let { title ->
-                ContentTitle(
+                ContentBody(
                     modifier = Modifier.fillMaxWidth(),
-                    content = title,
+                    content = entryToDisplay.content,
                     onClick = { onClick?.invoke(entryToDisplay) },
                     onOpenUrl = onOpenUrl,
                 )
-            }
 
-            ContentBody(
-                modifier = Modifier.fillMaxWidth(),
-                content = entryToDisplay.content,
-                onClick = { onClick?.invoke(entryToDisplay) },
-                onOpenUrl = onOpenUrl,
-            )
-
-            val imageUrl =
-                entryToDisplay.attachments
-                    .firstOrNull { attachment -> attachment.type == MediaType.Image }
-                    ?.url
-                    ?.takeIf { it.isNotBlank() }
-            if (imageUrl != null) {
-                ContentImage(
-                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
-                    url = imageUrl,
-                    sensitive = blurNsfw && entryToDisplay.sensitive,
-                    onClick = { onOpenImage?.invoke(imageUrl) },
-                )
-            }
-            entryToDisplay.poll?.also { poll ->
-                PollCard(
-                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
-                    poll = poll,
-                    enabled = pollEnabled,
-                    onVote = { choices ->
-                        onPollVote?.invoke(entryToDisplay, choices)
-                    },
-                )
+                val imageUrl =
+                    entryToDisplay.attachments
+                        .firstOrNull { attachment -> attachment.type == MediaType.Image }
+                        ?.url
+                        ?.takeIf { it.isNotBlank() }
+                if (imageUrl != null) {
+                    ContentImage(
+                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
+                        url = imageUrl,
+                        sensitive = blurNsfw && entryToDisplay.sensitive,
+                        onClick = { onOpenImage?.invoke(imageUrl) },
+                    )
+                }
+                entryToDisplay.poll?.also { poll ->
+                    PollCard(
+                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
+                        poll = poll,
+                        enabled = pollEnabled,
+                        onVote = { choices ->
+                            onPollVote?.invoke(entryToDisplay, choices)
+                        },
+                    )
+                }
             }
 
             if (extendedSocialInfoEnabled) {
-                ContentExtendedSocialInfo(
-                    reblogCount = entryToDisplay.reblogCount,
-                    favoriteCount = entryToDisplay.favoriteCount,
-                    modifier = Modifier.padding(vertical = Spacing.xs),
-                    onOpenUsersReblog = {
-                        onOpenUsersReblog?.invoke(entryToDisplay)
-                    },
-                    onOpenUsersFavorite = {
-                        onOpenUsersFavorite?.invoke(entryToDisplay)
-                    },
-                )
-            }
+                    ContentExtendedSocialInfo(
+                        reblogCount = entryToDisplay.reblogCount,
+                        favoriteCount = entryToDisplay.favoriteCount,
+                        modifier = Modifier.padding(vertical = Spacing.xs),
+                        onOpenUsersReblog = {
+                            onOpenUsersReblog?.invoke(entryToDisplay)
+                        },
+                        onOpenUsersFavorite = {
+                            onOpenUsersFavorite?.invoke(entryToDisplay)
+                        },
+                    )
+                }
 
-            if (actionsEnabled) {
-                ContentFooter(
-                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
-                    favoriteCount = entryToDisplay.favoriteCount,
-                    favorite = entryToDisplay.favorite,
-                    favoriteLoading = entryToDisplay.favoriteLoading,
-                    reblogCount = entryToDisplay.reblogCount,
-                    reblogged = entryToDisplay.reblogged,
-                    reblogLoading = entryToDisplay.reblogLoading,
-                    bookmarked = entryToDisplay.bookmarked,
-                    bookmarkLoading = entryToDisplay.bookmarkLoading,
-                    replyCount = entryToDisplay.replyCount,
-                    onReply = {
-                        onReply?.invoke(entryToDisplay)
-                    },
-                    onReblog = {
-                        onReblog?.invoke(entryToDisplay)
-                    },
-                    onFavorite = {
-                        onFavorite?.invoke(entryToDisplay)
-                    },
-                    onBookmark = {
-                        onBookmark?.invoke(entryToDisplay)
-                    },
-                )
+                if (actionsEnabled) {
+                    ContentFooter(
+                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
+                        favoriteCount = entryToDisplay.favoriteCount,
+                        favorite = entryToDisplay.favorite,
+                        favoriteLoading = entryToDisplay.favoriteLoading,
+                        reblogCount = entryToDisplay.reblogCount,
+                        reblogged = entryToDisplay.reblogged,
+                        reblogLoading = entryToDisplay.reblogLoading,
+                        bookmarked = entryToDisplay.bookmarked,
+                        bookmarkLoading = entryToDisplay.bookmarkLoading,
+                        replyCount = entryToDisplay.replyCount,
+                        onReply = {
+                            onReply?.invoke(entryToDisplay)
+                        },
+                        onReblog = {
+                            onReblog?.invoke(entryToDisplay)
+                        },
+                        onFavorite = {
+                            onFavorite?.invoke(entryToDisplay)
+                        },
+                        onBookmark = {
+                            onBookmark?.invoke(entryToDisplay)
+                        },
+                    )
+                }
             }
-        }
     }
 }

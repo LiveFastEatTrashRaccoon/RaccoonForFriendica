@@ -38,6 +38,8 @@ data class TimelineEntryModel(
     @Transient
     val loadMoreButtonVisible: Boolean = false,
     val poll: PollModel? = null,
+    @Transient
+    val isSpoilerActive: Boolean = false,
 )
 
 val TimelineEntryModel.safeKey: String
@@ -56,6 +58,8 @@ val TimelineEntryModel.safeKey: String
             append(e.bookmarked)
             append("-")
             append(e.bookmarkLoading)
+            append("-")
+            append(isSpoilerActive)
         }
         return buildString {
             appendKeys(this@safeKey)
