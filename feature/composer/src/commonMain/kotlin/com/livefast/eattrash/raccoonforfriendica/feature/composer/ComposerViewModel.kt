@@ -13,8 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.debounce
@@ -30,8 +29,7 @@ private const val PLACEHOLDER_ID = "placeholder"
 @OptIn(FlowPreview::class)
 class ComposerViewModel(
     private val inReplyToId: String? = null,
-    private val accountRepository: AccountRepository,
-    private val userRepository: UserRepository,
+    private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val photoRepository: PhotoRepository,
     private val userPaginationManager: UserPaginationManager,
@@ -54,7 +52,11 @@ class ComposerViewModel(
                     refreshUsers(query)
                 }.launchIn(this)
 
-            refreshAuthor()
+            identityRepository.currentUser
+                .onEach { currentUser ->
+                    updateState { it.copy(author = currentUser) }
+                }.launchIn(this)
+
             loadAvailableCircles()
         }
     }
@@ -65,12 +67,6 @@ class ComposerViewModel(
             entry.value.cancel()
         }
         uploadJobs.clear()
-    }
-
-    private suspend fun refreshAuthor() {
-        val handle = accountRepository.getActive()?.handle.orEmpty()
-        val currentAccount = userRepository.getByHandle(handle)
-        updateState { it.copy(author = currentAccount) }
     }
 
     private suspend fun loadAvailableCircles() {

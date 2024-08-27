@@ -11,8 +11,7 @@ val featureComposerModule =
                 inReplyToId = params[0],
                 timelineEntryRepository = get(),
                 photoRepository = get(),
-                accountRepository = get(),
-                userRepository = get(),
+                identityRepository = get(),
                 userPaginationManager = get(),
                 circlesRepository = get(),
             )
