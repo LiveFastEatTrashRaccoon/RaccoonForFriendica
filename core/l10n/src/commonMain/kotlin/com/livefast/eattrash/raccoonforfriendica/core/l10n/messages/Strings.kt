@@ -226,6 +226,7 @@ interface Strings {
     val actionReject: String
     val actionHideContent: String
     val messageEmptyInbox: String
+    val createPostSpoilerPlaceholder: String
 }
 
 object Locales {

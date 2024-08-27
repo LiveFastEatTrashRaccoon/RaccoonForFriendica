@@ -80,14 +80,19 @@ class ComposerViewModel(
                 editedPostId = intent.id
                 loadEditedPost()
             }
-            is ComposerMviModel.Intent.SetBodyValue ->
+            is ComposerMviModel.Intent.SetFieldValue ->
                 screenModelScope.launch {
-                    updateState { it.copy(bodyValue = intent.value) }
+                    updateState {
+                        when (intent.fieldType) {
+                            ComposerFieldType.Body -> it.copy(bodyValue = intent.value)
+                            ComposerFieldType.Spoiler -> it.copy(spoilerValue = intent.value)
+                        }
+                    }
                 }
 
-            is ComposerMviModel.Intent.SetSpoilerText ->
+            ComposerMviModel.Intent.ToggleHasSpoiler ->
                 screenModelScope.launch {
-                    updateState { it.copy(spoilerText = intent.spoiler) }
+                    updateState { it.copy(hasSpoiler = !it.hasSpoiler) }
                 }
 
             is ComposerMviModel.Intent.SetVisibility ->
@@ -157,8 +162,17 @@ class ComposerViewModel(
                     updateState { it.copy(sensitive = intent.sensitive) }
                 }
 
-            ComposerMviModel.Intent.AddBoldFormat ->
-                screenModelScope.launch {
+            is ComposerMviModel.Intent.AddBoldFormat -> addBoldFormat(intent.fieldType)
+            is ComposerMviModel.Intent.AddItalicFormat -> addItalicFormat(intent.fieldType)
+            is ComposerMviModel.Intent.AddUnderlineFormat -> addUnderlineFormat(intent.fieldType)
+            ComposerMviModel.Intent.Submit -> submit()
+        }
+    }
+
+    private fun addBoldFormat(fieldType: ComposerFieldType) {
+        screenModelScope.launch {
+            when (fieldType) {
+                ComposerFieldType.Body -> {
                     val selectedText =
                         uiState.value.bodyValue
                             .getSelectedText()
@@ -170,8 +184,25 @@ class ComposerViewModel(
                     )
                 }
 
-            ComposerMviModel.Intent.AddItalicFormat ->
-                screenModelScope.launch {
+                ComposerFieldType.Spoiler -> {
+                    val selectedText =
+                        uiState.value.spoilerValue
+                            .getSelectedText()
+                            .text
+                    val additionalPart = "<b>$selectedText</b>"
+                    updateSpoilerValue(
+                        additionalPart = additionalPart,
+                        offsetAfter = 3,
+                    )
+                }
+            }
+        }
+    }
+
+    private fun addItalicFormat(fieldType: ComposerFieldType) {
+        screenModelScope.launch {
+            when (fieldType) {
+                ComposerFieldType.Body -> {
                     val selectedText =
                         uiState.value.bodyValue
                             .getSelectedText()
@@ -183,8 +214,25 @@ class ComposerViewModel(
                     )
                 }
 
-            ComposerMviModel.Intent.AddUnderlineFormat ->
-                screenModelScope.launch {
+                ComposerFieldType.Spoiler -> {
+                    val selectedText =
+                        uiState.value.spoilerValue
+                            .getSelectedText()
+                            .text
+                    val additionalPart = "<i>$selectedText</i>"
+                    updateSpoilerValue(
+                        additionalPart = additionalPart,
+                        offsetAfter = 3,
+                    )
+                }
+            }
+        }
+    }
+
+    private fun addUnderlineFormat(fieldType: ComposerFieldType) {
+        screenModelScope.launch {
+            when (fieldType) {
+                ComposerFieldType.Body -> {
                     val selectedText =
                         uiState.value.bodyValue
                             .getSelectedText()
@@ -196,7 +244,18 @@ class ComposerViewModel(
                     )
                 }
 
-            ComposerMviModel.Intent.Submit -> submit()
+                ComposerFieldType.Spoiler -> {
+                    val selectedText =
+                        uiState.value.spoilerValue
+                            .getSelectedText()
+                            .text
+                    val additionalPart = "<u>$selectedText</u>"
+                    updateSpoilerValue(
+                        additionalPart = additionalPart,
+                        offsetAfter = 3,
+                    )
+                }
+            }
         }
     }
 
@@ -308,8 +367,8 @@ class ComposerViewModel(
         additionalPart: String,
         offsetAfter: Int,
     ) {
-        val bodyValue = uiState.value.bodyValue
-        val (text, selection) = uiState.value.bodyValue.let { it.text to it.selection }
+        val value = uiState.value.bodyValue
+        val (text, selection) = value.let { it.text to it.selection }
         val newText =
             buildString {
                 append(text.substring(0, selection.start))
@@ -331,8 +390,39 @@ class ComposerViewModel(
                     end = selection.end + offsetAfter,
                 )
             }
-        val newValue = bodyValue.copy(text = newText, selection = newSelection)
+        val newValue = value.copy(text = newText, selection = newSelection)
         updateState { it.copy(bodyValue = newValue) }
+    }
+
+    private suspend fun updateSpoilerValue(
+        additionalPart: String,
+        offsetAfter: Int,
+    ) {
+        val value = uiState.value.spoilerValue
+        val (text, selection) = value.let { it.text to it.selection }
+        val newText =
+            buildString {
+                append(text.substring(0, selection.start))
+                append(additionalPart)
+                append(
+                    text.substring(
+                        selection.end,
+                        text.length,
+                    ),
+                )
+            }
+
+        val newSelection =
+            if (selection.collapsed) {
+                TextRange(index = selection.start + offsetAfter)
+            } else {
+                TextRange(
+                    start = selection.start + offsetAfter,
+                    end = selection.end + offsetAfter,
+                )
+            }
+        val newValue = value.copy(text = newText, selection = newSelection)
+        updateState { it.copy(spoilerValue = newValue) }
     }
 
     private fun loadEditedPost() {
@@ -372,6 +462,7 @@ class ComposerViewModel(
             return
         }
 
+        val spoiler = currentState.spoilerValue.text.takeIf { currentState.hasSpoiler }
         val text = currentState.bodyValue.text
         // use the mediaId for this call otherwise the backend returns a 500
         val attachmentIds = currentState.attachments.map { it.mediaId }
@@ -398,7 +489,7 @@ class ComposerViewModel(
                             id = editId,
                             text = text,
                             inReplyTo = inReplyToId,
-                            spoilerText = currentState.spoilerText,
+                            spoilerText = spoiler,
                             sensitive = currentState.sensitive,
                             visibility = visibility,
                             lang = currentState.lang,
@@ -409,7 +500,7 @@ class ComposerViewModel(
                             localId = key,
                             text = text,
                             inReplyTo = inReplyToId,
-                            spoilerText = currentState.spoilerText,
+                            spoilerText = spoiler,
                             sensitive = currentState.sensitive,
                             visibility = currentState.visibility,
                             lang = currentState.lang,

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
+import androidx.compose.material.icons.filled.Explicit
 import androidx.compose.material.icons.filled.FormatBold
 import androidx.compose.material.icons.filled.FormatItalic
 import androidx.compose.material.icons.filled.FormatUnderlined
@@ -29,6 +30,7 @@ internal fun UtilsBar(
     onBoldClicked: (() -> Unit)? = null,
     onItalicClicked: (() -> Unit)? = null,
     onUnderlineClicked: (() -> Unit)? = null,
+    onSpoilerClicked: (() -> Unit)? = null,
 ) {
     Row(
         modifier =
@@ -59,6 +61,17 @@ internal fun UtilsBar(
                     }.padding(Spacing.xs)
                     .size(IconSize.m),
             imageVector = Icons.Default.Link,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Icon(
+            modifier =
+                Modifier
+                    .clickable {
+                        onSpoilerClicked?.invoke()
+                    }.padding(Spacing.xs)
+                    .size(IconSize.m),
+            imageVector = Icons.Default.Explicit,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )

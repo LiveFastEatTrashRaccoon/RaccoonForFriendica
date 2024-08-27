@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -80,90 +82,90 @@ fun TimelineItem(
         Column(
             modifier = Modifier.padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-                    ) {
-                        if (reshareAndReplyVisible) {
-                            if (isReblog) {
-                                entry.creator?.let {
-                                    ReblogInfo(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        user = it,
-                                        onOpenUser = onOpenUser,
-                                    )
-                                }
-                            } else {
-                                entry.inReplyTo?.creator?.let {
-                                    InReplyToInfo(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        user = it,
-                                        onOpenUser = onOpenUser,
-                                    )
-                                }
+                    if (reshareAndReplyVisible) {
+                        if (isReblog) {
+                            entry.creator?.let {
+                                ReblogInfo(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    user = it,
+                                    onOpenUser = onOpenUser,
+                                )
+                            }
+                        } else {
+                            entry.inReplyTo?.creator?.let {
+                                InReplyToInfo(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    user = it,
+                                    onOpenUser = onOpenUser,
+                                )
                             }
                         }
-
-                        ContentHeader(
-                            modifier = Modifier.fillMaxWidth(),
-                            user = entryToDisplay.creator,
-                            date = entryToDisplay.edited ?: entryToDisplay.created,
-                            isEdited = entryToDisplay.edited != null,
-                            onOpenUser = onOpenUser,
-                        )
                     }
-                    if (options.isNotEmpty()) {
-                        Box {
-                            Icon(
-                                modifier =
-                                    Modifier
-                                        .size(IconSize.m)
-                                        .padding(Spacing.xs)
-                                        .onGloballyPositioned {
-                                            optionsOffset = it.positionInParent()
-                                        }.clickable {
-                                            optionsMenuOpen = true
-                                        },
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
-                            CustomDropDown(
-                                expanded = optionsMenuOpen,
-                                onDismiss = {
-                                    optionsMenuOpen = false
-                                },
-                                offset =
-                                    with(LocalDensity.current) {
-                                        DpOffset(
-                                            x = optionsOffset.x.toDp(),
-                                            y = optionsOffset.y.toDp(),
-                                        )
+
+                    ContentHeader(
+                        modifier = Modifier.fillMaxWidth(),
+                        user = entryToDisplay.creator,
+                        date = entryToDisplay.edited ?: entryToDisplay.created,
+                        isEdited = entryToDisplay.edited != null,
+                        onOpenUser = onOpenUser,
+                    )
+                }
+                if (options.isNotEmpty()) {
+                    Box {
+                        Icon(
+                            modifier =
+                                Modifier
+                                    .size(IconSize.m)
+                                    .padding(Spacing.xs)
+                                    .onGloballyPositioned {
+                                        optionsOffset = it.positionInParent()
+                                    }.clickable {
+                                        optionsMenuOpen = true
                                     },
-                            ) {
-                                options.forEach { option ->
-                                    DropdownMenuItem(
-                                        text = {
-                                            Text(option.label)
-                                        },
-                                        onClick = {
-                                            optionsMenuOpen = false
-                                            onOptionSelected?.invoke(option.id)
-                                        },
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                        CustomDropDown(
+                            expanded = optionsMenuOpen,
+                            onDismiss = {
+                                optionsMenuOpen = false
+                            },
+                            offset =
+                                with(LocalDensity.current) {
+                                    DpOffset(
+                                        x = optionsOffset.x.toDp(),
+                                        y = optionsOffset.y.toDp(),
                                     )
-                                }
+                                },
+                        ) {
+                            options.forEach { option ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(option.label)
+                                    },
+                                    onClick = {
+                                        optionsMenuOpen = false
+                                        onOptionSelected?.invoke(option.id)
+                                    },
+                                )
                             }
                         }
                     }
                 }
+            }
 
             if (spoiler.isNotEmpty()) {
                 SpoilerCard(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
                     content =
                         if (entryToDisplay.isSpoilerActive) {
                             LocalStrings.current.actionHideContent
@@ -176,6 +178,9 @@ fun TimelineItem(
                 )
             }
             if (entryToDisplay.isSpoilerActive || spoiler.isEmpty()) {
+                if (spoiler.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(Spacing.xxxs))
+                }
                 entryToDisplay.title?.let { title ->
                     ContentTitle(
                         modifier = Modifier.fillMaxWidth(),
@@ -218,45 +223,45 @@ fun TimelineItem(
             }
 
             if (extendedSocialInfoEnabled) {
-                    ContentExtendedSocialInfo(
-                        reblogCount = entryToDisplay.reblogCount,
-                        favoriteCount = entryToDisplay.favoriteCount,
-                        modifier = Modifier.padding(vertical = Spacing.xs),
-                        onOpenUsersReblog = {
-                            onOpenUsersReblog?.invoke(entryToDisplay)
-                        },
-                        onOpenUsersFavorite = {
-                            onOpenUsersFavorite?.invoke(entryToDisplay)
-                        },
-                    )
-                }
-
-                if (actionsEnabled) {
-                    ContentFooter(
-                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
-                        favoriteCount = entryToDisplay.favoriteCount,
-                        favorite = entryToDisplay.favorite,
-                        favoriteLoading = entryToDisplay.favoriteLoading,
-                        reblogCount = entryToDisplay.reblogCount,
-                        reblogged = entryToDisplay.reblogged,
-                        reblogLoading = entryToDisplay.reblogLoading,
-                        bookmarked = entryToDisplay.bookmarked,
-                        bookmarkLoading = entryToDisplay.bookmarkLoading,
-                        replyCount = entryToDisplay.replyCount,
-                        onReply = {
-                            onReply?.invoke(entryToDisplay)
-                        },
-                        onReblog = {
-                            onReblog?.invoke(entryToDisplay)
-                        },
-                        onFavorite = {
-                            onFavorite?.invoke(entryToDisplay)
-                        },
-                        onBookmark = {
-                            onBookmark?.invoke(entryToDisplay)
-                        },
-                    )
-                }
+                ContentExtendedSocialInfo(
+                    reblogCount = entryToDisplay.reblogCount,
+                    favoriteCount = entryToDisplay.favoriteCount,
+                    modifier = Modifier.padding(vertical = Spacing.xs),
+                    onOpenUsersReblog = {
+                        onOpenUsersReblog?.invoke(entryToDisplay)
+                    },
+                    onOpenUsersFavorite = {
+                        onOpenUsersFavorite?.invoke(entryToDisplay)
+                    },
+                )
             }
+
+            if (actionsEnabled) {
+                ContentFooter(
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
+                    favoriteCount = entryToDisplay.favoriteCount,
+                    favorite = entryToDisplay.favorite,
+                    favoriteLoading = entryToDisplay.favoriteLoading,
+                    reblogCount = entryToDisplay.reblogCount,
+                    reblogged = entryToDisplay.reblogged,
+                    reblogLoading = entryToDisplay.reblogLoading,
+                    bookmarked = entryToDisplay.bookmarked,
+                    bookmarkLoading = entryToDisplay.bookmarkLoading,
+                    replyCount = entryToDisplay.replyCount,
+                    onReply = {
+                        onReply?.invoke(entryToDisplay)
+                    },
+                    onReblog = {
+                        onReblog?.invoke(entryToDisplay)
+                    },
+                    onFavorite = {
+                        onFavorite?.invoke(entryToDisplay)
+                    },
+                    onBookmark = {
+                        onBookmark?.invoke(entryToDisplay)
+                    },
+                )
+            }
+        }
     }
 }

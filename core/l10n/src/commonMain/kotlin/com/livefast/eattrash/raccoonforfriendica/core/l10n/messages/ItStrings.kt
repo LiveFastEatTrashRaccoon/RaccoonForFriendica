@@ -248,4 +248,5 @@ internal val ItStrings =
         override val actionHideContent = "Nascondi contenuto"
         override val messageEmptyInbox =
             "🎉 Sei già al passo! 🎉\n\nVedrai comparire le notifiche in questa pagina non appena ce ne saranno di nuove"
+        override val createPostSpoilerPlaceholder = "Testo dello spoiler"
     }

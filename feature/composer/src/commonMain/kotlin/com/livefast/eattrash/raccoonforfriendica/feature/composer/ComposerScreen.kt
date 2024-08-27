@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -36,16 +38,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTextualInfoDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SpoilerTextField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
@@ -97,6 +104,7 @@ class ComposerScreen(
         var mentionDialogOpen by remember { mutableStateOf(false) }
         var selectCircleDialogOpen by remember { mutableStateOf(false) }
         var attachmentWithDescriptionBeingEdited by remember { mutableStateOf<AttachmentModel?>(null) }
+        var hasSpoilerFieldFocus by remember { mutableStateOf(false) }
 
         LaunchedEffect(model) {
             if (editedPostId == null) {
@@ -220,6 +228,35 @@ class ComposerScreen(
                             },
                         )
 
+                        // spoiler text
+                        if (uiState.hasSpoiler) {
+                            val fieldHeight =
+                                with(LocalDensity.current) {
+                                    MaterialTheme.typography.titleMedium.lineHeight
+                                        .toDp() * 2
+                                }
+                            SpoilerTextField(
+                                modifier =
+                                    Modifier
+                                        .padding(horizontal = Spacing.s, vertical = Spacing.s)
+                                        .clip(RoundedCornerShape(CornerSize.l))
+                                        .height(fieldHeight)
+                                        .onFocusChanged {
+                                            hasSpoilerFieldFocus = it.hasFocus
+                                        },
+                                hint = LocalStrings.current.createPostSpoilerPlaceholder,
+                                value = uiState.spoilerValue,
+                                onValueChange = {
+                                    model.reduce(
+                                        ComposerMviModel.Intent.SetFieldValue(
+                                            value = it,
+                                            fieldType = ComposerFieldType.Spoiler,
+                                        ),
+                                    )
+                                },
+                            )
+                        }
+
                         // post body
                         OutlinedTextField(
                             modifier =
@@ -237,7 +274,12 @@ class ComposerScreen(
                                     autoCorrect = true,
                                 ),
                             onValueChange = { value ->
-                                model.reduce(ComposerMviModel.Intent.SetBodyValue(value))
+                                model.reduce(
+                                    ComposerMviModel.Intent.SetFieldValue(
+                                        value = value,
+                                        fieldType = ComposerFieldType.Body,
+                                    ),
+                                )
                             },
                         )
 
@@ -285,13 +327,43 @@ class ComposerScreen(
                             mentionDialogOpen = true
                         },
                         onBoldClicked = {
-                            model.reduce(ComposerMviModel.Intent.AddBoldFormat)
+                            model.reduce(
+                                ComposerMviModel.Intent.AddBoldFormat(
+                                    fieldType =
+                                        if (hasSpoilerFieldFocus) {
+                                            ComposerFieldType.Spoiler
+                                        } else {
+                                            ComposerFieldType.Body
+                                        },
+                                ),
+                            )
                         },
                         onItalicClicked = {
-                            model.reduce(ComposerMviModel.Intent.AddItalicFormat)
+                            model.reduce(
+                                ComposerMviModel.Intent.AddItalicFormat(
+                                    fieldType =
+                                        if (hasSpoilerFieldFocus) {
+                                            ComposerFieldType.Spoiler
+                                        } else {
+                                            ComposerFieldType.Body
+                                        },
+                                ),
+                            )
                         },
                         onUnderlineClicked = {
-                            model.reduce(ComposerMviModel.Intent.AddUnderlineFormat)
+                            model.reduce(
+                                ComposerMviModel.Intent.AddUnderlineFormat(
+                                    fieldType =
+                                        if (hasSpoilerFieldFocus) {
+                                            ComposerFieldType.Spoiler
+                                        } else {
+                                            ComposerFieldType.Body
+                                        },
+                                ),
+                            )
+                        },
+                        onSpoilerClicked = {
+                            model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
                         },
                     )
                 }
