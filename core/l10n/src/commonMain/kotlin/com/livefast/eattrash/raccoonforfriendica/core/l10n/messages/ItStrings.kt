@@ -245,4 +245,5 @@ internal val ItStrings =
         override val followRequestsTitle = "Richieste di seguirti"
         override val actionAccept = "Accetta"
         override val actionReject = "Rifiuta"
+        override val actionHideContent = "Nascondi contenuto"
     }

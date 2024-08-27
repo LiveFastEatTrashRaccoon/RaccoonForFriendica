@@ -240,4 +240,5 @@ internal open class DefaultStrings : Strings {
     override val followRequestsTitle = "Follow requests"
     override val actionAccept = "Accept"
     override val actionReject = "Reject"
+    override val actionHideContent = "Hide content"
 }

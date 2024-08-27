@@ -224,6 +224,7 @@ interface Strings {
     val followRequestsTitle: String
     val actionAccept: String
     val actionReject: String
+    val actionHideContent: String
 }
 
 object Locales {
