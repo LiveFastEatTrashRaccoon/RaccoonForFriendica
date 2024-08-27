@@ -113,6 +113,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] manage follow requests
 - [ ] support post spoiler text (both in creation and in timeline)
 - [ ] support post title (in creation, in timeline it is already included)
+- [ ] multi-account
 - [ ] edit one's own profile
 - [ ] private conversations
 - [ ] advanced media visualization (image carousels, videos, GIFs, etc.)
