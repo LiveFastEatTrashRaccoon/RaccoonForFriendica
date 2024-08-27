@@ -65,7 +65,8 @@ internal fun Status.toModel() =
         reblogCount = reblogsCount,
         reblogged = reblogged,
         replyCount = repliesCount,
-        spoiler = spoiler,
+        // needed because, for compatibility, Friendica titles are replicated as spoilers on Mastodon
+        spoiler = spoiler.takeIf { it != addons?.title },
         tags = tags.map { it.toModel() },
         updated = editedAt,
         url = url,
