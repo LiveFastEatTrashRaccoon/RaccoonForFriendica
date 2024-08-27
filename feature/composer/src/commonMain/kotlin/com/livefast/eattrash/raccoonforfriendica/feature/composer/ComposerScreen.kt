@@ -105,6 +105,7 @@ class ComposerScreen(
         var selectCircleDialogOpen by remember { mutableStateOf(false) }
         var attachmentWithDescriptionBeingEdited by remember { mutableStateOf<AttachmentModel?>(null) }
         var hasSpoilerFieldFocus by remember { mutableStateOf(false) }
+        var hasTitleFocus by remember { mutableStateOf(false) }
 
         LaunchedEffect(model) {
             if (editedPostId == null) {
@@ -257,6 +258,35 @@ class ComposerScreen(
                             )
                         }
 
+                        // post title
+                        OutlinedTextField(
+                            modifier =
+                                Modifier
+                                    .onFocusChanged {
+                                        hasTitleFocus = it.hasFocus
+                                    }.padding(top = Spacing.s, start = Spacing.xs, end = Spacing.xs)
+                                    .fillMaxWidth(),
+                            label = {
+                                Text(text = LocalStrings.current.createPostTitlePlaceholder)
+                            },
+                            maxLines = 1,
+                            value = uiState.titleValue,
+                            textStyle = MaterialTheme.typography.titleLarge,
+                            keyboardOptions =
+                                KeyboardOptions(
+                                    keyboardType = KeyboardType.Text,
+                                    autoCorrect = true,
+                                ),
+                            onValueChange = { value ->
+                                model.reduce(
+                                    ComposerMviModel.Intent.SetFieldValue(
+                                        value = value,
+                                        fieldType = ComposerFieldType.Title,
+                                    ),
+                                )
+                            },
+                        )
+
                         // post body
                         OutlinedTextField(
                             modifier =
@@ -330,10 +360,10 @@ class ComposerScreen(
                             model.reduce(
                                 ComposerMviModel.Intent.AddBoldFormat(
                                     fieldType =
-                                        if (hasSpoilerFieldFocus) {
-                                            ComposerFieldType.Spoiler
-                                        } else {
-                                            ComposerFieldType.Body
+                                        when {
+                                            hasTitleFocus -> ComposerFieldType.Title
+                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                            else -> ComposerFieldType.Body
                                         },
                                 ),
                             )
@@ -342,10 +372,10 @@ class ComposerScreen(
                             model.reduce(
                                 ComposerMviModel.Intent.AddItalicFormat(
                                     fieldType =
-                                        if (hasSpoilerFieldFocus) {
-                                            ComposerFieldType.Spoiler
-                                        } else {
-                                            ComposerFieldType.Body
+                                        when {
+                                            hasTitleFocus -> ComposerFieldType.Title
+                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                            else -> ComposerFieldType.Body
                                         },
                                 ),
                             )
@@ -354,10 +384,10 @@ class ComposerScreen(
                             model.reduce(
                                 ComposerMviModel.Intent.AddUnderlineFormat(
                                     fieldType =
-                                        if (hasSpoilerFieldFocus) {
-                                            ComposerFieldType.Spoiler
-                                        } else {
-                                            ComposerFieldType.Body
+                                        when {
+                                            hasTitleFocus -> ComposerFieldType.Title
+                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                            else -> ComposerFieldType.Body
                                         },
                                 ),
                             )

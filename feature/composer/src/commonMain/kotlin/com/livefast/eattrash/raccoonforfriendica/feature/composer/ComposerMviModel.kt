@@ -11,6 +11,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 sealed interface ComposerFieldType {
     data object Spoiler : ComposerFieldType
 
+    data object Title : ComposerFieldType
+
     data object Body : ComposerFieldType
 }
 
@@ -99,6 +101,7 @@ interface ComposerMviModel :
     data class State(
         val author: UserModel? = null,
         val lang: String? = null,
+        val titleValue: TextFieldValue = TextFieldValue(),
         val bodyValue: TextFieldValue = TextFieldValue(),
         val spoilerValue: TextFieldValue = TextFieldValue(),
         val visibility: Visibility = Visibility.Public,
