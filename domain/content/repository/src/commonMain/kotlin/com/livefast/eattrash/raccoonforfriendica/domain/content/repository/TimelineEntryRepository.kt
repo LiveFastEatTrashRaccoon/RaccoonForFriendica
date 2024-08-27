@@ -53,6 +53,7 @@ interface TimelineEntryRepository {
     suspend fun create(
         localId: String,
         text: String,
+        title: String? = null,
         spoilerText: String? = null,
         inReplyTo: String? = null,
         sensitive: Boolean = false,
@@ -64,6 +65,7 @@ interface TimelineEntryRepository {
     suspend fun update(
         id: String,
         text: String,
+        title: String? = null,
         spoilerText: String? = null,
         inReplyTo: String? = null,
         sensitive: Boolean = false,

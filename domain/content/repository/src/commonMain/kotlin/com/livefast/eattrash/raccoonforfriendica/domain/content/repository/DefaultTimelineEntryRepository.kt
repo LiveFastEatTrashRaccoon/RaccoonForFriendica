@@ -170,6 +170,7 @@ internal class DefaultTimelineEntryRepository(
     override suspend fun create(
         localId: String,
         text: String,
+        title: String?,
         spoilerText: String?,
         inReplyTo: String?,
         sensitive: Boolean,
@@ -182,7 +183,7 @@ internal class DefaultTimelineEntryRepository(
                 val data =
                     CreateStatusForm(
                         status = text,
-                        addons = StatusAddons(title = ""),
+                        addons = StatusAddons(title = title.orEmpty()),
                         mediaIds = mediaIds,
                         visibility = visibility.toDto(),
                         sensitive = sensitive,
@@ -205,6 +206,7 @@ internal class DefaultTimelineEntryRepository(
     override suspend fun update(
         id: String,
         text: String,
+        title: String?,
         spoilerText: String?,
         inReplyTo: String?,
         sensitive: Boolean,
@@ -217,7 +219,7 @@ internal class DefaultTimelineEntryRepository(
                 val data =
                     CreateStatusForm(
                         status = text,
-                        addons = StatusAddons(title = ""),
+                        addons = StatusAddons(title = title.orEmpty()),
                         mediaIds = mediaIds,
                         visibility = visibility.toDto(),
                         sensitive = sensitive,

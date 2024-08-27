@@ -244,4 +244,5 @@ internal open class DefaultStrings : Strings {
     override val messageEmptyInbox =
         "🎉 You are all caught up! 🎉\n\nYou'll see new notifications in this page as soon as they arrive"
     override val createPostSpoilerPlaceholder = "Spoiler text"
+    override val createPostTitlePlaceholder = "Title (optional)"
 }
