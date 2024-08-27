@@ -111,7 +111,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] manage one's own circles/following lists
 - [x] polls (read-only, since the submit vote method is unimplemented in the backend)
 - [x] manage follow requests
-- [ ] support post spoiler text (in post editor)
+- [x] support post spoiler text (in post editor)
 - [ ] support post title (in post editor)
 - [ ] multi-account
 - [ ] edit one's own profile
