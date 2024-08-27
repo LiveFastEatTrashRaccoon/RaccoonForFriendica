@@ -44,6 +44,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
@@ -205,6 +206,18 @@ class HashtagScreen(
                             )
                         }
                     }
+
+                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
+                        item {
+                            Text(
+                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                                text = LocalStrings.current.messageEmptyList,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        }
+                    }
+
                     itemsIndexed(
                         items = uiState.entries,
                         key = { _, e -> e.safeKey },
