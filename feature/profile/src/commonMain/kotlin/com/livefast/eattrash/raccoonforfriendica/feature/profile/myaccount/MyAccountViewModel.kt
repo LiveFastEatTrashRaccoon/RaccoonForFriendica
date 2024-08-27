@@ -103,6 +103,7 @@ class MyAccountViewModel(
             is MyAccountMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is MyAccountMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is MyAccountMviModel.Intent.TogglePin -> togglePin(intent.entry)
+            is MyAccountMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
         }
     }
 
@@ -300,6 +301,12 @@ class MyAccountViewModel(
                     }
                 }
             }
+        }
+    }
+
+    private fun toggleSpoiler(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 }

@@ -251,6 +251,9 @@ class HashtagScreen(
                                     ),
                                 )
                             },
+                            onToggleSpoilerActive = { e ->
+                                model.reduce(HashtagMviModel.Intent.ToggleSpoilerActive(e))
+                            },
                             options =
                                 buildList {
                                     if (!entry.url.isNullOrBlank()) {

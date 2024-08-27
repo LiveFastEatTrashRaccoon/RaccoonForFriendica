@@ -54,8 +54,10 @@ internal class DefaultTimelinePaginationManager(
 
                 is TimelinePaginationSpecification.Hashtag -> {
                     timelineRepository
-                        .getHashtag(specification.hashtag)
-                        .updatePaginationData()
+                        .getHashtag(
+                            specification.hashtag,
+                            pageCursor = pageCursor,
+                        ).updatePaginationData()
                         .filterNsfw(specification.includeNsfw)
                 }
 

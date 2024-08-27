@@ -289,6 +289,9 @@ class ThreadScreen(
                                         ),
                                     )
                                 },
+                                onToggleSpoilerActive = { e ->
+                                    model.reduce(ThreadMviModel.Intent.ToggleSpoilerActive(e))
+                                },
                                 options =
                                     buildList {
                                         if (!uiState.entry?.url.isNullOrBlank()) {

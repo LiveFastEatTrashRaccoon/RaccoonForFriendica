@@ -38,6 +38,8 @@ data class TimelineEntryModel(
     @Transient
     val loadMoreButtonVisible: Boolean = false,
     val poll: PollModel? = null,
+    @Transient
+    val isSpoilerActive: Boolean = false,
 )
 
 val TimelineEntryModel.safeKey: String

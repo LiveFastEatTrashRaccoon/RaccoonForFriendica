@@ -50,6 +50,7 @@ internal fun NotificationItem(
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
     onUserRelationshipClicked: ((String, RelationshipStatusNextAction) -> Unit)? = null,
+    onToggleSpoilerActive: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val boxColor = MaterialTheme.colorScheme.surfaceVariant
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
@@ -127,6 +128,7 @@ internal fun NotificationItem(
                     },
                     onOpenUser = onOpenUser,
                     onOpenUrl = onOpenUrl,
+                    onToggleSpoilerActive = onToggleSpoilerActive,
                 )
             } else if (user != null) {
                 NotificationUserInfo(

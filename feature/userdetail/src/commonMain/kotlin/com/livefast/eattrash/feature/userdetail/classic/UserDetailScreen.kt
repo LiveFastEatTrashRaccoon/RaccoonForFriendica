@@ -476,6 +476,9 @@ class UserDetailScreen(
                                         ),
                                     )
                                 },
+                                onToggleSpoilerActive = { e ->
+                                    model.reduce(UserDetailMviModel.Intent.ToggleSpoilerActive(e))
+                                },
                                 options =
                                     buildList {
                                         if (!entry.url.isNullOrBlank()) {

@@ -39,6 +39,10 @@ interface MyAccountMviModel :
         data class TogglePin(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class ToggleSpoilerActive(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(

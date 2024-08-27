@@ -220,6 +220,9 @@ class InboxScreen : Screen {
                                     }
                                 }
                             },
+                            onToggleSpoilerActive = { e ->
+                                model.reduce(InboxMviModel.Intent.ToggleSpoilerActive(e))
+                            },
                         )
                         HorizontalDivider(
                             modifier = Modifier.padding(vertical = Spacing.interItem),

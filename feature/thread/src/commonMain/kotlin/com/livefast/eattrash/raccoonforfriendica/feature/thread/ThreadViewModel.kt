@@ -72,6 +72,7 @@ class ThreadViewModel(
                     entryId = intent.entryId,
                 )
             is ThreadMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is ThreadMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
         }
     }
 
@@ -322,6 +323,12 @@ class ThreadViewModel(
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(ThreadMviModel.Effect.PollVoteFailure)
             }
+        }
+    }
+
+    private fun toggleSpoiler(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 }

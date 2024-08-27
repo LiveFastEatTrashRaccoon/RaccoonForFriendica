@@ -280,6 +280,9 @@ class ForumListScreen(
                                     ),
                                 )
                             },
+                            onToggleSpoilerActive = { e ->
+                                model.reduce(ForumListMviModel.Intent.ToggleSpoilerActive(e))
+                            },
                             options =
                                 buildList {
                                     if (!entry.url.isNullOrBlank()) {

@@ -55,6 +55,10 @@ interface UserDetailMviModel :
         data class ToggleBlock(
             val blocked: Boolean,
         ) : Intent
+
+        data class ToggleSpoilerActive(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
