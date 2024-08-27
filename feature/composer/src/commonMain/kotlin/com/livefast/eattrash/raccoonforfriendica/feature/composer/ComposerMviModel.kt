@@ -8,6 +8,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 
+sealed interface ComposerFieldType {
+    data object Spoiler : ComposerFieldType
+
+    data object Body : ComposerFieldType
+}
+
 interface ComposerMviModel :
     ScreenModel,
     MviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect> {
@@ -16,12 +22,9 @@ interface ComposerMviModel :
             val id: String,
         ) : Intent
 
-        data class SetBodyValue(
+        data class SetFieldValue(
             val value: TextFieldValue,
-        ) : Intent
-
-        data class SetSpoilerText(
-            val spoiler: String?,
+            val fieldType: ComposerFieldType,
         ) : Intent
 
         data class SetVisibility(
@@ -76,11 +79,19 @@ interface ComposerMviModel :
             val handle: String,
         ) : Intent
 
-        data object AddBoldFormat : Intent
+        data class AddBoldFormat(
+            val fieldType: ComposerFieldType,
+        ) : Intent
 
-        data object AddItalicFormat : Intent
+        data class AddItalicFormat(
+            val fieldType: ComposerFieldType,
+        ) : Intent
 
-        data object AddUnderlineFormat : Intent
+        data class AddUnderlineFormat(
+            val fieldType: ComposerFieldType,
+        ) : Intent
+
+        data object ToggleHasSpoiler : Intent
 
         data object Submit : Intent
     }
@@ -89,7 +100,7 @@ interface ComposerMviModel :
         val author: UserModel? = null,
         val lang: String? = null,
         val bodyValue: TextFieldValue = TextFieldValue(),
-        val spoilerText: String? = null,
+        val spoilerValue: TextFieldValue = TextFieldValue(),
         val visibility: Visibility = Visibility.Public,
         val availableVisibilities: List<Visibility> =
             listOf(
@@ -106,6 +117,7 @@ interface ComposerMviModel :
         val userSearchCanFetchMore: Boolean = true,
         val userSearchQuery: String = "",
         val availableCircles: List<CircleModel> = emptyList(),
+        val hasSpoiler: Boolean = false,
     )
 
     sealed interface Effect {
