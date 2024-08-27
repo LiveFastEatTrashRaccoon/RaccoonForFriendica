@@ -246,4 +246,6 @@ internal val ItStrings =
         override val actionAccept = "Accetta"
         override val actionReject = "Rifiuta"
         override val actionHideContent = "Nascondi contenuto"
+        override val messageEmptyInbox =
+            "🎉 Sei già al passo! 🎉\n\nVedrai comparire le notifiche in questa pagina non appena ce ne saranno di nuove"
     }

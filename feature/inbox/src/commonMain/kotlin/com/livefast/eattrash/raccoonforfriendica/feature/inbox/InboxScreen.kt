@@ -251,7 +251,7 @@ class InboxScreen : Screen {
                                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
                                 text =
                                     if (uiState.isLogged) {
-                                        LocalStrings.current.messageEmptyList
+                                        LocalStrings.current.messageEmptyInbox
                                     } else {
                                         LocalStrings.current.messageUserUnlogged
                                     },
