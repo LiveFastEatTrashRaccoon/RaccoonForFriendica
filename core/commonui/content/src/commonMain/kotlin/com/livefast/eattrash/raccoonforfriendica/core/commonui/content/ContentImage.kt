@@ -36,7 +36,7 @@ fun ContentImage(
     url: String,
     modifier: Modifier = Modifier,
     sensitive: Boolean = false,
-    minHeight: Dp = 200.dp,
+    minHeight: Dp = 50.dp,
     maxHeight: Dp = Dp.Unspecified,
     onClick: (() -> Unit)? = null,
 ) {

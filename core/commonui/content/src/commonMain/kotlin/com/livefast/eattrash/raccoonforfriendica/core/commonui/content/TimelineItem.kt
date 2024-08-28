@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -178,12 +176,10 @@ fun TimelineItem(
                 )
             }
             if (entryToDisplay.isSpoilerActive || spoiler.isEmpty()) {
-                if (spoiler.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(Spacing.xxxs))
-                }
-                entryToDisplay.title?.let { title ->
+                val title = entryToDisplay.title
+                if (title != null) {
                     ContentTitle(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.xxs),
                         content = title,
                         onClick = { onClick?.invoke(entryToDisplay) },
                         onOpenUrl = onOpenUrl,
@@ -191,7 +187,14 @@ fun TimelineItem(
                 }
 
                 ContentBody(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier =
+                        Modifier.fillMaxWidth().then(
+                            if (title == null) {
+                                Modifier.padding(top = Spacing.xxs)
+                            } else {
+                                Modifier.padding(top = Spacing.xxxs)
+                            },
+                        ),
                     content = entryToDisplay.content,
                     onClick = { onClick?.invoke(entryToDisplay) },
                     onOpenUrl = onOpenUrl,
