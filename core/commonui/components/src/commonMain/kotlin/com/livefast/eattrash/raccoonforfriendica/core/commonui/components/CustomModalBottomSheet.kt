@@ -1,10 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.components
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,24 +27,31 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 
 data class CustomModalBottomSheetItem(
     val leadingContent: @Composable (() -> Unit)? = null,
     val label: String,
+    val subtitle: String? = null,
     val customLabelStyle: TextStyle? = null,
     val trailingContent: @Composable (() -> Unit)? = null,
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun CustomModalBottomSheet(
     sheetState: SheetState = rememberModalBottomSheetState(),
     title: String = "",
     items: List<CustomModalBottomSheetItem> = emptyList(),
     onSelected: ((Int?) -> Unit)? = null,
+    onLongPress: ((Int) -> Unit)? = null,
 ) {
+    val fullColor = MaterialTheme.colorScheme.onBackground
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+
     ModalBottomSheet(
         sheetState = sheetState,
+        windowInsets = WindowInsets(0, 0, 0, 0),
         onDismissRequest = {
             onSelected?.invoke(null)
         },
@@ -55,6 +64,7 @@ fun CustomModalBottomSheet(
                     textAlign = TextAlign.Center,
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
+                    color = fullColor,
                 )
                 Spacer(modifier = Modifier.height(Spacing.xs))
                 LazyColumn {
@@ -66,9 +76,14 @@ fun CustomModalBottomSheet(
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
-                                        .clickable {
-                                            onSelected?.invoke(idx)
-                                        }.padding(
+                                        .combinedClickable(
+                                            onClick = {
+                                                onSelected?.invoke(idx)
+                                            },
+                                            onLongClick = {
+                                                onLongPress?.invoke(idx)
+                                            },
+                                        ).padding(
                                             horizontal = Spacing.s,
                                             vertical = Spacing.s,
                                         ),
@@ -76,13 +91,25 @@ fun CustomModalBottomSheet(
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                             ) {
                                 item.leadingContent?.invoke()
-                                Text(
+                                Column(
                                     modifier = Modifier.weight(1f),
-                                    text = item.label,
-                                    style =
-                                        item.customLabelStyle
-                                            ?: MaterialTheme.typography.bodyLarge,
-                                )
+                                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                                ) {
+                                    Text(
+                                        text = item.label,
+                                        style =
+                                            item.customLabelStyle
+                                                ?: MaterialTheme.typography.bodyLarge,
+                                        color = fullColor,
+                                    )
+                                    if (!item.subtitle.isNullOrEmpty()) {
+                                        Text(
+                                            text = item.subtitle,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = ancillaryColor,
+                                        )
+                                    }
+                                }
                                 item.trailingContent?.invoke()
                             }
                         }
