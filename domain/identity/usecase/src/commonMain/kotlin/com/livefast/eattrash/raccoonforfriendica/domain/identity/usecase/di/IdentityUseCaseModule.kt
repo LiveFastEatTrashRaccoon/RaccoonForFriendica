@@ -35,6 +35,7 @@ val domainIdentityUseCaseModule =
                 apiConfigurationRepository = get(),
                 accountRepository = get(),
                 settingsRepository = get(),
+                identityRepository = get(),
             )
         }
         single<CustomUriHandler> { params ->
