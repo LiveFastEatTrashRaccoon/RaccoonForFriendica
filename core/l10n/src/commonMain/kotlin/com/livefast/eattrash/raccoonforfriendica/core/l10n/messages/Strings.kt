@@ -228,6 +228,8 @@ interface Strings {
     val messageEmptyInbox: String
     val createPostSpoilerPlaceholder: String
     val createPostTitlePlaceholder: String
+    val actionSwitchAccount: String
+    val actionDeleteAccount: String
 }
 
 object Locales {
