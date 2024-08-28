@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di
 
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountCredentialsCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultAccountCredentialsCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultAccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultCredentialsRepository
@@ -48,6 +50,11 @@ val domainIdentityRepositoryModule =
         single<SettingsRepository> {
             DefaultSettingsRepository(
                 settingsDao = get(),
+            )
+        }
+        single<AccountCredentialsCache> {
+            DefaultAccountCredentialsCache(
+                keyStore = get(),
             )
         }
     }
