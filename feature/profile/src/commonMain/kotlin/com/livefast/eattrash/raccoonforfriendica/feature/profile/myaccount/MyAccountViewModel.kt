@@ -35,11 +35,11 @@ class MyAccountViewModel(
                 .getActiveAsFlow()
                 .distinctUntilChanged()
                 .onEach { account ->
-                    val handle = account?.handle.orEmpty()
+                    val userId = account?.remoteId.orEmpty()
                     val cachedUser = myAccountCache.retrieveUser()
                     val cachedPaginationState = myAccountCache.retrievePaginationState()
-                    if (cachedUser?.handle != handle) {
-                        val currentAccount = userRepository.getByHandle(handle)
+                    if (cachedUser?.id != userId) {
+                        val currentAccount = userRepository.getById(userId)
                         updateState { it.copy(user = currentAccount) }
                         refresh(initial = true)
                     } else {
