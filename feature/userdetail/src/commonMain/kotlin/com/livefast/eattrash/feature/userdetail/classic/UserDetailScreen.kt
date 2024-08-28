@@ -20,8 +20,6 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -69,6 +67,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -557,108 +556,36 @@ class UserDetailScreen(
         )
 
         if (confirmUnfollowDialogOpen) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionUnfollow,
+                onClose = { confirm ->
                     confirmUnfollowDialogOpen = false
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionUnfollow,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmUnfollowDialogOpen = false
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            confirmUnfollowDialogOpen = false
-                            model.reduce(UserDetailMviModel.Intent.Unfollow)
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm) {
+                        model.reduce(UserDetailMviModel.Intent.Unfollow)
                     }
                 },
             )
         }
 
         if (confirmDeleteFollowRequestDialogOpen) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionDeleteFollowRequest,
+                onClose = { confirm ->
                     confirmDeleteFollowRequestDialogOpen = false
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionDeleteFollowRequest,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmDeleteFollowRequestDialogOpen = false
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            confirmDeleteFollowRequestDialogOpen = false
-                            model.reduce(UserDetailMviModel.Intent.Unfollow)
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm) {
+                        model.reduce(UserDetailMviModel.Intent.Unfollow)
                     }
                 },
             )
         }
 
         if (confirmMuteNotificationsDialogOpen) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionMuteNotifications,
+                onClose = { confirm ->
                     confirmMuteNotificationsDialogOpen = false
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionMuteNotifications,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmMuteNotificationsDialogOpen = false
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            confirmMuteNotificationsDialogOpen = false
-                            model.reduce(UserDetailMviModel.Intent.DisableNotifications)
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm) {
+                        model.reduce(UserDetailMviModel.Intent.DisableNotifications)
                     }
                 },
             )
@@ -684,45 +611,19 @@ class UserDetailScreen(
         }
 
         if (confirmBlockUserDialogOpen) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title =
+                    buildString {
+                        append(LocalStrings.current.actionBlock)
+                        val handle = uiState.user?.handle ?: ""
+                        if (handle.isNotEmpty()) {
+                            append(" @$handle")
+                        }
+                    },
+                onClose = { confirm ->
                     confirmBlockUserDialogOpen = false
-                },
-                title = {
-                    Text(
-                        text =
-                            buildString {
-                                append(LocalStrings.current.actionBlock)
-                                val handle = uiState.user?.handle ?: ""
-                                if (handle.isNotEmpty()) {
-                                    append(" @$handle")
-                                }
-                            },
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmBlockUserDialogOpen = false
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            confirmBlockUserDialogOpen = false
-                            model.reduce(
-                                UserDetailMviModel.Intent.ToggleBlock(blocked = true),
-                            )
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm) {
+                        model.reduce(UserDetailMviModel.Intent.ToggleBlock(blocked = true))
                     }
                 },
             )
