@@ -2,8 +2,12 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SwitchAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.MyAccountCache
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -11,7 +15,10 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val identityRepository: IdentityRepository,
+    private val accountRepository: AccountRepository,
     private val logoutUseCase: LogoutUseCase,
+    private val switchAccountUseCase: SwitchAccountUseCase,
+    private val deleteAccountUseCase: DeleteAccountUseCase,
     private val myAccountCache: MyAccountCache,
 ) : DefaultMviModel<ProfileMviModel.Intent, ProfileMviModel.State, ProfileMviModel.Effect>(
         initialState = ProfileMviModel.State(),
@@ -19,13 +26,22 @@ class ProfileViewModel(
     ProfileMviModel {
     init {
         screenModelScope.launch {
-            identityRepository.isLogged
-                .onEach { isLogged ->
+            identityRepository.currentUser
+                .onEach { currentUser ->
                     updateState {
-                        it.copy(isLogged = isLogged)
+                        it.copy(currentUserId = currentUser?.id)
                     }
-                    if (!isLogged) {
+                    if (currentUser == null) {
                         myAccountCache.clear()
+                    }
+                }.launchIn(this)
+
+            accountRepository
+                .getAllAsFlow()
+                .onEach { accounts ->
+                    val nonAnonymousAccounts = accounts.filter { it.remoteId != null }
+                    updateState {
+                        it.copy(availableAccounts = nonAnonymousAccounts)
                     }
                 }.launchIn(this)
         }
@@ -42,6 +58,27 @@ class ProfileViewModel(
                 screenModelScope.launch {
                     logoutUseCase()
                 }
+
+            is ProfileMviModel.Intent.SwitchAccount -> switchAccount(intent.account)
+            is ProfileMviModel.Intent.DeleteAccount -> deleteAccount(intent.account)
+        }
+    }
+
+    private fun switchAccount(account: AccountModel) {
+        if (account.remoteId == uiState.value.currentUserId) {
+            return
+        }
+        screenModelScope.launch {
+            switchAccountUseCase(account)
+        }
+    }
+
+    private fun deleteAccount(account: AccountModel) {
+        if (account.remoteId == uiState.value.currentUserId) {
+            return
+        }
+        screenModelScope.launch {
+            deleteAccountUseCase(account)
         }
     }
 }
