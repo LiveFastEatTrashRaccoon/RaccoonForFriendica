@@ -6,11 +6,13 @@ import kotlinx.coroutines.flow.Flow
 interface AccountRepository {
     suspend fun getAll(): List<AccountModel>
 
+    fun getAllAsFlow(): Flow<List<AccountModel>>
+
     suspend fun getBy(handle: String): AccountModel?
 
     suspend fun getActive(): AccountModel?
 
-    suspend fun getActiveAsFlow(): Flow<AccountModel?>
+    fun getActiveAsFlow(): Flow<AccountModel?>
 
     suspend fun create(account: AccountModel)
 

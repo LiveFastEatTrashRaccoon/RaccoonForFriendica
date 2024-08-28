@@ -12,5 +12,7 @@ interface SettingsRepository {
 
     suspend fun update(settings: SettingsModel)
 
+    suspend fun delete(settings: SettingsModel)
+
     fun changeCurrent(settings: SettingsModel)
 }

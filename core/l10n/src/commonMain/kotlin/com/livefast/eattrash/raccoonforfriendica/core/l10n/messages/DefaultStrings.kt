@@ -245,4 +245,6 @@ internal open class DefaultStrings : Strings {
         "🎉 You are all caught up! 🎉\n\nYou'll see new notifications in this page as soon as they arrive"
     override val createPostSpoilerPlaceholder = "Spoiler text"
     override val createPostTitlePlaceholder = "Title (optional)"
+    override val actionSwitchAccount = "Switch account"
+    override val actionDeleteAccount = "Delete account"
 }

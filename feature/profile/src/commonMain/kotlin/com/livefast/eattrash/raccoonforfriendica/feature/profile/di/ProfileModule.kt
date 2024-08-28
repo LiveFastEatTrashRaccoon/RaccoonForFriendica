@@ -15,7 +15,10 @@ val featureProfileModule =
         factory<ProfileMviModel> {
             ProfileViewModel(
                 identityRepository = get(),
+                accountRepository = get(),
                 logoutUseCase = get(),
+                switchAccountUseCase = get(),
+                deleteAccountUseCase = get(),
                 myAccountCache = get(),
             )
         }
