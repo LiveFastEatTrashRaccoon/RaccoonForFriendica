@@ -5,9 +5,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.Default
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultLoginUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultLogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultSetupAccountUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultSwitchAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SwitchAccountUseCase
 import org.koin.dsl.module
 
 val domainIdentityUseCaseModule =
@@ -46,6 +48,15 @@ val domainIdentityUseCaseModule =
                 userRepository = get(),
                 customTabsHelper = get(),
                 settingsRepository = get(),
+            )
+        }
+        single<SwitchAccountUseCase> {
+            DefaultSwitchAccountUseCase(
+                apiConfigurationRepository = get(),
+                accountRepository = get(),
+                settingsRepository = get(),
+                identityRepository = get(),
+                accountCredentialsCache = get(),
             )
         }
     }
