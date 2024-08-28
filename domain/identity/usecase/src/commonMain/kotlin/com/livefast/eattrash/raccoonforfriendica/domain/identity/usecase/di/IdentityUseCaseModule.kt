@@ -2,10 +2,12 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.CustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultCustomUriHandler
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultDeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultLoginUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultLogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultSwitchAccountUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
@@ -56,6 +58,13 @@ val domainIdentityUseCaseModule =
                 accountRepository = get(),
                 settingsRepository = get(),
                 identityRepository = get(),
+                accountCredentialsCache = get(),
+            )
+        }
+        single<DeleteAccountUseCase> {
+            DefaultDeleteAccountUseCase(
+                accountRepository = get(),
+                settingsRepository = get(),
                 accountCredentialsCache = get(),
             )
         }
