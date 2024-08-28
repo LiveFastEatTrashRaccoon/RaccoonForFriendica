@@ -112,7 +112,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] polls (read-only, since the submit vote method is unimplemented in the backend)
 - [x] manage follow requests
 - [x] support for post addons (spoilers and titles)
-- [ ] multi-account
+- [x] multi-account
 - [ ] edit one's own profile
 - [ ] private conversations
 - [ ] advanced media visualization (image carousels, videos, GIFs, etc.)
