@@ -16,6 +16,9 @@ interface AccountDao {
     @Query("SELECT * FROM AccountEntity")
     suspend fun getAll(): List<AccountEntity>
 
+    @Query("SELECT * FROM AccountEntity")
+    fun getAllAsFlow(): Flow<List<AccountEntity>>
+
     @Query("SELECT * FROM AccountEntity WHERE handle = :handle")
     suspend fun getBy(handle: String): AccountEntity?
 
