@@ -16,8 +16,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +40,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.FollowHashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -192,44 +191,18 @@ class FollowedHashtagsScreen : Screen {
         }
 
         if (confirmUnfollowHashtagName != null) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionUnfollow,
+                onClose = { confirm ->
+                    val oldTag = confirmUnfollowHashtagName
                     confirmUnfollowHashtagName = null
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionUnfollow,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmUnfollowHashtagName = null
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            val oldTag = confirmUnfollowHashtagName
-                            confirmUnfollowHashtagName = null
-                            if (oldTag != null) {
-                                model.reduce(
-                                    FollowedHashtagsMviModel.Intent.ToggleTagFollow(
-                                        name = oldTag,
-                                        newValue = false,
-                                    ),
-                                )
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm && oldTag != null) {
+                        model.reduce(
+                            FollowedHashtagsMviModel.Intent.ToggleTagFollow(
+                                name = oldTag,
+                                newValue = false,
+                            ),
+                        )
                     }
                 },
             )

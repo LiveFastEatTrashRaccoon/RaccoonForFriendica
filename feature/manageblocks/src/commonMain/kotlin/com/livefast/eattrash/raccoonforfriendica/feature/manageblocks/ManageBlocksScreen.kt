@@ -18,8 +18,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -50,6 +48,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
@@ -277,78 +276,26 @@ class ManageBlocksScreen : Screen {
         }
 
         if (confirmUnmuteUserId != null) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionUnmute,
+                onClose = { confirm ->
+                    val userId = confirmUnmuteUserId
                     confirmUnmuteUserId = null
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionUnmute,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmUnmuteUserId = null
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            val userId = confirmUnmuteUserId ?: ""
-                            confirmUnmuteUserId = null
-                            if (userId.isNotEmpty()) {
-                                model.reduce(ManageBlocksMviModel.Intent.ToggleMute(userId))
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm && userId != null) {
+                        model.reduce(ManageBlocksMviModel.Intent.ToggleMute(userId))
                     }
                 },
             )
         }
 
         if (confirmUnblockUserId != null) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionUnblock,
+                onClose = { confirm ->
+                    val userId = confirmUnblockUserId
                     confirmUnblockUserId = null
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionUnblock,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmUnblockUserId = null
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            val userId = confirmUnblockUserId ?: ""
-                            confirmUnblockUserId = null
-                            if (userId.isNotEmpty()) {
-                                model.reduce(ManageBlocksMviModel.Intent.ToggleBlock(userId))
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm && userId != null) {
+                        model.reduce(ManageBlocksMviModel.Intent.ToggleBlock(userId))
                     }
                 },
             )

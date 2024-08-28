@@ -15,8 +15,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -45,6 +43,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimension
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
@@ -394,39 +393,13 @@ class MyAccountScreen : Screen {
         }
 
         if (confirmDeleteEntryId != null) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionDelete,
+                onClose = { confirm ->
+                    val entryId = confirmDeleteEntryId
                     confirmDeleteEntryId = null
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionDelete,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmDeleteEntryId = null
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            val entryId = confirmDeleteEntryId ?: ""
-                            confirmDeleteEntryId = null
-                            if (entryId.isNotEmpty()) {
-                                model.reduce(MyAccountMviModel.Intent.DeleteEntry(entryId))
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm && entryId != null) {
+                        model.reduce(MyAccountMviModel.Intent.DeleteEntry(entryId))
                     }
                 },
             )

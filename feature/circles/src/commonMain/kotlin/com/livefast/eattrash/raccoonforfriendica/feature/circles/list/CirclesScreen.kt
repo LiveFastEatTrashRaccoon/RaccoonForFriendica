@@ -20,8 +20,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -53,6 +51,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -211,6 +210,7 @@ class CirclesScreen : Screen {
                                     OptionId.Edit -> {
                                         model.reduce(CirclesMviModel.Intent.OpenEditor(circle))
                                     }
+
                                     OptionId.Delete -> confirmDeleteItemId = circle.id
                                     else -> Unit
                                 }
@@ -256,59 +256,33 @@ class CirclesScreen : Screen {
         }
 
         if (confirmDeleteItemId != null) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionDelete,
+                onClose = { confirm ->
+                    val itemId = confirmDeleteItemId
                     confirmDeleteItemId = null
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionDelete,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmDeleteItemId = null
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            val itemId = confirmDeleteItemId ?: ""
-                            confirmDeleteItemId = null
-                            if (itemId.isNotEmpty()) {
-                                model.reduce(CirclesMviModel.Intent.Delete(itemId))
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm && itemId != null) {
+                        model.reduce(CirclesMviModel.Intent.Delete(itemId))
                     }
                 },
             )
-        }
 
-        val editorData = uiState.editorData
-        if (editorData != null) {
-            CircleEditorDialog(
-                data = editorData,
-                onDataChanged = { newData ->
-                    model.reduce(CirclesMviModel.Intent.UpdateEditorData(newData))
-                },
-                onClose = { success ->
-                    if (success) {
-                        model.reduce(CirclesMviModel.Intent.SubmitEditorData)
-                    } else {
-                        model.reduce(CirclesMviModel.Intent.DismissEditor)
-                    }
-                },
-            )
+            val editorData = uiState.editorData
+            if (editorData != null) {
+                CircleEditorDialog(
+                    data = editorData,
+                    onDataChanged = { newData ->
+                        model.reduce(CirclesMviModel.Intent.UpdateEditorData(newData))
+                    },
+                    onClose = { success ->
+                        if (success) {
+                            model.reduce(CirclesMviModel.Intent.SubmitEditorData)
+                        } else {
+                            model.reduce(CirclesMviModel.Intent.DismissEditor)
+                        }
+                    },
+                )
+            }
         }
     }
 }

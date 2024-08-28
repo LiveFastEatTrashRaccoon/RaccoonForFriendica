@@ -10,8 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,6 +45,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
@@ -198,75 +197,25 @@ class ProfileScreen : Screen {
         }
 
         if (confirmDeleteAccount != null) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionDeleteAccount,
+                onClose = { confirm ->
+                    val account = confirmDeleteAccount
                     confirmDeleteAccount = null
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionDeleteAccount,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmDeleteAccount = null
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            val account = confirmDeleteAccount
-                            confirmDeleteAccount = null
-                            if (account != null) {
-                                model.reduce(ProfileMviModel.Intent.DeleteAccount(account))
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm && account != null) {
+                        model.reduce(ProfileMviModel.Intent.DeleteAccount(account))
                     }
                 },
             )
         }
 
         if (confirmLogoutDialogOpened) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionLogout,
+                onClose = { confirm ->
                     confirmLogoutDialogOpened = false
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionLogout,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmLogoutDialogOpened = false
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            confirmLogoutDialogOpened = false
-                            model.reduce(ProfileMviModel.Intent.Logout)
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm) {
+                        model.reduce(ProfileMviModel.Intent.Logout)
                     }
                 },
             )

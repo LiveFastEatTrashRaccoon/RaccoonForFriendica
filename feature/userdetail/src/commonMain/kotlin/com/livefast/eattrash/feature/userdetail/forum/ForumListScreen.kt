@@ -20,8 +20,6 @@ import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -60,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -376,39 +375,13 @@ class ForumListScreen(
         }
 
         if (confirmDeleteEntryId != null) {
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionDelete,
+                onClose = { confirm ->
+                    val entryId = confirmDeleteEntryId
                     confirmDeleteEntryId = null
-                },
-                title = {
-                    Text(
-                        text = LocalStrings.current.actionDelete,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmDeleteEntryId = null
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            val entryId = confirmDeleteEntryId ?: ""
-                            confirmDeleteEntryId = null
-                            if (entryId.isNotEmpty()) {
-                                model.reduce(ForumListMviModel.Intent.DeleteEntry(entryId))
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm && entryId != null) {
+                        model.reduce(ForumListMviModel.Intent.DeleteEntry(entryId))
                     }
                 },
             )
@@ -441,52 +414,26 @@ class ForumListScreen(
 
         if (confirmBlockEntry != null) {
             val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
-            AlertDialog(
-                onDismissRequest = {
+            CustomConfirmDialog(
+                title =
+                    buildString {
+                        append(LocalStrings.current.actionBlock)
+                        val handle = creator?.handle ?: ""
+                        if (handle.isNotEmpty()) {
+                            append(" @$handle")
+                        }
+                    },
+                onClose = { confirm ->
+                    val entryId = confirmBlockEntry?.id
+                    val creatorId = creator?.id
                     confirmBlockEntry = null
-                },
-                title = {
-                    Text(
-                        text =
-                            buildString {
-                                append(LocalStrings.current.actionBlock)
-                                val handle = creator?.handle ?: ""
-                                if (handle.isNotEmpty()) {
-                                    append(" @$handle")
-                                }
-                            },
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                },
-                text = {
-                    Text(text = LocalStrings.current.messageAreYouSure)
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            confirmBlockEntry = null
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            val entryId = confirmBlockEntry?.id
-                            val creatorId = creator?.id
-                            confirmBlockEntry = null
-                            if (entryId != null && creatorId != null) {
-                                model.reduce(
-                                    ForumListMviModel.Intent.BlockUser(
-                                        userId = creatorId,
-                                        entryId = entryId,
-                                    ),
-                                )
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+                    if (confirm && entryId != null && creatorId != null) {
+                        model.reduce(
+                            ForumListMviModel.Intent.BlockUser(
+                                userId = creatorId,
+                                entryId = entryId,
+                            ),
+                        )
                     }
                 },
             )
