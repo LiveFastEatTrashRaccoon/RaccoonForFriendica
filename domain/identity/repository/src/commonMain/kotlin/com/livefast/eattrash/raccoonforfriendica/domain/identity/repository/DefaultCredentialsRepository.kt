@@ -145,6 +145,7 @@ private fun CredentialAccount.toModel() =
         handle = acct,
         id = id,
         username = username,
+        avatar = avatar,
     )
 
 private fun OAuthToken.toModel(): ApiCredentials =

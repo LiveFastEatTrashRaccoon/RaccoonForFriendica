@@ -28,19 +28,15 @@ internal class DefaultIdentityRepository(
 
     override fun refreshCurrentUser() {
         scope.launch {
-            val handle = accountRepository.getActive()?.handle.orEmpty()
-            if (handle.isEmpty()) {
+            val userId = accountRepository.getActive()?.remoteId.orEmpty()
+            if (userId.isEmpty()) {
                 currentUser.update { null }
                 return@launch
             }
 
             try {
                 val user =
-                    provider.users
-                        .search(
-                            query = handle,
-                            resolve = true,
-                        ).first()
+                    provider.users.getById(userId)
                 currentUser.update {
                     UserModel(
                         id = user.id,

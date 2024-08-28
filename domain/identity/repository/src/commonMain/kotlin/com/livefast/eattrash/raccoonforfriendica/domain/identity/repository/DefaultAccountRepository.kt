@@ -1,11 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.AccountDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.AccountEntity
-import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.SettingsEntity
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -14,11 +11,16 @@ internal class DefaultAccountRepository(
 ) : AccountRepository {
     override suspend fun getAll(): List<AccountModel> = accountDao.getAll().map { it.toModel() }
 
+    override fun getAllAsFlow(): Flow<List<AccountModel>> =
+        accountDao.getAllAsFlow().map { list ->
+            list.map { it.toModel() }
+        }
+
     override suspend fun getBy(handle: String): AccountModel? = accountDao.getBy(handle)?.toModel()
 
     override suspend fun getActive(): AccountModel? = accountDao.getActive()?.toModel()
 
-    override suspend fun getActiveAsFlow(): Flow<AccountModel?> =
+    override fun getActiveAsFlow(): Flow<AccountModel?> =
         accountDao.getActiveAsFlow().map { list ->
             list.firstOrNull()?.toModel()
         }
@@ -41,6 +43,9 @@ private fun AccountModel.toEntity() =
         id = id,
         handle = handle,
         active = active,
+        remoteId = remoteId,
+        avatar = avatar,
+        displayName = displayName,
     )
 
 private fun AccountEntity.toModel() =
@@ -48,10 +53,7 @@ private fun AccountEntity.toModel() =
         id = id,
         handle = handle,
         active = active,
-    )
-
-private fun SettingsEntity.toModel() =
-    SettingsModel(
-        lang = lang,
-        theme = theme.toUiTheme(),
+        remoteId = remoteId,
+        avatar = avatar,
+        displayName = displayName,
     )

@@ -30,6 +30,10 @@ internal class DefaultSettingsRepository(
     override suspend fun update(settings: SettingsModel) {
         settingsDao.update(settings.toEntity())
     }
+
+    override suspend fun delete(settings: SettingsModel) {
+        settingsDao.delete(settings.toEntity())
+    }
 }
 
 private fun SettingsEntity.toModel() =
