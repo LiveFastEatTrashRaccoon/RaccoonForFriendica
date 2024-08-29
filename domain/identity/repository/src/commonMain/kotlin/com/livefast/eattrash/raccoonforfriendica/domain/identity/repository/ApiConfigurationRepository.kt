@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.StateFlow
 @Stable
 interface ApiConfigurationRepository {
     val node: StateFlow<String>
+    val isLogged: StateFlow<Boolean>
+    val defaultNode: String
 
     suspend fun initialize()
 
