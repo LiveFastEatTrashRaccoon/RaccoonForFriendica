@@ -39,6 +39,17 @@ internal class DefaultColorSchemeProvider : ColorSchemeProvider {
                 }
             }
 
+            UiTheme.Light ->
+                if (customSeed != null) {
+                    dynamicColorScheme(
+                        seedColor = customSeed,
+                        isDark = false,
+                        isAmoled = false,
+                    )
+                } else {
+                    LightColors
+            }
+
             else -> {
                 if (customSeed != null) {
                     dynamicColorScheme(
