@@ -27,7 +27,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
@@ -65,6 +64,7 @@ fun TimelineItem(
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
     val spoiler = entryToDisplay.spoiler.orEmpty()
+    val contentHorizontalPadding = Spacing.s
 
     Column(
         modifier =
@@ -78,10 +78,10 @@ fun TimelineItem(
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             Row(
+                modifier = Modifier.padding(horizontal = contentHorizontalPadding),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(
@@ -163,7 +163,12 @@ fun TimelineItem(
 
             if (spoiler.isNotEmpty()) {
                 SpoilerCard(
-                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
+                    modifier =
+                        Modifier.fillMaxWidth().padding(
+                            top = Spacing.s,
+                            start = contentHorizontalPadding,
+                            end = contentHorizontalPadding,
+                        ),
                     content =
                         if (entryToDisplay.isSpoilerActive) {
                             LocalStrings.current.actionHideContent
@@ -179,7 +184,12 @@ fun TimelineItem(
                 val title = entryToDisplay.title
                 if (title != null) {
                     ContentTitle(
-                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.xxs),
+                        modifier =
+                            Modifier.fillMaxWidth().padding(
+                                top = Spacing.xxs,
+                                start = contentHorizontalPadding,
+                                end = contentHorizontalPadding,
+                            ),
                         content = title,
                         onClick = { onClick?.invoke(entryToDisplay) },
                         onOpenUrl = onOpenUrl,
@@ -190,9 +200,17 @@ fun TimelineItem(
                     modifier =
                         Modifier.fillMaxWidth().then(
                             if (title == null) {
-                                Modifier.padding(top = Spacing.xxs)
+                                Modifier.padding(
+                                    top = Spacing.xxs,
+                                    start = contentHorizontalPadding,
+                                    end = contentHorizontalPadding,
+                                )
                             } else {
-                                Modifier.padding(top = Spacing.xxxs)
+                                Modifier.padding(
+                                    top = Spacing.xxxs,
+                                    start = contentHorizontalPadding,
+                                    end = contentHorizontalPadding,
+                                )
                             },
                         ),
                     content = entryToDisplay.content,
@@ -207,7 +225,12 @@ fun TimelineItem(
                         ?.takeIf { it.isNotBlank() }
                 if (imageUrl != null) {
                     ContentImage(
-                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
+                        modifier =
+                            Modifier.fillMaxWidth().padding(
+                                top = Spacing.xs,
+                                start = contentHorizontalPadding,
+                                end = contentHorizontalPadding,
+                            ),
                         url = imageUrl,
                         sensitive = blurNsfw && entryToDisplay.sensitive,
                         onClick = { onOpenImage?.invoke(imageUrl) },
@@ -215,7 +238,12 @@ fun TimelineItem(
                 }
                 entryToDisplay.poll?.also { poll ->
                     PollCard(
-                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
+                        modifier =
+                            Modifier.fillMaxWidth().padding(
+                                top = Spacing.xs,
+                                start = contentHorizontalPadding,
+                                end = contentHorizontalPadding,
+                            ),
                         poll = poll,
                         enabled = pollEnabled,
                         onVote = { choices ->
@@ -223,13 +251,32 @@ fun TimelineItem(
                         },
                     )
                 }
+                entryToDisplay.card?.also { preview ->
+                    ContentPreview(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    top = Spacing.xs,
+                                    start = contentHorizontalPadding,
+                                    end = contentHorizontalPadding,
+                                ),
+                        card = preview.copy(image = preview.image.takeIf { it != imageUrl }),
+                        onOpen = onOpenUrl,
+                        onOpenImage = onOpenImage,
+                    )
+                }
             }
 
             if (extendedSocialInfoEnabled) {
                 ContentExtendedSocialInfo(
+                    modifier =
+                        Modifier.padding(
+                            vertical = Spacing.xs,
+                            horizontal = contentHorizontalPadding,
+                        ),
                     reblogCount = entryToDisplay.reblogCount,
                     favoriteCount = entryToDisplay.favoriteCount,
-                    modifier = Modifier.padding(vertical = Spacing.xs),
                     onOpenUsersReblog = {
                         onOpenUsersReblog?.invoke(entryToDisplay)
                     },
@@ -241,7 +288,12 @@ fun TimelineItem(
 
             if (actionsEnabled) {
                 ContentFooter(
-                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
+                    modifier =
+                        Modifier.fillMaxWidth().padding(
+                            top = Spacing.xs,
+                            start = contentHorizontalPadding,
+                            end = contentHorizontalPadding,
+                        ),
                     favoriteCount = entryToDisplay.favoriteCount,
                     favorite = entryToDisplay.favorite,
                     favoriteLoading = entryToDisplay.favoriteLoading,
