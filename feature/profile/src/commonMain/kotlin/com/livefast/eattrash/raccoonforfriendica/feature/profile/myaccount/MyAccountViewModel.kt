@@ -47,12 +47,16 @@ class MyAccountViewModel(
                         if (cachedPaginationState != null) {
                             paginationManager.restoreState(cachedPaginationState)
                             val cachedHistory = paginationManager.history
-                            updateState {
-                                it.copy(
-                                    entries = cachedHistory,
-                                    initial = false,
-                                    section = myAccountCache.retrieveSection(),
-                                )
+                            if (cachedHistory.isEmpty()) {
+                                refresh(initial = true)
+                            } else {
+                                updateState {
+                                    it.copy(
+                                        entries = cachedHistory,
+                                        initial = false,
+                                        section = myAccountCache.retrieveSection(),
+                                    )
+                                }
                             }
                         } else {
                             refresh(initial = true)
