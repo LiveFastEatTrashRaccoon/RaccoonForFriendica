@@ -240,6 +240,7 @@ class ThreadScreen(
                                         ),
                                 entry = original,
                                 reshareAndReplyVisible = false,
+                                extendedSocialInfoEnabled = true,
                                 blurNsfw = uiState.blurNsfw,
                                 onOpenUrl = { url ->
                                     uriHandler.openUri(url)
@@ -250,15 +251,18 @@ class ThreadScreen(
                                 onOpenImage = { imageUrl ->
                                     detailOpener.openImageDetail(imageUrl)
                                 },
-                                onReblog = { e ->
-                                    model.reduce(ThreadMviModel.Intent.ToggleReblog(e))
-                                },
-                                onBookmark = { e ->
-                                    model.reduce(ThreadMviModel.Intent.ToggleBookmark(e))
-                                },
-                                onFavorite = { e ->
-                                    model.reduce(ThreadMviModel.Intent.ToggleFavorite(e))
-                                },
+                                onReblog =
+                                    uiState.currentUserId?.let {
+                                        { e -> model.reduce(ThreadMviModel.Intent.ToggleReblog(e)) }
+                                    },
+                                onBookmark =
+                                    uiState.currentUserId?.let {
+                                        { e -> model.reduce(ThreadMviModel.Intent.ToggleBookmark(e)) }
+                                    },
+                                onFavorite =
+                                    uiState.currentUserId?.let {
+                                        { e -> model.reduce(ThreadMviModel.Intent.ToggleFavorite(e)) }
+                                    },
                                 onOpenUsersFavorite = { e ->
                                     detailOpener.openEntryUsersFavorite(
                                         entryId = e.id,
@@ -271,24 +275,28 @@ class ThreadScreen(
                                         count = e.reblogCount,
                                     )
                                 },
-                                onReply = { e ->
-                                    detailOpener.openComposer(
-                                        inReplyToId = e.id,
-                                        inReplyToHandle = e.creator?.handle,
-                                        inReplyToUsername =
-                                            e.creator?.let {
-                                                it.displayName ?: it.username
-                                            },
-                                    )
-                                },
-                                onPollVote = { e, choices ->
-                                    model.reduce(
-                                        ThreadMviModel.Intent.SubmitPollVote(
-                                            entry = e,
-                                            choices = choices,
-                                        ),
-                                    )
-                                },
+                                onReply =
+                                    uiState.currentUserId?.let {
+                                        { e ->
+                                            detailOpener.openComposer(
+                                                inReplyToId = e.id,
+                                                inReplyToHandle = e.creator?.handle,
+                                                inReplyToUsername =
+                                                    e.creator?.let { it.displayName ?: it.username },
+                                            )
+                                        }
+                                    },
+                                onPollVote =
+                                    uiState.currentUserId?.let {
+                                        { e, choices ->
+                                            model.reduce(
+                                                ThreadMviModel.Intent.SubmitPollVote(
+                                                    entry = e,
+                                                    choices = choices,
+                                                ),
+                                            )
+                                        }
+                                    },
                                 onToggleSpoilerActive = { e ->
                                     model.reduce(ThreadMviModel.Intent.ToggleSpoilerActive(e))
                                 },

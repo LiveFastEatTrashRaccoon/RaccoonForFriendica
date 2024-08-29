@@ -279,33 +279,42 @@ class TimelineScreen : Screen {
                             onOpenImage = { imageUrl ->
                                 detailOpener.openImageDetail(imageUrl)
                             },
-                            onReblog = { e ->
-                                model.reduce(TimelineMviModel.Intent.ToggleReblog(e))
-                            },
-                            onBookmark = { e ->
-                                model.reduce(TimelineMviModel.Intent.ToggleBookmark(e))
-                            },
-                            onFavorite = { e ->
-                                model.reduce(TimelineMviModel.Intent.ToggleFavorite(e))
-                            },
-                            onPollVote = { e, choices ->
-                                model.reduce(
-                                    TimelineMviModel.Intent.SubmitPollVote(
-                                        entry = e,
-                                        choices = choices,
-                                    ),
-                                )
-                            },
-                            onReply = { e ->
-                                detailOpener.openComposer(
-                                    inReplyToId = e.id,
-                                    inReplyToUsername =
-                                        e.creator?.let {
-                                            it.displayName ?: it.username
-                                        },
-                                    inReplyToHandle = e.creator?.handle,
-                                )
-                            },
+                            onReblog =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(TimelineMviModel.Intent.ToggleReblog(e)) }
+                                },
+                            onBookmark =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(TimelineMviModel.Intent.ToggleBookmark(e)) }
+                                },
+                            onFavorite =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(TimelineMviModel.Intent.ToggleFavorite(e)) }
+                                },
+                            onPollVote =
+                                uiState.currentUserId?.let {
+                                    { e, choices ->
+                                        model.reduce(
+                                            TimelineMviModel.Intent.SubmitPollVote(
+                                                entry = e,
+                                                choices = choices,
+                                            ),
+                                        )
+                                    }
+                                },
+                            onReply =
+                                uiState.currentUserId?.let {
+                                    { e ->
+                                        detailOpener.openComposer(
+                                            inReplyToId = e.id,
+                                            inReplyToUsername =
+                                                e.creator?.let {
+                                                    it.displayName ?: it.username
+                                                },
+                                            inReplyToHandle = e.creator?.handle,
+                                        )
+                                    }
+                                },
                             onToggleSpoilerActive = { e ->
                                 model.reduce(TimelineMviModel.Intent.ToggleSpoilerActive(e))
                             },

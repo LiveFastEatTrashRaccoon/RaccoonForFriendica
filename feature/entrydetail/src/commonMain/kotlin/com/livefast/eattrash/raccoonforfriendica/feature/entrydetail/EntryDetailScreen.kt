@@ -257,15 +257,18 @@ class EntryDetailScreen(
                             onOpenImage = { imageUrl ->
                                 detailOpener.openImageDetail(imageUrl)
                             },
-                            onReblog = { e ->
-                                model.reduce(EntryDetailMviModel.Intent.ToggleReblog(e))
-                            },
-                            onBookmark = { e ->
-                                model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e))
-                            },
-                            onFavorite = { e ->
-                                model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
-                            },
+                            onReblog =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(EntryDetailMviModel.Intent.ToggleReblog(e)) }
+                                },
+                            onBookmark =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e)) }
+                                },
+                            onFavorite =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e)) }
+                                },
                             onOpenUsersFavorite = { e ->
                                 detailOpener.openEntryUsersFavorite(
                                     entryId = e.id,
@@ -278,23 +281,27 @@ class EntryDetailScreen(
                                     count = e.reblogCount,
                                 )
                             },
-                            onReply = { e ->
-                                detailOpener.openComposer(
-                                    inReplyToId = e.id,
-                                    inReplyToHandle = e.creator?.handle,
-                                    inReplyToUsername =
-                                        e.creator?.let {
-                                            it.displayName ?: it.username
-                                        },
-                                )
-                            },
-                            onPollVote = { e, choices ->
-                                model.reduce(
-                                    EntryDetailMviModel.Intent.SubmitPollVote(
-                                        entry = e,
-                                        choices = choices,
-                                    ),
-                                )
+                            onReply =
+                                uiState.currentUserId?.let {
+                                    { e ->
+                                        detailOpener.openComposer(
+                                            inReplyToId = e.id,
+                                            inReplyToHandle = e.creator?.handle,
+                                            inReplyToUsername =
+                                                e.creator?.let { it.displayName ?: it.username },
+                                        )
+                                    }
+                                },
+                            onPollVote =
+                                uiState.currentUserId?.let {
+                                    { e, choices ->
+                                        model.reduce(
+                                            EntryDetailMviModel.Intent.SubmitPollVote(
+                                                entry = e,
+                                                choices = choices,
+                                            ),
+                                    )
+                                }
                             },
                             onToggleSpoilerActive = { e ->
                                 model.reduce(EntryDetailMviModel.Intent.ToggleSpoilerActive(e))
