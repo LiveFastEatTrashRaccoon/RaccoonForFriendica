@@ -8,10 +8,12 @@ import kotlinx.coroutines.flow.update
 internal class DefaultApiConfigurationRepository(
     private val serviceProvider: ServiceProvider,
     private val keyStore: TemporaryKeyStore,
-    private val identityRepository: MutableIdentityRepository,
     private val credentialsRepository: CredentialsRepository,
 ) : ApiConfigurationRepository {
     override val node = MutableStateFlow("")
+    override val isLogged = MutableStateFlow(false)
+
+    override val defaultNode: String = DEFAULT_NODE
 
     override suspend fun initialize() {
         val node = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
@@ -33,20 +35,18 @@ internal class DefaultApiConfigurationRepository(
     override fun setAuth(credentials: ApiCredentials?) {
         val serviceCredentials = credentials?.toServiceCredentials()
         serviceProvider.setAuth(serviceCredentials)
-
         if (credentials != null) {
             saveInKeyStore(credentials)
+            isLogged.update { true }
         } else {
             clearKeyStore()
+            isLogged.update { false }
         }
-
-        identityRepository.changeIsLogged(credentials != null)
-        identityRepository.refreshCurrentUser()
     }
 
     override suspend fun hasCachedAuthCredentials(): Boolean {
-        val credentials = retrieveFromKeyStore()
         val node = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
+        val credentials = retrieveFromKeyStore()
         return validateCredentials(credentials = credentials, node = node)
     }
 

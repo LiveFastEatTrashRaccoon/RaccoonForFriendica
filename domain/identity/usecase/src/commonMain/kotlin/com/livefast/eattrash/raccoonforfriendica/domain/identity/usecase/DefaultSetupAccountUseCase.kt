@@ -8,8 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-private const val ANONYMOUS_ACCOUNT_HANDLE = ""
-
 internal class DefaultSetupAccountUseCase(
     private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
@@ -19,33 +17,20 @@ internal class DefaultSetupAccountUseCase(
             val accounts = accountRepository.getAll()
             if (accounts.isEmpty()) {
                 // create at least an anonymous account
-                val account =
-                    AccountModel(
-                        handle = ANONYMOUS_ACCOUNT_HANDLE,
-                        active = true,
-                    )
+                val account = AccountModel(handle = "")
                 accountRepository.create(account)
-            }
 
-            // mark the anon account as active is no one is found
-            val oldActive = accountRepository.getActive()
-            if (oldActive == null) {
-                val account = accountRepository.getBy(handle = ANONYMOUS_ACCOUNT_HANDLE)
-                if (account != null) {
-                    val newAccount = account.copy(active = true)
-                    accountRepository.update(newAccount)
+                // initialize anonymous account settings
+                val anonymousAccount = accountRepository.getBy(handle = "")
+                if (anonymousAccount != null) {
+                    val oldSettings = settingsRepository.get(anonymousAccount.id)
+                    if (oldSettings == null) {
+                        val newSettings = SettingsModel(accountId = anonymousAccount.id)
+                        settingsRepository.create(newSettings)
+                    }
+
+                    accountRepository.setActive(anonymousAccount, true)
                 }
             }
-
-            // initialize the settings and create them if not existing
-            val accountId = accountRepository.getActive()?.id ?: 0
-            val oldSettings = settingsRepository.get(accountId)
-            if (oldSettings == null) {
-                val newSettings = SettingsModel(accountId = accountId)
-                settingsRepository.create(newSettings)
-            }
-
-            val settings = settingsRepository.get(accountId) ?: SettingsModel()
-            settingsRepository.changeCurrent(settings)
         }
 }

@@ -26,8 +26,8 @@ class DefaultDetailOpener(
     private val navigationCoordinator: NavigationCoordinator,
     private val identityRepository: IdentityRepository,
 ) : DetailOpener {
-    private val isLogged: Boolean get() = identityRepository.isLogged.value
     private val currentUserId: String? get() = identityRepository.currentUser.value?.id
+    private val isLogged: Boolean get() = currentUserId != null
 
     override fun openUserDetail(id: String) {
         if (id == currentUserId) {

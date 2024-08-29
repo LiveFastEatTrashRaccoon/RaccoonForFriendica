@@ -16,7 +16,10 @@ interface AccountRepository {
 
     suspend fun create(account: AccountModel)
 
-    suspend fun update(account: AccountModel)
+    suspend fun setActive(
+        account: AccountModel,
+        active: Boolean,
+    )
 
     suspend fun delete(account: AccountModel)
 }

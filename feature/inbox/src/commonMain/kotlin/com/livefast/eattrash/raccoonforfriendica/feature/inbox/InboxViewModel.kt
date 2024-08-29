@@ -33,10 +33,10 @@ class InboxViewModel(
     InboxMviModel {
     init {
         screenModelScope.launch {
-            identityRepository.isLogged
-                .onEach { isLogged ->
+            identityRepository.currentUser
+                .onEach { currentUser ->
                     updateState {
-                        it.copy(isLogged = isLogged)
+                        it.copy(isLogged = currentUser != null)
                     }
                 }.launchIn(this)
             settingsRepository.current

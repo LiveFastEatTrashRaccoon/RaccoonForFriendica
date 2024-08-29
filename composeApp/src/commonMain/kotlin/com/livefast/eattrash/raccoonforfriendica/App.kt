@@ -27,6 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.g
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ProvideCustomFontScale
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ProvideCustomUriHandler
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
 import com.livefast.eattrash.raccoonforfriendica.main.MainScreen
@@ -40,6 +41,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
     val l10nManager = remember { getL10nManager() }
     val themeRepository = remember { getThemeRepository() }
     val settingsRepository = remember { getSettingsRepository() }
+    val activeAccountMonitor = remember { getActiveAccountMonitor() }
     val setupAccountUseCase = remember { getSetupAccountUseCase() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val drawerCoordinator = remember { getDrawerCoordinator() }
@@ -66,6 +68,8 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                     }
                 }
             }.launchIn(this)
+
+        activeAccountMonitor.start()
         setupAccountUseCase()
     }
 
