@@ -95,6 +95,8 @@ interface ComposerMviModel :
 
         data object ToggleHasSpoiler : Intent
 
+        data object ToggleHasTitle : Intent
+
         data object Submit : Intent
     }
 
@@ -121,6 +123,7 @@ interface ComposerMviModel :
         val userSearchQuery: String = "",
         val availableCircles: List<CircleModel> = emptyList(),
         val hasSpoiler: Boolean = false,
+        val hasTitle: Boolean = false,
     )
 
     sealed interface Effect {

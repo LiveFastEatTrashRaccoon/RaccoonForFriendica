@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.FormatItalic
 import androidx.compose.material.icons.filled.FormatUnderlined
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.Title
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ internal fun UtilsBar(
     onItalicClicked: (() -> Unit)? = null,
     onUnderlineClicked: (() -> Unit)? = null,
     onSpoilerClicked: (() -> Unit)? = null,
+    onTitleClicked: (() -> Unit)? = null,
 ) {
     Row(
         modifier =
@@ -68,10 +70,10 @@ internal fun UtilsBar(
             modifier =
                 Modifier
                     .clickable {
-                        onSpoilerClicked?.invoke()
+                        onMentionClicked?.invoke()
                     }.padding(Spacing.xs)
                     .size(IconSize.m),
-            imageVector = Icons.Default.Explicit,
+            imageVector = Icons.Default.AlternateEmail,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -79,10 +81,21 @@ internal fun UtilsBar(
             modifier =
                 Modifier
                     .clickable {
-                        onMentionClicked?.invoke()
+                        onTitleClicked?.invoke()
                     }.padding(Spacing.xs)
                     .size(IconSize.m),
-            imageVector = Icons.Default.AlternateEmail,
+            imageVector = Icons.Default.Title,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Icon(
+            modifier =
+                Modifier
+                    .clickable {
+                        onSpoilerClicked?.invoke()
+                    }.padding(Spacing.xs)
+                    .size(IconSize.m),
+            imageVector = Icons.Default.Explicit,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )

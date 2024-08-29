@@ -96,6 +96,11 @@ class ComposerViewModel(
                     updateState { it.copy(hasSpoiler = !it.hasSpoiler) }
                 }
 
+            ComposerMviModel.Intent.ToggleHasTitle ->
+                screenModelScope.launch {
+                    updateState { it.copy(hasTitle = !it.hasTitle) }
+                }
+
             is ComposerMviModel.Intent.SetVisibility ->
                 screenModelScope.launch {
                     updateState { it.copy(visibility = intent.visibility) }
@@ -446,7 +451,7 @@ class ComposerViewModel(
         }
 
         val spoiler = currentState.spoilerValue.text.takeIf { currentState.hasSpoiler }
-        val title = currentState.titleValue.text.takeIf { it.isNotBlank() }
+        val title = currentState.titleValue.text.takeIf { it.isNotBlank() && currentState.hasTitle }
         val text = currentState.bodyValue.text
         // use the mediaId for this call otherwise the backend returns a 500
         val attachmentIds = currentState.attachments.map { it.mediaId }
