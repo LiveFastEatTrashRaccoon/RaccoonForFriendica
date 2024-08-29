@@ -8,6 +8,7 @@ data class Status(
     @SerialName("account") val account: Account? = null,
     @SerialName("bookmarked") val bookmarked: Boolean = false,
     @SerialName("content") val content: String = "",
+    @SerialName("card") val card: PreviewCard? = null,
     @SerialName("created_at") val createdAt: String? = null,
     @SerialName("edited_at") val editedAt: String? = null,
     @SerialName("favourited") val favourited: Boolean = false,
