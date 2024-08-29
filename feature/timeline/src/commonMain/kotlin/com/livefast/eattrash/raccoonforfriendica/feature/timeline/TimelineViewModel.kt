@@ -174,6 +174,7 @@ class TimelineViewModel(
             return
         }
 
+        val wasRefreshing = uiState.value.refreshing
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()
         updateState {
@@ -184,6 +185,9 @@ class TimelineViewModel(
                 initial = false,
                 refreshing = false,
             )
+        }
+        if (wasRefreshing) {
+            emitEffect(TimelineMviModel.Effect.BackToTop)
         }
     }
 
