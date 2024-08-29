@@ -11,10 +11,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Defa
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultIdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.MutableIdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import org.koin.core.qualifier.named
-import org.koin.dsl.binds
 import org.koin.dsl.module
 
 val domainIdentityRepositoryModule =
@@ -23,17 +21,15 @@ val domainIdentityRepositoryModule =
             DefaultApiConfigurationRepository(
                 serviceProvider = get(named("default")),
                 keyStore = get(),
-                identityRepository = get(),
                 credentialsRepository = get(),
             )
         }
 
-        single {
+        single<IdentityRepository> {
             DefaultIdentityRepository(
-                accountRepository = get(),
                 provider = get(named("default")),
             )
-        } binds arrayOf(IdentityRepository::class, MutableIdentityRepository::class)
+        }
 
         single<CredentialsRepository> {
             DefaultCredentialsRepository(
