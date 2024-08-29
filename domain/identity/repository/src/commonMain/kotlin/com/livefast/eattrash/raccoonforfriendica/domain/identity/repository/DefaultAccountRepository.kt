@@ -29,8 +29,19 @@ internal class DefaultAccountRepository(
         accountDao.insert(account.toEntity())
     }
 
-    override suspend fun update(account: AccountModel) {
-        accountDao.update(account.toEntity())
+    override suspend fun setActive(
+        account: AccountModel,
+        active: Boolean,
+    ) {
+        val old = accountDao.getActive()
+        if (old != null && active) {
+            accountDao.replaceActive(
+                old = old.copy(active = false),
+                new = account.copy(active = true).toEntity(),
+            )
+        } else {
+            accountDao.update(account.copy(active = active).toEntity())
+        }
     }
 
     override suspend fun delete(account: AccountModel) {
