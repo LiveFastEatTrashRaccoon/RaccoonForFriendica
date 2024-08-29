@@ -252,33 +252,42 @@ class ForumListScreen(
                             onOpenImage = { imageUrl ->
                                 detailOpener.openImageDetail(imageUrl)
                             },
-                            onReblog = { e ->
-                                model.reduce(ForumListMviModel.Intent.ToggleReblog(e))
-                            },
-                            onBookmark = { e ->
-                                model.reduce(ForumListMviModel.Intent.ToggleBookmark(e))
-                            },
-                            onFavorite = { e ->
-                                model.reduce(ForumListMviModel.Intent.ToggleFavorite(e))
-                            },
-                            onReply = { e ->
-                                detailOpener.openComposer(
-                                    inReplyToId = e.id,
-                                    inReplyToHandle = e.creator?.handle,
-                                    inReplyToUsername =
-                                        e.creator?.let {
-                                            it.displayName ?: it.username
-                                        },
-                                )
-                            },
-                            onPollVote = { e, choices ->
-                                model.reduce(
-                                    ForumListMviModel.Intent.SubmitPollVote(
-                                        entry = e,
-                                        choices = choices,
-                                    ),
-                                )
-                            },
+                            onReblog =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(ForumListMviModel.Intent.ToggleReblog(e)) }
+                                },
+                            onBookmark =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(ForumListMviModel.Intent.ToggleBookmark(e)) }
+                                },
+                            onFavorite =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(ForumListMviModel.Intent.ToggleFavorite(e)) }
+                                },
+                            onReply =
+                                uiState.currentUserId?.let {
+                                    { e ->
+                                        detailOpener.openComposer(
+                                            inReplyToId = e.id,
+                                            inReplyToHandle = e.creator?.handle,
+                                            inReplyToUsername =
+                                                e.creator?.let {
+                                                    it.displayName ?: it.username
+                                                },
+                                        )
+                                    }
+                                },
+                            onPollVote =
+                                uiState.currentUserId?.let {
+                                    { e, choices ->
+                                        model.reduce(
+                                            ForumListMviModel.Intent.SubmitPollVote(
+                                                entry = e,
+                                                choices = choices,
+                                            ),
+                                        )
+                                    }
+                                },
                             onToggleSpoilerActive = { e ->
                                 model.reduce(ForumListMviModel.Intent.ToggleSpoilerActive(e))
                             },

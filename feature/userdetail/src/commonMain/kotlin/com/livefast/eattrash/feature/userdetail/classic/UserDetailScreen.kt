@@ -448,33 +448,50 @@ class UserDetailScreen(
                                 onOpenImage = { imageUrl ->
                                     detailOpener.openImageDetail(imageUrl)
                                 },
-                                onReblog = { e ->
-                                    model.reduce(UserDetailMviModel.Intent.ToggleReblog(e))
-                                },
-                                onBookmark = { e ->
-                                    model.reduce(UserDetailMviModel.Intent.ToggleBookmark(e))
-                                },
-                                onFavorite = { e ->
-                                    model.reduce(UserDetailMviModel.Intent.ToggleFavorite(e))
-                                },
-                                onReply = { e ->
-                                    detailOpener.openComposer(
-                                        inReplyToId = e.id,
-                                        inReplyToHandle = e.creator?.handle,
-                                        inReplyToUsername =
-                                            e.creator?.let {
-                                                it.displayName ?: it.username
-                                            },
-                                    )
-                                },
-                                onPollVote = { e, choices ->
-                                    model.reduce(
-                                        UserDetailMviModel.Intent.SubmitPollVote(
-                                            entry = e,
-                                            choices = choices,
-                                        ),
-                                    )
-                                },
+                                onReblog =
+                                    uiState.currentUserId?.let {
+                                        { e -> model.reduce(UserDetailMviModel.Intent.ToggleReblog(e)) }
+                                    },
+                                onBookmark =
+                                    uiState.currentUserId?.let {
+                                        { e ->
+                                            model.reduce(
+                                                UserDetailMviModel.Intent.ToggleBookmark(e),
+                                            )
+                                        }
+                                    },
+                                onFavorite =
+                                    uiState.currentUserId?.let {
+                                        { e ->
+                                            model.reduce(
+                                                UserDetailMviModel.Intent.ToggleFavorite(e),
+                                            )
+                                        }
+                                    },
+                                onReply =
+                                    uiState.currentUserId?.let {
+                                        { e ->
+                                            detailOpener.openComposer(
+                                                inReplyToId = e.id,
+                                                inReplyToHandle = e.creator?.handle,
+                                                inReplyToUsername =
+                                                    e.creator?.let {
+                                                        it.displayName ?: it.username
+                                                    },
+                                            )
+                                        }
+                                    },
+                                onPollVote =
+                                    uiState.currentUserId?.let {
+                                        { e, choices ->
+                                            model.reduce(
+                                                UserDetailMviModel.Intent.SubmitPollVote(
+                                                    entry = e,
+                                                    choices = choices,
+                                                ),
+                                            )
+                                        }
+                                    },
                                 onToggleSpoilerActive = { e ->
                                     model.reduce(UserDetailMviModel.Intent.ToggleSpoilerActive(e))
                                 },

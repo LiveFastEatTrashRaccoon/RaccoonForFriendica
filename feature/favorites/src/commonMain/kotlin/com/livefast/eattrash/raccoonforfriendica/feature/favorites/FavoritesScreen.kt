@@ -214,36 +214,43 @@ class FavoritesScreen(
                             onOpenImage = { imageUrl ->
                                 detailOpener.openImageDetail(imageUrl)
                             },
-                            onReblog = { e ->
-                                model.reduce(FavoritesMviModel.Intent.ToggleReblog(e))
-                            },
-                            onBookmark = { e ->
-                                model.reduce(FavoritesMviModel.Intent.ToggleBookmark(e))
-                            },
-                            onFavorite = { e ->
-                                model.reduce(FavoritesMviModel.Intent.ToggleFavorite(e))
-                            },
-                            onReply = { e ->
-                                detailOpener.openComposer(
-                                    inReplyToId = e.id,
-                                    inReplyToHandle = e.creator?.handle,
-                                    inReplyToUsername =
-                                        e.creator?.let {
-                                            it.displayName ?: it.username
-                                        },
-                                )
-                            },
+                            onReblog =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(FavoritesMviModel.Intent.ToggleReblog(e)) }
+                                },
+                            onBookmark =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(FavoritesMviModel.Intent.ToggleBookmark(e)) }
+                                },
+                            onFavorite =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(FavoritesMviModel.Intent.ToggleFavorite(e)) }
+                                },
+                            onReply =
+                                uiState.currentUserId?.let {
+                                    { e ->
+                                        detailOpener.openComposer(
+                                            inReplyToId = e.id,
+                                            inReplyToHandle = e.creator?.handle,
+                                            inReplyToUsername =
+                                                e.creator?.let { it.displayName ?: it.username },
+                                        )
+                                    }
+                                },
                             onToggleSpoilerActive = { e ->
                                 model.reduce(FavoritesMviModel.Intent.ToggleSpoilerActive(e))
                             },
-                            onPollVote = { e, choices ->
-                                model.reduce(
-                                    FavoritesMviModel.Intent.SubmitPollVote(
-                                        entry = e,
-                                        choices = choices,
-                                    ),
-                                )
-                            },
+                            onPollVote =
+                                uiState.currentUserId?.let {
+                                    { e, choices ->
+                                        model.reduce(
+                                            FavoritesMviModel.Intent.SubmitPollVote(
+                                                entry = e,
+                                                choices = choices,
+                                            ),
+                                        )
+                                    }
+                                },
                             options =
                                 buildList {
                                     if (!entry.url.isNullOrBlank()) {
@@ -402,7 +409,7 @@ class FavoritesScreen(
                             ),
                         )
                     }
-                }
+                },
             )
         }
 

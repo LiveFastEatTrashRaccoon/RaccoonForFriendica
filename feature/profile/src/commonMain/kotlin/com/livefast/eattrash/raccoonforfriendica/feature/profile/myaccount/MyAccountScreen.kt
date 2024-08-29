@@ -22,6 +22,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
@@ -90,6 +92,7 @@ class MyAccountScreen : Screen {
         val clipboardManager = LocalClipboardManager.current
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         val topAppBarState = LocalProfileTopAppBarStateWrapper.current.topAppBarState
+        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val stickyHeaderTopOffset by animateDpAsState(
             if (lazyListState.firstVisibleItemIndex >= 2) {
                 Dimensions.maxTopBarInset * topAppBarState.collapsedFraction
@@ -108,6 +111,8 @@ class MyAccountScreen : Screen {
                     }
                 } else {
                     lazyListState.scrollToItem(0)
+                    topAppBarState.heightOffset = 0f
+                    topAppBarState.contentOffset = 0f
                 }
             }
         }
@@ -144,6 +149,7 @@ class MyAccountScreen : Screen {
             modifier =
                 Modifier
                     .fillMaxWidth()
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .pullRefresh(pullRefreshState),
         ) {
             LazyColumn(

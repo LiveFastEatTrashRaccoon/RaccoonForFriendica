@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,17 +53,18 @@ internal fun NotificationItem(
     onUserRelationshipClicked: ((String, RelationshipStatusNextAction) -> Unit)? = null,
     onToggleSpoilerActive: ((TimelineEntryModel) -> Unit)? = null,
 ) {
-    val boxColor = MaterialTheme.colorScheme.surfaceVariant
+    val boxColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp)
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val entry = notification.entry
     val user = notification.user
+    val contentHorizontalPadding = Spacing.xs
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(Spacing.s),
+        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = Spacing.s),
+            modifier = Modifier.padding(horizontal = contentHorizontalPadding),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
@@ -107,6 +109,7 @@ internal fun NotificationItem(
         Box(
             modifier =
                 Modifier
+                    .padding(horizontal = contentHorizontalPadding)
                     .background(
                         color = boxColor,
                         shape = RoundedCornerShape(CornerSize.l),
@@ -132,7 +135,10 @@ internal fun NotificationItem(
                 )
             } else if (user != null) {
                 NotificationUserInfo(
-                    modifier = Modifier.padding(bottom = Spacing.m),
+                    modifier =
+                        Modifier.padding(
+                            bottom = Spacing.m,
+                        ),
                     user = user,
                     onOpenUrl = onOpenUrl,
                     onClick = {
