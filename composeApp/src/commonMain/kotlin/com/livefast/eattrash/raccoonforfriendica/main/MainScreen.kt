@@ -114,7 +114,9 @@ object MainScreen : Screen {
 
             Scaffold(
                 snackbarHost = {
-                    SnackbarHost(snackbarHostState) { data ->
+                    SnackbarHost(
+                        hostState = snackbarHostState,
+                    ) { data ->
                         Snackbar(
                             modifier =
                                 Modifier

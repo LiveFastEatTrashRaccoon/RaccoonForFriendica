@@ -24,7 +24,7 @@ class MainViewModel(
                         it.copy(bottomNavigationSections = getSections(inboxUnread))
                     }
                 }.launchIn(this)
-            identityRepository.isLogged
+            identityRepository.currentUser
                 .onEach {
                     inboxManager.refreshUnreadCount()
                 }.launchIn(this)
