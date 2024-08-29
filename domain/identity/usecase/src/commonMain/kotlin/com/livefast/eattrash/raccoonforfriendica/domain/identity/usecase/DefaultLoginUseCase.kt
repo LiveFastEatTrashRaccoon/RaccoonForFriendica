@@ -7,7 +7,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Acco
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 
 internal class DefaultLoginUseCase(
@@ -15,7 +14,6 @@ internal class DefaultLoginUseCase(
     private val credentialsRepository: CredentialsRepository,
     private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
-    private val identityRepository: IdentityRepository,
     private val accountCredentialsCache: AccountCredentialsCache,
 ) : LoginUseCase {
     override suspend fun invoke(
@@ -33,7 +31,7 @@ internal class DefaultLoginUseCase(
                 append("@")
                 append(node)
             }
-        val oldAccount = accountRepository.getBy(handle)
+        val oldAccount = accountRepository.getBy(handle = handle)
         if (oldAccount == null) {
             accountRepository.create(
                 AccountModel(
@@ -44,27 +42,18 @@ internal class DefaultLoginUseCase(
                 ),
             )
         }
-        val oldActive = accountRepository.getActive()
-        if (oldActive != null) {
-            accountRepository.update(oldActive.copy(active = false))
-        }
-        accountRepository.getBy(handle)?.also {
-            val account = it.copy(active = true)
-            accountRepository.update(account)
 
-            val accountId = account.id
-            val anonymousAccountId = accountRepository.getBy("")?.id ?: 0
-            val oldSettings = settingsRepository.get(accountId)
+        accountRepository.getBy(handle)?.also { account ->
+            accountCredentialsCache.save(account.id, credentials)
+
+            val anonymousAccountId = accountRepository.getBy(handle = "")?.id ?: 0
+            val oldSettings = settingsRepository.get(account.id)
             val defaultSettings = settingsRepository.get(anonymousAccountId) ?: SettingsModel()
             if (oldSettings == null) {
-                settingsRepository.create(defaultSettings.copy(id = 0, accountId = accountId))
+                settingsRepository.create(defaultSettings.copy(id = 0, accountId = account.id))
             }
 
-            val settings = settingsRepository.get(accountId) ?: defaultSettings
-            settingsRepository.changeCurrent(settings)
-
-            accountCredentialsCache.save(account.id, credentials)
-            identityRepository.refreshCurrentUser()
+            accountRepository.setActive(account, true)
         }
     }
 }
