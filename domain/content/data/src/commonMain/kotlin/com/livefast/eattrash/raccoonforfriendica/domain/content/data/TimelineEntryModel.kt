@@ -7,6 +7,7 @@ data class TimelineEntryModel(
     val bookmarked: Boolean = false,
     @Transient
     val bookmarkLoading: Boolean = false,
+    val card: PreviewCardModel? = null,
     val content: String,
     val created: String? = null,
     val creator: UserModel? = null,

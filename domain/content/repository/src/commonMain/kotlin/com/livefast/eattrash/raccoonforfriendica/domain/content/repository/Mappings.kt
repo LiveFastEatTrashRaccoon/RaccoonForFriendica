@@ -14,6 +14,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.VIDEO
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Poll
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PollOption
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PreviewCard
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PreviewCardType
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
@@ -32,6 +34,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
@@ -54,6 +58,7 @@ internal fun Status.toModel() =
         content = content,
         sensitive = sensitive,
         bookmarked = bookmarked,
+        card = card?.toModel(),
         created = createdAt,
         creator = account?.toModel(),
         edited = editedAt,
@@ -73,6 +78,22 @@ internal fun Status.toModel() =
         visibility = visibility.toVisibility(),
         title = addons?.title?.takeIf { it.isNotBlank() },
         poll = poll?.toModel(),
+    )
+
+internal fun PreviewCard.toModel() =
+    PreviewCardModel(
+        title = title,
+        description = description,
+        type =
+            when (type) {
+                PreviewCardType.LINK -> PreviewType.Link
+                PreviewCardType.PHOTO -> PreviewType.Photo
+                PreviewCardType.VIDEO -> PreviewType.Video
+                else -> PreviewType.Unknown
+            },
+        url = url,
+        image = image,
+        providerName = providerName,
     )
 
 internal fun StatusContext.toModel() =
