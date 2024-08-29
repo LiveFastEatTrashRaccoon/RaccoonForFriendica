@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di
 
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.CustomUriHandler
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultDeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultLoginUseCase
@@ -29,7 +31,6 @@ val domainIdentityUseCaseModule =
                 apiConfigurationRepository = get(),
                 accountRepository = get(),
                 settingsRepository = get(),
-                identityRepository = get(),
                 accountCredentialsCache = get(),
             )
         }
@@ -38,8 +39,6 @@ val domainIdentityUseCaseModule =
             DefaultLogoutUseCase(
                 apiConfigurationRepository = get(),
                 accountRepository = get(),
-                settingsRepository = get(),
-                identityRepository = get(),
             )
         }
         single<CustomUriHandler> { params ->
@@ -54,16 +53,21 @@ val domainIdentityUseCaseModule =
         }
         single<SwitchAccountUseCase> {
             DefaultSwitchAccountUseCase(
-                apiConfigurationRepository = get(),
                 accountRepository = get(),
-                settingsRepository = get(),
-                identityRepository = get(),
-                accountCredentialsCache = get(),
             )
         }
         single<DeleteAccountUseCase> {
             DefaultDeleteAccountUseCase(
                 accountRepository = get(),
+                settingsRepository = get(),
+                accountCredentialsCache = get(),
+            )
+        }
+        single<ActiveAccountMonitor> {
+            DefaultActiveAccountMonitor(
+                accountRepository = get(),
+                apiConfigurationRepository = get(),
+                identityRepository = get(),
                 settingsRepository = get(),
                 accountCredentialsCache = get(),
             )
