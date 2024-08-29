@@ -47,7 +47,7 @@ class TimelineViewModel(
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
-                    refreshCirclesInTimelineTypes()
+                    refreshCirclesInTimelineTypes(currentUser != null)
                 }.launchIn(this)
 
             combine(
@@ -118,8 +118,7 @@ class TimelineViewModel(
         }
     }
 
-    private suspend fun refreshCirclesInTimelineTypes() {
-        val isLogged = identityRepository.isLogged.value
+    private suspend fun refreshCirclesInTimelineTypes(isLogged: Boolean) {
         val circles = circlesRepository.getAll()
         val settings = settingsRepository.current.value
         val defaultTimelineTypes =
@@ -156,7 +155,8 @@ class TimelineViewModel(
 
     private suspend fun refresh(initial: Boolean = false) {
         // needed as a last-resort to update circles if edited elsewhere
-        refreshCirclesInTimelineTypes()
+        val isLogged = identityRepository.currentUser.value != null
+        refreshCirclesInTimelineTypes(isLogged)
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
