@@ -35,8 +35,9 @@ class SettingsViewModel(
     SettingsMviModel {
     init {
         screenModelScope.launch {
-            identityRepository.isLogged
-                .onEach { isLogged ->
+            identityRepository.currentUser
+                .onEach { currentUser ->
+                    val isLogged = currentUser != null
                     updateState {
                         it.copy(
                             availableTimelineTypes =
