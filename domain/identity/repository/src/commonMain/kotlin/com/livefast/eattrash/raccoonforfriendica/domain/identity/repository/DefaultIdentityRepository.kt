@@ -2,41 +2,20 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 internal class DefaultIdentityRepository(
-    private val accountRepository: AccountRepository,
     private val provider: ServiceProvider,
-    dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : IdentityRepository,
-    MutableIdentityRepository {
-    override val isLogged = MutableStateFlow(false)
+) : IdentityRepository {
     override val currentUser = MutableStateFlow<UserModel?>(null)
 
-    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
-
-    override fun changeIsLogged(value: Boolean) {
-        isLogged.update { value }
-    }
-
-    override fun refreshCurrentUser() {
-        scope.launch {
-            val userId = accountRepository.getActive()?.remoteId.orEmpty()
-            if (userId.isEmpty()) {
-                currentUser.update { null }
-                return@launch
-            }
-
+    override suspend fun refreshCurrentUser(userId: String?) {
+        if (userId.isNullOrEmpty()) {
+            currentUser.update { null }
+        } else {
             try {
-                val user =
-                    provider.users.getById(userId)
+                val user = provider.users.getById(userId)
                 currentUser.update {
                     UserModel(
                         id = user.id,
