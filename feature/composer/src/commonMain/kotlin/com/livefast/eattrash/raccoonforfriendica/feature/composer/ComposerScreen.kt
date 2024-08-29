@@ -1,14 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,7 +34,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
@@ -143,7 +140,11 @@ class ComposerScreen(
         }
 
         Scaffold(
-            modifier = Modifier.navigationBarsPadding(),
+            modifier =
+                Modifier
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .navigationBarsPadding()
+                    .safeImePadding(),
             topBar = {
                 TopAppBar(
                     windowInsets = topAppBarState.toWindowInsets(),
@@ -190,74 +191,128 @@ class ComposerScreen(
                     )
                 }
             },
+            bottomBar = {
+                UtilsBar(
+                    modifier =
+                        Modifier.fillMaxWidth(),
+                    onAttachmentClicked = {
+                        openImagePicker = true
+                    },
+                    onLinkClicked = {
+                        linkDialogOpen = true
+                    },
+                    onMentionClicked = {
+                        mentionDialogOpen = true
+                    },
+                    onBoldClicked = {
+                        model.reduce(
+                            ComposerMviModel.Intent.AddBoldFormat(
+                                fieldType =
+                                    when {
+                                        hasTitleFocus -> ComposerFieldType.Title
+                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                        else -> ComposerFieldType.Body
+                                    },
+                            ),
+                        )
+                    },
+                    onItalicClicked = {
+                        model.reduce(
+                            ComposerMviModel.Intent.AddItalicFormat(
+                                fieldType =
+                                    when {
+                                        hasTitleFocus -> ComposerFieldType.Title
+                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                        else -> ComposerFieldType.Body
+                                    },
+                            ),
+                        )
+                    },
+                    onUnderlineClicked = {
+                        model.reduce(
+                            ComposerMviModel.Intent.AddUnderlineFormat(
+                                fieldType =
+                                    when {
+                                        hasTitleFocus -> ComposerFieldType.Title
+                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                        else -> ComposerFieldType.Body
+                                    },
+                            ),
+                        )
+                    },
+                    onSpoilerClicked = {
+                        model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
+                    },
+                    onTitleClicked = {
+                        model.reduce(ComposerMviModel.Intent.ToggleHasTitle)
+                    },
+                )
+            },
             content = { padding ->
-                Box(
+                Column(
                     modifier =
                         Modifier
                             .padding(
                                 top = padding.calculateTopPadding(),
                             ).consumeWindowInsets(padding)
-                            .safeImePadding()
-                            .fillMaxSize(),
+                            .safeImePadding(),
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        if (!inReplyToUsername.isNullOrBlank()) {
-                            InReplyToInfo(
-                                modifier = Modifier.padding(horizontal = Spacing.s),
-                                username = inReplyToUsername,
-                            )
-                        } else if (!groupUsername.isNullOrBlank()) {
-                            CreateInGroupInfo(
-                                modifier = Modifier.padding(horizontal = Spacing.s),
-                                username = groupUsername,
-                            )
-                        }
-
-                        CreatePostHeader(
+                    if (!inReplyToUsername.isNullOrBlank()) {
+                        InReplyToInfo(
                             modifier = Modifier.padding(horizontal = Spacing.s),
-                            author = uiState.author,
-                            visibility = uiState.visibility,
-                            availableVisibilities = uiState.availableVisibilities,
-                            onChangeVisibility = { visibility ->
-                                if (visibility is Visibility.Circle) {
-                                    selectCircleDialogOpen = true
-                                } else {
-                                    model.reduce(ComposerMviModel.Intent.SetVisibility(visibility))
-                                }
+                            username = inReplyToUsername,
+                        )
+                    } else if (!groupUsername.isNullOrBlank()) {
+                        CreateInGroupInfo(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
+                            username = groupUsername,
+                        )
+                    }
+
+                    CreatePostHeader(
+                        modifier = Modifier.padding(horizontal = Spacing.s),
+                        author = uiState.author,
+                        visibility = uiState.visibility,
+                        availableVisibilities = uiState.availableVisibilities,
+                        onChangeVisibility = { visibility ->
+                            if (visibility is Visibility.Circle) {
+                                selectCircleDialogOpen = true
+                            } else {
+                                model.reduce(ComposerMviModel.Intent.SetVisibility(visibility))
+                            }
+                        },
+                    )
+
+                    // spoiler text
+                    if (uiState.hasSpoiler) {
+                        val fieldHeight =
+                            with(LocalDensity.current) {
+                                MaterialTheme.typography.titleMedium.lineHeight
+                                    .toDp() * 2
+                            }
+                        SpoilerTextField(
+                            modifier =
+                                Modifier
+                                    .padding(horizontal = Spacing.s, vertical = Spacing.s)
+                                    .clip(RoundedCornerShape(CornerSize.l))
+                                    .height(fieldHeight)
+                                    .onFocusChanged {
+                                        hasSpoilerFieldFocus = it.hasFocus
+                                    },
+                            hint = LocalStrings.current.createPostSpoilerPlaceholder,
+                            value = uiState.spoilerValue,
+                            onValueChange = {
+                                model.reduce(
+                                    ComposerMviModel.Intent.SetFieldValue(
+                                        value = it,
+                                        fieldType = ComposerFieldType.Spoiler,
+                                    ),
+                                )
                             },
                         )
+                    }
 
-                        // spoiler text
-                        if (uiState.hasSpoiler) {
-                            val fieldHeight =
-                                with(LocalDensity.current) {
-                                    MaterialTheme.typography.titleMedium.lineHeight
-                                        .toDp() * 2
-                                }
-                            SpoilerTextField(
-                                modifier =
-                                    Modifier
-                                        .padding(horizontal = Spacing.s, vertical = Spacing.s)
-                                        .clip(RoundedCornerShape(CornerSize.l))
-                                        .height(fieldHeight)
-                                        .onFocusChanged {
-                                            hasSpoilerFieldFocus = it.hasFocus
-                                        },
-                                hint = LocalStrings.current.createPostSpoilerPlaceholder,
-                                value = uiState.spoilerValue,
-                                onValueChange = {
-                                    model.reduce(
-                                        ComposerMviModel.Intent.SetFieldValue(
-                                            value = it,
-                                            fieldType = ComposerFieldType.Spoiler,
-                                        ),
-                                    )
-                                },
-                            )
-                        }
-
+                    if (uiState.hasTitle) {
                         // post title
                         OutlinedTextField(
                             modifier =
@@ -286,114 +341,59 @@ class ComposerScreen(
                                 )
                             },
                         )
-
-                        // post body
-                        OutlinedTextField(
-                            modifier =
-                                Modifier
-                                    .padding(top = Spacing.s, start = Spacing.xs, end = Spacing.xs)
-                                    .fillMaxWidth()
-                                    .heightIn(200.dp, 300.dp),
-                            placeholder = {
-                                Text(text = LocalStrings.current.createPostBodyPlaceholder)
-                            },
-                            value = uiState.bodyValue,
-                            keyboardOptions =
-                                KeyboardOptions(
-                                    keyboardType = KeyboardType.Text,
-                                    autoCorrect = true,
-                                ),
-                            onValueChange = { value ->
-                                model.reduce(
-                                    ComposerMviModel.Intent.SetFieldValue(
-                                        value = value,
-                                        fieldType = ComposerFieldType.Body,
-                                    ),
-                                )
-                            },
-                        )
-
-                        // sensitive switch
-                        SettingsSwitchRow(
-                            title = LocalStrings.current.postSensitive,
-                            value = uiState.sensitive,
-                            onValueChanged = {
-                                model.reduce(ComposerMviModel.Intent.SetSensitive(it))
-                            },
-                        )
-
-                        // attachments
-                        if (uiState.attachments.isNotEmpty()) {
-                            Text(
-                                modifier = Modifier.padding(top = Spacing.m),
-                                text = LocalStrings.current.createPostAttachmentsSection,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onBackground,
-                            )
-                        }
-                        AttachmentsGrid(
-                            attachments = uiState.attachments,
-                            onDelete = { attachment ->
-                                model.reduce(ComposerMviModel.Intent.RemoveAttachment(attachment.id))
-                            },
-                            onEditDescription = { attachment ->
-                                attachmentWithDescriptionBeingEdited = attachment
-                            },
-                        )
                     }
 
-                    UtilsBar(
+                    // post body
+                    OutlinedTextField(
                         modifier =
                             Modifier
+                                .padding(top = Spacing.s, start = Spacing.xs, end = Spacing.xs)
                                 .fillMaxWidth()
-                                .align(Alignment.BottomCenter),
-                        onAttachmentClicked = {
-                            openImagePicker = true
+                                .height(400.dp),
+                        placeholder = {
+                            Text(text = LocalStrings.current.createPostBodyPlaceholder)
                         },
-                        onLinkClicked = {
-                            linkDialogOpen = true
-                        },
-                        onMentionClicked = {
-                            mentionDialogOpen = true
-                        },
-                        onBoldClicked = {
+                        value = uiState.bodyValue,
+                        keyboardOptions =
+                            KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                autoCorrect = true,
+                            ),
+                        onValueChange = { value ->
                             model.reduce(
-                                ComposerMviModel.Intent.AddBoldFormat(
-                                    fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
+                                ComposerMviModel.Intent.SetFieldValue(
+                                    value = value,
+                                    fieldType = ComposerFieldType.Body,
                                 ),
                             )
                         },
-                        onItalicClicked = {
-                            model.reduce(
-                                ComposerMviModel.Intent.AddItalicFormat(
-                                    fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
-                                ),
-                            )
+                    )
+
+                    // sensitive switch
+                    SettingsSwitchRow(
+                        title = LocalStrings.current.postSensitive,
+                        value = uiState.sensitive,
+                        onValueChanged = {
+                            model.reduce(ComposerMviModel.Intent.SetSensitive(it))
                         },
-                        onUnderlineClicked = {
-                            model.reduce(
-                                ComposerMviModel.Intent.AddUnderlineFormat(
-                                    fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
-                                ),
-                            )
+                    )
+
+                    // attachments
+                    if (uiState.attachments.isNotEmpty()) {
+                        Text(
+                            modifier = Modifier.padding(top = Spacing.m),
+                            text = LocalStrings.current.createPostAttachmentsSection,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                    AttachmentsGrid(
+                        attachments = uiState.attachments,
+                        onDelete = { attachment ->
+                            model.reduce(ComposerMviModel.Intent.RemoveAttachment(attachment.id))
                         },
-                        onSpoilerClicked = {
-                            model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
+                        onEditDescription = { attachment ->
+                            attachmentWithDescriptionBeingEdited = attachment
                         },
                     )
                 }
