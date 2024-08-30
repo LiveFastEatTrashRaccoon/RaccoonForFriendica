@@ -37,15 +37,15 @@ internal class DefaultTimelineEntryRepository(
                         onlyMedia = onlyMedia,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModelWithReply() }
-            }
-        }.getOrElse { emptyList() }
+            }.getOrElse { emptyList() }
+        }
 
     override suspend fun getById(id: String): TimelineEntryModel? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.statuses.get(id = id).toModelWithReply()
-            }
-        }.getOrNull()
+            }.getOrNull()
+        }
 
     override suspend fun getContext(id: String): TimelineContextModel? =
         withContext(Dispatchers.IO) {
@@ -63,8 +63,8 @@ internal class DefaultTimelineEntryRepository(
                         id = id,
                         data = data,
                     ).toModelWithReply()
-            }
-        }.getOrNull()
+            }.getOrNull()
+        }
 
     override suspend fun unreblog(id: String): TimelineEntryModel? =
         withContext(Dispatchers.IO) {
@@ -123,8 +123,8 @@ internal class DefaultTimelineEntryRepository(
                         maxId = pageCursor,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModelWithReply() }
-            }
-        }.getOrElse { emptyList() }
+            }.getOrElse { emptyList() }
+        }
 
     override suspend fun getBookmarks(pageCursor: String?): List<TimelineEntryModel> =
         withContext(Dispatchers.IO) {
@@ -134,8 +134,8 @@ internal class DefaultTimelineEntryRepository(
                         maxId = pageCursor,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModelWithReply() }
-            }
-        }.getOrElse { emptyList() }
+            }.getOrElse { emptyList() }
+        }
 
     override suspend fun getUsersWhoFavorited(
         id: String,
@@ -149,8 +149,8 @@ internal class DefaultTimelineEntryRepository(
                         maxId = pageCursor,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
-            }
-        }.getOrElse { emptyList() }
+            }.getOrElse { emptyList() }
+        }
 
     override suspend fun getUsersWhoReblogged(
         id: String,
@@ -164,8 +164,8 @@ internal class DefaultTimelineEntryRepository(
                         maxId = pageCursor,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
-            }
-        }.getOrElse { emptyList() }
+            }.getOrElse { emptyList() }
+        }
 
     override suspend fun create(
         localId: String,
@@ -196,12 +196,8 @@ internal class DefaultTimelineEntryRepository(
                         key = localId,
                         data = data,
                     ).toModel()
+            }.getOrNull()
             }
-        }.apply {
-            exceptionOrNull()?.also {
-                it.printStackTrace()
-            }
-        }.getOrNull()
 
     override suspend fun update(
         id: String,
@@ -232,20 +228,16 @@ internal class DefaultTimelineEntryRepository(
                         id = id,
                         data = data,
                     ).toModel()
+            }.getOrNull()
             }
-        }.apply {
-            exceptionOrNull()?.also {
-                it.printStackTrace()
-            }
-        }.getOrNull()
 
     override suspend fun delete(id: String): Boolean =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.statuses.delete(id)
                 true
-            }
-        }.getOrElse { false }
+            }.getOrElse { false }
+        }
 
     override suspend fun submitPoll(
         pollId: String,

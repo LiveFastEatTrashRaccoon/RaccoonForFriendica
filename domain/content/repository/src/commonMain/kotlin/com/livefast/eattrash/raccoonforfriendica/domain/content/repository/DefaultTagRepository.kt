@@ -11,8 +11,8 @@ internal class DefaultTagRepository(
     private val provider: ServiceProvider,
 ) : TagRepository {
     override suspend fun getFollowed(pageCursor: String?): Pair<List<TagModel>, String?> =
-        runCatching {
-            withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
+            runCatching {
                 val response =
                     provider.tags.getFollowedTags(
                         maxId = pageCursor,
@@ -20,27 +20,27 @@ internal class DefaultTagRepository(
                 val list: List<TagModel> = response.body()?.map { it.toModel() }.orEmpty()
                 val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
                 list to nextCursor
-            }
-        }.getOrElse { emptyList<TagModel>() to null }
+            }.getOrElse { emptyList<TagModel>() to null }
+        }
 
     override suspend fun getBy(name: String): TagModel? =
-        runCatching {
-            withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
+            runCatching {
                 provider.tags.get(name)?.toModel()
-            }
-        }.getOrNull()
+            }.getOrNull()
+        }
 
     override suspend fun follow(name: String): TagModel? =
-        runCatching {
-            withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
+            runCatching {
                 provider.tags.follow(name)?.toModel()
+            }.getOrNull()
             }
-        }.getOrNull()
 
     override suspend fun unfollow(name: String): TagModel? =
+        withContext(Dispatchers.IO) {
         runCatching {
-            withContext(Dispatchers.IO) {
                 provider.tags.unfollow(name)?.toModel()
+            }.getOrNull()
             }
-        }.getOrNull()
 }

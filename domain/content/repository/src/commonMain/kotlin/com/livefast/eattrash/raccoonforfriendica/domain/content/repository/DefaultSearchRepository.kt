@@ -15,8 +15,8 @@ internal class DefaultSearchRepository(
         type: SearchResultType,
         pageCursor: String?,
     ): List<ExploreItemModel> =
-        runCatching {
-            withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
+            runCatching {
                 val response =
                     provider.search
                         .search(
@@ -35,8 +35,8 @@ internal class DefaultSearchRepository(
                     SearchResultType.Hashtags -> response.hashtags.map { ExploreItemModel.HashTag(it.toModel()) }
                     SearchResultType.Users -> response.accounts.map { ExploreItemModel.User(it.toModel()) }
                 }
-            }
-        }.getOrElse { emptyList() }
+            }.getOrElse { emptyList() }
+        }
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20
