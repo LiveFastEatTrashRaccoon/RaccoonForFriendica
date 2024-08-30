@@ -84,13 +84,17 @@ internal class DefaultColorSchemeProvider(
 
                     else -> {
                         LightColors
+                    }
                 }
-            }
 
             else -> {
                 when {
                     dynamic -> {
-                        dynamicLightColorScheme(context)
+                        if (isSystemInDarkTheme) {
+                            dynamicDarkColorScheme(context)
+                        } else {
+                            dynamicLightColorScheme(context)
+                        }
                     }
 
                     customSeed != null -> {
