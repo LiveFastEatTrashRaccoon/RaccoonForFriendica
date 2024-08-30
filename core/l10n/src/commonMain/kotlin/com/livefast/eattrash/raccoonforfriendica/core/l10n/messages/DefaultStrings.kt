@@ -259,4 +259,7 @@ internal open class DefaultStrings : Strings {
     override val unsavedChangesTitle = "Unsaved changes"
     override val messageAreYouSureExit = "Are you sure you want to exit?"
     override val buttonSave = "Save"
+    override val editProfileSectionFields = "Custom fields (experimental)"
+    override val editProfileItemFieldKey = "Key"
+    override val editProfileItemFieldValue = "Value"
 }
