@@ -7,13 +7,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.BuildCircle
+import androidx.compose.material.icons.outlined.ViewAgenda
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -47,6 +52,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsH
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -95,6 +101,7 @@ class EditProfileScreen : Screen {
         }
 
         Scaffold(
+            modifier = Modifier.safeImePadding(),
             topBar = {
                 TopAppBar(
                     modifier = Modifier.clickable { scope.launch { goBackToTop() } },
@@ -193,6 +200,43 @@ class EditProfileScreen : Screen {
                         value = uiState.bio,
                         onValueChange = {
                             model.reduce(EditProfileMviModel.Intent.ChangeBio(it))
+                        },
+                    )
+                }
+                item {
+                    SettingsHeader(
+                        icon = Icons.Outlined.ViewAgenda,
+                        title = LocalStrings.current.editProfileSectionFields,
+                        rightButton = {
+                            IconButton(
+                                enabled = uiState.canAddFields,
+                                onClick = {
+                                    model.reduce(EditProfileMviModel.Intent.AddField)
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AddCircle,
+                                    contentDescription = null,
+                                )
+                            }
+                        },
+                    )
+                }
+                itemsIndexed(uiState.fields) { idx, field ->
+                    EditFieldItem(
+                        modifier = Modifier.padding(horizontal = Spacing.s),
+                        field = field,
+                        onValueChange = { key, value ->
+                            model.reduce(
+                                EditProfileMviModel.Intent.EditField(
+                                    index = idx,
+                                    key = key,
+                                    value = value,
+                                ),
+                            )
+                        },
+                        onDelete = {
+                            model.reduce(EditProfileMviModel.Intent.RemoveField(idx))
                         },
                     )
                 }
