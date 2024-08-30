@@ -6,6 +6,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
@@ -26,8 +28,10 @@ class EditProfileViewModel(
                     updateState {
                         it.copy(
                             displayName = TextFieldValue(text = currentUser.displayName.orEmpty()),
+                            avatar = currentUser.avatar,
                             bio = TextFieldValue(text = currentUser.bio.orEmpty()),
                             bot = currentUser.bot,
+                            header = currentUser.header,
                             locked = currentUser.locked,
                             noIndex = currentUser.noIndex,
                             discoverable = currentUser.discoverable,
@@ -110,6 +114,14 @@ class EditProfileViewModel(
                     value = intent.value,
                 )
 
+            is EditProfileMviModel.Intent.AvatarSelected -> {
+                loadImageAvatar(intent.value)
+            }
+
+            is EditProfileMviModel.Intent.HeaderSelected -> {
+                loadImageHeader(intent.value)
+            }
+
             EditProfileMviModel.Intent.Submit -> submit()
         }
     }
@@ -163,6 +175,34 @@ class EditProfileViewModel(
         }
     }
 
+    private fun loadImageAvatar(bytes: ByteArray) {
+        if (bytes.isEmpty()) {
+            return
+        }
+        screenModelScope.launch(Dispatchers.IO) {
+            updateState {
+                it.copy(
+                    avatarBytes = bytes,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun loadImageHeader(bytes: ByteArray) {
+        if (bytes.isEmpty()) {
+            return
+        }
+        screenModelScope.launch(Dispatchers.IO) {
+            updateState {
+                it.copy(
+                    headerBytes = bytes,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
     private fun submit() {
         val currentState = uiState.value
         if (currentState.loading) {
@@ -189,6 +229,8 @@ class EditProfileViewModel(
                     indexable = !currentState.noIndex,
                     discoverable = currentState.discoverable,
                     fields = fieldMap,
+                    avatar = currentState.avatarBytes,
+                    header = currentState.headerBytes,
                 )
 
             if (res != null) {

@@ -3,18 +3,22 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.edit
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.BuildCircle
-import androidx.compose.material.icons.outlined.ViewAgenda
+import androidx.compose.material.icons.filled.BuildCircle
+import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,21 +42,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EditFieldItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsImageInfo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -69,9 +79,12 @@ class EditProfileScreen : Screen {
         val lazyListState = rememberLazyListState()
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
+        val galleryHelper = remember { getGalleryHelper() }
         val genericError = LocalStrings.current.messageGenericError
         val messageSuccess = LocalStrings.current.messageSuccess
         var confirmBackWithUnsavedChangesDialog by remember { mutableStateOf(false) }
+        var openAvatarPicker by remember { mutableStateOf(false) }
+        var openHeaderPicker by remember { mutableStateOf(false) }
 
         fun goBackToTop() {
             runCatching {
@@ -167,7 +180,7 @@ class EditProfileScreen : Screen {
             ) {
                 item {
                     SettingsHeader(
-                        icon = Icons.Outlined.AccountCircle,
+                        icon = Icons.Default.AccountCircle,
                         title = LocalStrings.current.editProfileSectionPersonal,
                     )
                 }
@@ -203,9 +216,44 @@ class EditProfileScreen : Screen {
                         },
                     )
                 }
+
                 item {
                     SettingsHeader(
-                        icon = Icons.Outlined.ViewAgenda,
+                        icon = Icons.Default.Camera,
+                        title = LocalStrings.current.editProfileSectionImages,
+                    )
+                }
+                item {
+                    val avatarSize = IconSize.xxl
+                    SettingsImageInfo(
+                        title = LocalStrings.current.editProfileItemAvatar,
+                        imageModifier =
+                            Modifier
+                                .size(avatarSize)
+                                .clip(RoundedCornerShape(avatarSize / 2)),
+                        url = uiState.avatar,
+                        bytes = uiState.avatarBytes,
+                        onEdit = {
+                            openAvatarPicker = true
+                        },
+                    )
+                }
+                item {
+                    SettingsImageInfo(
+                        title = LocalStrings.current.editProfileItemHeader,
+                        imageModifier = Modifier.fillMaxWidth().aspectRatio(3.5f),
+                        contentScale = ContentScale.Crop,
+                        url = uiState.header,
+                        bytes = uiState.headerBytes,
+                        onEdit = {
+                            openHeaderPicker = true
+                        },
+                    )
+                }
+
+                item {
+                    SettingsHeader(
+                        icon = Icons.Default.ViewAgenda,
                         title = LocalStrings.current.editProfileSectionFields,
                         rightButton = {
                             IconButton(
@@ -242,7 +290,7 @@ class EditProfileScreen : Screen {
                 }
                 item {
                     SettingsHeader(
-                        icon = Icons.Outlined.BuildCircle,
+                        icon = Icons.Default.BuildCircle,
                         title = LocalStrings.current.editProfileSectionFlags,
                     )
                 }
@@ -287,6 +335,19 @@ class EditProfileScreen : Screen {
 
         if (uiState.loading) {
             ProgressHud()
+        }
+
+        if (openAvatarPicker) {
+            galleryHelper.getImageFromGallery { bytes ->
+                openAvatarPicker = false
+                model.reduce(EditProfileMviModel.Intent.AvatarSelected(bytes))
+            }
+        }
+        if (openHeaderPicker) {
+            galleryHelper.getImageFromGallery { bytes ->
+                openHeaderPicker = false
+                model.reduce(EditProfileMviModel.Intent.HeaderSelected(bytes))
+            }
         }
 
         if (confirmBackWithUnsavedChangesDialog) {

@@ -109,11 +109,11 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] OAuth and HTTP basic authentication modes
 - [x] pin/unpin status to profile
 - [x] manage one's own circles/following lists
-- [x] polls (read-only, since the submit vote method is unimplemented in the backend)
+- [x] polls (read-only, voting it not supported yet by the back-end)
 - [x] manage follow requests
 - [x] support for post addons (spoilers and titles)
 - [x] multi-account
-- [x] edit one's own profile (partial)
+- [x] edit one's own profile (custom fields and images not supported yet by the back-end)
 - [ ] private conversations
 - [ ] photo gallery
 - [ ] advanced media visualization (image carousels, videos, GIFs, etc.)
