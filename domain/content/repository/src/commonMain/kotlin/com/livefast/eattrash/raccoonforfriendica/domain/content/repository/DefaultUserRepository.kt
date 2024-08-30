@@ -300,15 +300,20 @@ internal class DefaultUserRepository(
                             append("hide_collections", if (hideCollections) "1" else "0")
                         }
                         if (fields != null) {
-                            val encodedMap = mutableMapOf<Int, Map<String, String>>()
-                            fields.entries.forEachIndexed { idx, entry ->
-                                encodedMap[idx] =
-                                    mapOf(
-                                        "name" to entry.key,
-                                        "value" to entry.value,
-                                    )
+                            val serializedFields =
+                                buildList {
+                                    fields.entries.forEachIndexed { idx, entry ->
+                                        val nameKey = "fields_attributes[$idx][name]"
+                                        val nameValue = entry.key
+                                        this += (nameKey to nameValue)
+                                        val valueKey = "fields_attributes[$idx][value]"
+                                        val valueValue = entry.value
+                                        this += (valueKey to valueValue)
+                                    }
+                                }
+                            for (field in serializedFields) {
+                                append(field.first, field.second)
                             }
-                            append("fields_attributes", encodedMap.toString())
                         }
                     },
                 )
