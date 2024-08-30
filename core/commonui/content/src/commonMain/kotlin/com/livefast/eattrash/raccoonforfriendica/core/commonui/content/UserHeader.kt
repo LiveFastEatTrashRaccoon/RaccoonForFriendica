@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,6 +42,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 fun UserHeader(
     user: UserModel?,
     modifier: Modifier = Modifier,
+    editButtonEnabled: Boolean = false,
     onOpenImage: ((String) -> Unit)? = null,
     onOpenFollowers: (() -> Unit)? = null,
     onOpenFollowing: (() -> Unit)? = null,
@@ -48,6 +50,7 @@ fun UserHeader(
     onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
     onNotificationsClicked: ((NotificationStatusNextAction) -> Unit)? = null,
     onOpenInForumMode: (() -> Unit)? = null,
+    onEditClicked: (() -> Unit)? = null,
 ) {
     val banner = user?.header.orEmpty()
     val avatar = user?.avatar.orEmpty()
@@ -184,6 +187,15 @@ fun UserHeader(
                                 pending = user.relationshipStatusPending,
                                 onClick = onRelationshipClicked,
                             )
+                        }
+                        if (editButtonEnabled) {
+                            OutlinedButton(
+                                onClick = {
+                                    onEditClicked?.invoke()
+                                },
+                            ) {
+                                Text(text = LocalStrings.current.editProfileTitle)
+                            }
                         }
                     }
                 }

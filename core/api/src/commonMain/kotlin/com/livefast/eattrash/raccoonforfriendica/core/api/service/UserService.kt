@@ -14,6 +14,7 @@ import de.jensklingenberg.ktorfit.http.PATCH
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
 
 interface UserService {
@@ -134,6 +135,11 @@ interface UserService {
 
     @PATCH("v1/accounts/update_credentials")
     suspend fun updateProfile(
+        @Body content: FormDataContent,
+    ): Account
+
+    @PATCH("v1/accounts/update_credentials")
+    suspend fun updateProfileImage(
         @Body content: MultiPartFormDataContent,
     ): Account
 }

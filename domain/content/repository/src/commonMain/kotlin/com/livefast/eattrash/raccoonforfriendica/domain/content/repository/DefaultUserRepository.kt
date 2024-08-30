@@ -1,15 +1,18 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -272,9 +275,12 @@ internal class DefaultUserRepository(
         fields: Map<String, String>?,
     ) = withContext(Dispatchers.IO) {
         runCatching {
-            val content =
-                MultiPartFormDataContent(
-                    formData {
+            var result: Account
+
+            // textual data
+            val formData =
+                FormDataContent(
+                    parameters {
                         if (note != null) {
                             append("note", note)
                         }
@@ -282,16 +288,16 @@ internal class DefaultUserRepository(
                             append("display_name", displayName)
                         }
                         if (locked != null) {
-                            append("locked", locked)
+                            append("locked", if (locked) "1" else "0")
                         }
                         if (bot != null) {
-                            append("bot", bot)
+                            append("bot", if (bot) "1" else "0")
                         }
                         if (discoverable != null) {
-                            append("discoverable", discoverable)
+                            append("discoverable", if (discoverable) "1" else "0")
                         }
                         if (hideCollections != null) {
-                            append("hide_collections", hideCollections)
+                            append("hide_collections", if (hideCollections) "1" else "0")
                         }
                         if (fields != null) {
                             val encodedMap = mutableMapOf<Int, Map<String, String>>()
@@ -304,7 +310,15 @@ internal class DefaultUserRepository(
                             }
                             append("fields_attributes", encodedMap.toString())
                         }
-                        if (avatar != null) {
+                    },
+                )
+            result = provider.users.updateProfile(formData)
+
+            // images
+            if (avatar != null) {
+                val multipartFormData =
+                    MultiPartFormDataContent(
+                        formData {
                             append(
                                 key = "avatar",
                                 value = avatar,
@@ -314,8 +328,15 @@ internal class DefaultUserRepository(
                                         append(HttpHeaders.ContentDisposition, "filename=avatar.jpeg")
                                     },
                             )
-                        }
-                        if (header != null) {
+                        },
+                    )
+                result = provider.users.updateProfileImage(multipartFormData)
+            }
+
+            if (header != null) {
+                val multipartFormData =
+                    MultiPartFormDataContent(
+                        formData {
                             append(
                                 key = "header",
                                 value = header,
@@ -325,10 +346,12 @@ internal class DefaultUserRepository(
                                         append(HttpHeaders.ContentDisposition, "filename=header.jpeg")
                                     },
                             )
-                        }
-                    },
-                )
-            provider.users.updateProfile(content).toModel()
+                        },
+                    )
+                result = provider.users.updateProfileImage(multipartFormData)
+            }
+
+            result.toModel()
         }.getOrNull()
     }
 

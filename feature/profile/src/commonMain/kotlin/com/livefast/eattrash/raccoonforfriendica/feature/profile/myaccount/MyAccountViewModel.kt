@@ -39,8 +39,8 @@ class MyAccountViewModel(
                     val cachedUser = myAccountCache.retrieveUser()
                     val cachedPaginationState = myAccountCache.retrievePaginationState()
                     if (cachedUser?.id != userId) {
-                        val currentAccount = userRepository.getById(userId)
-                        updateState { it.copy(user = currentAccount) }
+                        val currentUser = userRepository.getById(userId)
+                        updateState { it.copy(user = currentUser) }
                         refresh(initial = true)
                     } else {
                         updateState { it.copy(user = cachedUser) }
@@ -99,6 +99,12 @@ class MyAccountViewModel(
 
             MyAccountMviModel.Intent.Refresh ->
                 screenModelScope.launch {
+                    val userId =
+                        uiState.value.user
+                            ?.id
+                            .orEmpty()
+                    val currentUser = userRepository.getById(userId)
+                    updateState { it.copy(user = currentUser) }
                     refresh()
                 }
 

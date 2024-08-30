@@ -252,4 +252,17 @@ internal val ItStrings =
         override val createPostTitlePlaceholder = "Titolo (facoltativo)"
         override val actionSwitchAccount = "Cambia account"
         override val actionDeleteAccount = "Elimina account"
+        override val editProfileTitle = "Modifica profilo"
+        override val editProfileSectionPersonal = "Dati personali"
+        override val editProfileItemDisplayName = "Nome visualizzato"
+        override val editProfileItemBio = "Bio"
+        override val editProfileSectionFlags = "Visibilità & permessi"
+        override val editProfileItemBot = "Sono un bot"
+        override val editProfileItemLocked =
+            "Richiedi approvazione manuale richieste di essere seguito"
+        override val editProfileItemDiscoverable = "Rendimi visibile nelle ricerche"
+        override val editProfileItemNoIndex = "Escludi i miei post dalle timeline pubbliche"
+        override val unsavedChangesTitle = "Modifiche non salvate"
+        override val messageAreYouSureExit = "Sei sicuro/a di voler uscire?"
+        override val buttonSave = "Salva"
     }

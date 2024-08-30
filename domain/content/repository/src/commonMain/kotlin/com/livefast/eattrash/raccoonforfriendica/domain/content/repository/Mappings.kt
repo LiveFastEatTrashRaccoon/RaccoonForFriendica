@@ -155,6 +155,8 @@ internal fun Account.toModel() =
         id = id,
         locked = locked,
         username = username,
+        discoverable = discoverable,
+        noIndex = noIndex,
     )
 
 internal fun Field.toModel() =

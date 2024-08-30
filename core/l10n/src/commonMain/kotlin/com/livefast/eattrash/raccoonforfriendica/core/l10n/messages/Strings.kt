@@ -230,6 +230,18 @@ interface Strings {
     val createPostTitlePlaceholder: String
     val actionSwitchAccount: String
     val actionDeleteAccount: String
+    val editProfileTitle: String
+    val editProfileSectionPersonal: String
+    val editProfileItemDisplayName: String
+    val editProfileItemBio: String
+    val editProfileSectionFlags: String
+    val editProfileItemBot: String
+    val editProfileItemLocked: String
+    val editProfileItemDiscoverable: String
+    val editProfileItemNoIndex: String
+    val unsavedChangesTitle: String
+    val messageAreYouSureExit: String
+    val buttonSave: String
 }
 
 object Locales {

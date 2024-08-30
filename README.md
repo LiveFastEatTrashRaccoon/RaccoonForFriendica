@@ -113,7 +113,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] manage follow requests
 - [x] support for post addons (spoilers and titles)
 - [x] multi-account
-- [ ] edit one's own profile
+- [x] edit one's own profile (partial)
 - [ ] private conversations
 - [ ] photo gallery
 - [ ] advanced media visualization (image carousels, videos, GIFs, etc.)
