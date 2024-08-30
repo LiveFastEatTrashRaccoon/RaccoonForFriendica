@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.profile.edit
+package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 
 @Composable
-internal fun EditFieldItem(
+fun EditFieldItem(
     field: FieldModel,
     modifier: Modifier = Modifier,
     onValueChange: ((String, String) -> Unit)? = null,
