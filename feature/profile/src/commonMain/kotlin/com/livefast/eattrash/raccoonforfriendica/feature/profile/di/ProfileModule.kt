@@ -6,6 +6,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.Anony
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.AnonymousViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.DefaultMyAccountCache
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.MyAccountCache
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountViewModel
 import org.koin.dsl.module
@@ -40,5 +42,11 @@ val featureProfileModule =
         }
         single<MyAccountCache> {
             DefaultMyAccountCache()
+        }
+        factory<EditProfileMviModel> {
+            EditProfileViewModel(
+                userRepository = get(),
+                identityRepository = get(),
+            )
         }
     }
