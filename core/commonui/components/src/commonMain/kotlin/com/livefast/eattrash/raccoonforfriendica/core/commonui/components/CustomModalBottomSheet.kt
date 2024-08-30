@@ -21,6 +21,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -28,6 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 data class CustomModalBottomSheetItem(
     val leadingContent: @Composable (() -> Unit)? = null,
@@ -40,6 +43,7 @@ data class CustomModalBottomSheetItem(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun CustomModalBottomSheet(
+    sheetScope: CoroutineScope = rememberCoroutineScope(),
     sheetState: SheetState = rememberModalBottomSheetState(),
     title: String = "",
     items: List<CustomModalBottomSheetItem> = emptyList(),
@@ -78,10 +82,18 @@ fun CustomModalBottomSheet(
                                         .fillMaxWidth()
                                         .combinedClickable(
                                             onClick = {
-                                                onSelected?.invoke(idx)
+                                                sheetScope.launch {
+                                                    sheetState.hide()
+                                                }.invokeOnCompletion {
+                                                    onSelected?.invoke(idx)
+                                                }
                                             },
                                             onLongClick = {
-                                                onLongPress?.invoke(idx)
+                                                sheetScope.launch {
+                                                    sheetState.hide()
+                                                }.invokeOnCompletion {
+                                                    onLongPress?.invoke(idx)
+                                                }
                                             },
                                         ).padding(
                                             horizontal = Spacing.s,
