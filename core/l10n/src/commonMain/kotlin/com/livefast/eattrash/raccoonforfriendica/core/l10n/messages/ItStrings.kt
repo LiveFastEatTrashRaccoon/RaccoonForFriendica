@@ -268,4 +268,7 @@ internal val ItStrings =
         override val editProfileSectionFields = "Campi personalizzati  (sperimentale)"
         override val editProfileItemFieldKey = "Chiave"
         override val editProfileItemFieldValue = "Valore"
+        override val editProfileSectionImages = "Immagini (sperimentale)"
+        override val editProfileItemAvatar = "Avatar"
+        override val editProfileItemHeader = "Banner"
     }

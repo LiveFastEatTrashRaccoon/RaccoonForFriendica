@@ -245,6 +245,9 @@ interface Strings {
     val editProfileSectionFields: String
     val editProfileItemFieldKey: String
     val editProfileItemFieldValue: String
+    val editProfileSectionImages: String
+    val editProfileItemAvatar: String
+    val editProfileItemHeader: String
 }
 
 object Locales {

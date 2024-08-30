@@ -262,4 +262,7 @@ internal open class DefaultStrings : Strings {
     override val editProfileSectionFields = "Custom fields (experimental)"
     override val editProfileItemFieldKey = "Key"
     override val editProfileItemFieldValue = "Value"
+    override val editProfileSectionImages = "Images (experimental)"
+    override val editProfileItemAvatar = "Avatar"
+    override val editProfileItemHeader = "Banner"
 }
