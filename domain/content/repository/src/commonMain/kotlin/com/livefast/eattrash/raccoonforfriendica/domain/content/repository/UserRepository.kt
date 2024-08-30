@@ -56,4 +56,17 @@ interface UserRepository {
     suspend fun getMuted(pageCursor: String? = null): List<UserModel>
 
     suspend fun getBlocked(pageCursor: String? = null): List<UserModel>
+
+    suspend fun updateProfile(
+        note: String? = null,
+        displayName: String? = null,
+        avatar: ByteArray? = null,
+        header: ByteArray? = null,
+        locked: Boolean? = null,
+        bot: Boolean? = null,
+        discoverable: Boolean? = null,
+        hideCollections: Boolean? = null,
+        indexable: Boolean? = null,
+        fields: Map<String, String>? = null,
+    ): UserModel?
 }

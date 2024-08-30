@@ -10,9 +10,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
+import de.jensklingenberg.ktorfit.http.PATCH
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
+import io.ktor.client.request.forms.MultiPartFormDataContent
 
 interface UserService {
     @GET("v1/accounts/verify_credentials")
@@ -129,4 +131,9 @@ interface UserService {
         @Query("max_id") maxId: String? = null,
         @Query("limit") limit: Int = 20,
     ): List<Account>
+
+    @PATCH("v1/accounts/update_credentials")
+    suspend fun updateProfile(
+        @Body content: MultiPartFormDataContent,
+    ): Account
 }

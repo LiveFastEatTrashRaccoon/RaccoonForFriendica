@@ -6,6 +6,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -254,6 +258,79 @@ internal class DefaultUserRepository(
                 }
             }.getOrElse { emptyList() }
         }
+
+    override suspend fun updateProfile(
+        note: String?,
+        displayName: String?,
+        avatar: ByteArray?,
+        header: ByteArray?,
+        locked: Boolean?,
+        bot: Boolean?,
+        discoverable: Boolean?,
+        hideCollections: Boolean?,
+        indexable: Boolean?,
+        fields: Map<String, String>?,
+    ) = withContext(Dispatchers.IO) {
+        runCatching {
+            val content =
+                MultiPartFormDataContent(
+                    formData {
+                        if (note != null) {
+                            append("note", note)
+                        }
+                        if (displayName != null) {
+                            append("display_name", displayName)
+                        }
+                        if (locked != null) {
+                            append("locked", locked)
+                        }
+                        if (bot != null) {
+                            append("bot", bot)
+                        }
+                        if (discoverable != null) {
+                            append("discoverable", discoverable)
+                        }
+                        if (hideCollections != null) {
+                            append("hide_collections", hideCollections)
+                        }
+                        if (fields != null) {
+                            val encodedMap = mutableMapOf<Int, Map<String, String>>()
+                            fields.entries.forEachIndexed { idx, entry ->
+                                encodedMap[idx] =
+                                    mapOf(
+                                        "name" to entry.key,
+                                        "value" to entry.value,
+                                    )
+                            }
+                            append("fields_attributes", encodedMap.toString())
+                        }
+                        if (avatar != null) {
+                            append(
+                                key = "avatar",
+                                value = avatar,
+                                headers =
+                                    Headers.build {
+                                        append(HttpHeaders.ContentType, "image/*")
+                                        append(HttpHeaders.ContentDisposition, "filename=avatar.jpeg")
+                                    },
+                            )
+                        }
+                        if (header != null) {
+                            append(
+                                key = "header",
+                                value = header,
+                                headers =
+                                    Headers.build {
+                                        append(HttpHeaders.ContentType, "image/*")
+                                        append(HttpHeaders.ContentDisposition, "filename=header.jpeg")
+                                    },
+                            )
+                        }
+                    },
+                )
+            provider.users.updateProfile(content).toModel()
+        }.getOrNull()
+    }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20
