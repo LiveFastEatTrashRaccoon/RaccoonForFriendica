@@ -159,6 +159,7 @@ class MyAccountScreen : Screen {
                     item {
                         UserHeader(
                             user = uiState.user,
+                            editButtonEnabled = true,
                             onOpenUrl = { url ->
                                 uriHandler.openUri(url)
                             },
@@ -171,6 +172,9 @@ class MyAccountScreen : Screen {
                                 uiState.user?.id?.also { userId ->
                                     detailOpener.openFollowing(userId)
                                 }
+                            },
+                            onEditClicked = {
+                                detailOpener.openEditProfile()
                             },
                         )
                     }
