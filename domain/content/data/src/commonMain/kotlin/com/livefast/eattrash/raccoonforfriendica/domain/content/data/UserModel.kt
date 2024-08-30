@@ -17,6 +17,9 @@ data class UserModel(
     val header: String? = null,
     val id: String,
     val locked: Boolean = false,
+    val discoverable: Boolean = true,
+    val hideCollections: Boolean = false,
+    val noIndex: Boolean = false,
     val username: String? = null,
     @Transient
     val relationshipStatus: RelationshipStatus? = null,
