@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.edit
 import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import kotlinx.coroutines.flow.launchIn
@@ -30,6 +31,8 @@ class EditProfileViewModel(
                             locked = currentUser.locked,
                             noIndex = currentUser.noIndex,
                             discoverable = currentUser.discoverable,
+                            fields = currentUser.fields,
+                            canAddFields = currentUser.fields.size < 4,
                         )
                     }
                 }.launchIn(this)
@@ -98,10 +101,65 @@ class EditProfileViewModel(
                     }
                 }
 
-            EditProfileMviModel.Intent.AddField -> Unit
-            is EditProfileMviModel.Intent.EditField -> Unit
-            is EditProfileMviModel.Intent.RemoveField -> Unit
+            EditProfileMviModel.Intent.AddField -> addField()
+            is EditProfileMviModel.Intent.RemoveField -> removeField(index = intent.index)
+            is EditProfileMviModel.Intent.EditField ->
+                editField(
+                    index = intent.index,
+                    key = intent.key,
+                    value = intent.value,
+                )
+
             EditProfileMviModel.Intent.Submit -> submit()
+        }
+    }
+
+    private fun addField() {
+        screenModelScope.launch {
+            updateState {
+                val newFields = it.fields + FieldModel("", "")
+                it.copy(
+                    fields = newFields,
+                    hasUnsavedChanges = true,
+                    canAddFields = newFields.size < 4,
+                )
+            }
+        }
+    }
+
+    private fun editField(
+        index: Int,
+        key: String,
+        value: String,
+    ) {
+        screenModelScope.launch {
+            updateState {
+                val newFields =
+                    it.fields.mapIndexed { idx, field ->
+                        if (idx == index) {
+                            field.copy(key = key, value = value)
+                        } else {
+                            field
+                        }
+                    }
+                it.copy(
+                    fields = newFields,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun removeField(index: Int) {
+        screenModelScope.launch {
+            updateState {
+                val newFields = it.fields.filterIndexed { idx, _ -> idx != index }
+                it.copy(
+                    fields = newFields,
+                    hasUnsavedChanges = true,
+                    canAddFields = newFields.size < 4,
+                )
+            }
         }
     }
 
@@ -111,11 +169,15 @@ class EditProfileViewModel(
             return
         }
 
+        val fieldMap =
+            currentState.fields.fold(mutableMapOf<String, String>()) { res, item ->
+                res[item.key] = item.value
+                res
+            }
+
         screenModelScope.launch {
             updateState {
-                it.copy(
-                    loading = true,
-                )
+                it.copy(loading = true)
             }
 
             val res =
@@ -126,6 +188,7 @@ class EditProfileViewModel(
                     locked = currentState.locked,
                     indexable = !currentState.noIndex,
                     discoverable = currentState.discoverable,
+                    fields = fieldMap,
                 )
 
             if (res != null) {

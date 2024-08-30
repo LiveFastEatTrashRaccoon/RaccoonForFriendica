@@ -265,4 +265,7 @@ internal val ItStrings =
         override val unsavedChangesTitle = "Modifiche non salvate"
         override val messageAreYouSureExit = "Sei sicuro/a di voler uscire?"
         override val buttonSave = "Salva"
+        override val editProfileSectionFields = "Campi personalizzati  (sperimentale)"
+        override val editProfileItemFieldKey = "Chiave"
+        override val editProfileItemFieldValue = "Valore"
     }

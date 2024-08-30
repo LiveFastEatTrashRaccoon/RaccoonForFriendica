@@ -242,6 +242,9 @@ interface Strings {
     val unsavedChangesTitle: String
     val messageAreYouSureExit: String
     val buttonSave: String
+    val editProfileSectionFields: String
+    val editProfileItemFieldKey: String
+    val editProfileItemFieldValue: String
 }
 
 object Locales {

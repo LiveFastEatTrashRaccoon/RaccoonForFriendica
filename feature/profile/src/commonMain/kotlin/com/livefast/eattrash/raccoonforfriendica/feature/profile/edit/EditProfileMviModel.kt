@@ -40,7 +40,7 @@ interface EditProfileMviModel :
         data class EditField(
             val index: Int,
             val key: String,
-            val value: TextFieldValue,
+            val value: String,
         ) : Intent
 
         data class RemoveField(
@@ -60,6 +60,7 @@ interface EditProfileMviModel :
         val discoverable: Boolean = false,
         val noIndex: Boolean = false,
         val fields: List<FieldModel> = emptyList(),
+        val canAddFields: Boolean = false,
     )
 
     sealed interface Effect {
