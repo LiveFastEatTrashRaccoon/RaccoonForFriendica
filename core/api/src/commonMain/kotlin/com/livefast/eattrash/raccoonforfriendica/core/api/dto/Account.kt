@@ -22,4 +22,5 @@ data class Account(
     @SerialName("username") val username: String,
     @SerialName("discoverable") val discoverable: Boolean = false,
     @SerialName("noindex") val noIndex: Boolean = false,
+    @SerialName("url") val url: String? = null,
 )
