@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -41,7 +42,10 @@ fun UserRelationshipButton(
                     color = MaterialTheme.colorScheme.onPrimary,
                 )
             }
-            Text(status.toReadableName(userLocked = locked))
+            Text(
+                text = status.toReadableName(userLocked = locked),
+                textAlign = TextAlign.Center,
+            )
         }
     }
     val buttonPadding =
