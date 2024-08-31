@@ -4,13 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -42,7 +40,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import kotlin.math.roundToInt
@@ -88,16 +85,15 @@ fun ContentImage(
                     bottom = Spacing.xxs,
                     end = Spacing.xs,
                 ),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         ) {
             val iconModifier =
                 Modifier
-                    .size(IconSize.m)
                     .border(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.onBackground,
                         shape = CircleShape,
-                    ).clip(CircleShape)
+                    ).padding(2.5.dp)
+                    .clip(CircleShape)
             if (!altText.isNullOrEmpty()) {
                 Box {
                     if (showingAltText) {
