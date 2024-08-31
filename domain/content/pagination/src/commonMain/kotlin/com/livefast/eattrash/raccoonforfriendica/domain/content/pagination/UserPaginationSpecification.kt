@@ -21,6 +21,11 @@ sealed interface UserPaginationSpecification {
         val query: String = "",
     ) : UserPaginationSpecification
 
+    data class SearchFollowing(
+        val query: String = "",
+        val excludeIds: List<String> = emptyList(),
+    ) : UserPaginationSpecification
+
     data object Muted : UserPaginationSpecification
 
     data object Blocked : UserPaginationSpecification

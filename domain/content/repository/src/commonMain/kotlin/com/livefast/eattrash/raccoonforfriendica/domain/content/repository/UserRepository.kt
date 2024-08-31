@@ -27,6 +27,11 @@ interface UserRepository {
         pageCursor: String? = null,
     ): List<UserModel>
 
+    suspend fun searchMyFollowing(
+        query: String,
+        pageCursor: String? = null,
+    ): List<UserModel>
+
     suspend fun follow(
         id: String,
         reblogs: Boolean = true,

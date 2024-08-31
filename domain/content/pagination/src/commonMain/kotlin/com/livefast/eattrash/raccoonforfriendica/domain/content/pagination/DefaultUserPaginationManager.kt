@@ -99,6 +99,17 @@ internal class DefaultUserPaginationManager(
                         ).deduplicate()
                         .updatePaginationData()
                         .filter(specification.query)
+
+                is UserPaginationSpecification.SearchFollowing ->
+                    userRepository
+                        .searchMyFollowing(
+                            query = specification.query,
+                            pageCursor = pageCursor,
+                        ).deduplicate()
+                        .updatePaginationData()
+                        .filter {
+                            it.id !in specification.excludeIds
+                        }
             }
         history.addAll(results)
 
