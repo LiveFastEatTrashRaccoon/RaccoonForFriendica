@@ -43,15 +43,7 @@ fun ContentHeader(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
     Row(
-        modifier =
-            modifier.clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                if (user != null) {
-                    onOpenUser?.invoke(user)
-                }
-            },
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
@@ -59,7 +51,14 @@ fun ContentHeader(
             CustomImage(
                 modifier =
                     Modifier
-                        .padding(Spacing.xxxs)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) {
+                            if (user != null) {
+                                onOpenUser?.invoke(user)
+                            }
+                        }.padding(Spacing.xxxs)
                         .size(iconSize)
                         .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
@@ -68,7 +67,16 @@ fun ContentHeader(
             )
         } else {
             PlaceholderImage(
-                size = iconSize,
+                modifier =
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) {
+                        if (user != null) {
+                            onOpenUser?.invoke(user)
+                        }
+                },
+                    size = iconSize,
                 title = creatorName,
             )
         }
