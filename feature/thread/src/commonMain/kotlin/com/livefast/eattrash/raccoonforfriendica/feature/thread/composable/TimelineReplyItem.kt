@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +32,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
@@ -121,20 +121,22 @@ fun TimelineReplyItem(
                     )
                     if (options.isNotEmpty()) {
                         Box {
-                            Icon(
+                            IconButton(
                                 modifier =
-                                    Modifier
-                                        .size(IconSize.m)
-                                        .padding(Spacing.xs)
-                                        .onGloballyPositioned {
-                                            optionsOffset = it.positionInParent()
-                                        }.clickable {
-                                            optionsMenuOpen = true
-                                        },
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
+                                    Modifier.onGloballyPositioned {
+                                        optionsOffset = it.positionInParent()
+                                    },
+                                onClick = {
+                                    optionsMenuOpen = true
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                )
+                            }
+
                             CustomDropDown(
                                 expanded = optionsMenuOpen,
                                 onDismiss = {
