@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
@@ -131,6 +132,7 @@ fun TimelineReplyItem(
                                 },
                             ) {
                                 Icon(
+                                    modifier = Modifier.size(IconSize.s),
                                     imageVector = Icons.Default.MoreVert,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.onBackground,

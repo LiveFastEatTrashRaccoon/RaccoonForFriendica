@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -93,11 +94,15 @@ fun UserItem(
                 text = user.displayName ?: user.username ?: "",
                 style = MaterialTheme.typography.titleMedium,
                 color = fullColor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = user.handle ?: user.username ?: "",
                 style = MaterialTheme.typography.titleMedium,
                 color = ancillaryColor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
 
@@ -121,6 +126,7 @@ fun UserItem(
                     },
                 ) {
                     Icon(
+                        modifier = Modifier.size(IconSize.s),
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onBackground,
