@@ -229,7 +229,9 @@ class InboxScreen : Screen {
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        if (idx == uiState.notifications.lastIndex - 5 && canFetchMore) {
+                        val isNearTheEnd =
+                            idx == uiState.notifications.lastIndex - 5 || uiState.notifications.size < 5
+                        if (isNearTheEnd && canFetchMore) {
                             model.reduce(InboxMviModel.Intent.LoadNextPage)
                         }
                     }

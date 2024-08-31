@@ -58,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleAddUserDialog
 import kotlinx.coroutines.flow.launchIn
@@ -84,6 +85,7 @@ class CircleDetailScreen(
         val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
+        val detailOpener = remember { getDetailOpener() }
         val genericError = LocalStrings.current.messageGenericError
         var confirmRemoveUserId by remember { mutableStateOf<String?>(null) }
 
@@ -205,6 +207,9 @@ class CircleDetailScreen(
                     ) { _, user ->
                         UserItem(
                             user = user,
+                            onClick = {
+                                detailOpener.openUserDetail(user.id)
+                            },
                             options =
                                 buildList {
                                     this += OptionId.Delete.toOption()

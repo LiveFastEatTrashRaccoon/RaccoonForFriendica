@@ -115,7 +115,8 @@ internal fun CircleAddUserDialog(
                         },
                     )
 
-                    if (idx == users.lastIndex - 5 && !loading && canFetchMore) {
+                    val isNearTheEnd = idx == users.lastIndex - 5 || users.size < 5
+                    if (isNearTheEnd && !loading && canFetchMore) {
                         onLoadMoreUsers?.invoke()
                     }
                 }

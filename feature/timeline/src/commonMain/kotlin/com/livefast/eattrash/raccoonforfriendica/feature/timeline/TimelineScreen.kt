@@ -384,7 +384,9 @@ class TimelineScreen : Screen {
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        if (idx == uiState.entries.lastIndex - 5 && canFetchMore) {
+                        val isNearTheEnd =
+                            idx == uiState.entries.lastIndex - 5 || uiState.entries.size < 5
+                        if (isNearTheEnd && canFetchMore) {
                             model.reduce(TimelineMviModel.Intent.LoadNextPage)
                         }
                     }

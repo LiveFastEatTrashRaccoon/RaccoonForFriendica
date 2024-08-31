@@ -226,7 +226,11 @@ class UserListScreen(
                         )
                         Spacer(modifier = Modifier.height(Spacing.interItem))
 
-                        if (idx == uiState.users.lastIndex - 5 && uiState.canFetchMore) {
+                        val isNearTheEnd =
+                            idx == uiState.users.lastIndex - 5 || uiState.users.size < 5
+                        val canFetchMore =
+                            !uiState.initial && !uiState.loading && uiState.canFetchMore
+                        if (isNearTheEnd && canFetchMore) {
                             model.reduce(UserListMviModel.Intent.LoadNextPage)
                         }
                     }
