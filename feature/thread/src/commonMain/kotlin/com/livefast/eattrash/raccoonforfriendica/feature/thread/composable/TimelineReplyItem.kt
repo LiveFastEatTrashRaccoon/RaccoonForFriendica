@@ -180,15 +180,15 @@ fun TimelineReplyItem(
                     onOpenUrl = onOpenUrl,
                 )
 
-                val imageUrl =
+                val firstImageAttachment =
                     entryToDisplay.attachments
                         .firstOrNull { attachment -> attachment.type == MediaType.Image }
-                        ?.url
-                        ?.takeIf { it.isNotBlank() }
+                val imageUrl = firstImageAttachment?.url?.takeIf { it.isNotBlank() }
                 if (imageUrl != null) {
                     ContentImage(
                         modifier = Modifier.fillMaxWidth(),
                         url = imageUrl,
+                        altText = firstImageAttachment.description,
                         sensitive = blurNsfw && entryToDisplay.sensitive,
                         onClick = { onOpenImage?.invoke(imageUrl) },
                     )
