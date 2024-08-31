@@ -88,7 +88,6 @@ internal fun InReplyToInfo(
         }
 
         Text(
-            modifier = Modifier.weight(1f),
             text = creatorName,
             style = MaterialTheme.typography.bodyMedium,
             color = fullColor,
