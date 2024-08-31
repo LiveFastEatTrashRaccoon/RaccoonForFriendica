@@ -98,6 +98,7 @@ class InboxViewModel(
             return
         }
 
+        val wasRefreshing = uiState.value.refreshing
         updateState { it.copy(loading = true) }
         val notifications = paginationManager.loadNextPage()
         updateState {
@@ -108,6 +109,9 @@ class InboxViewModel(
                 initial = false,
                 refreshing = false,
             )
+        }
+        if (wasRefreshing) {
+            emitEffect(InboxMviModel.Effect.BackToTop)
         }
     }
 
