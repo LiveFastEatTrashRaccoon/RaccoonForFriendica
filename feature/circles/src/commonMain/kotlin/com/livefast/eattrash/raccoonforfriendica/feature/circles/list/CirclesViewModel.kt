@@ -6,12 +6,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.Validatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.domain.ContactCache
 import kotlinx.coroutines.launch
 
 class CirclesViewModel(
     private val circlesRepository: CirclesRepository,
-    private val contactCache: ContactCache,
 ) : DefaultMviModel<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect>(
         initialState = CirclesMviModel.State(),
     ),
@@ -19,7 +17,6 @@ class CirclesViewModel(
     init {
         screenModelScope.launch {
             if (uiState.value.initial) {
-                contactCache.refresh()
                 refresh(initial = true)
             }
         }

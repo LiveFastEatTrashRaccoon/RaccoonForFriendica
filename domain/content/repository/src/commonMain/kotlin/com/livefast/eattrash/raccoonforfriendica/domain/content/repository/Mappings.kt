@@ -251,14 +251,14 @@ internal fun FriendicaPhoto.toModel() =
 
 internal fun UserListReplyPolicy.toModel(): CircleReplyPolicy =
     when (this) {
-        UserListReplyPolicy.FOLLOW -> CircleReplyPolicy.Follow
+        UserListReplyPolicy.FOLLOWED -> CircleReplyPolicy.Followed
         UserListReplyPolicy.LIST -> CircleReplyPolicy.List
         UserListReplyPolicy.NONE -> CircleReplyPolicy.None
     }
 
 internal fun CircleReplyPolicy.toDto(): String =
     when (this) {
-        CircleReplyPolicy.Follow -> "follow"
+        CircleReplyPolicy.Followed -> "followed"
         CircleReplyPolicy.List -> "list"
         CircleReplyPolicy.None -> "none"
     }

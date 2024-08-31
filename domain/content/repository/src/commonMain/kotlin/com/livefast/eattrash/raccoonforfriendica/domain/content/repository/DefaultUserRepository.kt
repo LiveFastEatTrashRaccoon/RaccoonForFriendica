@@ -120,6 +120,25 @@ internal class DefaultUserRepository(
             }.getOrElse { emptyList() }
         }
 
+    override suspend fun searchMyFollowing(
+        query: String,
+        pageCursor: String?,
+    ): List<UserModel> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                withContext(Dispatchers.IO) {
+                    provider.search
+                        .search(
+                            query = query,
+                            maxId = pageCursor,
+                            type = "accounts",
+                            limit = DEFAULT_PAGE_SIZE,
+                        ).accounts
+                        .map { it.toModel() }
+                }
+            }.getOrElse { emptyList() }
+        }
+
     override suspend fun follow(
         id: String,
         reblogs: Boolean,

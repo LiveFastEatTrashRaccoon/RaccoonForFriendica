@@ -26,6 +26,8 @@ interface CircleDetailMviModel :
         data class Add(
             val users: List<UserModel>,
         ) : Intent
+
+        data object UserSearchLoadNextPage : Intent
     }
 
     data class State(
@@ -37,6 +39,8 @@ interface CircleDetailMviModel :
         val addUsersDialogOpened: Boolean = false,
         val searchUsersQuery: String = "",
         val searchUsers: List<UserModel> = emptyList(),
+        val userSearchLoading: Boolean = false,
+        val userSearchCanFetchMore: Boolean = true,
     )
 
     sealed interface Effect {
