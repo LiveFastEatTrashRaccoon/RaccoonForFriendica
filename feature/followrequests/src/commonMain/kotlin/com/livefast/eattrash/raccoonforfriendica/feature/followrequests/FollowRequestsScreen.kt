@@ -162,7 +162,9 @@ class FollowRequestsScreen : Screen {
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        if (idx == uiState.items.lastIndex - 5 && canFetchMore) {
+                        val isNearTheEnd =
+                            idx == uiState.items.lastIndex - 5 || uiState.items.size < 5
+                        if (isNearTheEnd && canFetchMore) {
                             model.reduce(FollowRequestsMviModel.Intent.LoadNextPage)
                         }
                     }

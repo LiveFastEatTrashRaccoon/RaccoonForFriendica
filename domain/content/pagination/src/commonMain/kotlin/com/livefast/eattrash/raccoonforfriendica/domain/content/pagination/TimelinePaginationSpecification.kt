@@ -21,4 +21,9 @@ sealed interface TimelinePaginationSpecification {
         val pinned: Boolean = false,
         val includeNsfw: Boolean = true,
     ) : TimelinePaginationSpecification
+
+    data class Forum(
+        val userId: String,
+        val includeNsfw: Boolean = true,
+    ) : TimelinePaginationSpecification
 }

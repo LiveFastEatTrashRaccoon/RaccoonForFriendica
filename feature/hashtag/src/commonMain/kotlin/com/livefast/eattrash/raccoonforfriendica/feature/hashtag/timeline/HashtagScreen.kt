@@ -265,12 +265,12 @@ class HashtagScreen(
                                         model.reduce(
                                             HashtagMviModel.Intent.SubmitPollVote(
                                                 entry = e,
-                                            choices = choices,
-                                        ),
-                                    )
-                                }
-                            },
-                                                onToggleSpoilerActive = { e ->
+                                                choices = choices,
+                                            ),
+                                        )
+                                    }
+                                },
+                            onToggleSpoilerActive = { e ->
                                 model.reduce(HashtagMviModel.Intent.ToggleSpoilerActive(e))
                             },
                             options =
@@ -339,7 +339,9 @@ class HashtagScreen(
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        if (idx == uiState.entries.lastIndex - 5 && canFetchMore) {
+                        val isNearTheEnd =
+                            idx == uiState.entries.lastIndex - 5 || uiState.entries.size < 5
+                        if (isNearTheEnd && canFetchMore) {
                             model.reduce(HashtagMviModel.Intent.LoadNextPage)
                         }
                     }
@@ -443,7 +445,7 @@ class HashtagScreen(
                             ),
                         )
                     }
-                }
+                },
             )
         }
 

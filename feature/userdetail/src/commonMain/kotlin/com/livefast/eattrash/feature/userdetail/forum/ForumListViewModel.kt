@@ -91,7 +91,7 @@ class ForumListViewModel(
             it.copy(initial = initial, refreshing = !initial)
         }
         paginationManager.reset(
-            TimelinePaginationSpecification.User(
+            TimelinePaginationSpecification.Forum(
                 userId = id,
                 includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
             ),
@@ -105,11 +105,7 @@ class ForumListViewModel(
         }
 
         updateState { it.copy(loading = true) }
-        val entries =
-            paginationManager
-                .loadNextPage()
-                // needed because otherwise replies are included
-                .filter { it.inReplyTo == null }
+        val entries = paginationManager.loadNextPage()
         updateState {
             it.copy(
                 entries = entries,

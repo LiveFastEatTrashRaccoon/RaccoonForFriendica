@@ -72,6 +72,16 @@ internal class DefaultTimelinePaginationManager(
                             pinned = specification.pinned,
                         ).updatePaginationData()
                         .filterNsfw(specification.includeNsfw)
+
+                is TimelinePaginationSpecification.Forum ->
+                    timelineEntryRepository
+                        .getByUser(
+                            userId = specification.userId,
+                            pageCursor = pageCursor,
+                            excludeReplies = true,
+                        ).updatePaginationData()
+                        .filterNsfw(specification.includeNsfw)
+                        .filter { it.inReplyTo == null }
             }.deduplicate()
         history.addAll(results)
 

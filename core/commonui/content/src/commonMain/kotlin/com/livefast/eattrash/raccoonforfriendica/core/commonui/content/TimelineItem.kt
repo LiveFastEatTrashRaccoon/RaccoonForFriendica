@@ -60,6 +60,7 @@ fun TimelineItem(
     onToggleSpoilerActive: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val isReblog = entry.reblog != null
+    val isReply = entry.inReplyTo != null
     val entryToDisplay = entry.reblog ?: entry
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
@@ -80,42 +81,40 @@ fun TimelineItem(
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
+            if (reshareAndReplyVisible) {
+                Column(
+                    modifier = Modifier.padding(horizontal = contentHorizontalPadding),
+                ) {
+                    if (isReblog) {
+                        entry.creator?.let {
+                            ReblogInfo(
+                                user = it,
+                                onOpenUser = onOpenUser,
+                            )
+                        }
+                    }
+                    if (isReply) {
+                        entry.inReplyTo?.creator?.let {
+                            InReplyToInfo(
+                                user = it,
+                                onOpenUser = onOpenUser,
+                            )
+                        }
+                    }
+                }
+            }
+
             Row(
                 modifier = Modifier.padding(horizontal = contentHorizontalPadding),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-                ) {
-                    if (reshareAndReplyVisible) {
-                        if (isReblog) {
-                            entry.creator?.let {
-                                ReblogInfo(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    user = it,
-                                    onOpenUser = onOpenUser,
-                                )
-                            }
-                        } else {
-                            entry.inReplyTo?.creator?.let {
-                                InReplyToInfo(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    user = it,
-                                    onOpenUser = onOpenUser,
-                                )
-                            }
-                        }
-                    }
-
-                    ContentHeader(
-                        modifier = Modifier.fillMaxWidth(),
-                        user = entryToDisplay.creator,
-                        date = entryToDisplay.edited ?: entryToDisplay.created,
-                        isEdited = entryToDisplay.edited != null,
-                        onOpenUser = onOpenUser,
-                    )
-                }
+                ContentHeader(
+                    modifier = Modifier.fillMaxWidth(),
+                    user = entryToDisplay.creator,
+                    date = entryToDisplay.edited ?: entryToDisplay.created,
+                    isEdited = entryToDisplay.edited != null,
+                    onOpenUser = onOpenUser,
+                )
                 if (options.isNotEmpty()) {
                     Box {
                         Icon(
