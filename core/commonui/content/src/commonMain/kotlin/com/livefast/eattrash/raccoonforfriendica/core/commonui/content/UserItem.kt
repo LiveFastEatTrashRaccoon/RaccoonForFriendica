@@ -121,6 +121,7 @@ fun UserItem(
                     },
                 ) {
                     Icon(
+                        modifier = Modifier.size(IconSize.s),
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onBackground,
