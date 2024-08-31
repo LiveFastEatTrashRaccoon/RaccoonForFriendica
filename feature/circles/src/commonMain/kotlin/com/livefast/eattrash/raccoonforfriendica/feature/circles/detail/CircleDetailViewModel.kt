@@ -6,7 +6,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.domain.ContactCache
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,7 +21,7 @@ class CircleDetailViewModel(
     private val id: String,
     private val paginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
-    private val contactCache: ContactCache,
+    private val searchPaginationManager: UserPaginationManager,
 ) : DefaultMviModel<CircleDetailMviModel.Intent, CircleDetailMviModel.State, CircleDetailMviModel.Effect>(
         initialState = CircleDetailMviModel.State(),
     ),
@@ -73,6 +72,11 @@ class CircleDetailViewModel(
                     updateState { it.copy(searchUsersQuery = intent.text) }
                 }
 
+            CircleDetailMviModel.Intent.UserSearchLoadNextPage ->
+                screenModelScope.launch {
+                    loadNextPageSearchUsers()
+                }
+
             is CircleDetailMviModel.Intent.Add -> add(intent.users)
             is CircleDetailMviModel.Intent.Remove -> remove(intent.userId)
         }
@@ -119,18 +123,30 @@ class CircleDetailViewModel(
         }
     }
 
-    private fun refreshSearchUsers(query: String) {
-        screenModelScope.launch {
-            val currentCircleUserIds = uiState.value.users.map { it.id }
-            val newUsers =
-                contactCache
-                    .getContacts(excludeIds = currentCircleUserIds)
-                    .filter {
-                        query.isEmpty() ||
-                        it.username?.contains(other = query, ignoreCase = true) == true ||
-                        it.displayName?.contains(other = query, ignoreCase = true) == true
-                }
-            updateState { it.copy(searchUsers = newUsers) }
+    private suspend fun refreshSearchUsers(query: String) {
+        searchPaginationManager.reset(
+            UserPaginationSpecification.SearchFollowing(
+                query = query,
+                // exclude members of the current circle
+                excludeIds = uiState.value.users.map { it.id },
+            ),
+        )
+        loadNextPageSearchUsers()
+    }
+
+    private suspend fun loadNextPageSearchUsers() {
+        if (uiState.value.userSearchLoading) {
+            return
+        }
+
+        updateState { it.copy(userSearchLoading = true) }
+        val users = searchPaginationManager.loadNextPage()
+        updateState {
+            it.copy(
+                searchUsers = users,
+                userSearchCanFetchMore = searchPaginationManager.canFetchMore,
+                userSearchLoading = false,
+            )
         }
     }
 

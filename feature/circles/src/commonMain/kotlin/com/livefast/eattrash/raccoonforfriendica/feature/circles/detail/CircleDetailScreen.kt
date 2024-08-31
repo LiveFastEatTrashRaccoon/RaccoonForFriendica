@@ -272,6 +272,11 @@ class CircleDetailScreen(
             CircleAddUserDialog(
                 query = uiState.searchUsersQuery,
                 users = uiState.searchUsers,
+                loading = uiState.userSearchLoading,
+                canFetchMore = uiState.userSearchCanFetchMore,
+                onLoadMoreUsers = {
+                    model.reduce(CircleDetailMviModel.Intent.UserSearchLoadNextPage)
+                },
                 onSearchChanged = {
                     model.reduce(CircleDetailMviModel.Intent.SetSearchUserQuery(it))
                 },
