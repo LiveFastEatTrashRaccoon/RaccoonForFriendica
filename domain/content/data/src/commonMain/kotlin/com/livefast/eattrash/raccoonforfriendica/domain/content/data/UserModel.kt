@@ -21,6 +21,7 @@ data class UserModel(
     val hideCollections: Boolean = false,
     val noIndex: Boolean = false,
     val username: String? = null,
+    val url: String? = null,
     @Transient
     val relationshipStatus: RelationshipStatus? = null,
     @Transient

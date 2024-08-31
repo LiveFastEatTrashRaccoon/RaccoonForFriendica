@@ -157,6 +157,7 @@ internal fun Account.toModel() =
         username = username,
         discoverable = discoverable,
         noIndex = noIndex,
+        url = url,
     )
 
 internal fun Field.toModel() =
