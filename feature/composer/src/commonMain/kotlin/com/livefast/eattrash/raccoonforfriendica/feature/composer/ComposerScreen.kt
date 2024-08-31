@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -331,6 +332,7 @@ class ComposerScreen(
                                 KeyboardOptions(
                                     keyboardType = KeyboardType.Text,
                                     autoCorrect = true,
+                                    capitalization = KeyboardCapitalization.Sentences,
                                 ),
                             onValueChange = { value ->
                                 model.reduce(
@@ -358,6 +360,7 @@ class ComposerScreen(
                             KeyboardOptions(
                                 keyboardType = KeyboardType.Text,
                                 autoCorrect = true,
+                                capitalization = KeyboardCapitalization.Sentences,
                             ),
                         onValueChange = { value ->
                             model.reduce(
