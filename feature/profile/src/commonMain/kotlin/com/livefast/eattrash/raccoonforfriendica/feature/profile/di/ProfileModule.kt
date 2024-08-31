@@ -46,7 +46,6 @@ val featureProfileModule =
         factory<EditProfileMviModel> {
             EditProfileViewModel(
                 userRepository = get(),
-                identityRepository = get(),
             )
         }
     }

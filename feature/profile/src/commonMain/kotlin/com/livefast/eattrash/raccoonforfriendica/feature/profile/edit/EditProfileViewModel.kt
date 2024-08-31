@@ -5,16 +5,11 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class EditProfileViewModel(
-    private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
 ) : DefaultMviModel<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect>(
         initialState = EditProfileMviModel.State(),
@@ -22,24 +17,22 @@ class EditProfileViewModel(
     EditProfileMviModel {
     init {
         screenModelScope.launch {
-            identityRepository.currentUser
-                .mapNotNull { it?.let { u -> userRepository.getById(u.id) } }
-                .onEach { currentUser ->
-                    updateState {
-                        it.copy(
-                            displayName = TextFieldValue(text = currentUser.displayName.orEmpty()),
-                            avatar = currentUser.avatar,
-                            bio = TextFieldValue(text = currentUser.bio.orEmpty()),
-                            bot = currentUser.bot,
-                            header = currentUser.header,
-                            locked = currentUser.locked,
-                            noIndex = currentUser.noIndex,
-                            discoverable = currentUser.discoverable,
-                            fields = currentUser.fields,
-                            canAddFields = currentUser.fields.size < 4,
-                        )
-                    }
-                }.launchIn(this)
+            userRepository.getCurrent()?.also { currentUser ->
+                updateState {
+                    it.copy(
+                        displayName = TextFieldValue(text = currentUser.displayName.orEmpty()),
+                        avatar = currentUser.avatar,
+                        bio = TextFieldValue(text = currentUser.bio.orEmpty()),
+                        bot = currentUser.bot,
+                        header = currentUser.header,
+                        locked = currentUser.locked,
+                        noIndex = currentUser.noIndex,
+                        discoverable = currentUser.discoverable,
+                        fields = currentUser.fields,
+                        canAddFields = currentUser.fields.size < 4,
+                    )
+                }
+            }
         }
     }
 
