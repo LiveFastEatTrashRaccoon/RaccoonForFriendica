@@ -190,8 +190,10 @@ class UserDetailScreen(
                     actions = {
                         val options =
                             buildList {
-                                val user = uiState.user
-                                if (user != null) {
+                                uiState.user?.also { user ->
+                                    if (!user.url.isNullOrEmpty()) {
+                                        this += OptionId.Share.toOption()
+                                    }
                                     if (user.muted) {
                                         this += OptionId.Unmute.toOption()
                                     } else {
@@ -243,6 +245,9 @@ class UserDetailScreen(
                                             onClick = {
                                                 optionsMenuOpen = false
                                                 when (option.id) {
+                                                    OptionId.Share ->
+                                                        shareHelper.share(uiState.user?.url.orEmpty())
+
                                                     OptionId.Mute ->
                                                         confirmMuteUserDialogOpen = true
 
