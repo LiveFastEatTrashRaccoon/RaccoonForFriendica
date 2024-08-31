@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.circles.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
@@ -27,11 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SearchField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -42,6 +46,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 internal fun CircleAddUserDialog(
     query: String = "",
     users: List<UserModel> = emptyList(),
+    loading: Boolean = false,
+    canFetchMore: Boolean = false,
+    onLoadMoreUsers: (() -> Unit)? = null,
     onSearchChanged: ((String) -> Unit)? = null,
     onClose: ((List<UserModel>?) -> Unit)? = null,
 ) {
@@ -82,7 +89,19 @@ internal fun CircleAddUserDialog(
             LazyColumn(
                 modifier = Modifier.fillMaxWidth().height(300.dp),
             ) {
-                items(users) { user ->
+                if (!loading && users.isEmpty() && selectedUsers.isEmpty()) {
+                    item {
+                        Text(
+                            modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
+                            text = LocalStrings.current.messageEmptyList,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                }
+
+                itemsIndexed(users) { idx, user ->
                     val isSelected = selectedUsers.any { it.id == user.id }
                     UserResultItem(
                         user = user,
@@ -95,6 +114,33 @@ internal fun CircleAddUserDialog(
                             }
                         },
                     )
+
+                    if (idx == users.lastIndex - 5 && !loading && canFetchMore) {
+                        onLoadMoreUsers?.invoke()
+                    }
+                }
+
+                if (users.isEmpty()) {
+                    items(selectedUsers) { user ->
+                        UserResultItem(
+                            user = user,
+                            selected = true,
+                            onClick = {
+                                selectedUsers -= user
+                            },
+                        )
+                    }
+                }
+
+                item {
+                    if (loading && canFetchMore) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            ListLoadingIndicator()
+                        }
+                    }
                 }
             }
 
