@@ -224,6 +224,7 @@ class UserDetailScreen(
                                         contentDescription = null,
                                     )
                                 }
+
                                 CustomDropDown(
                                     expanded = optionsMenuOpen,
                                     onDismiss = {

@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -70,20 +70,22 @@ internal fun CircleItem(
 
         if (options.isNotEmpty()) {
             Box {
-                Icon(
+                IconButton(
                     modifier =
-                        Modifier
-                            .size(IconSize.m)
-                            .padding(Spacing.xs)
-                            .onGloballyPositioned {
-                                optionsOffset = it.positionInParent()
-                            }.clickable {
-                                optionsMenuOpen = true
-                            },
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                )
+                        Modifier.onGloballyPositioned {
+                            optionsOffset = it.positionInParent()
+                        },
+                    onClick = {
+                        optionsMenuOpen = true
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+
                 CustomDropDown(
                     expanded = optionsMenuOpen,
                     onDismiss = {
