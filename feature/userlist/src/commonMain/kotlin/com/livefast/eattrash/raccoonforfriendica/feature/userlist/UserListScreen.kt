@@ -263,8 +263,8 @@ class UserListScreen(
             CustomConfirmDialog(
                 title = LocalStrings.current.actionDeleteFollowRequest,
                 onClose = { confirm ->
-                    val userId = confirmUnfollowDialogUserId
-                    confirmUnfollowDialogUserId = null
+                    val userId = confirmDeleteFollowRequestDialogUserId
+                    confirmDeleteFollowRequestDialogUserId = null
                     if (confirm && userId != null) {
                         model.reduce(UserListMviModel.Intent.Unfollow(userId))
                     }
