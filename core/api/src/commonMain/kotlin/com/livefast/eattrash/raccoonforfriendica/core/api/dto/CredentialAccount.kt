@@ -20,4 +20,8 @@ data class CredentialAccount(
     @SerialName("note") val note: String? = null,
     @SerialName("statuses_count") val statusesCount: Int = 0,
     @SerialName("username") val username: String,
+    @SerialName("discoverable") val discoverable: Boolean = false,
+    @SerialName("noindex") val noIndex: Boolean = false,
+    @SerialName("url") val url: String? = null,
+    @SerialName("source") val source: AccountSource? = null,
 )

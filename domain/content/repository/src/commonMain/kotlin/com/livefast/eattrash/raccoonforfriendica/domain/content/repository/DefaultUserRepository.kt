@@ -59,6 +59,13 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
+    override suspend fun getCurrent(): UserModel? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.users.verifyCredentials().toModel()
+            }.getOrNull()
+        }
+
     override suspend fun getRelationships(ids: List<String>): List<RelationshipModel> =
         withContext(Dispatchers.IO) {
             runCatching {

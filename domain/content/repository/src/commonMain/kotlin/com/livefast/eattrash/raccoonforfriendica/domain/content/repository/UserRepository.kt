@@ -13,6 +13,8 @@ interface UserRepository {
 
     suspend fun getByHandle(handle: String): UserModel?
 
+    suspend fun getCurrent(): UserModel?
+
     suspend fun getRelationships(ids: List<String>): List<RelationshipModel>
 
     suspend fun getSuggestions(): List<UserModel>

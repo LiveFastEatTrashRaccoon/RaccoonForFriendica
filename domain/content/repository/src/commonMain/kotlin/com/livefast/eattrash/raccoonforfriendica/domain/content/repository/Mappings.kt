@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Field
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.HistoryItem
@@ -147,6 +148,28 @@ internal fun Account.toModel() =
         displayName = displayName,
         entryCount = statusesCount,
         fields = fields.map { it.toModel() },
+        followers = followersCount,
+        following = followingCount,
+        group = group,
+        handle = acct,
+        header = header,
+        id = id,
+        locked = locked,
+        username = username,
+        discoverable = discoverable,
+        noIndex = noIndex,
+        url = url,
+    )
+
+internal fun CredentialAccount.toModel() =
+    UserModel(
+        avatar = avatar,
+        bio = source?.note ?: note,
+        bot = bot,
+        created = createdAt,
+        displayName = displayName,
+        entryCount = statusesCount,
+        fields = (source?.fields ?: fields).map { it.toModel() },
         followers = followersCount,
         following = followingCount,
         group = group,
