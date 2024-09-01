@@ -69,6 +69,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
@@ -78,12 +79,9 @@ import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSectio
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toSearchSection
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
-import kotlin.math.roundToLong
 
 class SearchScreen : Screen {
     @OptIn(
@@ -598,19 +596,4 @@ class SearchScreen : Screen {
             )
         }
     }
-}
-
-@Composable
-private fun getAnimatedDots(durationMillis: Long = 2500): String {
-    val maxStep = 4
-    val interval = (durationMillis / maxStep.toFloat()).roundToLong()
-    var step by remember { mutableStateOf(0) }
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(interval)
-            step = (step + 1) % maxStep
-            yield()
-        }
-    }
-    return ".".repeat(step)
 }

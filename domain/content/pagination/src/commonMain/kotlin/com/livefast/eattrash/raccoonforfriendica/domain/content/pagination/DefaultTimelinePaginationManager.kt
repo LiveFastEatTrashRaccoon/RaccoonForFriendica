@@ -49,7 +49,9 @@ internal class DefaultTimelinePaginationManager(
                                 id = specification.timelineType.id,
                                 pageCursor = pageCursor,
                             )
-                    }.updatePaginationData().filterNsfw(specification.includeNsfw)
+                    }.updatePaginationData()
+                        .filterNsfw(specification.includeNsfw)
+                        .deduplicate()
                 }
 
                 is TimelinePaginationSpecification.Hashtag -> {
@@ -59,6 +61,7 @@ internal class DefaultTimelinePaginationManager(
                             pageCursor = pageCursor,
                         ).updatePaginationData()
                         .filterNsfw(specification.includeNsfw)
+                        .deduplicate()
                 }
 
                 is TimelinePaginationSpecification.User ->
@@ -70,7 +73,10 @@ internal class DefaultTimelinePaginationManager(
                             excludeReblogs = specification.excludeReblogs,
                             onlyMedia = specification.onlyMedia,
                             pinned = specification.pinned,
-                        ).updatePaginationData()
+                        )
+                        // intended: there is a bug in user pagination
+                        .deduplicate()
+                        .updatePaginationData()
                         .filterNsfw(specification.includeNsfw)
 
                 is TimelinePaginationSpecification.Forum ->
@@ -82,7 +88,8 @@ internal class DefaultTimelinePaginationManager(
                         ).updatePaginationData()
                         .filterNsfw(specification.includeNsfw)
                         .filter { it.inReplyTo == null }
-            }.deduplicate()
+                        .deduplicate()
+            }
         history.addAll(results)
 
         // return a copy

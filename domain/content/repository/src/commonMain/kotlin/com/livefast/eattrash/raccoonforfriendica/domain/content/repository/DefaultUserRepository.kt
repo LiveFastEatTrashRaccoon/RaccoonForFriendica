@@ -40,6 +40,7 @@ internal class DefaultUserRepository(
                         .search(
                             query = query,
                             offset = offset,
+                            resolve = true,
                         ).map { it.toModel() }
                 }
             }.getOrElse { emptyList() }

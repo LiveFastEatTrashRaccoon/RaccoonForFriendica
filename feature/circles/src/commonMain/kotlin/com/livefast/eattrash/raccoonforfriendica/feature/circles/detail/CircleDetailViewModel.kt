@@ -127,10 +127,12 @@ class CircleDetailViewModel(
         searchPaginationManager.reset(
             UserPaginationSpecification.SearchFollowing(
                 query = query,
+                withRelationship = false,
                 // exclude members of the current circle
                 excludeIds = uiState.value.users.map { it.id },
             ),
         )
+        updateState { it.copy(userSearchCanFetchMore = searchPaginationManager.canFetchMore) }
         loadNextPageSearchUsers()
     }
 

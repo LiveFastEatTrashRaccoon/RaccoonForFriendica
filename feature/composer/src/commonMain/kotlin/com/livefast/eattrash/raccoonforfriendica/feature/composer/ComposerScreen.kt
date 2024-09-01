@@ -424,6 +424,7 @@ class ComposerScreen(
 
         if (mentionDialogOpen) {
             MentionDialog(
+                query = uiState.userSearchQuery,
                 users = uiState.userSearchUsers,
                 loading = uiState.userSearchLoading,
                 canFetchMore = uiState.userSearchCanFetchMore,

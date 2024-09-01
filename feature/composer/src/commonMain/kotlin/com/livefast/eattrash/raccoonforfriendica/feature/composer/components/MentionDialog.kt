@@ -36,17 +36,19 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SearchField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MentionDialog(
-    query: String = "",
+    query: String,
     users: List<UserModel> = emptyList(),
     loading: Boolean = false,
     canFetchMore: Boolean = false,
@@ -93,13 +95,32 @@ internal fun MentionDialog(
             ) {
                 if (!loading && users.isEmpty()) {
                     item {
-                        Text(
-                            modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
-                            text = LocalStrings.current.messageEmptyList,
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
+                        if (query.isEmpty()) {
+                            val animatingPart = getAnimatedDots()
+                            Text(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = Spacing.s, start = Spacing.s),
+                                text =
+                                    buildString {
+                                        append("🔦")
+                                        append(" ")
+                                        append(LocalStrings.current.messageSearchInitialEmpty)
+                                        append(animatingPart)
+                                    },
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+                        } else {
+                            Text(
+                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
+                                text = LocalStrings.current.messageEmptyList,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
                     }
                 }
 
@@ -141,6 +162,7 @@ private fun UserResultItem(
     val avatar = user.avatar.orEmpty()
     val avatarSize = IconSize.m
     val fullColor = MaterialTheme.colorScheme.onBackground
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
     Surface(
         modifier = modifier,
@@ -179,14 +201,25 @@ private fun UserResultItem(
                 )
             }
 
-            Text(
+            Column(
                 modifier = Modifier.weight(1f),
-                text = user.displayName ?: user.username ?: "",
-                style = MaterialTheme.typography.titleMedium,
-                color = fullColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+            ) {
+                Text(
+                    text = user.displayName ?: user.username ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = fullColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = user.handle ?: "",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = ancillaryColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }
