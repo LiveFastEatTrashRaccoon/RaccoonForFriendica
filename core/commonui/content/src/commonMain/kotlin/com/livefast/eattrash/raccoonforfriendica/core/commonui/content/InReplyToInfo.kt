@@ -77,7 +77,10 @@ internal fun InReplyToInfo(
         } else {
             PlaceholderImage(
                 modifier =
-                    Modifier.clickable {
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) {
                         if (user != null) {
                             onOpenUser?.invoke(user)
                         }

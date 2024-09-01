@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -37,17 +38,10 @@ internal fun ReblogInfo(
     val creatorName = user?.let { it.displayName ?: it.handle }.orEmpty()
     val creatorAvatar = user?.avatar.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
     Row(
-        modifier =
-            modifier.clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                if (user != null) {
-                    onOpenUser?.invoke(user)
-                }
-            },
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
@@ -55,18 +49,25 @@ internal fun ReblogInfo(
             modifier = Modifier.size(iconSize),
             imageVector = Icons.Default.Repeat,
             contentDescription = null,
-            tint = fullColor,
+            tint = ancillaryColor,
         )
         Text(
             text = LocalStrings.current.timelineEntryRebloggedBy,
             style = MaterialTheme.typography.bodyMedium,
-            color = fullColor,
+            color = ancillaryColor,
         )
         if (creatorAvatar.isNotEmpty()) {
             CustomImage(
                 modifier =
                     Modifier
-                        .padding(Spacing.xxxs)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) {
+                            if (user != null) {
+                                onOpenUser?.invoke(user)
+                            }
+                        }.padding(Spacing.xxxs)
                         .size(iconSize)
                         .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
