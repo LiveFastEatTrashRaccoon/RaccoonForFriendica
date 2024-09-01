@@ -19,11 +19,13 @@ sealed interface UserPaginationSpecification {
 
     data class Search(
         val query: String = "",
+        val withRelationship: Boolean = true,
     ) : UserPaginationSpecification
 
     data class SearchFollowing(
         val query: String = "",
         val excludeIds: List<String> = emptyList(),
+        val withRelationship: Boolean = true,
     ) : UserPaginationSpecification
 
     data object Muted : UserPaginationSpecification

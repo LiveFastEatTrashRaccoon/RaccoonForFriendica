@@ -74,8 +74,13 @@ internal class DefaultUserPaginationManager(
                                     .indexOfLast { it.id == pageCursor }
                                     .takeIf { it >= 0 } ?: 0,
                         ).deduplicate()
-                        .determineRelationshipStatus()
-                        .updatePaginationData()
+                        .let {
+                            if (specification.withRelationship) {
+                                it.determineRelationshipStatus()
+                            } else {
+                                it
+                            }
+                        }.updatePaginationData()
 
                 UserPaginationSpecification.Blocked ->
                     userRepository
@@ -106,7 +111,13 @@ internal class DefaultUserPaginationManager(
                             query = specification.query,
                             pageCursor = pageCursor,
                         ).deduplicate()
-                        .updatePaginationData()
+                        .let {
+                            if (specification.withRelationship) {
+                                it.determineRelationshipStatus()
+                            } else {
+                                it
+                            }
+                        }.updatePaginationData()
                         .filter {
                             it.id !in specification.excludeIds
                         }

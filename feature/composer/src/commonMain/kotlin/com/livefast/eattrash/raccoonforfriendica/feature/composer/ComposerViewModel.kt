@@ -360,10 +360,13 @@ class ComposerViewModel(
     }
 
     private suspend fun refreshUsers(query: String) {
-        if (query.isEmpty()) {
-            return
-        }
-        userPaginationManager.reset(UserPaginationSpecification.Search(query))
+        userPaginationManager.reset(
+            UserPaginationSpecification.Search(
+                query = query,
+                withRelationship = false,
+            ),
+        )
+        updateState { it.copy(userSearchCanFetchMore = userPaginationManager.canFetchMore) }
         loadNextPageUsers()
     }
 
