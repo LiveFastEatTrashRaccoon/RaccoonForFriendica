@@ -26,6 +26,7 @@ val featureHashtagModule =
                 paginationManager = get(),
                 tagRepository = get(),
                 hapticFeedback = get(),
+                notificationCenter = get(),
             )
         }
     }
