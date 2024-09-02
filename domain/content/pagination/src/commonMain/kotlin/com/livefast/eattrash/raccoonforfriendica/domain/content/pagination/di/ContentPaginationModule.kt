@@ -51,6 +51,7 @@ val domainContentPaginationModule =
         factory<FavoritesPaginationManager> {
             DefaultFavoritesPaginationManager(
                 timelineEntryRepository = get(),
+                notificationCenter = get(),
             )
         }
         factory<FollowedHashtagsPaginationManager> {
