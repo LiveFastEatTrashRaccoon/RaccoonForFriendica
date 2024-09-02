@@ -10,13 +10,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.shimmerEffect
 
 @Composable
-fun GenericPlaceholder(modifier: Modifier = Modifier) {
+fun GenericPlaceholder(
+    height: Dp = 100.dp,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier.padding(horizontal = Spacing.xs),
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
@@ -24,7 +28,7 @@ fun GenericPlaceholder(modifier: Modifier = Modifier) {
         Box(
             modifier =
                 Modifier
-                    .height(100.dp)
+                    .height(height)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(CornerSize.s))
                     .shimmerEffect(),

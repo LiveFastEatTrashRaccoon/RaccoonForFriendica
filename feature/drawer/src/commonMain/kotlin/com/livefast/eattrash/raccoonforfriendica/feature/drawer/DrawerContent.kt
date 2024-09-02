@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Flaky
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material.icons.filled.Workspaces
@@ -100,6 +101,14 @@ class DrawerContent : Screen {
                     },
                 )
             }
+
+            DrawerShortcut(
+                title = LocalStrings.current.nodeInfoTitle,
+                icon = Icons.Default.Info,
+                onSelected = {
+                    handleOpen { detailOpener.openNodeInfo() }
+                },
+            )
 
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = Spacing.xs),

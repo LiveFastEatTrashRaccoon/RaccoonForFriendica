@@ -58,4 +58,6 @@ interface DetailOpener {
     fun openFollowRequests()
 
     fun openEditProfile()
+
+    fun openNodeInfo()
 }

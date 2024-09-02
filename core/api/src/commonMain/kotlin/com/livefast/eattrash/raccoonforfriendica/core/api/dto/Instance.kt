@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Instance(
+    @SerialName("uri") val uri: String? = null,
     @SerialName("domain") val domain: String? = null,
     @SerialName("title") val title: String? = null,
     @SerialName("version") val version: String? = null,

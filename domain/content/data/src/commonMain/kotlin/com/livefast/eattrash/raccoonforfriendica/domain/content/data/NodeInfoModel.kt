@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
 data class NodeInfoModel(
+    val uri: String? = null,
     val domain: String? = null,
     val title: String? = null,
     val version: String? = null,

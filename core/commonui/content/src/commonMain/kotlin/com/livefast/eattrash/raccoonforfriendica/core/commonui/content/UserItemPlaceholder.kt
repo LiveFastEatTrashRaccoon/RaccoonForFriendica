@@ -24,6 +24,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.shimmerEffec
 @Composable
 fun UserItemPlaceholder(
     modifier: Modifier = Modifier,
+    withSubtitle: Boolean = true,
     withRelationshipButton: Boolean = true,
 ) {
     Row(
@@ -51,14 +52,16 @@ fun UserItemPlaceholder(
                         .clip(RoundedCornerShape(CornerSize.s))
                         .shimmerEffect(),
             )
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(20.dp)
-                        .clip(RoundedCornerShape(CornerSize.s))
-                        .shimmerEffect(),
-            )
+            if (withSubtitle) {
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(20.dp)
+                            .clip(RoundedCornerShape(CornerSize.s))
+                            .shimmerEffect(),
+                )
+            }
         }
 
         if (withRelationshipButton) {

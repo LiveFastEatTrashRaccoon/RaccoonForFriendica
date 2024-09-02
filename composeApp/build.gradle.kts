@@ -86,6 +86,7 @@ kotlin {
             implementation(projects.feature.inbox)
             implementation(projects.feature.login)
             implementation(projects.feature.manageblocks)
+            implementation(projects.feature.nodeinfo)
             implementation(projects.feature.profile)
             implementation(projects.feature.search)
             implementation(projects.feature.settings)
