@@ -99,20 +99,23 @@ class LoginScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.loginTitle,
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },
                     navigationIcon = {
-                        Image(
-                            modifier =
-                                Modifier.clickable {
-                                    navigationCoordinator.pop()
-                                },
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                        )
+                        if (navigationCoordinator.canPop.value) {
+                            Image(
+                                modifier =
+                                    Modifier.clickable {
+                                        navigationCoordinator.pop()
+                                    },
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                            )
+                        }
                     },
                 )
             },

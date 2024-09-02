@@ -110,6 +110,7 @@ class CirclesScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.manageCirclesTitle,
                             style = MaterialTheme.typography.titleMedium,
                         )
@@ -197,9 +198,10 @@ class CirclesScreen : Screen {
                     ) { circle ->
                         CircleItem(
                             circle = circle,
-                            onClick = {
-                                detailOpener.openCircle(circle.id)
-                            }.takeIf { circle.editable },
+                            onClick =
+                                {
+                                    detailOpener.openCircle(circle.id)
+                                }.takeIf { circle.editable },
                             options =
                                 buildList {
                                     if (circle.editable) {

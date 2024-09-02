@@ -120,6 +120,7 @@ class FavoritesScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = type.toReadableName(),
                             style = MaterialTheme.typography.titleMedium,
                         )

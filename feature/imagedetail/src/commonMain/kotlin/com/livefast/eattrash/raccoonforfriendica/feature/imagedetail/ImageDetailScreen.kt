@@ -94,15 +94,17 @@ class ImageDetailScreen(
                 TopAppBar(
                     title = {},
                     navigationIcon = {
-                        Icon(
-                            modifier =
-                                Modifier.clickable {
-                                    navigationCoordinator.pop()
-                                },
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                        )
+                        if (navigationCoordinator.canPop.value) {
+                            Icon(
+                                modifier =
+                                    Modifier.clickable {
+                                        navigationCoordinator.pop()
+                                    },
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
                     },
                     actions = {
                         IconButton(

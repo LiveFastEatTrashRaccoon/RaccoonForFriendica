@@ -132,6 +132,7 @@ class ThreadScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.threadTitle,
                             style = MaterialTheme.typography.titleMedium,
                         )

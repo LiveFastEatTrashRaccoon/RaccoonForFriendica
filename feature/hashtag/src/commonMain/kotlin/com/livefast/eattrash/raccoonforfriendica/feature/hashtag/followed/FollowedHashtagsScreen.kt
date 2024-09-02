@@ -81,6 +81,7 @@ class FollowedHashtagsScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.followedHashtagsTitle,
                             style = MaterialTheme.typography.titleMedium,
                         )

@@ -154,6 +154,7 @@ class TimelineScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = uiState.timelineType?.toReadableName().orEmpty(),
                             style = MaterialTheme.typography.titleMedium,
                         )

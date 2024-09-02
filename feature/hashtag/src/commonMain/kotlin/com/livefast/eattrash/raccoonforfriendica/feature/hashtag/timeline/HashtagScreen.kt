@@ -124,6 +124,7 @@ class HashtagScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = "#$tag",
                             style = MaterialTheme.typography.titleMedium,
                         )

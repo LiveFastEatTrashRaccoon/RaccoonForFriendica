@@ -112,6 +112,7 @@ class ManageBlocksScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.settingsItemBlockedAndMuted,
                             style = MaterialTheme.typography.titleMedium,
                         )
