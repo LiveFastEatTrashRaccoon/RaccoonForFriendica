@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.coreAppearan
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.coreCommonUiComponentsModule
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.coreL10nModule
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.coreNavigationModule
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.coreNotificationsModule
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.di.corePersistenceModule
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.di.corePreferencesModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreHapticFeedbackModule
@@ -52,6 +53,7 @@ val sharedHelperModule =
             corePersistenceModule,
             corePreferencesModule,
             coreNavigationModule,
+            coreNotificationsModule,
             coreResourceModule,
             coreUtilsDebugModule,
             coreUtilsFileSystemModule,

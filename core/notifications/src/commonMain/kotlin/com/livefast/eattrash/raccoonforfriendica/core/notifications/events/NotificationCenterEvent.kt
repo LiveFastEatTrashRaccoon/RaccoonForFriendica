@@ -1,0 +1,3 @@
+package com.livefast.eattrash.raccoonforfriendica.core.notifications.events
+
+interface NotificationCenterEvent
