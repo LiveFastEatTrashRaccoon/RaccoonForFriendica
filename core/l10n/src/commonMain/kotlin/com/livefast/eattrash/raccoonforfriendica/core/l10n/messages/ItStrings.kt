@@ -271,4 +271,7 @@ internal val ItStrings =
         override val editProfileSectionImages = "Immagini (sperimentale)"
         override val editProfileItemAvatar = "Avatar"
         override val editProfileItemHeader = "Banner"
+        override val nodeInfoTitle = "Informazioni istanza"
+        override val nodeInfoSectionRules = "Regole"
+        override val nodeInfoSectionContact = "Contatto"
     }

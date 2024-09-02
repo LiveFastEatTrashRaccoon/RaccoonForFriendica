@@ -265,4 +265,7 @@ internal open class DefaultStrings : Strings {
     override val editProfileSectionImages = "Images (experimental)"
     override val editProfileItemAvatar = "Avatar"
     override val editProfileItemHeader = "Banner"
+    override val nodeInfoTitle = "Node info"
+    override val nodeInfoSectionRules = "Rules"
+    override val nodeInfoSectionContact = "Contact"
 }

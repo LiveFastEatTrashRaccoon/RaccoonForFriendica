@@ -248,6 +248,9 @@ interface Strings {
     val editProfileSectionImages: String
     val editProfileItemAvatar: String
     val editProfileItemHeader: String
+    val nodeInfoTitle: String
+    val nodeInfoSectionRules: String
+    val nodeInfoSectionContact: String
 }
 
 object Locales {
