@@ -12,6 +12,7 @@ val featureUserListModule =
                 paginationManager = get(),
                 userRepository = get(),
                 hapticFeedback = get(),
+                notificationCenter = get(),
             )
         }
     }
