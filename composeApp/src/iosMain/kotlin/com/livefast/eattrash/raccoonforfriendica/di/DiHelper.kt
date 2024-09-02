@@ -31,6 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.di.featureI
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.di.featureInboxModule
 import com.livefast.eattrash.raccoonforfriendica.feature.login.di.featureLoginModule
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.di.featureManageBlocksModule
+import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.di.featureNodeInfoModule
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.di.featureProfileModule
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.featureSettingsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.di.featureThreadModule
@@ -83,6 +84,7 @@ fun initKoin(): Koin {
                 featureFavoritesModule,
                 featureSearchModule,
                 featureThreadModule,
+                featureNodeInfoModule,
             )
         }
     return koinApp.koin
