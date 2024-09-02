@@ -61,6 +61,11 @@ class ExploreViewModel(
                         )
                     }
                 }.launchIn(this)
+            notificationCenter
+                .subscribe(UserUpdatedEvent::class)
+                .onEach { event ->
+                    updateUserInState(event.user.id) { event.user }
+                }.launchIn(this)
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
