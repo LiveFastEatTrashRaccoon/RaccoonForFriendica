@@ -67,7 +67,7 @@ class InboxViewModel(
             is InboxMviModel.Intent.ChangeSelectedNotificationTypes ->
                 screenModelScope.launch {
                     updateState {
-                        it.copy(selectedNotificationTypes = intent.types)
+                        it.copy(selectedNotificationTypes = intent.types, initial = true)
                     }
                     emitEffect(InboxMviModel.Effect.BackToTop)
                     refresh(initial = true)
