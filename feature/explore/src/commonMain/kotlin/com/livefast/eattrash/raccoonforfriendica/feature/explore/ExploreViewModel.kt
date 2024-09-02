@@ -2,6 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.explore
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -27,6 +29,7 @@ class ExploreViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
+    private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect>(
         initialState = ExploreMviModel.State(),
     ),
@@ -179,11 +182,14 @@ class ExploreViewModel(
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
             updateUserInState(userId) {
-                it.copy(
-                    relationshipStatus = newStatus,
-                    notificationStatus = newNotificationStatus,
-                    relationshipStatusPending = false,
-                )
+                it
+                    .copy(
+                        relationshipStatus = newStatus,
+                        notificationStatus = newNotificationStatus,
+                        relationshipStatusPending = false,
+                    ).also { user ->
+                        notificationCenter.send(UserUpdatedEvent(user = user))
+                    }
             }
         }
     }
@@ -201,11 +207,14 @@ class ExploreViewModel(
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
             updateUserInState(userId) {
-                it.copy(
-                    relationshipStatus = newStatus,
-                    notificationStatus = newNotificationStatus,
-                    relationshipStatusPending = false,
-                )
+                it
+                    .copy(
+                        relationshipStatus = newStatus,
+                        notificationStatus = newNotificationStatus,
+                        relationshipStatusPending = false,
+                    ).also { user ->
+                        notificationCenter.send(UserUpdatedEvent(user = user))
+                    }
             }
         }
     }
