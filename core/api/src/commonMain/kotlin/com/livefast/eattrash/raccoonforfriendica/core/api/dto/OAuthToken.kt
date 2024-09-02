@@ -10,4 +10,6 @@ data class OAuthToken(
     @SerialName("refresh_token") val refreshToken: String? = null,
 )
 
-fun String.toOauthToken() = Json { ignoreUnknownKeys = true }.decodeFromString<OAuthToken>(this)
+private val JsonSerializer = Json { ignoreUnknownKeys = true }
+
+fun String.toOauthToken() = JsonSerializer.decodeFromString<OAuthToken>(this)

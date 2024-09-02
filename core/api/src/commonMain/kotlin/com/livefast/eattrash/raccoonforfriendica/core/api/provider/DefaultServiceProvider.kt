@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.InstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
@@ -14,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createAppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createFollowRequestService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createInstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createNotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoService
@@ -56,6 +58,7 @@ internal class DefaultServiceProvider(
 
     override lateinit var apps: AppService
     override lateinit var followRequests: FollowRequestService
+    override lateinit var instance: InstanceService
     override lateinit var lists: ListService
     override lateinit var notifications: NotificationService
     override lateinit var photo: PhotoService
@@ -147,6 +150,7 @@ internal class DefaultServiceProvider(
                 .build()
         apps = ktorfit.createAppService()
         followRequests = ktorfit.createFollowRequestService()
+        instance = ktorfit.createInstanceService()
         lists = ktorfit.createListService()
         notifications = ktorfit.createNotificationService()
         photo = ktorfit.createPhotoService()
