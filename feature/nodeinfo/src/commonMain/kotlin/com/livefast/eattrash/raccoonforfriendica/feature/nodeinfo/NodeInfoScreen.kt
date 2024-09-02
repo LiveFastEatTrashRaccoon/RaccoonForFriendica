@@ -350,20 +350,26 @@ private fun ContactUserItem(
                 modifier = Modifier.weight(1f).padding(vertical = Spacing.s),
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
-                Text(
-                    text = user.displayName ?: user.username ?: "",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = fullColor,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    text = user.handle ?: "",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = ancillaryColor,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                val title = user.displayName ?: user.username ?: ""
+                val subtitle = user.handle ?: ""
+                if (!title.isNullOrBlank()) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = fullColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                if (!subtitle.isNullOrBlank()) {
+                    Text(
+                        text = user.handle ?: "",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = ancillaryColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
 
             Icon(

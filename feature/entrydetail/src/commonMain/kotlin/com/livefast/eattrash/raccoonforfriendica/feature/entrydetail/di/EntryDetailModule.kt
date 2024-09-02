@@ -14,6 +14,7 @@ val featureEntryDetailModule =
                 settingsRepository = get(),
                 userRepository = get(),
                 hapticFeedback = get(),
+                notificationCenter = get(),
             )
         }
     }

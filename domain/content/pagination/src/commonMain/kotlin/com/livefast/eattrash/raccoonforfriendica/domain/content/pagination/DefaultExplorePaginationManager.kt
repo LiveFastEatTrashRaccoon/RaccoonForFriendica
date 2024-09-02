@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
@@ -15,6 +16,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -32,19 +34,38 @@ internal class DefaultExplorePaginationManager(
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
     init {
-        notificationCenter
-            .subscribe(UserUpdatedEvent::class)
-            .onEach { event ->
-                mutex.withLock {
-                    val idx =
-                        history.indexOfFirst { e -> e is ExploreItemModel.User && e.user.id == event.user.id }
-                    if (idx >= 0) {
-                        (history[idx] as? ExploreItemModel.User)?.copy(user = event.user)?.also {
-                            history[idx] = it
+        scope.launch {
+            notificationCenter
+                .subscribe(UserUpdatedEvent::class)
+                .onEach { event ->
+                    mutex.withLock {
+                        val idx =
+                            history.indexOfFirst { e -> e is ExploreItemModel.User && e.user.id == event.user.id }
+                        if (idx >= 0) {
+                            (history[idx] as? ExploreItemModel.User)
+                                ?.copy(user = event.user)
+                                ?.also {
+                                    history[idx] = it
+                                }
                         }
                     }
-                }
-            }.launchIn(scope)
+                }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryUpdatedEvent::class)
+                .onEach { event ->
+                    mutex.withLock {
+                        val idx =
+                            history.indexOfFirst { e -> e is ExploreItemModel.Entry && e.entry.id == event.entry.id }
+                        if (idx >= 0) {
+                            (history[idx] as? ExploreItemModel.Entry)
+                                ?.copy(entry = event.entry)
+                                ?.also {
+                                    history[idx] = it
+                                }
+                        }
+                    }
+                }.launchIn(this)
+        }
     }
 
     override suspend fun reset(specification: ExplorePaginationSpecification) {

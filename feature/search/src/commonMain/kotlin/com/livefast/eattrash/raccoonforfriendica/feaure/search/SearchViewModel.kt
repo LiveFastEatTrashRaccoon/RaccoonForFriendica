@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feaure.search
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
@@ -63,6 +64,12 @@ class SearchViewModel(
                 .onEach { event ->
                     updateUserInState(event.user.id) { event.user }
                 }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryUpdatedEvent::class)
+                .onEach { event ->
+                    updateEntryInState(event.entry.id) { event.entry }
+                }.launchIn(this)
+
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
@@ -301,7 +308,9 @@ class SearchViewModel(
                         reblogged = newEntry.reblogged,
                         reblogCount = newEntry.reblogCount,
                         reblogLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -333,7 +342,9 @@ class SearchViewModel(
                         favorite = newEntry.favorite,
                         favoriteCount = newEntry.favoriteCount,
                         favoriteLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -364,7 +375,9 @@ class SearchViewModel(
                     it.copy(
                         bookmarked = newEntry.bookmarked,
                         bookmarkLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -447,7 +460,11 @@ class SearchViewModel(
                     choices = choices,
                 )
             if (newPoll != null) {
-                updateEntryInState(entry.id) { it.copy(poll = newPoll) }
+                updateEntryInState(entry.id) {
+                    it.copy(poll = newPoll).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
+                }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(SearchMviModel.Effect.PollVoteFailure)

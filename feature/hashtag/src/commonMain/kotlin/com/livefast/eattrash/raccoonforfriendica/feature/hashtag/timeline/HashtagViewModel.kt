@@ -2,6 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TagUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
@@ -25,6 +28,7 @@ class HashtagViewModel(
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
     private val hapticFeedback: HapticFeedback,
+    private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>(
         initialState = HashtagMviModel.State(),
     ),
@@ -39,6 +43,12 @@ class HashtagViewModel(
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
                 }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryUpdatedEvent::class)
+                .onEach { event ->
+                    updateEntryInState(event.entry.id) { event.entry }
+                }.launchIn(this)
+
             if (uiState.value.initial) {
                 val model = tagRepository.getBy(tag)
                 updateState {
@@ -167,11 +177,14 @@ class HashtagViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        reblogged = newEntry.reblogged,
-                        reblogCount = newEntry.reblogCount,
-                        reblogLoading = false,
-                    )
+                    it
+                        .copy(
+                            reblogged = newEntry.reblogged,
+                            reblogCount = newEntry.reblogCount,
+                            reblogLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -199,11 +212,14 @@ class HashtagViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        favorite = newEntry.favorite,
-                        favoriteCount = newEntry.favoriteCount,
-                        favoriteLoading = false,
-                    )
+                    it
+                        .copy(
+                            favorite = newEntry.favorite,
+                            favoriteCount = newEntry.favoriteCount,
+                            favoriteLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -231,10 +247,13 @@ class HashtagViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        bookmarked = newEntry.bookmarked,
-                        bookmarkLoading = false,
-                    )
+                    it
+                        .copy(
+                            bookmarked = newEntry.bookmarked,
+                            bookmarkLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -255,6 +274,8 @@ class HashtagViewModel(
                     tagRepository.follow(tag)
                 } else {
                     tagRepository.unfollow(tag)
+                }?.also { tag ->
+                    notificationCenter.send(TagUpdatedEvent(tag = tag))
                 }
             updateState {
                 it.copy(

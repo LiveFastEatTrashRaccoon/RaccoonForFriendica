@@ -2,22 +2,33 @@ package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TagUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowedHashtagsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class FollowedHashtagsViewModel(
     private val paginationManager: FollowedHashtagsPaginationManager,
     private val tagRepository: TagRepository,
     private val hapticFeedback: HapticFeedback,
+    private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<FollowedHashtagsMviModel.Intent, FollowedHashtagsMviModel.State, FollowedHashtagsMviModel.Effect>(
         initialState = FollowedHashtagsMviModel.State(),
     ),
     FollowedHashtagsMviModel {
     init {
         screenModelScope.launch {
+            notificationCenter
+                .subscribe(TagUpdatedEvent::class)
+                .onEach { event ->
+                    updateItemInState(event.tag.name) { event.tag }
+                }.launchIn(this)
+
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
@@ -109,6 +120,8 @@ class FollowedHashtagsViewModel(
                     tagRepository.unfollow(name)
                 } else {
                     tagRepository.follow(name)
+                }?.also {
+                    notificationCenter.send(TagUpdatedEvent(tag = it))
                 }
             if (newTag != null) {
                 if (!follow) {

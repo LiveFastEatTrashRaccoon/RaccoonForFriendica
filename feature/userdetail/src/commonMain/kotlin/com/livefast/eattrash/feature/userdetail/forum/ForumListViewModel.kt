@@ -2,6 +2,8 @@ package com.livefast.eattrash.feature.userdetail.forum
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
@@ -23,6 +25,7 @@ class ForumListViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
+    private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<ForumListMviModel.Intent, ForumListMviModel.State, ForumListMviModel.Effect>(
         initialState = ForumListMviModel.State(),
     ),
@@ -36,6 +39,11 @@ class ForumListViewModel(
             settingsRepository.current
                 .onEach { settings ->
                     updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryUpdatedEvent::class)
+                .onEach { event ->
+                    updateEntryInState(event.entry.id) { event.entry }
                 }.launchIn(this)
 
             if (uiState.value.initial) {
@@ -171,7 +179,9 @@ class ForumListViewModel(
                         reblogged = newEntry.reblogged,
                         reblogCount = newEntry.reblogCount,
                         reblogLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -203,7 +213,9 @@ class ForumListViewModel(
                         favorite = newEntry.favorite,
                         favoriteCount = newEntry.favoriteCount,
                         favoriteLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -234,7 +246,9 @@ class ForumListViewModel(
                     it.copy(
                         bookmarked = newEntry.bookmarked,
                         bookmarkLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -299,7 +313,11 @@ class ForumListViewModel(
                     choices = choices,
                 )
             if (newPoll != null) {
-                updateEntryInState(entry.id) { it.copy(poll = newPoll) }
+                updateEntryInState(entry.id) {
+                    it.copy(poll = newPoll).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
+                }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(ForumListMviModel.Effect.PollVoteFailure)

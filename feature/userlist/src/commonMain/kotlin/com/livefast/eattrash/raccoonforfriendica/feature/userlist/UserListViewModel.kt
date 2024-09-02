@@ -33,6 +33,7 @@ internal class UserListViewModel(
                 .onEach { event ->
                     updateUserInState(event.user.id) { event.user }
                 }.launchIn(this)
+
             if (uiState.value.initial) {
                 loadUser()
                 refresh(initial = true)

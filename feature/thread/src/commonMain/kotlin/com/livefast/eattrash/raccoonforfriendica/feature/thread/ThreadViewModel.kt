@@ -2,6 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.thread
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
@@ -22,6 +24,7 @@ class ThreadViewModel(
     private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository,
     private val hapticFeedback: HapticFeedback,
+    private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>(
         initialState = ThreadMviModel.State(),
     ),
@@ -35,6 +38,11 @@ class ThreadViewModel(
             settingsRepository.current
                 .onEach { settings ->
                     updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryUpdatedEvent::class)
+                .onEach { event ->
+                    updateEntryInState(event.entry.id) { event.entry }
                 }.launchIn(this)
 
             if (uiState.value.initial) {
@@ -190,7 +198,9 @@ class ThreadViewModel(
                         reblogged = newEntry.reblogged,
                         reblogCount = newEntry.reblogCount,
                         reblogLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -222,7 +232,9 @@ class ThreadViewModel(
                         favorite = newEntry.favorite,
                         favoriteCount = newEntry.favoriteCount,
                         favoriteLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -253,7 +265,9 @@ class ThreadViewModel(
                     it.copy(
                         bookmarked = newEntry.bookmarked,
                         bookmarkLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -320,7 +334,11 @@ class ThreadViewModel(
             if (newPoll != null) {
                 updateEntryInState(entry.id) { it.copy(poll = newPoll) }
             } else {
-                updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
+                updateEntryInState(entry.id) {
+                    it.copy(poll = poll.copy(loading = false)).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
+                }
                 emitEffect(ThreadMviModel.Effect.PollVoteFailure)
             }
         }

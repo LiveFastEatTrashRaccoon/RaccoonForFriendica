@@ -29,6 +29,7 @@ val featureUserDetailModule =
                 identityRepository = get(),
                 settingsRepository = get(),
                 hapticFeedback = get(),
+                notificationCenter = get(),
             )
         }
     }

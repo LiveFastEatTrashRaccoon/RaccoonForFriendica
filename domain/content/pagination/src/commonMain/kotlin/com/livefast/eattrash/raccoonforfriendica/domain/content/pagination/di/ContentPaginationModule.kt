@@ -24,6 +24,7 @@ val domainContentPaginationModule =
             DefaultTimelinePaginationManager(
                 timelineRepository = get(),
                 timelineEntryRepository = get(),
+                notificationCenter = get(),
             )
         }
         factory<NotificationsPaginationManager> {
@@ -50,6 +51,7 @@ val domainContentPaginationModule =
         factory<FavoritesPaginationManager> {
             DefaultFavoritesPaginationManager(
                 timelineEntryRepository = get(),
+                notificationCenter = get(),
             )
         }
         factory<FollowedHashtagsPaginationManager> {

@@ -16,6 +16,7 @@ val featureTimelineModule =
                 userRepository = get(),
                 circlesRepository = get(),
                 hapticFeedback = get(),
+                notificationCenter = get(),
             )
         }
     }

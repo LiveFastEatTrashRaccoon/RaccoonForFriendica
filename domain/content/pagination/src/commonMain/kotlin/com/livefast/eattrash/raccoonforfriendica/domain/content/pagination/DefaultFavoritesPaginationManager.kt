@@ -1,21 +1,49 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DefaultFavoritesPaginationManager(
     private val timelineEntryRepository: TimelineEntryRepository,
+    notificationCenter: NotificationCenter,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : FavoritesPaginationManager {
     private var specification: FavoritesPaginationSpecification? = null
     private var pageCursor: String? = null
     override var canFetchMore: Boolean = true
     private val history = mutableListOf<TimelineEntryModel>()
+    private val mutex = Mutex()
+    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
+
+    init {
+        notificationCenter
+            .subscribe(TimelineEntryUpdatedEvent::class)
+            .onEach { event ->
+                val idx = history.indexOfFirst { e -> e.id == event.entry.id }
+                if (idx >= 0) {
+                    history[idx] = event.entry
+                }
+        }.launchIn(scope)
+    }
 
     override suspend fun reset(specification: FavoritesPaginationSpecification) {
         this.specification = specification
         pageCursor = null
-        history.clear()
+        mutex.withLock {
+            history.clear()
+        }
         canFetchMore = true
     }
 
@@ -36,7 +64,9 @@ internal class DefaultFavoritesPaginationManager(
                         .updatePaginationData()
                         .filterNsfw(specification.includeNsfw)
             }.deduplicate()
-        history.addAll(results)
+        mutex.withLock {
+            history.addAll(results)
+        }
 
         // return a copy
         return history.map { it }

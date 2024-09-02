@@ -1,24 +1,54 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DefaultTimelinePaginationManager(
     private val timelineRepository: TimelineRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
+    notificationCenter: NotificationCenter,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : TimelinePaginationManager {
     private var specification: TimelinePaginationSpecification? = null
     private var pageCursor: String? = null
     override var canFetchMore: Boolean = true
     override val history = mutableListOf<TimelineEntryModel>()
+    private val mutex = Mutex()
+    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
+
+    init {
+        notificationCenter
+            .subscribe(TimelineEntryUpdatedEvent::class)
+            .onEach { event ->
+                mutex.withLock {
+                    val idx = history.indexOfFirst { e -> e.id == event.entry.id }
+                    if (idx >= 0) {
+                        history[idx] = event.entry
+                    }
+                }
+            }.launchIn(scope)
+    }
 
     override suspend fun reset(specification: TimelinePaginationSpecification) {
         this.specification = specification
         pageCursor = null
-        history.clear()
+        mutex.withLock {
+            history.clear()
+        }
         canFetchMore = true
     }
 
@@ -90,7 +120,9 @@ internal class DefaultTimelinePaginationManager(
                         .filter { it.inReplyTo == null }
                         .deduplicate()
             }
-        history.addAll(results)
+        mutex.withLock {
+            history.addAll(results)
+        }
 
         // return a copy
         return history.map { it }
@@ -104,13 +136,15 @@ internal class DefaultTimelinePaginationManager(
             canFetchMore = canFetchMore,
         )
 
-    override fun restoreState(state: TimelinePaginationManagerState) {
+    override suspend fun restoreState(state: TimelinePaginationManagerState) {
         (state as? DefaultTimelinePaginationManagerState)?.also {
             specification = it.specification
             pageCursor = it.pageCursor
             canFetchMore = it.canFetchMore
-            history.clear()
-            history.addAll(it.history)
+            mutex.withLock {
+                history.clear()
+                history.addAll(it.history)
+            }
         }
     }
 
