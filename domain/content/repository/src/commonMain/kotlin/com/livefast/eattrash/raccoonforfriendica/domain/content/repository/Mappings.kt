@@ -328,6 +328,7 @@ internal fun PollOption.toModel() =
 
 internal fun Instance.toModel() =
     NodeInfoModel(
+        uri = uri,
         title = title,
         domain = domain,
         version = version,
