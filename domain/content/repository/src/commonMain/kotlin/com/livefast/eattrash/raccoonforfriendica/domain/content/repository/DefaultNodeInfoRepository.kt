@@ -11,10 +11,9 @@ internal class DefaultNodeInfoRepository(
 ) : NodeInfoRepository {
     override suspend fun getInfo(): NodeInfoModel? =
         withContext(Dispatchers.IO) {
-            kotlin
-                .runCatching {
-                    provider.instance.getInfo().toModel()
-                }.getOrNull()
+            runCatching {
+                provider.instance.getInfo().toModel()
+            }.getOrNull()
         }
 
     override suspend fun isFriendica(): Boolean =

@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.EditListForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.EditListMembersForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.DELETE
@@ -17,6 +18,9 @@ import de.jensklingenberg.ktorfit.http.Query
 interface ListService {
     @GET("v1/lists")
     suspend fun getAll(): List<UserList>
+
+    @GET("friendica/group_show")
+    suspend fun getFriendicaCircles(): List<FriendicaCircle>
 
     @GET("v1/lists/{id}")
     suspend fun getBy(
