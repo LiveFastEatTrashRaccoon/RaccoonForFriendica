@@ -12,5 +12,5 @@ interface TimelinePaginationManager {
 
     fun extractState(): TimelinePaginationManagerState
 
-    fun restoreState(state: TimelinePaginationManagerState)
+    suspend fun restoreState(state: TimelinePaginationManagerState)
 }

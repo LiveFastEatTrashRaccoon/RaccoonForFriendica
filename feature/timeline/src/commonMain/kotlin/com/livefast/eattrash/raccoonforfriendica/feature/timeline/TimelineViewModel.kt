@@ -2,6 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.timeline
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
@@ -29,6 +31,7 @@ class TimelineViewModel(
     private val userRepository: UserRepository,
     private val circlesRepository: CirclesRepository,
     private val hapticFeedback: HapticFeedback,
+    private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
         initialState = TimelineMviModel.State(),
     ),
@@ -48,6 +51,11 @@ class TimelineViewModel(
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
                     refreshCirclesInTimelineTypes(currentUser != null)
+                }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryUpdatedEvent::class)
+                .onEach { event ->
+                    updateEntryInState(event.entry.id) { event.entry }
                 }.launchIn(this)
 
             combine(
@@ -241,7 +249,9 @@ class TimelineViewModel(
                         reblogged = newEntry.reblogged,
                         reblogCount = newEntry.reblogCount,
                         reblogLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -273,7 +283,9 @@ class TimelineViewModel(
                         favorite = newEntry.favorite,
                         favoriteCount = newEntry.favoriteCount,
                         favoriteLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -304,7 +316,9 @@ class TimelineViewModel(
                     it.copy(
                         bookmarked = newEntry.bookmarked,
                         bookmarkLoading = false,
-                    )
+                    ).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -387,7 +401,11 @@ class TimelineViewModel(
                     choices = choices,
                 )
             if (newPoll != null) {
-                updateEntryInState(entry.id) { it.copy(poll = newPoll) }
+                updateEntryInState(entry.id) {
+                    it.copy(poll = newPoll).also { entry ->
+                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                    }
+                }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(TimelineMviModel.Effect.PollVoteFailure)
