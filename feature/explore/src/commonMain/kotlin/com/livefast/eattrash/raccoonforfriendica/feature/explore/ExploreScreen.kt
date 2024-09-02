@@ -244,24 +244,24 @@ class ExploreScreen : Screen {
                             val modifier = Modifier.fillMaxWidth()
                             when (uiState.section) {
                                 ExploreSection.Hashtags -> {
-                                    GenericPlaceholder(modifier)
+                                    GenericPlaceholder(modifier = modifier)
                                     Spacer(modifier = Modifier.height(Spacing.interItem))
                                 }
 
                                 ExploreSection.Links -> {
-                                    GenericPlaceholder(modifier)
+                                    GenericPlaceholder(modifier = modifier)
                                     Spacer(modifier = Modifier.height(Spacing.interItem))
                                 }
 
                                 ExploreSection.Posts -> {
-                                    TimelineItemPlaceholder(modifier)
+                                    TimelineItemPlaceholder(modifier = modifier)
                                     HorizontalDivider(
                                         modifier = Modifier.padding(vertical = Spacing.s),
                                     )
                                 }
 
                                 ExploreSection.Suggestions -> {
-                                    UserItemPlaceholder(modifier)
+                                    UserItemPlaceholder(modifier = modifier)
                                     Spacer(modifier = Modifier.height(Spacing.interItem))
                                 }
                             }

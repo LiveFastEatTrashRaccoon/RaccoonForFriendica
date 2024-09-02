@@ -227,19 +227,19 @@ class SearchScreen : Screen {
                             val modifier = Modifier.fillMaxWidth()
                             when (uiState.section) {
                                 SearchSection.Hashtags -> {
-                                    GenericPlaceholder(modifier)
+                                    GenericPlaceholder(modifier = modifier)
                                     Spacer(modifier = Modifier.height(Spacing.interItem))
                                 }
 
                                 SearchSection.Posts -> {
-                                    TimelineItemPlaceholder(modifier)
+                                    TimelineItemPlaceholder(modifier = modifier)
                                     HorizontalDivider(
                                         modifier = Modifier.padding(vertical = Spacing.s),
                                     )
                                 }
 
                                 SearchSection.Users -> {
-                                    UserItemPlaceholder(modifier)
+                                    UserItemPlaceholder(modifier = modifier)
                                     Spacer(modifier = Modifier.height(Spacing.interItem))
                                 }
                             }
