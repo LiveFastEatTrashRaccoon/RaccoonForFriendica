@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Field
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.HistoryItem
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Instance
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaAttachment
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.AUDIO
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.GIFV
@@ -31,6 +32,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHistoryItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
@@ -315,4 +317,18 @@ internal fun PollOption.toModel() =
     PollOptionModel(
         title = title,
         votes = votesCount,
+    )
+
+internal fun Instance.toModel() =
+    NodeInfoModel(
+        title = title,
+        domain = domain,
+        version = version,
+        sourceUrl = sourceUrl,
+        description = description,
+        activeUsers = usage?.users?.activeMonth,
+        thumbnail = thumbnail?.url,
+        languages = languages,
+        rules = rules.mapNotNull { it.text },
+        contact = contactAccount?.toModel(),
     )
