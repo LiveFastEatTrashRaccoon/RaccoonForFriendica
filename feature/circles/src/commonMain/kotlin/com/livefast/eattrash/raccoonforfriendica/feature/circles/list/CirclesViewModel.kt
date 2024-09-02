@@ -6,10 +6,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.Validatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class CirclesViewModel(
     private val circlesRepository: CirclesRepository,
+    private val nodeInfoRepository: NodeInfoRepository,
 ) : DefaultMviModel<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect>(
         initialState = CirclesMviModel.State(),
     ),
@@ -60,13 +64,24 @@ class CirclesViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        val items = circlesRepository.getAll()
-        updateState {
-            it.copy(
-                initial = false,
-                refreshing = false,
-                items = items,
-            )
+        coroutineScope {
+            val circles = async { circlesRepository.getAll() }.await()
+            val friendicaCircles = async { circlesRepository.getFriendicaCircles() }.await()
+            val isFriendica = async { nodeInfoRepository.isFriendica() }.await()
+            val items =
+                circles.map { circle ->
+                    // on Mastodon, all lists can be edited; on Friendica ony the user-created ones
+                    val canBeEdited = !isFriendica || friendicaCircles.any { c -> c.id == circle.id }
+                    circle.copy(editable = canBeEdited)
+                }
+
+            updateState {
+                it.copy(
+                    initial = false,
+                    refreshing = false,
+                    items = items,
+                )
+            }
         }
     }
 

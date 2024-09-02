@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Field
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.HistoryItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Instance
@@ -300,6 +301,12 @@ internal fun UserList.toModel() =
         replyPolicy = repliesPolicy?.toModel() ?: CircleReplyPolicy.List,
     )
 
+internal fun FriendicaCircle.toModel() =
+    CircleModel(
+        name = title,
+        id = id,
+    )
+
 internal fun Poll.toModel() =
     PollModel(
         id = id,
@@ -327,7 +334,7 @@ internal fun Instance.toModel() =
         sourceUrl = sourceUrl,
         description = description,
         activeUsers = usage?.users?.activeMonth,
-        thumbnail = thumbnail?.url,
+        thumbnail = thumbnail,
         languages = languages,
         rules = rules.mapNotNull { it.text },
         contact = contactAccount?.toModel(),

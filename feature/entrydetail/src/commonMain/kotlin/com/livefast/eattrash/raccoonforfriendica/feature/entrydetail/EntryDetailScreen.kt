@@ -132,6 +132,7 @@ class EntryDetailScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text =
                                 buildString {
                                     append(LocalStrings.current.postTitle)
@@ -300,9 +301,9 @@ class EntryDetailScreen(
                                                 entry = e,
                                                 choices = choices,
                                             ),
-                                    )
-                                }
-                            },
+                                        )
+                                    }
+                                },
                             onToggleSpoilerActive = { e ->
                                 model.reduce(EntryDetailMviModel.Intent.ToggleSpoilerActive(e))
                             },

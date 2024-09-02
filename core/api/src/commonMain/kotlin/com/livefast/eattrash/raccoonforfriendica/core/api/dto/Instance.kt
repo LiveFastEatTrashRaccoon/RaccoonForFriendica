@@ -11,7 +11,7 @@ data class Instance(
     @SerialName("source_url") val sourceUrl: String? = null,
     @SerialName("description") val description: String? = null,
     @SerialName("usage") val usage: InstanceUsage? = null,
-    @SerialName("thumbnail") val thumbnail: InstanceThumbnail? = null,
+    @SerialName("thumbnail") val thumbnail: String? = null,
     @SerialName("icon") val icon: List<InstanceIcon> = emptyList(),
     @SerialName("languages") val languages: List<String> = emptyList(),
     @SerialName("rules") val rules: List<InstanceRule> = emptyList(),

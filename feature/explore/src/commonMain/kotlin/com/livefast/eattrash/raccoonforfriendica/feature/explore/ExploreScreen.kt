@@ -148,6 +148,7 @@ class ExploreScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.sectionTitleExplore,
                             style = MaterialTheme.typography.titleMedium,
                         )

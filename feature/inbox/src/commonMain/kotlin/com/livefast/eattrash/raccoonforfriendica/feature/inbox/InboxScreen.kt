@@ -112,6 +112,7 @@ class InboxScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.sectionTitleInbox,
                             style = MaterialTheme.typography.titleMedium,
                         )

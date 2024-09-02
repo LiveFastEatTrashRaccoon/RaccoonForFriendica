@@ -7,6 +7,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 interface CirclesRepository {
     suspend fun getAll(): List<CircleModel>
 
+    suspend fun getFriendicaCircles(): List<CircleModel>
+
     suspend fun get(id: String): CircleModel?
 
     suspend fun getMembers(

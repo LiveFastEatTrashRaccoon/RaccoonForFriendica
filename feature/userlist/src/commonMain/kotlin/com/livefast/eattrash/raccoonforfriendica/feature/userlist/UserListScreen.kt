@@ -115,6 +115,7 @@ class UserListScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text =
                                 buildString {
                                     when (type) {
