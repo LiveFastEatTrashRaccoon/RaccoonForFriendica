@@ -18,6 +18,7 @@ val featureHashtagModule =
                 identityRepository = get(),
                 userRepository = get(),
                 hapticFeedback = get(),
+                notificationCenter = get(),
             )
         }
         factory<FollowedHashtagsMviModel> {
