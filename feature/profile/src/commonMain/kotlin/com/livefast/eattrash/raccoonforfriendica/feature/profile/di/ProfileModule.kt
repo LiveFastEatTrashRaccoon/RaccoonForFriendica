@@ -33,6 +33,7 @@ val featureProfileModule =
                 myAccountCache = get(),
                 settingsRepository = get(),
                 hapticFeedback = get(),
+                notificationCenter = get(),
             )
         }
         factory<AnonymousMviModel> {
