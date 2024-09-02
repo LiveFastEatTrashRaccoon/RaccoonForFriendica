@@ -10,6 +10,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineCon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -197,7 +200,7 @@ internal class DefaultTimelineEntryRepository(
                         data = data,
                     ).toModel()
             }.getOrNull()
-            }
+        }
 
     override suspend fun update(
         id: String,
@@ -229,7 +232,7 @@ internal class DefaultTimelineEntryRepository(
                         data = data,
                     ).toModel()
             }.getOrNull()
-            }
+        }
 
     override suspend fun delete(id: String): Boolean =
         withContext(Dispatchers.IO) {
