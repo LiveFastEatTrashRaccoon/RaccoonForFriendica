@@ -60,6 +60,7 @@ val domainContentPaginationModule =
         factory<SearchPaginationManager> {
             DefaultSearchPaginationManager(
                 searchRepository = get(),
+                userRepository = get(),
                 notificationCenter = get(),
             )
         }
