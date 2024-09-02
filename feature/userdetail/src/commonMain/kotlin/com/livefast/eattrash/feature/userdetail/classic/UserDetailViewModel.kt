@@ -3,6 +3,8 @@ package com.livefast.eattrash.feature.userdetail.classic
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
@@ -26,6 +28,7 @@ class UserDetailViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
+    private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
         initialState = UserDetailMviModel.State(),
     ),
@@ -156,11 +159,14 @@ class UserDetailViewModel(
             updateState {
                 it.copy(
                     user =
-                        it.user?.copy(
-                            relationshipStatus = newStatus,
-                            notificationStatus = newNotificationStatus,
-                            relationshipStatusPending = false,
-                        ),
+                        it.user
+                            ?.copy(
+                                relationshipStatus = newStatus,
+                                notificationStatus = newNotificationStatus,
+                                relationshipStatusPending = false,
+                            )?.also { user ->
+                                notificationCenter.send(UserUpdatedEvent(user = user))
+                            },
                 )
             }
         }
@@ -177,11 +183,14 @@ class UserDetailViewModel(
             updateState {
                 it.copy(
                     user =
-                        it.user?.copy(
-                            relationshipStatus = newStatus,
-                            notificationStatus = newNotificationStatus,
-                            relationshipStatusPending = false,
-                        ),
+                        it.user
+                            ?.copy(
+                                relationshipStatus = newStatus,
+                                notificationStatus = newNotificationStatus,
+                                relationshipStatusPending = false,
+                            )?.also { user ->
+                                notificationCenter.send(UserUpdatedEvent(user = user))
+                            },
                 )
             }
         }
