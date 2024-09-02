@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
+package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility

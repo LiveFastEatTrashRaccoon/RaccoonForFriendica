@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -35,12 +36,12 @@ internal class DefaultTagRepository(
             runCatching {
                 provider.tags.follow(name)?.toModel()
             }.getOrNull()
-            }
+        }
 
     override suspend fun unfollow(name: String): TagModel? =
         withContext(Dispatchers.IO) {
-        runCatching {
+            runCatching {
                 provider.tags.unfollow(name)?.toModel()
             }.getOrNull()
-            }
+        }
 }

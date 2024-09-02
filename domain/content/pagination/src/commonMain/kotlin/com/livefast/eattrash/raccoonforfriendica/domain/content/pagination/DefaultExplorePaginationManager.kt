@@ -1,24 +1,57 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DefaultExplorePaginationManager(
     private val trendingRepository: TrendingRepository,
     private val userRepository: UserRepository,
+    notificationCenter: NotificationCenter,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ExplorePaginationManager {
     private var specification: ExplorePaginationSpecification? = null
     private var offset = 0
     override var canFetchMore: Boolean = true
     private val history = mutableListOf<ExploreItemModel>()
+    private val mutex = Mutex()
+    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
+
+    init {
+        notificationCenter
+            .subscribe(UserUpdatedEvent::class)
+            .onEach { event ->
+                mutex.withLock {
+                    val idx =
+                        history.indexOfFirst { e -> e is ExploreItemModel.User && e.user.id == event.user.id }
+                    if (idx >= 0) {
+                        (history[idx] as? ExploreItemModel.User)?.copy(user = event.user)?.also {
+                            history[idx] = it
+                        }
+                    }
+                }
+            }.launchIn(scope)
+    }
 
     override suspend fun reset(specification: ExplorePaginationSpecification) {
         this.specification = specification
         offset = 0
-        history.clear()
+        mutex.withLock {
+            history.clear()
+        }
         canFetchMore = true
     }
 
@@ -57,7 +90,9 @@ internal class DefaultExplorePaginationManager(
                         )
                     }
             }.deduplicate().updatePaginationData()
-        history.addAll(results)
+        mutex.withLock {
+            history.addAll(results)
+        }
 
         // return a copy
         return history.map { it }

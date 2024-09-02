@@ -60,11 +60,12 @@ kotlin {
             implementation(projects.core.architecture)
             implementation(projects.core.commonui.components)
             implementation(projects.core.commonui.content)
-            implementation(projects.core.resources)
             implementation(projects.core.l10n)
             implementation(projects.core.navigation)
+            implementation(projects.core.notifications)
             implementation(projects.core.persistence)
             implementation(projects.core.preferences)
+            implementation(projects.core.resources)
             implementation(projects.core.utils)
 
             implementation(projects.domain.content.data)

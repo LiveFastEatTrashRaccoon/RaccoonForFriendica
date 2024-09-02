@@ -36,6 +36,7 @@ val domainContentPaginationModule =
             DefaultExplorePaginationManager(
                 trendingRepository = get(),
                 userRepository = get(),
+                notificationCenter = get(),
             )
         }
         factory<UserPaginationManager> {
@@ -43,6 +44,7 @@ val domainContentPaginationModule =
                 userRepository = get(),
                 timelineEntryRepository = get(),
                 circlesRepository = get(),
+                notificationCenter = get(),
             )
         }
         factory<FavoritesPaginationManager> {
@@ -58,6 +60,7 @@ val domainContentPaginationModule =
         factory<SearchPaginationManager> {
             DefaultSearchPaginationManager(
                 searchRepository = get(),
+                notificationCenter = get(),
             )
         }
         factory<FollowRequestPaginationManager> {

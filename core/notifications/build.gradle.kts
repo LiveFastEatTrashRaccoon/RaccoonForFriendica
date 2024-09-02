@@ -21,7 +21,7 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "feature.userlist"
+            baseName = "core.notifications"
             isStatic = true
         }
     }
@@ -31,33 +31,18 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.material3)
-                implementation(compose.materialIconsExtended)
 
                 implementation(libs.koin.core)
-                implementation(libs.voyager.screenmodel)
-                implementation(libs.voyager.koin)
 
-                implementation(projects.core.appearance)
-                implementation(projects.core.architecture)
-                implementation(projects.core.commonui.components)
-                implementation(projects.core.commonui.content)
-                implementation(projects.core.l10n)
-                implementation(projects.core.navigation)
-                implementation(projects.core.notifications)
                 implementation(projects.core.utils)
-
                 implementation(projects.domain.content.data)
-                implementation(projects.domain.content.pagination)
-                implementation(projects.domain.content.repository)
             }
         }
     }
 }
 
 android {
-    namespace = "com.livefast.eattrash.raccoonforfriendica.feature.userlist"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.core.notifications"
     compileSdk =
         libs.versions.android.targetSdk
             .get()

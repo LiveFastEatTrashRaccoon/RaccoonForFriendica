@@ -1,26 +1,56 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DefaultUserPaginationManager(
     private val userRepository: UserRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val circlesRepository: CirclesRepository,
+    notificationCenter: NotificationCenter,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : UserPaginationManager {
     private var specification: UserPaginationSpecification? = null
     private var pageCursor: String? = null
     override var canFetchMore: Boolean = true
     private val history = mutableListOf<UserModel>()
+    private val mutex = Mutex()
+    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
+
+    init {
+        notificationCenter
+            .subscribe(UserUpdatedEvent::class)
+            .onEach { event ->
+                mutex.withLock {
+                    val idx = history.indexOfFirst { u -> u.id == event.user.id }
+                    if (idx >= 0) {
+                        history[idx] = event.user
+                    }
+                }
+            }.launchIn(scope)
+    }
 
     override suspend fun reset(specification: UserPaginationSpecification) {
         this.specification = specification
         pageCursor = null
-        history.clear()
+        mutex.withLock {
+            history.clear()
+        }
         canFetchMore = true
     }
 
@@ -122,7 +152,9 @@ internal class DefaultUserPaginationManager(
                             it.id !in specification.excludeIds
                         }
             }
-        history.addAll(results)
+        mutex.withLock {
+            history.addAll(results)
+        }
 
         // return a copy
         return history.map { it }
