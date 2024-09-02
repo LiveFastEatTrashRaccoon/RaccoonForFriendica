@@ -34,6 +34,7 @@ fun CustomImage(
     colorFilter: ColorFilter? = null,
     onLoading: @Composable (BoxScope.(Float?) -> Unit)? = null,
     onFailure: @Composable (BoxScope.(Throwable) -> Unit)? = null,
+    onSuccess: @Composable (BoxScope.() -> Unit)? = null,
 ) {
     val imageLoaderProvider = remember { getImageLoaderProvider() }
     var painterState: AsyncImagePainter.State by remember {
@@ -69,6 +70,10 @@ fun CustomImage(
 
             is AsyncImagePainter.State.Loading -> {
                 onLoading?.invoke(this, null)
+            }
+
+            is AsyncImagePainter.State.Success -> {
+                onSuccess?.invoke(this)
             }
 
             else -> Unit

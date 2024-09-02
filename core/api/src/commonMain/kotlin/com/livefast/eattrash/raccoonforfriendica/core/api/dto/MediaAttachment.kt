@@ -11,4 +11,5 @@ data class MediaAttachment(
     @SerialName("preview_url") val previewUrl: String? = null,
     @SerialName("type") val type: MediaType,
     @SerialName("url") val url: String,
+    @SerialName("blurhash") val blurHash: String? = null,
 )

@@ -110,6 +110,9 @@ internal fun MediaAttachment.toModel() =
         url = url,
         previewUrl = previewUrl,
         type = type.toModel(),
+        blurHash = blurHash,
+        originalWidth = meta?.original?.width,
+        originalHeight = meta?.original?.height,
     )
 
 internal fun MediaTypeDto.toModel(): MediaType =

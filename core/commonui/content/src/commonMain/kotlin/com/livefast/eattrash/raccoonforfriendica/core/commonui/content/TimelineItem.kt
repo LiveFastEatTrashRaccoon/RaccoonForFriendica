@@ -235,6 +235,9 @@ fun TimelineItem(
                             ),
                         url = imageUrl,
                         altText = firstImageAttachment.description,
+                        blurHash = firstImageAttachment.blurHash,
+                        originalWidth = firstImageAttachment.originalWidth ?: 0,
+                        originalHeight = firstImageAttachment.originalHeight ?: 0,
                         sensitive = blurNsfw && entryToDisplay.sensitive,
                         onClick = { onOpenImage?.invoke(imageUrl) },
                     )
