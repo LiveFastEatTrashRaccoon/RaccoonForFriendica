@@ -199,11 +199,13 @@ class CirclesScreen : Screen {
                             circle = circle,
                             onClick = {
                                 detailOpener.openCircle(circle.id)
-                            },
+                            }.takeIf { circle.editable },
                             options =
                                 buildList {
-                                    this += OptionId.Edit.toOption()
-                                    this += OptionId.Delete.toOption()
+                                    if (circle.editable) {
+                                        this += OptionId.Edit.toOption()
+                                        this += OptionId.Delete.toOption()
+                                    }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {

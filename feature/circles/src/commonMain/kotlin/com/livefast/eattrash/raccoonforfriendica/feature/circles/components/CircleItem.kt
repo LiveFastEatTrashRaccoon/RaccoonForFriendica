@@ -48,9 +48,15 @@ internal fun CircleItem(
     Row(
         modifier =
             modifier
-                .clickable {
-                    onClick?.invoke()
-                }.padding(Spacing.s),
+                .then(
+                    if (onClick != null) {
+                        Modifier.clickable {
+                            onClick?.invoke()
+                        }
+                    } else {
+                        Modifier
+                    },
+                ).padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
