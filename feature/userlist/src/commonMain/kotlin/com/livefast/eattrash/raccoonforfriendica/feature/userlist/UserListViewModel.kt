@@ -12,6 +12,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 internal class UserListViewModel(
@@ -26,6 +28,11 @@ internal class UserListViewModel(
     UserListMviModel {
     init {
         screenModelScope.launch {
+            notificationCenter
+                .subscribe(UserUpdatedEvent::class)
+                .onEach { event ->
+                    updateUserInState(event.user.id) { event.user }
+                }.launchIn(this)
             if (uiState.value.initial) {
                 loadUser()
                 refresh(initial = true)

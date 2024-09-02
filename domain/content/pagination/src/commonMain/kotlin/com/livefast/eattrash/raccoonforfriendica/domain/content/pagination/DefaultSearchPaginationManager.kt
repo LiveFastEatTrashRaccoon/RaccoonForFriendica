@@ -5,7 +5,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserU
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +21,7 @@ import kotlinx.coroutines.sync.withLock
 
 internal class DefaultSearchPaginationManager(
     private val searchRepository: SearchRepository,
+    private val userRepository: UserRepository,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : SearchPaginationManager {
@@ -79,7 +83,7 @@ internal class DefaultSearchPaginationManager(
                             query = specification.query,
                             pageCursor = pageCursor,
                             type = SearchResultType.Users,
-                        )
+                        ).determineUserRelationshipStatus()
             }.deduplicate().updatePaginationData()
         mutex.withLock {
             history.addAll(results)
@@ -103,4 +107,24 @@ internal class DefaultSearchPaginationManager(
         }.distinctBy { it.id }
 
     private fun List<ExploreItemModel>.filterNsfw(included: Boolean): List<ExploreItemModel> = filter { included || !it.isNsfw }
+
+    private suspend fun List<ExploreItemModel>.determineUserRelationshipStatus(): List<ExploreItemModel> =
+        run {
+            val userIds = mapNotNull { e -> (e as? ExploreItemModel.User)?.user?.id }
+            val relationships = userRepository.getRelationships(userIds)
+            map { entry ->
+                if (entry !is ExploreItemModel.User) {
+                    entry
+                } else {
+                    val relationship = relationships.firstOrNull { rel -> rel.id == entry.user.id }
+                    entry.copy(
+                        user =
+                            entry.user.copy(
+                                relationshipStatus = relationship?.toStatus(),
+                                notificationStatus = relationship?.toNotificationStatus(),
+                            ),
+                    )
+                }
+            }
+        }
 }

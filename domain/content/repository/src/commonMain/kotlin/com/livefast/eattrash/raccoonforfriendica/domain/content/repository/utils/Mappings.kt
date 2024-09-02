@@ -162,7 +162,7 @@ internal fun Account.toModel() =
         id = id,
         locked = locked,
         username = username,
-        discoverable = discoverable,
+        discoverable = discoverable ?: true,
         noIndex = noIndex,
         url = url,
     )
@@ -184,7 +184,7 @@ internal fun CredentialAccount.toModel() =
         id = id,
         locked = locked,
         username = username,
-        discoverable = discoverable,
+        discoverable = discoverable ?: true,
         noIndex = noIndex,
         url = url,
     )
