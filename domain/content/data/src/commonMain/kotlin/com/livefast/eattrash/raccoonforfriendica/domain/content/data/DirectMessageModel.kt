@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
 data class DirectMessageModel(
     val id: String,
+    val created: String? = null,
     val text: String? = null,
     val title: String? = null,
     val read: Boolean = true,

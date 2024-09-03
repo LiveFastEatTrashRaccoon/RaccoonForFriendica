@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessa
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
+import io.ktor.http.append
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -50,6 +51,14 @@ internal class DefaultDirectMessageRepository(
                     FormDataContent(
                         formData =
                             Parameters.build {
+                                if (title != null) {
+                                    append("title", title)
+                                }
+                                append("text", text)
+                                if (inReplyTo != null) {
+                                    append("replyto", inReplyTo)
+                                }
+                                append("user_id", recipientId)
                             },
                     )
                 val res = provider.directMessage.create(data)
