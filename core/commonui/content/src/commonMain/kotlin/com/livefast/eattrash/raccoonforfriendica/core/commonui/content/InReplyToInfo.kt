@@ -67,8 +67,8 @@ internal fun InReplyToInfo(
                             if (user != null) {
                                 onOpenUser?.invoke(user)
                             }
-                        }.padding(Spacing.xxxs)
-                        .size(iconSize)
+                        }.size(iconSize)
+                        .padding(Spacing.xxxs)
                         .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
                 quality = FilterQuality.Low,

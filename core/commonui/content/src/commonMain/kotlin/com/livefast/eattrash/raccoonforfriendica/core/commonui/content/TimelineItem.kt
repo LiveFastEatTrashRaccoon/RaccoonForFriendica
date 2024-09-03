@@ -189,7 +189,6 @@ fun TimelineItem(
                     ContentTitle(
                         modifier =
                             Modifier.fillMaxWidth().padding(
-                                top = Spacing.xxs,
                                 start = contentHorizontalPadding,
                                 end = contentHorizontalPadding,
                             ),
@@ -204,7 +203,6 @@ fun TimelineItem(
                         Modifier.fillMaxWidth().then(
                             if (title == null) {
                                 Modifier.padding(
-                                    top = Spacing.xxs,
                                     start = contentHorizontalPadding,
                                     end = contentHorizontalPadding,
                                 )
@@ -229,7 +227,8 @@ fun TimelineItem(
                     ContentImage(
                         modifier =
                             Modifier.fillMaxWidth().padding(
-                                top = Spacing.xs,
+                                top = Spacing.s,
+                                bottom = Spacing.xxxs,
                                 start = contentHorizontalPadding,
                                 end = contentHorizontalPadding,
                             ),
@@ -246,7 +245,7 @@ fun TimelineItem(
                     PollCard(
                         modifier =
                             Modifier.fillMaxWidth().padding(
-                                top = Spacing.xs,
+                                top = Spacing.s,
                                 start = contentHorizontalPadding,
                                 end = contentHorizontalPadding,
                             ),
@@ -263,7 +262,7 @@ fun TimelineItem(
                             Modifier
                                 .fillMaxWidth()
                                 .padding(
-                                    top = Spacing.xs,
+                                    top = Spacing.s,
                                     start = contentHorizontalPadding,
                                     end = contentHorizontalPadding,
                                 ),

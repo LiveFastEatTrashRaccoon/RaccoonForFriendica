@@ -58,8 +58,8 @@ fun ContentHeader(
                             if (user != null) {
                                 onOpenUser?.invoke(user)
                             }
-                        }.padding(Spacing.xxxs)
-                        .size(iconSize)
+                        }.size(iconSize)
+                        .padding(Spacing.xxxs)
                         .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
                 quality = FilterQuality.Low,
@@ -75,8 +75,8 @@ fun ContentHeader(
                         if (user != null) {
                             onOpenUser?.invoke(user)
                         }
-                },
-                    size = iconSize,
+                    },
+                size = iconSize,
                 title = creatorName,
             )
         }
@@ -90,32 +90,27 @@ fun ContentHeader(
                 color = fullColor,
             )
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(Spacing.s),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text =
-                        buildString {
-                            if (!user?.handle.isNullOrBlank()) {
-                                append(user?.handle?.ellipsize(25))
+            Text(
+                text =
+                    buildString {
+                        if (!user?.handle.isNullOrBlank()) {
+                            append(user?.handle?.ellipsize(30))
+                        }
+                        if (!date.isNullOrBlank()) {
+                            if (isNotEmpty()) {
+                                append(" • ")
                             }
-                            if (!date.isNullOrBlank()) {
-                                if (isNotEmpty()) {
-                                    append(" • ")
-                                }
-                                append(date.prettifyDate())
-                                if (isEdited) {
-                                    append(" (")
-                                    append(LocalStrings.current.infoEdited)
-                                    append(")")
-                                }
+                            append(date.prettifyDate())
+                            if (isEdited) {
+                                append(" (")
+                                append(LocalStrings.current.infoEdited)
+                                append(")")
                             }
-                        },
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = ancillaryColor,
-                )
-            }
+                        }
+                    },
+                style = MaterialTheme.typography.bodyMedium,
+                color = ancillaryColor,
+            )
         }
     }
 }

@@ -38,15 +38,12 @@ class InboxViewModel(
                     updateState {
                         it.copy(isLogged = currentUser != null)
                     }
+                    refresh(initial = true)
                 }.launchIn(this)
             settingsRepository.current
                 .onEach { settings ->
                     updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
                 }.launchIn(this)
-
-            if (uiState.value.initial) {
-                refresh(initial = true)
-            }
         }
     }
 
@@ -159,8 +156,8 @@ class InboxViewModel(
                             )
                         } else {
                             notification
-                    }
-                },
+                        }
+                    },
             )
         }
     }

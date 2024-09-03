@@ -113,7 +113,12 @@ internal fun NotificationItem(
                     .background(
                         color = boxColor,
                         shape = RoundedCornerShape(CornerSize.l),
-                    ).clip(RoundedCornerShape(CornerSize.l)),
+                    ).clip(RoundedCornerShape(CornerSize.l))
+                    .padding(
+                        start = Spacing.xxs,
+                        end = Spacing.xxs,
+                        bottom = Spacing.xs,
+                    ),
         ) {
             if (entry != null) {
                 TimelineItem(

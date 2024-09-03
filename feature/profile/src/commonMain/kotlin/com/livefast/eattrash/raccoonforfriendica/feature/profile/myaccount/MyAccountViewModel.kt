@@ -14,6 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.MyAccountCache
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -42,6 +43,7 @@ class MyAccountViewModel(
                     val cachedUser = myAccountCache.retrieveUser()
                     val cachedPaginationState = myAccountCache.retrievePaginationState()
                     if (cachedUser?.id != userId) {
+                        delay(50)
                         val currentUser = userRepository.getById(userId)
                         updateState { it.copy(user = currentUser) }
                         refresh(initial = true)
