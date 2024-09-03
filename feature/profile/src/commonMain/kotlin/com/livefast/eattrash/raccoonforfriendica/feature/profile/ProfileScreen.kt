@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -177,7 +178,20 @@ class ProfileScreen : Screen {
                             )
                         },
                     )
-                }
+                } +
+                    CustomModalBottomSheetItem(
+                        label = LocalStrings.current.actionAddNew,
+                        leadingContent = {
+                            IconButton(
+                                onClick = {},
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AddCircle,
+                                    contentDescription = null,
+                                )
+                            }
+                        },
+                    )
             CustomModalBottomSheet(
                 title = LocalStrings.current.actionSwitchAccount,
                 sheetState = sheetState,
@@ -185,8 +199,13 @@ class ProfileScreen : Screen {
                 onSelected = { index ->
                     manageAccountsDialogOpened = false
                     if (index != null) {
-                        val selectedAccount = uiState.availableAccounts[index]
-                        model.reduce(ProfileMviModel.Intent.SwitchAccount(selectedAccount))
+                        val accounts = uiState.availableAccounts
+                        if (index in accounts.indices) {
+                            val selectedAccount = accounts[index]
+                            model.reduce(ProfileMviModel.Intent.SwitchAccount(selectedAccount))
+                        } else {
+                            model.reduce(ProfileMviModel.Intent.AddAccount)
+                        }
                     }
                 },
                 onLongPress = { index ->

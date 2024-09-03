@@ -268,4 +268,5 @@ internal open class DefaultStrings : Strings {
     override val nodeInfoTitle = "Node info"
     override val nodeInfoSectionRules = "Rules"
     override val nodeInfoSectionContact = "Contact"
+    override val actionAddNew = "Add new"
 }

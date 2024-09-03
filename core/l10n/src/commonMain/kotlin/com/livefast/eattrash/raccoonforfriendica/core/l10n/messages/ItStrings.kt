@@ -274,4 +274,5 @@ internal val ItStrings =
         override val nodeInfoTitle = "Informazioni istanza"
         override val nodeInfoSectionRules = "Regole"
         override val nodeInfoSectionContact = "Contatto"
+        override val actionAddNew = "Aggiungi nuovo"
     }

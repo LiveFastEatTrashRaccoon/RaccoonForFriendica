@@ -19,6 +19,8 @@ interface ProfileMviModel :
         data class DeleteAccount(
             val account: AccountModel,
         ) : Intent
+
+        data object AddAccount : Intent
     }
 
     data class State(

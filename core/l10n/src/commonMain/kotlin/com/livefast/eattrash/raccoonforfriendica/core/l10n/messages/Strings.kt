@@ -251,6 +251,7 @@ interface Strings {
     val nodeInfoTitle: String
     val nodeInfoSectionRules: String
     val nodeInfoSectionContact: String
+    val actionAddNew: String
 }
 
 object Locales {
