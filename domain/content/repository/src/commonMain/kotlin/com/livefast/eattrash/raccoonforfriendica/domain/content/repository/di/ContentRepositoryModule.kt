@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultCirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultDirectMessageRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultInboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNotificationRepository
@@ -12,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
@@ -79,6 +81,11 @@ val domainContentRepositoryModule =
         }
         single<NodeInfoRepository> {
             DefaultNodeInfoRepository(
+                provider = get(named("default")),
+            )
+        }
+        single<DirectMessageRepository> {
+            DefaultDirectMessageRepository(
                 provider = get(named("default")),
             )
         }
