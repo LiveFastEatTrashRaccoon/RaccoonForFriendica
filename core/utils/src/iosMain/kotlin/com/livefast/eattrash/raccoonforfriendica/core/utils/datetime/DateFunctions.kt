@@ -45,6 +45,19 @@ actual fun getFormattedDate(
     return dateFormatter.stringFromDate(date)
 }
 
+actual fun parseDate(
+    value: String,
+    format: String,
+): String {
+    val dateFormatter = NSDateFormatter()
+    dateFormatter.timeZone = NSTimeZone.localTimeZone
+    dateFormatter.locale = NSLocale.autoupdatingCurrentLocale
+    dateFormatter.dateFormat = format
+
+    val date = dateFormatter.dateFromString(value) ?: return ""
+    return NSISO8601DateFormatter().stringFromDate(date)
+}
+
 actual fun getPrettyDate(
     iso8601Timestamp: String,
     yearLabel: String,

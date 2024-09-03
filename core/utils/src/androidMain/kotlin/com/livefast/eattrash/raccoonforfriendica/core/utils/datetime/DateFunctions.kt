@@ -15,9 +15,12 @@ import java.time.Duration as JavaDuration
 
 actual fun epochMillis(): Long = System.currentTimeMillis()
 
+private val formatter =
+    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.US).apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }
+
 actual fun Long.toIso8601Timestamp(): String? {
-    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.US)
-    formatter.timeZone = TimeZone.getTimeZone("UTC")
     val date = Date(this)
     return formatter.format(date)
 }
@@ -30,6 +33,16 @@ actual fun getFormattedDate(
     val formatter = DateTimeFormatter.ofPattern(format)
     return date.format(formatter)
 }
+
+actual fun parseDate(
+    value: String,
+    format: String,
+): String =
+    SimpleDateFormat(format, Locale.US)
+        .apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }.parse(value)
+        ?.let { formatter.format(it) }.orEmpty()
 
 actual fun getPrettyDate(
     iso8601Timestamp: String,
