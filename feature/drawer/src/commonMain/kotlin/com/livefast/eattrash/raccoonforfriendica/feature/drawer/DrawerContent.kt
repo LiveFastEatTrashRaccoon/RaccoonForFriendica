@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.drawer
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Flaky
@@ -100,6 +101,16 @@ class DrawerContent : Screen {
                         handleOpen { detailOpener.openCircles() }
                     },
                 )
+
+                if (uiState.hasDirectMessages) {
+                    DrawerShortcut(
+                        title = LocalStrings.current.directMessagesTitle,
+                        icon = Icons.AutoMirrored.Default.Chat,
+                        onSelected = {
+                            handleOpen { detailOpener.openDirectMessages() }
+                        },
+                    )
+                }
             }
 
             DrawerShortcut(
