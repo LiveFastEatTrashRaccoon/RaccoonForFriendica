@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.InstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
@@ -16,6 +17,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 
 interface ServiceProvider {
     val apps: AppService
+    val directMessage: DirectMessageService
     val followRequests: FollowRequestService
     val instance: InstanceService
     val lists: ListService

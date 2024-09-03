@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.InstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
@@ -14,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineServic
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createAppService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createDirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createFollowRequestService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createInstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createListService
@@ -57,6 +59,7 @@ internal class DefaultServiceProvider(
     private var currentNode: String = ""
 
     override lateinit var apps: AppService
+    override lateinit var directMessage: DirectMessageService
     override lateinit var followRequests: FollowRequestService
     override lateinit var instance: InstanceService
     override lateinit var lists: ListService
@@ -149,6 +152,7 @@ internal class DefaultServiceProvider(
                 .converterFactories(ResponseConverterFactory())
                 .build()
         apps = ktorfit.createAppService()
+        directMessage = ktorfit.createDirectMessageService()
         followRequests = ktorfit.createFollowRequestService()
         instance = ktorfit.createInstanceService()
         lists = ktorfit.createListService()
