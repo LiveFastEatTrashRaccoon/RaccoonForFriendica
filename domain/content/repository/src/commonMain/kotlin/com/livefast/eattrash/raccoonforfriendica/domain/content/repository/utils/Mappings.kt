@@ -5,7 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Field
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaContact
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPrivateMessage
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.HistoryItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Instance
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaAttachment
@@ -29,6 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserListReplyPolic
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHistoryItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
@@ -339,4 +342,23 @@ internal fun Instance.toModel() =
         languages = languages,
         rules = rules.mapNotNull { it.text },
         contact = contactAccount?.toModel(),
+    )
+
+internal fun FriendicaContact.toModel() =
+    UserModel(
+        id = id.toString(),
+        displayName = screenName,
+        username = name,
+        url = url,
+        avatar = profileImageUrl,
+        bio = description,
+    )
+
+internal fun FriendicaPrivateMessage.toModel() =
+    DirectMessageModel(
+        id = id.toString(),
+        text = text,
+        title = title,
+        sender = sender?.toModel(),
+        recipient = recipient?.toModel(),
     )
