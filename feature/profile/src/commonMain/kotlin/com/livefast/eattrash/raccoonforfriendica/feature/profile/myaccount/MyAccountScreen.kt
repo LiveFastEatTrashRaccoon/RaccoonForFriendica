@@ -81,6 +81,7 @@ class MyAccountScreen : Screen {
         val model = getScreenModel<MyAccountMviModel>()
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
+        val connection = navigationCoordinator.getBottomBarScrollConnection()
         val uriHandler = LocalUriHandler.current
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
@@ -149,7 +150,13 @@ class MyAccountScreen : Screen {
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
+                    .then(
+                        if (connection != null) {
+                            Modifier.nestedScroll(connection)
+                        } else {
+                            Modifier
+                        },
+                    ).nestedScroll(scrollBehavior.nestedScrollConnection)
                     .pullRefresh(pullRefreshState),
         ) {
             LazyColumn(
