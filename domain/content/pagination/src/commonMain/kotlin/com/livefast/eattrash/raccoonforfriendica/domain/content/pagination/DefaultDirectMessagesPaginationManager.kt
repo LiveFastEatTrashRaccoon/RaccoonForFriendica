@@ -7,13 +7,13 @@ internal class DefaultDirectMessagesPaginationManager(
     private val directMessageRepository: DirectMessageRepository,
 ) : DirectMessagesPaginationManager {
     private var specification: DirectMessagesPaginationSpecification? = null
-    private var page = 0
+    private var page = 1
     override var canFetchMore: Boolean = true
     private val history = mutableListOf<DirectMessageModel>()
 
     override suspend fun reset(specification: DirectMessagesPaginationSpecification) {
         this.specification = specification
-        page = 0
+        page = 1
         history.clear()
         canFetchMore = true
     }

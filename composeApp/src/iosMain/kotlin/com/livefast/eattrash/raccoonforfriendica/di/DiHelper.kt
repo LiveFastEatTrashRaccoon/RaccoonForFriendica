@@ -22,6 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.d
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.domainIdentityUseCaseModule
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.featureCirclesModule
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.featureComposerModule
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.featureDirectMessagesModule
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.di.featureDrawerModule
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.featureEntryDetailModule
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.di.featureExploreModule
@@ -87,6 +88,7 @@ fun initKoin(): Koin {
                 featureSearchModule,
                 featureThreadModule,
                 featureNodeInfoModule,
+                featureDirectMessagesModule,
             )
         }
     return koinApp.koin
