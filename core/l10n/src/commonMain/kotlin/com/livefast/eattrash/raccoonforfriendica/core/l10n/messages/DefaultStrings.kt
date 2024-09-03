@@ -269,4 +269,11 @@ internal open class DefaultStrings : Strings {
     override val nodeInfoSectionRules = "Rules"
     override val nodeInfoSectionContact = "Contact"
     override val actionAddNew = "Add new"
+    override val directMessagesTitle = "Direct messages"
+
+    override fun messages(count: Int): String =
+        when (count) {
+            1 -> "message"
+            else -> "messages"
+        }
 }

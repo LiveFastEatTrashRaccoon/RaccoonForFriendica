@@ -275,4 +275,11 @@ internal val ItStrings =
         override val nodeInfoSectionRules = "Regole"
         override val nodeInfoSectionContact = "Contatto"
         override val actionAddNew = "Aggiungi nuovo"
+        override val directMessagesTitle = "Messaggi diretti"
+
+        override fun messages(count: Int): String =
+            when (count) {
+                1 -> "messaggio"
+                else -> "messaggi"
+            }
     }
