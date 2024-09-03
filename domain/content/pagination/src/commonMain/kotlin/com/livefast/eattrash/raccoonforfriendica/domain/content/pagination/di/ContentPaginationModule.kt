@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultDirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultExplorePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultFavoritesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultFollowRequestPaginationManager
@@ -8,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultSearchPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultTimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultUserPaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.ExplorePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowRequestPaginationManager
@@ -69,6 +71,11 @@ val domainContentPaginationModule =
         factory<FollowRequestPaginationManager> {
             DefaultFollowRequestPaginationManager(
                 userRepository = get(),
+            )
+        }
+        factory<DirectMessagesPaginationManager> {
+            DefaultDirectMessagesPaginationManager(
+                directMessageRepository = get(),
             )
         }
     }
