@@ -11,6 +11,7 @@ data class FriendicaPrivateMessage(
     @SerialName("recipient") val recipient: FriendicaContact? = null,
     @SerialName("recipient_id") val recipientId: Long? = null,
     @SerialName("text") val text: String? = null,
+    @SerialName("created_at") val createdAt: String? = null,
     @SerialName("title") val title: String? = null,
     @SerialName("sender_screen_name") val senderScreenName: String? = null,
     @SerialName("recipient_screen_name") val recipientScreenName: String? = null,

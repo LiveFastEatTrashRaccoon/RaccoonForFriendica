@@ -14,6 +14,7 @@ interface DrawerMviModel :
     data class State(
         val user: UserModel? = null,
         val node: String? = null,
+        val hasDirectMessages: Boolean = false,
     )
 
     sealed interface Effect

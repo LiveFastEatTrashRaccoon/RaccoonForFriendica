@@ -57,7 +57,6 @@ class FollowedHashtagsScreen : Screen {
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val connection = navigationCoordinator.getBottomBarScrollConnection()
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
         val scope = rememberCoroutineScope()
@@ -114,13 +113,7 @@ class FollowedHashtagsScreen : Screen {
                     Modifier
                         .padding(padding)
                         .fillMaxWidth()
-                        .then(
-                            if (connection != null) {
-                                Modifier.nestedScroll(connection)
-                            } else {
-                                Modifier
-                            },
-                        ).nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .pullRefresh(pullRefreshState),
             ) {
                 LazyColumn(

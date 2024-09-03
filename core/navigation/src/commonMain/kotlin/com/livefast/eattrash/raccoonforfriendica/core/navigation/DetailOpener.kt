@@ -60,4 +60,6 @@ interface DetailOpener {
     fun openEditProfile()
 
     fun openNodeInfo()
+
+    fun openDirectMessages()
 }

@@ -13,10 +13,15 @@ expect fun epochMillis(): Long
 expect fun Long.toIso8601Timestamp(): String?
 
 /**
- * Represents a date with a given format.
+ * Converts a date (in the ISO 8601 format) to another given format.
  */
 expect fun getFormattedDate(
     iso8601Timestamp: String,
+    format: String,
+): String
+
+expect fun parseDate(
+    value: String,
     format: String,
 ): String
 

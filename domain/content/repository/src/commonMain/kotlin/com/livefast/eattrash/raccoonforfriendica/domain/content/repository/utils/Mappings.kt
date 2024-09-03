@@ -28,6 +28,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserListReplyPolicy
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.parseDate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
@@ -357,8 +358,16 @@ internal fun FriendicaContact.toModel() =
 internal fun FriendicaPrivateMessage.toModel() =
     DirectMessageModel(
         id = id.toString(),
+        created =
+            createdAt?.let { date ->
+                parseDate(
+                    value = date,
+                    format = "EEE MMM dd HH:mm:ss ZZZZ yyyy",
+                )
+            },
         text = text,
         title = title,
         sender = sender?.toModel(),
         recipient = recipient?.toModel(),
+        parentUri = parentUri,
     )

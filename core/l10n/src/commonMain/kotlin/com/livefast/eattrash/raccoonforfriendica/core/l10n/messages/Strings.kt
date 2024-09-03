@@ -252,6 +252,9 @@ interface Strings {
     val nodeInfoSectionRules: String
     val nodeInfoSectionContact: String
     val actionAddNew: String
+    val directMessagesTitle: String
+
+    fun messages(count: Int): String
 }
 
 object Locales {

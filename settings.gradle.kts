@@ -52,6 +52,7 @@ include(":domain:identity:usecase")
 
 include(":feature:circles")
 include(":feature:composer")
+include(":feature:directmessages")
 include(":feature:drawer")
 include(":feature:entrydetail")
 include(":feature:explore")

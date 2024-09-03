@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.followrequests
+package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -41,21 +42,19 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.components.FollowRequestItem
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.ConversationItem
 import kotlinx.coroutines.launch
 
-class FollowRequestsScreen : Screen {
+class DirectMessageListScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        val model = getScreenModel<FollowRequestsMviModel>()
+        val model = getScreenModel<DirectMessageListMviModel>()
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
         val scope = rememberCoroutineScope()
 
@@ -78,7 +77,7 @@ class FollowRequestsScreen : Screen {
                     title = {
                         Text(
                             modifier = Modifier.padding(horizontal = Spacing.s),
-                            text = LocalStrings.current.followRequestsTitle,
+                            text = LocalStrings.current.directMessagesTitle,
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },
@@ -102,7 +101,7 @@ class FollowRequestsScreen : Screen {
                 rememberPullRefreshState(
                     refreshing = uiState.refreshing,
                     onRefresh = {
-                        model.reduce(FollowRequestsMviModel.Intent.Refresh)
+                        model.reduce(DirectMessageListMviModel.Intent.Refresh)
                     },
                 )
             Box(
@@ -117,41 +116,36 @@ class FollowRequestsScreen : Screen {
                     state = lazyListState,
                 ) {
                     if (uiState.initial) {
-                        items(5) {
-                            GenericPlaceholder(modifier = Modifier.fillMaxWidth())
+                        items(10) {
+                            GenericPlaceholder(height = 120.dp)
                             HorizontalDivider(
                                 modifier = Modifier.padding(vertical = Spacing.s),
                             )
                         }
                     }
 
-                    if (!uiState.initial && uiState.items.isEmpty()) {
+                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
                         item {
                             Text(
-                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
+                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
                                 text = LocalStrings.current.messageEmptyList,
                                 textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onBackground,
+                                style = MaterialTheme.typography.bodyLarge,
                             )
                         }
                     }
 
                     itemsIndexed(
                         items = uiState.items,
-                        key = { _, e -> e.id },
-                    ) { idx, user ->
-                        FollowRequestItem(
-                            user = user,
-                            onAccept = {
-                                model.reduce(FollowRequestsMviModel.Intent.Accept(user.id))
-                            },
-                            onReject = {
-                                model.reduce(FollowRequestsMviModel.Intent.Reject(user.id))
-                            },
-                            onClick = {
-                                detailOpener.openUserDetail(user.id)
-                            },
+                        key = { _, e -> e.lastMessage.id },
+                    ) { idx, message ->
+
+                        ConversationItem(
+                            conversation = message,
+                            onClick = {},
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = Spacing.s),
                         )
 
                         val canFetchMore =
@@ -159,7 +153,7 @@ class FollowRequestsScreen : Screen {
                         val isNearTheEnd =
                             idx == uiState.items.lastIndex - 5 || uiState.items.size < 5
                         if (isNearTheEnd && canFetchMore) {
-                            model.reduce(FollowRequestsMviModel.Intent.LoadNextPage)
+                            model.reduce(DirectMessageListMviModel.Intent.LoadNextPage)
                         }
                     }
 

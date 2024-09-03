@@ -77,6 +77,7 @@ kotlin {
 
             implementation(projects.feature.circles)
             implementation(projects.feature.composer)
+            implementation(projects.feature.directmessages)
             implementation(projects.feature.drawer)
             implementation(projects.feature.entrydetail)
             implementation(projects.feature.explore)
