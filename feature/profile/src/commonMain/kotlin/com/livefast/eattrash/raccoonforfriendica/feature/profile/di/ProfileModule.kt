@@ -22,6 +22,7 @@ val featureProfileModule =
                 switchAccountUseCase = get(),
                 deleteAccountUseCase = get(),
                 myAccountCache = get(),
+                authManager = get(),
             )
         }
         factory<MyAccountMviModel> {
