@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.detail.CircleDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
@@ -174,6 +175,11 @@ class DefaultDetailOpener(
 
     override fun openNodeInfo() {
         val screen = NodeInfoScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openDirectMessages() {
+        val screen = DirectMessageListScreen()
         navigationCoordinator.push(screen)
     }
 }
