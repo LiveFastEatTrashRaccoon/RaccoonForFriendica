@@ -25,6 +25,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -42,8 +43,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.ConversationItem
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class DirectMessageListScreen : Screen {
@@ -53,6 +57,7 @@ class DirectMessageListScreen : Screen {
         val model = getScreenModel<DirectMessageListMviModel>()
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
+        val detailOpener = remember { getDetailOpener() }
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val lazyListState = rememberLazyListState()
@@ -66,6 +71,15 @@ class DirectMessageListScreen : Screen {
                     topAppBarState.contentOffset = 0f
                 }
             }
+        }
+
+        LaunchedEffect(model) {
+            model.effects
+                .onEach { event ->
+                    when (event) {
+                        DirectMessageListMviModel.Effect.BackToTop -> goBackToTop()
+                    }
+                }.launchIn(this)
         }
 
         Scaffold(
@@ -138,11 +152,19 @@ class DirectMessageListScreen : Screen {
                     itemsIndexed(
                         items = uiState.items,
                         key = { _, e -> e.lastMessage.id },
-                    ) { idx, message ->
-
+                    ) { idx, conversation ->
                         ConversationItem(
-                            conversation = message,
-                            onClick = {},
+                            conversation = conversation,
+                            onClick = {
+                                val otherUserId = conversation.otherUser.id
+                                val parentUri = conversation.lastMessage.parentUri
+                                if (parentUri != null) {
+                                    detailOpener.openConversation(
+                                        otherUserId = otherUserId,
+                                        parentUri = parentUri,
+                                    )
+                                }
+                            },
                         )
                         HorizontalDivider(
                             modifier = Modifier.padding(vertical = Spacing.s),
