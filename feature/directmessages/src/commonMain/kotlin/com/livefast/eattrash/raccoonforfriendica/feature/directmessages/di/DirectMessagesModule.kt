@@ -10,6 +10,7 @@ val featureDirectMessagesModule =
             DirectMessageListViewModel(
                 paginationManager = get(),
                 identityRepository = get(),
+                userPaginationManager = get(),
             )
         }
     }

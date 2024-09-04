@@ -5,20 +5,35 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ConversationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class DirectMessageListViewModel(
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
+    private val userPaginationManager: UserPaginationManager,
 ) : DefaultMviModel<DirectMessageListMviModel.Intent, DirectMessageListMviModel.State, DirectMessageListMviModel.Effect>(
         initialState = DirectMessageListMviModel.State(),
     ),
     DirectMessageListMviModel {
     init {
         screenModelScope.launch {
+            uiState
+                .map { it.userSearchQuery }
+                .distinctUntilChanged()
+                .drop(1)
+                .debounce(750)
+                .onEach { query ->
+                    refreshUsers(query)
+                }.launchIn(this)
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
@@ -37,6 +52,21 @@ class DirectMessageListViewModel(
             DirectMessageListMviModel.Intent.LoadNextPage ->
                 screenModelScope.launch {
                     loadNextPage()
+                }
+
+            is DirectMessageListMviModel.Intent.UserSearchSetQuery ->
+                screenModelScope.launch {
+                    updateState { it.copy(userSearchQuery = intent.query) }
+                }
+
+            DirectMessageListMviModel.Intent.UserSearchClear ->
+                screenModelScope.launch {
+                    updateState { it.copy(userSearchUsers = emptyList()) }
+                }
+
+            DirectMessageListMviModel.Intent.UserSearchLoadNextPage ->
+                screenModelScope.launch {
+                    loadNextPageUsers()
                 }
         }
     }
@@ -91,6 +121,33 @@ class DirectMessageListViewModel(
         }
         if (wasRefreshing) {
             emitEffect(DirectMessageListMviModel.Effect.BackToTop)
+        }
+    }
+
+    private suspend fun refreshUsers(query: String) {
+        userPaginationManager.reset(
+            UserPaginationSpecification.Search(
+                query = query,
+                withRelationship = false,
+            ),
+        )
+        updateState { it.copy(userSearchCanFetchMore = userPaginationManager.canFetchMore) }
+        loadNextPageUsers()
+    }
+
+    private suspend fun loadNextPageUsers() {
+        if (uiState.value.userSearchLoading) {
+            return
+        }
+
+        updateState { it.copy(userSearchLoading = true) }
+        val users = userPaginationManager.loadNextPage()
+        updateState {
+            it.copy(
+                userSearchUsers = users,
+                userSearchCanFetchMore = userPaginationManager.canFetchMore,
+                userSearchLoading = false,
+            )
         }
     }
 }

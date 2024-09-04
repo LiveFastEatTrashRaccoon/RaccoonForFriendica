@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ConversationModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 interface DirectMessageListMviModel :
     ScreenModel,
@@ -11,6 +12,14 @@ interface DirectMessageListMviModel :
         data object Refresh : Intent
 
         data object LoadNextPage : Intent
+
+        data object UserSearchLoadNextPage : Intent
+
+        data class UserSearchSetQuery(
+            val query: String,
+        ) : Intent
+
+        data object UserSearchClear : Intent
     }
 
     data class State(
@@ -20,6 +29,10 @@ interface DirectMessageListMviModel :
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
         val items: List<ConversationModel> = emptyList(),
+        val userSearchUsers: List<UserModel> = emptyList(),
+        val userSearchLoading: Boolean = false,
+        val userSearchCanFetchMore: Boolean = true,
+        val userSearchQuery: String = "",
     )
 
     sealed interface Effect {

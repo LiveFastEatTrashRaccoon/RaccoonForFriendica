@@ -10,7 +10,7 @@ import de.jensklingenberg.ktorfit.http.Query
 import io.ktor.client.request.forms.FormDataContent
 
 interface DirectMessageService {
-    @GET("direct_messages")
+    @GET("direct_messages/all")
     suspend fun getAll(
         @Query("count") count: Int,
         @Query("page") page: Int,
