@@ -49,6 +49,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTextualInfoDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SelectUserDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SpoilerTextField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -62,7 +63,6 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.Cre
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InReplyToInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InsertLinkDialog
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.MentionDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SelectCircleDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
 import kotlinx.coroutines.flow.launchIn
@@ -426,7 +426,7 @@ class ComposerScreen(
         }
 
         if (mentionDialogOpen) {
-            MentionDialog(
+            SelectUserDialog(
                 query = uiState.userSearchQuery,
                 users = uiState.userSearchUsers,
                 loading = uiState.userSearchLoading,

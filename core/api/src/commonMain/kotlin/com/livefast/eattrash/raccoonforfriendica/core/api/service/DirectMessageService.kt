@@ -10,7 +10,7 @@ import de.jensklingenberg.ktorfit.http.Query
 import io.ktor.client.request.forms.FormDataContent
 
 interface DirectMessageService {
-    @GET("direct_messages")
+    @GET("direct_messages/all")
     suspend fun getAll(
         @Query("count") count: Int,
         @Query("page") page: Int,
@@ -24,13 +24,14 @@ interface DirectMessageService {
         @Query("count") count: Int,
         @Query("page") page: Int,
         @Query("max_id") maxId: Long? = null,
+        @Query("since_id") sinceId: Long? = null,
         @Query("getText") getText: String = "html",
     ): List<FriendicaPrivateMessage>
 
     @POST("direct_messages/new")
     suspend fun create(
         @Body data: FormDataContent,
-    ): FriendicaApiResult
+    ): FriendicaPrivateMessage
 
     @POST("direct_messages/destroy")
     @Headers("Content-Type: application/json")

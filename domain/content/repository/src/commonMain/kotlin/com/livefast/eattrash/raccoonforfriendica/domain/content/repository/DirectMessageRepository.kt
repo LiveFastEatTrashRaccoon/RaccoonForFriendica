@@ -10,12 +10,17 @@ interface DirectMessageRepository {
         page: Int = 0,
     ): List<DirectMessageModel>
 
+    suspend fun pollReplies(
+        parentUri: String,
+        minId: String,
+    ): List<DirectMessageModel>
+
     suspend fun create(
         recipientId: String,
         text: String,
         title: String? = null,
         inReplyTo: String? = null,
-    ): Boolean
+    ): DirectMessageModel?
 
     suspend fun delete(id: String): Boolean
 

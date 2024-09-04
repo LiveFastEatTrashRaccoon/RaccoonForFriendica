@@ -1,0 +1,211 @@
+package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail
+
+import androidx.compose.ui.text.input.TextFieldValue
+import cafe.adriel.voyager.core.model.screenModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+
+private const val POLLING_INTERVAL = 1200L
+
+class ConversationViewModel(
+    private val otherUserId: String,
+    parentUri: String,
+    private val paginationManager: DirectMessagesPaginationManager,
+    private val identityRepository: IdentityRepository,
+    private val userRepository: UserRepository,
+    private val messageRepository: DirectMessageRepository,
+) : DefaultMviModel<ConversationMviModel.Intent, ConversationMviModel.State, ConversationMviModel.Effect>(
+        initialState = ConversationMviModel.State(),
+    ),
+    ConversationMviModel {
+    private var parentUriToUse = parentUri
+    private var job: Job? = null
+
+    init {
+        screenModelScope.launch {
+            val otherUser = userRepository.getById(otherUserId)
+            val currentUser = identityRepository.currentUser.value
+            updateState {
+                it.copy(
+                    currentUser = currentUser,
+                    otherUser = otherUser,
+                )
+            }
+            if (uiState.value.initial) {
+                refresh(initial = true)
+            }
+        }
+        job =
+            screenModelScope.launch {
+                while (isActive) {
+                    delay(POLLING_INTERVAL)
+                    poll()
+                }
+            }
+    }
+
+    override fun onDispose() {
+        super.onDispose()
+        job?.cancel()
+        job = null
+    }
+
+    override fun reduce(intent: ConversationMviModel.Intent) {
+        when (intent) {
+            ConversationMviModel.Intent.Refresh ->
+                screenModelScope.launch {
+                    refresh()
+                }
+
+            ConversationMviModel.Intent.LoadNextPage ->
+                screenModelScope.launch {
+                    loadNextPage()
+                }
+
+            is ConversationMviModel.Intent.SetNewMessageValue ->
+                screenModelScope.launch {
+                    updateState { it.copy(newMessageValue = intent.value) }
+                }
+
+            ConversationMviModel.Intent.Submit -> submit()
+        }
+    }
+
+    private suspend fun refresh(initial: Boolean = false) {
+        updateState {
+            it.copy(initial = initial, refreshing = !initial)
+        }
+        paginationManager.reset(
+            DirectMessagesPaginationSpecification.Replies(parentUri = parentUriToUse),
+        )
+        loadNextPage()
+    }
+
+    private suspend fun loadNextPage() {
+        if (uiState.value.loading) {
+            return
+        }
+
+        updateState { it.copy(loading = true) }
+        val items = paginationManager.loadNextPage()
+        val wasRefreshing = uiState.value.refreshing
+        updateState {
+            it.copy(
+                items = items,
+                canFetchMore = paginationManager.canFetchMore,
+                loading = false,
+                initial = false,
+                refreshing = false,
+            )
+        }
+        if (wasRefreshing) {
+            emitEffect(ConversationMviModel.Effect.BackToTop)
+        }
+    }
+
+    private fun updateParentUriIfNeeded(value: String?) {
+        if (parentUriToUse.isEmpty() && !value.isNullOrBlank()) {
+            parentUriToUse = value
+        }
+    }
+
+    private suspend fun poll() {
+        val originalItems = uiState.value.items
+        val minId = originalItems.lastOrNull()?.id ?: return
+        val newMessages =
+            messageRepository
+                .pollReplies(
+                    parentUri = parentUriToUse,
+                    minId = minId,
+                ).filter { m1 ->
+                    originalItems.none { m2 -> m2.id == m1.id }
+                }
+        if (newMessages.isNotEmpty()) {
+            updateParentUriIfNeeded(newMessages.lastOrNull()?.parentUri)
+            updateState { it.copy(items = newMessages + originalItems) }
+            emitEffect(ConversationMviModel.Effect.BackToTop)
+        }
+    }
+
+    private suspend fun updateMessageInState(
+        messageId: String,
+        block: (DirectMessageModel) -> DirectMessageModel,
+    ) {
+        updateState {
+            it.copy(
+                items =
+                    it.items.map { msg ->
+                        if (msg.id == messageId) {
+                            msg.let(block)
+                        } else {
+                            msg
+                        }
+                    },
+            )
+        }
+    }
+
+    private fun submit() {
+        val currentState = uiState.value
+        val text = currentState.newMessageValue.text
+        if (text.isEmpty() || currentState.sendInProgress) {
+            return
+        }
+
+        val localId = getUuid()
+        val originalItems = currentState.items
+        val inReplyToId = originalItems.lastOrNull()?.id
+        val newItem =
+            DirectMessageModel(
+                text = text,
+                id = localId,
+                recipient = currentState.otherUser,
+                sender = currentState.currentUser,
+            )
+        screenModelScope.launch {
+            updateState {
+                it.copy(
+                    sendInProgress = true,
+                    items = listOf(newItem) + originalItems,
+                )
+            }
+            emitEffect(ConversationMviModel.Effect.BackToTop)
+            val remoteMessage =
+                messageRepository.create(
+                    recipientId = otherUserId,
+                    text = text,
+                    inReplyTo = inReplyToId,
+                )
+            updateState { it.copy(sendInProgress = false) }
+            if (remoteMessage == null) {
+                emitEffect(ConversationMviModel.Effect.Failure)
+                updateState {
+                    it.copy(items = originalItems)
+                }
+            } else {
+                updateParentUriIfNeeded(remoteMessage.parentUri)
+                updateMessageInState(localId) {
+                    remoteMessage.copy(
+                        // the title is appended in a newline before the body
+                        text = remoteMessage.text?.substringAfter("\n"),
+                    )
+                }
+                updateState {
+                    it.copy(
+                        newMessageValue = TextFieldValue(),
+                    )
+                }
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.composer.components
+package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,7 +47,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun MentionDialog(
+fun SelectUserDialog(
     query: String,
     users: List<UserModel> = emptyList(),
     loading: Boolean = false,
