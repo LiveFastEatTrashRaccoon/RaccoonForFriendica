@@ -65,7 +65,9 @@ object BlurHashDecoder {
                     decodeAc(colorEnc, maxAc * punch)
                 }
             }
-        return composeBitmap(width, height, numCompX, numCompY, colors, useCache)
+        return runCatching {
+            composeBitmap(width, height, numCompX, numCompY, colors, useCache)
+        }.getOrNull()
     }
 
     private fun decode83(
