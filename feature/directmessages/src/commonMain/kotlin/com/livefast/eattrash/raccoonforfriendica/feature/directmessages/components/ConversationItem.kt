@@ -43,6 +43,7 @@ internal fun ConversationItem(
     val avatarSize = IconSize.l
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val parentUri = message.parentUri.orEmpty()
 
     Column(
         modifier =
@@ -50,9 +51,7 @@ internal fun ConversationItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
             ) {
-                message.parentUri?.also {
-                    onClick?.invoke(it)
-                }
+                onClick?.invoke(parentUri)
             },
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
@@ -103,6 +102,9 @@ internal fun ConversationItem(
             ContentTitle(
                 modifier = Modifier.padding(horizontal = contentPadding),
                 content = title,
+                onClick = {
+                    onClick?.invoke(parentUri)
+                },
             )
         }
 
@@ -110,6 +112,9 @@ internal fun ConversationItem(
             ContentBody(
                 modifier = Modifier.padding(horizontal = contentPadding),
                 content = text,
+                onClick = {
+                    onClick?.invoke(parentUri)
+                },
             )
         }
 

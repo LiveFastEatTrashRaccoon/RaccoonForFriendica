@@ -5,23 +5,24 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 
 @Composable
 fun ContentTitle(
     content: String = "",
     modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.onBackground,
     onClick: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
 ) {
-    val fullColor = MaterialTheme.colorScheme.onBackground
     Box(modifier = modifier) {
         val annotatedContent =
             content.parseHtml(
                 linkColor = MaterialTheme.colorScheme.primary,
             )
         ClickableText(
-            style = MaterialTheme.typography.titleMedium.copy(color = fullColor),
+            style = MaterialTheme.typography.titleMedium.copy(color = color),
             text = annotatedContent,
             onClick = { offset ->
                 val url =
