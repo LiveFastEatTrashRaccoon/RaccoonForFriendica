@@ -62,4 +62,8 @@ interface DetailOpener {
     fun openNodeInfo()
 
     fun openDirectMessages()
+
+    fun openConversation(
+        otherUserId: String,
+        parentUri: String)
 }
