@@ -168,9 +168,8 @@ fun TimelineItem(
                 SpoilerCard(
                     modifier =
                         Modifier.fillMaxWidth().padding(
-                            top = Spacing.s,
-                            start = contentHorizontalPadding,
-                            end = contentHorizontalPadding,
+                            vertical = Spacing.s,
+                            horizontal = contentHorizontalPadding,
                         ),
                     content =
                         if (entryToDisplay.isSpoilerActive) {
@@ -245,7 +244,6 @@ fun TimelineItem(
                     PollCard(
                         modifier =
                             Modifier.fillMaxWidth().padding(
-                                top = Spacing.s,
                                 start = contentHorizontalPadding,
                                 end = contentHorizontalPadding,
                             ),
