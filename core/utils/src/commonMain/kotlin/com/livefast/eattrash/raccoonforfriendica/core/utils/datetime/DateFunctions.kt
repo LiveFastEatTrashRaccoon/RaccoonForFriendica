@@ -20,6 +20,9 @@ expect fun getFormattedDate(
     format: String,
 ): String
 
+/**
+ * Parse a date (as String) given its format to an ISO-8601 string date.
+ */
 expect fun parseDate(
     value: String,
     format: String,
