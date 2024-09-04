@@ -5,7 +5,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessa
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
-import io.ktor.http.append
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -39,12 +38,28 @@ internal class DefaultDirectMessageRepository(
             }.getOrElse { emptyList() }
         }
 
+    override suspend fun pollReplies(
+        parentUri: String,
+        minId: String,
+    ): List<DirectMessageModel> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.directMessage
+                    .getConversation(
+                        uri = parentUri,
+                        sinceId = minId.toLongOrNull() ?: 0,
+                        page = 1,
+                        count = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }.getOrElse { emptyList() }
+        }
+
     override suspend fun create(
         recipientId: String,
         text: String,
         title: String?,
         inReplyTo: String?,
-    ): Boolean =
+    ): DirectMessageModel? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val data =
@@ -61,9 +76,8 @@ internal class DefaultDirectMessageRepository(
                                 append("user_id", recipientId)
                             },
                     )
-                val res = provider.directMessage.create(data)
-                res.result == RESULT_OK
-            }.getOrElse { false }
+                provider.directMessage.create(data).toModel()
+            }.getOrNull()
         }
 
     override suspend fun delete(id: String): Boolean =
