@@ -12,4 +12,5 @@ data class FriendicaPhoto(
     @SerialName("type") val type: String? = null,
     @SerialName("link") val link: List<String> = emptyList(),
     @SerialName("media-id") val mediaId: String? = null,
+    @SerialName("thumb") val thumb: String? = null,
 )
