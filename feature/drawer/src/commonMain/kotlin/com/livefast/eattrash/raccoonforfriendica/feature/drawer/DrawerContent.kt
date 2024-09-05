@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Flaky
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PhotoAlbum
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material.icons.filled.Workspaces
@@ -108,6 +109,15 @@ class DrawerContent : Screen {
                         icon = Icons.AutoMirrored.Default.Chat,
                         onSelected = {
                             handleOpen { detailOpener.openDirectMessages() }
+                        },
+                    )
+                }
+                if (uiState.hasGallery) {
+                    DrawerShortcut(
+                        title = LocalStrings.current.galleryTitle,
+                        icon = Icons.Default.PhotoAlbum,
+                        onSelected = {
+                            handleOpen { detailOpener.openGallery() }
                         },
                     )
                 }
