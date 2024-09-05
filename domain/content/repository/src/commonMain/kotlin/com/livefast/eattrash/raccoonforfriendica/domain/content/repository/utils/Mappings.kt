@@ -283,6 +283,7 @@ internal fun FriendicaPhoto.toModel() =
         type = MediaType.Image,
         description = desc,
         album = album,
+        thumbnail = thumb,
     )
 
 internal fun UserListReplyPolicy.toModel(): CircleReplyPolicy =

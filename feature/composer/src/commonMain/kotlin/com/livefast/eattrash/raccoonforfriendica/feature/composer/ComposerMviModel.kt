@@ -136,7 +136,7 @@ interface ComposerMviModel :
         data object Success : Effect
 
         data class Failure(
-            val message: String?,
+            val message: String? = null,
         ) : Effect
     }
 }

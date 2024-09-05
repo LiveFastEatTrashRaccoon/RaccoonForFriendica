@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.client.request.forms.FormDataContent
@@ -50,4 +51,25 @@ internal class DefaultPhotoAlbumRepository(
                 res.result == "deleted"
             }.getOrElse { false }
         }
+
+    override suspend fun getPhotos(
+        album: String,
+        pageCursor: String?,
+        latestFirst: Boolean,
+    ): List<AttachmentModel> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.photoAlbum
+                    .getPhotos(
+                        album = album,
+                        maxId = pageCursor?.toLong(),
+                        latestFirst = latestFirst,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }.getOrElse { emptyList() }
+        }
+
+    companion object {
+        private const val DEFAULT_PAGE_SIZE = 20
+    }
 }

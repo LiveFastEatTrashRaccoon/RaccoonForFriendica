@@ -8,6 +8,7 @@ data class AttachmentModel(
     val previewUrl: String? = null,
     val type: MediaType = MediaType.Unknown,
     val url: String,
+    val thumbnail: String? = null,
     val loading: Boolean = false,
     val album: String? = null,
     val originalWidth: Int? = null,

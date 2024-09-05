@@ -281,28 +281,26 @@ class ComposerViewModel(
 
     private fun uploadAttachment(byteArray: ByteArray) {
         screenModelScope.launch {
-            try {
+            updateState {
+                it.copy(
+                    attachments =
+                        it.attachments +
+                            AttachmentModel(
+                                id = PLACEHOLDER_ID,
+                                url = "",
+                                loading = true,
+                            ),
+                )
+            }
+            val attachment = photoRepository.create(byteArray)
+            if (attachment != null) {
                 updateState {
                     it.copy(
-                        attachments =
-                            it.attachments +
-                                AttachmentModel(
-                                    id = PLACEHOLDER_ID,
-                                    url = "",
-                                    loading = true,
-                                ),
+                        attachments = it.attachments.filter { a -> a.id != PLACEHOLDER_ID } + attachment,
                     )
                 }
-                val attachment = photoRepository.create(byteArray)
-                if (attachment != null) {
-                    updateState {
-                        it.copy(
-                            attachments = it.attachments.filter { a -> a.id != PLACEHOLDER_ID } + attachment,
-                        )
-                    }
-                }
-            } catch (e: Throwable) {
-                emitEffect(ComposerMviModel.Effect.Failure(e.message))
+            } else {
+                emitEffect(ComposerMviModel.Effect.Failure())
             }
         }
     }

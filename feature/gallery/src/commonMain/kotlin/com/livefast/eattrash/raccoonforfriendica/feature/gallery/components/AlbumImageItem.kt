@@ -1,30 +1,29 @@
-package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
+package com.livefast.eattrash.raccoonforfriendica.feature.gallery.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Abc
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
@@ -44,32 +42,33 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
-import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashDecoder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.withContext
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import kotlin.math.roundToInt
 
 @Composable
-fun ContentImage(
-    url: String,
+internal fun AlbumImageItem(
+    attachment: AttachmentModel,
     modifier: Modifier = Modifier,
-    sensitive: Boolean = false,
-    altText: String? = null,
-    blurHash: String? = null,
-    originalWidth: Int = 0,
-    originalHeight: Int = 0,
     minHeight: Dp = 50.dp,
     maxHeight: Dp = Dp.Unspecified,
+    onDelete: (() -> Unit)? = null,
+    onEdit: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
 ) {
-    var revealing by remember { mutableStateOf(!sensitive) }
     var showingAltText by remember { mutableStateOf(false) }
     var popupOffset by remember { mutableStateOf(Offset.Zero) }
     val additionalOffset = with(LocalDensity.current) { Spacing.xl.toPx().roundToInt() }
-    var hasFinishedLoadingSuccessfully by remember { mutableStateOf(false) }
+    val iconModifier =
+        Modifier
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onBackground,
+                shape = CircleShape,
+            ).padding(2.5.dp)
+            .clip(CircleShape)
 
     Box(
         modifier =
@@ -77,36 +76,60 @@ fun ContentImage(
                 .fillMaxWidth()
                 .heightIn(min = minHeight, max = maxHeight),
     ) {
-        if (!hasFinishedLoadingSuccessfully) {
-            BlurredPreview(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(CornerSize.xl))
-                        .clickable {
-                            onClick?.invoke()
-                        },
-                originalWidth = originalWidth,
-                originalHeight = originalHeight,
-                blurHash = blurHash,
-            )
-        }
-
         CustomImage(
             modifier =
                 Modifier
+                    .fillMaxWidth()
                     .clip(RoundedCornerShape(CornerSize.xl))
                     .clickable {
                         onClick?.invoke()
                     },
-            url = url,
+            url = attachment.thumbnail ?: attachment.url,
             quality = FilterQuality.Low,
-            blurred = !revealing,
             contentScale = ContentScale.FillWidth,
-            onSuccess = {
-                hasFinishedLoadingSuccessfully = true
-            },
         )
+
+        Row(
+            modifier =
+                Modifier.align(Alignment.TopEnd).padding(
+                    bottom = Spacing.xxs,
+                    end = Spacing.xs,
+                ),
+        ) {
+            FilledIconButton(
+                modifier = Modifier.padding(5.dp).size(IconSize.s),
+                onClick = {
+                    onEdit?.invoke()
+                },
+            ) {
+                Icon(
+                    modifier = Modifier.padding(2.5.dp),
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = null,
+                )
+            }
+            FilledIconButton(
+                modifier = Modifier.padding(5.dp).size(IconSize.s),
+                onClick = {
+                    onDelete?.invoke()
+                },
+            ) {
+                Icon(
+                    modifier = Modifier.padding(2.5.dp),
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                )
+            }
+        }
+
+        if (attachment.loading) {
+            CircularProgressIndicator(
+                modifier =
+                    Modifier
+                        .size(IconSize.l)
+                        .align(Alignment.Center),
+            )
+        }
 
         Row(
             modifier =
@@ -115,15 +138,7 @@ fun ContentImage(
                     end = Spacing.xs,
                 ),
         ) {
-            val iconModifier =
-                Modifier
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        shape = CircleShape,
-                    ).padding(2.5.dp)
-                    .clip(CircleShape)
-            if (!altText.isNullOrEmpty()) {
+            if (!attachment.description.isNullOrEmpty()) {
                 Box {
                     if (showingAltText) {
                         Popup(
@@ -155,7 +170,7 @@ fun ContentImage(
                                             ),
                                 ) {
                                     Text(
-                                        text = altText,
+                                        text = attachment.description.orEmpty(),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurface,
                                     )
@@ -180,62 +195,6 @@ fun ContentImage(
                         )
                     }
                 }
-            }
-            if (sensitive) {
-                IconButton(
-                    onClick = {
-                        revealing = !revealing
-                    },
-                ) {
-                    Icon(
-                        modifier = iconModifier,
-                        imageVector =
-                            if (revealing) {
-                                Icons.Default.VisibilityOff
-                            } else {
-                                Icons.Default.Visibility
-                            },
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun BlurredPreview(
-    originalWidth: Int,
-    originalHeight: Int,
-    blurHash: String?,
-    modifier: Modifier = Modifier,
-) {
-    if (originalWidth > 0 && originalHeight > 0) {
-        var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
-
-        LaunchedEffect(blurHash) {
-            withContext(Dispatchers.IO) {
-                imageBitmap =
-                    BlurHashDecoder
-                        .decode(
-                            blurHash = blurHash,
-                            width = originalWidth,
-                            height = originalHeight,
-                        )
-            }
-        }
-
-        Box(
-            modifier = modifier.aspectRatio(originalWidth / originalHeight.toFloat()),
-        ) {
-            imageBitmap?.also { bmp ->
-                Image(
-                    modifier = Modifier.fillMaxSize(),
-                    bitmap = bmp,
-                    contentDescription = null,
-                    contentScale = ContentScale.FillWidth,
-                )
             }
         }
     }

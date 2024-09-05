@@ -453,6 +453,7 @@ class ComposerScreen(
             EditTextualInfoDialog(
                 label = LocalStrings.current.pictureDescriptionPlaceholder,
                 value = attachmentWithDescriptionBeingEdited?.description.orEmpty(),
+                minLines = 3,
                 onClose = { newValue ->
                     val attachment = attachmentWithDescriptionBeingEdited
                     if (attachment != null && newValue != null) {
