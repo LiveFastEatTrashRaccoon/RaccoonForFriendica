@@ -141,6 +141,7 @@ internal class DefaultUserRepository(
                             query = query,
                             maxId = pageCursor,
                             type = "accounts",
+                            following = true,
                             limit = DEFAULT_PAGE_SIZE,
                         ).accounts
                         .map { it.toModel() }

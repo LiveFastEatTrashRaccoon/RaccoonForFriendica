@@ -126,7 +126,7 @@ class DirectMessageListViewModel(
 
     private suspend fun refreshUsers(query: String) {
         userPaginationManager.reset(
-            UserPaginationSpecification.Search(
+            UserPaginationSpecification.SearchFollowing(
                 query = query,
                 withRelationship = false,
             ),
