@@ -22,8 +22,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +46,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Search
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,6 +62,13 @@ internal fun CircleAddUserDialog(
     onClose: ((List<UserModel>?) -> Unit)? = null,
 ) {
     val selectedUsers = remember { mutableStateListOf<UserModel>() }
+    val noUsersDebounced by
+        snapshotFlow { users }
+            .drop(1)
+            .map { it.isEmpty() }
+            .debounce(250)
+            .collectAsState(false)
+
     BasicAlertDialog(
         modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
@@ -111,7 +124,7 @@ internal fun CircleAddUserDialog(
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
-                        } else {
+                        } else if (noUsersDebounced) {
                             Text(
                                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
                                 text = LocalStrings.current.messageEmptyList,
