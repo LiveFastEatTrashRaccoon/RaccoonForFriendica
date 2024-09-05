@@ -150,7 +150,7 @@ internal val ItStrings =
         override val selectUserSearchPlaceholder = "nome utente or identificativo"
         override val searchSectionUsers = "Utenti"
         override val searchPlaceholder = "Cerca nel Fediverso"
-        override val messageSearchInitialEmpty = "Inizia a digitare qualcosa da cercare"
+        override val messageSearchInitialEmpty = "Inizia a digitare qualcosa"
         override val topicTitle = "Argomento"
         override val threadTitle = "Conversazione"
         override val buttonLoadMoreReplies = "Carica altre risposte"
@@ -282,4 +282,9 @@ internal val ItStrings =
                 1 -> "messaggio"
                 else -> "messaggi"
             }
+
+        override val messageEmptyConversation =
+            "Questo è l'inizio della tua epica conversazione con"
+        override val followRequiredMessage =
+            "È necessario seguire l'altro utente per poter inviare un messaggio diretto!"
     }
