@@ -260,9 +260,11 @@ class DirectMessageListScreen : Screen {
                     selectUserToCreateConversationDialogOpen = false
                     val userId = user?.id
                     if (userId != null) {
+                        val existingConversation =
+                            uiState.items.firstOrNull { it.otherUser.id == userId }
                         detailOpener.openConversation(
                             otherUserId = userId,
-                            parentUri = "",
+                            parentUri = existingConversation?.lastMessage?.parentUri.orEmpty(),
                         )
                     }
                 },
