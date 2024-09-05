@@ -184,7 +184,7 @@ fun TimelineItem(
             }
             if (entryToDisplay.isSpoilerActive || spoiler.isEmpty()) {
                 val title = entryToDisplay.title
-                if (title != null) {
+                if (!title.isNullOrBlank()) {
                     ContentTitle(
                         modifier =
                             Modifier.fillMaxWidth().padding(
@@ -197,26 +197,29 @@ fun TimelineItem(
                     )
                 }
 
-                ContentBody(
-                    modifier =
-                        Modifier.fillMaxWidth().then(
-                            if (title == null) {
-                                Modifier.padding(
-                                    start = contentHorizontalPadding,
-                                    end = contentHorizontalPadding,
-                                )
-                            } else {
-                                Modifier.padding(
-                                    top = Spacing.xxxs,
-                                    start = contentHorizontalPadding,
-                                    end = contentHorizontalPadding,
-                                )
-                            },
-                        ),
-                    content = entryToDisplay.content,
-                    onClick = { onClick?.invoke(entryToDisplay) },
-                    onOpenUrl = onOpenUrl,
-                )
+                val body = entryToDisplay.content
+                if (body.isNotBlank()) {
+                    ContentBody(
+                        modifier =
+                            Modifier.fillMaxWidth().then(
+                                if (title == null) {
+                                    Modifier.padding(
+                                        start = contentHorizontalPadding,
+                                        end = contentHorizontalPadding,
+                                    )
+                                } else {
+                                    Modifier.padding(
+                                        top = Spacing.xxxs,
+                                        start = contentHorizontalPadding,
+                                        end = contentHorizontalPadding,
+                                    )
+                                },
+                            ),
+                        content = body,
+                        onClick = { onClick?.invoke(entryToDisplay) },
+                        onOpenUrl = onOpenUrl,
+                    )
+                }
 
                 val firstImageAttachment =
                     entryToDisplay.attachments
