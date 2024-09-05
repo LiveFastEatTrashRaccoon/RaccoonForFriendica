@@ -5,6 +5,8 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
@@ -34,11 +36,13 @@ class ConversationViewModel(
     init {
         screenModelScope.launch {
             val otherUser = userRepository.getById(otherUserId)
+            val relationshipStatus =
+                userRepository.getRelationships(listOf(otherUserId)).firstOrNull()?.toStatus()
             val currentUser = identityRepository.currentUser.value
             updateState {
                 it.copy(
                     currentUser = currentUser,
-                    otherUser = otherUser,
+                    otherUser = otherUser?.copy(relationshipStatus = relationshipStatus),
                 )
             }
             if (uiState.value.initial) {
@@ -159,6 +163,22 @@ class ConversationViewModel(
         val currentState = uiState.value
         val text = currentState.newMessageValue.text
         if (text.isEmpty() || currentState.sendInProgress) {
+            return
+        }
+
+        val relationshipStatus =
+            currentState.otherUser?.relationshipStatus ?: RelationshipStatus.Undetermined
+        if (relationshipStatus !in
+            listOf(
+                RelationshipStatus.MutualFollow,
+                RelationshipStatus.Following,
+            )
+        ) {
+            // it is necessary that you follow the other user, otherwise messages are sent
+            // to some other random user https://github.com/friendica/friendica/issues/11274
+            screenModelScope.launch {
+                emitEffect(ConversationMviModel.Effect.FollowUserRequired)
+            }
             return
         }
 

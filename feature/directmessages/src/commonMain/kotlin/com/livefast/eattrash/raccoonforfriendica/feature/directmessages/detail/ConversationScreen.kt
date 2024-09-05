@@ -96,6 +96,7 @@ class ConversationScreen(
         val scope = rememberCoroutineScope()
         val otherUserName = uiState.otherUser?.let { it.displayName ?: it.username }
         val genericError = LocalStrings.current.messageGenericError
+        val followRequiredMessage = LocalStrings.current.followRequiredMessage
 
         fun goBackToTop() {
             runCatching {
@@ -114,6 +115,9 @@ class ConversationScreen(
                         ConversationMviModel.Effect.BackToTop -> goBackToTop()
                         ConversationMviModel.Effect.Failure ->
                             snackbarHostState.showSnackbar(genericError)
+
+                        ConversationMviModel.Effect.FollowUserRequired ->
+                            snackbarHostState.showSnackbar(followRequiredMessage)
                     }
                 }.launchIn(this)
         }
