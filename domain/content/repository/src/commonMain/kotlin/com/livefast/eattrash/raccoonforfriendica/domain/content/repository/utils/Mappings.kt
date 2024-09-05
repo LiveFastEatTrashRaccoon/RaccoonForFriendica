@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Field
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaContact
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhotoAlbum
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPrivateMessage
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.HistoryItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Instance
@@ -36,6 +37,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessa
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHistoryItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
@@ -370,4 +372,17 @@ internal fun FriendicaPrivateMessage.toModel() =
         sender = sender?.toModel(),
         recipient = recipient?.toModel(),
         parentUri = parentUri,
+    )
+
+internal fun FriendicaPhotoAlbum.toModel() =
+    MediaAlbumModel(
+        name = name,
+        created =
+            created?.let { date ->
+                parseDate(
+                    value = date,
+                    format = "yyyy-MM-dd HH:mm:ss",
+                )
+            },
+        items = count,
     )

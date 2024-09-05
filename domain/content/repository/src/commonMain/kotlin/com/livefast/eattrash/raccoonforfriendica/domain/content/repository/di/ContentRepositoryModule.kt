@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultInboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNotificationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultSearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTagRepository
@@ -17,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Direc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
@@ -86,6 +88,11 @@ val domainContentRepositoryModule =
         }
         single<DirectMessageRepository> {
             DefaultDirectMessageRepository(
+                provider = get(named("default")),
+            )
+        }
+        single<PhotoAlbumRepository> {
+            DefaultPhotoAlbumRepository(
                 provider = get(named("default")),
             )
         }

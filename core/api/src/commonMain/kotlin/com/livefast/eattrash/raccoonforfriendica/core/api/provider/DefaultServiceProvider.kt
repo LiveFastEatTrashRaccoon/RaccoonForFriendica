@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestS
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.InstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoAlbumService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PollService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.SearchService
@@ -20,6 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.createFollowRe
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createInstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createNotificationService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoAlbumService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPollService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createSearchService
@@ -65,6 +67,7 @@ internal class DefaultServiceProvider(
     override lateinit var lists: ListService
     override lateinit var notifications: NotificationService
     override lateinit var photo: PhotoService
+    override lateinit var photoAlbum: PhotoAlbumService
     override lateinit var polls: PollService
     override lateinit var search: SearchService
     override lateinit var statuses: StatusService
@@ -158,6 +161,7 @@ internal class DefaultServiceProvider(
         lists = ktorfit.createListService()
         notifications = ktorfit.createNotificationService()
         photo = ktorfit.createPhotoService()
+        photoAlbum = ktorfit.createPhotoAlbumService()
         polls = ktorfit.createPollService()
         search = ktorfit.createSearchService()
         statuses = ktorfit.createStatusService()
