@@ -113,6 +113,7 @@ class FavoritesViewModel(
 
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()
+        val wasRefreshing = uiState.value.refreshing
         updateState {
             it.copy(
                 entries = entries,
@@ -121,6 +122,9 @@ class FavoritesViewModel(
                 initial = false,
                 refreshing = false,
             )
+        }
+        if (wasRefreshing) {
+            emitEffect(FavoritesMviModel.Effect.BackToTop)
         }
     }
 

@@ -68,6 +68,8 @@ interface FavoritesMviModel :
     )
 
     sealed interface Effect {
+        data object BackToTop : Effect
+
         data object PollVoteFailure : Effect
     }
 }
