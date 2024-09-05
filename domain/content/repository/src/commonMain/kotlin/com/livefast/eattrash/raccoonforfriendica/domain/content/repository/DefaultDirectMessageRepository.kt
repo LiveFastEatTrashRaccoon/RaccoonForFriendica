@@ -12,13 +12,16 @@ import kotlinx.coroutines.withContext
 internal class DefaultDirectMessageRepository(
     private val provider: ServiceProvider,
 ) : DirectMessageRepository {
-    override suspend fun getAll(page: Int): List<DirectMessageModel> =
+    override suspend fun getAll(
+        page: Int,
+        limit: Int?,
+    ): List<DirectMessageModel> =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.directMessage
                     .getAll(
                         page = page,
-                        count = DEFAULT_PAGE_SIZE,
+                        count = limit ?: DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
             }.getOrElse { emptyList() }
         }
