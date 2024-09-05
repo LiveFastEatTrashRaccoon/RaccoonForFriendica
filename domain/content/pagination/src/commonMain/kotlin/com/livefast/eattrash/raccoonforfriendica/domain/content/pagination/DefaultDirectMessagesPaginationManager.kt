@@ -25,7 +25,10 @@ internal class DefaultDirectMessagesPaginationManager(
             when (specification) {
                 DirectMessagesPaginationSpecification.All ->
                     directMessageRepository
-                        .getAll(page = page)
+                        .getAll(
+                            page = page,
+                            limit = 40,
+                        )
                         .deduplicate()
                         .updatePaginationData()
 

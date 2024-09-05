@@ -37,5 +37,7 @@ interface ConversationMviModel :
         data object BackToTop : Effect
 
         data object Failure : Effect
+
+        data object FollowUserRequired : Effect
     }
 }

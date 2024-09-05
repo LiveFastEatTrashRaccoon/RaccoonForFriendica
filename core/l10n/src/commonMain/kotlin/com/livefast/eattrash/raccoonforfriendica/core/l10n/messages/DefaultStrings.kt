@@ -145,7 +145,7 @@ internal open class DefaultStrings : Strings {
     override val selectUserSearchPlaceholder = "username or handle"
     override val searchSectionUsers = "Users"
     override val searchPlaceholder = "Search the Fediverse"
-    override val messageSearchInitialEmpty = "Start typing something to search"
+    override val messageSearchInitialEmpty = "Start typing something"
     override val topicTitle = "Topic"
     override val threadTitle = "Thread"
     override val buttonLoadMoreReplies = "Load more replies"
@@ -276,4 +276,8 @@ internal open class DefaultStrings : Strings {
             1 -> "message"
             else -> "messages"
         }
+
+    override val messageEmptyConversation = "This is the beginning of your epic conversation with"
+    override val followRequiredMessage =
+        "You need to follow the other user in order to be able to send a direct message!"
 }

@@ -255,6 +255,9 @@ interface Strings {
     val directMessagesTitle: String
 
     fun messages(count: Int): String
+
+    val messageEmptyConversation: String
+    val followRequiredMessage: String
 }
 
 object Locales {

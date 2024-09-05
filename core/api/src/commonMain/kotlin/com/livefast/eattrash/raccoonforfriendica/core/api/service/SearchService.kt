@@ -11,6 +11,7 @@ interface SearchService {
         @Query("type") type: String,
         @Query("max_id") maxId: String? = null,
         @Query("min_id") minId: String? = null,
+        @Query("following") following: Boolean = false,
         @Query("limit") limit: Int = 20,
     ): Search
 }

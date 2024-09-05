@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -55,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -91,7 +94,9 @@ class ConversationScreen(
         val snackbarHostState = remember { SnackbarHostState() }
         val lazyListState = rememberLazyListState()
         val scope = rememberCoroutineScope()
+        val otherUserName = uiState.otherUser?.let { it.displayName ?: it.username }
         val genericError = LocalStrings.current.messageGenericError
+        val followRequiredMessage = LocalStrings.current.followRequiredMessage
 
         fun goBackToTop() {
             runCatching {
@@ -110,6 +115,9 @@ class ConversationScreen(
                         ConversationMviModel.Effect.BackToTop -> goBackToTop()
                         ConversationMviModel.Effect.Failure ->
                             snackbarHostState.showSnackbar(genericError)
+
+                        ConversationMviModel.Effect.FollowUserRequired ->
+                            snackbarHostState.showSnackbar(followRequiredMessage)
                     }
                 }.launchIn(this)
         }
@@ -132,7 +140,6 @@ class ConversationScreen(
                         ) {
                             val avatar = uiState.otherUser?.avatar.orEmpty()
                             val avatarSize = IconSize.l
-                            val name = uiState.otherUser?.let { it.displayName ?: it.username }
                             if (avatar.isNotEmpty()) {
                                 CustomImage(
                                     modifier =
@@ -146,12 +153,12 @@ class ConversationScreen(
                             } else {
                                 PlaceholderImage(
                                     size = avatarSize,
-                                    title = name ?: "?",
+                                    title = otherUserName ?: "?",
                                 )
                             }
                             Text(
                                 modifier = Modifier.padding(horizontal = Spacing.s),
-                                text = name.orEmpty(),
+                                text = otherUserName.orEmpty(),
                                 style = MaterialTheme.typography.titleMedium,
                             )
                         }
@@ -261,12 +268,42 @@ class ConversationScreen(
 
                     if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
                         item {
-                            Text(
-                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
-                                text = LocalStrings.current.messageEmptyList,
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
+                            if (!otherUserName.isNullOrEmpty()) {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(
+                                                top = Spacing.m,
+                                                start = Spacing.s,
+                                                end = Spacing.s,
+                                            ).border(
+                                                width = 1.dp,
+                                                color = MaterialTheme.colorScheme.onBackground,
+                                                shape = RoundedCornerShape(CornerSize.xl),
+                                            ).background(
+                                                color =
+                                                    MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                                        5.dp,
+                                                    ),
+                                                shape = RoundedCornerShape(CornerSize.xl),
+                                            ).padding(
+                                                vertical = Spacing.s,
+                                                horizontal = Spacing.s,
+                                            ),
+                                ) {
+                                    Text(
+                                        text =
+                                            buildString {
+                                                append(LocalStrings.current.messageEmptyConversation)
+                                                append(" ")
+                                                append(otherUserName)
+                                            },
+                                        textAlign = TextAlign.Center,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                    )
+                                }
+                            }
                         }
                     }
 
