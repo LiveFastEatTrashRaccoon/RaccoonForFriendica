@@ -114,7 +114,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] support for post addons (spoilers and titles)
 - [x] multi-account
 - [x] edit one's own profile (custom fields and images not supported yet by the back-end)
-- [ ] private conversations
+- [x] direct messages
 - [ ] photo gallery
 - [ ] advanced media visualization (image carousels, videos, GIFs, etc.)
 - [ ] custom emojis
