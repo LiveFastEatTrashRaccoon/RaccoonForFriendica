@@ -120,11 +120,14 @@ class FollowedHashtagsScreen : Screen {
                     state = lazyListState,
                 ) {
                     if (uiState.initial) {
-                        items(5) {
+                        val placeholderCount = 5
+                        items(placeholderCount) { idx ->
                             GenericPlaceholder(modifier = Modifier.fillMaxWidth())
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = Spacing.s),
-                            )
+                            if (idx < placeholderCount - 1) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(vertical = Spacing.s),
+                                )
+                            }
                         }
                     }
                     itemsIndexed(

@@ -167,11 +167,14 @@ class DirectMessageListScreen : Screen {
                     state = lazyListState,
                 ) {
                     if (uiState.initial) {
-                        items(10) {
+                        val placeholderCount = 10
+                        items(placeholderCount) { idx ->
                             GenericPlaceholder(height = 120.dp)
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = Spacing.s),
-                            )
+                            if (idx < placeholderCount - 1) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(vertical = Spacing.s),
+                                )
+                            }
                         }
                     }
 
@@ -203,9 +206,11 @@ class DirectMessageListScreen : Screen {
                                 }
                             },
                         )
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = Spacing.s),
-                        )
+                        if (idx < uiState.items.lastIndex) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = Spacing.s),
+                            )
+                        }
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -217,11 +218,14 @@ class ThreadScreen(
                     state = lazyListState,
                 ) {
                     if (uiState.initial) {
-                        items(5) {
+                        val placeholderCount = 5
+                        items(placeholderCount) { idx ->
                             TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = Spacing.s),
-                            )
+                            if (idx < placeholderCount - 1) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(vertical = Spacing.s),
+                                )
+                            }
                         }
                     }
 
@@ -332,10 +336,10 @@ class ThreadScreen(
                     }
 
                     // replies
-                    items(
+                    itemsIndexed(
                         items = uiState.replies,
-                        key = { it.safeKey },
-                    ) { entry ->
+                        key = { _, e -> e.safeKey },
+                    ) { idx, entry ->
                         TimelineReplyItem(
                             entry = entry,
                             onOpenUrl = { url ->
@@ -441,10 +445,11 @@ class ThreadScreen(
                                 }
                             }
                         }
-
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = Spacing.s),
-                        )
+                        if (idx < uiState.replies.lastIndex) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = Spacing.s),
+                            )
+                        }
                     }
                     item {
                         Spacer(modifier = Modifier.height(Spacing.xxxl))

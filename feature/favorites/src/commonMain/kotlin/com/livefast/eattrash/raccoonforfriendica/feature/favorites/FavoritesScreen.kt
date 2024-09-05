@@ -106,6 +106,7 @@ class FavoritesScreen(
             model.effects
                 .onEach { event ->
                     when (event) {
+                        FavoritesMviModel.Effect.BackToTop -> goBackToTop()
                         FavoritesMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
                     }
                 }.launchIn(this)
@@ -170,11 +171,14 @@ class FavoritesScreen(
                     state = lazyListState,
                 ) {
                     if (uiState.initial) {
-                        items(5) {
+                        val placeholderCount = 5
+                        items(placeholderCount) { idx ->
                             TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = Spacing.s),
-                            )
+                            if (idx < placeholderCount - 1) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(vertical = Spacing.s),
+                                )
+                            }
                         }
                     }
 
@@ -305,9 +309,11 @@ class FavoritesScreen(
                                 }
                             },
                         )
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = Spacing.s),
-                        )
+                        if (idx < uiState.entries.lastIndex) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = Spacing.s),
+                            )
+                        }
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore

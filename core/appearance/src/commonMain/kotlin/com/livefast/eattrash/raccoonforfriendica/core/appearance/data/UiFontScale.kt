@@ -18,10 +18,10 @@ sealed interface UiFontScale {
 fun UiFontScale.toScaleFactor(): Float =
     when (this) {
         UiFontScale.Largest -> 1.25f
-        UiFontScale.Larger -> 1.15f
-        UiFontScale.Normal -> 1.1f
-        UiFontScale.Smaller -> 1.05f
-        UiFontScale.Smallest -> 0.95f
+        UiFontScale.Larger -> 1.2f
+        UiFontScale.Normal -> 1.15f
+        UiFontScale.Smaller -> 1.1f
+        UiFontScale.Smallest -> 1f
     }
 
 fun UiFontScale.toInt(): Int =
