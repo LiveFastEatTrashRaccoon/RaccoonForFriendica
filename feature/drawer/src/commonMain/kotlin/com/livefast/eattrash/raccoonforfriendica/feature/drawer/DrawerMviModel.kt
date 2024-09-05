@@ -15,6 +15,7 @@ interface DrawerMviModel :
         val user: UserModel? = null,
         val node: String? = null,
         val hasDirectMessages: Boolean = false,
+        val hasGallery: Boolean = false,
     )
 
     sealed interface Effect

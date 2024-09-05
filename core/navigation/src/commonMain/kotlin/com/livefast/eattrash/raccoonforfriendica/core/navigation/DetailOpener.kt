@@ -65,5 +65,13 @@ interface DetailOpener {
 
     fun openConversation(
         otherUserId: String,
-        parentUri: String)
+        parentUri: String,
+    )
+
+    fun openGallery()
+
+    fun openAlbum(
+        name: String,
+        createMode: Boolean = false,
+    )
 }

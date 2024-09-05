@@ -15,6 +15,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.Dir
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail.AlbumDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.HashtagScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailScreen
@@ -189,6 +191,19 @@ class DefaultDetailOpener(
         parentUri: String,
     ) {
         val screen = ConversationScreen(otherUserId = otherUserId, parentUri = parentUri)
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openGallery() {
+        val screen = GalleryScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openAlbum(
+        name: String,
+        createMode: Boolean,
+    ) {
+        val screen = AlbumDetailScreen(name = name, createMode = createMode)
         navigationCoordinator.push(screen)
     }
 }

@@ -26,6 +26,7 @@ class DrawerViewModel(
                         it.copy(
                             node = node,
                             hasDirectMessages = isFriendica,
+                            hasGallery = isFriendica,
                         )
                     }
                 }.launchIn(this)

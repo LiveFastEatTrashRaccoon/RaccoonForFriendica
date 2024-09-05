@@ -280,4 +280,13 @@ internal open class DefaultStrings : Strings {
     override val messageEmptyConversation = "This is the beginning of your epic conversation with"
     override val followRequiredMessage =
         "You need to follow the other user in order to be able to send a direct message!"
+    override val galleryTitle = "Gallery"
+
+    override fun items(count: Int): String =
+        when (count) {
+            1 -> "item"
+            else -> "items"
+        }
+
+    override val galleryFieldAlbumName = "Album name"
 }

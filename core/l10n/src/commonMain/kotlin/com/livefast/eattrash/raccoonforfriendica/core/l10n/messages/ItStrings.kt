@@ -287,4 +287,13 @@ internal val ItStrings =
             "Questo è l'inizio della tua epica conversazione con"
         override val followRequiredMessage =
             "È necessario seguire l'altro utente per poter inviare un messaggio diretto!"
+        override val galleryTitle = "Galleria"
+
+        override fun items(count: Int): String =
+            when (count) {
+                1 -> "elemento"
+                else -> "elementi"
+            }
+
+        override val galleryFieldAlbumName = "Nome album"
     }
