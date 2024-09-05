@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultAlbumPhotoPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultDirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultExplorePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultFavoritesPaginationManager
@@ -76,6 +78,11 @@ val domainContentPaginationModule =
         factory<DirectMessagesPaginationManager> {
             DefaultDirectMessagesPaginationManager(
                 directMessageRepository = get(),
+            )
+        }
+        factory<AlbumPhotoPaginationManager> {
+            DefaultAlbumPhotoPaginationManager(
+                albumRepository = get(),
             )
         }
     }
