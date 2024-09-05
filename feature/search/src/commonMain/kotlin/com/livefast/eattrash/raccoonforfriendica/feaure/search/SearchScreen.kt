@@ -223,7 +223,8 @@ class SearchScreen : Screen {
                     }
 
                     if (uiState.initial) {
-                        items(20) {
+                        val placeholderCount = 20
+                        items(placeholderCount) { idx ->
                             val modifier = Modifier.fillMaxWidth()
                             when (uiState.section) {
                                 SearchSection.Hashtags -> {
@@ -233,9 +234,11 @@ class SearchScreen : Screen {
 
                                 SearchSection.Posts -> {
                                     TimelineItemPlaceholder(modifier = modifier)
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(vertical = Spacing.s),
-                                    )
+                                    if (idx < placeholderCount - 1) {
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(vertical = Spacing.s),
+                                        )
+                                    }
                                 }
 
                                 SearchSection.Users -> {
@@ -410,9 +413,11 @@ class SearchScreen : Screen {
                                         }
                                     },
                                 )
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = Spacing.s),
-                                )
+                                if (idx < uiState.items.lastIndex) {
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(vertical = Spacing.s),
+                                    )
+                                }
                             }
 
                             is ExploreItemModel.HashTag -> {

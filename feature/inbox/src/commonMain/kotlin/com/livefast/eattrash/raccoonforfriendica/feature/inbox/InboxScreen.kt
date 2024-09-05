@@ -170,11 +170,14 @@ class InboxScreen : Screen {
                     state = lazyListState,
                 ) {
                     if (uiState.initial) {
-                        items(5) {
+                        val placeholderCount = 5
+                        items(placeholderCount) { idx ->
                             NotificationItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = Spacing.interItem),
-                            )
+                            if (idx < placeholderCount - 1) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(vertical = Spacing.interItem),
+                                )
+                            }
                         }
                     }
 
@@ -224,9 +227,11 @@ class InboxScreen : Screen {
                                 model.reduce(InboxMviModel.Intent.ToggleSpoilerActive(e))
                             },
                         )
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = Spacing.interItem),
-                        )
+                        if (idx < uiState.notifications.lastIndex) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = Spacing.interItem),
+                            )
+                        }
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
