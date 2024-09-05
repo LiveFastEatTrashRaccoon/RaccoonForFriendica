@@ -258,6 +258,11 @@ interface Strings {
 
     val messageEmptyConversation: String
     val followRequiredMessage: String
+    val galleryTitle: String
+
+    fun items(count: Int): String
+
+    val galleryFieldAlbumName: String
 }
 
 object Locales {
