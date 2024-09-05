@@ -42,7 +42,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Popup
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -70,17 +69,13 @@ fun ContentImage(
     var showingAltText by remember { mutableStateOf(false) }
     var popupOffset by remember { mutableStateOf(Offset.Zero) }
     val additionalOffset = with(LocalDensity.current) { Spacing.xl.toPx().roundToInt() }
-    var availableWidth by remember { mutableStateOf(0f) }
     var hasFinishedLoadingSuccessfully by remember { mutableStateOf(false) }
 
     Box(
         modifier =
             modifier
                 .fillMaxWidth()
-                .heightIn(min = minHeight, max = maxHeight)
-                .onGloballyPositioned {
-                    availableWidth = it.size.toSize().width
-                },
+                .heightIn(min = minHeight, max = maxHeight),
     ) {
         if (!hasFinishedLoadingSuccessfully) {
             BlurredPreview(

@@ -39,6 +39,8 @@ fun EditTextualInfoDialog(
     title: String = LocalStrings.current.actionEdit,
     label: String = "",
     value: String = "",
+    minLines: Int = 1,
+    maxLines: Int = 20,
     onClose: ((String?) -> Unit)? = null,
 ) {
     var textFieldValue by remember {
@@ -68,6 +70,8 @@ fun EditTextualInfoDialog(
 
             TextField(
                 modifier = Modifier.fillMaxWidth(),
+                minLines = minLines,
+                maxLines = maxLines,
                 colors =
                     TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
