@@ -13,6 +13,7 @@ interface PhotoRepository {
         id: String,
         bytes: ByteArray? = null,
         album: String = "",
+        newAlbum: String? = null,
         alt: String = "",
     ): Boolean
 
