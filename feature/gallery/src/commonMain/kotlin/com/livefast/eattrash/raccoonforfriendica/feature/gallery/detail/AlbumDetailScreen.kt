@@ -53,11 +53,15 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTextualInfoDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -99,6 +103,7 @@ class AlbumDetailScreen(
         }
         var attachmentIdToDelete by remember { mutableStateOf<String?>(null) }
         var attachmentWithDescriptionBeingEdited by remember { mutableStateOf<AttachmentModel?>(null) }
+        var attachmentToMove by remember { mutableStateOf<AttachmentModel?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -236,11 +241,24 @@ class AlbumDetailScreen(
                                     detailOpener.openImageDetail(url)
                                 }
                             },
-                            onDelete = {
-                                attachmentIdToDelete = attachment.id
-                            },
-                            onEdit = {
-                                attachmentWithDescriptionBeingEdited = attachment
+                            options =
+                                buildList {
+                                    this += OptionId.Delete.toOption()
+                                    this += OptionId.Edit.toOption()
+                                    if (uiState.albums.isNotEmpty()) {
+                                        this += OptionId.Move.toOption()
+                                    }
+                                },
+                            onOptionSelected = { optionId ->
+                                when (optionId) {
+                                    OptionId.Delete -> attachmentIdToDelete = attachment.id
+                                    OptionId.Edit ->
+                                        attachmentWithDescriptionBeingEdited = attachment
+
+                                    OptionId.Move -> attachmentToMove = attachment
+
+                                    else -> Unit
+                                }
                             },
                         )
 
@@ -295,6 +313,27 @@ class AlbumDetailScreen(
                         )
                     }
                     attachmentWithDescriptionBeingEdited = null
+                },
+            )
+        }
+
+        if (attachmentToMove != null) {
+            val items = uiState.albums.map { CustomModalBottomSheetItem(label = it.name) }
+            CustomModalBottomSheet(
+                title = LocalStrings.current.actionMove,
+                items = items,
+                onSelected = { idx ->
+                    val attachment = attachmentToMove
+                    attachmentToMove = null
+                    if (idx != null && attachment != null) {
+                        val albumName = items[idx].label
+                        model.reduce(
+                            AlbumDetailMviModel.Intent.Move(
+                                attachment = attachment,
+                                album = albumName,
+                            ),
+                        )
+                    }
                 },
             )
         }

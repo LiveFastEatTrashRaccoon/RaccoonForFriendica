@@ -45,6 +45,7 @@ internal class DefaultPhotoRepository(
         id: String,
         bytes: ByteArray?,
         album: String,
+        newAlbum: String?,
         alt: String,
     ): Boolean =
         withContext(Dispatchers.IO) {
@@ -68,11 +69,14 @@ internal class DefaultPhotoRepository(
                                 )
                             }
                             append("album", album)
+                            if (newAlbum != null) {
+                                append("album_new", newAlbum)
+                            }
                             append("desc", alt)
                         },
                     )
-                provider.photo.update(content = content)
-                true
+                val res = provider.photo.update(content = content)
+                res.result == "updated"
             }
         }.getOrElse { false }
 
@@ -85,8 +89,8 @@ internal class DefaultPhotoRepository(
                             append("photo_id", id)
                         },
                     )
-                provider.photo.delete(content)
-                true
+                val res = provider.photo.delete(content)
+                res.result == "deleted"
             }
         }.getOrElse { false }
 }

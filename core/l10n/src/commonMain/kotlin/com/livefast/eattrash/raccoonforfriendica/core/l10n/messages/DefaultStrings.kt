@@ -291,4 +291,5 @@ internal open class DefaultStrings : Strings {
     override val galleryFieldAlbumName = "Album name"
     override val messageEmptyAlbum =
         "It looks like this album is still empty… ✨"
+    override val actionMove = "Move"
 }

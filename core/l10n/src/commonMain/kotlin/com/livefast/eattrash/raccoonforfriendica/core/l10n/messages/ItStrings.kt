@@ -298,4 +298,5 @@ internal val ItStrings =
         override val galleryFieldAlbumName = "Nome album"
         override val messageEmptyAlbum =
             "Sembra che questo album sia ancora vuoto… ✨"
+        override val actionMove = "Sposta"
     }

@@ -15,3 +15,5 @@ data class TimelineEntryUpdatedEvent(
 data class TagUpdatedEvent(
     val tag: TagModel,
 ) : NotificationCenterEvent
+
+data object AlbumsUpdatedEvent : NotificationCenterEvent

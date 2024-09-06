@@ -264,6 +264,7 @@ interface Strings {
 
     val galleryFieldAlbumName: String
     val messageEmptyAlbum: String
+    val actionMove: String
 }
 
 object Locales {

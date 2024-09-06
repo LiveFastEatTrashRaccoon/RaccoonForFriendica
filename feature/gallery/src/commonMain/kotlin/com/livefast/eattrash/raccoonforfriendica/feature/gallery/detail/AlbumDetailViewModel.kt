@@ -2,10 +2,13 @@ package com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import kotlinx.coroutines.launch
 
@@ -13,6 +16,8 @@ class AlbumDetailViewModel(
     private val albumName: String,
     private val paginationManager: AlbumPhotoPaginationManager,
     private val photoRepository: PhotoRepository,
+    private val albumRepository: PhotoAlbumRepository,
+    private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<AlbumDetailMviModel.Intent, AlbumDetailMviModel.State, AlbumDetailMviModel.Effect>(
         initialState = AlbumDetailMviModel.State(),
     ),
@@ -20,6 +25,13 @@ class AlbumDetailViewModel(
     init {
         screenModelScope.launch {
             if (uiState.value.initial) {
+                val albums =
+                    albumRepository
+                        .getAll()
+                        .distinctBy { it.name }
+                        .filter { it.name != albumName }
+                updateState { it.copy(albums = albums) }
+
                 refresh(initial = true)
             }
         }
@@ -32,6 +44,9 @@ class AlbumDetailViewModel(
             is AlbumDetailMviModel.Intent.Create -> upload(intent.byteArray)
             is AlbumDetailMviModel.Intent.EditDescription ->
                 updateDescription(attachment = intent.attachment, description = intent.description)
+
+            is AlbumDetailMviModel.Intent.Move ->
+                moveToOtherAlbum(attachment = intent.attachment, otherAlbum = intent.album)
 
             is AlbumDetailMviModel.Intent.Delete -> delete(intent.id)
         }
@@ -138,6 +153,32 @@ class AlbumDetailViewModel(
                 updateItemInState(attachment.id) {
                     it.copy(description = description)
                 }
+            } else {
+                emitEffect(AlbumDetailMviModel.Effect.Failure)
+            }
+        }
+    }
+
+    private fun moveToOtherAlbum(
+        attachment: AttachmentModel,
+        otherAlbum: String,
+    ) {
+        if (otherAlbum == albumName) {
+            return
+        }
+        screenModelScope.launch {
+            updateState { it.copy(operationInProgress = true) }
+            val successful =
+                photoRepository.update(
+                    id = attachment.id,
+                    album = attachment.album.orEmpty(),
+                    newAlbum = otherAlbum,
+                    alt = attachment.description.orEmpty(),
+                )
+            updateState { it.copy(operationInProgress = false) }
+            if (successful) {
+                removeItemFromState(attachment.id)
+                notificationCenter.send(AlbumsUpdatedEvent)
             } else {
                 emitEffect(AlbumDetailMviModel.Effect.Failure)
             }

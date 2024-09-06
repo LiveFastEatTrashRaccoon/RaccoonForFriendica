@@ -2,18 +2,29 @@ package com.livefast.eattrash.raccoonforfriendica.feature.gallery.list
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class GalleryViewModel(
     private val albumRepository: PhotoAlbumRepository,
+    private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<GalleryMviModel.Intent, GalleryMviModel.State, GalleryMviModel.Effect>(
         initialState = GalleryMviModel.State(),
     ),
     GalleryMviModel {
     init {
         screenModelScope.launch {
+            notificationCenter
+                .subscribe(AlbumsUpdatedEvent::class)
+                .onEach {
+                    refresh()
+                }.launchIn(this)
+
             if (uiState.value.initial) {
                 refresh(initial = true)
             }

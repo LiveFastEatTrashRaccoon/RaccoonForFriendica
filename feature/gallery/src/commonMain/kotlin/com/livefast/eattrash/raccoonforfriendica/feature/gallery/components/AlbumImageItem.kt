@@ -15,9 +15,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Abc
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,13 +39,17 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import kotlin.math.roundToInt
 
@@ -55,13 +59,15 @@ internal fun AlbumImageItem(
     modifier: Modifier = Modifier,
     minHeight: Dp = 50.dp,
     maxHeight: Dp = Dp.Unspecified,
-    onDelete: (() -> Unit)? = null,
-    onEdit: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
+    options: List<Option> = emptyList(),
+    onOptionSelected: ((OptionId) -> Unit)? = null,
 ) {
     var showingAltText by remember { mutableStateOf(false) }
     var popupOffset by remember { mutableStateOf(Offset.Zero) }
     val additionalOffset = with(LocalDensity.current) { Spacing.xl.toPx().roundToInt() }
+    var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+    var optionsMenuOpen by remember { mutableStateOf(false) }
     val iconModifier =
         Modifier
             .border(
@@ -90,36 +96,59 @@ internal fun AlbumImageItem(
             contentScale = ContentScale.FillWidth,
         )
 
-        Row(
-            modifier =
-                Modifier.align(Alignment.TopEnd).padding(
-                    bottom = Spacing.xxs,
-                    end = Spacing.xs,
-                ),
-        ) {
-            FilledIconButton(
-                modifier = Modifier.padding(5.dp).size(IconSize.s),
-                onClick = {
-                    onEdit?.invoke()
-                },
+        if (options.isNotEmpty()) {
+            Box(
+                modifier =
+                    Modifier.align(Alignment.TopEnd).padding(
+                        bottom = Spacing.xxs,
+                        end = Spacing.xs,
+                    ),
             ) {
-                Icon(
-                    modifier = Modifier.padding(2.5.dp),
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = null,
-                )
-            }
-            FilledIconButton(
-                modifier = Modifier.padding(5.dp).size(IconSize.s),
-                onClick = {
-                    onDelete?.invoke()
-                },
-            ) {
-                Icon(
-                    modifier = Modifier.padding(2.5.dp),
-                    imageVector = Icons.Default.Close,
-                    contentDescription = null,
-                )
+                FilledIconButton(
+                    modifier =
+                        Modifier
+                            .padding(5.dp)
+                            .size(IconSize.s)
+                            .onGloballyPositioned {
+                                optionsOffset = it.positionInParent()
+                            },
+                    onClick = {
+                        optionsMenuOpen = true
+                    },
+                ) {
+                    Icon(
+                        modifier = Modifier.padding(2.5.dp),
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+
+                CustomDropDown(
+                    expanded = optionsMenuOpen,
+                    onDismiss = {
+                        optionsMenuOpen = false
+                    },
+                    offset =
+                        with(LocalDensity.current) {
+                            DpOffset(
+                                x = optionsOffset.x.toDp(),
+                                y = optionsOffset.y.toDp(),
+                            )
+                        },
+                ) {
+                    options.forEach { option ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(option.label)
+                            },
+                            onClick = {
+                                optionsMenuOpen = false
+                                onOptionSelected?.invoke(option.id)
+                            },
+                        )
+                    }
+                }
             }
         }
 
