@@ -139,7 +139,7 @@ internal val ItStrings =
         override val visibilityUnlisted = "Non in lista"
         override val visibilityPrivate = "Privato"
         override val visibilityDirect = "Solo menzioni"
-        override val createPostBodyPlaceholder = "Un magnifico nuovo post..."
+        override val createPostBodyPlaceholder = "Un magnifico nuovo post… 🪄"
         override val createPostAttachmentsSection = "Allegati"
         override val actionEdit = "Modifica"
         override val pictureDescriptionPlaceholder = "Descrizione immagine"
@@ -206,7 +206,7 @@ internal val ItStrings =
         override val settingsItemUrlOpeningMode = "Modalità apertura URL"
         override val urlOpeningModeExternal = "Browser esterno"
         override val urlOpeningModeCustomTabs = "Schede personalizzate"
-        override val dialogErrorTitle = "Ops... "
+        override val dialogErrorTitle = "Ops…"
         override val messagePollVoteErrorBody =
             "Purtroppo sono solo uno sviluppatore mobile e non posso aggiungere metodi mancanti al back-end!\nDai un'occhiata alla segnalazione e metti un 👍 in modo che gli sviluppatori sappiano che può valere la pena di implementarlo."
         override val buttonPollErrorOpenIssue = "Vedi su GitHub"
@@ -296,4 +296,6 @@ internal val ItStrings =
             }
 
         override val galleryFieldAlbumName = "Nome album"
+        override val messageEmptyAlbum =
+            "Sembra che questo album sia ancora vuoto… ✨"
     }
