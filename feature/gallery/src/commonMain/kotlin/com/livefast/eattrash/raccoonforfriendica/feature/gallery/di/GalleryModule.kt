@@ -11,6 +11,7 @@ val featureGalleryModule =
         factory<GalleryMviModel> {
             GalleryViewModel(
                 albumRepository = get(),
+                notificationCenter = get(),
             )
         }
         factory<AlbumDetailMviModel> { params ->
