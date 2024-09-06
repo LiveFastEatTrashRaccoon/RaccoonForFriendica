@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 
 interface AlbumDetailMviModel :
     ScreenModel,
@@ -35,6 +36,11 @@ interface AlbumDetailMviModel :
             val attachment: AttachmentModel,
             val description: String,
         ) : Intent
+
+        data class Move(
+            val attachment: AttachmentModel,
+            val album: String,
+        ) : Intent
     }
 
     data class State(
@@ -44,6 +50,7 @@ interface AlbumDetailMviModel :
         val operationInProgress: Boolean = false,
         val refreshing: Boolean = false,
         val items: List<AttachmentModel> = emptyList(),
+        val albums: List<MediaAlbumModel> = emptyList(),
     )
 
     sealed interface Effect {

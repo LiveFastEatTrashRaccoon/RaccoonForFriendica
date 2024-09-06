@@ -18,7 +18,9 @@ val featureGalleryModule =
             AlbumDetailViewModel(
                 albumName = params[0],
                 paginationManager = get(),
+                albumRepository = get(),
                 photoRepository = get(),
+                notificationCenter = get(),
             )
         }
     }
