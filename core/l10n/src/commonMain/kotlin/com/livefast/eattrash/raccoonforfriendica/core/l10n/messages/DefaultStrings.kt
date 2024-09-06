@@ -134,7 +134,7 @@ internal open class DefaultStrings : Strings {
     override val visibilityUnlisted = "Unlisted"
     override val visibilityPrivate = "Private"
     override val visibilityDirect = "Only mentioned"
-    override val createPostBodyPlaceholder = "Your awesome new post..."
+    override val createPostBodyPlaceholder = "Your awesome new post… 🪄"
     override val createPostAttachmentsSection = "Attachments"
     override val actionEdit = "Edit"
     override val pictureDescriptionPlaceholder = "Image description"
@@ -201,7 +201,7 @@ internal open class DefaultStrings : Strings {
     override val settingsItemUrlOpeningMode = "URL opening mode"
     override val urlOpeningModeExternal = "External"
     override val urlOpeningModeCustomTabs = "Custom tabs"
-    override val dialogErrorTitle = "Oops..."
+    override val dialogErrorTitle = "Oops…"
     override val messagePollVoteErrorBody =
         "Unfortunately, I'm just a mobile dev and I can't add missing back-end methods!\nCheck out this issue and put a 👍 so that the devs know it may be worth implementing it."
     override val buttonPollErrorOpenIssue = "View on GitHub"
@@ -289,4 +289,6 @@ internal open class DefaultStrings : Strings {
         }
 
     override val galleryFieldAlbumName = "Album name"
+    override val messageEmptyAlbum =
+        "It looks like this album is still empty… ✨"
 }

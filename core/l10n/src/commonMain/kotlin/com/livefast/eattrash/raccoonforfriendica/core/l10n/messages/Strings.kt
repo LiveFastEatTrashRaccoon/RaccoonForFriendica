@@ -263,6 +263,7 @@ interface Strings {
     fun items(count: Int): String
 
     val galleryFieldAlbumName: String
+    val messageEmptyAlbum: String
 }
 
 object Locales {
