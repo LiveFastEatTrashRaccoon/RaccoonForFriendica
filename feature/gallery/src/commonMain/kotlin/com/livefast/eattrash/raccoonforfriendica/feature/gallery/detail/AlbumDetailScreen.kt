@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -60,6 +61,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPl
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.components.AlbumImageItem
 import kotlinx.coroutines.flow.launchIn
@@ -84,9 +86,17 @@ class AlbumDetailScreen(
         val lazyGridState = rememberLazyStaggeredGridState()
         val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
         val detailOpener = remember { getDetailOpener() }
+        val galleryHelper = remember { getGalleryHelper() }
         val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
         val scope = rememberCoroutineScope()
         val genericError = LocalStrings.current.messageGenericError
+        var openImagePicker by remember { mutableStateOf(false) }
+        if (openImagePicker) {
+            galleryHelper.getImageFromGallery { bytes ->
+                openImagePicker = false
+                model.reduce(AlbumDetailMviModel.Intent.Create(bytes))
+            }
+        }
         var attachmentIdToDelete by remember { mutableStateOf<String?>(null) }
         var attachmentWithDescriptionBeingEdited by remember { mutableStateOf<AttachmentModel?>(null) }
 
@@ -164,7 +174,7 @@ class AlbumDetailScreen(
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            // TODO: show upload UI
+                            openImagePicker = true
                         },
                     ) {
                         Icon(
@@ -200,6 +210,17 @@ class AlbumDetailScreen(
                     if (uiState.initial) {
                         items(10) {
                             GenericPlaceholder(modifier = Modifier.height(60.dp))
+                        }
+                    }
+
+                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
+                        item(span = StaggeredGridItemSpan.FullLine) {
+                            Text(
+                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                                text = LocalStrings.current.messageEmptyAlbum,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
                         }
                     }
 
