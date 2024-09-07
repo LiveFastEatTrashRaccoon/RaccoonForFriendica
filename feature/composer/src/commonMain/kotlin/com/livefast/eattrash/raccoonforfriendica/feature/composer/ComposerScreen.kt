@@ -38,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
@@ -95,6 +96,7 @@ class ComposerScreen(
         val galleryHelper = remember { getGalleryHelper() }
         val missingDataError = LocalStrings.current.messagePostEmptyText
         val invalidVisibilityError = LocalStrings.current.messagePostInvalidVisibility
+        val characterLimitExceededError = LocalStrings.current.messageCharacterLimitExceeded
         val genericError = LocalStrings.current.messageGenericError
         var openImagePicker by remember { mutableStateOf(false) }
         if (openImagePicker) {
@@ -127,21 +129,19 @@ class ComposerScreen(
             model.effects
                 .onEach { event ->
                     when (event) {
-                        is ComposerMviModel.Effect.Failure -> {
+                        is ComposerMviModel.Effect.Failure ->
                             snackbarHostState.showSnackbar(message = event.message ?: genericError)
-                        }
 
-                        ComposerMviModel.Effect.ValidationError.TextOrImagesMandatory -> {
+                        ComposerMviModel.Effect.ValidationError.TextOrImagesMandatory ->
                             snackbarHostState.showSnackbar(message = missingDataError)
-                        }
 
-                        ComposerMviModel.Effect.ValidationError.InvalidVisibility -> {
+                        ComposerMviModel.Effect.ValidationError.InvalidVisibility ->
                             snackbarHostState.showSnackbar(message = invalidVisibilityError)
-                        }
 
-                        ComposerMviModel.Effect.Success -> {
-                            navigationCoordinator.pop()
-                        }
+                        ComposerMviModel.Effect.ValidationError.CharacterLimitExceeded ->
+                            snackbarHostState.showSnackbar(message = characterLimitExceededError)
+
+                        ComposerMviModel.Effect.Success -> navigationCoordinator.pop()
                     }
                 }.launchIn(this)
         }
@@ -206,11 +206,17 @@ class ComposerScreen(
                     modifier =
                         Modifier.fillMaxWidth(),
                     onAttachmentClicked = {
-                        openImagePicker = true
+                        val limit = uiState.attachmentLimit ?: Int.MAX_VALUE
+                        if (uiState.attachments.size < limit) {
+                            openImagePicker = true
+                        }
                     },
                     hasGallery = uiState.hasGallery,
                     onAttachmentFromGalleryClicked = {
-                        photoGalleryPickerOpen = true
+                        val limit = uiState.attachmentLimit ?: Int.MAX_VALUE
+                        if (uiState.attachments.size < limit) {
+                            photoGalleryPickerOpen = true
+                        }
                     },
                     onLinkClicked = {
                         linkDialogOpen = true
@@ -284,7 +290,11 @@ class ComposerScreen(
                     }
 
                     CreatePostHeader(
-                        modifier = Modifier.padding(horizontal = Spacing.s),
+                        modifier =
+                            Modifier.padding(
+                                horizontal = Spacing.s,
+                                vertical = Spacing.xxs,
+                            ),
                         author = uiState.author,
                         visibility = uiState.visibility,
                         availableVisibilities = uiState.availableVisibilities,
@@ -296,6 +306,20 @@ class ComposerScreen(
                             }
                         },
                     )
+
+                    // character count
+                    if (uiState.characterLimit != null) {
+                        Text(
+                            modifier = Modifier.align(Alignment.End).padding(end = Spacing.s),
+                            text =
+                                buildString {
+                                    append(uiState.bodyValue.text.length)
+                                    append("/")
+                                    append(uiState.characterLimit)
+                                },
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    }
 
                     // spoiler text
                     if (uiState.hasSpoiler) {

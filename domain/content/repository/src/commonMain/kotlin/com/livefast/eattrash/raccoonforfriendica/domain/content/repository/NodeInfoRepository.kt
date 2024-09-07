@@ -4,6 +4,4 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoMod
 
 interface NodeInfoRepository {
     suspend fun getInfo(): NodeInfoModel?
-
-    suspend fun isFriendica(): Boolean
 }

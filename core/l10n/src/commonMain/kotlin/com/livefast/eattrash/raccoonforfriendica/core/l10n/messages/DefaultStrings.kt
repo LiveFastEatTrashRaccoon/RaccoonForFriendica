@@ -295,4 +295,7 @@ internal open class DefaultStrings : Strings {
     override val pickFromGalleryDialogTitle = "Select from gallery"
 
     override fun unreadMessages(count: Int): String = "unread"
+
+    override val messageCharacterLimitExceeded =
+        "You exceeded the maximum allowed character count"
 }

@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.drawer
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isFriendica
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -21,7 +22,7 @@ class DrawerViewModel(
         screenModelScope.launch {
             apiConfigurationRepository.node
                 .onEach { node ->
-                    val isFriendica = nodeInfoRepository.isFriendica()
+                    val isFriendica = nodeInfoRepository.getInfo()?.isFriendica == true
                     updateState {
                         it.copy(
                             node = node,

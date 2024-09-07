@@ -143,6 +143,8 @@ interface ComposerMviModel :
         val galleryCanFetchMore: Boolean = true,
         val galleryLoading: Boolean = false,
         val galleryCurrentAlbumPhotos: List<AttachmentModel> = emptyList(),
+        val characterLimit: Int? = null,
+        val attachmentLimit: Int? = null,
     )
 
     sealed interface Effect {
@@ -150,6 +152,8 @@ interface ComposerMviModel :
             data object TextOrImagesMandatory : ValidationError
 
             data object InvalidVisibility : ValidationError
+
+            data object CharacterLimitExceeded : ValidationError
         }
 
         data object Success : Effect

@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isFriendica
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
@@ -63,8 +64,14 @@ class ComposerViewModel(
                 .onEach { currentUser ->
                     updateState { it.copy(author = currentUser) }
                 }.launchIn(this)
-            val isFriendica = nodeInfoRepository.isFriendica()
-            updateState { it.copy(hasGallery = isFriendica) }
+            val nodeInfo = nodeInfoRepository.getInfo()
+            updateState {
+                it.copy(
+                    hasGallery = nodeInfo?.isFriendica == true,
+                    characterLimit = nodeInfo?.characterLimit,
+                    attachmentLimit = nodeInfo?.attachmentLimit,
+                )
+            }
 
             loadAvailableCircles()
         }
@@ -544,11 +551,17 @@ class ComposerViewModel(
         // use the mediaId for this call otherwise the backend returns a 500
         val attachmentIds = currentState.attachments.map { it.mediaId }
         val visibility = currentState.visibility
+        val characterLimit = currentState.characterLimit ?: Int.MAX_VALUE
         val key = getUuid()
 
         screenModelScope.launch {
             if (text.isBlank() && attachmentIds.isEmpty()) {
                 emitEffect(ComposerMviModel.Effect.ValidationError.TextOrImagesMandatory)
+                return@launch
+            }
+
+            if (text.length > characterLimit) {
+                emitEffect(ComposerMviModel.Effect.ValidationError.CharacterLimitExceeded)
                 return@launch
             }
 
