@@ -4,13 +4,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
@@ -26,6 +29,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,6 +65,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostHeader
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.GalleryPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InReplyToInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InsertLinkDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SelectCircleDialog
@@ -98,6 +103,7 @@ class ComposerScreen(
                 model.reduce(ComposerMviModel.Intent.AddAttachment(bytes))
             }
         }
+        var photoGalleryPickerOpen by remember { mutableStateOf(false) }
         var linkDialogOpen by remember { mutableStateOf(false) }
         var mentionDialogOpen by remember { mutableStateOf(false) }
         var selectCircleDialogOpen by remember { mutableStateOf(false) }
@@ -202,6 +208,10 @@ class ComposerScreen(
                     onAttachmentClicked = {
                         openImagePicker = true
                     },
+                    hasGallery = uiState.hasGallery,
+                    onAttachmentFromGalleryClicked = {
+                        photoGalleryPickerOpen = true
+                    },
                     onLinkClicked = {
                         linkDialogOpen = true
                     },
@@ -259,7 +269,7 @@ class ComposerScreen(
                             .padding(
                                 top = padding.calculateTopPadding(),
                             ).consumeWindowInsets(padding)
-                            .safeImePadding(),
+                            .verticalScroll(rememberScrollState()),
                 ) {
                     if (!inReplyToUsername.isNullOrBlank()) {
                         InReplyToInfo(
@@ -387,21 +397,34 @@ class ComposerScreen(
                     // attachments
                     if (uiState.attachments.isNotEmpty()) {
                         Text(
-                            modifier = Modifier.padding(top = Spacing.m),
+                            modifier =
+                                Modifier.padding(
+                                    top = Spacing.m,
+                                    start = Spacing.s,
+                                    end = Spacing.s,
+                                ),
                             text = LocalStrings.current.createPostAttachmentsSection,
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
                     }
                     AttachmentsGrid(
+                        modifier =
+                            Modifier.padding(
+                                top = Spacing.s,
+                                start = Spacing.s,
+                                end = Spacing.s,
+                            ),
                         attachments = uiState.attachments,
                         onDelete = { attachment ->
-                            model.reduce(ComposerMviModel.Intent.RemoveAttachment(attachment.id))
+                            model.reduce(ComposerMviModel.Intent.RemoveAttachment(attachment))
                         },
                         onEditDescription = { attachment ->
                             attachmentWithDescriptionBeingEdited = attachment
                         },
                     )
+
+                    Spacer(modifier = Modifier.height(Spacing.xxxl))
                 }
             },
         )
@@ -483,6 +506,32 @@ class ComposerScreen(
                                 ),
                             ),
                         )
+                    }
+                },
+            )
+        }
+
+        if (photoGalleryPickerOpen) {
+            GalleryPickerDialog(
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                currentAlbum = uiState.galleryCurrentAlbum,
+                albums = uiState.galleryAlbums,
+                canFetchMore = uiState.galleryCanFetchMore,
+                loading = uiState.galleryLoading,
+                photos = uiState.galleryCurrentAlbumPhotos,
+                onInitialLoad = {
+                    model.reduce(ComposerMviModel.Intent.GalleryInitialLoad)
+                },
+                onLoadMorePhotos = {
+                    model.reduce(ComposerMviModel.Intent.GalleryLoadMorePhotos)
+                },
+                onAlbumChanged = { album ->
+                    model.reduce(ComposerMviModel.Intent.GalleryAlbumSelected(album))
+                },
+                onClose = { attachments ->
+                    photoGalleryPickerOpen = false
+                    if (attachments != null) {
+                        model.reduce(ComposerMviModel.Intent.AddAttachmentsFromGallery(attachments))
                     }
                 },
             )

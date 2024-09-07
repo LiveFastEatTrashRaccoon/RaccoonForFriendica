@@ -115,7 +115,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] multi-account
 - [x] edit one's own profile (custom fields and images not supported yet by the back-end)
 - [x] direct messages
-- [ ] photo gallery
+- [x] photo gallery
 - [ ] advanced media visualization (image carousels, videos, GIFs, etc.)
 - [ ] custom emojis
 - [ ] scheduled posts

@@ -299,4 +299,5 @@ internal val ItStrings =
         override val messageEmptyAlbum =
             "Sembra che questo album sia ancora vuoto… ✨"
         override val actionMove = "Sposta"
+        override val pickFromGalleryDialogTitle = "Seleziona dalla galleria"
     }

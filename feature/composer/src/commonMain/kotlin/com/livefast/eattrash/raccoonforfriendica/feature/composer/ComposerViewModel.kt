@@ -8,9 +8,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -34,6 +38,9 @@ class ComposerViewModel(
     private val photoRepository: PhotoRepository,
     private val userPaginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
+    private val nodeInfoRepository: NodeInfoRepository,
+    private val albumRepository: PhotoAlbumRepository,
+    private val albumPhotoPaginationManager: AlbumPhotoPaginationManager,
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
         initialState = ComposerMviModel.State(),
     ),
@@ -56,6 +63,8 @@ class ComposerViewModel(
                 .onEach { currentUser ->
                     updateState { it.copy(author = currentUser) }
                 }.launchIn(this)
+            val isFriendica = nodeInfoRepository.isFriendica()
+            updateState { it.copy(hasGallery = isFriendica) }
 
             loadAvailableCircles()
         }
@@ -110,7 +119,7 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.EditAttachmentDescription ->
                 updateAttachmentDescription(intent.attachment, intent.description)
 
-            is ComposerMviModel.Intent.RemoveAttachment -> removeAttachment(intent.attachmentId)
+            is ComposerMviModel.Intent.RemoveAttachment -> removeAttachment(intent.attachment)
             is ComposerMviModel.Intent.AddLink -> {
                 screenModelScope.launch {
                     val (anchor, url) = intent.link
@@ -180,7 +189,47 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.AddBoldFormat -> addBoldFormat(intent.fieldType)
             is ComposerMviModel.Intent.AddItalicFormat -> addItalicFormat(intent.fieldType)
             is ComposerMviModel.Intent.AddUnderlineFormat -> addUnderlineFormat(intent.fieldType)
+            is ComposerMviModel.Intent.AddAttachmentsFromGallery ->
+                addAttachmentsFromGallery(intent.attachments)
+
+            is ComposerMviModel.Intent.GalleryAlbumSelected ->
+                screenModelScope.launch {
+                    updateState { it.copy(galleryCurrentAlbum = intent.album) }
+                    refreshGalleryPhotos()
+                }
+
+            ComposerMviModel.Intent.GalleryInitialLoad ->
+                screenModelScope.launch {
+                    val albums = albumRepository.getAll()
+                    val currentAlbum = albums.firstOrNull()
+                    updateState {
+                        it.copy(
+                            galleryAlbums = albums,
+                            galleryCurrentAlbum = currentAlbum?.name,
+                        )
+                    }
+                    refreshGalleryPhotos()
+                }
+
+            ComposerMviModel.Intent.GalleryLoadMorePhotos ->
+                screenModelScope.launch {
+                    loadNextPageGalleryPhotos()
+                }
+
             ComposerMviModel.Intent.Submit -> submit()
+        }
+    }
+
+    private fun addAttachmentsFromGallery(attachments: List<AttachmentModel>) {
+        screenModelScope.launch {
+            val currentAttachments = uiState.value.attachments
+            val attachmentsToAdd =
+                attachments
+                    .filter { a1 -> currentAttachments.none { a2 -> a1.id == a2.id } }
+                    .map { it.copy(fromGallery = true) }
+            updateState {
+                it.copy(attachments = it.attachments + attachmentsToAdd)
+            }
         }
     }
 
@@ -348,11 +397,17 @@ class ComposerViewModel(
         }
     }
 
-    private fun removeAttachment(attachmentId: String) {
+    private fun removeAttachment(attachment: AttachmentModel) {
         screenModelScope.launch {
-            val success = photoRepository.delete(attachmentId)
-            if (success) {
+            val attachmentId = attachment.id
+            if (attachment.fromGallery || editedPostId != null) {
+                // soft removal
                 removeAttachmentFromState(attachmentId)
+            } else {
+                val success = photoRepository.delete(attachmentId)
+                if (success) {
+                    removeAttachmentFromState(attachmentId)
+                }
             }
         }
     }
@@ -380,6 +435,31 @@ class ComposerViewModel(
                 userSearchUsers = users,
                 userSearchCanFetchMore = userPaginationManager.canFetchMore,
                 userSearchLoading = false,
+            )
+        }
+    }
+
+    private suspend fun refreshGalleryPhotos() {
+        val albumName = uiState.value.galleryCurrentAlbum ?: return
+        albumPhotoPaginationManager.reset(
+            AlbumPhotoPaginationSpecification.Default(albumName),
+        )
+        updateState { it.copy(galleryCanFetchMore = albumPhotoPaginationManager.canFetchMore) }
+        loadNextPageGalleryPhotos()
+    }
+
+    private suspend fun loadNextPageGalleryPhotos() {
+        if (uiState.value.galleryLoading) {
+            return
+        }
+
+        updateState { it.copy(galleryLoading = true) }
+        val photos = albumPhotoPaginationManager.loadNextPage()
+        updateState {
+            it.copy(
+                galleryCurrentAlbumPhotos = photos,
+                galleryCanFetchMore = albumPhotoPaginationManager.canFetchMore,
+                galleryLoading = false,
             )
         }
     }
