@@ -300,4 +300,10 @@ internal val ItStrings =
             "Sembra che questo album sia ancora vuoto… ✨"
         override val actionMove = "Sposta"
         override val pickFromGalleryDialogTitle = "Seleziona dalla galleria"
+
+        override fun unreadMessages(count: Int): String =
+            when (count) {
+                1 -> "non letto"
+                else -> "non letti"
+        }
     }
