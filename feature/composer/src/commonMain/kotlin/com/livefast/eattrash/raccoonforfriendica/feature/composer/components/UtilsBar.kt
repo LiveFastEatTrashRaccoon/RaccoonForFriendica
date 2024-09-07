@@ -8,12 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
+import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Explicit
 import androidx.compose.material.icons.filled.FormatBold
 import androidx.compose.material.icons.filled.FormatItalic
 import androidx.compose.material.icons.filled.FormatUnderlined
 import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Title
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,9 +26,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 @Composable
 internal fun UtilsBar(
     modifier: Modifier = Modifier,
+    hasGallery: Boolean = false,
     onLinkClicked: (() -> Unit)? = null,
     onMentionClicked: (() -> Unit)? = null,
     onAttachmentClicked: (() -> Unit)? = null,
+    onAttachmentFromGalleryClicked: (() -> Unit)? = null,
     onBoldClicked: (() -> Unit)? = null,
     onItalicClicked: (() -> Unit)? = null,
     onUnderlineClicked: (() -> Unit)? = null,
@@ -51,10 +54,23 @@ internal fun UtilsBar(
                         onAttachmentClicked?.invoke()
                     }.padding(Spacing.xs)
                     .size(IconSize.m),
-            imageVector = Icons.Default.PhotoLibrary,
+            imageVector = Icons.Default.PhotoCamera,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        if (hasGallery) {
+            Icon(
+                modifier =
+                    Modifier
+                        .clickable {
+                            onAttachmentFromGalleryClicked?.invoke()
+                        }.padding(Spacing.xs)
+                        .size(IconSize.m),
+                imageVector = Icons.Default.Dashboard,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         Icon(
             modifier =
                 Modifier
