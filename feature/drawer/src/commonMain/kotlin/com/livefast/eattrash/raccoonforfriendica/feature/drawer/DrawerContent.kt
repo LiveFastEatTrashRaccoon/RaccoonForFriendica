@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Flaky
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.PhotoAlbum
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material.icons.filled.Workspaces
@@ -115,7 +115,7 @@ class DrawerContent : Screen {
                 if (uiState.hasGallery) {
                     DrawerShortcut(
                         title = LocalStrings.current.galleryTitle,
-                        icon = Icons.Default.PhotoAlbum,
+                        icon = Icons.Default.Dashboard,
                         onSelected = {
                             handleOpen { detailOpener.openGallery() }
                         },
