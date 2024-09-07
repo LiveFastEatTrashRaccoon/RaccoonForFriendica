@@ -14,6 +14,9 @@ val featureComposerModule =
                 identityRepository = get(),
                 userPaginationManager = get(),
                 circlesRepository = get(),
+                nodeInfoRepository = get(),
+                albumRepository = get(),
+                albumPhotoPaginationManager = get(),
             )
         }
     }

@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 
@@ -52,13 +53,17 @@ interface ComposerMviModel :
             override fun hashCode(): Int = byteArray.contentHashCode()
         }
 
+        data class AddAttachmentsFromGallery(
+            val attachments: List<AttachmentModel>,
+        ) : Intent
+
         data class EditAttachmentDescription(
             val attachment: AttachmentModel,
             val description: String,
         ) : Intent
 
         data class RemoveAttachment(
-            val attachmentId: String,
+            val attachment: AttachmentModel,
         ) : Intent
 
         data class AddLink(
@@ -98,6 +103,14 @@ interface ComposerMviModel :
         data object ToggleHasTitle : Intent
 
         data object Submit : Intent
+
+        data object GalleryInitialLoad : Intent
+
+        data object GalleryLoadMorePhotos : Intent
+
+        data class GalleryAlbumSelected(
+            val album: String,
+        ) : Intent
     }
 
     data class State(
@@ -124,6 +137,12 @@ interface ComposerMviModel :
         val availableCircles: List<CircleModel> = emptyList(),
         val hasSpoiler: Boolean = false,
         val hasTitle: Boolean = false,
+        val hasGallery: Boolean = false,
+        val galleryCurrentAlbum: String? = null,
+        val galleryAlbums: List<MediaAlbumModel> = emptyList(),
+        val galleryCanFetchMore: Boolean = true,
+        val galleryLoading: Boolean = false,
+        val galleryCurrentAlbumPhotos: List<AttachmentModel> = emptyList(),
     )
 
     sealed interface Effect {
