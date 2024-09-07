@@ -39,7 +39,7 @@ interface DirectMessageService {
         @Query("id") id: Long,
     ): FriendicaApiResult
 
-    @GET("friendica/direct_messages_setseen")
+    @POST("friendica/direct_messages_setseen")
     suspend fun markAsRead(
         @Query("id") id: Long,
     ): FriendicaApiResult
