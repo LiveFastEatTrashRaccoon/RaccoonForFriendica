@@ -18,6 +18,8 @@ interface TimelineEntryRepository {
 
     suspend fun getById(id: String): TimelineEntryModel?
 
+    suspend fun getSource(id: String): TimelineEntryModel?
+
     suspend fun getContext(id: String): TimelineContextModel?
 
     suspend fun reblog(id: String): TimelineEntryModel?
