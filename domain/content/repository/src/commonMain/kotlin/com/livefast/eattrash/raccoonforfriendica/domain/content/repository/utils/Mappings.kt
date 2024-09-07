@@ -373,6 +373,7 @@ internal fun FriendicaPrivateMessage.toModel() =
         sender = sender?.toModel(),
         recipient = recipient?.toModel(),
         parentUri = parentUri,
+        read = seen ?: true,
     )
 
 internal fun FriendicaPhotoAlbum.toModel() =

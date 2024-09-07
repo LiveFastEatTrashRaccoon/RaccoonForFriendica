@@ -293,4 +293,6 @@ internal open class DefaultStrings : Strings {
         "It looks like this album is still empty… ✨"
     override val actionMove = "Move"
     override val pickFromGalleryDialogTitle = "Select from gallery"
+
+    override fun unreadMessages(count: Int): String = "unread"
 }

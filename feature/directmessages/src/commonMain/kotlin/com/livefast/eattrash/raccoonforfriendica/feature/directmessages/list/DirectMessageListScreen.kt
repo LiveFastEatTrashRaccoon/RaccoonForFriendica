@@ -199,6 +199,9 @@ class DirectMessageListScreen : Screen {
                                 val otherUserId = conversation.otherUser.id
                                 val parentUri = conversation.lastMessage.parentUri
                                 if (parentUri != null) {
+                                    model.reduce(
+                                        DirectMessageListMviModel.Intent.MarkConversationAsRead(idx),
+                                    )
                                     detailOpener.openConversation(
                                         otherUserId = otherUserId,
                                         parentUri = parentUri,

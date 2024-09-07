@@ -266,6 +266,8 @@ interface Strings {
     val messageEmptyAlbum: String
     val actionMove: String
     val pickFromGalleryDialogTitle: String
+
+    fun unreadMessages(count: Int): String
 }
 
 object Locales {
