@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.detail.CircleDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScreen
@@ -72,7 +73,7 @@ class DefaultDetailOpener(
         if (!isLogged) {
             return
         }
-        val screen = FavoritesScreen(type = FavoritesType.Favorites)
+        val screen = FavoritesScreen(type = FavoritesType.Favorites.toInt())
         navigationCoordinator.push(screen)
     }
 
@@ -80,7 +81,7 @@ class DefaultDetailOpener(
         if (!isLogged) {
             return
         }
-        val screen = FavoritesScreen(type = FavoritesType.Bookmarks)
+        val screen = FavoritesScreen(type = FavoritesType.Bookmarks.toInt())
         navigationCoordinator.push(screen)
     }
 
@@ -190,7 +191,11 @@ class DefaultDetailOpener(
         otherUserId: String,
         parentUri: String,
     ) {
-        val screen = ConversationScreen(otherUserId = otherUserId, parentUri = parentUri)
+        val screen =
+            ConversationScreen(
+                otherUserId = otherUserId,
+                parentUri = parentUri,
+            )
         navigationCoordinator.push(screen)
     }
 
@@ -203,7 +208,11 @@ class DefaultDetailOpener(
         name: String,
         createMode: Boolean,
     ) {
-        val screen = AlbumDetailScreen(name = name, createMode = createMode)
+        val screen =
+            AlbumDetailScreen(
+                name = name,
+                createMode = createMode
+        )
         navigationCoordinator.push(screen)
     }
 }

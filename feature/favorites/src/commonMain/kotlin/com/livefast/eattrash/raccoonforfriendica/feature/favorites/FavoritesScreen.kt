@@ -59,9 +59,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toFavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -69,12 +69,13 @@ import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
 class FavoritesScreen(
-    private val type: FavoritesType,
+    private val type: Int,
 ) : Screen {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        val model = getScreenModel<FavoritesMviModel>(parameters = { parametersOf(type) })
+        val model =
+            getScreenModel<FavoritesMviModel>(parameters = { parametersOf(type.toFavoritesType()) })
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val topAppBarState = rememberTopAppBarState()
@@ -121,7 +122,7 @@ class FavoritesScreen(
                     title = {
                         Text(
                             modifier = Modifier.padding(horizontal = Spacing.s),
-                            text = type.toReadableName(),
+                            text = type.toFavoritesType().toReadableName(),
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },
