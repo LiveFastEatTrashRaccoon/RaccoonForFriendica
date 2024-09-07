@@ -121,7 +121,12 @@ fun UserHeader(
                         val followers = user?.followers ?: 0
                         val following = user?.following ?: 0
                         Text(
-                            modifier = Modifier.clickable { onOpenFollowers?.invoke() },
+                            modifier =
+                                Modifier.clickable {
+                                    if (followers > 0) {
+                                        onOpenFollowers?.invoke()
+                                    }
+                                },
                             text =
                                 buildString {
                                     append(followers)
@@ -137,7 +142,12 @@ fun UserHeader(
                             color = ancillaryColor,
                         )
                         Text(
-                            modifier = Modifier.clickable { onOpenFollowing?.invoke() },
+                            modifier =
+                                Modifier.clickable {
+                                    if (following > 0) {
+                                        onOpenFollowing?.invoke()
+                                    }
+                                },
                             text =
                                 buildString {
                                     append(following)
