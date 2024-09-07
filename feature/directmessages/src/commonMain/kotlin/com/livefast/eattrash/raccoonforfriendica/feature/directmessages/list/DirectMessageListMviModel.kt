@@ -20,6 +20,10 @@ interface DirectMessageListMviModel :
         ) : Intent
 
         data object UserSearchClear : Intent
+
+        data class MarkConversationAsRead(
+            val index: Int,
+        ) : Intent
     }
 
     data class State(

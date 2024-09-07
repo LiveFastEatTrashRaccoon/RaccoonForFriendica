@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Direc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 class DirectMessageListViewModel(
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
@@ -68,6 +70,22 @@ class DirectMessageListViewModel(
                 screenModelScope.launch {
                     loadNextPageUsers()
                 }
+
+            is DirectMessageListMviModel.Intent.MarkConversationAsRead ->
+                screenModelScope.launch {
+                    updateState {
+                        it.copy(
+                            items =
+                                it.items.mapIndexed { idx, conversation ->
+                                    if (idx == intent.index) {
+                                        conversation.copy(unreadCount = 0)
+                                    } else {
+                                        conversation
+                                    }
+                                },
+                        )
+                    }
+                }
         }
     }
 
@@ -107,6 +125,7 @@ class DirectMessageListViewModel(
                             otherUser = user,
                             lastMessage = lastMessage,
                             messageCount = messages.size,
+                            unreadCount = messages.count { m -> !m.read },
                         )
                     }
                 }
