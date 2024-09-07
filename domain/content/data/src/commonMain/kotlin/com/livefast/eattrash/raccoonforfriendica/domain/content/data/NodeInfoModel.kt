@@ -12,4 +12,15 @@ data class NodeInfoModel(
     val languages: List<String> = emptyList(),
     val rules: List<String> = emptyList(),
     val contact: UserModel? = null,
+    val characterLimit: Int? = null,
+    val attachmentLimit: Int? = null,
 )
+
+private val FRIENDICA_REGEX =
+    Regex("\\(compatible; Friendica (?<version>[a-zA-Z0-9.-_]*)\\)")
+
+val NodeInfoModel.isFriendica: Boolean
+    get() =
+        version
+            .orEmpty()
+            .contains(FRIENDICA_REGEX)

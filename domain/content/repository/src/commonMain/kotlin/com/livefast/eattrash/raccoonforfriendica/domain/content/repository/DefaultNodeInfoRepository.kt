@@ -16,15 +16,4 @@ internal class DefaultNodeInfoRepository(
                 provider.instance.getInfo().toModel()
             }.getOrNull()
         }
-
-    override suspend fun isFriendica(): Boolean =
-        getInfo()
-            ?.version
-            .orEmpty()
-            .contains(FRIENDICA_REGEX)
-
-    companion object {
-        private val FRIENDICA_REGEX =
-            Regex("\\(compatible; Friendica (?<version>[a-zA-Z0-9.-_]*)\\)")
-    }
 }

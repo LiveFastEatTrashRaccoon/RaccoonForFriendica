@@ -354,6 +354,8 @@ internal fun Instance.toModel() =
         languages = languages,
         rules = rules.mapNotNull { it.text },
         contact = contactAccount?.toModel(),
+        characterLimit = configuration?.statuses?.maxCharacters,
+        attachmentLimit = configuration?.statuses?.maxMediaAttachments,
     )
 
 internal fun FriendicaContact.toModel() =

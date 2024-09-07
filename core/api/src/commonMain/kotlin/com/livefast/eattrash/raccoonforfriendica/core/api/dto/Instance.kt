@@ -17,4 +17,5 @@ data class Instance(
     @SerialName("languages") val languages: List<String> = emptyList(),
     @SerialName("rules") val rules: List<InstanceRule> = emptyList(),
     @SerialName("contact_account") val contactAccount: Account? = null,
+    @SerialName("configuration") val configuration: InstanceConfiguration? = null,
 )
