@@ -455,8 +455,10 @@ class UserDetailScreen(
                                 onOpenUrl = { url ->
                                     uriHandler.openUri(url)
                                 },
-                                onOpenUser = {
-                                    detailOpener.openUserDetail(it.id)
+                                onOpenUser = { user ->
+                                    if (user.id != uiState.user?.id) {
+                                        detailOpener.openUserDetail(user.id)
+                                    }
                                 },
                                 onOpenImage = { imageUrl ->
                                     detailOpener.openImageDetail(imageUrl)
