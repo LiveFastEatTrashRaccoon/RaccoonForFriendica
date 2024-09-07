@@ -102,6 +102,7 @@ class ConversationViewModel(
 
         updateState { it.copy(loading = true) }
         val items = paginationManager.loadNextPage()
+            .onEach { markAsRead(it) }
         val wasRefreshing = uiState.value.refreshing
         updateState {
             it.copy(
@@ -138,6 +139,12 @@ class ConversationViewModel(
             updateParentUriIfNeeded(newMessages.lastOrNull()?.parentUri)
             updateState { it.copy(items = newMessages + originalItems) }
             emitEffect(ConversationMviModel.Effect.BackToTop)
+        }
+    }
+
+    private suspend fun markAsRead(message: DirectMessageModel) {
+        if (!message.read) {
+            messageRepository.markAsRead(message.id)
         }
     }
 
