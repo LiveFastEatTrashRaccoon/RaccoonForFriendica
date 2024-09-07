@@ -1,28 +1,28 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.datetime
 
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.Period
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.GregorianCalendar
-import java.util.Locale
 import java.util.TimeZone
+import kotlin.math.abs
 import kotlin.time.Duration
 import kotlin.time.toKotlinDuration
 import java.time.Duration as JavaDuration
 
 actual fun epochMillis(): Long = System.currentTimeMillis()
 
-private val formatter =
-    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.US).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
-    }
+private fun getDateTimeFormatter(pattern: String) =
+    DateTimeFormatter
+        .ofPattern(pattern)
+        .withZone(TimeZone.getTimeZone("UTC").toZoneId())
+
+private val safeFormatter = getDateTimeFormatter("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
 
 actual fun Long.toIso8601Timestamp(): String? {
-    val date = Date(this)
-    return formatter.format(date)
+    val date = LocalDateTime.ofEpochSecond(this, 0, ZoneOffset.UTC)
+    return safeFormatter.format(date)
 }
 
 actual fun getFormattedDate(
@@ -38,11 +38,10 @@ actual fun parseDate(
     value: String,
     format: String,
 ): String =
-    SimpleDateFormat(format, Locale.US)
-        .apply {
-            timeZone = TimeZone.getTimeZone("UTC")
-        }.parse(value)
-        ?.let { formatter.format(it) }.orEmpty()
+    getDateTimeFormatter(format)
+        .parse(value)
+        ?.let { safeFormatter.format(it) }
+        .orEmpty()
 
 actual fun getPrettyDate(
     iso8601Timestamp: String,
@@ -53,7 +52,7 @@ actual fun getPrettyDate(
     minuteLabel: String,
     secondLabel: String,
 ): String {
-    val now = GregorianCalendar().toZonedDateTime()
+    val now = ZonedDateTime.now()
     val date = getDateFromIso8601Timestamp(iso8601Timestamp)
     val delta = Period.between(date.toLocalDate(), now.toLocalDate())
     val years = delta.years
@@ -61,7 +60,7 @@ actual fun getPrettyDate(
     val days = delta.days
     val nowSeconds = now.toEpochSecond()
     val dateSeconds = date.toEpochSecond()
-    val diffSeconds = (nowSeconds - dateSeconds)
+    val diffSeconds = abs(nowSeconds - dateSeconds)
     val hours = ((diffSeconds % 86400) / 3600) % 24
     val minutes = ((diffSeconds % 3600) / 60) % 60
     val seconds = diffSeconds % 60
@@ -108,7 +107,7 @@ actual fun getPrettyDate(
 }
 
 actual fun getDurationSinceDate(iso8601Timestamp: String): Duration? {
-    val date = getDateFromIso8601Timestamp(iso8601Timestamp).toLocalDateTime()
+    val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
     val now = LocalDateTime.now()
     val duration = JavaDuration.between(date, now)
     return duration.toKotlinDuration()
