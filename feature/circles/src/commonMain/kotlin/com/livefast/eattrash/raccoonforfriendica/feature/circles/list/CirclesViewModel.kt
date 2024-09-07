@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isFriendica
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import kotlinx.coroutines.async
@@ -67,7 +68,7 @@ class CirclesViewModel(
         coroutineScope {
             val circles = async { circlesRepository.getAll() }.await()
             val friendicaCircles = async { circlesRepository.getFriendicaCircles() }.await()
-            val isFriendica = async { nodeInfoRepository.isFriendica() }.await()
+            val isFriendica = async { nodeInfoRepository.getInfo()?.isFriendica == true }.await()
             val items =
                 circles.map { circle ->
                     // on Mastodon, all lists can be edited; on Friendica ony the user-created ones
