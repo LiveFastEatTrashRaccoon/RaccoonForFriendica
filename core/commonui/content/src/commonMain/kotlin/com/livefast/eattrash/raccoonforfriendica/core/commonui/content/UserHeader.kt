@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
@@ -121,7 +122,14 @@ fun UserHeader(
                         val followers = user?.followers ?: 0
                         val following = user?.following ?: 0
                         Text(
-                            modifier = Modifier.clickable { onOpenFollowers?.invoke() },
+                            modifier =
+                                Modifier
+                                    .clip(RoundedCornerShape(CornerSize.xl))
+                                    .clickable {
+                                        if (followers > 0) {
+                                            onOpenFollowers?.invoke()
+                                        }
+                                    }.padding(horizontal = Spacing.s),
                             text =
                                 buildString {
                                     append(followers)
@@ -132,12 +140,19 @@ fun UserHeader(
                             color = ancillaryColor,
                         )
                         Text(
-                            text = " • ",
+                            text = "•",
                             style = MaterialTheme.typography.labelMedium,
                             color = ancillaryColor,
                         )
                         Text(
-                            modifier = Modifier.clickable { onOpenFollowing?.invoke() },
+                            modifier =
+                                Modifier
+                                    .clip(RoundedCornerShape(CornerSize.xl))
+                                    .clickable {
+                                        if (following > 0) {
+                                            onOpenFollowing?.invoke()
+                                        }
+                                    }.padding(horizontal = Spacing.s),
                             text =
                                 buildString {
                                     append(following)

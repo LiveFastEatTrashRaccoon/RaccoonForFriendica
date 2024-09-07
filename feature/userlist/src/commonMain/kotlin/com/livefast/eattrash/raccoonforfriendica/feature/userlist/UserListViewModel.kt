@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 
 internal class UserListViewModel(
     private val type: UserListType,
+    private val userId: String? = null,
+    private val entryId: String? = null,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val hapticFeedback: HapticFeedback,
@@ -44,8 +46,8 @@ internal class UserListViewModel(
     private suspend fun loadUser() {
         val userId =
             when (type) {
-                is UserListType.Follower -> type.userId
-                is UserListType.Following -> type.userId
+                is UserListType.Follower -> userId
+                is UserListType.Following -> userId
                 else -> null
             }
         if (userId != null) {
@@ -78,10 +80,12 @@ internal class UserListViewModel(
         }
         paginationManager.reset(
             when (type) {
-                is UserListType.Follower -> UserPaginationSpecification.Follower(type.userId)
-                is UserListType.Following -> UserPaginationSpecification.Following(type.userId)
-                is UserListType.UsersFavorite -> UserPaginationSpecification.EntryUsersFavorite(type.entryId)
-                is UserListType.UsersReblog -> UserPaginationSpecification.EntryUsersReblog(type.entryId)
+                is UserListType.Follower -> UserPaginationSpecification.Follower(userId.orEmpty())
+                is UserListType.Following -> UserPaginationSpecification.Following(userId.orEmpty())
+                is UserListType.UsersFavorite ->
+                    UserPaginationSpecification.EntryUsersFavorite(entryId.orEmpty())
+
+                is UserListType.UsersReblog -> UserPaginationSpecification.EntryUsersReblog(entryId.orEmpty())
             },
         )
         loadNextPage()

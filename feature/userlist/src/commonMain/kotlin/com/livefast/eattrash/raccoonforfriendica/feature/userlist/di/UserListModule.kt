@@ -9,6 +9,8 @@ val featureUserListModule =
         factory<UserListMviModel> { params ->
             UserListViewModel(
                 type = params[0],
+                userId = params[1],
+                entryId = params[2],
                 paginationManager = get(),
                 userRepository = get(),
                 hapticFeedback = get(),

@@ -48,45 +48,56 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toUserListType
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
 class UserListScreen(
-    private val type: UserListType,
+    private val type: Int,
+    private val userId: String? = null,
+    private val entryId: String? = null,
+    private val infoCount: Int? = null,
 ) : Screen {
     override val key: ScreenKey
         get() =
             super.key +
-                when (type) {
+                when (type.toUserListType()) {
                     is UserListType.Follower ->
                         buildString {
                             append("follower-")
-                            append(type.userId)
+                            append(userId)
                         }
 
                     is UserListType.Following ->
                         buildString {
                             append("following-")
-                            append(type.userId)
+                            append(userId)
                         }
 
                     is UserListType.UsersFavorite ->
                         buildString {
                             append("favorites-")
-                            append(type.entryId)
+                            append(entryId)
                         }
 
                     is UserListType.UsersReblog ->
                         buildString {
                             append("reblogs-")
-                            append(type.entryId)
+                            append(entryId)
                         }
                 }
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        val model = getScreenModel<UserListMviModel>(parameters = { parametersOf(type) })
+        val model =
+            getScreenModel<UserListMviModel>(parameters = {
+                parametersOf(
+                    type.toUserListType(),
+                    userId,
+                    entryId,
+                )
+            })
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -118,31 +129,51 @@ class UserListScreen(
                             modifier = Modifier.padding(horizontal = Spacing.s),
                             text =
                                 buildString {
-                                    when (type) {
+                                    when (type.toUserListType()) {
                                         is UserListType.Follower -> {
                                             append(LocalStrings.current.followerTitle)
-                                            append(" (")
-                                            append(uiState.user?.handle.orEmpty())
-                                            append(")")
+                                            val handle = uiState.user?.handle.orEmpty()
+                                            if (handle.isNotEmpty()) {
+                                                append(" (")
+                                                append(uiState.user?.handle.orEmpty())
+                                                append(")")
+                                            }
                                         }
 
                                         is UserListType.Following -> {
                                             append(LocalStrings.current.followingTitle)
-                                            append(" (")
-                                            append(uiState.user?.handle.orEmpty())
-                                            append(")")
+                                            val handle = uiState.user?.handle.orEmpty()
+                                            if (handle.isNotEmpty()) {
+                                                append(" (")
+                                                append(handle)
+                                                append(")")
+                                            }
                                         }
 
                                         is UserListType.UsersFavorite -> {
-                                            append(type.count)
-                                            append(" ")
-                                            append(LocalStrings.current.extendedSocialInfoFavorites(type.count))
+                                            val count = infoCount ?: 0
+                                            if (count > 0) {
+                                                append(count)
+                                                append(" ")
+                                                append(
+                                                    LocalStrings.current.extendedSocialInfoFavorites(
+                                                        count,
+                                                    ),
+                                                )
+                                            }
                                         }
 
                                         is UserListType.UsersReblog -> {
-                                            append(type.count)
-                                            append(" ")
-                                            append(LocalStrings.current.extendedSocialInfoReblogs(type.count))
+                                            val count = infoCount ?: 0
+                                            if (count > 0) {
+                                                append(count)
+                                                append(" ")
+                                                append(
+                                                    LocalStrings.current.extendedSocialInfoReblogs(
+                                                        count,
+                                                    ),
+                                                )
+                                            }
                                         }
                                     }
                                 },

@@ -3,7 +3,9 @@ package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -13,6 +15,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
@@ -34,11 +38,13 @@ fun ContentExtendedSocialInfo(
     ) {
         Row(
             modifier =
-                Modifier.clickable {
-                    if (reblogCount > 0) {
-                        onOpenUsersReblog?.invoke()
-                    }
-                },
+                Modifier
+                    .clip(RoundedCornerShape(CornerSize.xl))
+                    .clickable {
+                        if (reblogCount > 0) {
+                            onOpenUsersReblog?.invoke()
+                        }
+                    }.padding(horizontal = Spacing.s),
             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -60,17 +66,19 @@ fun ContentExtendedSocialInfo(
             )
         }
         Text(
-            text = " • ",
+            text = "•",
             style = MaterialTheme.typography.labelMedium,
             color = ancillaryColor,
         )
         Row(
             modifier =
-                Modifier.clickable {
-                    if (favoriteCount > 0) {
-                        onOpenUsersFavorite?.invoke()
-                    }
-                },
+                Modifier
+                    .clip(RoundedCornerShape(CornerSize.xl))
+                    .clickable {
+                        if (favoriteCount > 0) {
+                            onOpenUsersFavorite?.invoke()
+                        }
+                    }.padding(horizontal = Spacing.s),
             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
             verticalAlignment = Alignment.CenterVertically,
         ) {
