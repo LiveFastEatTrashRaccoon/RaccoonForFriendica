@@ -497,7 +497,9 @@ class ComposerViewModel(
     private fun loadEditedPost() {
         val id = editedPostId ?: return
         screenModelScope.launch {
+            updateState { it.copy(loading = true) }
             val entry = timelineEntryRepository.getById(id)
+            val sourceEntry = timelineEntryRepository.getSource(id)
             val visibility =
                 entry?.visibility.let { visibility ->
                     when (visibility) {
@@ -516,10 +518,15 @@ class ComposerViewModel(
 
             updateState {
                 it.copy(
-                    bodyValue = TextFieldValue(text = entry?.content.orEmpty()),
+                    bodyValue = TextFieldValue(text = sourceEntry?.content.orEmpty()),
                     sensitive = entry?.sensitive ?: false,
                     attachments = entry?.attachments.orEmpty(),
                     visibility = visibility,
+                    spoilerValue = TextFieldValue(text = sourceEntry?.spoiler.orEmpty()),
+                    hasSpoiler = !sourceEntry?.spoiler.isNullOrEmpty(),
+                    titleValue = TextFieldValue(text = entry?.title.orEmpty()),
+                    hasTitle = !entry?.title.isNullOrEmpty(),
+                    loading = false,
                 )
             }
         }
