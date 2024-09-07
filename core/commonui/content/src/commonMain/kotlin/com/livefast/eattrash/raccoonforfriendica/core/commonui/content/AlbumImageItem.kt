@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.gallery.components
+package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -48,13 +48,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import kotlin.math.roundToInt
 
 @Composable
-internal fun AlbumImageItem(
+fun AlbumImageItem(
     attachment: AttachmentModel,
     modifier: Modifier = Modifier,
     minHeight: Dp = 50.dp,
