@@ -268,6 +268,8 @@ interface Strings {
     val pickFromGalleryDialogTitle: String
 
     fun unreadMessages(count: Int): String
+
+    val messageCharacterLimitExceeded: String
 }
 
 object Locales {

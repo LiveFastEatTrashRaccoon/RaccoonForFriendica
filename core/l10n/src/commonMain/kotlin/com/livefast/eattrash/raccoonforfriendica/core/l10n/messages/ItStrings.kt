@@ -306,4 +306,7 @@ internal val ItStrings =
                 1 -> "non letto"
                 else -> "non letti"
         }
+
+        override val messageCharacterLimitExceeded =
+            "Hai superato il limite massimo consentito di caratteri"
     }
