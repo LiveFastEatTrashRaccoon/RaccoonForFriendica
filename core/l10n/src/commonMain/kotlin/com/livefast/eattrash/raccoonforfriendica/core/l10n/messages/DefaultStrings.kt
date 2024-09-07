@@ -292,4 +292,5 @@ internal open class DefaultStrings : Strings {
     override val messageEmptyAlbum =
         "It looks like this album is still empty… ✨"
     override val actionMove = "Move"
+    override val pickFromGalleryDialogTitle = "Select from gallery"
 }
