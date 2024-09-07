@@ -50,6 +50,13 @@ internal class DefaultTimelineEntryRepository(
             }.getOrNull()
         }
 
+    override suspend fun getSource(id: String): TimelineEntryModel? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                provider.statuses.getSource(id = id).toModel()
+            }.getOrNull()
+        }
+
     override suspend fun getContext(id: String): TimelineContextModel? =
         withContext(Dispatchers.IO) {
             runCatching {

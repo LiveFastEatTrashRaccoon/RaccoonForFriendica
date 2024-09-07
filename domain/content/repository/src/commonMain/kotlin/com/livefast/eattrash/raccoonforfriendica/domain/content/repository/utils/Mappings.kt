@@ -25,6 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PreviewCardType
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
@@ -88,6 +89,13 @@ internal fun Status.toModel() =
         visibility = visibility.toVisibility(),
         title = addons?.title?.takeIf { it.isNotBlank() },
         poll = poll?.toModel(),
+    )
+
+internal fun StatusSource.toModel() =
+    TimelineEntryModel(
+        content = text.orEmpty(),
+        id = id,
+        spoiler = spoilerText,
     )
 
 internal fun PreviewCard.toModel() =

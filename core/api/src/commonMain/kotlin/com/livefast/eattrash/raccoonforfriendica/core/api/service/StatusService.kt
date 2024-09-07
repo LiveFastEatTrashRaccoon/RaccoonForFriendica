@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
 import de.jensklingenberg.ktorfit.http.Body
@@ -25,6 +26,11 @@ interface StatusService {
     suspend fun getContext(
         @Path("id") id: String,
     ): StatusContext
+
+    @GET("v1/statuses/{id}/source")
+    suspend fun getSource(
+        @Path("id") id: String,
+    ): StatusSource
 
     @POST("v1/statuses/{id}/reblog")
     @Headers("Content-Type: application/json")
