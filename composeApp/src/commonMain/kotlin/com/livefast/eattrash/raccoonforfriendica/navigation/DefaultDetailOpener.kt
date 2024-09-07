@@ -60,12 +60,20 @@ class DefaultDetailOpener(
     }
 
     override fun openFollowers(userId: String) {
-        val screen = UserListScreen(UserListType.Follower(userId))
+        val screen =
+            UserListScreen(
+                type = UserListType.Follower.toInt(),
+                userId = userId,
+            )
         navigationCoordinator.push(screen)
     }
 
     override fun openFollowing(userId: String) {
-        val screen = UserListScreen(UserListType.Following(userId))
+        val screen =
+            UserListScreen(
+                type = UserListType.Following.toInt(),
+                userId = userId,
+            )
         navigationCoordinator.push(screen)
     }
 
@@ -97,7 +105,12 @@ class DefaultDetailOpener(
         entryId: String,
         count: Int,
     ) {
-        val screen = UserListScreen(UserListType.UsersFavorite(entryId, count))
+        val screen =
+            UserListScreen(
+                type = UserListType.UsersFavorite.toInt(),
+                entryId = entryId,
+                infoCount = count,
+            )
         navigationCoordinator.push(screen)
     }
 
@@ -105,7 +118,12 @@ class DefaultDetailOpener(
         entryId: String,
         count: Int,
     ) {
-        val screen = UserListScreen(UserListType.UsersReblog(entryId, count))
+        val screen =
+            UserListScreen(
+                type = UserListType.UsersReblog.toInt(),
+                entryId = entryId,
+                infoCount = count,
+            )
         navigationCoordinator.push(screen)
     }
 
