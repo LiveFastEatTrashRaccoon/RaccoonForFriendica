@@ -59,6 +59,14 @@ interface UserDetailMviModel :
         data class ToggleSpoilerActive(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data object TogglePersonalNoteEditMode : Intent
+
+        data class SetPersonalNote(
+            val note: String,
+        ) : Intent
+
+        data object SubmitPersonalNote : Intent
     }
 
     data class State(
@@ -71,11 +79,15 @@ interface UserDetailMviModel :
         val section: UserSection = UserSection.Posts,
         val entries: List<TimelineEntryModel> = emptyList(),
         val blurNsfw: Boolean = true,
+        val personalNote: String? = null,
+        val personalNoteEditEnabled: Boolean = false,
     )
 
     sealed interface Effect {
         data object BackToTop : Effect
 
         data object PollVoteFailure : Effect
+
+        data object Failure : Effect
     }
 }
