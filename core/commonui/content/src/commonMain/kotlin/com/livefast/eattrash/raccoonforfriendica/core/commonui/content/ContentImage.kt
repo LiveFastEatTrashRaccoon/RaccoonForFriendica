@@ -63,6 +63,7 @@ fun ContentImage(
     originalHeight: Int = 0,
     minHeight: Dp = 50.dp,
     maxHeight: Dp = Dp.Unspecified,
+    contentScale: ContentScale = ContentScale.FillWidth,
     onClick: (() -> Unit)? = null,
 ) {
     var revealing by remember { mutableStateOf(!sensitive) }
@@ -73,9 +74,7 @@ fun ContentImage(
 
     Box(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .heightIn(min = minHeight, max = maxHeight),
+            modifier.heightIn(min = minHeight, max = maxHeight),
     ) {
         if (!hasFinishedLoadingSuccessfully) {
             BlurredPreview(
@@ -89,6 +88,7 @@ fun ContentImage(
                 originalWidth = originalWidth,
                 originalHeight = originalHeight,
                 blurHash = blurHash,
+                contentScale = contentScale,
             )
         }
 
@@ -102,7 +102,7 @@ fun ContentImage(
             url = url,
             quality = FilterQuality.Low,
             blurred = !revealing,
-            contentScale = ContentScale.FillWidth,
+            contentScale = contentScale,
             onSuccess = {
                 hasFinishedLoadingSuccessfully = true
             },
@@ -210,6 +210,7 @@ private fun BlurredPreview(
     originalHeight: Int,
     blurHash: String?,
     modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.FillWidth,
 ) {
     if (originalWidth > 0 && originalHeight > 0) {
         var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
@@ -234,7 +235,7 @@ private fun BlurredPreview(
                     modifier = Modifier.fillMaxSize(),
                     bitmap = bmp,
                     contentDescription = null,
-                    contentScale = ContentScale.FillWidth,
+                    contentScale = contentScale,
                 )
             }
         }

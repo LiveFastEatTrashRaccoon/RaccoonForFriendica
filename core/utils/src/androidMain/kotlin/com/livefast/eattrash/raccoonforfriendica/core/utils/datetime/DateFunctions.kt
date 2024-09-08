@@ -106,11 +106,12 @@ actual fun getPrettyDate(
     }
 }
 
-actual fun getDurationSinceDate(iso8601Timestamp: String): Duration? {
-    val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
+actual fun getDurationSinceDate(iso8601Timestamp: String): Duration? =
+    runCatching {
+        val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
     val now = LocalDateTime.now()
     val duration = JavaDuration.between(date, now)
-    return duration.toKotlinDuration()
-}
+        duration.toKotlinDuration()
+    }.getOrNull()
 
 private fun getDateFromIso8601Timestamp(string: String): ZonedDateTime = ZonedDateTime.parse(string)

@@ -32,7 +32,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
@@ -82,6 +81,7 @@ fun TimelineItem(
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
+            // reshare and reply info
             if (reshareAndReplyVisible) {
                 Column(
                     modifier = Modifier.padding(horizontal = contentHorizontalPadding),
@@ -105,6 +105,7 @@ fun TimelineItem(
                 }
             }
 
+            // header and options
             Row(
                 modifier = Modifier.padding(horizontal = contentHorizontalPadding),
                 verticalAlignment = Alignment.CenterVertically,
@@ -164,6 +165,7 @@ fun TimelineItem(
                 }
             }
 
+            // post spoiler
             if (spoiler.isNotEmpty()) {
                 SpoilerCard(
                     modifier =
@@ -182,7 +184,9 @@ fun TimelineItem(
                     },
                 )
             }
+
             if (entryToDisplay.isSpoilerActive || spoiler.isEmpty()) {
+                // post title
                 val title = entryToDisplay.title
                 if (!title.isNullOrBlank()) {
                     ContentTitle(
@@ -197,6 +201,7 @@ fun TimelineItem(
                     )
                 }
 
+                // post body
                 val body = entryToDisplay.content
                 if (body.isNotBlank()) {
                     ContentBody(
@@ -221,28 +226,22 @@ fun TimelineItem(
                     )
                 }
 
-                val firstImageAttachment =
-                    entryToDisplay.attachments
-                        .firstOrNull { attachment -> attachment.type == MediaType.Image }
-                val imageUrl = firstImageAttachment?.url?.takeIf { it.isNotBlank() }
-                if (imageUrl != null) {
-                    ContentImage(
-                        modifier =
-                            Modifier.fillMaxWidth().padding(
-                                top = Spacing.s,
-                                bottom = Spacing.xxxs,
-                                start = contentHorizontalPadding,
-                                end = contentHorizontalPadding,
-                            ),
-                        url = imageUrl,
-                        altText = firstImageAttachment.description,
-                        blurHash = firstImageAttachment.blurHash,
-                        originalWidth = firstImageAttachment.originalWidth ?: 0,
-                        originalHeight = firstImageAttachment.originalHeight ?: 0,
-                        sensitive = blurNsfw && entryToDisplay.sensitive,
-                        onClick = { onOpenImage?.invoke(imageUrl) },
-                    )
-                }
+                // attachment (single or grid)
+                TimelineItemAttachments(
+                    modifier =
+                        Modifier.fillMaxWidth().padding(
+                            top = Spacing.s,
+                            bottom = Spacing.xxxs,
+                            start = contentHorizontalPadding,
+                            end = contentHorizontalPadding,
+                        ),
+                    attachments = entryToDisplay.attachments,
+                    blurNsfw = blurNsfw,
+                    sensitive = entryToDisplay.sensitive,
+                    onOpenImage = onOpenImage,
+                )
+
+                // poll
                 entryToDisplay.poll?.also { poll ->
                     PollCard(
                         modifier =
@@ -257,7 +256,10 @@ fun TimelineItem(
                         },
                     )
                 }
+
+                // preview
                 entryToDisplay.card?.also { preview ->
+                    val attachmentUrls = entryToDisplay.attachments.map { it.url }
                     ContentPreview(
                         modifier =
                             Modifier
@@ -267,13 +269,14 @@ fun TimelineItem(
                                     start = contentHorizontalPadding,
                                     end = contentHorizontalPadding,
                                 ),
-                        card = preview.copy(image = preview.image.takeIf { it != imageUrl }),
+                        card = preview.copy(image = preview.image.takeIf { it !in attachmentUrls }),
                         onOpen = onOpenUrl,
                         onOpenImage = onOpenImage,
                     )
                 }
             }
 
+            // reblog and favorite info
             if (extendedSocialInfoEnabled) {
                 ContentExtendedSocialInfo(
                     modifier =
