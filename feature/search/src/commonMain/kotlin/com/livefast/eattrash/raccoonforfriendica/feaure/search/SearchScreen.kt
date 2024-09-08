@@ -304,8 +304,11 @@ class SearchScreen : Screen {
                                     onOpenUser = {
                                         detailOpener.openUserDetail(it.id)
                                     },
-                                    onOpenImage = { imageUrl ->
-                                        detailOpener.openImageDetail(imageUrl)
+                                    onOpenImage = { urls, imageIdx ->
+                                        detailOpener.openImageDetail(
+                                            urls = urls,
+                                            initialIndex = imageIdx,
+                                        )
                                     },
                                     onReblog =
                                         uiState.currentUserId?.let {
