@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -82,14 +81,13 @@ internal fun NotificationItem(
                 )
             }
             Text(
-                modifier = Modifier.padding(horizontal = Spacing.xxs),
+                modifier = Modifier.padding(horizontal = Spacing.xxs).weight(1f),
                 text = notification.type.toReadableName(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodyMedium,
                 color = ancillaryColor,
             )
-            Spacer(modifier = Modifier.weight(1f))
 
             // unread indicator
             if (!notification.read) {

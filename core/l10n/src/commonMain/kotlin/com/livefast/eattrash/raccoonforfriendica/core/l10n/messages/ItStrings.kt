@@ -89,12 +89,12 @@ internal val ItStrings =
         override val relationshipStatusRequestedToOther = "Richiesta inviata"
         override val relationshipStatusRequestedToYou = "Richiesta in attesa"
         override val notificationTypeEntry = "ha pubblicato un post"
-        override val notificationTypeFavorite = "ha aggiunto ai preferiti un tuo post"
+        override val notificationTypeFavorite = "ha aggiunto il tuo post ai preferiti"
         override val notificationTypeFollow = "ha iniziato a seguirti"
         override val notificationTypeFollowRequest = "ha inviato la richiesta di seguirti"
         override val notificationTypeMention = "ti ha menzionato in un post"
-        override val notificationTypePoll = "vedi i risultati di un sondaggio cui hai partecipato"
-        override val notificationTypeReblog = "ha ricondiviso un tuo post"
+        override val notificationTypePoll = "un sondaggio cui hai partecipato si è chiuso"
+        override val notificationTypeReblog = "ha ricondiviso il tuo post"
         override val notificationTypeUpdate = "ha aggiornato un post che hai ricondiviso"
         override val exploreSectionHashtags = "Hashtag"
         override val exploreSectionLinks = "Link"
@@ -305,7 +305,7 @@ internal val ItStrings =
             when (count) {
                 1 -> "non letto"
                 else -> "non letti"
-        }
+            }
 
         override val messageCharacterLimitExceeded =
             "Hai superato il limite massimo consentito di caratteri"
