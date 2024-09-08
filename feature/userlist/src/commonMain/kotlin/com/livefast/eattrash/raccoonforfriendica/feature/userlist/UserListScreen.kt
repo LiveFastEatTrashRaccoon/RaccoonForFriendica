@@ -24,6 +24,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +50,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toUserListType
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
@@ -116,6 +119,15 @@ class UserListScreen(
                     topAppBarState.contentOffset = 0f
                 }
             }
+        }
+
+        LaunchedEffect(model) {
+            model.effects
+                .onEach { event ->
+                    when (event) {
+                        UserListMviModel.Effect.BackToTop -> goBackToTop()
+                    }
+                }.launchIn(this)
         }
 
         Scaffold(

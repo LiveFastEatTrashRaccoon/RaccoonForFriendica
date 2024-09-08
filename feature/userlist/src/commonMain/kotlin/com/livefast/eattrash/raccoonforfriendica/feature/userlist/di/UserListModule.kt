@@ -13,6 +13,7 @@ val featureUserListModule =
                 entryId = params[2],
                 paginationManager = get(),
                 userRepository = get(),
+                identityRepository = get(),
                 hapticFeedback = get(),
                 notificationCenter = get(),
             )

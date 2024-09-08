@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -22,6 +23,7 @@ internal class UserListViewModel(
     private val entryId: String? = null,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
+    private val identityRepository: IdentityRepository,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>(
@@ -30,6 +32,12 @@ internal class UserListViewModel(
     UserListMviModel {
     init {
         screenModelScope.launch {
+            identityRepository.currentUser
+                .onEach { currentUser ->
+                    updateState {
+                        it.copy(currentUserId = currentUser?.id)
+                    }
+                }.launchIn(this)
             notificationCenter
                 .subscribe(UserUpdatedEvent::class)
                 .onEach { event ->
@@ -96,8 +104,21 @@ internal class UserListViewModel(
             return
         }
 
+        val currentState = uiState.value
         updateState { it.copy(loading = true) }
-        val users = paginationManager.loadNextPage()
+        val users =
+            paginationManager
+                .loadNextPage()
+                .map { user ->
+                    if (currentState.currentUserId == null) {
+                        user.copy(relationshipStatus = null)
+                    } else if (user.id == currentState.currentUserId) {
+                        user.copy(relationshipStatus = null)
+                    } else {
+                        user
+                    }
+                }
+        val wasRefreshing = currentState.refreshing
         updateState {
             it.copy(
                 users = users,
@@ -106,6 +127,9 @@ internal class UserListViewModel(
                 initial = false,
                 refreshing = false,
             )
+        }
+        if (wasRefreshing) {
+            emitEffect(UserListMviModel.Effect.BackToTop)
         }
     }
 

@@ -24,6 +24,7 @@ interface UserListMviModel :
     }
 
     data class State(
+        val currentUserId: String? = null,
         val refreshing: Boolean = false,
         val loading: Boolean = false,
         val initial: Boolean = true,
@@ -32,5 +33,7 @@ interface UserListMviModel :
         val users: List<UserModel> = emptyList(),
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object BackToTop : Effect
+    }
 }
