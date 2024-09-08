@@ -1,10 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.imagedetail
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AspectRatio
@@ -18,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -27,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
@@ -46,23 +52,44 @@ import kotlinx.coroutines.flow.onEach
 import org.koin.core.parameter.parametersOf
 
 class ImageDetailScreen(
-    private val url: String,
+    private val urls: List<String>,
+    private val initialIndex: Int = 0,
 ) : Screen {
     override val key: ScreenKey
-        get() = super.key + url
+        get() = super.key + urls.joinToString("-")
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
-        val model = getScreenModel<ImageDetailMviModel>(parameters = { parametersOf(url) })
+        val model =
+            getScreenModel<ImageDetailMviModel>(
+                parameters = {
+                    parametersOf(
+                        urls,
+                        initialIndex,
+                    )
+                },
+            )
         val uiState by model.uiState.collectAsState()
         val snackbarHostState = remember { SnackbarHostState() }
         val successMessage = LocalStrings.current.messageSuccess
         val errorMessage = LocalStrings.current.messageGenericError
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val drawerCoordinator = remember { getDrawerCoordinator() }
+        val pagerState =
+            rememberPagerState(
+                initialPage = initialIndex,
+                pageCount = { urls.size },
+            )
         var shareModeBottomSheetOpened by remember { mutableStateOf(false) }
         var scaleModeBottomSheetOpened by remember { mutableStateOf(false) }
+
+        LaunchedEffect(pagerState) {
+            snapshotFlow { pagerState.currentPage }
+                .onEach {
+                    model.reduce(ImageDetailMviModel.Intent.ChangeIndex(it))
+                }.launchIn(this)
+        }
 
         LaunchedEffect(model) {
             model.effects
@@ -92,7 +119,20 @@ class ImageDetailScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = {},
+                    title = {
+                        Text(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
+                            text =
+                                buildString {
+                                    if (urls.size > 1) {
+                                        append(uiState.currentIndex + 1)
+                                        append("/")
+                                        append(urls.size)
+                                    }
+                                },
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    },
                     navigationIcon = {
                         if (navigationCoordinator.canPop.value) {
                             Icon(
@@ -151,19 +191,27 @@ class ImageDetailScreen(
             },
             content =
                 { padding ->
-                    Box(
-                        modifier =
-                            Modifier
-                                .padding(
-                                    top = padding.calculateTopPadding(),
-                                ).fillMaxWidth()
-                                .background(Color.Black),
-                        contentAlignment = Alignment.Center,
+                    HorizontalPager(
+                        state = pagerState,
+                        beyondBoundsPageCount = 1,
                     ) {
-                        ZoomableImage(
-                            url = url,
-                            contentScale = uiState.contentScale,
-                        )
+                        Box(
+                            modifier =
+                                Modifier
+                                    .padding(
+                                        top = padding.calculateTopPadding(),
+                                    ).fillMaxWidth()
+                                    .background(Color.Black),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            val url = urls.getOrNull(uiState.currentIndex)
+                            if (!url.isNullOrEmpty()) {
+                                ZoomableImage(
+                                    url = url,
+                                    contentScale = uiState.contentScale,
+                                )
+                            }
+                        }
                     }
                 },
         )

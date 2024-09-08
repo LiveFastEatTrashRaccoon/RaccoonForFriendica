@@ -8,7 +8,8 @@ val featureImageDetailModule =
     module {
         factory<ImageDetailMviModel> { params ->
             ImageDetailViewModel(
-                url = params[0],
+                urls = params[0],
+                initialIndex = params[1],
                 shareHelper = get(),
                 galleryHelper = get(),
                 imagePreloadManager = get(),

@@ -10,6 +10,10 @@ interface ImageDetailMviModel :
     ScreenModel,
     MviModel<ImageDetailMviModel.Intent, ImageDetailMviModel.UiState, ImageDetailMviModel.Effect> {
     sealed interface Intent {
+        data class ChangeIndex(
+            val index: Int,
+        ) : Intent
+
         data object SaveToGallery : Intent
 
         data class ChangeContentScale(
@@ -22,6 +26,7 @@ interface ImageDetailMviModel :
     }
 
     data class UiState(
+        val currentIndex: Int = 0,
         val loading: Boolean = false,
         val contentScale: ContentScale = ContentScale.FillWidth,
     )

@@ -49,6 +49,11 @@ interface DetailOpener {
 
     fun openImageDetail(url: String)
 
+    fun openImageDetail(
+        urls: List<String>,
+        initialIndex: Int,
+    )
+
     fun openBlockedAndMuted()
 
     fun openCircles()
