@@ -142,4 +142,10 @@ interface UserService {
     suspend fun updateProfileImage(
         @Body content: MultiPartFormDataContent,
     ): Account
+
+    @POST("v1/accounts/{id}/note")
+    suspend fun updatePersonalNote(
+        @Path("id") id: String,
+        @Body data: FormDataContent,
+    ): Relationship
 }

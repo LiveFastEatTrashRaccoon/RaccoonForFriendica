@@ -389,6 +389,24 @@ internal class DefaultUserRepository(
         }.getOrNull()
     }
 
+    override suspend fun updatePersonalNote(
+        id: String,
+        value: String,
+    ): RelationshipModel? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                withContext(Dispatchers.IO) {
+                    val data =
+                        FormDataContent(
+                            parameters {
+                                append("comment", value)
+                            },
+                        )
+                    provider.users.updatePersonalNote(id = id, data = data).toModel()
+                }
+            }.getOrNull()
+        }
+
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20
     }

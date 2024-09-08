@@ -76,4 +76,9 @@ interface UserRepository {
         indexable: Boolean? = null,
         fields: Map<String, String>? = null,
     ): UserModel?
+
+    suspend fun updatePersonalNote(
+        id: String,
+        value: String,
+    ): RelationshipModel?
 }
