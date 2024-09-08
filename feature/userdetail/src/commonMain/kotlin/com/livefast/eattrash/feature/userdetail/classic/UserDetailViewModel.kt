@@ -95,6 +95,15 @@ class UserDetailViewModel(
                     disableNotifications = intent.disableNotifications,
                 )
             is UserDetailMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
+            UserDetailMviModel.Intent.TogglePersonalNoteEditMode ->
+                toggleEditPersonalNote()
+
+            is UserDetailMviModel.Intent.SetPersonalNote ->
+                screenModelScope.launch {
+                    updateState { it.copy(personalNote = intent.note) }
+                }
+
+            UserDetailMviModel.Intent.SubmitPersonalNote -> updatePersonalNote()
         }
     }
 
@@ -115,6 +124,7 @@ class UserDetailViewModel(
                         muted = relationship?.muting == true,
                         blocked = relationship?.blocking == true,
                     ),
+                personalNote = relationship?.note,
             )
         }
     }
@@ -435,6 +445,39 @@ class UserDetailViewModel(
     private fun toggleSpoiler(entry: TimelineEntryModel) {
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
+        }
+    }
+
+    private fun toggleEditPersonalNote() {
+        screenModelScope.launch {
+            val currentState = uiState.value
+            if (!currentState.personalNoteEditEnabled) {
+                updateState {
+                    it.copy(personalNoteEditEnabled = true)
+                }
+            } else {
+                val relationship = userRepository.getRelationships(listOf(id)).firstOrNull()
+                updateState {
+                    it.copy(
+                        personalNote = relationship?.note,
+                        personalNoteEditEnabled = false,
+                    )
+                }
+            }
+        }
+    }
+
+    private fun updatePersonalNote() {
+        val note = uiState.value.personalNote ?: return
+        screenModelScope.launch {
+            val relationShip = userRepository.updatePersonalNote(id, note)
+            if (relationShip != null) {
+                updateState {
+                    it.copy(personalNoteEditEnabled = false)
+                }
+            } else {
+                emitEffect(UserDetailMviModel.Effect.Failure)
+            }
         }
     }
 }

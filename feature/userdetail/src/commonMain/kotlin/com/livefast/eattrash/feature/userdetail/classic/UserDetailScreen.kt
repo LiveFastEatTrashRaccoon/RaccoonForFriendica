@@ -52,6 +52,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
@@ -61,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.feature.userdetail.components.UserNoteField
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -70,6 +72,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -85,6 +88,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toReadabl
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
@@ -129,6 +133,8 @@ class UserDetailScreen(
         )
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
+        val genericError = LocalStrings.current.messageGenericError
+        val focusManager = LocalFocusManager.current
         var confirmUnfollowDialogOpen by remember { mutableStateOf(false) }
         var confirmDeleteFollowRequestDialogOpen by remember { mutableStateOf(false) }
         var confirmMuteNotificationsDialogOpen by remember { mutableStateOf(false) }
@@ -158,11 +164,14 @@ class UserDetailScreen(
                     when (event) {
                         UserDetailMviModel.Effect.BackToTop -> goBackToTop()
                         UserDetailMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                        UserDetailMviModel.Effect.Failure ->
+                            snackbarHostState.showSnackbar(genericError)
                     }
                 }.launchIn(this)
         }
 
         Scaffold(
+            modifier = Modifier.safeImePadding(),
             topBar = {
                 TopAppBar(
                     modifier = Modifier.clickable { scope.launch { goBackToTop() } },
@@ -207,6 +216,16 @@ class UserDetailScreen(
                                     } else {
                                         this += OptionId.Block.toOption()
                                     }
+                                    this +=
+                                        Option(
+                                            id = OptionId.Edit,
+                                            label =
+                                                if (uiState.personalNoteEditEnabled) {
+                                                    LocalStrings.current.actionCancelEditPersonalNote
+                                                } else {
+                                                    LocalStrings.current.actionEditPersonalNote
+                                                },
+                                        )
                                 }
                             }
                         var optionsOffset by remember { mutableStateOf(Offset.Zero) }
@@ -256,24 +275,27 @@ class UserDetailScreen(
                                                     OptionId.Mute ->
                                                         confirmMuteUserDialogOpen = true
 
-                                                    OptionId.Unmute -> {
+                                                    OptionId.Unmute ->
                                                         model.reduce(
                                                             UserDetailMviModel.Intent.ToggleMute(
                                                                 muted = false,
                                                             ),
                                                         )
-                                                    }
 
                                                     OptionId.Block ->
                                                         confirmBlockUserDialogOpen = true
 
-                                                    OptionId.Unblock -> {
+                                                    OptionId.Unblock ->
                                                         model.reduce(
                                                             UserDetailMviModel.Intent.ToggleBlock(
                                                                 blocked = false,
                                                             ),
                                                         )
-                                                    }
+
+                                                    OptionId.Edit ->
+                                                        model.reduce(
+                                                            UserDetailMviModel.Intent.TogglePersonalNoteEditMode,
+                                                        )
 
                                                     else -> Unit
                                                 }
@@ -377,10 +399,36 @@ class UserDetailScreen(
                             }
                         }
                         item {
+                            Spacer(modifier = Modifier.height(Spacing.xs))
+                        }
+                        item {
+                            val note = uiState.personalNote.orEmpty()
+                            if (note.isNotEmpty() || uiState.personalNoteEditEnabled) {
+                                UserNoteField(
+                                    modifier =
+                                        Modifier.fillMaxWidth().padding(
+                                            top = Spacing.s,
+                                            bottom = Spacing.s,
+                                            start = Spacing.xs,
+                                            end = Spacing.xs,
+                                        ),
+                                    editEnabled = uiState.personalNoteEditEnabled,
+                                    note = note,
+                                    onNoteChanged = {
+                                        model.reduce(UserDetailMviModel.Intent.SetPersonalNote(it))
+                                    },
+                                    onSave = {
+                                        focusManager.clearFocus()
+                                        model.reduce(UserDetailMviModel.Intent.SubmitPersonalNote)
+                                    },
+                                )
+                            }
+                        }
+                        item {
                             UserFields(
                                 modifier =
                                     Modifier.padding(
-                                        top = Spacing.m,
+                                        top = Spacing.s,
                                         bottom = Spacing.s,
                                     ),
                                 fields =

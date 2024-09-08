@@ -309,4 +309,7 @@ internal val ItStrings =
 
         override val messageCharacterLimitExceeded =
             "Hai superato il limite massimo consentito di caratteri"
+        override val userFieldPersonalNote = "Nota personale"
+        override val actionEditPersonalNote = "Modifica nota"
+        override val actionCancelEditPersonalNote = "Termina modifica nota"
     }
