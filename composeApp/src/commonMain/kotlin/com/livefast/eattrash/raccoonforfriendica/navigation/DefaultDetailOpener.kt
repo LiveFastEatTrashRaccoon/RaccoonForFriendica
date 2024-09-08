@@ -166,7 +166,21 @@ class DefaultDetailOpener(
     }
 
     override fun openImageDetail(url: String) {
-        val screen = ImageDetailScreen(url)
+        openImageDetail(
+            urls = listOf(url),
+            initialIndex = 0,
+        )
+    }
+
+    override fun openImageDetail(
+        urls: List<String>,
+        initialIndex: Int,
+    ) {
+        val screen =
+            ImageDetailScreen(
+                urls = urls,
+                initialIndex = initialIndex,
+            )
         navigationCoordinator.push(screen)
     }
 
