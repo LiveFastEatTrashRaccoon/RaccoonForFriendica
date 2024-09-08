@@ -167,15 +167,18 @@ class ExploreScreen : Screen {
                         )
                     },
                     actions = {
-                        IconButton(
-                            onClick = {
-                                detailOpener.openSearch()
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = null,
-                            )
+                        if (uiState.currentUserId != null) {
+                            // only logged users can call the v2/search API
+                            IconButton(
+                                onClick = {
+                                    detailOpener.openSearch()
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     },
                 )
