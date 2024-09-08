@@ -27,7 +27,7 @@ internal fun TimelineItemAttachments(
     modifier: Modifier = Modifier,
     blurNsfw: Boolean = true,
     sensitive: Boolean = false,
-    onOpenImage: ((String) -> Unit)? = null,
+    onOpenImage: ((List<String>, Int) -> Unit)? = null,
 ) {
     val images =
         attachments.filter { it.type == MediaType.Image }.takeIf { it.isNotEmpty() } ?: return
@@ -36,7 +36,7 @@ internal fun TimelineItemAttachments(
     val firstAttachmentHeight = firstAttachment.originalHeight ?: 0
     val interItemSpacing = Spacing.xxs
 
-    if (attachments.size == 1) {
+    if (images.size == 1) {
         if (firstAttachment.url.isNotBlank()) {
             ContentImage(
                 modifier = modifier,
@@ -46,15 +46,21 @@ internal fun TimelineItemAttachments(
                 originalWidth = firstAttachment.originalWidth ?: 0,
                 originalHeight = firstAttachment.originalHeight ?: 0,
                 sensitive = blurNsfw && sensitive,
-                onClick = { onOpenImage?.invoke(firstAttachment.url) },
+                onClick = {
+                    onOpenImage?.invoke(
+                        listOf(firstAttachment.url),
+                        0,
+                    )
+                },
             )
         }
-    } else if (attachments.size == 2) {
+    } else if (images.size == 2) {
+        val urls = images.map { it.url }
         Row(
             modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(interItemSpacing),
         ) {
-            for (attachment in attachments) {
+            images.forEachIndexed { idx, attachment ->
                 val attachmentWidth = attachment.originalWidth ?: 0
                 val attachmentHeight = attachment.originalHeight ?: 0
                 ContentImage(
@@ -66,7 +72,7 @@ internal fun TimelineItemAttachments(
                     originalHeight = attachmentHeight,
                     maxHeight = 200.dp,
                     sensitive = blurNsfw && sensitive,
-                    onClick = { onOpenImage?.invoke(attachment.url) },
+                    onClick = { onOpenImage?.invoke(urls, idx) },
                     contentScale =
                         if (attachmentHeight < attachmentWidth) {
                             ContentScale.FillHeight
@@ -77,6 +83,8 @@ internal fun TimelineItemAttachments(
             }
         }
     } else {
+        val urls = images.map { it.url }
+        val chunkSize = 4
         if (firstAttachmentWidth < firstAttachmentHeight) {
             Row(
                 modifier = modifier,
@@ -95,12 +103,12 @@ internal fun TimelineItemAttachments(
                     originalWidth = firstAttachment.originalWidth ?: 0,
                     originalHeight = firstAttachment.originalHeight ?: 0,
                     sensitive = blurNsfw && sensitive,
-                    onClick = { onOpenImage?.invoke(firstAttachment.url) },
+                    onClick = { onOpenImage?.invoke(urls, 0) },
                 )
 
                 // rest of images arranged vertically in chunks
-                val chunks = attachments.drop(1).chunked(4)
-                for (chunk in chunks) {
+                val chunks = images.drop(1).chunked(chunkSize)
+                chunks.forEachIndexed { chunkIndex, chunk ->
                     Column(
                         modifier =
                             Modifier
@@ -109,7 +117,8 @@ internal fun TimelineItemAttachments(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(interItemSpacing),
                     ) {
-                        for (attachment in chunk) {
+                        chunk.forEachIndexed { imageIndex, attachment ->
+                            val index = imageIndex + chunkIndex * chunkSize + 1
                             val attachmentWidth = attachment.originalWidth ?: 0
                             val attachmentHeight = attachment.originalHeight ?: 0
                             ContentImage(
@@ -120,7 +129,9 @@ internal fun TimelineItemAttachments(
                                 originalWidth = attachmentWidth,
                                 originalHeight = attachmentHeight,
                                 sensitive = blurNsfw && sensitive,
-                                onClick = { onOpenImage?.invoke(attachment.url) },
+                                onClick = {
+                                    onOpenImage?.invoke(urls, index)
+                                },
                                 contentScale =
                                     if (attachmentHeight < attachmentWidth) {
                                         ContentScale.FillHeight
@@ -146,18 +157,19 @@ internal fun TimelineItemAttachments(
                     originalWidth = firstAttachment.originalWidth ?: 0,
                     originalHeight = firstAttachment.originalHeight ?: 0,
                     sensitive = blurNsfw && sensitive,
-                    onClick = { onOpenImage?.invoke(firstAttachment.url) },
+                    onClick = { onOpenImage?.invoke(urls, 0) },
                 )
 
                 // rest of images arranged vertically in chunks
-                val chunks = attachments.drop(1).chunked(4)
-                for (chunk in chunks) {
+                val chunks = images.drop(1).chunked(chunkSize)
+                chunks.forEachIndexed { chunkIndex, chunk ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(interItemSpacing),
                     ) {
-                        for (attachment in chunk) {
+                        chunk.forEachIndexed { imageIndex, attachment ->
+                            val index = imageIndex + chunkIndex * chunkSize + 1
                             val attachmentWidth = attachment.originalWidth ?: 0
                             val attachmentHeight = attachment.originalHeight ?: 0
                             ContentImage(
@@ -169,7 +181,7 @@ internal fun TimelineItemAttachments(
                                 originalHeight = attachmentHeight,
                                 sensitive = blurNsfw && sensitive,
                                 maxHeight = 180.dp,
-                                onClick = { onOpenImage?.invoke(attachment.url) },
+                                onClick = { onOpenImage?.invoke(urls, index) },
                                 contentScale =
                                     if (attachmentHeight < attachmentWidth) {
                                         ContentScale.FillHeight

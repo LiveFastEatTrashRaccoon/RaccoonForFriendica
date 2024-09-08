@@ -54,7 +54,7 @@ fun TimelineItem(
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
-    onOpenImage: ((String) -> Unit)? = null,
+    onOpenImage: ((List<String>, Int) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
     onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
     onToggleSpoilerActive: ((TimelineEntryModel) -> Unit)? = null,
@@ -271,7 +271,9 @@ fun TimelineItem(
                                 ),
                         card = preview.copy(image = preview.image.takeIf { it !in attachmentUrls }),
                         onOpen = onOpenUrl,
-                        onOpenImage = onOpenImage,
+                        onOpenImage = { url ->
+                            onOpenImage?.invoke(listOf(url), 0)
+                        },
                     )
                 }
             }
