@@ -54,6 +54,8 @@ fun ZoomableImage(
         visible = true
     }
 
+    val gesturesEnabled = scale > 1
+
     BoxWithConstraints(
         modifier =
             modifier
@@ -75,27 +77,38 @@ fun ZoomableImage(
                                     scale *= 2.5f
                                 }
                             },
-                        ).pointerInput(Unit) {
-                            detectTransformGestures(
-                                onGesture = { _, pan, gestureZoom, _ ->
-                                    val extraWidth = (scale - 1) * constraints.maxWidth
-                                    val extraHeight = (scale - 1) * constraints.maxHeight
-                                    val maxX = extraWidth / 2
-                                    val maxY = extraHeight / 2
+                        ).pointerInput(gesturesEnabled) {
+                            // otherwise detectTransformGestures consumes the gesture and the pager does not intercept it
+                            if (gesturesEnabled) {
+                                detectTransformGestures(
+                                    onGesture = { _, pan, gestureZoom, _ ->
+                                        val extraWidth = (scale - 1) * constraints.maxWidth
+                                        val extraHeight = (scale - 1) * constraints.maxHeight
+                                        val maxX = extraWidth / 2
+                                        val maxY = extraHeight / 2
 
-                                    scale = (scale * gestureZoom).coerceIn(1f, 16f)
+                                        scale = (scale * gestureZoom).coerceIn(1f, 16f)
 
-                                    offset =
-                                        if (scale > 1) {
-                                            Offset(
-                                                x = (offset.x + pan.x * scale).coerceIn(-maxX, maxX),
-                                                y = (offset.y + pan.y * scale).coerceIn(-maxY, maxY),
-                                            )
-                                        } else {
-                                            Offset.Zero
-                                        }
-                                },
-                            )
+                                        offset =
+                                            if (scale > 1) {
+                                                Offset(
+                                                    x =
+                                                        (offset.x + pan.x * scale).coerceIn(
+                                                            minimumValue = -maxX,
+                                                            maximumValue = maxX,
+                                                        ),
+                                                    y =
+                                                        (offset.y + pan.y * scale).coerceIn(
+                                                            minimumValue = -maxY,
+                                                            maximumValue = maxY,
+                                                        ),
+                                                )
+                                            } else {
+                                                Offset.Zero
+                                            }
+                                    },
+                                )
+                            }
                         }.graphicsLayer(
                             scaleX = scale,
                             scaleY = scale,
