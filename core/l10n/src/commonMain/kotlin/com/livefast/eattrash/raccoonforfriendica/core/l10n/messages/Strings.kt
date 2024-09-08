@@ -270,6 +270,9 @@ interface Strings {
     fun unreadMessages(count: Int): String
 
     val messageCharacterLimitExceeded: String
+    val userFieldPersonalNote: String
+    val actionEditPersonalNote: String
+    val actionCancelEditPersonalNote: String
 }
 
 object Locales {

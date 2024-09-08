@@ -298,4 +298,7 @@ internal open class DefaultStrings : Strings {
 
     override val messageCharacterLimitExceeded =
         "You exceeded the maximum allowed character count"
+    override val userFieldPersonalNote = "Personal note"
+    override val actionEditPersonalNote = "Edit note"
+    override val actionCancelEditPersonalNote = "Cancel edit note"
 }
