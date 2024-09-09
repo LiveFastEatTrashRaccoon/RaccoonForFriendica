@@ -18,6 +18,7 @@ val featureUserDetailModule =
                 settingsRepository = get(),
                 hapticFeedback = get(),
                 notificationCenter = get(),
+                userCache = get(),
             )
         }
         factory<ForumListMviModel> { params ->
@@ -30,6 +31,7 @@ val featureUserDetailModule =
                 settingsRepository = get(),
                 hapticFeedback = get(),
                 notificationCenter = get(),
+                userCache = get(),
             )
         }
     }

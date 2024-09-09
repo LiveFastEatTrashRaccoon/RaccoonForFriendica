@@ -23,6 +23,7 @@ val featureThreadModule =
                 userRepository = get(),
                 hapticFeedback = get(),
                 notificationCenter = get(),
+                entryCache = get(),
             )
         }
     }

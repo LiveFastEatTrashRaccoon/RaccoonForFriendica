@@ -6,10 +6,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import kotlinx.coroutines.Job
@@ -26,6 +28,7 @@ class ConversationViewModel(
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
     private val messageRepository: DirectMessageRepository,
+    private val userCache: LocalItemCache<UserModel>,
 ) : DefaultMviModel<ConversationMviModel.Intent, ConversationMviModel.State, ConversationMviModel.Effect>(
         initialState = ConversationMviModel.State(),
     ),
@@ -35,14 +38,12 @@ class ConversationViewModel(
 
     init {
         screenModelScope.launch {
-            val otherUser = userRepository.getById(otherUserId)
-            val relationshipStatus =
-                userRepository.getRelationships(listOf(otherUserId)).firstOrNull()?.toStatus()
+            val otherUser = userCache.get(otherUserId)
             val currentUser = identityRepository.currentUser.value
             updateState {
                 it.copy(
                     currentUser = currentUser,
-                    otherUser = otherUser?.copy(relationshipStatus = relationshipStatus),
+                    otherUser = otherUser,
                 )
             }
             if (uiState.value.initial) {
@@ -101,8 +102,10 @@ class ConversationViewModel(
         }
 
         updateState { it.copy(loading = true) }
-        val items = paginationManager.loadNextPage()
-            .onEach { markAsRead(it) }
+        val items =
+            paginationManager
+                .loadNextPage()
+                .onEach { markAsRead(it) }
         val wasRefreshing = uiState.value.refreshing
         updateState {
             it.copy(
@@ -173,33 +176,32 @@ class ConversationViewModel(
             return
         }
 
-        val relationshipStatus =
-            currentState.otherUser?.relationshipStatus ?: RelationshipStatus.Undetermined
-        if (relationshipStatus !in
-            listOf(
-                RelationshipStatus.MutualFollow,
-                RelationshipStatus.Following,
-            )
-        ) {
-            // it is necessary that you follow the other user, otherwise messages are sent
-            // to some other random user https://github.com/friendica/friendica/issues/11274
-            screenModelScope.launch {
-                emitEffect(ConversationMviModel.Effect.FollowUserRequired)
-            }
-            return
-        }
-
-        val localId = getUuid()
-        val originalItems = currentState.items
-        val inReplyToId = originalItems.lastOrNull()?.id
-        val newItem =
-            DirectMessageModel(
-                text = text,
-                id = localId,
-                recipient = currentState.otherUser,
-                sender = currentState.currentUser,
-            )
         screenModelScope.launch {
+            val relationshipStatus =
+                userRepository.getRelationships(listOf(otherUserId)).firstOrNull()?.toStatus()
+            if (relationshipStatus !in
+                listOf(
+                    RelationshipStatus.MutualFollow,
+                    RelationshipStatus.Following,
+                )
+            ) {
+                // it is necessary that you follow the other user, otherwise messages are sent
+                // to some other random user https://github.com/friendica/friendica/issues/11274
+
+                emitEffect(ConversationMviModel.Effect.FollowUserRequired)
+                return@launch
+            }
+
+            val localId = getUuid()
+            val originalItems = currentState.items
+            val inReplyToId = originalItems.lastOrNull()?.id
+            val newItem =
+                DirectMessageModel(
+                    text = text,
+                    id = localId,
+                    recipient = currentState.otherUser,
+                    sender = currentState.currentUser,
+                )
             updateState {
                 it.copy(
                     sendInProgress = true,
