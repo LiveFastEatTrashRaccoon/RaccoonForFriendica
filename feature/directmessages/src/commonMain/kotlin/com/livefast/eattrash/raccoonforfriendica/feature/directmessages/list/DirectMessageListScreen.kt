@@ -196,14 +196,13 @@ class DirectMessageListScreen : Screen {
                         ConversationItem(
                             conversation = conversation,
                             onClick = {
-                                val otherUserId = conversation.otherUser.id
                                 val parentUri = conversation.lastMessage.parentUri
                                 if (parentUri != null) {
                                     model.reduce(
                                         DirectMessageListMviModel.Intent.MarkConversationAsRead(idx),
                                     )
                                     detailOpener.openConversation(
-                                        otherUserId = otherUserId,
+                                        otherUser = conversation.otherUser,
                                         parentUri = parentUri,
                                     )
                                 }
@@ -271,7 +270,7 @@ class DirectMessageListScreen : Screen {
                         val existingConversation =
                             uiState.items.firstOrNull { it.otherUser.id == userId }
                         detailOpener.openConversation(
-                            otherUserId = userId,
+                            otherUser = user,
                             parentUri = existingConversation?.lastMessage?.parentUri.orEmpty(),
                         )
                     }

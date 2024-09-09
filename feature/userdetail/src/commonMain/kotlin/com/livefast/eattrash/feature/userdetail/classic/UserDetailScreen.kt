@@ -383,13 +383,19 @@ class UserDetailScreen(
                                         }
                                     },
                                     onOpenFollowers = {
-                                        detailOpener.openFollowers(id)
+                                        uiState.user?.also { user ->
+                                            detailOpener.openFollowers(user)
+                                        }
                                     },
                                     onOpenFollowing = {
-                                        detailOpener.openFollowing(id)
+                                        uiState.user?.also { user ->
+                                            detailOpener.openFollowing(user)
+                                        }
                                     },
                                     onOpenInForumMode = {
-                                        detailOpener.openInForumMode(id)
+                                        uiState.user?.also { user ->
+                                            detailOpener.openInForumMode(user)
+                                        }
                                     },
                                 )
                             }
@@ -498,14 +504,14 @@ class UserDetailScreen(
                                 entry = entry,
                                 blurNsfw = uiState.blurNsfw,
                                 onClick = { e ->
-                                    detailOpener.openEntryDetail(e.id)
+                                    detailOpener.openEntryDetail(e)
                                 },
                                 onOpenUrl = { url ->
                                     uriHandler.openUri(url)
                                 },
                                 onOpenUser = { user ->
                                     if (user.id != uiState.user?.id) {
-                                        detailOpener.openUserDetail(user.id)
+                                        detailOpener.openUserDetail(user)
                                     }
                                 },
                                 onOpenImage = { urls, imageIdx ->
@@ -539,11 +545,7 @@ class UserDetailScreen(
                                         { e ->
                                             detailOpener.openComposer(
                                                 inReplyToId = e.id,
-                                                inReplyToHandle = e.creator?.handle,
-                                                inReplyToUsername =
-                                                    e.creator?.let {
-                                                        it.displayName ?: it.username
-                                                    },
+                                                inReplyToUser = e.creator,
                                             )
                                         }
                                     },

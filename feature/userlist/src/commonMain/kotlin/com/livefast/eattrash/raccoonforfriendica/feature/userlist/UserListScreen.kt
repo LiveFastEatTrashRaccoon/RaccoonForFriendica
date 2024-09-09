@@ -242,7 +242,7 @@ class UserListScreen(
                         UserItem(
                             user = user,
                             onClick = {
-                                detailOpener.openUserDetail(user.id)
+                                detailOpener.openUserDetail(user)
                             },
                             onRelationshipClicked = { nextAction ->
                                 when (nextAction) {

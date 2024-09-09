@@ -153,7 +153,7 @@ class FollowRequestsScreen : Screen {
                                 model.reduce(FollowRequestsMviModel.Intent.Reject(user.id))
                             },
                             onClick = {
-                                detailOpener.openUserDetail(user.id)
+                                detailOpener.openUserDetail(user)
                             },
                         )
 

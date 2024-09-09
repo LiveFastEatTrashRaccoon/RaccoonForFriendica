@@ -171,13 +171,13 @@ class MyAccountScreen : Screen {
                                 uriHandler.openUri(url)
                             },
                             onOpenFollowers = {
-                                uiState.user?.id?.also { userId ->
-                                    detailOpener.openFollowers(userId)
+                                uiState.user?.also { user ->
+                                    detailOpener.openFollowers(user)
                                 }
                             },
                             onOpenFollowing = {
-                                uiState.user?.id?.also { userId ->
-                                    detailOpener.openFollowing(userId)
+                                uiState.user?.also { user ->
+                                    detailOpener.openFollowing(user)
                                 }
                             },
                             onEditClicked = {
@@ -264,13 +264,13 @@ class MyAccountScreen : Screen {
                         blurNsfw = uiState.blurNsfw,
                         pollEnabled = false,
                         onClick = { e ->
-                            detailOpener.openEntryDetail(e.id)
+                            detailOpener.openEntryDetail(e)
                         },
                         onOpenUrl = { url ->
                             uriHandler.openUri(url)
                         },
                         onOpenUser = {
-                            detailOpener.openUserDetail(it.id)
+                            detailOpener.openUserDetail(it)
                         },
                         onOpenImage = { urls, imageIdx ->
                             detailOpener.openImageDetail(urls = urls, initialIndex = imageIdx)
@@ -287,8 +287,7 @@ class MyAccountScreen : Screen {
                         onReply = { e ->
                             detailOpener.openComposer(
                                 inReplyToId = e.id,
-                                inReplyToHandle = e.creator?.handle,
-                                inReplyToUsername = e.creator?.let { it.displayName ?: it.username },
+                                inReplyToUser = e.creator,
                             )
                         },
                         onToggleSpoilerActive = { e ->
@@ -318,15 +317,15 @@ class MyAccountScreen : Screen {
                                     if (entry.creator?.group == true) {
                                         // edit the original post reblogged by the group
                                         detailOpener.openComposer(
-                                            groupHandle = entry.creator?.handle,
-                                            groupUsername = entry.creator?.username,
+                                            inReplyToId = entry.inReplyTo?.id,
+                                            inReplyToUser = entry.creator,
                                             editedPostId = entry.reblog?.id,
+                                            inGroup = true,
                                         )
                                     } else {
                                         detailOpener.openComposer(
                                             inReplyToId = entry.inReplyTo?.id,
-                                            inReplyToHandle = entry.inReplyTo?.creator?.handle,
-                                            inReplyToUsername = entry.inReplyTo?.creator?.username,
+                                            inReplyToUser = entry.inReplyTo?.creator,
                                             editedPostId = entry.id,
                                         )
                                     }

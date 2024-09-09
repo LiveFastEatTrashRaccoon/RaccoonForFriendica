@@ -209,7 +209,7 @@ class CircleDetailScreen(
                         UserItem(
                             user = user,
                             onClick = {
-                                detailOpener.openUserDetail(user.id)
+                                detailOpener.openUserDetail(user)
                             },
                             options =
                                 buildList {

@@ -300,13 +300,13 @@ class ExploreScreen : Screen {
                                     entry = item.entry,
                                     blurNsfw = uiState.blurNsfw,
                                     onClick = { e ->
-                                        detailOpener.openEntryDetail(e.id)
+                                        detailOpener.openEntryDetail(e)
                                     },
                                     onOpenUrl = { url ->
                                         uriHandler.openUri(url)
                                     },
                                     onOpenUser = {
-                                        detailOpener.openUserDetail(it.id)
+                                        detailOpener.openUserDetail(it)
                                     },
                                     onOpenImage = { urls, imageIdx ->
                                         detailOpener.openImageDetail(
@@ -349,11 +349,7 @@ class ExploreScreen : Screen {
                                             { e ->
                                                 detailOpener.openComposer(
                                                     inReplyToId = e.id,
-                                                    inReplyToHandle = e.creator?.handle,
-                                                    inReplyToUsername =
-                                                        e.creator?.let {
-                                                            it.displayName ?: it.username
-                                                        },
+                                                    inReplyToUser = e.creator,
                                                 )
                                             }
                                         },
@@ -419,8 +415,7 @@ class ExploreScreen : Screen {
                                                 (item.entry.reblog ?: item.entry).also { entryToEdit ->
                                                     detailOpener.openComposer(
                                                         inReplyToId = entryToEdit.inReplyTo?.id,
-                                                        inReplyToHandle = entryToEdit.inReplyTo?.creator?.handle,
-                                                        inReplyToUsername = entryToEdit.inReplyTo?.creator?.username,
+                                                        inReplyToUser = entryToEdit.inReplyTo?.creator,
                                                         editedPostId = entryToEdit.id,
                                                     )
                                                 }
@@ -468,7 +463,7 @@ class ExploreScreen : Screen {
                                 UserItem(
                                     user = item.user,
                                     onClick = {
-                                        detailOpener.openUserDetail(item.user.id)
+                                        detailOpener.openUserDetail(item.user)
                                     },
                                     onRelationshipClicked = { nextAction ->
                                         when (nextAction) {
