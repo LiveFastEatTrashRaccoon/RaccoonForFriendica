@@ -1,9 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultCirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultDirectMessageRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultInboxManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultLocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPhotoAlbumRepository
@@ -16,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
@@ -95,5 +99,11 @@ val domainContentRepositoryModule =
             DefaultPhotoAlbumRepository(
                 provider = get(named("default")),
             )
+        }
+        single<LocalItemCache<UserModel>> {
+            DefaultLocalItemCache()
+        }
+        single<LocalItemCache<TimelineEntryModel>> {
+            DefaultLocalItemCache()
         }
     }
