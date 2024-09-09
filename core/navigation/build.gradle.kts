@@ -39,6 +39,8 @@ kotlin {
             implementation(libs.voyager.tab)
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.koin)
+
+            implementation(projects.domain.content.data)
         }
         val androidUnitTest by getting {
             dependencies {

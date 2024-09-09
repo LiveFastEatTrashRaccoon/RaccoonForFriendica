@@ -20,6 +20,8 @@ internal val sharedModule =
             DefaultDetailOpener(
                 navigationCoordinator = get(),
                 identityRepository = get(),
+                userCache = get(),
+                entryCache = get(),
             )
         }
         single<AuthManager> {
