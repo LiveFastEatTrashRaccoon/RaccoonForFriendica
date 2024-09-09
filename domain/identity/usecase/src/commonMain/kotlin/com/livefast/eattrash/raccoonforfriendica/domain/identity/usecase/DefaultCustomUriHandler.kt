@@ -46,9 +46,9 @@ internal class DefaultCustomUriHandler(
                         append(currentNode)
                     }
                 scope.launch {
-                    val userId = userRepository.getByHandle(handle)
-                    if (userId != null) {
-                        detailOpener.openUserDetail(userId.id)
+                    val user = userRepository.getByHandle(handle)
+                    if (user != null) {
+                        detailOpener.openUserDetail(user)
                     } else {
                         openUrl(url = uri, mode = urlOpeningMode)
                     }
@@ -60,9 +60,9 @@ internal class DefaultCustomUriHandler(
                     val (node, user) = group["instance"]?.value.orEmpty() to group["detail"]?.value.orEmpty()
                     scope.launch {
                         val handle = "$user@$node"
-                        val userId = userRepository.getByHandle(handle)
-                        if (userId != null) {
-                            detailOpener.openUserDetail(userId.id)
+                        val user = userRepository.getByHandle(handle)
+                        if (user != null) {
+                            detailOpener.openUserDetail(user)
                         } else {
                             openUrl(url = uri, mode = urlOpeningMode)
                         }

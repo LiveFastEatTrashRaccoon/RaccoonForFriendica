@@ -189,14 +189,14 @@ class InboxScreen : Screen {
                             notification = notification,
                             blurNsfw = uiState.blurNsfw,
                             onOpenEntry = { entry ->
-                                detailOpener.openEntryDetail(entry.id)
+                                detailOpener.openEntryDetail(entry)
                                 model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
                             },
                             onOpenUrl = { url ->
                                 uriHandler.openUri(url)
                             },
                             onOpenUser = {
-                                detailOpener.openUserDetail(it.id)
+                                detailOpener.openUserDetail(it)
                                 model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
                             },
                             onUserRelationshipClicked = { userId, nextAction ->

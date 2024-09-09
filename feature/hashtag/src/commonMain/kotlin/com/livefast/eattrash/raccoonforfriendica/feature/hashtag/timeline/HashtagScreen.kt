@@ -222,13 +222,13 @@ class HashtagScreen(
                             entry = entry,
                             blurNsfw = uiState.blurNsfw,
                             onClick = { e ->
-                                detailOpener.openEntryDetail(e.id)
+                                detailOpener.openEntryDetail(e)
                             },
                             onOpenUrl = { url ->
                                 uriHandler.openUri(url)
                             },
                             onOpenUser = {
-                                detailOpener.openUserDetail(it.id)
+                                detailOpener.openUserDetail(it)
                             },
                             onOpenImage = { urls, imageIdx ->
                                 detailOpener.openImageDetail(urls = urls, initialIndex = imageIdx)
@@ -250,9 +250,7 @@ class HashtagScreen(
                                     { e ->
                                         detailOpener.openComposer(
                                             inReplyToId = e.id,
-                                            inReplyToHandle = e.creator?.handle,
-                                            inReplyToUsername =
-                                                e.creator?.let { it.displayName ?: it.username },
+                                            inReplyToUser = e.creator,
                                         )
                                     }
                                 },
@@ -312,8 +310,7 @@ class HashtagScreen(
                                         (entry.reblog ?: entry).also { entryToEdit ->
                                             detailOpener.openComposer(
                                                 inReplyToId = entryToEdit.inReplyTo?.id,
-                                                inReplyToHandle = entryToEdit.inReplyTo?.creator?.handle,
-                                                inReplyToUsername = entryToEdit.inReplyTo?.creator?.username,
+                                                inReplyToUser = entryToEdit.inReplyTo?.creator,
                                                 editedPostId = entryToEdit.id,
                                             )
                                         }

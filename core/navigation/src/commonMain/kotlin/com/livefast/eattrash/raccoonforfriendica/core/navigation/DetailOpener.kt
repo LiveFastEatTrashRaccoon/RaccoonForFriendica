@@ -1,20 +1,22 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.runtime.Stable
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Stable
 interface DetailOpener {
-    fun openUserDetail(id: String)
+    fun openUserDetail(user: UserModel)
 
-    fun openEntryDetail(id: String)
+    fun openEntryDetail(entry: TimelineEntryModel)
 
     fun openSettings()
 
     fun openHashtag(tag: String)
 
-    fun openFollowers(userId: String)
+    fun openFollowers(user: UserModel)
 
-    fun openFollowing(userId: String)
+    fun openFollowing(user: UserModel)
 
     fun openFavorites()
 
@@ -34,18 +36,16 @@ interface DetailOpener {
 
     fun openComposer(
         inReplyToId: String? = null,
-        inReplyToUsername: String? = null,
-        inReplyToHandle: String? = null,
-        groupUsername: String? = null,
-        groupHandle: String? = null,
+        inReplyToUser: UserModel? = null,
         editedPostId: String? = null,
+        inGroup: Boolean = false,
     )
 
     fun openSearch()
 
-    fun openInForumMode(groupId: String)
+    fun openInForumMode(group: UserModel)
 
-    fun openThread(entryId: String)
+    fun openThread(entry: TimelineEntryModel)
 
     fun openImageDetail(url: String)
 
@@ -69,7 +69,7 @@ interface DetailOpener {
     fun openDirectMessages()
 
     fun openConversation(
-        otherUserId: String,
+        otherUser: UserModel,
         parentUri: String,
     )
 

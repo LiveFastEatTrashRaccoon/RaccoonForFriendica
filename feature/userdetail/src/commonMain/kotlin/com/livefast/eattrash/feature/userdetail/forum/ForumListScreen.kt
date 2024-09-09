@@ -180,8 +180,8 @@ class ForumListScreen(
                         FloatingActionButton(
                             onClick = {
                                 detailOpener.openComposer(
-                                    groupUsername = uiState.user?.username,
-                                    groupHandle = uiState.user?.handle,
+                                    inReplyToUser = uiState.user,
+                                    inGroup = true,
                                 )
                             },
                         ) {
@@ -245,13 +245,13 @@ class ForumListScreen(
                             reshareAndReplyVisible = false,
                             blurNsfw = uiState.blurNsfw,
                             onClick = { e ->
-                                detailOpener.openThread(e.id)
+                                detailOpener.openThread(e)
                             },
                             onOpenUrl = { url ->
                                 uriHandler.openUri(url)
                             },
                             onOpenUser = {
-                                detailOpener.openUserDetail(it.id)
+                                detailOpener.openUserDetail(it)
                             },
                             onOpenImage = { urls, imageIdx ->
                                 detailOpener.openImageDetail(urls = urls, initialIndex = imageIdx)
@@ -273,11 +273,7 @@ class ForumListScreen(
                                     { e ->
                                         detailOpener.openComposer(
                                             inReplyToId = e.id,
-                                            inReplyToHandle = e.creator?.handle,
-                                            inReplyToUsername =
-                                                e.creator?.let {
-                                                    it.displayName ?: it.username
-                                                },
+                                            inReplyToUser = e.creator,
                                         )
                                     }
                                 },
@@ -326,9 +322,9 @@ class ForumListScreen(
 
                                     OptionId.Edit -> {
                                         detailOpener.openComposer(
-                                            groupHandle = entry.creator?.handle,
-                                            groupUsername = entry.creator?.username,
+                                            inReplyToUser = entry.creator,
                                             editedPostId = entry.reblog?.id,
+                                            inGroup = true,
                                         )
                                     }
 

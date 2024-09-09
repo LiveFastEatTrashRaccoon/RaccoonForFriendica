@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificat
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import kotlinx.coroutines.flow.launchIn
@@ -26,6 +27,7 @@ internal class UserListViewModel(
     private val identityRepository: IdentityRepository,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
+    private val userCache: LocalItemCache<UserModel>,
 ) : DefaultMviModel<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>(
         initialState = UserListMviModel.State(),
     ),
@@ -59,7 +61,7 @@ internal class UserListViewModel(
                 else -> null
             }
         if (userId != null) {
-            val user = userRepository.getById(id = userId)
+            val user = userCache.get(userId)
             updateState {
                 it.copy(user = user)
             }

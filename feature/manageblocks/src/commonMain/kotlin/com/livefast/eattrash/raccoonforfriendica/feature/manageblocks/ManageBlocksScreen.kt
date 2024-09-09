@@ -213,7 +213,7 @@ class ManageBlocksScreen : Screen {
                         UserItem(
                             user = item,
                             onClick = {
-                                detailOpener.openUserDetail(item.id)
+                                detailOpener.openUserDetail(item)
                             },
                             options =
                                 buildList {

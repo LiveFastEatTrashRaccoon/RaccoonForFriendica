@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -25,6 +26,7 @@ class ThreadViewModel(
     private val userRepository: UserRepository,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
+    private val entryCache: LocalItemCache<TimelineEntryModel>,
 ) : DefaultMviModel<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>(
         initialState = ThreadMviModel.State(),
     ),
@@ -85,8 +87,10 @@ class ThreadViewModel(
     }
 
     private suspend fun refresh(initial: Boolean = false) {
+        val originalEntry = entryCache.get(entryId)
         updateState {
             it.copy(
+                entry = originalEntry,
                 initial = initial,
                 loading = true,
                 refreshing = !initial,
@@ -94,11 +98,9 @@ class ThreadViewModel(
             )
         }
         val result = populateThreadUseCase(entryId)
-        val originalEntry = result.firstOrNull { it.id == entryId }
         val replies = result.filter { it.id != entryId }
         updateState {
             it.copy(
-                entry = originalEntry,
                 replies = replies,
                 loading = false,
                 initial = false,
@@ -194,13 +196,14 @@ class ThreadViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        reblogged = newEntry.reblogged,
-                        reblogCount = newEntry.reblogCount,
-                        reblogLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            reblogged = newEntry.reblogged,
+                            reblogCount = newEntry.reblogCount,
+                            reblogLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -228,13 +231,14 @@ class ThreadViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        favorite = newEntry.favorite,
-                        favoriteCount = newEntry.favoriteCount,
-                        favoriteLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            favorite = newEntry.favorite,
+                            favoriteCount = newEntry.favoriteCount,
+                            favoriteLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -262,12 +266,13 @@ class ThreadViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        bookmarked = newEntry.bookmarked,
-                        bookmarkLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            bookmarked = newEntry.bookmarked,
+                            bookmarkLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {

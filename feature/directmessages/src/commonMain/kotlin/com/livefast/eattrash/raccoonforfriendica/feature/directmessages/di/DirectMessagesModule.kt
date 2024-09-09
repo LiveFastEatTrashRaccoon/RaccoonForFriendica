@@ -23,6 +23,7 @@ val featureDirectMessagesModule =
                 userRepository = get(),
                 identityRepository = get(),
                 messageRepository = get(),
+                userCache = get(),
             )
         }
     }

@@ -171,8 +171,7 @@ class ThreadScreen(
                                 if (entry != null) {
                                     detailOpener.openComposer(
                                         inReplyToId = entry.id,
-                                        inReplyToUsername = entry.creator?.username,
-                                        inReplyToHandle = entry.creator?.handle,
+                                        inReplyToUser = entry.creator,
                                     )
                                 }
                             },
@@ -216,18 +215,6 @@ class ThreadScreen(
                 LazyColumn(
                     state = lazyListState,
                 ) {
-                    if (uiState.initial) {
-                        val placeholderCount = 5
-                        items(placeholderCount) { idx ->
-                            TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                            if (idx < placeholderCount - 1) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = Spacing.s),
-                                )
-                            }
-                        }
-                    }
-
                     // original entry
                     uiState.entry?.also { original ->
                         item {
@@ -250,7 +237,7 @@ class ThreadScreen(
                                     uriHandler.openUri(url)
                                 },
                                 onOpenUser = {
-                                    detailOpener.openUserDetail(it.id)
+                                    detailOpener.openUserDetail(it)
                                 },
                                 onOpenImage = { urls, idx ->
                                     detailOpener.openImageDetail(urls = urls, initialIndex = idx)
@@ -284,9 +271,7 @@ class ThreadScreen(
                                         { e ->
                                             detailOpener.openComposer(
                                                 inReplyToId = e.id,
-                                                inReplyToHandle = e.creator?.handle,
-                                                inReplyToUsername =
-                                                    e.creator?.let { it.displayName ?: it.username },
+                                                inReplyToUser = e.creator,
                                             )
                                         }
                                     },
@@ -334,6 +319,19 @@ class ThreadScreen(
                         }
                     }
 
+                    // here to show the initial entry from cache at startup
+                    if (uiState.initial) {
+                        val placeholderCount = 5
+                        items(placeholderCount) { idx ->
+                            TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                            if (idx < placeholderCount - 1) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(vertical = Spacing.s),
+                                )
+                            }
+                        }
+                    }
+
                     // replies
                     itemsIndexed(
                         items = uiState.replies,
@@ -345,7 +343,7 @@ class ThreadScreen(
                                 uriHandler.openUri(url)
                             },
                             onOpenUser = {
-                                detailOpener.openUserDetail(it.id)
+                                detailOpener.openUserDetail(it)
                             },
                             onOpenImage = { url ->
                                 detailOpener.openImageDetail(url)
@@ -362,11 +360,7 @@ class ThreadScreen(
                             onReply = { e ->
                                 detailOpener.openComposer(
                                     inReplyToId = e.id,
-                                    inReplyToHandle = e.creator?.handle,
-                                    inReplyToUsername =
-                                        e.creator?.let {
-                                            it.displayName ?: it.username
-                                        },
+                                    inReplyToUser = e.creator,
                                 )
                             },
                             options =
@@ -400,9 +394,9 @@ class ThreadScreen(
 
                                     OptionId.Edit -> {
                                         detailOpener.openComposer(
-                                            groupHandle = entry.creator?.handle,
-                                            groupUsername = entry.creator?.username,
+                                            inReplyToUser = entry.creator,
                                             editedPostId = entry.reblog?.id,
+                                            inGroup = true,
                                         )
                                     }
 

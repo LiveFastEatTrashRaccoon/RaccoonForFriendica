@@ -216,7 +216,7 @@ class NodeInfoScreen : Screen {
                                         ),
                                     user = contact,
                                     onClick = {
-                                        detailOpener.openUserDetail(contact.id)
+                                        detailOpener.openUserDetail(contact)
                                     },
                                 )
                             }
@@ -352,7 +352,7 @@ private fun ContactUserItem(
             ) {
                 val title = user.displayName ?: user.username ?: ""
                 val subtitle = user.handle ?: ""
-                if (!title.isNullOrBlank()) {
+                if (title.isNotBlank()) {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.bodyMedium,
@@ -361,7 +361,7 @@ private fun ContactUserItem(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                if (!subtitle.isNullOrBlank()) {
+                if (subtitle.isNotBlank()) {
                     Text(
                         text = user.handle ?: "",
                         style = MaterialTheme.typography.bodySmall,

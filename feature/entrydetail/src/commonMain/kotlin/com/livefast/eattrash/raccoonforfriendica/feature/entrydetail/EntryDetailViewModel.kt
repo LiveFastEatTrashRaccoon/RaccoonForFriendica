@@ -6,12 +6,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -26,6 +25,7 @@ class EntryDetailViewModel(
     private val userRepository: UserRepository,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
+    private val entryCache: LocalItemCache<TimelineEntryModel>,
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
         initialState = EntryDetailMviModel.State(),
     ),
@@ -82,26 +82,24 @@ class EntryDetailViewModel(
     }
 
     private suspend fun refresh(initial: Boolean = false) {
+        val currentEntry = entryCache.get(id)
         updateState {
-            it.copy(initial = initial, refreshing = !initial)
+            it.copy(
+                initial = initial,
+                refreshing = !initial,
+                entries = currentEntry?.let { e -> listOf(e) } ?: emptyList(),
+            )
         }
 
         val context = timelineEntryRepository.getContext(id)
         val entries =
             coroutineScope {
                 buildList {
-                    addAll(context?.ancestors.orEmpty().map { it.id })
-                    add(id)
-                    addAll(context?.descendants.orEmpty().map { it.id })
-                }.map { entryId ->
-                    async {
-                        timelineEntryRepository.getById(entryId)
-                    }
-                }.awaitAll()
-                    .filterNotNull()
+                    addAll(context?.ancestors.orEmpty())
+                    add(entryCache.get(id))
+                    addAll(context?.descendants.orEmpty())
+                }.filterNotNull()
             }
-
-        val currentEntry = entries.firstOrNull { e -> e.id == id }
         updateState {
             it.copy(
                 creator = currentEntry?.creator,
@@ -167,13 +165,14 @@ class EntryDetailViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        reblogged = newEntry.reblogged,
-                        reblogCount = newEntry.reblogCount,
-                        reblogLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            reblogged = newEntry.reblogged,
+                            reblogCount = newEntry.reblogCount,
+                            reblogLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -201,13 +200,14 @@ class EntryDetailViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        favorite = newEntry.favorite,
-                        favoriteCount = newEntry.favoriteCount,
-                        favoriteLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            favorite = newEntry.favorite,
+                            favoriteCount = newEntry.favoriteCount,
+                            favoriteLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -235,12 +235,13 @@ class EntryDetailViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        bookmarked = newEntry.bookmarked,
-                        bookmarkLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            bookmarked = newEntry.bookmarked,
+                            bookmarkLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
