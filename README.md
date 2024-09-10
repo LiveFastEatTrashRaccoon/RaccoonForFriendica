@@ -116,7 +116,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] edit one's own profile (custom fields and images not supported yet by the back-end)
 - [x] direct messages
 - [x] photo gallery
-- [ ] advanced media visualization (videos & GIFs)
+- [ ] advanced media visualization (videos, ~GIFs~, ~multiple images~)
 - [ ] scheduled posts
 - [ ] custom emojis
 
