@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.drawer.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -96,14 +96,16 @@ internal fun DrawerHeader(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Icon(
-                    modifier =
-                        Modifier.clickable {
-                            onOpenSwitchAccount?.invoke()
-                        },
-                    imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = null,
-                )
+                IconButton(
+                    onClick = {
+                        onOpenSwitchAccount?.invoke()
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = null,
+                    )
+                }
             }
         } else {
             val anonymousTitle = LocalStrings.current.sidebarAnonymousTitle
@@ -126,14 +128,16 @@ internal fun DrawerHeader(
                         color = ancillaryColor,
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        modifier =
-                            Modifier.clickable {
-                                onOpenChangeInstance?.invoke()
-                            },
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = null,
-                    )
+                    IconButton(
+                        onClick = {
+                            onOpenChangeInstance?.invoke()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
         }

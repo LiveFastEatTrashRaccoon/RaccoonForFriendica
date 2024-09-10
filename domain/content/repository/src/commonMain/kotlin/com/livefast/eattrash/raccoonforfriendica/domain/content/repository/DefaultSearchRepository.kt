@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import kotlinx.coroutines.Dispatchers
@@ -25,12 +26,7 @@ internal class DefaultSearchRepository(
                             query = query,
                             maxId = pageCursor,
                             limit = DEFAULT_PAGE_SIZE,
-                            type =
-                                when (type) {
-                                    SearchResultType.Entries -> "statuses"
-                                    SearchResultType.Hashtags -> "hashtags"
-                                    SearchResultType.Users -> "accounts"
-                                },
+                            type = type.toDto(),
                         )
                 when (type) {
                     SearchResultType.Entries -> response.statuses.map { ExploreItemModel.Entry(it.toModelWithReply()) }

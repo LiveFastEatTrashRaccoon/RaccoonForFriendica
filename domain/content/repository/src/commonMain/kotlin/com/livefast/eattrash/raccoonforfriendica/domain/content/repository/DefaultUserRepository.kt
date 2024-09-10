@@ -5,8 +5,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -140,7 +142,7 @@ internal class DefaultUserRepository(
                         .search(
                             query = query,
                             maxId = pageCursor,
-                            type = "accounts",
+                            type = SearchResultType.Users.toDto(),
                             following = true,
                             limit = DEFAULT_PAGE_SIZE,
                         ).accounts

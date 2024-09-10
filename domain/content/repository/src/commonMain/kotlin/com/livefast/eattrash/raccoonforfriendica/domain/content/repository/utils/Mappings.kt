@@ -48,6 +48,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -375,7 +376,7 @@ internal fun FriendicaPrivateMessage.toModel() =
             createdAt?.let { date ->
                 parseDate(
                     value = date,
-                    format = "EEE MMM dd HH:mm:ss ZZZZ yyyy",
+                    format = FriendicaDateFormats.PRIVATE_MESSAGES,
                 )
             },
         text = text,
@@ -393,8 +394,20 @@ internal fun FriendicaPhotoAlbum.toModel() =
             created?.let { date ->
                 parseDate(
                     value = date,
-                    format = "yyyy-MM-dd HH:mm:ss",
+                    format = FriendicaDateFormats.PHOTO_ALBUMS,
                 )
             },
         items = count,
     )
+
+internal fun SearchResultType.toDto(): String =
+    when (this) {
+        SearchResultType.Entries -> "statuses"
+        SearchResultType.Hashtags -> "hashtags"
+        SearchResultType.Users -> "accounts"
+    }
+
+private object FriendicaDateFormats {
+    const val PRIVATE_MESSAGES = "EEE MMM dd HH:mm:ss xxxx yyyy"
+    const val PHOTO_ALBUMS = "yyyy-MM-dd HH:mm:ss"
+}
