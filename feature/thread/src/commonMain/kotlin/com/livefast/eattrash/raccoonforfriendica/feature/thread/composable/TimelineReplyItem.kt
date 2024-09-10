@@ -38,11 +38,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentFooter
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentHeader
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentTitle
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemAttachments
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
@@ -60,7 +59,7 @@ fun TimelineReplyItem(
     onReblog: ((TimelineEntryModel) -> Unit)? = null,
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
-    onOpenImage: ((String) -> Unit)? = null,
+    onOpenImage: ((List<String>, Int) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
 ) {
     val entryToDisplay = entry.reblog ?: entry
@@ -168,7 +167,8 @@ fun TimelineReplyItem(
                     }
                 }
 
-                entryToDisplay.title?.let { title ->
+                val title = entryToDisplay.title
+                if (!title.isNullOrBlank()) {
                     ContentTitle(
                         modifier = Modifier.fillMaxWidth(),
                         content = title,
@@ -177,26 +177,30 @@ fun TimelineReplyItem(
                     )
                 }
 
-                ContentBody(
-                    modifier = Modifier.fillMaxWidth(),
-                    content = entryToDisplay.content,
-                    onClick = { onClick?.invoke(entryToDisplay) },
-                    onOpenUrl = onOpenUrl,
-                )
-
-                val firstImageAttachment =
-                    entryToDisplay.attachments
-                        .firstOrNull { attachment -> attachment.type == MediaType.Image }
-                val imageUrl = firstImageAttachment?.url?.takeIf { it.isNotBlank() }
-                if (imageUrl != null) {
-                    ContentImage(
+                val body = entryToDisplay.content
+                if (body.isNotBlank()) {
+                    ContentBody(
                         modifier = Modifier.fillMaxWidth(),
-                        url = imageUrl,
-                        altText = firstImageAttachment.description,
-                        sensitive = blurNsfw && entryToDisplay.sensitive,
-                        onClick = { onOpenImage?.invoke(imageUrl) },
+                        content = entryToDisplay.content,
+                        onClick = { onClick?.invoke(entryToDisplay) },
+                        onOpenUrl = onOpenUrl,
                     )
                 }
+
+                // attachment (single or grid)
+                TimelineItemAttachments(
+                    modifier =
+                        Modifier.fillMaxWidth().padding(
+                            top = Spacing.s,
+                            bottom = Spacing.xxxs,
+                            start = Spacing.s,
+                            end = Spacing.s,
+                        ),
+                    attachments = entryToDisplay.attachments,
+                    blurNsfw = blurNsfw,
+                    sensitive = entryToDisplay.sensitive,
+                    onOpenImage = onOpenImage,
+                )
 
                 if (actionsEnabled) {
                     ContentFooter(
