@@ -48,6 +48,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -398,6 +399,13 @@ internal fun FriendicaPhotoAlbum.toModel() =
             },
         items = count,
     )
+
+internal fun SearchResultType.toDto(): String =
+    when (this) {
+        SearchResultType.Entries -> "statuses"
+        SearchResultType.Hashtags -> "hashtags"
+        SearchResultType.Users -> "accounts"
+    }
 
 private object FriendicaDateFormats {
     const val PRIVATE_MESSAGES = "EEE MMM dd HH:mm:ss xxxx yyyy"
