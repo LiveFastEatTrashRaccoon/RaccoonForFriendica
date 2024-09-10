@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,13 +10,13 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,10 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
@@ -169,24 +166,16 @@ fun UserHeader(
                         horizontalArrangement = Arrangement.spacedBy(Spacing.m),
                     ) {
                         if (user?.group == true) {
-                            Icon(
-                                modifier =
-                                    Modifier
-                                        .size(IconSize.l)
-                                        .clickable {
-                                            onOpenInForumMode?.invoke()
-                                        }.border(
-                                            width = Dp.Hairline,
-                                            color =
-                                                MaterialTheme.colorScheme.onBackground.copy(
-                                                    ancillaryTextAlpha,
-                                                ),
-                                            shape = CircleShape,
-                                        ).padding(5.dp),
-                                imageVector = Icons.Default.Groups,
-                                tint = MaterialTheme.colorScheme.onBackground,
-                                contentDescription = null,
-                            )
+                            OutlinedIconButton(
+                                onClick = {
+                                    onOpenInForumMode?.invoke()
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Groups,
+                                    contentDescription = null,
+                                )
+                            }
                         }
                         if (notificationStatus != null) {
                             UserNotificationButton(

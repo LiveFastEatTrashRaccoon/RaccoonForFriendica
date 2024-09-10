@@ -1,7 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.login.oauth
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -175,14 +173,16 @@ class LoginScreen : Screen {
                     },
                     trailingIcon = {
                         if (uiState.nodeName.isNotEmpty()) {
-                            Icon(
-                                modifier =
-                                    Modifier.clickable {
-                                        model.reduce(LoginMviModel.Intent.SetNodeName(""))
-                                    },
-                                imageVector = Icons.Default.Clear,
-                                contentDescription = null,
-                            )
+                            IconButton(
+                                onClick = {
+                                    model.reduce(LoginMviModel.Intent.SetNodeName(""))
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     },
                 )

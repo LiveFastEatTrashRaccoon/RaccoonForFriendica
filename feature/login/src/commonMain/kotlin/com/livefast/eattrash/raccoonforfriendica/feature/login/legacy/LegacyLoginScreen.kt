@@ -199,14 +199,16 @@ class LegacyLoginScreen : Screen {
                     },
                     trailingIcon = {
                         if (uiState.nodeName.isNotEmpty()) {
-                            Icon(
-                                modifier =
-                                    Modifier.clickable {
-                                        model.reduce(LegacyLoginMviModel.Intent.SetNodeName(""))
-                                    },
-                                imageVector = Icons.Default.Clear,
-                                contentDescription = null,
-                            )
+                            IconButton(
+                                onClick = {
+                                    model.reduce(LegacyLoginMviModel.Intent.SetNodeName(""))
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     },
                 )
