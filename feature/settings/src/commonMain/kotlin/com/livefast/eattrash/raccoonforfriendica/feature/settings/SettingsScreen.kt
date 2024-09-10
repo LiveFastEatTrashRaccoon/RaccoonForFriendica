@@ -1,8 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.settings
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +16,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,7 +31,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -101,15 +99,16 @@ class SettingsScreen : Screen {
                     },
                     navigationIcon = {
                         if (navigationCoordinator.canPop.value) {
-                            Image(
-                                modifier =
-                                    Modifier.clickable {
-                                        navigationCoordinator.pop()
-                                    },
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            )
+                            IconButton(
+                                onClick = {
+                                    navigationCoordinator.pop()
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     },
                 )
@@ -402,9 +401,9 @@ class SettingsScreen : Screen {
                                 },
                                 label = LocalStrings.current.customOption,
                                 trailingContent = {
-                                Text(
-                                    text = "🎨",
-                                    style = MaterialTheme.typography.bodyLarge,
+                                    Text(
+                                        text = "🎨",
+                                        style = MaterialTheme.typography.bodyLarge,
                                     )
                                 },
                             )

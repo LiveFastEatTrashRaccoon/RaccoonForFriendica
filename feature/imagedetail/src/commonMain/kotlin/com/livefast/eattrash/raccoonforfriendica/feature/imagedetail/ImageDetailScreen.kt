@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.imagedetail
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -135,15 +134,16 @@ class ImageDetailScreen(
                     },
                     navigationIcon = {
                         if (navigationCoordinator.canPop.value) {
-                            Icon(
-                                modifier =
-                                    Modifier.clickable {
-                                        navigationCoordinator.pop()
-                                    },
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
+                            IconButton(
+                                onClick = {
+                                    navigationCoordinator.pop()
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     },
                     actions = {

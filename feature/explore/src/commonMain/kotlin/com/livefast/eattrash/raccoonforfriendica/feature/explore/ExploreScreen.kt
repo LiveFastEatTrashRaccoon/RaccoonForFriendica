@@ -1,9 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.explore
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,7 +40,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
@@ -154,17 +151,18 @@ class ExploreScreen : Screen {
                         )
                     },
                     navigationIcon = {
-                        Image(
-                            modifier =
-                                Modifier.clickable {
-                                    scope.launch {
-                                        drawerCoordinator.toggleDrawer()
-                                    }
-                                },
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                        )
+                        IconButton(
+                            onClick = {
+                                scope.launch {
+                                    drawerCoordinator.toggleDrawer()
+                                }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = null,
+                            )
+                        }
                     },
                     actions = {
                         if (uiState.currentUserId != null) {

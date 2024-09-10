@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile.edit
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.aspectRatio
@@ -43,7 +42,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
@@ -131,19 +129,20 @@ class EditProfileScreen : Screen {
                     },
                     navigationIcon = {
                         if (navigationCoordinator.canPop.value) {
-                            Image(
-                                modifier =
-                                    Modifier.clickable {
-                                        if (uiState.hasUnsavedChanges) {
-                                            confirmBackWithUnsavedChangesDialog = true
-                                        } else {
-                                            navigationCoordinator.pop()
-                                        }
-                                    },
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            )
+                            IconButton(
+                                onClick = {
+                                    if (uiState.hasUnsavedChanges) {
+                                        confirmBackWithUnsavedChangesDialog = true
+                                    } else {
+                                        navigationCoordinator.pop()
+                                    }
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     },
                     actions = {

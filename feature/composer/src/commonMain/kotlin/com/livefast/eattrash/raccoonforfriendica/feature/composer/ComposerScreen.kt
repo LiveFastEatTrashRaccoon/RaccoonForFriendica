@@ -1,8 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -42,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -165,15 +162,16 @@ class ComposerScreen(
                     },
                     navigationIcon = {
                         if (navigationCoordinator.canPop.value) {
-                            Image(
-                                modifier =
-                                    Modifier.clickable {
-                                        navigationCoordinator.pop()
-                                    },
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            )
+                            IconButton(
+                                onClick = {
+                                    navigationCoordinator.pop()
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     },
                     actions = {
