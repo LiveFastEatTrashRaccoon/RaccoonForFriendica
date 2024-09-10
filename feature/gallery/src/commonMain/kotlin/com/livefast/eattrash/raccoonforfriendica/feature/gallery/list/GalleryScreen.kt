@@ -114,7 +114,6 @@ class GalleryScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.galleryTitle,
                             style = MaterialTheme.typography.titleMedium,
                         )

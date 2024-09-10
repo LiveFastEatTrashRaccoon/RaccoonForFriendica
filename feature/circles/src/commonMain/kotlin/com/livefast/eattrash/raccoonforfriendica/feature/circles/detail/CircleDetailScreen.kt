@@ -116,7 +116,6 @@ class CircleDetailScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = uiState.circle?.name.orEmpty(),
                             style = MaterialTheme.typography.titleMedium,
                         )

@@ -38,7 +38,6 @@ import androidx.compose.ui.layout.ContentScale
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
@@ -120,7 +119,6 @@ class ImageDetailScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text =
                                 buildString {
                                     if (urls.size > 1) {

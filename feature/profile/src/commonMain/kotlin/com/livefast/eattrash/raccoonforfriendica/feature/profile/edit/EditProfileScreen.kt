@@ -120,7 +120,6 @@ class EditProfileScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.editProfileTitle,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,

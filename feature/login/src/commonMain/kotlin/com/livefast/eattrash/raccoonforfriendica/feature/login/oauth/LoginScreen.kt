@@ -97,7 +97,6 @@ class LoginScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.loginTitle,
                             style = MaterialTheme.typography.titleMedium,
                         )

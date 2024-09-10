@@ -131,7 +131,6 @@ class EntryDetailScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text =
                                 buildString {
                                     append(LocalStrings.current.postTitle)
