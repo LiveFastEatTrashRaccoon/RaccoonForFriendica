@@ -133,7 +133,6 @@ class ForumListScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text =
                                 buildString {
                                     append(LocalStrings.current.topicTitle)

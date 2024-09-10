@@ -135,7 +135,7 @@ class ConversationScreen(
                     title = {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                         ) {
                             val avatar = uiState.otherUser?.avatar.orEmpty()
                             val avatarSize = IconSize.l
@@ -156,7 +156,6 @@ class ConversationScreen(
                                 )
                             }
                             Text(
-                                modifier = Modifier.padding(horizontal = Spacing.s),
                                 text = otherUserName.orEmpty(),
                                 style = MaterialTheme.typography.titleMedium,
                             )

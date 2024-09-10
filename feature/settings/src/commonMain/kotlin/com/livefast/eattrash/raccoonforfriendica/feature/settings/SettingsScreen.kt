@@ -92,7 +92,6 @@ class SettingsScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.settingsTitle,
                             style = MaterialTheme.typography.titleMedium,
                         )

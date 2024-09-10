@@ -96,7 +96,6 @@ class NodeInfoScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.nodeInfoTitle,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,

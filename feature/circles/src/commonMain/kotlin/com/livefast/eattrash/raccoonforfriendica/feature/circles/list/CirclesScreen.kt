@@ -109,7 +109,6 @@ class CirclesScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.manageCirclesTitle,
                             style = MaterialTheme.typography.titleMedium,
                         )

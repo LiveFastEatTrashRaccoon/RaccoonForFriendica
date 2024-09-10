@@ -102,7 +102,6 @@ class DirectMessageListScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.directMessagesTitle,
                             style = MaterialTheme.typography.titleMedium,
                         )

@@ -136,7 +136,6 @@ class AlbumDetailScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
                             text = name,
                             style = MaterialTheme.typography.titleMedium,
                         )

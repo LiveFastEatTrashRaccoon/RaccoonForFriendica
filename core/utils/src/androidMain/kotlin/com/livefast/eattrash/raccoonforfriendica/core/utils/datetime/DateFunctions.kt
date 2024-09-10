@@ -5,6 +5,7 @@ import java.time.Period
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import java.util.TimeZone
 import kotlin.math.abs
 import kotlin.time.Duration
@@ -16,6 +17,7 @@ actual fun epochMillis(): Long = System.currentTimeMillis()
 private fun getDateTimeFormatter(pattern: String) =
     DateTimeFormatter
         .ofPattern(pattern)
+        .withLocale(Locale.US)
         .withZone(TimeZone.getTimeZone("UTC").toZoneId())
 
 private val safeFormatter = getDateTimeFormatter("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
@@ -109,8 +111,8 @@ actual fun getPrettyDate(
 actual fun getDurationSinceDate(iso8601Timestamp: String): Duration? =
     runCatching {
         val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
-    val now = LocalDateTime.now()
-    val duration = JavaDuration.between(date, now)
+        val now = LocalDateTime.now()
+        val duration = JavaDuration.between(date, now)
         duration.toKotlinDuration()
     }.getOrNull()
 
