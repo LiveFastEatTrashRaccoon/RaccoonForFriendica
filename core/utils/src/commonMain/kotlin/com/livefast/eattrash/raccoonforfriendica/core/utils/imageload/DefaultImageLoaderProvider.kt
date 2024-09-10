@@ -14,7 +14,12 @@ internal class DefaultImageLoaderProvider(
     private val imageLoader by lazy {
         ImageLoader
             .Builder(context)
-            .memoryCache {
+            .components {
+                val decoders = getNativeDecoders()
+                for (decoder in decoders) {
+                    add(decoder)
+                }
+            }.memoryCache {
                 MemoryCache
                     .Builder()
                     .maxSizePercent(context, 0.25)
