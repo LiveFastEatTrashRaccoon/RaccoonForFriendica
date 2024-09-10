@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.imageload
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
+import coil3.decode.Decoder
 import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorType
@@ -20,3 +21,5 @@ actual fun IntArray.toComposeImageBitmap(
     bmp.installPixels(info, map { it.toByte() }.toByteArray(), info.minRowBytes)
     return bmp.asComposeImageBitmap()
 }
+
+actual fun getNativeDecoders(): List<Decoder.Factory> = emptyList()

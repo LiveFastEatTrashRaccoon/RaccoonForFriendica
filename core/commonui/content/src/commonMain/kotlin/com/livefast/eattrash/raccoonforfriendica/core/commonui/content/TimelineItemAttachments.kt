@@ -22,7 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 
 @Composable
-internal fun TimelineItemAttachments(
+fun TimelineItemAttachments(
     attachments: List<AttachmentModel>,
     modifier: Modifier = Modifier,
     blurNsfw: Boolean = true,
