@@ -46,6 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Placeh
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SearchField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
+import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -220,14 +221,14 @@ private fun UserResultItem(
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
                 Text(
-                    text = user.displayName ?: user.username ?: "",
+                    text = (user.displayName ?: user.username ?: "").ellipsize(30),
                     style = MaterialTheme.typography.bodyMedium,
                     color = fullColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    text = user.handle ?: "",
+                    text = (user.handle ?: "").ellipsize(25),
                     style = MaterialTheme.typography.bodySmall,
                     color = ancillaryColor,
                     maxLines = 1,

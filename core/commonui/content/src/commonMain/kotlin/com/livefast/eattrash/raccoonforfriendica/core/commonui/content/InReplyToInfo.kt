@@ -27,6 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
@@ -36,7 +37,7 @@ internal fun InReplyToInfo(
     iconSize: Dp = IconSize.s,
     onOpenUser: ((UserModel) -> Unit)? = null,
 ) {
-    val creatorName = user?.let { it.displayName ?: it.handle }.orEmpty()
+    val creatorName = user?.let { it.displayName ?: it.handle }.orEmpty().ellipsize(30)
     val creatorAvatar = user?.avatar.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)

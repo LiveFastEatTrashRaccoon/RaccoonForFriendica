@@ -26,6 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
@@ -51,7 +52,7 @@ internal fun DrawerHeader(
         horizontalArrangement = Arrangement.spacedBy(Spacing.m),
     ) {
         if (user != null) {
-            val username = user.displayName ?: user.username ?: ""
+            val username = (user.displayName ?: user.username ?: "").ellipsize(30)
             val userAvatar = user.avatar.orEmpty()
             if (userAvatar.isNotEmpty()) {
                 CustomImage(
