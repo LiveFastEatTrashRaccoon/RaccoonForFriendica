@@ -31,7 +31,9 @@ fun AttachmentsGrid(
     onOpenImage: ((List<String>, Int) -> Unit)? = null,
 ) {
     val filteredAttachments =
-        attachments.filter { it.type == MediaType.Image }.takeIf { it.isNotEmpty() } ?: return
+        attachments
+            .filter { it.type == MediaType.Image || it.type == MediaType.Video }
+            .takeIf { it.isNotEmpty() } ?: return
     val firstAttachment = filteredAttachments.first()
     val firstAttachmentWidth = firstAttachment.originalWidth ?: 0
     val firstAttachmentHeight = firstAttachment.originalHeight ?: 0
@@ -177,21 +179,43 @@ private fun GridElement(
     val attachmentWidth = attachment.originalWidth ?: 0
     val attachmentHeight = attachment.originalHeight ?: 0
 
-    ContentImage(
-        modifier = modifier,
-        url = attachment.url,
-        altText = attachment.description,
-        blurHash = attachment.blurHash,
-        originalWidth = attachmentWidth,
-        originalHeight = attachmentHeight,
-        sensitive = blurNsfw && sensitive,
-        maxHeight = maxHeight,
-        onClick = onClick,
-        contentScale =
-            contentScale ?: if (attachmentHeight < attachmentWidth) {
-                ContentScale.FillHeight
-            } else {
-                ContentScale.FillWidth
-            },
-    )
+    when (attachment.type) {
+        MediaType.Image ->
+            ContentImage(
+                modifier = modifier,
+                url = attachment.url,
+                altText = attachment.description,
+                blurHash = attachment.blurHash,
+                originalWidth = attachmentWidth,
+                originalHeight = attachmentHeight,
+                sensitive = blurNsfw && sensitive,
+                maxHeight = maxHeight,
+                contentScale =
+                    contentScale ?: if (attachmentHeight < attachmentWidth) {
+                        ContentScale.FillHeight
+                    } else {
+                        ContentScale.FillWidth
+                    },
+                onClick = onClick,
+            )
+
+        MediaType.Video ->
+            ContentVideo(
+                modifier = modifier,
+                url = attachment.url,
+                blurHash = attachment.blurHash,
+                originalWidth = attachmentWidth,
+                originalHeight = attachmentHeight,
+                sensitive = blurNsfw && sensitive,
+                contentScale =
+                    contentScale ?: if (attachmentHeight < attachmentWidth) {
+                        ContentScale.FillHeight
+                    } else {
+                        ContentScale.FillWidth
+                    },
+                onClick = onClick,
+            )
+
+        else -> Unit
+    }
 }
