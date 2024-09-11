@@ -44,6 +44,13 @@ kotlin {
                 implementation(projects.core.l10n)
             }
         }
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.exoplayer)
+                implementation(libs.exoplayer.dash)
+                implementation(libs.exoplayer.ui)
+            }
+        }
     }
 }
 

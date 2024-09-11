@@ -10,6 +10,7 @@ androidx-browser = "1.8.0"
 androidx-core-ktx = "1.13.1"
 androidx-crypto = "1.0.0"
 androidx-material = "1.12.0"
+androidx-media3 = "1.4.1"
 androidx-splashscreen = "1.0.1"
 androidx-sqlite = "2.5.0-alpha07"
 androidx-test-junit = "1.2.1"
@@ -83,6 +84,10 @@ materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "ma
 compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", version.ref = "compose-colorpicker" }
 
 lyricist = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
+
+exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "androidx-media3" }
+exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "androidx-media3" }
+exoplayer-ui = { module = "androidx.media3:media3-ui", version.ref = "androidx-media3" }
 
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately" }
 
