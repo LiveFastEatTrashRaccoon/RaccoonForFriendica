@@ -594,7 +594,7 @@ class ComposerViewModel(
                             inReplyTo = inReplyToId,
                             spoilerText = spoiler,
                             sensitive = currentState.sensitive,
-                            visibility = currentState.visibility,
+                            visibility = visibility,
                             lang = currentState.lang,
                             mediaIds = attachmentIds,
                         )

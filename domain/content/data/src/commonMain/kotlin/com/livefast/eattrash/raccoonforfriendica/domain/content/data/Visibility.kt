@@ -1,10 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Message
+import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.Workspaces
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -28,10 +28,10 @@ sealed interface Visibility {
 @Composable
 fun Visibility.toIcon(): ImageVector =
     when (this) {
-        Visibility.Direct -> Icons.AutoMirrored.Default.Message
-        Visibility.Private -> Icons.Default.VisibilityOff
+        Visibility.Direct -> Icons.Default.AlternateEmail
+        Visibility.Private -> Icons.Default.Lock
         Visibility.Public -> Icons.Default.Public
-        Visibility.Unlisted -> Icons.Default.Lock
+        Visibility.Unlisted -> Icons.Default.LockOpen
         is Visibility.Circle -> Icons.Default.Workspaces
     }
 

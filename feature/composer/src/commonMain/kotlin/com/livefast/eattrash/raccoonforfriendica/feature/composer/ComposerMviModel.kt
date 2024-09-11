@@ -125,6 +125,7 @@ interface ComposerMviModel :
                 Visibility.Public,
                 Visibility.Unlisted,
                 Visibility.Private,
+                Visibility.Direct,
                 Visibility.Circle(),
             ),
         val sensitive: Boolean = false,

@@ -133,7 +133,7 @@ internal open class DefaultStrings : Strings {
     override val visibilityPublic = "Public"
     override val visibilityUnlisted = "Unlisted"
     override val visibilityPrivate = "Private"
-    override val visibilityDirect = "Only mentioned"
+    override val visibilityDirect = "Only mentions"
     override val createPostBodyPlaceholder = "Your awesome new post… 🪄"
     override val createPostAttachmentsSection = "Attachments"
     override val actionEdit = "Edit"
