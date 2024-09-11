@@ -301,4 +301,6 @@ internal open class DefaultStrings : Strings {
     override val userFieldPersonalNote = "Personal note"
     override val actionEditPersonalNote = "Edit note"
     override val actionCancelEditPersonalNote = "Cancel edit note"
+    override val messageVideoNsfw = "This video may contain sensitive content 🙈"
+    override val buttonLoad = "Load"
 }
