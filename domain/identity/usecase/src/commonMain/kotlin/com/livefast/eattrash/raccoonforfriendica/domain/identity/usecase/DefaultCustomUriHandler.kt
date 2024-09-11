@@ -60,9 +60,39 @@ internal class DefaultCustomUriHandler(
                     val (node, user) = group["instance"]?.value.orEmpty() to group["detail"]?.value.orEmpty()
                     scope.launch {
                         val handle = "$user@$node"
-                        val user = userRepository.getByHandle(handle)
-                        if (user != null) {
-                            detailOpener.openUserDetail(user)
+                        val remoteUser = userRepository.getByHandle(handle)
+                        if (remoteUser != null) {
+                            detailOpener.openUserDetail(remoteUser)
+                        } else {
+                            openUrl(url = uri, mode = urlOpeningMode)
+                        }
+                    }
+                }
+            }
+
+            LEMMY_USER_REGEX.matches(uri) -> {
+                LEMMY_USER_REGEX.find(uri)?.groups?.also { group ->
+                    val (node, user) = group["instance"]?.value.orEmpty() to group["detail"]?.value.orEmpty()
+                    scope.launch {
+                        val handle = "$user@$node"
+                        val remoteUser = userRepository.getByHandle(handle)
+                        if (remoteUser != null) {
+                            detailOpener.openUserDetail(remoteUser)
+                        } else {
+                            openUrl(url = uri, mode = urlOpeningMode)
+                        }
+                    }
+                }
+            }
+
+            LEMMY_COMMUNITY_REGEX.matches(uri) -> {
+                LEMMY_COMMUNITY_REGEX.find(uri)?.groups?.also { group ->
+                    val (node, user) = group["instance"]?.value.orEmpty() to group["detail"]?.value.orEmpty()
+                    scope.launch {
+                        val handle = "$user@$node"
+                        val remoteUser = userRepository.getByHandle(handle)
+                        if (remoteUser != null) {
+                            detailOpener.openUserDetail(remoteUser)
                         } else {
                             openUrl(url = uri, mode = urlOpeningMode)
                         }
@@ -94,5 +124,9 @@ internal class DefaultCustomUriHandler(
 
         private val EXTERNAL_USER_REGEX =
             Regex("https://(?<instance>$INSTANCE_FRAGMENT)/users/(?<detail>$DETAIL_FRAGMENT)")
+        private val LEMMY_USER_REGEX =
+            Regex("https://(?<instance>$INSTANCE_FRAGMENT)/u/(?<detail>$DETAIL_FRAGMENT)")
+        private val LEMMY_COMMUNITY_REGEX =
+            Regex("https://(?<instance>$INSTANCE_FRAGMENT)/c/(?<detail>$DETAIL_FRAGMENT)")
     }
 }
