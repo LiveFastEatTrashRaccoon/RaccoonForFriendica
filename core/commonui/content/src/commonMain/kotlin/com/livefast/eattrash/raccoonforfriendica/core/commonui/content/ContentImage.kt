@@ -1,14 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -24,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
@@ -46,10 +41,6 @@ import androidx.compose.ui.window.Popup
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
-import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashDecoder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 @Composable
@@ -199,44 +190,6 @@ fun ContentImage(
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun BlurredPreview(
-    originalWidth: Int,
-    originalHeight: Int,
-    blurHash: String?,
-    modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.FillWidth,
-) {
-    if (originalWidth > 0 && originalHeight > 0) {
-        var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
-
-        LaunchedEffect(blurHash) {
-            withContext(Dispatchers.IO) {
-                imageBitmap =
-                    BlurHashDecoder
-                        .decode(
-                            blurHash = blurHash,
-                            width = originalWidth,
-                            height = originalHeight,
-                        )
-            }
-        }
-
-        Box(
-            modifier = modifier.aspectRatio(originalWidth / originalHeight.toFloat()),
-        ) {
-            imageBitmap?.also { bmp ->
-                Image(
-                    modifier = Modifier.fillMaxSize(),
-                    bitmap = bmp,
-                    contentDescription = null,
-                    contentScale = contentScale,
-                )
             }
         }
     }
