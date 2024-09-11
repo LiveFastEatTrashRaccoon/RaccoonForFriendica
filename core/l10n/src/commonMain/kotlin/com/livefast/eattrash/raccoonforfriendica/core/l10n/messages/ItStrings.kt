@@ -312,4 +312,6 @@ internal val ItStrings =
         override val userFieldPersonalNote = "Nota personale"
         override val actionEditPersonalNote = "Modifica nota"
         override val actionCancelEditPersonalNote = "Termina modifica nota"
+        override val messageVideoNsfw = "Questo video potrebbe contenere materiale sensibile 🙈"
+        override val buttonLoad = "Carica"
     }

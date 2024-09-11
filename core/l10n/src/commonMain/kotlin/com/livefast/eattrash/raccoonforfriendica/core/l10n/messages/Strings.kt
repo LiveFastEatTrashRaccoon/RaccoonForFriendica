@@ -273,6 +273,8 @@ interface Strings {
     val userFieldPersonalNote: String
     val actionEditPersonalNote: String
     val actionCancelEditPersonalNote: String
+    val messageVideoNsfw: String
+    val buttonLoad: String
 }
 
 object Locales {
