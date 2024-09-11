@@ -67,6 +67,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import kotlinx.coroutines.flow.launchIn
@@ -136,7 +137,7 @@ class ForumListScreen(
                             text =
                                 buildString {
                                     append(LocalStrings.current.topicTitle)
-                                    val name = uiState.user?.displayName ?: uiState.user?.username ?: ""
+                                    val name = (uiState.user?.displayName ?: uiState.user?.username ?: "").ellipsize(30)
                                     if (name.isNotBlank()) {
                                         append(": ")
                                         append(name)

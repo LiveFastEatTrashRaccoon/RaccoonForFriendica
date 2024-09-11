@@ -66,6 +66,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationSinceDate
+import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItem
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItemPlaceholder
@@ -93,7 +94,7 @@ class ConversationScreen(
         val snackbarHostState = remember { SnackbarHostState() }
         val lazyListState = rememberLazyListState()
         val scope = rememberCoroutineScope()
-        val otherUserName = uiState.otherUser?.let { it.displayName ?: it.username }
+        val otherUserName = uiState.otherUser?.let { it.displayName ?: it.username }.ellipsize(30)
         val genericError = LocalStrings.current.messageGenericError
         val followRequiredMessage = LocalStrings.current.followRequiredMessage
 
@@ -152,11 +153,11 @@ class ConversationScreen(
                             } else {
                                 PlaceholderImage(
                                     size = avatarSize,
-                                    title = otherUserName ?: "?",
+                                    title = otherUserName,
                                 )
                             }
                             Text(
-                                text = otherUserName.orEmpty(),
+                                text = otherUserName,
                                 style = MaterialTheme.typography.titleMedium,
                             )
                         }
@@ -267,7 +268,7 @@ class ConversationScreen(
 
                     if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
                         item {
-                            if (!otherUserName.isNullOrEmpty()) {
+                            if (otherUserName.isNotEmpty()) {
                                 Box(
                                     modifier =
                                         Modifier

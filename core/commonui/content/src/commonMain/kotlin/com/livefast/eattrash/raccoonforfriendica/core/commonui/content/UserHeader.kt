@@ -217,7 +217,7 @@ fun UserHeader(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
                     Text(
-                        text = user?.displayName ?: user?.username ?: "",
+                        text = (user?.displayName ?: user?.username ?: "").ellipsize(30),
                         style = MaterialTheme.typography.titleMedium,
                         color = fullColor,
                     )

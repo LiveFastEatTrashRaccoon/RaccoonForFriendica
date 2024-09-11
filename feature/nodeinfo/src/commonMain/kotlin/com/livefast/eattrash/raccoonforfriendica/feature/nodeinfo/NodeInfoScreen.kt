@@ -63,6 +63,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemP
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.launch
 
@@ -349,7 +350,7 @@ private fun ContactUserItem(
                 modifier = Modifier.weight(1f).padding(vertical = Spacing.s),
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
-                val title = user.displayName ?: user.username ?: ""
+                val title = (user.displayName ?: user.username ?: "").ellipsize(30)
                 val subtitle = user.handle ?: ""
                 if (title.isNotBlank()) {
                     Text(
@@ -362,7 +363,7 @@ private fun ContactUserItem(
                 }
                 if (subtitle.isNotBlank()) {
                     Text(
-                        text = user.handle ?: "",
+                        text = (user.handle ?: "").ellipsize(25),
                         style = MaterialTheme.typography.bodySmall,
                         color = ancillaryColor,
                         maxLines = 1,

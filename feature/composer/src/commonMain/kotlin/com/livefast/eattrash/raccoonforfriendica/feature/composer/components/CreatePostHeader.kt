@@ -35,6 +35,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
+import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
@@ -61,7 +62,7 @@ internal fun CreatePostHeader(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
-        val creatorName = author?.displayName ?: author?.username ?: ""
+        val creatorName = (author?.displayName ?: author?.username ?: "").ellipsize(30)
         val creatorAvatar = author?.avatar.orEmpty()
         val iconSize = IconSize.l
         if (creatorAvatar.isNotEmpty()) {
