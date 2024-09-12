@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ScheduledStatus
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
@@ -15,6 +16,7 @@ import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.PUT
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
+import io.ktor.client.request.forms.FormDataContent
 
 interface StatusService {
     @GET("v1/statuses/{id}")
@@ -113,4 +115,27 @@ interface StatusService {
     suspend fun delete(
         @Path("id") id: String,
     ): Status
+
+    @GET("v1/scheduled_statuses")
+    fun getScheduled(
+        @Query("max_id") maxId: String? = null,
+        @Query("min_id") minId: String? = null,
+        @Query("limit") limit: Int = 20,
+    ): List<ScheduledStatus>
+
+    @GET("v1/scheduled_statuses/{id}")
+    fun getScheduledById(
+        @Path("id") id: String,
+    ): ScheduledStatus
+
+    @PUT("v1/scheduled_statuses/{id}")
+    fun updateScheduled(
+        @Path("id") id: String,
+        @Body data: FormDataContent,
+    ): ScheduledStatus
+
+    @DELETE("v1/scheduled_statuses/{id}")
+    fun deleteScheduled(
+        @Path("id") id: String,
+    )
 }

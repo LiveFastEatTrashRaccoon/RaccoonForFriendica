@@ -62,6 +62,7 @@ interface TimelineEntryRepository {
         mediaIds: List<String>? = null,
         visibility: Visibility,
         lang: String? = null,
+        scheduled: String? = null,
     ): TimelineEntryModel?
 
     suspend fun update(

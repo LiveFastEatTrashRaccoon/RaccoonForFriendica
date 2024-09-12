@@ -27,6 +27,7 @@ data class TimelineEntryModel(
     @Transient
     val reblogLoading: Boolean = false,
     val replyCount: Int = 0,
+    val scheduled: String? = null,
     val sensitive: Boolean = false,
     val spoiler: String? = null,
     val tags: List<TagModel> = emptyList(),

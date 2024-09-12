@@ -23,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PollOption
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PreviewCard
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PreviewCardType
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ScheduledStatus
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
@@ -406,6 +407,19 @@ internal fun SearchResultType.toDto(): String =
         SearchResultType.Hashtags -> "hashtags"
         SearchResultType.Users -> "accounts"
     }
+
+internal fun ScheduledStatus.toModel() =
+    TimelineEntryModel(
+        id = id,
+        content = params?.text.orEmpty(),
+        scheduled = scheduledAt,
+        attachments = attachments.map { it.toModel() },
+        parentId = params?.inReplyToId,
+        sensitive = params?.sensitive ?: false,
+        spoiler = params?.spoilerText,
+        visibility = params?.visibility?.toVisibility() ?: Visibility.Public,
+        poll = params?.poll?.toModel(),
+    )
 
 private object FriendicaDateFormats {
     const val PRIVATE_MESSAGES = "EEE MMM dd HH:mm:ss xxxx yyyy"

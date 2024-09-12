@@ -14,4 +14,5 @@ class CreateStatusForm(
     @SerialName("language") val lang: String? = null,
     @SerialName("in_reply_to_id") val inReplyTo: String? = null,
     @SerialName("spoiler_text") val spoilerText: String? = null,
+    @SerialName("scheduled_at") val scheduledAt: String? = null,
 )
