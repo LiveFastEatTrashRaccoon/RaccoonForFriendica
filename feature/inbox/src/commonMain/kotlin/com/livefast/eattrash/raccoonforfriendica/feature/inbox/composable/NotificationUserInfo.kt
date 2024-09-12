@@ -97,7 +97,7 @@ fun NotificationUserInfo(
         }
 
         Column(
-            modifier = Modifier.padding(horizontal = Spacing.m),
+            modifier = Modifier.padding(horizontal = Spacing.s),
         ) {
             Row {
                 Column(
