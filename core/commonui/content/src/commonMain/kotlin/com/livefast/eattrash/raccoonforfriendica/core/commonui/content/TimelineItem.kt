@@ -259,7 +259,7 @@ fun TimelineItem(
 
                 // preview
                 entryToDisplay.card?.also { preview ->
-                    val attachmentUrls = entryToDisplay.attachments.map { it.url }
+                    val attachments = entryToDisplay.attachments
                     ContentPreview(
                         modifier =
                             Modifier
@@ -269,7 +269,7 @@ fun TimelineItem(
                                     start = contentHorizontalPadding,
                                     end = contentHorizontalPadding,
                                 ),
-                        card = preview.copy(image = preview.image.takeIf { it !in attachmentUrls }),
+                        card = preview.copy(image = preview.image.takeIf { attachments.isEmpty() }),
                         onOpen = onOpenUrl,
                         onOpenImage = { url ->
                             onOpenImage?.invoke(listOf(url), 0)

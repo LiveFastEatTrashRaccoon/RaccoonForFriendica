@@ -53,6 +53,7 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -278,7 +279,7 @@ class ConversationScreen(
                                                 start = Spacing.s,
                                                 end = Spacing.s,
                                             ).border(
-                                                width = 1.dp,
+                                                width = Dp.Hairline,
                                                 color = MaterialTheme.colorScheme.onBackground,
                                                 shape = RoundedCornerShape(CornerSize.xl),
                                             ).background(

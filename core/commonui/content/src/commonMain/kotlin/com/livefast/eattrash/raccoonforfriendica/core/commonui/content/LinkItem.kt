@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -47,7 +48,7 @@ fun LinkItem(
                         onOpen?.invoke(url)
                     }
                 }.border(
-                    width = 1.dp,
+                    width = Dp.Hairline,
                     color = MaterialTheme.colorScheme.onBackground,
                     shape = RoundedCornerShape(CornerSize.l),
                 ).padding(Spacing.s),

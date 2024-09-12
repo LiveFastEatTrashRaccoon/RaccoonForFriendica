@@ -69,7 +69,7 @@ fun AlbumImageItem(
     val iconModifier =
         Modifier
             .border(
-                width = 1.dp,
+                width = Dp.Hairline,
                 color = MaterialTheme.colorScheme.onBackground,
                 shape = CircleShape,
             ).padding(2.5.dp)
