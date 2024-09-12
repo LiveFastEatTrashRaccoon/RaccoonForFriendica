@@ -187,6 +187,7 @@ internal class DefaultTimelineEntryRepository(
         mediaIds: List<String>?,
         visibility: Visibility,
         lang: String?,
+        scheduled: String?,
     ): TimelineEntryModel? =
         withContext(Dispatchers.IO) {
             runCatching {
@@ -200,6 +201,7 @@ internal class DefaultTimelineEntryRepository(
                         inReplyTo = inReplyTo,
                         lang = lang,
                         spoilerText = spoilerText,
+                        scheduledAt = scheduled,
                     )
                 provider.statuses
                     .create(

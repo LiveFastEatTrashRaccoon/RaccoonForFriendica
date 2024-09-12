@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPhotoRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultSearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineEntryRepository
@@ -24,6 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeI
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
@@ -105,5 +107,10 @@ val domainContentRepositoryModule =
         }
         single<LocalItemCache<TimelineEntryModel>> {
             DefaultLocalItemCache()
+        }
+        single<ScheduledEntryRepository> {
+            DefaultScheduledEntryRepository(
+                provider = get(named("default")),
+            )
         }
     }
