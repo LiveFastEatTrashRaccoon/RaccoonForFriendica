@@ -207,7 +207,7 @@ fun UserHeader(
         }
 
         Column(
-            modifier = Modifier.padding(horizontal = Spacing.m),
+            modifier = Modifier.padding(horizontal = Spacing.s),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             Row(
