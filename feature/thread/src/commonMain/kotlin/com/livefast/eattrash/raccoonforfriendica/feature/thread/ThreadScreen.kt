@@ -52,11 +52,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
@@ -221,9 +222,12 @@ class ThreadScreen(
                                 modifier =
                                     Modifier
                                         .border(
-                                            width = 1.dp,
-                                            color = MaterialTheme.colorScheme.onBackground,
-                                            shape = RoundedCornerShape(CornerSize.l),
+                                            width = Dp.Hairline,
+                                            color =
+                                                MaterialTheme.colorScheme.onBackground.copy(
+                                                    ancillaryTextAlpha,
+                                                ),
+                                                shape = RoundedCornerShape(CornerSize.l),
                                         ).padding(
                                             vertical = Spacing.s,
                                             horizontal = Spacing.xxxs,

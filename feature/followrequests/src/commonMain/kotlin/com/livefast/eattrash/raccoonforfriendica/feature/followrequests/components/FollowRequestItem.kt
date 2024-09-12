@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
@@ -103,7 +103,7 @@ fun FollowRequestItem(
         ) {
             OutlinedButton(
                 modifier = Modifier.weight(1f),
-                border = BorderStroke(1.dp, rejectColor),
+                border = BorderStroke(Dp.Hairline, rejectColor),
                 onClick = {
                     onReject?.invoke()
                 },
@@ -121,7 +121,7 @@ fun FollowRequestItem(
             }
             OutlinedButton(
                 modifier = Modifier.weight(1f),
-                border = BorderStroke(1.dp, acceptColor),
+                border = BorderStroke(Dp.Hairline, acceptColor),
                 onClick = {
                     onAccept?.invoke()
                 },

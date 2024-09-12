@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
@@ -88,7 +89,7 @@ fun CustomColorPickerDialog(
                     Modifier
                         .border(
                             color = selectedColor,
-                            width = 1.dp,
+                            width = Dp.Hairline,
                             shape = RoundedCornerShape(CornerSize.xxl),
                         ).padding(
                             horizontal = Spacing.m,

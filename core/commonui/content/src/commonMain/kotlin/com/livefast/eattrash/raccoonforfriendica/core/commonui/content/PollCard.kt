@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -159,7 +160,7 @@ private fun PollCardOption(
             modifier
                 .padding(vertical = Spacing.xxxs)
                 .border(
-                    width = 1.dp,
+                    width = Dp.Hairline,
                     color = MaterialTheme.colorScheme.onBackground,
                     shape = RoundedCornerShape(CornerSize.xl),
                 ).then(
