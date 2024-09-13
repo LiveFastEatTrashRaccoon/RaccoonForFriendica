@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
@@ -29,6 +30,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
 
@@ -161,6 +163,18 @@ class DefaultDetailOpener(
         navigationCoordinator.push(screen)
     }
 
+    override fun openEditUnpublished(
+        entry: TimelineEntryModel,
+        type: UnpublishedType,
+    ) {
+        entryCache.put(entry.id, entry)
+        val screen =
+            ComposerScreen(
+                scheduledPostId = entry.id.takeIf { type == UnpublishedType.Scheduled },
+            )
+        navigationCoordinator.push(screen)
+    }
+
     override fun openSearch() {
         val screen = SearchScreen()
         navigationCoordinator.push(screen)
@@ -259,6 +273,11 @@ class DefaultDetailOpener(
                 name = name,
                 createMode = createMode,
             )
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openUnpublished() {
+        val screen = UnpublishedScreen()
         navigationCoordinator.push(screen)
     }
 }
