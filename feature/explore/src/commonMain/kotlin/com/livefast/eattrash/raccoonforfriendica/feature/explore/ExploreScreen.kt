@@ -69,10 +69,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toExploreSection
@@ -81,6 +83,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toReadable
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 class ExploreScreen : Screen {
     @OptIn(
@@ -110,6 +113,7 @@ class ExploreScreen : Screen {
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
 
         suspend fun goBackToTop() {
@@ -314,11 +318,19 @@ class ExploreScreen : Screen {
                                     onReblog =
                                         uiState.currentUserId?.let {
                                             { e ->
-                                                model.reduce(
-                                                    ExploreMviModel.Intent.ToggleReblog(
-                                                        e,
-                                                    ),
-                                                )
+                                                val timeSinceCreation =
+                                                    e.created?.run {
+                                                        getDurationFromDateToNow(this)
+                                                    } ?: Duration.ZERO
+                                                when {
+                                                    !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                        confirmReblogEntry = e
+
+                                                    else ->
+                                                        model.reduce(
+                                                            ExploreMviModel.Intent.ToggleReblog(e),
+                                                        )
+                                                }
                                             }
                                         },
                                     onBookmark =
@@ -620,6 +632,20 @@ class ExploreScreen : Screen {
             PollVoteErrorDialog(
                 onDismissRequest = {
                     pollErrorDialogOpened = false
+                },
+            )
+        }
+
+        if (confirmReblogEntry != null) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.buttonConfirm,
+                body = LocalStrings.current.messageAreYouSureReblog,
+                onClose = { confirm ->
+                    val e = confirmReblogEntry
+                    confirmReblogEntry = null
+                    if (confirm && e != null) {
+                        model.reduce(ExploreMviModel.Intent.ToggleReblog(e))
+                    }
                 },
             )
         }

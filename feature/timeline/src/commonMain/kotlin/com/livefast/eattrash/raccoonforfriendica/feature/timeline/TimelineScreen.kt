@@ -74,14 +74,17 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 class TimelineScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -112,6 +115,7 @@ class TimelineScreen : Screen {
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
 
         suspend fun goBackToTop() {
@@ -284,7 +288,19 @@ class TimelineScreen : Screen {
                             },
                             onReblog =
                                 uiState.currentUserId?.let {
-                                    { e -> model.reduce(TimelineMviModel.Intent.ToggleReblog(e)) }
+                                    { e ->
+                                        val timeSinceCreation =
+                                            e.created?.run {
+                                                getDurationFromDateToNow(this)
+                                            } ?: Duration.ZERO
+                                        when {
+                                            !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                confirmReblogEntry = e
+
+                                            else ->
+                                                model.reduce(TimelineMviModel.Intent.ToggleReblog(e))
+                                        }
+                                    }
                                 },
                             onBookmark =
                                 uiState.currentUserId?.let {
@@ -514,6 +530,20 @@ class TimelineScreen : Screen {
             PollVoteErrorDialog(
                 onDismissRequest = {
                     pollErrorDialogOpened = false
+                },
+            )
+        }
+
+        if (confirmReblogEntry != null) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.buttonConfirm,
+                body = LocalStrings.current.messageAreYouSureReblog,
+                onClose = { confirm ->
+                    val e = confirmReblogEntry
+                    confirmReblogEntry = null
+                    if (confirm && e != null) {
+                        model.reduce(TimelineMviModel.Intent.ToggleReblog(e))
+                    }
                 },
             )
         }

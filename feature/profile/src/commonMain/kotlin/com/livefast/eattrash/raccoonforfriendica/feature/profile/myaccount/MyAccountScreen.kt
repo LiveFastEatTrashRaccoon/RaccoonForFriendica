@@ -61,14 +61,18 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.LocalProfileTopAppBarStateWrapper
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 class MyAccountScreen : Screen {
     @OptIn(
@@ -92,6 +96,7 @@ class MyAccountScreen : Screen {
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
+        var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         val topAppBarState = LocalProfileTopAppBarStateWrapper.current.topAppBarState
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val stickyHeaderTopOffset by animateDpAsState(
@@ -276,7 +281,19 @@ class MyAccountScreen : Screen {
                             detailOpener.openImageDetail(urls = urls, initialIndex = imageIdx)
                         },
                         onReblog = { e ->
-                            model.reduce(MyAccountMviModel.Intent.ToggleReblog(e))
+                            val timeSinceCreation =
+                                e.created?.run {
+                                    getDurationFromDateToNow(this)
+                                } ?: Duration.ZERO
+                            when {
+                                !e.reblogged && timeSinceCreation.isOldEntry ->
+                                    confirmReblogEntry = e
+
+                                else ->
+                                    model.reduce(
+                                        MyAccountMviModel.Intent.ToggleReblog(e),
+                                    )
+                            }
                         },
                         onBookmark = { e ->
                             model.reduce(MyAccountMviModel.Intent.ToggleBookmark(e))
@@ -423,6 +440,20 @@ class MyAccountScreen : Screen {
                     confirmDeleteEntryId = null
                     if (confirm && entryId != null) {
                         model.reduce(MyAccountMviModel.Intent.DeleteEntry(entryId))
+                    }
+                },
+            )
+        }
+
+        if (confirmReblogEntry != null) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.buttonConfirm,
+                body = LocalStrings.current.messageAreYouSureReblog,
+                onClose = { confirm ->
+                    val e = confirmReblogEntry
+                    confirmReblogEntry = null
+                    if (confirm && e != null) {
+                        model.reduce(MyAccountMviModel.Intent.ToggleReblog(e))
                     }
                 },
             )

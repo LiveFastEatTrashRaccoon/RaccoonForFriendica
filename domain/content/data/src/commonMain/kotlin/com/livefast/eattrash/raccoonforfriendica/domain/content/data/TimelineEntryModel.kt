@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
 import kotlin.jvm.Transient
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 
 data class TimelineEntryModel(
     val attachments: List<AttachmentModel> = emptyList(),
@@ -71,3 +73,6 @@ val TimelineEntryModel.safeKey: String
     }
 
 val TimelineEntryModel.isNsfw: Boolean get() = reblog?.sensitive ?: sensitive
+
+val Duration.isOldEntry: Boolean
+    get() = this < (-30).days

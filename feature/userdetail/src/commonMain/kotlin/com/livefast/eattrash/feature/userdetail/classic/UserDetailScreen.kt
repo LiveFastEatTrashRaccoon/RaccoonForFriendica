@@ -93,16 +93,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
+import kotlin.time.Duration
 
 class UserDetailScreen(
     private val id: String,
@@ -147,6 +151,7 @@ class UserDetailScreen(
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
         var confirmMuteUserDialogOpen by remember { mutableStateOf(false) }
         var confirmBlockUserDialogOpen by remember { mutableStateOf(false) }
+        var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -353,327 +358,341 @@ class UserDetailScreen(
             },
         ) { padding ->
             val pullRefreshState =
-                    rememberPullRefreshState(
-                        refreshing = uiState.refreshing,
-                        onRefresh = {
-                            model.reduce(UserDetailMviModel.Intent.Refresh)
-                        },
-                    )
-                Box(
-                    modifier =
-                        Modifier
-                            .padding(padding)
-                            .fillMaxWidth()
-                            .nestedScroll(scrollBehavior.nestedScrollConnection)
+                rememberPullRefreshState(
+                    refreshing = uiState.refreshing,
+                    onRefresh = {
+                        model.reduce(UserDetailMviModel.Intent.Refresh)
+                    },
+                )
+            Box(
+                modifier =
+                    Modifier
+                        .padding(padding)
+                        .fillMaxWidth()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .nestedScroll(fabNestedScrollConnection)
                         .pullRefresh(pullRefreshState),
+            ) {
+                LazyColumn(
+                    state = lazyListState,
                 ) {
-                    LazyColumn(
-                        state = lazyListState,
-                    ) {
-                        if (uiState.user != null) {
-                            item {
-                                UserHeader(
-                                    user = uiState.user,
-                                    onOpenUrl = { url ->
-                                        uriHandler.openUri(url)
-                                    },
-                                    onOpenImage = { url ->
-                                        detailOpener.openImageDetail(url)
-                                    },
-                                    onRelationshipClicked = { nextAction ->
-                                        when (nextAction) {
-                                            RelationshipStatusNextAction.AcceptRequest -> {
-                                                detailOpener.openFollowRequests()
-                                            }
-
-                                            RelationshipStatusNextAction.ConfirmUnfollow -> {
-                                                confirmUnfollowDialogOpen = true
-                                            }
-
-                                            RelationshipStatusNextAction.ConfirmDeleteFollowRequest -> {
-                                                confirmDeleteFollowRequestDialogOpen = true
-                                            }
-
-                                            RelationshipStatusNextAction.Follow -> {
-                                                model.reduce(UserDetailMviModel.Intent.Follow)
-                                            }
-
-                                            RelationshipStatusNextAction.Unfollow -> {
-                                                model.reduce(UserDetailMviModel.Intent.Unfollow)
-                                            }
-                                        }
-                                    },
-                                    onNotificationsClicked = { nextAction ->
-                                        when (nextAction) {
-                                            NotificationStatusNextAction.Disable -> {
-                                                confirmMuteNotificationsDialogOpen = true
-                                            }
-
-                                            NotificationStatusNextAction.Enable -> {
-                                                model.reduce(UserDetailMviModel.Intent.EnableNotifications)
-                                            }
-                                        }
-                                    },
-                                    onOpenFollowers = {
-                                        uiState.user?.also { user ->
-                                            detailOpener.openFollowers(user)
-                                        }
-                                    },
-                                    onOpenFollowing = {
-                                        uiState.user?.also { user ->
-                                            detailOpener.openFollowing(user)
-                                        }
-                                    },
-                                    onOpenInForumMode = {
-                                        uiState.user?.also { user ->
-                                            detailOpener.openInForumMode(user)
-                                        }
-                                    },
-                                )
-                            }
-                        } else {
-                            item {
-                                UserHeaderPlaceholder(modifier = Modifier.fillMaxWidth())
-                            }
-                        }
+                    if (uiState.user != null) {
                         item {
-                            Spacer(modifier = Modifier.height(Spacing.xs))
+                            UserHeader(
+                                user = uiState.user,
+                                onOpenUrl = { url ->
+                                    uriHandler.openUri(url)
+                                },
+                                onOpenImage = { url ->
+                                    detailOpener.openImageDetail(url)
+                                },
+                                onRelationshipClicked = { nextAction ->
+                                    when (nextAction) {
+                                        RelationshipStatusNextAction.AcceptRequest -> {
+                                            detailOpener.openFollowRequests()
+                                        }
+
+                                        RelationshipStatusNextAction.ConfirmUnfollow -> {
+                                            confirmUnfollowDialogOpen = true
+                                        }
+
+                                        RelationshipStatusNextAction.ConfirmDeleteFollowRequest -> {
+                                            confirmDeleteFollowRequestDialogOpen = true
+                                        }
+
+                                        RelationshipStatusNextAction.Follow -> {
+                                            model.reduce(UserDetailMviModel.Intent.Follow)
+                                        }
+
+                                        RelationshipStatusNextAction.Unfollow -> {
+                                            model.reduce(UserDetailMviModel.Intent.Unfollow)
+                                        }
+                                    }
+                                },
+                                onNotificationsClicked = { nextAction ->
+                                    when (nextAction) {
+                                        NotificationStatusNextAction.Disable -> {
+                                            confirmMuteNotificationsDialogOpen = true
+                                        }
+
+                                        NotificationStatusNextAction.Enable -> {
+                                            model.reduce(UserDetailMviModel.Intent.EnableNotifications)
+                                        }
+                                    }
+                                },
+                                onOpenFollowers = {
+                                    uiState.user?.also { user ->
+                                        detailOpener.openFollowers(user)
+                                    }
+                                },
+                                onOpenFollowing = {
+                                    uiState.user?.also { user ->
+                                        detailOpener.openFollowing(user)
+                                    }
+                                },
+                                onOpenInForumMode = {
+                                    uiState.user?.also { user ->
+                                        detailOpener.openInForumMode(user)
+                                    }
+                                },
+                            )
                         }
+                    } else {
                         item {
-                            val note = uiState.personalNote.orEmpty()
-                            if (note.isNotEmpty() || uiState.personalNoteEditEnabled) {
-                                UserNoteField(
-                                    modifier =
-                                        Modifier.fillMaxWidth().padding(
-                                            top = Spacing.s,
-                                            bottom = Spacing.s,
-                                            start = Spacing.xs,
-                                            end = Spacing.xs,
-                                        ),
-                                    editEnabled = uiState.personalNoteEditEnabled,
-                                    note = note,
-                                    onNoteChanged = {
-                                        model.reduce(UserDetailMviModel.Intent.SetPersonalNote(it))
-                                    },
-                                    onSave = {
-                                        focusManager.clearFocus()
-                                        model.reduce(UserDetailMviModel.Intent.SubmitPersonalNote)
-                                    },
-                                )
-                            }
+                            UserHeaderPlaceholder(modifier = Modifier.fillMaxWidth())
                         }
-                        item {
-                            UserFields(
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(Spacing.xs))
+                    }
+                    item {
+                        val note = uiState.personalNote.orEmpty()
+                        if (note.isNotEmpty() || uiState.personalNoteEditEnabled) {
+                            UserNoteField(
                                 modifier =
-                                    Modifier.padding(
+                                    Modifier.fillMaxWidth().padding(
                                         top = Spacing.s,
                                         bottom = Spacing.s,
+                                        start = Spacing.xs,
+                                        end = Spacing.xs,
                                     ),
-                                fields =
-                                    buildList {
-                                        uiState.user?.created?.also { date ->
-                                            add(
-                                                FieldModel(
-                                                    key = LocalStrings.current.accountAge,
-                                                    value = date.prettifyDate(),
-                                                ),
-                                            )
-                                        }
-                                        addAll(uiState.user?.fields.orEmpty())
-                                    },
-                                onOpenUrl = { url ->
-                                    uriHandler.openUri(url)
+                                editEnabled = uiState.personalNoteEditEnabled,
+                                note = note,
+                                onNoteChanged = {
+                                    model.reduce(UserDetailMviModel.Intent.SetPersonalNote(it))
+                                },
+                                onSave = {
+                                    focusManager.clearFocus()
+                                    model.reduce(UserDetailMviModel.Intent.SubmitPersonalNote)
                                 },
                             )
                         }
+                    }
+                    item {
+                        UserFields(
+                            modifier =
+                                Modifier.padding(
+                                    top = Spacing.s,
+                                    bottom = Spacing.s,
+                                ),
+                            fields =
+                                buildList {
+                                    uiState.user?.created?.also { date ->
+                                        add(
+                                            FieldModel(
+                                                key = LocalStrings.current.accountAge,
+                                                value = date.prettifyDate(),
+                                            ),
+                                        )
+                                    }
+                                    addAll(uiState.user?.fields.orEmpty())
+                                },
+                            onOpenUrl = { url ->
+                                uriHandler.openUri(url)
+                            },
+                        )
+                    }
 
-                        stickyHeader {
-                            SectionSelector(
-                                modifier =
-                                    Modifier
-                                        .background(MaterialTheme.colorScheme.background)
-                                        .padding(
-                                            top = stickyHeaderTopOffset,
-                                            bottom = Spacing.s,
-                                        ),
-                                titles =
-                                    listOf(
-                                        UserSection.Posts.toReadableName(),
-                                        UserSection.All.toReadableName(),
-                                        UserSection.Pinned.toReadableName(),
-                                        UserSection.Media.toReadableName(),
+                    stickyHeader {
+                        SectionSelector(
+                            modifier =
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .padding(
+                                        top = stickyHeaderTopOffset,
+                                        bottom = Spacing.s,
                                     ),
-                                scrollable = true,
-                                currentSection = uiState.section.toInt(),
-                                onSectionSelected = {
-                                    val section = it.toAccountSection()
-                                    model.reduce(
-                                        UserDetailMviModel.Intent.ChangeSection(
-                                            section,
-                                        ),
-                                    )
-                                },
-                            )
-                        }
+                            titles =
+                                listOf(
+                                    UserSection.Posts.toReadableName(),
+                                    UserSection.All.toReadableName(),
+                                    UserSection.Pinned.toReadableName(),
+                                    UserSection.Media.toReadableName(),
+                                ),
+                            scrollable = true,
+                            currentSection = uiState.section.toInt(),
+                            onSectionSelected = {
+                                val section = it.toAccountSection()
+                                model.reduce(
+                                    UserDetailMviModel.Intent.ChangeSection(
+                                        section,
+                                    ),
+                                )
+                            },
+                        )
+                    }
 
-                        if (uiState.initial) {
-                            val placeholderCount = 5
-                            items(placeholderCount) { idx ->
-                                TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                                if (idx < placeholderCount - 1) {
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(vertical = Spacing.s),
-                                    )
-                                }
-                            }
-                        }
-
-                        itemsIndexed(
-                            items = uiState.entries,
-                            key = { _, e -> e.safeKey },
-                        ) { idx, entry ->
-                            TimelineItem(
-                                entry = entry,
-                                blurNsfw = uiState.blurNsfw,
-                                onClick = { e ->
-                                    detailOpener.openEntryDetail(e)
-                                },
-                                onOpenUrl = { url ->
-                                    uriHandler.openUri(url)
-                                },
-                                onOpenUser = { user ->
-                                    if (user.id != uiState.user?.id) {
-                                        detailOpener.openUserDetail(user)
-                                    }
-                                },
-                                onOpenImage = { urls, imageIdx ->
-                                    detailOpener.openImageDetail(
-                                        urls = urls,
-                                        initialIndex = imageIdx,
-                                    )
-                                },
-                                onReblog =
-                                    uiState.currentUserId?.let {
-                                        { e -> model.reduce(UserDetailMviModel.Intent.ToggleReblog(e)) }
-                                    },
-                                onBookmark =
-                                    uiState.currentUserId?.let {
-                                        { e ->
-                                            model.reduce(
-                                                UserDetailMviModel.Intent.ToggleBookmark(e),
-                                            )
-                                        }
-                                    },
-                                onFavorite =
-                                    uiState.currentUserId?.let {
-                                        { e ->
-                                            model.reduce(
-                                                UserDetailMviModel.Intent.ToggleFavorite(e),
-                                            )
-                                        }
-                                    },
-                                onReply =
-                                    uiState.currentUserId?.let {
-                                        { e ->
-                                            detailOpener.openComposer(
-                                                inReplyToId = e.id,
-                                                inReplyToUser = e.creator,
-                                            )
-                                        }
-                                    },
-                                onPollVote =
-                                    uiState.currentUserId?.let {
-                                        { e, choices ->
-                                            model.reduce(
-                                                UserDetailMviModel.Intent.SubmitPollVote(
-                                                    entry = e,
-                                                    choices = choices,
-                                                ),
-                                            )
-                                        }
-                                    },
-                                onToggleSpoilerActive = { e ->
-                                    model.reduce(UserDetailMviModel.Intent.ToggleSpoilerActive(e))
-                                },
-                                options =
-                                    buildList {
-                                        if (!entry.url.isNullOrBlank()) {
-                                            this += OptionId.Share.toOption()
-                                            this += OptionId.CopyUrl.toOption()
-                                        }
-                                    },
-                                onOptionSelected = { optionId ->
-                                    when (optionId) {
-                                        OptionId.Share -> {
-                                            val urlString = entry.url.orEmpty()
-                                            shareHelper.share(urlString)
-                                        }
-
-                                        OptionId.CopyUrl -> {
-                                            val urlString = entry.url.orEmpty()
-                                            clipboardManager.setText(AnnotatedString(urlString))
-                                            scope.launch {
-                                                snackbarHostState.showSnackbar(
-                                                    copyToClipboardSuccess,
-                                                )
-                                            }
-                                        }
-
-                                        else -> Unit
-                                    }
-                                },
-                            )
-                            if (idx < uiState.entries.lastIndex) {
+                    if (uiState.initial) {
+                        val placeholderCount = 5
+                        items(placeholderCount) { idx ->
+                            TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                            if (idx < placeholderCount - 1) {
                                 HorizontalDivider(
                                     modifier = Modifier.padding(vertical = Spacing.s),
                                 )
                             }
-
-                            val canFetchMore =
-                                !uiState.initial && !uiState.loading && uiState.canFetchMore
-                            val isNearTheEnd =
-                                idx == uiState.entries.lastIndex - 5 || uiState.entries.size < 5
-                            if (isNearTheEnd && canFetchMore) {
-                                model.reduce(UserDetailMviModel.Intent.LoadNextPage)
-                            }
-                        }
-
-                        if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
-                            item {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
-                                    text = LocalStrings.current.messageEmptyList,
-                                    textAlign = TextAlign.Center,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                )
-                            }
-                        }
-
-                        item {
-                            if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    ListLoadingIndicator()
-                                }
-                            }
-                        }
-
-                        item {
-                            Spacer(modifier = Modifier.height(Spacing.xxxl))
                         }
                     }
 
-                    PullRefreshIndicator(
-                        refreshing = uiState.refreshing,
-                        state = pullRefreshState,
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        backgroundColor = MaterialTheme.colorScheme.background,
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                    )
+                    itemsIndexed(
+                        items = uiState.entries,
+                        key = { _, e -> e.safeKey },
+                    ) { idx, entry ->
+                        TimelineItem(
+                            entry = entry,
+                            blurNsfw = uiState.blurNsfw,
+                            onClick = { e ->
+                                detailOpener.openEntryDetail(e)
+                            },
+                            onOpenUrl = { url ->
+                                uriHandler.openUri(url)
+                            },
+                            onOpenUser = { user ->
+                                if (user.id != uiState.user?.id) {
+                                    detailOpener.openUserDetail(user)
+                                }
+                            },
+                            onOpenImage = { urls, imageIdx ->
+                                detailOpener.openImageDetail(
+                                    urls = urls,
+                                    initialIndex = imageIdx,
+                                )
+                            },
+                            onReblog =
+                                uiState.currentUserId?.let {
+                                    { e ->
+                                        val timeSinceCreation =
+                                            e.created?.run {
+                                                getDurationFromDateToNow(this)
+                                            } ?: Duration.ZERO
+                                        when {
+                                            !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                confirmReblogEntry = e
+
+                                            else ->
+                                                model.reduce(
+                                                    UserDetailMviModel.Intent.ToggleReblog(e),
+                                                )
+                                        }
+                                    }
+                                },
+                            onBookmark =
+                                uiState.currentUserId?.let {
+                                    { e ->
+                                        model.reduce(
+                                            UserDetailMviModel.Intent.ToggleBookmark(e),
+                                        )
+                                    }
+                                },
+                            onFavorite =
+                                uiState.currentUserId?.let {
+                                    { e ->
+                                        model.reduce(
+                                            UserDetailMviModel.Intent.ToggleFavorite(e),
+                                        )
+                                    }
+                                },
+                            onReply =
+                                uiState.currentUserId?.let {
+                                    { e ->
+                                        detailOpener.openComposer(
+                                            inReplyToId = e.id,
+                                            inReplyToUser = e.creator,
+                                        )
+                                    }
+                                },
+                            onPollVote =
+                                uiState.currentUserId?.let {
+                                    { e, choices ->
+                                        model.reduce(
+                                            UserDetailMviModel.Intent.SubmitPollVote(
+                                                entry = e,
+                                                choices = choices,
+                                            ),
+                                        )
+                                    }
+                                },
+                            onToggleSpoilerActive = { e ->
+                                model.reduce(UserDetailMviModel.Intent.ToggleSpoilerActive(e))
+                            },
+                            options =
+                                buildList {
+                                    if (!entry.url.isNullOrBlank()) {
+                                        this += OptionId.Share.toOption()
+                                        this += OptionId.CopyUrl.toOption()
+                                    }
+                                },
+                            onOptionSelected = { optionId ->
+                                when (optionId) {
+                                    OptionId.Share -> {
+                                        val urlString = entry.url.orEmpty()
+                                        shareHelper.share(urlString)
+                                    }
+
+                                    OptionId.CopyUrl -> {
+                                        val urlString = entry.url.orEmpty()
+                                        clipboardManager.setText(AnnotatedString(urlString))
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(
+                                                copyToClipboardSuccess,
+                                            )
+                                        }
+                                    }
+
+                                    else -> Unit
+                                }
+                            },
+                        )
+                        if (idx < uiState.entries.lastIndex) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = Spacing.s),
+                            )
+                        }
+
+                        val canFetchMore =
+                            !uiState.initial && !uiState.loading && uiState.canFetchMore
+                        val isNearTheEnd =
+                            idx == uiState.entries.lastIndex - 5 || uiState.entries.size < 5
+                        if (isNearTheEnd && canFetchMore) {
+                            model.reduce(UserDetailMviModel.Intent.LoadNextPage)
+                        }
+                    }
+
+                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
+                        item {
+                            Text(
+                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                                text = LocalStrings.current.messageEmptyList,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        }
+                    }
+
+                    item {
+                        if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                ListLoadingIndicator()
+                            }
+                        }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(Spacing.xxxl))
+                    }
                 }
+
+                PullRefreshIndicator(
+                    refreshing = uiState.refreshing,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    backgroundColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                )
+            }
         }
 
         if (confirmUnfollowDialogOpen) {
@@ -754,6 +773,20 @@ class UserDetailScreen(
             PollVoteErrorDialog(
                 onDismissRequest = {
                     pollErrorDialogOpened = false
+                },
+            )
+        }
+
+        if (confirmReblogEntry != null) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.buttonConfirm,
+                body = LocalStrings.current.messageAreYouSureReblog,
+                onClose = { confirm ->
+                    val e = confirmReblogEntry
+                    confirmReblogEntry = null
+                    if (confirm && e != null) {
+                        model.reduce(UserDetailMviModel.Intent.ToggleReblog(e))
+                    }
                 },
             )
         }
