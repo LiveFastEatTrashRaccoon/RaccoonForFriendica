@@ -303,4 +303,6 @@ internal open class DefaultStrings : Strings {
     override val actionCancelEditPersonalNote = "Cancel edit note"
     override val messageVideoNsfw = "This video may contain sensitive content 🙈"
     override val buttonLoad = "Load"
+    override val messageAreYouSureReblog =
+        "This post is more than one month old. Are you sure you want to re-share it?"
 }

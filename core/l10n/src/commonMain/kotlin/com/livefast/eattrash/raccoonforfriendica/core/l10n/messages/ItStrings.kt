@@ -314,4 +314,6 @@ internal val ItStrings =
         override val actionCancelEditPersonalNote = "Termina modifica nota"
         override val messageVideoNsfw = "Questo video potrebbe contenere materiale sensibile 🙈"
         override val buttonLoad = "Carica"
+        override val messageAreYouSureReblog =
+            "Questo post è più vecchio di un mese. Sei sicuro/a di volerlo ricondividere?"
     }
