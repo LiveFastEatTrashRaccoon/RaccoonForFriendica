@@ -44,4 +44,9 @@ expect fun getPrettyDate(
 /**
  * Get the time from now to a future date.
  */
-expect fun getDurationSinceDate(iso8601Timestamp: String): Duration?
+expect fun getDurationFromNowToDate(iso8601Timestamp: String): Duration?
+
+/**
+ * Get the time from now a past date to now.
+ */
+expect fun getDurationFromDateToNow(iso8601Timestamp: String): Duration?

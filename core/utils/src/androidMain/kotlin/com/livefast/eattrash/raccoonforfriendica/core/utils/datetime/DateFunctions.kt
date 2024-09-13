@@ -108,11 +108,19 @@ actual fun getPrettyDate(
     }
 }
 
-actual fun getDurationSinceDate(iso8601Timestamp: String): Duration? =
+actual fun getDurationFromNowToDate(iso8601Timestamp: String): Duration? =
     runCatching {
         val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
         val now = LocalDateTime.now()
         val duration = JavaDuration.between(date, now)
+        duration.toKotlinDuration()
+    }.getOrNull()
+
+actual fun getDurationFromDateToNow(iso8601Timestamp: String): Duration? =
+    runCatching {
+        val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
+        val now = LocalDateTime.now()
+        val duration = JavaDuration.between(now, date)
         duration.toKotlinDuration()
     }.getOrNull()
 

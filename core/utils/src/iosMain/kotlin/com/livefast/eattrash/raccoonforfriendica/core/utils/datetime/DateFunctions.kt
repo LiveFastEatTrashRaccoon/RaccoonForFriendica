@@ -125,10 +125,16 @@ actual fun getPrettyDate(
     }
 }
 
-actual fun getDurationSinceDate(iso8601Timestamp: String): Duration? {
-    val date = getDateFromIso8601Timestamp(iso8601Timestamp)
-    val interval = date?.timeIntervalSinceDate(NSDate())
-    return interval?.toDuration(DurationUnit.SECONDS)
+actual fun getDurationFromNowToDate(iso8601Timestamp: String): Duration? {
+    val date = getDateFromIso8601Timestamp(iso8601Timestamp) ?: return null
+    val interval = date.timeIntervalSinceDate(NSDate())
+    return interval.toDuration(DurationUnit.SECONDS)
+}
+
+actual fun getDurationFromDateToNow(iso8601Timestamp: String): Duration? {
+    val date = getDateFromIso8601Timestamp(iso8601Timestamp) ?: return null
+    val interval = NSDate().timeIntervalSinceDate(date)
+    return interval.toDuration(DurationUnit.SECONDS)
 }
 
 private fun getDateFromIso8601Timestamp(string: String): NSDate? = NSISO8601DateFormatter().dateFromString(string)
