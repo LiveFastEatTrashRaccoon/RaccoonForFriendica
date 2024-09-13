@@ -8,7 +8,7 @@ interface NotificationRepository {
         types: List<NotificationType> = emptyList(),
         includeAll: Boolean = false,
         pageCursor: String? = null,
-    ): List<NotificationModel>
+    ): List<NotificationModel>?
 
     suspend fun markAsRead(id: String): Boolean
 

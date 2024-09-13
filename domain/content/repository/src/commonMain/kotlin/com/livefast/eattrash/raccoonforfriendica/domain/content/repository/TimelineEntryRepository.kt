@@ -14,7 +14,7 @@ interface TimelineEntryRepository {
         excludeReblogs: Boolean = false,
         pinned: Boolean = false,
         onlyMedia: Boolean = false,
-    ): List<TimelineEntryModel>
+    ): List<TimelineEntryModel>?
 
     suspend fun getById(id: String): TimelineEntryModel?
 
@@ -38,19 +38,19 @@ interface TimelineEntryRepository {
 
     suspend fun unbookmark(id: String): TimelineEntryModel?
 
-    suspend fun getFavorites(pageCursor: String? = null): List<TimelineEntryModel>
+    suspend fun getFavorites(pageCursor: String? = null): List<TimelineEntryModel>?
 
-    suspend fun getBookmarks(pageCursor: String? = null): List<TimelineEntryModel>
+    suspend fun getBookmarks(pageCursor: String? = null): List<TimelineEntryModel>?
 
     suspend fun getUsersWhoFavorited(
         id: String,
         pageCursor: String? = null,
-    ): List<UserModel>
+    ): List<UserModel>?
 
     suspend fun getUsersWhoReblogged(
         id: String,
         pageCursor: String? = null,
-    ): List<UserModel>
+    ): List<UserModel>?
 
     suspend fun create(
         localId: String,

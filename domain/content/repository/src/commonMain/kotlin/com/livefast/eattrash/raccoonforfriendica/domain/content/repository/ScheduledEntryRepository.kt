@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
 interface ScheduledEntryRepository {
-    suspend fun getAll(pageCursor: String?): List<TimelineEntryModel>
+    suspend fun getAll(pageCursor: String?): List<TimelineEntryModel>?
 
     suspend fun getById(id: String): TimelineEntryModel?
 

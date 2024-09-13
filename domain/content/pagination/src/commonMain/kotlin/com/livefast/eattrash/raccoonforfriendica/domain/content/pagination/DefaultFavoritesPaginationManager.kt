@@ -55,15 +55,16 @@ internal class DefaultFavoritesPaginationManager(
                 is FavoritesPaginationSpecification.Bookmarks ->
                     timelineEntryRepository
                         .getBookmarks(pageCursor = pageCursor)
-                        .updatePaginationData()
-                        .filterNsfw(specification.includeNsfw)
+                        ?.updatePaginationData()
+                        ?.filterNsfw(specification.includeNsfw)
 
                 is FavoritesPaginationSpecification.Favorites ->
                     timelineEntryRepository
                         .getFavorites(pageCursor = pageCursor)
-                        .updatePaginationData()
-                        .filterNsfw(specification.includeNsfw)
-            }.deduplicate()
+                        ?.updatePaginationData()
+                        ?.filterNsfw(specification.includeNsfw)
+            }?.deduplicate()
+                .orEmpty()
         mutex.withLock {
             history.addAll(results)
         }

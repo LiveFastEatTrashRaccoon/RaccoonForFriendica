@@ -68,7 +68,7 @@ internal class DefaultCredentialsRepository(
                         scopes = scopes,
                     )
                 provider.apps.create(data).toModel()
-            }.getOrElse { null }
+            }.getOrNull()
         }
 
     override suspend fun validateApplicationCredentials(

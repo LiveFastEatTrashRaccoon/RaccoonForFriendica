@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 
 interface TagRepository {
-    suspend fun getFollowed(pageCursor: String? = null): Pair<List<TagModel>, String?>
+    suspend fun getFollowed(pageCursor: String? = null): Pair<List<TagModel>, String>?
 
     suspend fun getBy(name: String): TagModel?
 

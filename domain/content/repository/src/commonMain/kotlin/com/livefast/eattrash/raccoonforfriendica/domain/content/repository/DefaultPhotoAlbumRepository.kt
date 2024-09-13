@@ -13,11 +13,11 @@ import kotlinx.coroutines.withContext
 internal class DefaultPhotoAlbumRepository(
     private val provider: ServiceProvider,
 ) : PhotoAlbumRepository {
-    override suspend fun getAll(): List<MediaAlbumModel> =
+    override suspend fun getAll(): List<MediaAlbumModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.photoAlbum.getAll().map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun update(
@@ -56,7 +56,7 @@ internal class DefaultPhotoAlbumRepository(
         album: String,
         pageCursor: String?,
         latestFirst: Boolean,
-    ): List<AttachmentModel> =
+    ): List<AttachmentModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.photoAlbum
@@ -66,7 +66,7 @@ internal class DefaultPhotoAlbumRepository(
                         latestFirst = latestFirst,
                         limit = DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     companion object {

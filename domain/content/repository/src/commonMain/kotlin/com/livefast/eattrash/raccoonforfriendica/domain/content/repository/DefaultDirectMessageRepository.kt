@@ -15,7 +15,7 @@ internal class DefaultDirectMessageRepository(
     override suspend fun getAll(
         page: Int,
         limit: Int?,
-    ): List<DirectMessageModel> =
+    ): List<DirectMessageModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.directMessage
@@ -23,13 +23,13 @@ internal class DefaultDirectMessageRepository(
                         page = page,
                         count = limit ?: DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun getReplies(
         parentUri: String,
         page: Int,
-    ): List<DirectMessageModel> =
+    ): List<DirectMessageModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.directMessage
@@ -38,13 +38,13 @@ internal class DefaultDirectMessageRepository(
                         page = page,
                         count = DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun pollReplies(
         parentUri: String,
         minId: String,
-    ): List<DirectMessageModel> =
+    ): List<DirectMessageModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.directMessage
@@ -54,7 +54,7 @@ internal class DefaultDirectMessageRepository(
                         page = 1,
                         count = DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun create(

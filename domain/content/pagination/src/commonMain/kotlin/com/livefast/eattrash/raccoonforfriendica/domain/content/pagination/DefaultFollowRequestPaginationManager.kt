@@ -17,8 +17,13 @@ internal class DefaultFollowRequestPaginationManager(
     }
 
     override suspend fun loadNextPage(): List<UserModel> {
-        val (tags, cursor) = userRepository.getFollowRequests(pageCursor)
-        val results = tags.deduplicate().updatePaginationData(cursor)
+        val results =
+            userRepository
+                .getFollowRequests(pageCursor)
+                ?.let { (list, cursor) ->
+                    list.deduplicate().updatePaginationData(cursor)
+                }.orEmpty()
+
         history.addAll(results)
 
         // return a copy

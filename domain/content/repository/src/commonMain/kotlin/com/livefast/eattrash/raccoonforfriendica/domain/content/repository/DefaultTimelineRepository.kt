@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 internal class DefaultTimelineRepository(
     private val provider: ServiceProvider,
 ) : TimelineRepository {
-    override suspend fun getPublic(pageCursor: String?): List<TimelineEntryModel> =
+    override suspend fun getPublic(pageCursor: String?): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -19,10 +19,10 @@ internal class DefaultTimelineRepository(
                         limit = DEFAULT_PAGE_SIZE,
                     )
                 response.map { it.toModelWithReply() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
-    override suspend fun getHome(pageCursor: String?): List<TimelineEntryModel> =
+    override suspend fun getHome(pageCursor: String?): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -31,10 +31,10 @@ internal class DefaultTimelineRepository(
                         limit = DEFAULT_PAGE_SIZE,
                     )
                 response.map { it.toModelWithReply() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
-    override suspend fun getLocal(pageCursor: String?): List<TimelineEntryModel> =
+    override suspend fun getLocal(pageCursor: String?): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -44,13 +44,13 @@ internal class DefaultTimelineRepository(
                         local = true,
                     )
                 response.map { it.toModelWithReply() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun getHashtag(
         hashtag: String,
         pageCursor: String?,
-    ): List<TimelineEntryModel> =
+    ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -60,13 +60,13 @@ internal class DefaultTimelineRepository(
                         limit = DEFAULT_PAGE_SIZE,
                     )
                 response.map { it.toModelWithReply() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun getCircle(
         id: String,
         pageCursor: String?,
-    ): List<TimelineEntryModel> =
+    ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -76,7 +76,7 @@ internal class DefaultTimelineRepository(
                         limit = DEFAULT_PAGE_SIZE,
                     )
                 response.map { it.toModelWithReply() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     companion object {

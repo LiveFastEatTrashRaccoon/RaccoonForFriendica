@@ -5,16 +5,16 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReply
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 interface CirclesRepository {
-    suspend fun getAll(): List<CircleModel>
+    suspend fun getAll(): List<CircleModel>?
 
-    suspend fun getFriendicaCircles(): List<CircleModel>
+    suspend fun getFriendicaCircles(): List<CircleModel>?
 
     suspend fun get(id: String): CircleModel?
 
     suspend fun getMembers(
         id: String,
         pageCursor: String? = null,
-    ): List<UserModel>
+    ): List<UserModel>?
 
     suspend fun create(
         title: String,

@@ -79,19 +79,21 @@ internal class DefaultTimelinePaginationManager(
                                 id = specification.timelineType.id,
                                 pageCursor = pageCursor,
                             )
-                    }.updatePaginationData()
-                        .filterNsfw(specification.includeNsfw)
-                        .deduplicate()
+                    }?.updatePaginationData()
+                        ?.filterNsfw(specification.includeNsfw)
+                        ?.deduplicate()
+                        .orEmpty()
                 }
 
                 is TimelinePaginationSpecification.Hashtag -> {
                     timelineRepository
                         .getHashtag(
-                            specification.hashtag,
+                            hashtag = specification.hashtag,
                             pageCursor = pageCursor,
-                        ).updatePaginationData()
-                        .filterNsfw(specification.includeNsfw)
-                        .deduplicate()
+                        )?.updatePaginationData()
+                        ?.filterNsfw(specification.includeNsfw)
+                        ?.deduplicate()
+                        .orEmpty()
                 }
 
                 is TimelinePaginationSpecification.User ->
@@ -105,9 +107,10 @@ internal class DefaultTimelinePaginationManager(
                             pinned = specification.pinned,
                         )
                         // intended: there is a bug in user pagination
-                        .deduplicate()
-                        .updatePaginationData()
-                        .filterNsfw(specification.includeNsfw)
+                        ?.deduplicate()
+                        ?.updatePaginationData()
+                        ?.filterNsfw(specification.includeNsfw)
+                        .orEmpty()
 
                 is TimelinePaginationSpecification.Forum ->
                     timelineEntryRepository
@@ -115,10 +118,11 @@ internal class DefaultTimelinePaginationManager(
                             userId = specification.userId,
                             pageCursor = pageCursor,
                             excludeReplies = true,
-                        ).updatePaginationData()
-                        .filterNsfw(specification.includeNsfw)
-                        .filter { it.inReplyTo == null }
-                        .deduplicate()
+                        )?.updatePaginationData()
+                        ?.filterNsfw(specification.includeNsfw)
+                        ?.filter { it.inReplyTo == null }
+                        ?.deduplicate()
+                        .orEmpty()
             }
         mutex.withLock {
             history.addAll(results)

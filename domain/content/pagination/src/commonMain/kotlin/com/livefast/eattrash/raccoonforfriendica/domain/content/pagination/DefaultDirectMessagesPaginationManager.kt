@@ -28,15 +28,16 @@ internal class DefaultDirectMessagesPaginationManager(
                         .getAll(
                             page = page,
                             limit = 40,
-                        )
-                        .deduplicate()
-                        .updatePaginationData()
+                        )?.deduplicate()
+                        ?.updatePaginationData()
+                        .orEmpty()
 
                 is DirectMessagesPaginationSpecification.Replies ->
                     directMessageRepository
                         .getReplies(specification.parentUri)
-                        .deduplicate()
-                        .updatePaginationData()
+                        ?.deduplicate()
+                        ?.updatePaginationData()
+                        .orEmpty()
             }
         history.addAll(results)
 

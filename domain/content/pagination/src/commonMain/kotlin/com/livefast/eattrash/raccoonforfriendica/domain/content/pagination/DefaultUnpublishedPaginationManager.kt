@@ -23,14 +23,11 @@ internal class DefaultUnpublishedPaginationManager(
 
         val results =
             when (specification) {
-                is UnpublishedPaginationSpecification.Scheduled -> {
-                    when (specification) {
-                        UnpublishedPaginationSpecification.Scheduled ->
-                            scheduledEntryRepository.getAll(pageCursor)
-                        else -> emptyList()
-                    }
-                }
-            }.updatePaginationData().deduplicate()
+                is UnpublishedPaginationSpecification.Scheduled ->
+                    scheduledEntryRepository.getAll(pageCursor)
+            }?.updatePaginationData()
+                ?.deduplicate()
+                .orEmpty()
 
         history.addAll(results)
 

@@ -9,30 +9,30 @@ interface UserRepository {
     suspend fun search(
         query: String,
         offset: Int,
-    ): List<UserModel>
+    ): List<UserModel>?
 
     suspend fun getByHandle(handle: String): UserModel?
 
     suspend fun getCurrent(): UserModel?
 
-    suspend fun getRelationships(ids: List<String>): List<RelationshipModel>
+    suspend fun getRelationships(ids: List<String>): List<RelationshipModel>?
 
-    suspend fun getSuggestions(): List<UserModel>
+    suspend fun getSuggestions(): List<UserModel>?
 
     suspend fun getFollowers(
         id: String,
         pageCursor: String? = null,
-    ): List<UserModel>
+    ): List<UserModel>?
 
     suspend fun getFollowing(
         id: String,
         pageCursor: String? = null,
-    ): List<UserModel>
+    ): List<UserModel>?
 
     suspend fun searchMyFollowing(
         query: String,
         pageCursor: String? = null,
-    ): List<UserModel>
+    ): List<UserModel>?
 
     suspend fun follow(
         id: String,
@@ -42,7 +42,7 @@ interface UserRepository {
 
     suspend fun unfollow(id: String): RelationshipModel?
 
-    suspend fun getFollowRequests(pageCursor: String? = null): Pair<List<UserModel>, String?>
+    suspend fun getFollowRequests(pageCursor: String? = null): Pair<List<UserModel>, String>?
 
     suspend fun acceptFollowRequest(id: String): Boolean
 
@@ -60,9 +60,9 @@ interface UserRepository {
 
     suspend fun unblock(id: String): RelationshipModel?
 
-    suspend fun getMuted(pageCursor: String? = null): List<UserModel>
+    suspend fun getMuted(pageCursor: String? = null): List<UserModel>?
 
-    suspend fun getBlocked(pageCursor: String? = null): List<UserModel>
+    suspend fun getBlocked(pageCursor: String? = null): List<UserModel>?
 
     suspend fun updateProfile(
         note: String? = null,

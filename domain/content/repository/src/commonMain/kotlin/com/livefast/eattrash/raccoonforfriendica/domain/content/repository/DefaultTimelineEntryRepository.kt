@@ -27,7 +27,7 @@ internal class DefaultTimelineEntryRepository(
         excludeReblogs: Boolean,
         pinned: Boolean,
         onlyMedia: Boolean,
-    ): List<TimelineEntryModel> =
+    ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.users
@@ -40,7 +40,7 @@ internal class DefaultTimelineEntryRepository(
                         onlyMedia = onlyMedia,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModelWithReply() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun getById(id: String): TimelineEntryModel? =
@@ -125,7 +125,7 @@ internal class DefaultTimelineEntryRepository(
             }.getOrNull()
         }
 
-    override suspend fun getFavorites(pageCursor: String?): List<TimelineEntryModel> =
+    override suspend fun getFavorites(pageCursor: String?): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.users
@@ -133,10 +133,10 @@ internal class DefaultTimelineEntryRepository(
                         maxId = pageCursor,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModelWithReply() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
-    override suspend fun getBookmarks(pageCursor: String?): List<TimelineEntryModel> =
+    override suspend fun getBookmarks(pageCursor: String?): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.users
@@ -144,13 +144,13 @@ internal class DefaultTimelineEntryRepository(
                         maxId = pageCursor,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModelWithReply() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun getUsersWhoFavorited(
         id: String,
         pageCursor: String?,
-    ): List<UserModel> =
+    ): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.statuses
@@ -159,13 +159,13 @@ internal class DefaultTimelineEntryRepository(
                         maxId = pageCursor,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun getUsersWhoReblogged(
         id: String,
         pageCursor: String?,
-    ): List<UserModel> =
+    ): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.statuses
@@ -174,7 +174,7 @@ internal class DefaultTimelineEntryRepository(
                         maxId = pageCursor,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun create(

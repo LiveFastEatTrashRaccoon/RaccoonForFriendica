@@ -5,9 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
 interface TrendingRepository {
-    suspend fun getEntries(offset: Int): List<TimelineEntryModel>
+    suspend fun getEntries(offset: Int): List<TimelineEntryModel>?
 
-    suspend fun getHashtags(offset: Int): List<TagModel>
+    suspend fun getHashtags(offset: Int): List<TagModel>?
 
-    suspend fun getLinks(offset: Int): List<LinkModel>
+    suspend fun getLinks(offset: Int): List<LinkModel>?
 }

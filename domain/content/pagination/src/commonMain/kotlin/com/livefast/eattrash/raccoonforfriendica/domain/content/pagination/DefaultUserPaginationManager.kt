@@ -64,36 +64,40 @@ internal class DefaultUserPaginationManager(
                         .getFollowers(
                             id = specification.userId,
                             pageCursor = pageCursor,
-                        ).deduplicate()
-                        .determineRelationshipStatus()
-                        .updatePaginationData()
+                        )?.deduplicate()
+                        ?.determineRelationshipStatus()
+                        ?.updatePaginationData()
+                        .orEmpty()
 
                 is UserPaginationSpecification.Following ->
                     userRepository
                         .getFollowing(
                             id = specification.userId,
                             pageCursor = pageCursor,
-                        ).deduplicate()
-                        .determineRelationshipStatus()
-                        .updatePaginationData()
+                        )?.deduplicate()
+                        ?.determineRelationshipStatus()
+                        ?.updatePaginationData()
+                        .orEmpty()
 
                 is UserPaginationSpecification.EntryUsersFavorite ->
                     timelineEntryRepository
                         .getUsersWhoFavorited(
                             id = specification.entryId,
                             pageCursor = pageCursor,
-                        ).determineRelationshipStatus()
-                        .deduplicate()
-                        .updatePaginationData()
+                        )?.determineRelationshipStatus()
+                        ?.deduplicate()
+                        ?.updatePaginationData()
+                        .orEmpty()
 
                 is UserPaginationSpecification.EntryUsersReblog ->
                     timelineEntryRepository
                         .getUsersWhoReblogged(
                             id = specification.entryId,
                             pageCursor = pageCursor,
-                        ).deduplicate()
-                        .determineRelationshipStatus()
-                        .updatePaginationData()
+                        )?.deduplicate()
+                        ?.determineRelationshipStatus()
+                        ?.updatePaginationData()
+                        .orEmpty()
 
                 is UserPaginationSpecification.Search ->
                     userRepository
@@ -103,54 +107,58 @@ internal class DefaultUserPaginationManager(
                                 history
                                     .indexOfLast { it.id == pageCursor }
                                     .takeIf { it >= 0 } ?: 0,
-                        ).deduplicate()
-                        .let {
+                        )?.deduplicate()
+                        ?.let {
                             if (specification.withRelationship) {
                                 it.determineRelationshipStatus()
                             } else {
                                 it
                             }
-                        }.updatePaginationData()
+                        }?.updatePaginationData()
+                        .orEmpty()
 
                 UserPaginationSpecification.Blocked ->
                     userRepository
                         .getBlocked(
                             pageCursor = pageCursor,
-                        ).deduplicate()
-                        .updatePaginationData()
+                        )?.deduplicate()
+                        ?.updatePaginationData()
+                        .orEmpty()
 
                 UserPaginationSpecification.Muted ->
                     userRepository
                         .getMuted(
                             pageCursor = pageCursor,
-                        ).deduplicate()
-                        .updatePaginationData()
+                        )?.deduplicate()
+                        ?.updatePaginationData()
+                        .orEmpty()
 
                 is UserPaginationSpecification.CircleMembers ->
                     circlesRepository
                         .getMembers(
                             id = specification.id,
                             pageCursor = pageCursor,
-                        ).deduplicate()
-                        .updatePaginationData()
-                        .filter(specification.query)
+                        )?.deduplicate()
+                        ?.updatePaginationData()
+                        ?.filter(specification.query)
+                        .orEmpty()
 
                 is UserPaginationSpecification.SearchFollowing ->
                     userRepository
                         .searchMyFollowing(
                             query = specification.query,
                             pageCursor = pageCursor,
-                        ).deduplicate()
-                        .let {
+                        )?.deduplicate()
+                        ?.let {
                             if (specification.withRelationship) {
                                 it.determineRelationshipStatus()
                             } else {
                                 it
                             }
-                        }.updatePaginationData()
-                        .filter {
+                        }?.updatePaginationData()
+                        ?.filter {
                             it.id !in specification.excludeIds
-                        }
+                        }.orEmpty()
             }
         mutex.withLock {
             history.addAll(results)
@@ -173,7 +181,7 @@ internal class DefaultUserPaginationManager(
             val userIds = map { user -> user.id }
             val relationships = userRepository.getRelationships(userIds)
             map { user ->
-                val relationship = relationships.firstOrNull { rel -> rel.id == user.id }
+                val relationship = relationships?.firstOrNull { rel -> rel.id == user.id }
                 user.copy(
                     relationshipStatus = relationship?.toStatus(),
                     notificationStatus = relationship?.toNotificationStatus(),

@@ -135,9 +135,9 @@ class ConversationViewModel(
                 .pollReplies(
                     parentUri = parentUriToUse,
                     minId = minId,
-                ).filter { m1 ->
+                )?.filter { m1 ->
                     originalItems.none { m2 -> m2.id == m1.id }
-                }
+                }.orEmpty()
         if (newMessages.isNotEmpty()) {
             updateParentUriIfNeeded(newMessages.lastOrNull()?.parentUri)
             updateState { it.copy(items = newMessages + originalItems) }
@@ -178,7 +178,7 @@ class ConversationViewModel(
 
         screenModelScope.launch {
             val relationshipStatus =
-                userRepository.getRelationships(listOf(otherUserId)).firstOrNull()?.toStatus()
+                userRepository.getRelationships(listOf(otherUserId))?.firstOrNull()?.toStatus()
             if (relationshipStatus !in
                 listOf(
                     RelationshipStatus.MutualFollow,
