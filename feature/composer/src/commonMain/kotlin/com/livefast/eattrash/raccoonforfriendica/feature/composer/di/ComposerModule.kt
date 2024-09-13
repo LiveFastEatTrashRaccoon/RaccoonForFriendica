@@ -17,6 +17,8 @@ val featureComposerModule =
                 nodeInfoRepository = get(),
                 albumRepository = get(),
                 albumPhotoPaginationManager = get(),
+                entryCache = get(),
+                scheduledEntryRepository = get(),
             )
         }
     }
