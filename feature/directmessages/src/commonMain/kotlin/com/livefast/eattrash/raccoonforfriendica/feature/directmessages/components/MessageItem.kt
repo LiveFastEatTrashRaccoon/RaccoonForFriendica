@@ -26,7 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
-import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationSinceDate
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormattedDate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 
@@ -125,7 +125,7 @@ fun MessageItem(
                         val date = message.created
                         if (withDate && date != null) {
                             val moreThanOneDay =
-                                (getDurationSinceDate(date)?.inWholeDays ?: 0) > 1
+                                (getDurationFromDateToNow(date)?.inWholeDays ?: 0) < -1
                             val dateString =
                                 getFormattedDate(
                                     iso8601Timestamp = date,

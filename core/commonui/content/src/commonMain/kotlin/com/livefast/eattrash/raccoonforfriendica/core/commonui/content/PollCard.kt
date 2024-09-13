@@ -41,7 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationSinceDate
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
@@ -278,7 +278,7 @@ private fun PollCardFooter(
                         val remainingTime =
                             expirationDate
                                 ?.let {
-                                    getDurationSinceDate(it)
+                                    getDurationFromNowToDate(it)
                                 }?.getPrettyDuration(
                                     secondsLabel = LocalStrings.current.timeSecondShort,
                                     minutesLabel = LocalStrings.current.timeMinuteShort,

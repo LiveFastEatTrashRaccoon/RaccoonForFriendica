@@ -66,7 +66,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Placeh
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
-import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationSinceDate
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItem
@@ -373,13 +373,12 @@ private fun isTimeBetweenMessagesAboveThreshold(
 ): Boolean {
     val ref1 =
         current.created
-            ?.let { getDurationSinceDate(it)?.absoluteValue }
+            ?.let { getDurationFromDateToNow(it) }
             ?.inWholeSeconds ?: return false
     val ref2 =
         other
             ?.created
-            ?.let {
-                getDurationSinceDate(it)?.absoluteValue
-            }?.inWholeSeconds ?: return false
+            ?.let { getDurationFromDateToNow(it) }
+            ?.inWholeSeconds ?: return false
     return abs(ref1 - ref2) > thresholdSeconds
 }
