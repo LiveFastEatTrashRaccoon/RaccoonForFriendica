@@ -86,7 +86,7 @@ class ComposerViewModel(
     }
 
     private suspend fun loadAvailableCircles() {
-        val circles = circlesRepository.getAll()
+        val circles = circlesRepository.getAll().orEmpty()
         updateState { it.copy(availableCircles = circles) }
     }
 
@@ -207,7 +207,7 @@ class ComposerViewModel(
 
             ComposerMviModel.Intent.GalleryInitialLoad ->
                 screenModelScope.launch {
-                    val albums = albumRepository.getAll()
+                    val albums = albumRepository.getAll().orEmpty()
                     val currentAlbum = albums.firstOrNull()
                     updateState {
                         it.copy(

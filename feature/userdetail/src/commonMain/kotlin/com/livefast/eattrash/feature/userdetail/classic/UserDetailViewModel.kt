@@ -115,7 +115,7 @@ class UserDetailViewModel(
         updateState { it.copy(user = user) }
         val relationship =
             if (id != uiState.value.currentUserId) {
-                userRepository.getRelationships(listOf(id)).firstOrNull()
+                userRepository.getRelationships(listOf(id))?.firstOrNull()
             } else {
                 null
             }
@@ -460,7 +460,7 @@ class UserDetailViewModel(
                     it.copy(personalNoteEditEnabled = true)
                 }
             } else {
-                val relationship = userRepository.getRelationships(listOf(id)).firstOrNull()
+                val relationship = userRepository.getRelationships(listOf(id))?.firstOrNull()
                 updateState {
                     it.copy(
                         personalNote = relationship?.note,

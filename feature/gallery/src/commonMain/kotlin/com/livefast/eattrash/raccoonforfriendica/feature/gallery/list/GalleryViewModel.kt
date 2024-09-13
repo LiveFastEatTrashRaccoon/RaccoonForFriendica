@@ -52,7 +52,7 @@ class GalleryViewModel(
             return
         }
         updateState { it.copy(loading = true) }
-        val items = albumRepository.getAll()
+        val items = albumRepository.getAll().orEmpty()
         val wasRefreshing = uiState.value.refreshing
         updateState {
             it.copy(

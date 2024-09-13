@@ -66,8 +66,14 @@ class CirclesViewModel(
             it.copy(initial = initial, refreshing = !initial)
         }
         coroutineScope {
-            val circles = async { circlesRepository.getAll() }.await()
-            val friendicaCircles = async { circlesRepository.getFriendicaCircles() }.await()
+            val circles =
+                async {
+                    circlesRepository.getAll()
+                }.await().orEmpty()
+            val friendicaCircles =
+                async {
+                    circlesRepository.getFriendicaCircles()
+                }.await().orEmpty()
             val isFriendica = async { nodeInfoRepository.getInfo()?.isFriendica == true }.await()
             val items =
                 circles.map { circle ->

@@ -28,8 +28,9 @@ class AlbumDetailViewModel(
                 val albums =
                     albumRepository
                         .getAll()
-                        .distinctBy { it.name }
-                        .filter { it.name != albumName }
+                        ?.distinctBy { it.name }
+                        ?.filter { it.name != albumName }
+                        .orEmpty()
                 updateState { it.copy(albums = albums) }
 
                 refresh(initial = true)
