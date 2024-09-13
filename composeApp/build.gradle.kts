@@ -95,6 +95,7 @@ kotlin {
             implementation(projects.feature.settings)
             implementation(projects.feature.thread)
             implementation(projects.feature.timeline)
+            implementation(projects.feature.unpublished)
             implementation(projects.feature.userdetail)
             implementation(projects.feature.userlist)
         }
