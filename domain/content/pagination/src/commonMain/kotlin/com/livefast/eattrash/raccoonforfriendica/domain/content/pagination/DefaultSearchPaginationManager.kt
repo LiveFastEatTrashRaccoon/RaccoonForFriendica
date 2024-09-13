@@ -88,7 +88,7 @@ internal class DefaultSearchPaginationManager(
                             query = specification.query,
                             pageCursor = pageCursor,
                             type = SearchResultType.Entries,
-                        ).filterNsfw(specification.includeNsfw)
+                        )?.filterNsfw(specification.includeNsfw)
 
                 is SearchPaginationSpecification.Hashtags ->
                     searchRepository
@@ -104,8 +104,10 @@ internal class DefaultSearchPaginationManager(
                             query = specification.query,
                             pageCursor = pageCursor,
                             type = SearchResultType.Users,
-                        ).determineUserRelationshipStatus()
-            }.deduplicate().updatePaginationData()
+                        )?.determineUserRelationshipStatus()
+            }?.deduplicate()
+                ?.updatePaginationData()
+                .orEmpty()
         mutex.withLock {
             history.addAll(results)
         }
@@ -137,7 +139,7 @@ internal class DefaultSearchPaginationManager(
                 if (entry !is ExploreItemModel.User) {
                     entry
                 } else {
-                    val relationship = relationships.firstOrNull { rel -> rel.id == entry.user.id }
+                    val relationship = relationships?.firstOrNull { rel -> rel.id == entry.user.id }
                     entry.copy(
                         user =
                             entry.user.copy(

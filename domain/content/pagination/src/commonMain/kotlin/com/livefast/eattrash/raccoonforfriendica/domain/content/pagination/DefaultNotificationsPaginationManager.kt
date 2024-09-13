@@ -35,9 +35,10 @@ internal class DefaultNotificationsPaginationManager(
                             pageCursor = pageCursor,
                             types = specification.types,
                             includeAll = specification.types.toSet() == NotificationType.ALL.toSet(),
-                        ).determineRelationshipStatus()
-                        .updatePaginationData()
-                        .filterNsfw(specification.includeNsfw)
+                        )?.determineRelationshipStatus()
+                        ?.updatePaginationData()
+                        ?.filterNsfw(specification.includeNsfw)
+                        .orEmpty()
             }.deduplicate()
         history.addAll(results)
 
@@ -59,7 +60,7 @@ internal class DefaultNotificationsPaginationManager(
             val relationships = userRepository.getRelationships(userIds)
             map { notification ->
                 val relationship =
-                    relationships.firstOrNull { rel -> rel.id == notification.user?.id }
+                    relationships?.firstOrNull { rel -> rel.id == notification.user?.id }
                 notification.copy(
                     user =
                         notification.user?.copy(

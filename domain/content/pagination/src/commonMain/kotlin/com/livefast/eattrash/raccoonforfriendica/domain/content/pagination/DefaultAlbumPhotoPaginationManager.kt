@@ -29,7 +29,10 @@ internal class DefaultAlbumPhotoPaginationManager(
                         pageCursor = pageCursor,
                         latestFirst = true,
                     )
-            }.deduplicate().updatePaginationData()
+            }?.deduplicate()
+                ?.updatePaginationData()
+                .orEmpty()
+
         history.addAll(results)
 
         // return a copy

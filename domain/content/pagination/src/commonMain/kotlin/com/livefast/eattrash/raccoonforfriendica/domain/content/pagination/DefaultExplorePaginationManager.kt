@@ -83,12 +83,12 @@ internal class DefaultExplorePaginationManager(
         val results =
             when (specification) {
                 ExplorePaginationSpecification.Hashtags ->
-                    trendingRepository.getHashtags(offset).map {
+                    trendingRepository.getHashtags(offset)?.map {
                         ExploreItemModel.HashTag(it)
                     }
 
                 ExplorePaginationSpecification.Links ->
-                    trendingRepository.getLinks(offset).mapNotNull {
+                    trendingRepository.getLinks(offset)?.mapNotNull {
                         if (it.url.isBlank()) {
                             null
                         } else {
@@ -99,15 +99,19 @@ internal class DefaultExplorePaginationManager(
                 is ExplorePaginationSpecification.Posts ->
                     trendingRepository
                         .getEntries(offset)
-                        .map {
+                        ?.map {
                             ExploreItemModel.Entry(it)
-                        }.filterNsfw(specification.includeNsfw)
+                        }?.filterNsfw(specification.includeNsfw)
 
                 ExplorePaginationSpecification.Suggestions ->
-                    userRepository.getSuggestions().map {
-                        ExploreItemModel.User(it)
-                    }.determineUserRelationshipStatus()
-            }.deduplicate().updatePaginationData()
+                    userRepository
+                        .getSuggestions()
+                        ?.map {
+                            ExploreItemModel.User(it)
+                        }?.determineUserRelationshipStatus()
+            }?.deduplicate()
+                ?.updatePaginationData()
+                .orEmpty()
         mutex.withLock {
             history.addAll(results)
         }
@@ -137,7 +141,7 @@ internal class DefaultExplorePaginationManager(
                 if (entry !is ExploreItemModel.User) {
                     entry
                 } else {
-                    val relationship = relationships.firstOrNull { rel -> rel.id == entry.user.id }
+                    val relationship = relationships?.firstOrNull { rel -> rel.id == entry.user.id }
                     entry.copy(
                         user =
                             entry.user.copy(
