@@ -17,7 +17,7 @@ internal class DefaultSearchRepository(
         query: String,
         type: SearchResultType,
         pageCursor: String?,
-    ): List<ExploreItemModel> =
+    ): List<ExploreItemModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -33,7 +33,7 @@ internal class DefaultSearchRepository(
                     SearchResultType.Hashtags -> response.hashtags.map { ExploreItemModel.HashTag(it.toModel()) }
                     SearchResultType.Users -> response.accounts.map { ExploreItemModel.User(it.toModel()) }
                 }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     companion object {

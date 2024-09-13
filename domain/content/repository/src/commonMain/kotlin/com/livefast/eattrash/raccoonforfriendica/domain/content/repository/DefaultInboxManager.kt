@@ -21,7 +21,7 @@ internal class DefaultInboxManager(
             )
         val notifications = notificationRepository.getAll(types)
         unreadCount.update {
-            notifications.count { !it.read }
+            notifications?.count { !it.read } ?: 0
         }
     }
 

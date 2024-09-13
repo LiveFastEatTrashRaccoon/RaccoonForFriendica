@@ -6,17 +6,17 @@ interface DirectMessageRepository {
     suspend fun getAll(
         page: Int = 0,
         limit: Int? = null,
-    ): List<DirectMessageModel>
+    ): List<DirectMessageModel>?
 
     suspend fun getReplies(
         parentUri: String,
         page: Int = 0,
-    ): List<DirectMessageModel>
+    ): List<DirectMessageModel>?
 
     suspend fun pollReplies(
         parentUri: String,
         minId: String,
-    ): List<DirectMessageModel>
+    ): List<DirectMessageModel>?
 
     suspend fun create(
         recipientId: String,

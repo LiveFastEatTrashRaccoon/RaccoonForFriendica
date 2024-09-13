@@ -4,7 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 
 interface PhotoAlbumRepository {
-    suspend fun getAll(): List<MediaAlbumModel>
+    suspend fun getAll(): List<MediaAlbumModel>?
 
     suspend fun update(
         oldName: String,
@@ -17,5 +17,5 @@ interface PhotoAlbumRepository {
         album: String,
         pageCursor: String?,
         latestFirst: Boolean = false,
-    ): List<AttachmentModel>
+    ): List<AttachmentModel>?
 }

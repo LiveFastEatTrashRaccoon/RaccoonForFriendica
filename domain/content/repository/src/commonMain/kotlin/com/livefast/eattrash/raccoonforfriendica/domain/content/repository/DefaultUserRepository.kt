@@ -35,7 +35,7 @@ internal class DefaultUserRepository(
     override suspend fun search(
         query: String,
         offset: Int,
-    ): List<UserModel> =
+    ): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -46,7 +46,7 @@ internal class DefaultUserRepository(
                             resolve = true,
                         ).map { it.toModel() }
                 }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun getByHandle(handle: String): UserModel? =
@@ -70,7 +70,7 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
-    override suspend fun getRelationships(ids: List<String>): List<RelationshipModel> =
+    override suspend fun getRelationships(ids: List<String>): List<RelationshipModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -78,10 +78,10 @@ internal class DefaultUserRepository(
                         .getRelationships(ids)
                         .map { it.toModel() }
                 }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
-    override suspend fun getSuggestions(): List<UserModel> =
+    override suspend fun getSuggestions(): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -94,13 +94,13 @@ internal class DefaultUserRepository(
                 exceptionOrNull()?.also {
                     it.printStackTrace()
                 }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun getFollowers(
         id: String,
         pageCursor: String?,
-    ): List<UserModel> =
+    ): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -111,13 +111,13 @@ internal class DefaultUserRepository(
                             limit = DEFAULT_PAGE_SIZE,
                         ).map { it.toModel() }
                 }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun getFollowing(
         id: String,
         pageCursor: String?,
-    ): List<UserModel> =
+    ): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -128,13 +128,13 @@ internal class DefaultUserRepository(
                             limit = DEFAULT_PAGE_SIZE,
                         ).map { it.toModel() }
                 }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun searchMyFollowing(
         query: String,
         pageCursor: String?,
-    ): List<UserModel> =
+    ): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -148,7 +148,7 @@ internal class DefaultUserRepository(
                         ).accounts
                         .map { it.toModel() }
                 }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun follow(
@@ -182,20 +182,22 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
-    override suspend fun getFollowRequests(pageCursor: String?): Pair<List<UserModel>, String?> =
+    override suspend fun getFollowRequests(pageCursor: String?): Pair<List<UserModel>, String>? =
         withContext(Dispatchers.IO) {
             runCatching {
-                withContext(Dispatchers.IO) {
-                    val response =
-                        provider.followRequests.getAll(
-                            maxId = pageCursor,
-                            limit = DEFAULT_PAGE_SIZE,
-                        )
-                    val list: List<UserModel> = response.body()?.map { it.toModel() }.orEmpty()
-                    val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
+                val response =
+                    provider.followRequests.getAll(
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    )
+                val list: List<UserModel> = response.body()?.map { it.toModel() }.orEmpty()
+                val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
+                if (nextCursor != null) {
                     list to nextCursor
+                } else {
+                    null
                 }
-            }.getOrElse { emptyList<UserModel>() to null }
+            }.getOrNull()
         }
 
     override suspend fun acceptFollowRequest(id: String) =
@@ -267,7 +269,7 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
-    override suspend fun getMuted(pageCursor: String?): List<UserModel> =
+    override suspend fun getMuted(pageCursor: String?): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -277,10 +279,10 @@ internal class DefaultUserRepository(
                             limit = DEFAULT_PAGE_SIZE,
                         ).map { it.toModel() }
                 }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
-    override suspend fun getBlocked(pageCursor: String?): List<UserModel> =
+    override suspend fun getBlocked(pageCursor: String?): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -290,7 +292,7 @@ internal class DefaultUserRepository(
                             limit = DEFAULT_PAGE_SIZE,
                         ).map { it.toModel() }
                 }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun updateProfile(

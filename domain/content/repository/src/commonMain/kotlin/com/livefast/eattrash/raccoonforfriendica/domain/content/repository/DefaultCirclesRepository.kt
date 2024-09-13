@@ -15,18 +15,18 @@ import kotlinx.coroutines.withContext
 internal class DefaultCirclesRepository(
     private val provider: ServiceProvider,
 ) : CirclesRepository {
-    override suspend fun getAll(): List<CircleModel> =
+    override suspend fun getAll(): List<CircleModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.lists.getAll().map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
-    override suspend fun getFriendicaCircles(): List<CircleModel> =
+    override suspend fun getFriendicaCircles(): List<CircleModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.lists.getFriendicaCircles().map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun get(id: String): CircleModel? =
@@ -39,7 +39,7 @@ internal class DefaultCirclesRepository(
     override suspend fun getMembers(
         id: String,
         pageCursor: String?,
-    ): List<UserModel> =
+    ): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.lists
@@ -47,7 +47,7 @@ internal class DefaultCirclesRepository(
                         id = id,
                         maxId = pageCursor,
                     ).map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun create(

@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 internal class DefaultTagRepository(
     private val provider: ServiceProvider,
 ) : TagRepository {
-    override suspend fun getFollowed(pageCursor: String?): Pair<List<TagModel>, String?> =
+    override suspend fun getFollowed(pageCursor: String?): Pair<List<TagModel>, String>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -20,8 +20,12 @@ internal class DefaultTagRepository(
                     )
                 val list: List<TagModel> = response.body()?.map { it.toModel() }.orEmpty()
                 val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
-                list to nextCursor
-            }.getOrElse { emptyList<TagModel>() to null }
+                if (nextCursor != null) {
+                    list to nextCursor
+                } else {
+                    null
+                }
+            }.getOrNull()
         }
 
     override suspend fun getBy(name: String): TagModel? =

@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
@@ -15,9 +16,10 @@ internal class DefaultNotificationRepository(
         types: List<NotificationType>,
         includeAll: Boolean,
         pageCursor: String?,
-    ) = withContext(Dispatchers.IO) {
-        runCatching {
-            val response =
+    ): List<NotificationModel>? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val response =
                 provider.notifications.get(
                     types = types.mapNotNull { it.toDto() },
                     maxId = pageCursor,
@@ -25,8 +27,8 @@ internal class DefaultNotificationRepository(
                     limit = DEFAULT_PAGE_SIZE,
                 )
             response.map { it.toModel() }
+            }.getOrNull()
         }
-    }.getOrElse { emptyList() }
 
     override suspend fun markAsRead(id: String): Boolean =
         withContext(Dispatchers.IO) {

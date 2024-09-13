@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 internal class DefaultTrendingRepository(
     private val provider: ServiceProvider,
 ) : TrendingRepository {
-    override suspend fun getEntries(offset: Int): List<TimelineEntryModel> =
+    override suspend fun getEntries(offset: Int): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -23,10 +23,10 @@ internal class DefaultTrendingRepository(
                             limit = DEFAULT_PAGE_SIZE,
                         )
                 response.map { it.toModelWithReply() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
-    override suspend fun getHashtags(offset: Int): List<TagModel> =
+    override suspend fun getHashtags(offset: Int): List<TagModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -36,10 +36,10 @@ internal class DefaultTrendingRepository(
                             limit = DEFAULT_PAGE_SIZE,
                         )
                 response.map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
-    override suspend fun getLinks(offset: Int): List<LinkModel> =
+    override suspend fun getLinks(offset: Int): List<LinkModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -49,7 +49,7 @@ internal class DefaultTrendingRepository(
                             limit = DEFAULT_PAGE_SIZE,
                         )
                 response.map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     companion object {

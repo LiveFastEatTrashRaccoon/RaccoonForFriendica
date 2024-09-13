@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 internal class DefaultScheduledEntryRepository(
     private val provider: ServiceProvider,
 ) : ScheduledEntryRepository {
-    override suspend fun getAll(pageCursor: String?): List<TimelineEntryModel> =
+    override suspend fun getAll(pageCursor: String?): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.statuses
@@ -20,7 +20,7 @@ internal class DefaultScheduledEntryRepository(
                         maxId = pageCursor,
                         limit = DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
-            }.getOrElse { emptyList() }
+            }.getOrNull()
         }
 
     override suspend fun getById(id: String): TimelineEntryModel? =
