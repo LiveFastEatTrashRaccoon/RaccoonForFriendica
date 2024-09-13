@@ -117,25 +117,25 @@ interface StatusService {
     ): Status
 
     @GET("v1/scheduled_statuses")
-    fun getScheduled(
+    suspend fun getScheduled(
         @Query("max_id") maxId: String? = null,
         @Query("min_id") minId: String? = null,
         @Query("limit") limit: Int = 20,
     ): List<ScheduledStatus>
 
     @GET("v1/scheduled_statuses/{id}")
-    fun getScheduledById(
+    suspend fun getScheduledById(
         @Path("id") id: String,
     ): ScheduledStatus
 
     @PUT("v1/scheduled_statuses/{id}")
-    fun updateScheduled(
+    suspend fun updateScheduled(
         @Path("id") id: String,
         @Body data: FormDataContent,
     ): ScheduledStatus
 
     @DELETE("v1/scheduled_statuses/{id}")
-    fun deleteScheduled(
+    suspend fun deleteScheduled(
         @Path("id") id: String,
     )
 }

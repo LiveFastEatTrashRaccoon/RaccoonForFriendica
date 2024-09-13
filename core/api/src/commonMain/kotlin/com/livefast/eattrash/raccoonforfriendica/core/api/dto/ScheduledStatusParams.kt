@@ -11,7 +11,7 @@ data class ScheduledStatusParams(
     @SerialName("media_attachments") val attachments: List<MediaAttachment> = emptyList(),
     @SerialName("media_ids") val mediaIds: List<String> = emptyList(),
     @SerialName("poll") val poll: Poll? = null,
-    @SerialName("sensitive") val sensitive: Boolean = false,
+    @SerialName("sensitive") val sensitive: Boolean? = null,
     @SerialName("spoiler_text") val spoilerText: String? = null,
     @SerialName("text") val text: String? = null,
     @SerialName("visibility") val visibility: String = ContentVisibility.PUBLIC,
