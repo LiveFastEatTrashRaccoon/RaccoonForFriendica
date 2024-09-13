@@ -21,7 +21,13 @@ fun String.parseHtml(
             .Builder()
             .onOpenTag { name, attributes, _ ->
                 when (name) {
-                    "p", "span" -> {}
+                    "p" ->
+                        if (string.length != 0) {
+                            // separate paragraphs with a blank line
+                            string.append("\n\n")
+                        }
+
+                    "span" -> Unit
                     "br" -> string.append('\n')
                     "a" -> {
                         string.pushStringAnnotation("link", attributes["href"] ?: "")
@@ -40,10 +46,10 @@ fun String.parseHtml(
 
                     else -> println("onOpenTag: Unhandled span $name")
                 }
-            }.onCloseTag { name, isImplied ->
+            }.onCloseTag { name, _ ->
                 when (name) {
                     "p" -> string.append(' ')
-                    "span", "br" -> {}
+                    "span", "br" -> Unit
                     "b", "strong", "u", "i", "em", "s" -> string.pop()
                     "a" -> {
                         string.pop() // corresponds to pushStyle
