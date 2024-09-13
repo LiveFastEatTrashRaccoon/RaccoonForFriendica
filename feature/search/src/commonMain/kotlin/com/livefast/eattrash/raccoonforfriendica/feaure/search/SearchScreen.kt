@@ -70,10 +70,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toInt
@@ -82,6 +84,7 @@ import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toSearchSect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 class SearchScreen : Screen {
     @OptIn(
@@ -110,6 +113,7 @@ class SearchScreen : Screen {
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
 
         suspend fun goBackToTop() {
@@ -313,7 +317,21 @@ class SearchScreen : Screen {
                                     },
                                     onReblog =
                                         uiState.currentUserId?.let {
-                                            { e -> model.reduce(SearchMviModel.Intent.ToggleReblog(e)) }
+                                            { e ->
+                                                val timeSinceCreation =
+                                                    e.created?.run {
+                                                        getDurationFromDateToNow(this)
+                                                    } ?: Duration.ZERO
+                                                when {
+                                                    !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                        confirmReblogEntry = e
+
+                                                    else ->
+                                                        model.reduce(
+                                                            SearchMviModel.Intent.ToggleReblog(e),
+                                                        )
+                                                }
+                                            }
                                         },
                                     onBookmark =
                                         uiState.currentUserId?.let {
@@ -596,6 +614,20 @@ class SearchScreen : Screen {
             PollVoteErrorDialog(
                 onDismissRequest = {
                     pollErrorDialogOpened = false
+                },
+            )
+        }
+
+        if (confirmReblogEntry != null) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.buttonConfirm,
+                body = LocalStrings.current.messageAreYouSureReblog,
+                onClose = { confirm ->
+                    val e = confirmReblogEntry
+                    confirmReblogEntry = null
+                    if (confirm && e != null) {
+                        model.reduce(SearchMviModel.Intent.ToggleReblog(e))
+                    }
                 },
             )
         }

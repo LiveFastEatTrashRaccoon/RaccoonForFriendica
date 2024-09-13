@@ -58,8 +58,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toFavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
@@ -67,6 +69,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
+import kotlin.time.Duration
 
 class FavoritesScreen(
     private val type: Int,
@@ -91,6 +94,7 @@ class FavoritesScreen(
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
 
         fun goBackToTop() {
@@ -215,7 +219,21 @@ class FavoritesScreen(
                             },
                             onReblog =
                                 uiState.currentUserId?.let {
-                                    { e -> model.reduce(FavoritesMviModel.Intent.ToggleReblog(e)) }
+                                    { e ->
+                                        val timeSinceCreation =
+                                            e.created?.run {
+                                                getDurationFromDateToNow(this)
+                                            } ?: Duration.ZERO
+                                        when {
+                                            !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                confirmReblogEntry = e
+
+                                            else ->
+                                                model.reduce(
+                                                    FavoritesMviModel.Intent.ToggleReblog(e),
+                                                )
+                                        }
+                                    }
                                 },
                             onBookmark =
                                 uiState.currentUserId?.let {
@@ -417,6 +435,20 @@ class FavoritesScreen(
             PollVoteErrorDialog(
                 onDismissRequest = {
                     pollErrorDialogOpened = false
+                },
+            )
+        }
+
+        if (confirmReblogEntry != null) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.buttonConfirm,
+                body = LocalStrings.current.messageAreYouSureReblog,
+                onClose = { confirm ->
+                    val e = confirmReblogEntry
+                    confirmReblogEntry = null
+                    if (confirm && e != null) {
+                        model.reduce(FavoritesMviModel.Intent.ToggleReblog(e))
+                    }
                 },
             )
         }

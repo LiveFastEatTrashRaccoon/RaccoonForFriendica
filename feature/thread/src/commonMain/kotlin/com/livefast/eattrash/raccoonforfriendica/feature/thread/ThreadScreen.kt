@@ -70,14 +70,18 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.composable.TimelineReplyItem
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parameterArrayOf
+import kotlin.time.Duration
 
 class ThreadScreen(
     private val entryId: String,
@@ -103,6 +107,7 @@ class ThreadScreen(
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
         var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
 
         fun goBackToTop() {
@@ -227,7 +232,7 @@ class ThreadScreen(
                                                 MaterialTheme.colorScheme.onBackground.copy(
                                                     ancillaryTextAlpha,
                                                 ),
-                                                shape = RoundedCornerShape(CornerSize.l),
+                                            shape = RoundedCornerShape(CornerSize.l),
                                         ).padding(
                                             vertical = Spacing.s,
                                             horizontal = Spacing.xxxs,
@@ -247,7 +252,21 @@ class ThreadScreen(
                                 },
                                 onReblog =
                                     uiState.currentUserId?.let {
-                                        { e -> model.reduce(ThreadMviModel.Intent.ToggleReblog(e)) }
+                                        { e ->
+                                            val timeSinceCreation =
+                                                e.created?.run {
+                                                    getDurationFromDateToNow(this)
+                                                } ?: Duration.ZERO
+                                            when {
+                                                !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                    confirmReblogEntry = e
+
+                                                else ->
+                                                    model.reduce(
+                                                        ThreadMviModel.Intent.ToggleReblog(e),
+                                                    )
+                                            }
+                                        }
                                     },
                                 onBookmark =
                                     uiState.currentUserId?.let {
@@ -351,20 +370,40 @@ class ThreadScreen(
                             onOpenImage = { urls, index ->
                                 detailOpener.openImageDetail(urls = urls, initialIndex = index)
                             },
-                            onReblog = { e ->
-                                model.reduce(ThreadMviModel.Intent.ToggleReblog(e))
-                            },
-                            onBookmark = { e ->
-                                model.reduce(ThreadMviModel.Intent.ToggleBookmark(e))
-                            },
-                            onFavorite = { e ->
-                                model.reduce(ThreadMviModel.Intent.ToggleFavorite(e))
-                            },
-                            onReply = { e ->
-                                detailOpener.openComposer(
-                                    inReplyToId = e.id,
-                                    inReplyToUser = e.creator,
-                                )
+                            onReblog =
+                                uiState.currentUserId?.let {
+                                    { e ->
+                                        val timeSinceCreation =
+                                            e.created?.run {
+                                                getDurationFromNowToDate(this)
+                                            } ?: Duration.ZERO
+                                        when {
+                                            !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                confirmReblogEntry = e
+
+                                            else ->
+                                                model.reduce(
+                                                    ThreadMviModel.Intent.ToggleReblog(e),
+                                                )
+                                        }
+                                    }
+                                },
+                            onBookmark =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(ThreadMviModel.Intent.ToggleBookmark(e)) }
+                                },
+                            onFavorite =
+                                uiState.currentUserId?.let {
+                                    { e -> model.reduce(ThreadMviModel.Intent.ToggleFavorite(e)) }
+                                },
+                            onReply =
+                                uiState.currentUserId?.let {
+                                    { e ->
+                                        detailOpener.openComposer(
+                                            inReplyToId = e.id,
+                                            inReplyToUser = e.creator,
+                                        )
+                                }
                             },
                             options =
                                 buildList {
@@ -531,6 +570,20 @@ class ThreadScreen(
             PollVoteErrorDialog(
                 onDismissRequest = {
                     pollErrorDialogOpened = false
+                },
+            )
+        }
+
+        if (confirmReblogEntry != null) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.buttonConfirm,
+                body = LocalStrings.current.messageAreYouSureReblog,
+                onClose = { confirm ->
+                    val e = confirmReblogEntry
+                    confirmReblogEntry = null
+                    if (confirm && e != null) {
+                        model.reduce(ThreadMviModel.Intent.ToggleReblog(e))
+                    }
                 },
             )
         }

@@ -275,6 +275,7 @@ interface Strings {
     val actionCancelEditPersonalNote: String
     val messageVideoNsfw: String
     val buttonLoad: String
+    val messageAreYouSureReblog: String
 }
 
 object Locales {
