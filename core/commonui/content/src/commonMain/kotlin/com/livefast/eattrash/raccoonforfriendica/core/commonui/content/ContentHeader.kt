@@ -24,6 +24,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormattedDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -33,6 +34,7 @@ fun ContentHeader(
     modifier: Modifier = Modifier,
     user: UserModel? = null,
     date: String? = null,
+    scheduleDate: String? = null,
     isEdited: Boolean = false,
     iconSize: Dp = IconSize.l,
     onOpenUser: ((UserModel) -> Unit)? = null,
@@ -96,7 +98,12 @@ fun ContentHeader(
                         if (!user?.handle.isNullOrBlank()) {
                             append(user?.handle?.ellipsize(30))
                         }
-                        if (!date.isNullOrBlank()) {
+                        if (!scheduleDate.isNullOrBlank()) {
+                            if (isNotEmpty()) {
+                                append(" • ")
+                            }
+                            append(getFormattedDate(scheduleDate, "dd/MM/yy HH:mm:ss"))
+                        } else if (!date.isNullOrBlank()) {
                             if (isNotEmpty()) {
                                 append(" • ")
                             }

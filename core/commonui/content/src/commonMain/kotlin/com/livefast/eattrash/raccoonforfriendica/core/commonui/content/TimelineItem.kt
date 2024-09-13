@@ -114,6 +114,7 @@ fun TimelineItem(
                     modifier = Modifier.weight(1f),
                     user = entryToDisplay.creator,
                     date = entryToDisplay.edited ?: entryToDisplay.created,
+                    scheduleDate = entryToDisplay.scheduled,
                     isEdited = entryToDisplay.edited != null,
                     onOpenUser = onOpenUser,
                 )
