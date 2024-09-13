@@ -39,6 +39,7 @@ fun ContentPreview(
     val url = card.url
     val image = card.image
     val cornerSize = CornerSize.xl
+    val contentPadding = 12.dp
 
     Column(
         modifier =
@@ -55,7 +56,7 @@ fun ContentPreview(
                     color = ancillaryColor,
                     shape = RoundedCornerShape(cornerSize),
                 ).padding(
-                    bottom = 12.dp,
+                    bottom = contentPadding,
                 ),
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
@@ -87,22 +88,22 @@ fun ContentPreview(
             modifier =
                 Modifier.padding(
                     top = Spacing.s,
-                    end = 10.dp,
-                    start = 10.dp,
+                    end = contentPadding,
+                    start = contentPadding,
                 ),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             if (card.title.isNotEmpty()) {
                 Text(
                     text = card.title,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = fullColor,
                 )
             }
-            if (card.description.isNotEmpty()) {
+            if (card.description.isNotEmpty() && !card.description.contains(card.title)) {
                 Text(
                     text = card.description,
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.labelMedium,
                     color = ancillaryColor,
                 )
             }
