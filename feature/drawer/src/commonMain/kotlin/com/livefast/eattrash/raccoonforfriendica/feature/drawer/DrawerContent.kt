@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Drafts
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Flaky
 import androidx.compose.material.icons.filled.Info
@@ -121,6 +122,13 @@ class DrawerContent : Screen {
                         },
                     )
                 }
+                DrawerShortcut(
+                    title = LocalStrings.current.unpublishedTitle,
+                    icon = Icons.Default.Drafts,
+                    onSelected = {
+                        handleOpen { detailOpener.openUnpublished() }
+                    },
+                )
             }
 
             DrawerShortcut(
