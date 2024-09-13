@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 import androidx.compose.ui.platform.UriHandler
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
@@ -13,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 
 internal class DefaultCustomUriHandler(
     private val defaultHandler: UriHandler,
@@ -39,16 +41,11 @@ internal class DefaultCustomUriHandler(
             }
 
             uri.startsWith(profilePrefix) -> {
-                val handle =
-                    buildString {
-                        append(uri.replace(profilePrefix, ""))
-                        append("@")
-                        append(currentNode)
-                    }
+                val user = uri.replace(profilePrefix, "")
                 scope.launch {
-                    val user = userRepository.getByHandle(handle)
-                    if (user != null) {
-                        detailOpener.openUserDetail(user)
+                    val remoteUser = getRemoteUser("$user@$currentNode")
+                    if (remoteUser != null) {
+                        detailOpener.openUserDetail(remoteUser)
                     } else {
                         openUrl(url = uri, mode = urlOpeningMode)
                     }
@@ -59,8 +56,7 @@ internal class DefaultCustomUriHandler(
                 EXTERNAL_USER_REGEX.find(uri)?.groups?.also { group ->
                     val (node, user) = group["instance"]?.value.orEmpty() to group["detail"]?.value.orEmpty()
                     scope.launch {
-                        val handle = "$user@$node"
-                        val remoteUser = userRepository.getByHandle(handle)
+                        val remoteUser = getRemoteUser("$user@$node")
                         if (remoteUser != null) {
                             detailOpener.openUserDetail(remoteUser)
                         } else {
@@ -74,8 +70,7 @@ internal class DefaultCustomUriHandler(
                 LEMMY_USER_REGEX.find(uri)?.groups?.also { group ->
                     val (node, user) = group["instance"]?.value.orEmpty() to group["detail"]?.value.orEmpty()
                     scope.launch {
-                        val handle = "$user@$node"
-                        val remoteUser = userRepository.getByHandle(handle)
+                        val remoteUser = getRemoteUser("$user@$node")
                         if (remoteUser != null) {
                             detailOpener.openUserDetail(remoteUser)
                         } else {
@@ -89,8 +84,7 @@ internal class DefaultCustomUriHandler(
                 LEMMY_COMMUNITY_REGEX.find(uri)?.groups?.also { group ->
                     val (node, user) = group["instance"]?.value.orEmpty() to group["detail"]?.value.orEmpty()
                     scope.launch {
-                        val handle = "$user@$node"
-                        val remoteUser = userRepository.getByHandle(handle)
+                        val remoteUser = getRemoteUser("$user@$node")
                         if (remoteUser != null) {
                             detailOpener.openUserDetail(remoteUser)
                         } else {
@@ -103,6 +97,11 @@ internal class DefaultCustomUriHandler(
             else -> openUrl(url = uri, mode = urlOpeningMode)
         }
     }
+
+    private suspend fun getRemoteUser(handle: String): UserModel? =
+        withTimeoutOrNull(USER_SEARCH_TIMEOUT_MILLIS) {
+            userRepository.getByHandle(handle)
+        }
 
     private fun openUrl(
         url: String,
@@ -117,6 +116,8 @@ internal class DefaultCustomUriHandler(
     }
 
     companion object {
+        private const val USER_SEARCH_TIMEOUT_MILLIS = 1000L
+
         private const val DETAIL_FRAGMENT: String = "[a-zA-Z0-9_]{3,}"
 
         private const val INSTANCE_FRAGMENT: String =
