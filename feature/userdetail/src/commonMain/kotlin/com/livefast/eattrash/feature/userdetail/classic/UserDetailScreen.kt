@@ -1,6 +1,9 @@
 package com.livefast.eattrash.feature.userdetail.classic
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,12 +19,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -68,6 +73,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
@@ -119,6 +125,8 @@ class UserDetailScreen(
         val uriHandler = LocalUriHandler.current
         val detailOpener = remember { getDetailOpener() }
         val lazyListState = rememberLazyListState()
+        val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
+        val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
         val shareHelper = remember { getShareHelper() }
@@ -306,6 +314,32 @@ class UserDetailScreen(
                     },
                 )
             },
+            floatingActionButton = {
+                AnimatedVisibility(
+                    visible = isFabVisible,
+                    enter =
+                        slideInVertically(
+                            initialOffsetY = { it * 2 },
+                        ),
+                    exit =
+                        slideOutVertically(
+                            targetOffsetY = { it * 2 },
+                        ),
+                ) {
+                    FloatingActionButton(
+                        onClick = {
+                            detailOpener.openComposer(
+                                inReplyToUser = uiState.user,
+                            )
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.Reply,
+                            contentDescription = null,
+                        )
+                    }
+                }
+            },
             snackbarHost = {
                 SnackbarHost(
                     hostState = snackbarHostState,
@@ -317,8 +351,8 @@ class UserDetailScreen(
                     )
                 }
             },
-            content = { padding ->
-                val pullRefreshState =
+        ) { padding ->
+            val pullRefreshState =
                     rememberPullRefreshState(
                         refreshing = uiState.refreshing,
                         onRefresh = {
@@ -331,7 +365,8 @@ class UserDetailScreen(
                             .padding(padding)
                             .fillMaxWidth()
                             .nestedScroll(scrollBehavior.nestedScrollConnection)
-                            .pullRefresh(pullRefreshState),
+                        .nestedScroll(fabNestedScrollConnection)
+                        .pullRefresh(pullRefreshState),
                 ) {
                     LazyColumn(
                         state = lazyListState,
@@ -639,8 +674,7 @@ class UserDetailScreen(
                         contentColor = MaterialTheme.colorScheme.onBackground,
                     )
                 }
-            },
-        )
+        }
 
         if (confirmUnfollowDialogOpen) {
             CustomConfirmDialog(
