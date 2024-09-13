@@ -305,4 +305,7 @@ internal open class DefaultStrings : Strings {
     override val buttonLoad = "Load"
     override val messageAreYouSureReblog =
         "This post is more than one month old. Are you sure you want to re-share it?"
+    override val unpublishedTitle = "Unpublished items"
+    override val unpublishedSectionScheduled = "Scheduled"
+    override val unpublishedSectionDrafts = "Drafts"
 }

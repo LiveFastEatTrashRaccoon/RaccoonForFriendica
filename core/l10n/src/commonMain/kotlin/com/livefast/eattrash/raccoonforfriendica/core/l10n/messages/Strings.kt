@@ -276,6 +276,9 @@ interface Strings {
     val messageVideoNsfw: String
     val buttonLoad: String
     val messageAreYouSureReblog: String
+    val unpublishedTitle: String
+    val unpublishedSectionScheduled: String
+    val unpublishedSectionDrafts: String
 }
 
 object Locales {

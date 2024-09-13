@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Stable
@@ -39,6 +40,11 @@ interface DetailOpener {
         inReplyToUser: UserModel? = null,
         editedPostId: String? = null,
         inGroup: Boolean = false,
+    )
+
+    fun openEditUnpublished(
+        entry: TimelineEntryModel,
+        type: UnpublishedType,
     )
 
     fun openSearch()
@@ -79,4 +85,6 @@ interface DetailOpener {
         name: String,
         createMode: Boolean = false,
     )
+
+    fun openUnpublished()
 }

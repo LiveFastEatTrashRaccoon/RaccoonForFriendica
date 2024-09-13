@@ -79,6 +79,7 @@ class ComposerScreen(
     private val groupUsername: String? = null,
     private val groupHandle: String? = null,
     private val editedPostId: String? = null,
+    private val scheduledPostId: String? = null,
 ) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -111,14 +112,20 @@ class ComposerScreen(
         var hasTitleFocus by remember { mutableStateOf(false) }
 
         LaunchedEffect(model) {
-            if (editedPostId == null) {
-                if (!inReplyToHandle.isNullOrEmpty()) {
+            when {
+                scheduledPostId != null ->
+                    model.reduce(ComposerMviModel.Intent.LoadScheduled(scheduledPostId))
+
+                editedPostId != null ->
+                    model.reduce(ComposerMviModel.Intent.LoadEditedPost(editedPostId))
+
+                !inReplyToHandle.isNullOrEmpty() ->
                     model.reduce(ComposerMviModel.Intent.AddMention(inReplyToHandle))
-                } else if (!groupHandle.isNullOrEmpty()) {
+
+                !groupHandle.isNullOrEmpty() ->
                     model.reduce(ComposerMviModel.Intent.AddGroupReference(groupHandle))
-                }
-            } else {
-                model.reduce(ComposerMviModel.Intent.LoadEditedPost(editedPostId))
+
+                else -> Unit
             }
         }
 

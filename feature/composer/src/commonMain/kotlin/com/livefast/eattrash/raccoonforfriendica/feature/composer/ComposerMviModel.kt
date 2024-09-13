@@ -25,6 +25,10 @@ interface ComposerMviModel :
             val id: String,
         ) : Intent
 
+        data class LoadScheduled(
+            val id: String,
+        ) : Intent
+
         data class SetFieldValue(
             val value: TextFieldValue,
             val fieldType: ComposerFieldType,
@@ -146,6 +150,7 @@ interface ComposerMviModel :
         val galleryCurrentAlbumPhotos: List<AttachmentModel> = emptyList(),
         val characterLimit: Int? = null,
         val attachmentLimit: Int? = null,
+        val scheduleDate: String? = null,
     )
 
     sealed interface Effect {

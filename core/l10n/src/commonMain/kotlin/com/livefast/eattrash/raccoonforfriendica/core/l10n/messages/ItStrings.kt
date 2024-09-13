@@ -316,4 +316,7 @@ internal val ItStrings =
         override val buttonLoad = "Carica"
         override val messageAreYouSureReblog =
             "Questo post è più vecchio di un mese. Sei sicuro/a di volerlo ricondividere?"
+        override val unpublishedTitle = "Non pubblicati"
+        override val unpublishedSectionScheduled = "Schedulati"
+        override val unpublishedSectionDrafts = "Bozze"
     }
