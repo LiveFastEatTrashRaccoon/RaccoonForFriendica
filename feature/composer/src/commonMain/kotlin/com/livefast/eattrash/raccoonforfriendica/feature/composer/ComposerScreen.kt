@@ -274,7 +274,7 @@ class ComposerScreen(
                             ).consumeWindowInsets(padding)
                             .verticalScroll(rememberScrollState()),
                 ) {
-                    if (!inReplyToUsername.isNullOrBlank()) {
+                    if (!inReplyToUsername.isNullOrBlank() && !inReplyToId.isNullOrBlank()) {
                         InReplyToInfo(
                             modifier = Modifier.padding(horizontal = Spacing.s),
                             username = inReplyToUsername,
