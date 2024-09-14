@@ -39,6 +39,10 @@ interface ComposerMviModel :
             val id: String,
         ) : Intent
 
+        data class LoadDraft(
+            val id: String,
+        ) : Intent
+
         data class SetFieldValue(
             val value: TextFieldValue,
             val fieldType: ComposerFieldType,
@@ -170,8 +174,11 @@ interface ComposerMviModel :
     sealed interface Effect {
         sealed interface ValidationError : Effect {
             data object TextOrImagesMandatory : ValidationError
+
             data object InvalidVisibility : ValidationError
+
             data object CharacterLimitExceeded : ValidationError
+
             data object ScheduleDateInThePast : ValidationError
         }
 

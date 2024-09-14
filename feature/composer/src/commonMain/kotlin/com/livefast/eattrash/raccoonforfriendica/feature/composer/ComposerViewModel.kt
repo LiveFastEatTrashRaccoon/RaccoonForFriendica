@@ -5,7 +5,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Timestamp
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -16,6 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Album
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
@@ -49,12 +54,15 @@ class ComposerViewModel(
     private val albumPhotoPaginationManager: AlbumPhotoPaginationManager,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
     private val scheduledEntryRepository: ScheduledEntryRepository,
+    private val draftRepository: DraftRepository,
+    private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
         initialState = ComposerMviModel.State(),
     ),
     ComposerMviModel {
     private var uploadJobs = mutableMapOf<String, Job>()
     private var editedPostId: String? = null
+    private var draftId: String? = null
 
     init {
         screenModelScope.launch {
@@ -113,6 +121,18 @@ class ComposerViewModel(
                             updateState {
                                 it.copy(publicationType = PublicationType.Scheduled(scheduleDate))
                             }
+                        }
+                        loadEntry(entry)
+                    }
+                }
+
+            is ComposerMviModel.Intent.LoadDraft ->
+                screenModelScope.launch {
+                    draftId = intent.id
+                    val entry = entryCache.get(intent.id)
+                    if (entry != null) {
+                        updateState {
+                            it.copy(publicationType = PublicationType.Draft)
                         }
                         loadEntry(entry)
                     }
@@ -667,12 +687,39 @@ class ComposerViewModel(
                             }
                         }
 
-                        else -> {
-                            null
+                        PublicationType.Draft -> {
+                            val entry =
+                                TimelineEntryModel(
+                                    id = editId ?: key,
+                                    content = text,
+                                    title = title,
+                                    updated =
+                                        epochMillis().toIso8601Timestamp(withLocalTimezone = false),
+                                    spoiler = spoiler,
+                                    sensitive = currentState.sensitive,
+                                    visibility = visibility,
+                                    parentId = inReplyToId,
+                                    lang = currentState.lang,
+                                    attachments =
+                                        attachmentIds.map {
+                                            AttachmentModel(id = it, url = "")
+                                        },
+                                )
+                            if (draftId != null) {
+                                draftRepository.update(entry)
+                            } else {
+                                draftRepository.create(entry)
+                            }
                         }
                     }
                 updateState { it.copy(loading = false) }
                 if (res != null) {
+                    val draftToDeleteId = draftId
+                    if (currentState.publicationType != PublicationType.Draft && draftToDeleteId != null) {
+                        draftRepository.delete(draftToDeleteId)
+                        notificationCenter.send(DraftDeletedEvent(draftToDeleteId))
+                    }
+
                     emitEffect(ComposerMviModel.Effect.Success)
                 } else {
                     emitEffect(ComposerMviModel.Effect.Failure(null))
