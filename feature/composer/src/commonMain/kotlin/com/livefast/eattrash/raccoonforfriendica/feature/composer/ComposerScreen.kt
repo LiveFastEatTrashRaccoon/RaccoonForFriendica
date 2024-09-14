@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +17,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -25,9 +35,12 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,23 +53,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTextualInfoDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SelectUserDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SpoilerTextField
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.concatDateWithTime
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormattedDate
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Timestamp
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
@@ -95,6 +120,7 @@ class ComposerScreen(
         val missingDataError = LocalStrings.current.messagePostEmptyText
         val invalidVisibilityError = LocalStrings.current.messagePostInvalidVisibility
         val characterLimitExceededError = LocalStrings.current.messageCharacterLimitExceeded
+        val pastScheduleDateError = LocalStrings.current.messageScheduleDateInThePast
         val genericError = LocalStrings.current.messageGenericError
         var openImagePicker by remember { mutableStateOf(false) }
         if (openImagePicker) {
@@ -110,6 +136,11 @@ class ComposerScreen(
         var attachmentWithDescriptionBeingEdited by remember { mutableStateOf<AttachmentModel?>(null) }
         var hasSpoilerFieldFocus by remember { mutableStateOf(false) }
         var hasTitleFocus by remember { mutableStateOf(false) }
+        val isBeingEdited = remember { scheduledPostId != null || editedPostId != null }
+        var schedulePickerDateMillis by remember { mutableStateOf<Long?>(null) }
+        var datePickerOpen by remember { mutableStateOf(false) }
+        var timePickerOpen by remember { mutableStateOf(false) }
+        var scheduleDateSelected by remember { mutableStateOf<Long?>(null) }
 
         LaunchedEffect(model) {
             when {
@@ -144,6 +175,9 @@ class ComposerScreen(
 
                         ComposerMviModel.Effect.ValidationError.CharacterLimitExceeded ->
                             snackbarHostState.showSnackbar(message = characterLimitExceededError)
+
+                        ComposerMviModel.Effect.ValidationError.ScheduleDateInThePast ->
+                            snackbarHostState.showSnackbar(message = pastScheduleDateError)
 
                         ComposerMviModel.Effect.Success -> navigationCoordinator.pop()
                     }
@@ -181,13 +215,100 @@ class ComposerScreen(
                         }
                     },
                     actions = {
-                        IconButton(
+                        val options =
+                            buildList {
+                                when (uiState.publicationType) {
+                                    is PublicationType.Scheduled -> {
+                                        this += OptionId.ChangeSchedule.toOption()
+                                        if (!isBeingEdited) {
+                                            this += OptionId.PublishDefault.toOption()
+                                        }
+                                    }
+
+                                    else -> {
+                                        this += OptionId.SetSchedule.toOption()
+                                    }
+                                }
+                            }
+                        Box {
+                            var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+                            var optionsMenuOpen by remember { mutableStateOf(false) }
+                            IconButton(
+                                modifier =
+                                    Modifier.onGloballyPositioned {
+                                        optionsOffset = it.positionInParent()
+                                    },
+                                onClick = {
+                                    optionsMenuOpen = true
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = null,
+                                )
+                            }
+
+                            CustomDropDown(
+                                expanded = optionsMenuOpen,
+                                onDismiss = {
+                                    optionsMenuOpen = false
+                                },
+                                offset =
+                                    with(LocalDensity.current) {
+                                        DpOffset(
+                                            x = optionsOffset.x.toDp(),
+                                            y = optionsOffset.y.toDp(),
+                                        )
+                                    },
+                            ) {
+                                for (option in options) {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(option.label)
+                                        },
+                                        onClick = {
+                                            optionsMenuOpen = false
+                                            when (option.id) {
+                                                OptionId.SetSchedule -> {
+                                                    schedulePickerDateMillis = epochMillis()
+                                                    datePickerOpen = true
+                                                }
+
+                                                OptionId.ChangeSchedule -> {
+                                                    schedulePickerDateMillis =
+                                                        (uiState.publicationType as? PublicationType.Scheduled)
+                                                            ?.date
+                                                            ?.toEpochMillis()
+                                                    datePickerOpen = true
+                                                }
+
+                                                OptionId.PublishDefault ->
+                                                    model.reduce(
+                                                        ComposerMviModel.Intent.ChangePublicationType(
+                                                            PublicationType.Default,
+                                                        ),
+                                                    )
+
+                                                else -> Unit
+                                            }
+                                        },
+                                    )
+                                }
+                            }
+                        }
+
+                        FilledIconButton(
                             onClick = {
                                 model.reduce(ComposerMviModel.Intent.Submit)
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.Send,
+                                imageVector =
+                                    when (uiState.publicationType) {
+                                        PublicationType.Draft -> Icons.Default.Save
+                                        is PublicationType.Scheduled -> Icons.Default.Schedule
+                                        else -> Icons.AutoMirrored.Default.Send
+                                    },
                                 contentDescription = null,
                             )
                         }
@@ -313,16 +434,45 @@ class ComposerScreen(
 
                     // character count
                     if (uiState.characterLimit != null) {
-                        Text(
-                            modifier = Modifier.align(Alignment.End).padding(end = Spacing.s),
-                            text =
-                                buildString {
-                                    append(uiState.bodyValue.text.length)
-                                    append("/")
-                                    append(uiState.characterLimit)
-                                },
-                            style = MaterialTheme.typography.labelSmall,
-                        )
+                        Row(
+                            modifier =
+                                Modifier.padding(
+                                    top = Spacing.s,
+                                    start = Spacing.s,
+                                    end = Spacing.s,
+                                ),
+                        ) {
+                            when (val type = uiState.publicationType) {
+                                is PublicationType.Scheduled -> {
+                                    Text(
+                                        text =
+                                            buildString {
+                                                append(LocalStrings.current.scheduleDateIndication)
+                                                append(" ")
+                                                append(
+                                                    getFormattedDate(
+                                                        iso8601Timestamp = type.date,
+                                                        format = "dd/MM/yy HH:mm",
+                                                    ),
+                                                )
+                                            },
+                                        style = MaterialTheme.typography.labelSmall,
+                                    )
+                                }
+
+                                else -> Unit
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                text =
+                                    buildString {
+                                        append(uiState.bodyValue.text.length)
+                                        append("/")
+                                        append(uiState.characterLimit)
+                                    },
+                                style = MaterialTheme.typography.labelSmall,
+                            )
+                        }
                     }
 
                     // spoiler text
@@ -563,6 +713,101 @@ class ComposerScreen(
                     }
                 },
             )
+        }
+
+        if (datePickerOpen) {
+            val datePickerState =
+                rememberDatePickerState(
+                    initialSelectedDateMillis = schedulePickerDateMillis,
+                )
+            DatePickerDialog(
+                onDismissRequest = {
+                    datePickerOpen = false
+                    scheduleDateSelected = null
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            datePickerOpen = false
+                            scheduleDateSelected = datePickerState.selectedDateMillis
+                            if (scheduleDateSelected != null) {
+                                timePickerOpen = true
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            datePickerOpen = false
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+            ) {
+                DatePicker(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    state = datePickerState,
+                )
+            }
+        }
+
+        if (timePickerOpen) {
+            val timePickerState =
+                rememberTimePickerState(
+                    initialMinute = 0,
+                    initialHour = 0,
+                )
+            DatePickerDialog(
+                onDismissRequest = {
+                    timePickerOpen = false
+                    scheduleDateSelected = null
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            timePickerOpen = false
+                            val hour = timePickerState.hour
+                            val minute = timePickerState.minute
+                            if (scheduleDateSelected != null) {
+                                val resultingScheduleDate =
+                                    scheduleDateSelected
+                                        ?.concatDateWithTime(hour, minute, 0)
+                                        ?.toIso8601Timestamp(withLocalTimezone = false)
+                                if (resultingScheduleDate != null) {
+                                    model.reduce(
+                                        ComposerMviModel.Intent.ChangePublicationType(
+                                            PublicationType.Scheduled(resultingScheduleDate),
+                                        ),
+                                    )
+                                }
+                            }
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonConfirm)
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            timePickerOpen = false
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonCancel)
+                    }
+                },
+            ) {
+                TimePicker(
+                    modifier =
+                        Modifier
+                            .padding(top = Spacing.s)
+                            .align(Alignment.CenterHorizontally),
+                    state = timePickerState,
+                )
+            }
         }
     }
 }

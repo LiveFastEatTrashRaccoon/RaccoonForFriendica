@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -31,6 +32,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 private const val PLACEHOLDER_ID = "placeholder"
 
@@ -53,7 +55,6 @@ class ComposerViewModel(
     ComposerMviModel {
     private var uploadJobs = mutableMapOf<String, Job>()
     private var editedPostId: String? = null
-    private var scheduledPostId: String? = null
 
     init {
         screenModelScope.launch {
@@ -105,9 +106,14 @@ class ComposerViewModel(
 
             is ComposerMviModel.Intent.LoadScheduled ->
                 screenModelScope.launch {
-                    scheduledPostId = intent.id
+                    editedPostId = intent.id
                     val entry = entryCache.get(intent.id)
                     if (entry != null) {
+                        entry.scheduled?.also { scheduleDate ->
+                            updateState {
+                                it.copy(publicationType = PublicationType.Scheduled(scheduleDate))
+                            }
+                        }
                         loadEntry(entry)
                     }
                 }
@@ -237,6 +243,11 @@ class ComposerViewModel(
             ComposerMviModel.Intent.GalleryLoadMorePhotos ->
                 screenModelScope.launch {
                     loadNextPageGalleryPhotos()
+                }
+
+            is ComposerMviModel.Intent.ChangePublicationType ->
+                screenModelScope.launch {
+                    updateState { it.copy(publicationType = intent.type) }
                 }
 
             ComposerMviModel.Intent.Submit -> submit()
@@ -556,7 +567,6 @@ class ComposerViewModel(
                 titleValue = TextFieldValue(text = entry.title.orEmpty()),
                 hasTitle = !entry.title.isNullOrEmpty(),
                 loading = false,
-                scheduleDate = entry.scheduled,
             )
         }
     }
@@ -575,6 +585,8 @@ class ComposerViewModel(
         val visibility = currentState.visibility
         val characterLimit = currentState.characterLimit ?: Int.MAX_VALUE
         val key = getUuid()
+        val publicationType = currentState.publicationType
+        val scheduleDate = (publicationType as? PublicationType.Scheduled)?.date
 
         screenModelScope.launch {
             if (text.isBlank() && attachmentIds.isEmpty()) {
@@ -592,45 +604,71 @@ class ComposerViewModel(
                 return@launch
             }
 
+            if (scheduleDate != null) {
+                val timeSpan = getDurationFromNowToDate(scheduleDate) ?: Duration.ZERO
+                if (timeSpan <= Duration.ZERO) {
+                    emitEffect(ComposerMviModel.Effect.ValidationError.ScheduleDateInThePast)
+                    return@launch
+                }
+            }
+
             updateState { it.copy(loading = true) }
             val editId = editedPostId
-            val scheduledId = scheduledPostId
             try {
                 val res =
-                    when {
-                        scheduledId != null -> {
-                            scheduledEntryRepository.update(
-                                id = scheduledId,
-                                date = currentState.scheduleDate.orEmpty(),
-                            )
+                    when (publicationType) {
+                        is PublicationType.Scheduled -> {
+                            if (editId != null) {
+                                scheduledEntryRepository.update(
+                                    id = editId,
+                                    date = publicationType.date,
+                                )
+                            } else {
+                                timelineEntryRepository.create(
+                                    localId = key,
+                                    title = title,
+                                    text = text,
+                                    inReplyTo = inReplyToId,
+                                    spoilerText = spoiler,
+                                    sensitive = currentState.sensitive,
+                                    visibility = visibility,
+                                    lang = currentState.lang,
+                                    mediaIds = attachmentIds,
+                                    scheduled = publicationType.date,
+                                )
+                            }
                         }
 
-                        editId != null -> {
-                            timelineEntryRepository.update(
-                                id = editId,
-                                title = title,
-                                text = text,
-                                inReplyTo = inReplyToId,
-                                spoilerText = spoiler,
-                                sensitive = currentState.sensitive,
-                                visibility = visibility,
-                                lang = currentState.lang,
-                                mediaIds = attachmentIds,
-                            )
+                        PublicationType.Default -> {
+                            if (editId != null) {
+                                timelineEntryRepository.update(
+                                    id = editId,
+                                    title = title,
+                                    text = text,
+                                    inReplyTo = inReplyToId,
+                                    spoilerText = spoiler,
+                                    sensitive = currentState.sensitive,
+                                    visibility = visibility,
+                                    lang = currentState.lang,
+                                    mediaIds = attachmentIds,
+                                )
+                            } else {
+                                timelineEntryRepository.create(
+                                    localId = key,
+                                    title = title,
+                                    text = text,
+                                    inReplyTo = inReplyToId,
+                                    spoilerText = spoiler,
+                                    sensitive = currentState.sensitive,
+                                    visibility = visibility,
+                                    lang = currentState.lang,
+                                    mediaIds = attachmentIds,
+                                )
+                            }
                         }
 
                         else -> {
-                            timelineEntryRepository.create(
-                                localId = key,
-                                title = title,
-                                text = text,
-                                inReplyTo = inReplyToId,
-                                spoilerText = spoiler,
-                                sensitive = currentState.sensitive,
-                                visibility = visibility,
-                                lang = currentState.lang,
-                                mediaIds = attachmentIds,
-                            )
+                            null
                         }
                     }
                 updateState { it.copy(loading = false) }

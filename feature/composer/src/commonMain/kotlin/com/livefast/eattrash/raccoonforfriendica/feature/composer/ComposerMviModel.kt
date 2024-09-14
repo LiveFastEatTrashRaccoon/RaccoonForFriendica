@@ -17,6 +17,16 @@ sealed interface ComposerFieldType {
     data object Body : ComposerFieldType
 }
 
+sealed interface PublicationType {
+    data object Default : PublicationType
+
+    data class Scheduled(
+        val date: String,
+    ) : PublicationType
+
+    data object Draft : PublicationType
+}
+
 interface ComposerMviModel :
     ScreenModel,
     MviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect> {
@@ -115,6 +125,10 @@ interface ComposerMviModel :
         data class GalleryAlbumSelected(
             val album: String,
         ) : Intent
+
+        data class ChangePublicationType(
+            val type: PublicationType,
+        ) : Intent
     }
 
     data class State(
@@ -150,16 +164,15 @@ interface ComposerMviModel :
         val galleryCurrentAlbumPhotos: List<AttachmentModel> = emptyList(),
         val characterLimit: Int? = null,
         val attachmentLimit: Int? = null,
-        val scheduleDate: String? = null,
+        val publicationType: PublicationType = PublicationType.Default,
     )
 
     sealed interface Effect {
         sealed interface ValidationError : Effect {
             data object TextOrImagesMandatory : ValidationError
-
             data object InvalidVisibility : ValidationError
-
             data object CharacterLimitExceeded : ValidationError
+            data object ScheduleDateInThePast : ValidationError
         }
 
         data object Success : Effect
