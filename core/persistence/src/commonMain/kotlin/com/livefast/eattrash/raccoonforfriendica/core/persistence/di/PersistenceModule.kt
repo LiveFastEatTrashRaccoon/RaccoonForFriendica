@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.persistence.di
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.DatabaseProvider
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.DefaultDatabaseProvider
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.AccountDao
+import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.DraftDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
 import org.koin.dsl.module
 
@@ -24,5 +25,9 @@ val corePersistenceModule =
         single<SettingsDao> {
             val dbProvider: DatabaseProvider = get()
             dbProvider.provideDatabase().getSettingsDao()
+        }
+        single<DraftDao> {
+            val dbProvider: DatabaseProvider = get()
+            dbProvider.provideDatabase().getDraftDao()
         }
     }
