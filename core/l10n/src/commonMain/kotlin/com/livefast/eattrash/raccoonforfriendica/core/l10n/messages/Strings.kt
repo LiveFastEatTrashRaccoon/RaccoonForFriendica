@@ -284,6 +284,7 @@ interface Strings {
     val actionPublishDefault: String
     val scheduleDateIndication: String
     val messageScheduleDateInThePast: String
+    val actionSaveDraft: String
 }
 
 object Locales {
