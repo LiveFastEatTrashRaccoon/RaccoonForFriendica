@@ -239,10 +239,10 @@ class UserDetailScreen(
                                         )
                                 }
                             }
-                        var optionsOffset by remember { mutableStateOf(Offset.Zero) }
-                        var optionsMenuOpen by remember { mutableStateOf(false) }
                         if (options.isNotEmpty()) {
                             Box {
+                                var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+                                var optionsMenuOpen by remember { mutableStateOf(false) }
                                 IconButton(
                                     modifier =
                                         Modifier.onGloballyPositioned {

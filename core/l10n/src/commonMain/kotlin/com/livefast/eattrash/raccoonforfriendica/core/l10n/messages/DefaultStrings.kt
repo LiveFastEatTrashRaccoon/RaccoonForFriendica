@@ -308,4 +308,9 @@ internal open class DefaultStrings : Strings {
     override val unpublishedTitle = "Unpublished items"
     override val unpublishedSectionScheduled = "Scheduled"
     override val unpublishedSectionDrafts = "Drafts"
+    override val actionSetScheduleDate = "Set schedule"
+    override val actionUpdateScheduleDate = "Change schedule"
+    override val actionPublishDefault = "Publish now"
+    override val scheduleDateIndication = "Scheduled for:"
+    override val messageScheduleDateInThePast = "Please select a schedule date in the future"
 }

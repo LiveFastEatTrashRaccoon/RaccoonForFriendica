@@ -85,7 +85,10 @@ internal fun MediaAlbumItem(
                         val creationDate = album.created
                         if (creationDate != null) {
                             val formattedDate =
-                                getFormattedDate(iso8601Timestamp = creationDate, format = "dd/MM/yy")
+                                getFormattedDate(
+                                    iso8601Timestamp = creationDate,
+                                    format = "dd/MM/yy",
+                                )
                             append(formattedDate)
                         }
                         if (isNotEmpty()) {

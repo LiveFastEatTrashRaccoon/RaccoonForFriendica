@@ -319,4 +319,9 @@ internal val ItStrings =
         override val unpublishedTitle = "Non pubblicati"
         override val unpublishedSectionScheduled = "Schedulati"
         override val unpublishedSectionDrafts = "Bozze"
+        override val actionSetScheduleDate = "Imposta schedulazione"
+        override val actionUpdateScheduleDate = "Modifica schedulazione"
+        override val actionPublishDefault = "Pubblica ora"
+        override val scheduleDateIndication = "Schedulato per il:"
+        override val messageScheduleDateInThePast = "Selezionare una data di schedulazione futura"
     }

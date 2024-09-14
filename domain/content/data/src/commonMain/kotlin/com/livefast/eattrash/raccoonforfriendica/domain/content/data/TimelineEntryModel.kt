@@ -75,4 +75,4 @@ val TimelineEntryModel.safeKey: String
 val TimelineEntryModel.isNsfw: Boolean get() = reblog?.sensitive ?: sensitive
 
 val Duration.isOldEntry: Boolean
-    get() = this < (-30).days
+    get() = this > 30.days

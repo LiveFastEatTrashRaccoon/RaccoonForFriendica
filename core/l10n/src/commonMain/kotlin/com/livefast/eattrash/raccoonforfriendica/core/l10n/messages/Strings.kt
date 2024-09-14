@@ -279,6 +279,11 @@ interface Strings {
     val unpublishedTitle: String
     val unpublishedSectionScheduled: String
     val unpublishedSectionDrafts: String
+    val actionSetScheduleDate: String
+    val actionUpdateScheduleDate: String
+    val actionPublishDefault: String
+    val scheduleDateIndication: String
+    val messageScheduleDateInThePast: String
 }
 
 object Locales {

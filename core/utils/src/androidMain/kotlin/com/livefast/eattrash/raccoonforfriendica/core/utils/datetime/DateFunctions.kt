@@ -1,10 +1,16 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.datetime
 
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.time.Period
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAccessor
+import java.util.Calendar
+import java.util.GregorianCalendar
 import java.util.Locale
 import java.util.TimeZone
 import kotlin.math.abs
@@ -20,19 +26,65 @@ private fun getDateTimeFormatter(pattern: String) =
         .withLocale(Locale.US)
         .withZone(TimeZone.getTimeZone("UTC").toZoneId())
 
-private val safeFormatter = getDateTimeFormatter("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
+private val defaultFormatter = getDateTimeFormatter("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
+private val backupFormatter = getDateTimeFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
-actual fun Long.toIso8601Timestamp(): String? {
-    val date = LocalDateTime.ofEpochSecond(this, 0, ZoneOffset.UTC)
-    return safeFormatter.format(date)
+private fun String.tryParse(): TemporalAccessor? {
+    var res: TemporalAccessor? =
+        runCatching { defaultFormatter.parse(this) }.getOrNull()
+    if (res == null) {
+        res = runCatching { backupFormatter.parse(this) }.getOrNull()
+    }
+    return res
+}
+
+private fun getDateFromIso8601Timestamp(string: String): ZonedDateTime = ZonedDateTime.parse(string)
+
+actual fun Long.toIso8601Timestamp(withLocalTimezone: Boolean): String? {
+    val offset =
+        if (withLocalTimezone) {
+            OffsetDateTime.now().offset
+        } else {
+            ZoneOffset.UTC
+        }
+    val date = LocalDateTime.ofEpochSecond(this / 1000, 0, offset)
+    return defaultFormatter.format(date)
+}
+
+actual fun String.toEpochMillis(): Long {
+    val accessor = tryParse() ?: return 0
+    val instant = Instant.from(accessor)
+    return Instant.EPOCH.until(instant, ChronoUnit.MILLIS)
+}
+
+actual fun Long.concatDateWithTime(
+    hours: Int,
+    minutes: Int,
+    seconds: Int,
+): Long {
+    val calendar = GregorianCalendar.getInstance()
+    calendar.timeInMillis = this
+    calendar.set(Calendar.HOUR, hours)
+    calendar.set(Calendar.MINUTE, minutes)
+    calendar.set(Calendar.SECOND, seconds)
+    calendar.set(Calendar.MILLISECOND, 0)
+    return calendar.timeInMillis
 }
 
 actual fun getFormattedDate(
     iso8601Timestamp: String,
     format: String,
+    withLocalTimezone: Boolean,
 ): String {
     val date = getDateFromIso8601Timestamp(iso8601Timestamp)
-    val formatter = DateTimeFormatter.ofPattern(format)
+    val formatter =
+        DateTimeFormatter.ofPattern(format).run {
+            if (withLocalTimezone) {
+                withZone(ZoneOffset.systemDefault())
+            } else {
+                this
+            }
+        }
     return date.format(formatter)
 }
 
@@ -41,8 +93,10 @@ actual fun parseDate(
     format: String,
 ): String =
     getDateTimeFormatter(format)
-        .parse(value)
-        ?.let { safeFormatter.format(it) }
+        .runCatching {
+            parse(value)
+        }.getOrNull()
+        ?.let { defaultFormatter.format(it) }
         .orEmpty()
 
 actual fun getPrettyDate(
@@ -111,17 +165,31 @@ actual fun getPrettyDate(
 actual fun getDurationFromNowToDate(iso8601Timestamp: String): Duration? =
     runCatching {
         val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
-        val now = LocalDateTime.now()
-        val duration = JavaDuration.between(date, now)
+        val now = ZonedDateTime.now()
+        val duration = JavaDuration.between(now, date)
         duration.toKotlinDuration()
     }.getOrNull()
 
 actual fun getDurationFromDateToNow(iso8601Timestamp: String): Duration? =
     runCatching {
         val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
-        val now = LocalDateTime.now()
-        val duration = JavaDuration.between(now, date)
+        val now = ZonedDateTime.now()
+        val duration = JavaDuration.between(date, now)
         duration.toKotlinDuration()
     }.getOrNull()
 
-private fun getDateFromIso8601Timestamp(string: String): ZonedDateTime = ZonedDateTime.parse(string)
+actual fun isToday(iso8601Timestamp: String): Boolean {
+    val millis = iso8601Timestamp.toEpochMillis()
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = millis
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    calendar.timeInMillis = epochMillis()
+    val yearNow = calendar.get(Calendar.YEAR)
+    val monthNow = calendar.get(Calendar.MONTH)
+    val dayNow = calendar.get(Calendar.DAY_OF_MONTH)
+
+    return year == yearNow && month == monthNow && day == dayNow
+}

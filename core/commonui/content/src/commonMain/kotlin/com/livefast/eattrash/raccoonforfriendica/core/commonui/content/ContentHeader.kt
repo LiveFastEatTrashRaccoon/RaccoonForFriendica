@@ -102,7 +102,12 @@ fun ContentHeader(
                             if (isNotEmpty()) {
                                 append(" • ")
                             }
-                            append(getFormattedDate(scheduleDate, "dd/MM/yy HH:mm:ss"))
+                            append(
+                                getFormattedDate(
+                                    iso8601Timestamp = scheduleDate,
+                                    format = "dd/MM/yy HH:mm:ss",
+                                ),
+                            )
                         } else if (!date.isNullOrBlank()) {
                             if (isNotEmpty()) {
                                 append(" • ")

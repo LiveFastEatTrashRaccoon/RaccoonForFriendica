@@ -10,7 +10,21 @@ expect fun epochMillis(): Long
 /**
  * Convert from a timestamp (in milliseconds) to an ISO-8601 string date.
  */
-expect fun Long.toIso8601Timestamp(): String?
+expect fun Long.toIso8601Timestamp(withLocalTimezone: Boolean = true): String?
+
+/**
+ * Convert from an ISO-8601 string date to a timestamp (in milliseconds).
+ */
+expect fun String.toEpochMillis(): Long
+
+/**
+ * Updates the time part of a timestamp (in milliseconds).
+ */
+expect fun Long.concatDateWithTime(
+    hours: Int,
+    minutes: Int,
+    seconds: Int,
+): Long
 
 /**
  * Converts a date (in the ISO 8601 format) to another given format.
@@ -18,6 +32,7 @@ expect fun Long.toIso8601Timestamp(): String?
 expect fun getFormattedDate(
     iso8601Timestamp: String,
     format: String,
+    withLocalTimezone: Boolean = true,
 ): String
 
 /**
@@ -50,3 +65,8 @@ expect fun getDurationFromNowToDate(iso8601Timestamp: String): Duration?
  * Get the time from now a past date to now.
  */
 expect fun getDurationFromDateToNow(iso8601Timestamp: String): Duration?
+
+/**
+ * Determines whether the date represented in the ISO-8601 string belongs to the current day
+ */
+expect fun isToday(iso8601Timestamp: String): Boolean
