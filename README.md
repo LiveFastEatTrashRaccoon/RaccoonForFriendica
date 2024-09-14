@@ -117,7 +117,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] direct messages
 - [x] photo gallery
 - [x] advanced media visualization (videos, GIFs, multiple images)
-- [ ] scheduled posts
+- [x] scheduled posts and drafts
 - [ ] custom emojis
 
 ## Technologies used
