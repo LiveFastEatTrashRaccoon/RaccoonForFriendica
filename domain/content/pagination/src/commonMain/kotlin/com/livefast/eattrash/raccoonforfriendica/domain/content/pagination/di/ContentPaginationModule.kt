@@ -90,6 +90,7 @@ val domainContentPaginationModule =
         factory<UnpublishedPaginationManager> {
             DefaultUnpublishedPaginationManager(
                 scheduledEntryRepository = get(),
+                draftRepository = get(),
             )
         }
     }
