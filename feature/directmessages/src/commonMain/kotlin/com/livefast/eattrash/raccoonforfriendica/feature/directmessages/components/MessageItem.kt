@@ -26,8 +26,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
-import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormattedDate
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.isToday
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 
 @Composable
@@ -124,13 +124,12 @@ fun MessageItem(
                         )
                         val date = message.created
                         if (withDate && date != null) {
-                            val moreThanOneDay =
-                                (getDurationFromDateToNow(date)?.inWholeDays ?: 0) < -1
+                            val isDayDifferent = !isToday(date)
                             val dateString =
                                 getFormattedDate(
                                     iso8601Timestamp = date,
                                     format =
-                                        if (moreThanOneDay) {
+                                        if (isDayDifferent) {
                                             "dd/MM/yy • HH:mm"
                                         } else {
                                             "HH:mm"
