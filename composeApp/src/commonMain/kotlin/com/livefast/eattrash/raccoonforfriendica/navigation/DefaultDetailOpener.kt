@@ -171,6 +171,7 @@ class DefaultDetailOpener(
         val screen =
             ComposerScreen(
                 scheduledPostId = entry.id.takeIf { type == UnpublishedType.Scheduled },
+                draftId = entry.id.takeIf { type == UnpublishedType.Drafts },
             )
         navigationCoordinator.push(screen)
     }
