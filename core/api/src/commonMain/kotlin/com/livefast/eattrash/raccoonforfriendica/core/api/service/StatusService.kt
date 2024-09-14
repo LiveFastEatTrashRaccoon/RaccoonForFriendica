@@ -114,7 +114,7 @@ interface StatusService {
     @DELETE("v1/statuses/{id}")
     suspend fun delete(
         @Path("id") id: String,
-    ): Status
+    )
 
     @GET("v1/scheduled_statuses")
     suspend fun getScheduled(
