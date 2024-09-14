@@ -19,6 +19,8 @@ val featureComposerModule =
                 albumPhotoPaginationManager = get(),
                 entryCache = get(),
                 scheduledEntryRepository = get(),
+                draftRepository = get(),
+                notificationCenter = get(),
             )
         }
     }

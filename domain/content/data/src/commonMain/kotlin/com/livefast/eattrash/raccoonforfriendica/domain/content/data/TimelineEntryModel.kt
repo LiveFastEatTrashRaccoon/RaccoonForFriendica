@@ -13,7 +13,6 @@ data class TimelineEntryModel(
     val content: String,
     val created: String? = null,
     val creator: UserModel? = null,
-    val edited: String? = null,
     val favorite: Boolean = false,
     @Transient
     val favoriteLoading: Boolean = false,

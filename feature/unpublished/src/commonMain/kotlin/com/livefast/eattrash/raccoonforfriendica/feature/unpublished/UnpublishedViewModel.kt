@@ -2,10 +2,13 @@ package com.livefast.eattrash.raccoonforfriendica.feature.unpublished
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import kotlinx.coroutines.flow.launchIn
@@ -16,12 +19,19 @@ class UnpublishedViewModel(
     private val paginationManager: UnpublishedPaginationManager,
     private val identityRepository: IdentityRepository,
     private val scheduledEntryRepository: ScheduledEntryRepository,
+    private val draftRepository: DraftRepository,
+    private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<UnpublishedMviModel.Intent, UnpublishedMviModel.State, UnpublishedMviModel.Effect>(
         initialState = UnpublishedMviModel.State(),
     ),
     UnpublishedMviModel {
     init {
         screenModelScope.launch {
+            notificationCenter
+                .subscribe(DraftDeletedEvent::class)
+                .onEach { event ->
+                    removeEntryFromState(event.id)
+                }.launchIn(this)
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUser = currentUser) }
@@ -123,7 +133,7 @@ class UnpublishedViewModel(
             val success =
                 when (currentState.section) {
                     UnpublishedType.Scheduled -> scheduledEntryRepository.delete(entryId)
-                    else -> false
+                    UnpublishedType.Drafts -> draftRepository.delete(entryId)
                 }
             if (success) {
                 removeEntryFromState(entryId)

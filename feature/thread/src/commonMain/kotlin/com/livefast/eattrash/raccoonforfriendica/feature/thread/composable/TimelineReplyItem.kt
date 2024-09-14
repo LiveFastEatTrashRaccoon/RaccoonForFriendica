@@ -115,8 +115,8 @@ fun TimelineReplyItem(
                     ContentHeader(
                         modifier = Modifier.weight(1f),
                         user = entryToDisplay.creator,
-                        date = entryToDisplay.edited ?: entryToDisplay.created,
-                        isEdited = entryToDisplay.edited != null,
+                        date = entryToDisplay.updated ?: entryToDisplay.created,
+                        isEdited = entryToDisplay.updated != null,
                         onOpenUser = onOpenUser,
                     )
                     if (options.isNotEmpty()) {

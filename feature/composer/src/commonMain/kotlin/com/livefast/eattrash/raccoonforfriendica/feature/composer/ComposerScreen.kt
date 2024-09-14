@@ -105,6 +105,7 @@ class ComposerScreen(
     private val groupHandle: String? = null,
     private val editedPostId: String? = null,
     private val scheduledPostId: String? = null,
+    private val draftId: String? = null,
 ) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -144,6 +145,8 @@ class ComposerScreen(
 
         LaunchedEffect(model) {
             when {
+                draftId != null ->
+                    model.reduce(ComposerMviModel.Intent.LoadDraft(draftId))
                 scheduledPostId != null ->
                     model.reduce(ComposerMviModel.Intent.LoadScheduled(scheduledPostId))
 
@@ -219,13 +222,20 @@ class ComposerScreen(
                             buildList {
                                 when (uiState.publicationType) {
                                     is PublicationType.Scheduled -> {
+                                        this += OptionId.SaveDraft.toOption()
                                         this += OptionId.ChangeSchedule.toOption()
                                         if (!isBeingEdited) {
                                             this += OptionId.PublishDefault.toOption()
                                         }
                                     }
 
-                                    else -> {
+                                    PublicationType.Draft -> {
+                                        this += OptionId.SetSchedule.toOption()
+                                        this += OptionId.PublishDefault.toOption()
+                                    }
+
+                                    PublicationType.Default -> {
+                                        this += OptionId.SaveDraft.toOption()
                                         this += OptionId.SetSchedule.toOption()
                                     }
                                 }
@@ -286,6 +296,13 @@ class ComposerScreen(
                                                     model.reduce(
                                                         ComposerMviModel.Intent.ChangePublicationType(
                                                             PublicationType.Default,
+                                                        ),
+                                                    )
+
+                                                OptionId.SaveDraft ->
+                                                    model.reduce(
+                                                        ComposerMviModel.Intent.ChangePublicationType(
+                                                            PublicationType.Draft,
                                                         ),
                                                     )
 
@@ -432,7 +449,7 @@ class ComposerScreen(
                         },
                     )
 
-                    // character count
+                    // schedule date and character count
                     if (uiState.characterLimit != null) {
                         Row(
                             modifier =
@@ -442,25 +459,26 @@ class ComposerScreen(
                                     end = Spacing.s,
                                 ),
                         ) {
-                            when (val type = uiState.publicationType) {
-                                is PublicationType.Scheduled -> {
-                                    Text(
-                                        text =
-                                            buildString {
-                                                append(LocalStrings.current.scheduleDateIndication)
-                                                append(" ")
-                                                append(
-                                                    getFormattedDate(
-                                                        iso8601Timestamp = type.date,
-                                                        format = "dd/MM/yy HH:mm",
-                                                    ),
-                                                )
-                                            },
-                                        style = MaterialTheme.typography.labelSmall,
-                                    )
+                            val date =
+                                when (val type = uiState.publicationType) {
+                                    is PublicationType.Scheduled -> type.date
+                                    else -> null
                                 }
-
-                                else -> Unit
+                            if (date != null) {
+                                Text(
+                                    text =
+                                        buildString {
+                                            append(LocalStrings.current.scheduleDateIndication)
+                                            append(" ")
+                                            append(
+                                                getFormattedDate(
+                                                    iso8601Timestamp = date,
+                                                    format = "dd/MM/yy HH:mm",
+                                                ),
+                                            )
+                                        },
+                                    style = MaterialTheme.typography.labelSmall,
+                                )
                             }
                             Spacer(modifier = Modifier.weight(1f))
                             Text(

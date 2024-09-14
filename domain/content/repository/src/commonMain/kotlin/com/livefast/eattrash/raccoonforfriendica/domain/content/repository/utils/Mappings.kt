@@ -74,7 +74,6 @@ internal fun Status.toModel() =
         card = card?.toModel(),
         created = createdAt,
         creator = account?.toModel(),
-        edited = editedAt,
         favorite = favourited,
         favoriteCount = favoritesCount,
         lang = lang,

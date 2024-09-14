@@ -31,6 +31,8 @@ sealed interface OptionId {
     data object ChangeSchedule : OptionId
 
     data object PublishDefault : OptionId
+
+    data object SaveDraft : OptionId
 }
 
 @Composable
@@ -50,6 +52,7 @@ private fun OptionId.toReadableName(): String =
         OptionId.SetSchedule -> LocalStrings.current.actionSetScheduleDate
         OptionId.ChangeSchedule -> LocalStrings.current.actionUpdateScheduleDate
         OptionId.PublishDefault -> LocalStrings.current.actionPublishDefault
+        OptionId.SaveDraft -> LocalStrings.current.actionSaveDraft
     }
 
 @Composable

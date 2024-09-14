@@ -34,6 +34,7 @@ kotlin {
                 implementation(projects.core.api)
                 implementation(projects.core.utils)
 
+                implementation(projects.core.persistence)
                 implementation(projects.domain.content.data)
             }
         }

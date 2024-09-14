@@ -11,6 +11,8 @@ val featureUnpublishedModule =
                 paginationManager = get(),
                 identityRepository = get(),
                 scheduledEntryRepository = get(),
+                draftRepository = get(),
+                notificationCenter = get(),
             )
         }
     }

@@ -17,3 +17,7 @@ data class TagUpdatedEvent(
 ) : NotificationCenterEvent
 
 data object AlbumsUpdatedEvent : NotificationCenterEvent
+
+data class DraftDeletedEvent(
+    val id: String,
+) : NotificationCenterEvent

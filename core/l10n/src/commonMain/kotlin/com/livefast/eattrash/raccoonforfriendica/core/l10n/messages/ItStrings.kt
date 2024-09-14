@@ -324,4 +324,5 @@ internal val ItStrings =
         override val actionPublishDefault = "Pubblica ora"
         override val scheduleDateIndication = "Schedulato per il:"
         override val messageScheduleDateInThePast = "Selezionare una data di schedulazione futura"
+        override val actionSaveDraft = "Salva bozza"
     }

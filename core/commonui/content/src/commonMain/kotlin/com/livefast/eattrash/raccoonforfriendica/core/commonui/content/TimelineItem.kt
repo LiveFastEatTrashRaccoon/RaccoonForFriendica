@@ -113,9 +113,9 @@ fun TimelineItem(
                 ContentHeader(
                     modifier = Modifier.weight(1f),
                     user = entryToDisplay.creator,
-                    date = entryToDisplay.edited ?: entryToDisplay.created,
+                    date = entryToDisplay.updated ?: entryToDisplay.created,
                     scheduleDate = entryToDisplay.scheduled,
-                    isEdited = entryToDisplay.edited != null,
+                    isEdited = entryToDisplay.updated != null,
                     onOpenUser = onOpenUser,
                 )
                 if (options.isNotEmpty()) {

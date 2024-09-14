@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultCirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultDirectMessageRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultDraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultInboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultLocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNodeInfoRepository
@@ -19,6 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
@@ -110,6 +112,12 @@ val domainContentRepositoryModule =
         }
         single<ScheduledEntryRepository> {
             DefaultScheduledEntryRepository(
+                provider = get(named("default")),
+            )
+        }
+        single<DraftRepository> {
+            DefaultDraftRepository(
+                draftDao = get(),
                 provider = get(named("default")),
             )
         }

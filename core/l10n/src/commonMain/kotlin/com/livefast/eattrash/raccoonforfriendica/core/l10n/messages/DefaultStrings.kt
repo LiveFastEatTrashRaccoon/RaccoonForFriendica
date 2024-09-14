@@ -313,4 +313,5 @@ internal open class DefaultStrings : Strings {
     override val actionPublishDefault = "Publish now"
     override val scheduleDateIndication = "Scheduled for:"
     override val messageScheduleDateInThePast = "Please select a schedule date in the future"
+    override val actionSaveDraft = "Save draft"
 }
