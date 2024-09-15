@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageS
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.InstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.MediaService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoAlbumService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
@@ -20,6 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.createDirectMe
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createFollowRequestService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createInstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createListService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createMediaService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createNotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoAlbumService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoService
@@ -65,6 +67,7 @@ internal class DefaultServiceProvider(
     override lateinit var followRequests: FollowRequestService
     override lateinit var instance: InstanceService
     override lateinit var lists: ListService
+    override lateinit var media: MediaService
     override lateinit var notifications: NotificationService
     override lateinit var photo: PhotoService
     override lateinit var photoAlbum: PhotoAlbumService
@@ -159,6 +162,7 @@ internal class DefaultServiceProvider(
         followRequests = ktorfit.createFollowRequestService()
         instance = ktorfit.createInstanceService()
         lists = ktorfit.createListService()
+        media = ktorfit.createMediaService()
         notifications = ktorfit.createNotificationService()
         photo = ktorfit.createPhotoService()
         photoAlbum = ktorfit.createPhotoAlbumService()
