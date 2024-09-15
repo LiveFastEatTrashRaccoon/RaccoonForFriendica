@@ -17,6 +17,7 @@ val featureTimelineModule =
                 circlesRepository = get(),
                 hapticFeedback = get(),
                 notificationCenter = get(),
+                imagePreloadManager = get(),
             )
         }
     }

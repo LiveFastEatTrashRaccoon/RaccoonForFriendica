@@ -15,6 +15,7 @@ val featureSearchModule =
                 identityRepository = get(),
                 hapticFeedback = get(),
                 notificationCenter = get(),
+                imagePreloadManager = get(),
             )
         }
     }

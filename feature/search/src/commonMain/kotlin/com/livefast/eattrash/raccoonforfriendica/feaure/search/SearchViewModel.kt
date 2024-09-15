@@ -5,8 +5,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
@@ -37,6 +39,7 @@ class SearchViewModel(
     private val identityRepository: IdentityRepository,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
+    private val imagePreloadManager: ImagePreloadManager,
 ) : DefaultMviModel<SearchMviModel.Intent, SearchMviModel.State, SearchMviModel.Effect>(
         initialState = SearchMviModel.State(),
     ),
@@ -158,6 +161,7 @@ class SearchViewModel(
 
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()
+        entries.mapNotNull { (it as? ExploreItemModel.Entry)?.entry }.preloadImages()
         updateState {
             it.copy(
                 items = entries,
@@ -167,6 +171,32 @@ class SearchViewModel(
                 initial = false,
                 refreshing = false,
             )
+        }
+    }
+
+    private fun List<TimelineEntryModel>.preloadImages() {
+        flatMap { entry ->
+            val entryToDisplay = entry.reblog ?: entry
+            buildList {
+                entryToDisplay.attachments
+                    .mapNotNull { attachment ->
+                        if (attachment.type != MediaType.Image) {
+                            null
+                        } else {
+                            attachment.url.takeUnless { it.isNotBlank() }
+                        }
+                    }.also { urls ->
+                        addAll(urls)
+                    }
+                entryToDisplay.card
+                    ?.image
+                    ?.takeUnless { it.isNotBlank() }
+                    ?.also { url ->
+                        add(url)
+                    }
+            }
+        }.forEach { url ->
+            imagePreloadManager.preload(url)
         }
     }
 
@@ -304,13 +334,14 @@ class SearchViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        reblogged = newEntry.reblogged,
-                        reblogCount = newEntry.reblogCount,
-                        reblogLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            reblogged = newEntry.reblogged,
+                            reblogCount = newEntry.reblogCount,
+                            reblogLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -338,13 +369,14 @@ class SearchViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        favorite = newEntry.favorite,
-                        favoriteCount = newEntry.favoriteCount,
-                        favoriteLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            favorite = newEntry.favorite,
+                            favoriteCount = newEntry.favoriteCount,
+                            favoriteLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -372,12 +404,13 @@ class SearchViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        bookmarked = newEntry.bookmarked,
-                        bookmarkLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            bookmarked = newEntry.bookmarked,
+                            bookmarkLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {

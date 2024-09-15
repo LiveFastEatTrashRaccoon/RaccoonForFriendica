@@ -5,7 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
@@ -29,6 +31,7 @@ class MyAccountViewModel(
     private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
+    private val imagePreloadManager: ImagePreloadManager,
 ) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
         initialState = MyAccountMviModel.State(),
     ),
@@ -151,6 +154,7 @@ class MyAccountViewModel(
 
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()
+        entries.preloadImages()
         updateState {
             it.copy(
                 entries = entries,
@@ -159,6 +163,32 @@ class MyAccountViewModel(
                 initial = false,
                 refreshing = false,
             )
+        }
+    }
+
+    private fun List<TimelineEntryModel>.preloadImages() {
+        flatMap { entry ->
+            val entryToDisplay = entry.reblog ?: entry
+            buildList {
+                entryToDisplay.attachments
+                    .mapNotNull { attachment ->
+                        if (attachment.type != MediaType.Image) {
+                            null
+                        } else {
+                            attachment.url.takeUnless { it.isNotBlank() }
+                        }
+                    }.also { urls ->
+                        addAll(urls)
+                    }
+                entryToDisplay.card
+                    ?.image
+                    ?.takeUnless { it.isNotBlank() }
+                    ?.also { url ->
+                        add(url)
+                    }
+            }
+        }.forEach { url ->
+            imagePreloadManager.preload(url)
         }
     }
 

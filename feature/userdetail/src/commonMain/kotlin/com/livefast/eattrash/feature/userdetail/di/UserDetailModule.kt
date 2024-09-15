@@ -17,8 +17,9 @@ val featureUserDetailModule =
                 identityRepository = get(),
                 settingsRepository = get(),
                 hapticFeedback = get(),
-                notificationCenter = get(),
                 userCache = get(),
+                notificationCenter = get(),
+                imagePreloadManager = get(),
             )
         }
         factory<ForumListMviModel> { params ->
@@ -30,8 +31,9 @@ val featureUserDetailModule =
                 identityRepository = get(),
                 settingsRepository = get(),
                 hapticFeedback = get(),
-                notificationCenter = get(),
                 userCache = get(),
+                notificationCenter = get(),
+                imagePreloadManager = get(),
             )
         }
     }

@@ -2,7 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.feature.inbox
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -27,6 +29,7 @@ class InboxViewModel(
     private val notificationRepository: NotificationRepository,
     private val inboxManager: InboxManager,
     private val hapticFeedback: HapticFeedback,
+    private val imagePreloadManager: ImagePreloadManager,
 ) : DefaultMviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>(
         initialState = InboxMviModel.State(),
     ),
@@ -98,6 +101,7 @@ class InboxViewModel(
         val wasRefreshing = uiState.value.refreshing
         updateState { it.copy(loading = true) }
         val notifications = paginationManager.loadNextPage()
+        notifications.preloadImages()
         updateState {
             it.copy(
                 notifications = notifications,
@@ -109,6 +113,41 @@ class InboxViewModel(
         }
         if (wasRefreshing) {
             emitEffect(InboxMviModel.Effect.BackToTop)
+        }
+    }
+
+    private fun List<NotificationModel>.preloadImages() {
+        flatMap { notification ->
+            val entry = notification.entry
+            val user = notification.user
+            buildList {
+                entry
+                    ?.attachments
+                    ?.mapNotNull { attachment ->
+                        if (attachment.type != MediaType.Image) {
+                            null
+                        } else {
+                            attachment.url.takeUnless { it.isNotBlank() }
+                        }
+                    }?.also { urls ->
+                        addAll(urls)
+                    }
+                entry
+                    ?.card
+                    ?.image
+                    ?.takeUnless { it.isNotBlank() }
+                    ?.also { url ->
+                        add(url)
+                    }
+                user
+                    ?.header
+                    ?.takeUnless { it.isNotBlank() }
+                    ?.also { url ->
+                        add(url)
+                    }
+            }
+        }.forEach { url ->
+            imagePreloadManager.preload(url)
         }
     }
 

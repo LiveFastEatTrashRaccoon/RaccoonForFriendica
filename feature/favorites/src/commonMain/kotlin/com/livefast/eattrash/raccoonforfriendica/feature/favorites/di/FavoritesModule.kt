@@ -16,6 +16,7 @@ val featureFavoritesModule =
                 userRepository = get(),
                 hapticFeedback = get(),
                 notificationCenter = get(),
+                imagePreloadManager = get(),
             )
         }
     }

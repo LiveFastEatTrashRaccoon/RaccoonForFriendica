@@ -35,6 +35,7 @@ val featureProfileModule =
                 settingsRepository = get(),
                 hapticFeedback = get(),
                 notificationCenter = get(),
+                imagePreloadManager = get(),
             )
         }
         factory<AnonymousMviModel> {

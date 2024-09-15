@@ -6,7 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSecti
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
@@ -31,8 +33,9 @@ class UserDetailViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
-    private val notificationCenter: NotificationCenter,
     private val userCache: LocalItemCache<UserModel>,
+    private val notificationCenter: NotificationCenter,
+    private val imagePreloadManager: ImagePreloadManager,
 ) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
         initialState = UserDetailMviModel.State(),
     ),
@@ -156,6 +159,7 @@ class UserDetailViewModel(
 
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()
+        entries.preloadImages()
         updateState {
             it.copy(
                 entries = entries,
@@ -164,6 +168,32 @@ class UserDetailViewModel(
                 initial = false,
                 refreshing = false,
             )
+        }
+    }
+
+    private fun List<TimelineEntryModel>.preloadImages() {
+        flatMap { entry ->
+            val entryToDisplay = entry.reblog ?: entry
+            buildList {
+                entryToDisplay.attachments
+                    .mapNotNull { attachment ->
+                        if (attachment.type != MediaType.Image) {
+                            null
+                        } else {
+                            attachment.url.takeUnless { it.isNotBlank() }
+                        }
+                    }.also { urls ->
+                        addAll(urls)
+                    }
+                entryToDisplay.card
+                    ?.image
+                    ?.takeUnless { it.isNotBlank() }
+                    ?.also { url ->
+                        add(url)
+                    }
+            }
+        }.forEach { url ->
+            imagePreloadManager.preload(url)
         }
     }
 
@@ -257,13 +287,14 @@ class UserDetailViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        reblogged = newEntry.reblogged,
-                        reblogCount = newEntry.reblogCount,
-                        reblogLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            reblogged = newEntry.reblogged,
+                            reblogCount = newEntry.reblogCount,
+                            reblogLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -291,13 +322,14 @@ class UserDetailViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        favorite = newEntry.favorite,
-                        favoriteCount = newEntry.favoriteCount,
-                        favoriteLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            favorite = newEntry.favorite,
+                            favoriteCount = newEntry.favoriteCount,
+                            favoriteLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -325,12 +357,13 @@ class UserDetailViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        bookmarked = newEntry.bookmarked,
-                        bookmarkLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            bookmarked = newEntry.bookmarked,
+                            bookmarkLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {

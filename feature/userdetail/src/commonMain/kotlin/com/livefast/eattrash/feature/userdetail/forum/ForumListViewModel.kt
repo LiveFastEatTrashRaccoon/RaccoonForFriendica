@@ -4,7 +4,9 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
@@ -27,8 +29,9 @@ class ForumListViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
-    private val notificationCenter: NotificationCenter,
     private val userCache: LocalItemCache<UserModel>,
+    private val notificationCenter: NotificationCenter,
+    private val imagePreloadManager: ImagePreloadManager,
 ) : DefaultMviModel<ForumListMviModel.Intent, ForumListMviModel.State, ForumListMviModel.Effect>(
         initialState = ForumListMviModel.State(),
     ),
@@ -117,6 +120,7 @@ class ForumListViewModel(
 
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()
+        entries.preloadImages()
         updateState {
             it.copy(
                 entries = entries,
@@ -125,6 +129,32 @@ class ForumListViewModel(
                 initial = false,
                 refreshing = false,
             )
+        }
+    }
+
+    private fun List<TimelineEntryModel>.preloadImages() {
+        flatMap { entry ->
+            val entryToDisplay = entry.reblog ?: entry
+            buildList {
+                entryToDisplay.attachments
+                    .mapNotNull { attachment ->
+                        if (attachment.type != MediaType.Image) {
+                            null
+                        } else {
+                            attachment.url.takeUnless { it.isNotBlank() }
+                        }
+                    }.also { urls ->
+                        addAll(urls)
+                    }
+                entryToDisplay.card
+                    ?.image
+                    ?.takeUnless { it.isNotBlank() }
+                    ?.also { url ->
+                        add(url)
+                    }
+            }
+        }.forEach { url ->
+            imagePreloadManager.preload(url)
         }
     }
 
