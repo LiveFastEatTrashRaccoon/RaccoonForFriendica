@@ -36,76 +36,82 @@ fun ContentPreview(
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val image = card.image.orEmpty()
     val url = card.url
-    val image = card.image
     val cornerSize = CornerSize.xl
     val contentPadding = 12.dp
+    val title = card.title
+    val description = card.description.takeIf { !it.startsWith(title) }.orEmpty()
+    val hasMediaInfo = image.isNotEmpty() || (card.type == PreviewType.Video && url.isNotEmpty())
+    val hasTextualInfo = title.isNotEmpty() || description.isNotEmpty()
 
-    Column(
-        modifier =
-            modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    if (url.isNotEmpty()) {
-                        onOpen?.invoke(url)
-                    }
-                }.border(
-                    width = Dp.Hairline,
-                    color = ancillaryColor,
-                    shape = RoundedCornerShape(cornerSize),
-                ).padding(
-                    bottom = contentPadding,
-                ),
-        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-    ) {
-        if (!image.isNullOrBlank()) {
-            CustomImage(
-                modifier =
-                    Modifier
-                        .clip(
-                            RoundedCornerShape(
-                                topStart = cornerSize,
-                                topEnd = cornerSize,
-                            ),
-                        ).clickable {
-                            onOpenImage?.invoke(image)
-                        },
-                url = image,
-                quality = FilterQuality.Low,
-                contentScale = ContentScale.FillWidth,
-            )
-        } else if (card.type == PreviewType.Video) {
-            VideoPlayer(
-                modifier =
-                    Modifier.fillMaxWidth().aspectRatio(16 / 9f),
-                url = url,
-            )
-        }
-
+    if (hasMediaInfo || hasTextualInfo) {
         Column(
             modifier =
-                Modifier.padding(
-                    top = Spacing.s,
-                    end = contentPadding,
-                    start = contentPadding,
-                ),
+                modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) {
+                        if (url.isNotEmpty()) {
+                            onOpen?.invoke(url)
+                        }
+                    }.border(
+                        width = Dp.Hairline,
+                        color = ancillaryColor,
+                        shape = RoundedCornerShape(cornerSize),
+                    ).padding(
+                        bottom = contentPadding,
+                    ),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
-            if (card.title.isNotEmpty()) {
-                Text(
-                    text = card.title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = fullColor,
+            if (image.isNotEmpty()) {
+                CustomImage(
+                    modifier =
+                        Modifier
+                            .clip(
+                                RoundedCornerShape(
+                                    topStart = cornerSize,
+                                    topEnd = cornerSize,
+                                ),
+                            ).clickable {
+                                onOpenImage?.invoke(image)
+                            },
+                    url = image,
+                    quality = FilterQuality.Low,
+                    contentScale = ContentScale.FillWidth,
+                )
+            } else if (card.type == PreviewType.Video) {
+                VideoPlayer(
+                    modifier =
+                        Modifier.fillMaxWidth().aspectRatio(16 / 9f),
+                    url = url,
                 )
             }
-            if (card.description.isNotEmpty() && !card.description.contains(card.title)) {
-                Text(
-                    text = card.description,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = ancillaryColor,
-                )
+
+            Column(
+                modifier =
+                    Modifier.padding(
+                        top = if (hasMediaInfo) Spacing.xs else Spacing.s,
+                        end = contentPadding,
+                        start = contentPadding,
+                    ),
+                verticalArrangement = Arrangement.spacedBy(Spacing.s),
+            ) {
+                if (card.title.isNotEmpty()) {
+                    Text(
+                        text = card.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = fullColor,
+                    )
+                }
+                if (card.description.isNotEmpty() && !card.description.startsWith(card.title)) {
+                    Text(
+                        text = card.description,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = ancillaryColor,
+                    )
+                }
             }
         }
     }

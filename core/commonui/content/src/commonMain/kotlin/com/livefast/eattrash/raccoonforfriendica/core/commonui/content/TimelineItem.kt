@@ -270,7 +270,14 @@ fun TimelineItem(
                                     start = contentHorizontalPadding,
                                     end = contentHorizontalPadding,
                                 ),
-                        card = preview.copy(image = preview.image.takeIf { attachments.isEmpty() }),
+                        card =
+                            preview.copy(
+                                title =
+                                    preview.title
+                                        .takeIf { !entryToDisplay.content.startsWith(it) }
+                                        .orEmpty(),
+                                image = preview.image.takeIf { attachments.isEmpty() },
+                        ),
                         onOpen = onOpenUrl,
                         onOpenImage = { url ->
                             onOpenImage?.invoke(listOf(url), 0)
