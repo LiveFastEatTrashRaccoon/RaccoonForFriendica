@@ -13,6 +13,7 @@ val featureUnpublishedModule =
                 scheduledEntryRepository = get(),
                 draftRepository = get(),
                 notificationCenter = get(),
+                imagePreloadManager = get(),
             )
         }
     }

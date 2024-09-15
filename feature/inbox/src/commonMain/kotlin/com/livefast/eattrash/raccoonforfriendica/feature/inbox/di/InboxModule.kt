@@ -15,6 +15,7 @@ val featureInboxModule =
                 notificationRepository = get(),
                 inboxManager = get(),
                 hapticFeedback = get(),
+                imagePreloadManager = get(),
             )
         }
     }

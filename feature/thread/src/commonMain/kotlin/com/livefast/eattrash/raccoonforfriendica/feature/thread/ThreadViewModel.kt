@@ -4,7 +4,9 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
@@ -25,8 +27,9 @@ class ThreadViewModel(
     private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository,
     private val hapticFeedback: HapticFeedback,
-    private val notificationCenter: NotificationCenter,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
+    private val notificationCenter: NotificationCenter,
+    private val imagePreloadManager: ImagePreloadManager,
 ) : DefaultMviModel<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>(
         initialState = ThreadMviModel.State(),
     ),
@@ -99,6 +102,7 @@ class ThreadViewModel(
         }
         val result = populateThreadUseCase(entryId)
         val replies = result.filter { it.id != entryId }
+        replies.preloadImages()
         updateState {
             it.copy(
                 replies = replies,
@@ -117,6 +121,7 @@ class ThreadViewModel(
             // abort and disable load more button
             updateEntryInState(entry.id) { it.copy(loadMoreButtonVisible = false) }
         } else {
+            newReplies.preloadImages()
             val replies = uiState.value.replies.toMutableList()
             val insertIndex = replies.indexOfFirst { it.id == entry.id }
             replies[insertIndex] = replies[insertIndex].copy(loadMoreButtonVisible = false)
@@ -124,6 +129,32 @@ class ThreadViewModel(
             updateState {
                 it.copy(replies = replies)
             }
+        }
+    }
+
+    private fun List<TimelineEntryModel>.preloadImages() {
+        flatMap { entry ->
+            val entryToDisplay = entry.reblog ?: entry
+            buildList {
+                entryToDisplay.attachments
+                    .mapNotNull { attachment ->
+                        if (attachment.type != MediaType.Image) {
+                            null
+                        } else {
+                            attachment.url.takeUnless { it.isNotBlank() }
+                        }
+                    }.also { urls ->
+                        addAll(urls)
+                    }
+                entryToDisplay.card
+                    ?.image
+                    ?.takeUnless { it.isNotBlank() }
+                    ?.also { url ->
+                        add(url)
+                    }
+            }
+        }.forEach { url ->
+            imagePreloadManager.preload(url)
         }
     }
 

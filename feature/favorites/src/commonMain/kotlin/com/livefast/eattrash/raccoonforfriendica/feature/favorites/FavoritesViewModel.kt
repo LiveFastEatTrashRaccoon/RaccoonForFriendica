@@ -4,8 +4,10 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationSpecification
@@ -27,6 +29,7 @@ class FavoritesViewModel(
     private val userRepository: UserRepository,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
+    private val imagePreloadManager: ImagePreloadManager,
 ) : DefaultMviModel<FavoritesMviModel.Intent, FavoritesMviModel.State, FavoritesMviModel.Effect>(
         initialState = FavoritesMviModel.State(),
     ),
@@ -113,6 +116,7 @@ class FavoritesViewModel(
 
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()
+        entries.preloadImages()
         val wasRefreshing = uiState.value.refreshing
         updateState {
             it.copy(
@@ -125,6 +129,32 @@ class FavoritesViewModel(
         }
         if (wasRefreshing) {
             emitEffect(FavoritesMviModel.Effect.BackToTop)
+        }
+    }
+
+    private fun List<TimelineEntryModel>.preloadImages() {
+        flatMap { entry ->
+            val entryToDisplay = entry.reblog ?: entry
+            buildList {
+                entryToDisplay.attachments
+                    .mapNotNull { attachment ->
+                        if (attachment.type != MediaType.Image) {
+                            null
+                        } else {
+                            attachment.url.takeUnless { it.isNotBlank() }
+                        }
+                    }.also { urls ->
+                        addAll(urls)
+                    }
+                entryToDisplay.card
+                    ?.image
+                    ?.takeUnless { it.isNotBlank() }
+                    ?.also { url ->
+                        add(url)
+                    }
+            }
+        }.forEach { url ->
+            imagePreloadManager.preload(url)
         }
     }
 
@@ -178,13 +208,14 @@ class FavoritesViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        reblogged = newEntry.reblogged,
-                        reblogCount = newEntry.reblogCount,
-                        reblogLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            reblogged = newEntry.reblogged,
+                            reblogCount = newEntry.reblogCount,
+                            reblogLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -215,13 +246,14 @@ class FavoritesViewModel(
                     removeEntryFromState(entry.id)
                 } else {
                     updateEntryInState(entry.id) {
-                        it.copy(
-                            favorite = newEntry.favorite,
-                            favoriteCount = newEntry.favoriteCount,
-                            favoriteLoading = false,
-                        ).also { entry ->
-                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                        }
+                        it
+                            .copy(
+                                favorite = newEntry.favorite,
+                                favoriteCount = newEntry.favoriteCount,
+                                favoriteLoading = false,
+                            ).also { entry ->
+                                notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                            }
                     }
                 }
             } else {
@@ -253,12 +285,13 @@ class FavoritesViewModel(
                     removeEntryFromState(entry.id)
                 } else {
                     updateEntryInState(entry.id) {
-                        it.copy(
-                            bookmarked = newEntry.bookmarked,
-                            bookmarkLoading = false,
-                        ).also { entry ->
-                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                        }
+                        it
+                            .copy(
+                                bookmarked = newEntry.bookmarked,
+                                bookmarkLoading = false,
+                            ).also { entry ->
+                                notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                            }
                     }
                 }
             } else {
