@@ -70,7 +70,7 @@ internal class DefaultDraftRepository(
                 mediaIds
                     ?.split(",")
                     ?.mapNotNull { id ->
-                        provider.photo.getBy(id)?.toModel()
+                        provider.media.getBy(id)?.toModel()
                     }.orEmpty(),
             parentId = inReplyToId,
             lang = lang,
