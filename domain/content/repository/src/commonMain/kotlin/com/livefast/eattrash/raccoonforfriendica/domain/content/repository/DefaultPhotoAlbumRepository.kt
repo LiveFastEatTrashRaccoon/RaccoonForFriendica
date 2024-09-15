@@ -62,7 +62,7 @@ internal class DefaultPhotoAlbumRepository(
                 provider.photoAlbum
                     .getPhotos(
                         album = album,
-                        maxId = pageCursor?.toLong(),
+                        maxId = pageCursor,
                         latestFirst = latestFirst,
                         limit = DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }

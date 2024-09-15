@@ -16,7 +16,7 @@ interface PhotoAlbumService {
     @GET("friendica/photoalbum")
     suspend fun getPhotos(
         @Query("album") album: String,
-        @Query("maxId") maxId: Long? = null,
+        @Query("maxId") maxId: String? = null,
         @Query("latest_first") latestFirst: Boolean = false,
         @Query("limit") limit: Int = 20,
     ): List<FriendicaPhoto>
