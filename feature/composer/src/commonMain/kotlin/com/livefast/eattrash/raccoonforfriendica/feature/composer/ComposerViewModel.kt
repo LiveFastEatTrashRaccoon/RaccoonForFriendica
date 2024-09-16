@@ -22,6 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MediaRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
@@ -50,6 +51,7 @@ class ComposerViewModel(
     private val userPaginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
     private val nodeInfoRepository: NodeInfoRepository,
+    private val mediaRepository: MediaRepository,
     private val albumRepository: PhotoAlbumRepository,
     private val albumPhotoPaginationManager: AlbumPhotoPaginationManager,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
@@ -63,6 +65,12 @@ class ComposerViewModel(
     private var uploadJobs = mutableMapOf<String, Job>()
     private var editedPostId: String? = null
     private var draftId: String? = null
+
+    /*
+     * Attachments work differently on Friendica so a flag is needed in order to determine
+     * how attachments will be uploaded/edited/deleted.
+     */
+    private var isFriendica = true
 
     init {
         screenModelScope.launch {
@@ -80,9 +88,10 @@ class ComposerViewModel(
                     updateState { it.copy(author = currentUser) }
                 }.launchIn(this)
             val nodeInfo = nodeInfoRepository.getInfo()
+            isFriendica = nodeInfo?.isFriendica != false
             updateState {
                 it.copy(
-                    hasGallery = nodeInfo?.isFriendica == true,
+                    hasGallery = isFriendica,
                     characterLimit = nodeInfo?.characterLimit,
                     attachmentLimit = nodeInfo?.attachmentLimit,
                 )
@@ -395,7 +404,12 @@ class ComposerViewModel(
                             ),
                 )
             }
-            val attachment = photoRepository.create(byteArray)
+            val attachment =
+                if (isFriendica) {
+                    photoRepository.create(byteArray)
+                } else {
+                    mediaRepository.create(byteArray)
+                }
             if (attachment != null) {
                 updateState {
                     it.copy(
@@ -438,11 +452,19 @@ class ComposerViewModel(
     ) {
         screenModelScope.launch {
             val successful =
-                photoRepository.update(
-                    id = attachment.id,
-                    album = attachment.album.orEmpty(),
-                    alt = description,
-                )
+                if (isFriendica) {
+                    photoRepository.update(
+                        id = attachment.id,
+                        album = attachment.album.orEmpty(),
+                        alt = description,
+                    )
+                } else {
+                    mediaRepository.update(
+                        id = attachment.id,
+                        alt = description,
+                    )
+                }
+
             if (successful) {
                 updateAttachmentInState(attachment.id) {
                     it.copy(description = description)
@@ -454,11 +476,16 @@ class ComposerViewModel(
     private fun removeAttachment(attachment: AttachmentModel) {
         screenModelScope.launch {
             val attachmentId = attachment.id
-            if (attachment.fromGallery || editedPostId != null) {
+            if (attachment.fromGallery || editedPostId != null || draftId != null) {
                 // soft removal
                 removeAttachmentFromState(attachmentId)
             } else {
-                val success = photoRepository.delete(attachmentId)
+                val success =
+                    if (isFriendica) {
+                        photoRepository.delete(attachmentId)
+                    } else {
+                        mediaRepository.delete(attachmentId)
+                    }
                 if (success) {
                     removeAttachmentFromState(attachmentId)
                 }
