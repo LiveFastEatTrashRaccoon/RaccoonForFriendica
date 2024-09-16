@@ -24,6 +24,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayer
+import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 
@@ -36,14 +37,15 @@ fun ContentPreview(
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val type = card.type
     val image = card.image.orEmpty()
     val url = card.url
-    val cornerSize = CornerSize.xl
-    val contentPadding = 12.dp
     val title = card.title
     val description = card.description.takeIf { !it.startsWith(title) }.orEmpty()
-    val hasMediaInfo = image.isNotEmpty() || (card.type == PreviewType.Video && url.isNotEmpty())
+    val hasMediaInfo = image.isNotEmpty() || (type == PreviewType.Video && url.isNotEmpty())
     val hasTextualInfo = title.isNotEmpty() || description.isNotEmpty()
+    val cornerSize = CornerSize.xl
+    val contentPadding = 12.dp
 
     if (hasMediaInfo || hasTextualInfo) {
         Column(
@@ -81,7 +83,7 @@ fun ContentPreview(
                     quality = FilterQuality.Low,
                     contentScale = ContentScale.FillWidth,
                 )
-            } else if (card.type == PreviewType.Video) {
+            } else if (type == PreviewType.Video) {
                 VideoPlayer(
                     modifier =
                         Modifier.fillMaxWidth().aspectRatio(16 / 9f),
@@ -98,16 +100,24 @@ fun ContentPreview(
                     ),
                 verticalArrangement = Arrangement.spacedBy(Spacing.s),
             ) {
-                if (card.title.isNotEmpty()) {
+                if (title.isNotEmpty()) {
+                    val annotatedTitle =
+                        title.parseHtml(
+                            linkColor = MaterialTheme.colorScheme.primary,
+                        )
                     Text(
-                        text = card.title,
+                        text = annotatedTitle,
                         style = MaterialTheme.typography.bodyMedium,
                         color = fullColor,
                     )
                 }
-                if (card.description.isNotEmpty() && !card.description.startsWith(card.title)) {
+                if (description.isNotEmpty() && !description.startsWith(title)) {
+                    val annotatedDescription =
+                        description.parseHtml(
+                            linkColor = MaterialTheme.colorScheme.primary,
+                        )
                     Text(
-                        text = card.description,
+                        text = annotatedDescription,
                         style = MaterialTheme.typography.labelMedium,
                         color = ancillaryColor,
                     )
@@ -116,13 +126,13 @@ fun ContentPreview(
         }
     }
 
-    if (card.type == PreviewType.Link && url.isNotEmpty()) {
+    if (type == PreviewType.Link && url.isNotEmpty()) {
         LinkBanner(
             modifier =
                 modifier.clickable {
                     onOpen?.invoke(url)
                 },
-            url = card.url,
+            url = url,
         )
     }
 }
