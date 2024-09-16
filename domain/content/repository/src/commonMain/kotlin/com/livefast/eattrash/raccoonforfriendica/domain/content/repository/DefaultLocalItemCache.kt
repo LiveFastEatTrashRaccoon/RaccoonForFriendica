@@ -1,39 +1,25 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
+
 internal class DefaultLocalItemCache<T> : LocalItemCache<T> {
-    private val keysSortedByLastAccess = mutableListOf<String>()
-    private val map = mutableMapOf<String, T>()
+    private val cache = LruCache<String, T>(MAX_SIZE)
 
     override fun put(
         key: String,
         value: T,
     ) {
-        if (keysSortedByLastAccess.contains(key)) {
-            keysSortedByLastAccess.remove(key)
-        } else if (keysSortedByLastAccess.size > MAX_SIZE) {
-            keysSortedByLastAccess.lastOrNull()?.also { lastKey ->
-                keysSortedByLastAccess.remove(lastKey)
-                map.remove(lastKey)
-            }
-        }
-        map[key] = value
-        keysSortedByLastAccess.add(0, key)
+        cache.put(key, value)
     }
 
-    override fun get(key: String): T? {
-        if (keysSortedByLastAccess.contains(key)) {
-            keysSortedByLastAccess.remove(key)
-            keysSortedByLastAccess.add(0, key)
-        }
-        return map[key]
-    }
+    override fun get(key: String): T? = cache.get(key)
 
     override fun remove(key: String) {
-        map.remove(key)
+        cache.remove(key)
     }
 
     override fun clear() {
-        map.clear()
+        cache.clear()
     }
 
     companion object {
