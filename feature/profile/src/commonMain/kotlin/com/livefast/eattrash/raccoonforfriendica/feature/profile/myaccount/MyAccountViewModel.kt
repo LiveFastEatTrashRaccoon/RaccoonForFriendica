@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
@@ -334,6 +335,7 @@ class MyAccountViewModel(
         screenModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
+                notificationCenter.send(TimelineEntryDeletedEvent(entryId))
                 removeEntryFromState(entryId)
             } else {
                 emitEffect(MyAccountMviModel.Effect.Failure)
