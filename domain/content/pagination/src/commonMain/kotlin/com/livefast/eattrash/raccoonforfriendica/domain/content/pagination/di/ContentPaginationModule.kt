@@ -91,6 +91,7 @@ val domainContentPaginationModule =
             DefaultUnpublishedPaginationManager(
                 scheduledEntryRepository = get(),
                 draftRepository = get(),
+                notificationCenter = get(),
             )
         }
     }

@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
@@ -65,6 +66,16 @@ internal class DefaultExplorePaginationManager(
                         }
                     }
                 }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryDeletedEvent::class)
+                .onEach { event ->
+                    mutex.withLock {
+                        val idx = history.indexOfFirst { e -> e.id == event.id }
+                        if (idx >= 0) {
+                            history.removeAt(idx)
+                        }
+                    }
+                }.launchIn(scope)
         }
     }
 
