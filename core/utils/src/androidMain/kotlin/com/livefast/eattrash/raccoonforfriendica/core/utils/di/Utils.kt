@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.DefaultFileSystem
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.DefaultGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashDecoder
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.DefaultShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
@@ -34,6 +35,11 @@ actual fun getShareHelper(): ShareHelper {
 
 actual fun getAppInfoRepository(): AppInfoRepository {
     val res: AppInfoRepository by KoinJavaComponent.inject(AppInfoRepository::class.java)
+    return res
+}
+
+actual fun getBlurHashDecoder(): BlurHashDecoder {
+    val res: BlurHashDecoder by KoinJavaComponent.inject(BlurHashDecoder::class.java)
     return res
 }
 
