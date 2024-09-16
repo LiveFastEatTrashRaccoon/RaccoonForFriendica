@@ -43,7 +43,8 @@ fun String.parseHtml(
                     "u" -> string.pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
                     "i", "em" -> string.pushStyle(SpanStyle(fontStyle = FontStyle.Italic))
                     "s" -> string.pushStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
-
+                    "ul", "ol" -> Unit
+                    "li" -> string.append(" • ")
                     else -> println("onOpenTag: Unhandled span $name")
                 }
             }.onCloseTag { name, _ ->
@@ -55,7 +56,8 @@ fun String.parseHtml(
                         string.pop() // corresponds to pushStyle
                         string.pop() // corresponds to pushStringAnnotation
                     }
-
+                    "ul", "ol" -> Unit
+                    "li" -> string.append('\n')
                     else -> println("onCloseTag: Unhandled span $name")
                 }
             }.onText { text ->
