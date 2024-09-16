@@ -1,24 +1,54 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DefaultUnpublishedPaginationManager(
     private val scheduledEntryRepository: ScheduledEntryRepository,
     private val draftRepository: DraftRepository,
+    notificationCenter: NotificationCenter,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : UnpublishedPaginationManager {
     private var specification: UnpublishedPaginationSpecification? = null
     private var pageCursor: String? = null
     private var page: Int = 0
     override var canFetchMore: Boolean = true
     override val history = mutableListOf<TimelineEntryModel>()
+    private val mutex = Mutex()
+    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
+
+    init {
+        notificationCenter
+            .subscribe(TimelineEntryDeletedEvent::class)
+            .onEach { event ->
+                mutex.withLock {
+                    val idx = history.indexOfFirst { e -> e.id == event.id }
+                    if (idx >= 0) {
+                        history.removeAt(idx)
+                    }
+                }
+            }.launchIn(scope)
+    }
 
     override suspend fun reset(specification: UnpublishedPaginationSpecification) {
         this.specification = specification
         pageCursor = null
         page = 0
-        history.clear()
+        mutex.withLock {
+            history.clear()
+        }
         canFetchMore = true
     }
 
@@ -36,7 +66,9 @@ internal class DefaultUnpublishedPaginationManager(
                 ?.deduplicate()
                 .orEmpty()
 
-        history.addAll(results)
+        mutex.withLock {
+            history.addAll(results)
+        }
 
         // return a copy
         return history.map { it }

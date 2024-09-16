@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feaure.search
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
@@ -426,6 +427,7 @@ class SearchViewModel(
         screenModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
+                notificationCenter.send(TimelineEntryDeletedEvent(entryId))
                 removeEntryFromState(entryId)
             }
         }

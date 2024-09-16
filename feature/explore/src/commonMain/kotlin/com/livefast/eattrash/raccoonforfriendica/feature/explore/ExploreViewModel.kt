@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.explore
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
@@ -325,13 +326,14 @@ class ExploreViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        reblogged = newEntry.reblogged,
-                        reblogCount = newEntry.reblogCount,
-                        reblogLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            reblogged = newEntry.reblogged,
+                            reblogCount = newEntry.reblogCount,
+                            reblogLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -359,13 +361,14 @@ class ExploreViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        favorite = newEntry.favorite,
-                        favoriteCount = newEntry.favoriteCount,
-                        favoriteLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            favorite = newEntry.favorite,
+                            favoriteCount = newEntry.favoriteCount,
+                            favoriteLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -393,12 +396,13 @@ class ExploreViewModel(
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        bookmarked = newEntry.bookmarked,
-                        bookmarkLoading = false,
-                    ).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                    }
+                    it
+                        .copy(
+                            bookmarked = newEntry.bookmarked,
+                            bookmarkLoading = false,
+                        ).also { entry ->
+                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        }
                 }
             } else {
                 updateEntryInState(entry.id) {
@@ -414,6 +418,7 @@ class ExploreViewModel(
         screenModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
+                notificationCenter.send(TimelineEntryDeletedEvent(entryId))
                 removeEntryFromState(entryId)
             }
         }
