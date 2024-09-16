@@ -12,6 +12,10 @@ data class TimelineEntryUpdatedEvent(
     val entry: TimelineEntryModel,
 ) : NotificationCenterEvent
 
+data class TimelineEntryDeletedEvent(
+    val id: String,
+) : NotificationCenterEvent
+
 data class TagUpdatedEvent(
     val tag: TagModel,
 ) : NotificationCenterEvent
