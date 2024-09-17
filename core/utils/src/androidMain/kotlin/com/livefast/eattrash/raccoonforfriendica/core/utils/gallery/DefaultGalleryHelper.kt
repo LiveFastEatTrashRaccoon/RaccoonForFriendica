@@ -85,8 +85,14 @@ internal class DefaultGalleryHelper(
                     result(byteArrayOf())
                 }
             }
+
         SideEffect {
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            pickMedia.launch(
+                PickVisualMediaRequest
+                    .Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    .build(),
+            )
         }
     }
 }

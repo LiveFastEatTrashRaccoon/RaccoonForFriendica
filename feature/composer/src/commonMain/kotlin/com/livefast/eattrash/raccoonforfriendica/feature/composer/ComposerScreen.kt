@@ -127,7 +127,9 @@ class ComposerScreen(
         if (openImagePicker) {
             galleryHelper.getImageFromGallery { bytes ->
                 openImagePicker = false
-                model.reduce(ComposerMviModel.Intent.AddAttachment(bytes))
+                if (bytes.isNotEmpty()) {
+                    model.reduce(ComposerMviModel.Intent.AddAttachment(bytes))
+                }
             }
         }
         var photoGalleryPickerOpen by remember { mutableStateOf(false) }

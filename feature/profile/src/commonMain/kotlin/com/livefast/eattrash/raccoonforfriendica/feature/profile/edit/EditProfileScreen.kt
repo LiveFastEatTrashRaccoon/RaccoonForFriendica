@@ -339,13 +339,17 @@ class EditProfileScreen : Screen {
         if (openAvatarPicker) {
             galleryHelper.getImageFromGallery { bytes ->
                 openAvatarPicker = false
-                model.reduce(EditProfileMviModel.Intent.AvatarSelected(bytes))
+                if (bytes.isNotEmpty()) {
+                    model.reduce(EditProfileMviModel.Intent.AvatarSelected(bytes))
+                }
             }
         }
         if (openHeaderPicker) {
             galleryHelper.getImageFromGallery { bytes ->
                 openHeaderPicker = false
-                model.reduce(EditProfileMviModel.Intent.HeaderSelected(bytes))
+                if (bytes.isNotEmpty()) {
+                    model.reduce(EditProfileMviModel.Intent.HeaderSelected(bytes))
+                }
             }
         }
 
