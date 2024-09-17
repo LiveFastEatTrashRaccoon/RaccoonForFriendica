@@ -59,6 +59,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
@@ -84,6 +85,8 @@ class SettingsScreen : Screen {
         var urlOpeningModeBottomSheetOpened by remember { mutableStateOf(false) }
         var aboutDialogOpened by remember { mutableStateOf(false) }
         var customColorPickerDialogOpened by remember { mutableStateOf(false) }
+        var defaultPostVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
+        var defaultReplyVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -141,6 +144,20 @@ class SettingsScreen : Screen {
                             value = uiState.defaultTimelineType.toReadableName(),
                             onTap = {
                                 defaultTimelineTypeBottomSheetOpened = true
+                            },
+                        )
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemDefaultPostVisibility,
+                            value = uiState.defaultPostVisibility.toReadableName(),
+                            onTap = {
+                                defaultPostVisibilityBottomSheetOpened = true
+                            },
+                        )
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemDefaultReplyVisibility,
+                            value = uiState.defaultReplyVisibility.toReadableName(),
+                            onTap = {
+                                defaultReplyVisibilityBottomSheetOpened = true
                             },
                         )
                         SettingsRow(
@@ -476,6 +493,74 @@ class SettingsScreen : Screen {
                     if (index != null) {
                         val type = types[index]
                         model.reduce(SettingsMviModel.Intent.ChangeUrlOpeningMode(type))
+                    }
+                },
+            )
+        }
+
+        if (defaultPostVisibilityBottomSheetOpened) {
+            val types =
+                listOf(
+                    Visibility.Public,
+                    Visibility.Unlisted,
+                    Visibility.Direct,
+                    Visibility.Private,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemDefaultPostVisibility,
+                items =
+                    types.map {
+                        CustomModalBottomSheetItem(
+                            label = it.toReadableName(),
+                            trailingContent = {
+                                Icon(
+                                    modifier = Modifier.size(IconSize.m),
+                                    imageVector = it.toIcon(),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
+                    defaultPostVisibilityBottomSheetOpened = false
+                    if (index != null) {
+                        val type = types[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeDefaultPostVisibility(type))
+                    }
+                },
+            )
+        }
+
+        if (defaultReplyVisibilityBottomSheetOpened) {
+            val types =
+                listOf(
+                    Visibility.Public,
+                    Visibility.Unlisted,
+                    Visibility.Direct,
+                    Visibility.Private,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemDefaultReplyVisibility,
+                items =
+                    types.map {
+                        CustomModalBottomSheetItem(
+                            label = it.toReadableName(),
+                            trailingContent = {
+                                Icon(
+                                    modifier = Modifier.size(IconSize.m),
+                                    imageVector = it.toIcon(),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
+                    defaultReplyVisibilityBottomSheetOpened = false
+                    if (index != null) {
+                        val type = types[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeDefaultReplyVisibility(type))
                     }
                 },
             )

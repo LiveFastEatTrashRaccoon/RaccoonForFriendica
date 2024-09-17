@@ -12,8 +12,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSche
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -92,6 +94,8 @@ class SettingsViewModel(
                                 includeNsfw = settings.includeNsfw,
                                 blurNsfw = settings.blurNsfw,
                                 urlOpeningMode = settings.urlOpeningMode,
+                                defaultPostVisibility = settings.defaultPostVisibility.toVisibility(),
+                                defaultReplyVisibility = settings.defaultReplyVisibility.toVisibility(),
                             )
                         }
                     }
@@ -157,6 +161,16 @@ class SettingsViewModel(
                 screenModelScope.launch {
                     changeUrlOpeningMode(intent.mode)
                 }
+
+            is SettingsMviModel.Intent.ChangeDefaultPostVisibility ->
+                screenModelScope.launch {
+                    changeDefaultPostVisibility(intent.visibility)
+                }
+
+            is SettingsMviModel.Intent.ChangeDefaultReplyVisibility ->
+                screenModelScope.launch {
+                    changeDefaultReplyVisibility(intent.visibility)
+                }
         }
     }
 
@@ -199,6 +213,18 @@ class SettingsViewModel(
     private suspend fun changeDefaultTimelineType(type: TimelineType) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(defaultTimelineType = type.toInt())
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeDefaultPostVisibility(visibility: Visibility) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(defaultPostVisibility = visibility.toInt())
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeDefaultReplyVisibility(visibility: Visibility) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(defaultReplyVisibility = visibility.toInt())
         saveSettings(newSettings)
     }
 
