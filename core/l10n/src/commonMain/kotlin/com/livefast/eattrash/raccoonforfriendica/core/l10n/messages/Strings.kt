@@ -285,6 +285,8 @@ interface Strings {
     val scheduleDateIndication: String
     val messageScheduleDateInThePast: String
     val actionSaveDraft: String
+    val settingsItemDefaultPostVisibility: String
+    val settingsItemDefaultReplyVisibility: String
 }
 
 object Locales {

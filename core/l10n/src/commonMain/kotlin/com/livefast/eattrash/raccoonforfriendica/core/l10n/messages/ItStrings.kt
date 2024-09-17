@@ -325,4 +325,6 @@ internal val ItStrings =
         override val scheduleDateIndication = "Schedulato per il:"
         override val messageScheduleDateInThePast = "Selezionare una data di schedulazione futura"
         override val actionSaveDraft = "Salva bozza"
+        override val settingsItemDefaultPostVisibility = "Visibilità predefinita post"
+        override val settingsItemDefaultReplyVisibility = "Visibilità predefinita risposte"
     }

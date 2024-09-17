@@ -314,4 +314,6 @@ internal open class DefaultStrings : Strings {
     override val scheduleDateIndication = "Scheduled for:"
     override val messageScheduleDateInThePast = "Please select a schedule date in the future"
     override val actionSaveDraft = "Save draft"
+    override val settingsItemDefaultPostVisibility = "Default visibility for posts"
+    override val settingsItemDefaultReplyVisibility = "Default visibility for replies"
 }
