@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class InstanceRule(
-    @SerialName("id") val id: String? = null,
-    @SerialName("text") val text: String? = null,
+    @SerialName("id") val id: String,
+    @SerialName("text") val text: String = "",
 )
