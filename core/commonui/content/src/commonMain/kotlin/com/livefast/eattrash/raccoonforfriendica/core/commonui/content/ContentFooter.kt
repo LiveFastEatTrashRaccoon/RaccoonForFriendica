@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -53,13 +54,13 @@ fun ContentFooter(
         FooterItem(
             modifier = Modifier.width(baseItemWidth),
             icon = Icons.AutoMirrored.Default.Reply,
-            value = replyCount.takeIf { it > 0 },
+            value = replyCount,
             onClick = onReply,
         )
         FooterItem(
             modifier = Modifier.width(baseItemWidth),
             icon = Icons.Default.Repeat,
-            value = reblogCount.takeIf { it > 0 },
+            value = reblogCount,
             toggled = reblogged,
             loading = reblogLoading,
             onClick = onReblog,
@@ -68,7 +69,7 @@ fun ContentFooter(
             modifier = Modifier.width(baseItemWidth),
             icon = Icons.Default.FavoriteBorder,
             toggledIcon = Icons.Default.Favorite,
-            value = favoriteCount.takeIf { it > 0 },
+            value = favoriteCount,
             toggled = favorite,
             loading = favoriteLoading,
             onClick = onFavorite,
@@ -88,7 +89,7 @@ fun ContentFooter(
 private fun FooterItem(
     icon: ImageVector,
     modifier: Modifier = Modifier,
-    value: Int? = null,
+    value: Int = 0,
     toggledIcon: ImageVector? = null,
     toggled: Boolean = false,
     loading: Boolean = false,
@@ -100,44 +101,50 @@ private fun FooterItem(
         modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
-        Crossfade(targetState = loading) { isLoading ->
-            if (isLoading) {
-                Box(
-                    modifier = Modifier.size(IconSize.s),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
-                    )
-                }
-            } else {
-                Row(
-                    modifier =
-                        Modifier
-                            .clickable {
-                                onClick?.invoke()
-                            },
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    FeedbackButton(
-                        imageVector = toggledIcon.takeIf { toggled } ?: icon,
-                        tintColor = toggledColor.takeIf { toggled } ?: fullColor,
-                        enabled = onClick != null,
-                        onClick = {
-                            onClick?.invoke()
-                        },
-                    )
-                    if (value != null) {
-                        Text(
-                            modifier = Modifier.padding(start = Spacing.xs),
-                            text = value.toString(),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = toggledColor.takeIf { toggled } ?: fullColor,
+        Row(
+            modifier =
+                Modifier
+                    .clickable {
+                        onClick?.invoke()
+                    },
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (loading) {
+                AnimatedVisibility(visible = loading) {
+                    Box(
+                        modifier = Modifier.size(IconSize.s),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator(
+                            color =
+                                MaterialTheme.colorScheme.onBackground.copy(
+                                    ancillaryTextAlpha,
+                                ),
                         )
                     }
                 }
+            } else {
+                FeedbackButton(
+                    imageVector = toggledIcon.takeIf { toggled } ?: icon,
+                    tintColor = toggledColor.takeIf { toggled } ?: fullColor,
+                    enabled = onClick != null,
+                    onClick = {
+                        onClick?.invoke()
+                    },
+                )
             }
+            Text(
+                modifier =
+                    Modifier
+                        .padding(start = Spacing.xs)
+                        .alpha(
+                            if (loading || value == 0) 0f else 1f,
+                        ),
+                text = value.toString(),
+                style = MaterialTheme.typography.labelMedium,
+                color = toggledColor.takeIf { toggled } ?: fullColor,
+            )
         }
     }
 }
