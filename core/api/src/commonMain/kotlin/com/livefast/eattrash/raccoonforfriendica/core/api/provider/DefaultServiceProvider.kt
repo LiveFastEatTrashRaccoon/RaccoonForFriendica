@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationSe
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoAlbumService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PollService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.ReportService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.SearchService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.StatusService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TagsService
@@ -26,6 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.createNotifica
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoAlbumService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPollService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createReportService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createSearchService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createStatusService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createTagsService
@@ -72,6 +74,7 @@ internal class DefaultServiceProvider(
     override lateinit var photo: PhotoService
     override lateinit var photoAlbum: PhotoAlbumService
     override lateinit var polls: PollService
+    override lateinit var reports: ReportService
     override lateinit var search: SearchService
     override lateinit var statuses: StatusService
     override lateinit var tags: TagsService
@@ -167,6 +170,7 @@ internal class DefaultServiceProvider(
         photo = ktorfit.createPhotoService()
         photoAlbum = ktorfit.createPhotoAlbumService()
         polls = ktorfit.createPollService()
+        reports = ktorfit.createReportService()
         search = ktorfit.createSearchService()
         statuses = ktorfit.createStatusService()
         tags = ktorfit.createTagsService()

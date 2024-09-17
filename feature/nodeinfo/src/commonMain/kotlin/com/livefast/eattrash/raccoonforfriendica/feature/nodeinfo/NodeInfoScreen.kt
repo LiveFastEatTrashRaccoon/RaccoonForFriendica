@@ -64,6 +64,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.launch
 
@@ -383,13 +384,13 @@ private fun ContactUserItem(
 
 @Composable
 private fun RuleItem(
-    rule: String,
+    rule: RuleModel,
     modifier: Modifier = Modifier,
     onOpenUrl: ((String) -> Unit)? = null,
 ) {
     ContentBody(
         modifier = modifier,
-        content = rule,
+        content = rule.text,
         onOpenUrl = onOpenUrl,
     )
 }

@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhotoAlbu
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPrivateMessage
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.HistoryItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Instance
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.InstanceRule
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaAttachment
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.AUDIO
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.GIFV
@@ -49,6 +50,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
@@ -353,10 +356,16 @@ internal fun Instance.toModel() =
         activeUsers = usage?.users?.activeMonth,
         thumbnail = thumbnail,
         languages = languages,
-        rules = rules.mapNotNull { it.text },
+        rules = rules.map { it.toModel() },
         contact = contactAccount?.toModel(),
         characterLimit = configuration?.statuses?.maxCharacters,
         attachmentLimit = configuration?.statuses?.maxMediaAttachments,
+    )
+
+internal fun InstanceRule.toModel() =
+    RuleModel(
+        id = id,
+        text = text,
     )
 
 internal fun FriendicaContact.toModel() =
@@ -419,6 +428,14 @@ internal fun ScheduledStatus.toModel() =
         visibility = params?.visibility?.toVisibility() ?: Visibility.Public,
         poll = params?.poll?.toModel(),
     )
+
+internal fun ReportCategory.toDto(): String =
+    when (this) {
+        ReportCategory.Legal -> "legal"
+        ReportCategory.Other -> "other"
+        ReportCategory.Spam -> "span"
+        ReportCategory.Violation -> "violation"
+    }
 
 private object FriendicaDateFormats {
     const val PRIVATE_MESSAGES = "EEE MMM dd HH:mm:ss xxxx yyyy"

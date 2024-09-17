@@ -10,7 +10,7 @@ data class NodeInfoModel(
     val activeUsers: Int? = null,
     val thumbnail: String? = null,
     val languages: List<String> = emptyList(),
-    val rules: List<String> = emptyList(),
+    val rules: List<RuleModel> = emptyList(),
     val contact: UserModel? = null,
     val characterLimit: Int? = null,
     val attachmentLimit: Int? = null,
