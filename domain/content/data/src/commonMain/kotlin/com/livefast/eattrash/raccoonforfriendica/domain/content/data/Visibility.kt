@@ -44,3 +44,21 @@ fun Visibility.toReadableName(): String =
         Visibility.Unlisted -> LocalStrings.current.visibilityUnlisted
         is Visibility.Circle -> name ?: LocalStrings.current.visibilityCircle
     }
+
+fun Visibility.toInt() =
+    when (this) {
+        is Visibility.Circle -> 4
+        Visibility.Private -> 3
+        Visibility.Direct -> 2
+        Visibility.Unlisted -> 1
+        Visibility.Public -> 0
+    }
+
+fun Int.toVisibility(): Visibility =
+    when (this) {
+        4 -> Visibility.Circle()
+        3 -> Visibility.Private
+        2 -> Visibility.Direct
+        1 -> Visibility.Unlisted
+    else -> Visibility.Public
+}

@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScal
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 
 @Stable
@@ -55,6 +56,14 @@ interface SettingsMviModel :
         data class ChangeUrlOpeningMode(
             val mode: UrlOpeningMode,
         ) : Intent
+
+        data class ChangeDefaultPostVisibility(
+            val visibility: Visibility,
+        ) : Intent
+
+        data class ChangeDefaultReplyVisibility(
+            val visibility: Visibility,
+        ) : Intent
     }
 
     data class State(
@@ -72,6 +81,8 @@ interface SettingsMviModel :
         val includeNsfw: Boolean = true,
         val blurNsfw: Boolean = true,
         val urlOpeningMode: UrlOpeningMode = UrlOpeningMode.External,
+        val defaultPostVisibility: Visibility = Visibility.Public,
+        val defaultReplyVisibility: Visibility = Visibility.Public,
     )
 
     sealed interface Effect

@@ -15,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isFriendica
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
@@ -29,6 +30,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Photo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.debounce
@@ -57,6 +59,7 @@ class ComposerViewModel(
     private val entryCache: LocalItemCache<TimelineEntryModel>,
     private val scheduledEntryRepository: ScheduledEntryRepository,
     private val draftRepository: DraftRepository,
+    private val settingsRepository: SettingsRepository,
     private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
         initialState = ComposerMviModel.State(),
@@ -89,11 +92,18 @@ class ComposerViewModel(
                 }.launchIn(this)
             val nodeInfo = nodeInfoRepository.getInfo()
             isFriendica = nodeInfo?.isFriendica != false
+            val currentSettings = settingsRepository.current.value
             updateState {
                 it.copy(
                     hasGallery = isFriendica,
                     characterLimit = nodeInfo?.characterLimit,
                     attachmentLimit = nodeInfo?.attachmentLimit,
+                    visibility =
+                        if (inReplyToId != null) {
+                            currentSettings?.defaultReplyVisibility
+                        } else {
+                            currentSettings?.defaultPostVisibility
+                        }?.toVisibility() ?: Visibility.Public,
                 )
             }
 

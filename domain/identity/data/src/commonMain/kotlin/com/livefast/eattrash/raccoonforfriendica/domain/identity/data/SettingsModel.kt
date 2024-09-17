@@ -17,4 +17,6 @@ data class SettingsModel(
     val includeNsfw: Boolean = false,
     val blurNsfw: Boolean = true,
     val urlOpeningMode: UrlOpeningMode = UrlOpeningMode.External,
+    val defaultPostVisibility: Int = 0,
+    val defaultReplyVisibility: Int = 0,
 )

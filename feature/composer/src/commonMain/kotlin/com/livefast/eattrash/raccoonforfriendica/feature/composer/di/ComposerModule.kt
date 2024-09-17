@@ -21,6 +21,7 @@ val featureComposerModule =
                 entryCache = get(),
                 scheduledEntryRepository = get(),
                 draftRepository = get(),
+                settingsRepository = get(),
                 notificationCenter = get(),
             )
         }
