@@ -100,7 +100,9 @@ class AlbumDetailScreen(
         if (openImagePicker) {
             galleryHelper.getImageFromGallery { bytes ->
                 openImagePicker = false
-                model.reduce(AlbumDetailMviModel.Intent.Create(bytes))
+                if (bytes.isNotEmpty()) {
+                    model.reduce(AlbumDetailMviModel.Intent.Create(bytes))
+                }
             }
         }
         var attachmentIdToDelete by remember { mutableStateOf<String?>(null) }
