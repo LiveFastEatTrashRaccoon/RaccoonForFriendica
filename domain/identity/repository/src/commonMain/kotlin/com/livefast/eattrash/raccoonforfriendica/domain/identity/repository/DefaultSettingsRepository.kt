@@ -50,6 +50,8 @@ private fun SettingsEntity.toModel() =
         blurNsfw = blurNsfw,
         includeNsfw = includeNsfw,
         urlOpeningMode = urlOpeningMode.toUrlOpeningMode(),
+        defaultPostVisibility = defaultPostVisibility,
+        defaultReplyVisibility = defaultReplyVisibility,
     )
 
 private fun SettingsModel.toEntity() =
@@ -66,4 +68,6 @@ private fun SettingsModel.toEntity() =
         includeNsfw = includeNsfw,
         blurNsfw = blurNsfw,
         urlOpeningMode = urlOpeningMode.toInt(),
+        defaultPostVisibility = defaultPostVisibility,
+        defaultReplyVisibility = defaultReplyVisibility,
     )
