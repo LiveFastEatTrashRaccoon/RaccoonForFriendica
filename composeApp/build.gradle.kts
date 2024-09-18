@@ -91,6 +91,7 @@ kotlin {
             implementation(projects.feature.manageblocks)
             implementation(projects.feature.nodeinfo)
             implementation(projects.feature.profile)
+            implementation(projects.feature.report)
             implementation(projects.feature.search)
             implementation(projects.feature.settings)
             implementation(projects.feature.thread)
