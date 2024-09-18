@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.EditListForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.EditListMembersForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
+import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.DELETE
 import de.jensklingenberg.ktorfit.http.GET
@@ -50,19 +51,19 @@ interface ListService {
     @DELETE("v1/lists/{id}")
     suspend fun delete(
         @Path("id") id: String,
-    )
+    ): Response<Unit>
 
     @POST("v1/lists/{id}/accounts")
     @Headers("Content-Type: application/json")
     suspend fun addMembers(
         @Path("id") id: String,
         @Body data: EditListMembersForm,
-    )
+    ): Response<Unit>
 
     @HTTP(method = "DELETE", path = "v1/lists/{id}/accounts", hasBody = true)
     @Headers("Content-Type: application/json")
     suspend fun removeMembers(
         @Path("id") id: String,
         @Body data: EditListMembersForm,
-    )
+    ): Response<Unit>
 }
