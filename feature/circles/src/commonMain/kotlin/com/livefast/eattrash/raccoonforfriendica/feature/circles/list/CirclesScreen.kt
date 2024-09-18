@@ -269,23 +269,23 @@ class CirclesScreen : Screen {
                     }
                 },
             )
+        }
 
-            val editorData = uiState.editorData
-            if (editorData != null) {
-                CircleEditorDialog(
-                    data = editorData,
-                    onDataChanged = { newData ->
-                        model.reduce(CirclesMviModel.Intent.UpdateEditorData(newData))
-                    },
-                    onClose = { success ->
-                        if (success) {
-                            model.reduce(CirclesMviModel.Intent.SubmitEditorData)
-                        } else {
-                            model.reduce(CirclesMviModel.Intent.DismissEditor)
-                        }
-                    },
-                )
-            }
+        val editorData = uiState.editorData
+        if (editorData != null) {
+            CircleEditorDialog(
+                data = editorData,
+                onDataChanged = { newData ->
+                    model.reduce(CirclesMviModel.Intent.UpdateEditorData(newData))
+                },
+                onClose = { success ->
+                    if (success) {
+                        model.reduce(CirclesMviModel.Intent.SubmitEditorData)
+                    } else {
+                        model.reduce(CirclesMviModel.Intent.DismissEditor)
+                    }
+                },
+            )
         }
     }
 }
