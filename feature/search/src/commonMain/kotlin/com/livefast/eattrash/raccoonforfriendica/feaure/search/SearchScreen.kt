@@ -76,6 +76,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toInt
@@ -389,6 +390,8 @@ class SearchScreen : Screen {
                                             } else if (currentUserId != null) {
                                                 this += OptionId.Mute.toOption()
                                                 this += OptionId.Block.toOption()
+                                                this += OptionId.ReportUser.toOption()
+                                                this += OptionId.ReportEntry.toOption()
                                             }
                                         },
                                     onOptionSelected = { optionId ->
@@ -426,6 +429,19 @@ class SearchScreen : Screen {
                                                 model.reduce(
                                                     SearchMviModel.Intent.TogglePin(item.entry),
                                                 )
+                                            OptionId.ReportUser ->
+                                                item.entry.original.creator?.also { userToReport ->
+                                                    detailOpener.openCreateReport(user = userToReport)
+                                                }
+                                            OptionId.ReportEntry ->
+                                                item.entry.original.also { entryToReport ->
+                                                    entryToReport.creator?.also { userToReport ->
+                                                        detailOpener.openCreateReport(
+                                                            user = userToReport,
+                                                            entry = entryToReport,
+                                                        )
+                                                    }
+                                                }
                                             else -> Unit
                                         }
                                     },
