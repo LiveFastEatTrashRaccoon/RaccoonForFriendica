@@ -118,6 +118,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] photo gallery
 - [x] advanced media visualization (videos, GIFs, multiple images)
 - [x] scheduled posts and drafts
+- [x] report posts and users
 - [ ] custom emojis
 
 ## Technologies used
