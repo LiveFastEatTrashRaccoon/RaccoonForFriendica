@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePrelo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
@@ -109,7 +110,7 @@ class UnpublishedViewModel(
 
     private fun List<TimelineEntryModel>.preloadImages() {
         flatMap { entry ->
-            val entryToDisplay = entry.reblog ?: entry
+            val entryToDisplay = entry.original
             buildList {
                 entryToDisplay.attachments
                     .mapNotNull { attachment ->
