@@ -75,6 +75,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toExploreSection
@@ -401,6 +402,8 @@ class ExploreScreen : Screen {
                                             } else if (currentUserId != null) {
                                                 this += OptionId.Mute.toOption()
                                                 this += OptionId.Block.toOption()
+                                                this += OptionId.ReportUser.toOption()
+                                                this += OptionId.ReportEntry.toOption()
                                             }
                                         },
                                     onOptionSelected = { optionId ->
@@ -421,7 +424,7 @@ class ExploreScreen : Screen {
                                             }
 
                                             OptionId.Edit -> {
-                                                (item.entry.reblog ?: item.entry).also { entryToEdit ->
+                                                item.entry.original.also { entryToEdit ->
                                                     detailOpener.openComposer(
                                                         inReplyToId = entryToEdit.inReplyTo?.id,
                                                         inReplyToUser = entryToEdit.inReplyTo?.creator,
@@ -437,6 +440,19 @@ class ExploreScreen : Screen {
                                                 model.reduce(
                                                     ExploreMviModel.Intent.TogglePin(item.entry),
                                                 )
+                                            OptionId.ReportUser ->
+                                                item.entry.original.creator?.also { userToReport ->
+                                                    detailOpener.openCreateReport(user = userToReport)
+                                                }
+                                            OptionId.ReportEntry ->
+                                                item.entry.original.also { entryToReport ->
+                                                    entryToReport.creator?.also { userToReport ->
+                                                        detailOpener.openCreateReport(
+                                                            user = userToReport,
+                                                            entry = entryToReport,
+                                                        )
+                                                    }
+                                                }
                                             else -> Unit
                                         }
                                     },
