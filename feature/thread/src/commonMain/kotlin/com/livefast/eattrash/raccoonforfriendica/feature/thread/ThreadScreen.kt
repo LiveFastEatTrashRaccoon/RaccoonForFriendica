@@ -75,6 +75,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDuration
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.composable.TimelineReplyItem
 import kotlinx.coroutines.flow.launchIn
@@ -317,6 +318,8 @@ class ThreadScreen(
                                             this += OptionId.Share.toOption()
                                             this += OptionId.CopyUrl.toOption()
                                         }
+                                        this += OptionId.ReportUser.toOption()
+                                        this += OptionId.ReportEntry.toOption()
                                     },
                                 onOptionSelected = { optionId ->
                                     when (optionId) {
@@ -417,6 +420,8 @@ class ThreadScreen(
                                     } else if (uiState.currentUserId != null) {
                                         this += OptionId.Mute.toOption()
                                         this += OptionId.Block.toOption()
+                                        this += OptionId.ReportUser.toOption()
+                                        this += OptionId.ReportEntry.toOption()
                                     }
                                 },
                             onOptionSelected = { optionId ->
@@ -445,6 +450,20 @@ class ThreadScreen(
                                     OptionId.Delete -> confirmDeleteEntryId = entry.id
                                     OptionId.Mute -> confirmMuteEntry = entry
                                     OptionId.Block -> confirmBlockEntry = entry
+                                    OptionId.ReportUser ->
+                                        entry.original.creator?.also { userToReport ->
+                                            detailOpener.openCreateReport(user = userToReport)
+                                        }
+
+                                    OptionId.ReportEntry ->
+                                        entry.original.also { entryToReport ->
+                                            entryToReport.creator?.also { userToReport ->
+                                                detailOpener.openCreateReport(
+                                                    user = userToReport,
+                                                    entry = entryToReport,
+                                                )
+                                            }
+                                        }
                                     else -> Unit
                                 }
                             },

@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.thread.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.data.ConversationNode
 import kotlinx.coroutines.coroutineScope
@@ -41,7 +42,7 @@ internal class DefaultPopulateThreadUseCase(
                 descendants
                     .mapNotNull { child ->
                         // needed because otherwise replies of different depths are included
-                        val referenceChild = child.reblog ?: child
+                        val referenceChild = child.original
                         if (referenceChild.inReplyTo?.id == entry.id || referenceChild.inReplyTo?.id == entry.reblog?.id) {
                             ConversationNode(entry = referenceChild.copy(depth = depth + 1))
                         } else {
