@@ -327,4 +327,24 @@ internal val ItStrings =
         override val actionSaveDraft = "Salva bozza"
         override val settingsItemDefaultPostVisibility = "Visibilità predefinita post"
         override val settingsItemDefaultReplyVisibility = "Visibilità predefinita risposte"
+        override val reportCategoryLegal = "Problema legale"
+        override val reportCategoryOther = "Altro (specificare)"
+        override val reportCategorySpam = "Spam"
+        override val reportCategoryViolation = "Violazione regole del server"
+        override val messageMissingRules = "Seleziona almeno una regola"
+        override val createReportTitleUser = "Segnala"
+        override val createReportTitleEntry = "Segnala post di"
+        override val createReportItemCategory = "Categoria"
+        override val createReportCommentPlaceholder = "Descrivi il problema che hai riscontrato"
+        override val createReportItemRules = "Regole violate"
+
+        override fun createReportSelectedRules(count: Int) =
+            when (count) {
+                1 -> "regola selezionata"
+                else -> "regole selezionate"
+            }
+
+        override val createReportItemForward = "Inoltra segnalazione"
+        override val actionReportUser = "Segnala utente"
+        override val actionReportEntry = "Segnala post"
     }
