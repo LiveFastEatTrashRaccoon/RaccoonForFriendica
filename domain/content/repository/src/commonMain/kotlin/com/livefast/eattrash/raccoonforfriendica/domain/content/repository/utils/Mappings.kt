@@ -433,7 +433,7 @@ internal fun ReportCategory.toDto(): String =
     when (this) {
         ReportCategory.Legal -> "legal"
         ReportCategory.Other -> "other"
-        ReportCategory.Spam -> "span"
+        ReportCategory.Spam -> "spam"
         ReportCategory.Violation -> "violation"
     }
 

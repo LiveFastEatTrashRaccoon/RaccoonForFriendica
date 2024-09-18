@@ -44,6 +44,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 
 @Composable
 fun TimelineReplyItem(
@@ -62,7 +63,7 @@ fun TimelineReplyItem(
     onOpenImage: ((List<String>, Int) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
 ) {
-    val entryToDisplay = entry.reblog ?: entry
+    val entryToDisplay = entry.original
     val depthZeroBased = entry.depth - 1
     val themeRepository = remember { getThemeRepository() }
     val barWidth = 3.dp

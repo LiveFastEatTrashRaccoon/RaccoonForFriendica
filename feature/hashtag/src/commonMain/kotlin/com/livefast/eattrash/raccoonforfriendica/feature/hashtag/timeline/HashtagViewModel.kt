@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePrelo
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
@@ -134,7 +135,7 @@ class HashtagViewModel(
 
     private fun List<TimelineEntryModel>.preloadImages() {
         flatMap { entry ->
-            val entryToDisplay = entry.reblog ?: entry
+            val entryToDisplay = entry.original
             buildList {
                 entryToDisplay.attachments
                     .mapNotNull { attachment ->

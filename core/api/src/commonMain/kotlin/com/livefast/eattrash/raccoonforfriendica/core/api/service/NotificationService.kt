@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType
+import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
@@ -20,8 +21,8 @@ interface NotificationService {
     @POST("v1/notifications/{id}/dismiss")
     suspend fun dismiss(
         @Path("id") id: String,
-    )
+    ): Response<Unit>
 
     @POST("v1/notifications/clear")
-    suspend fun dismissAll()
+    suspend fun dismissAll(): Response<Unit>
 }

@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaAttachment
+import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.DELETE
 import de.jensklingenberg.ktorfit.http.GET
@@ -29,5 +30,5 @@ interface MediaService {
     @DELETE("v1/media/{id}")
     suspend fun delete(
         @Path("id") id: String,
-    )
+    ): Response<Unit>
 }

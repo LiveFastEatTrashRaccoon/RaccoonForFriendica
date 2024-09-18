@@ -71,6 +71,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -321,6 +322,8 @@ class ForumListScreen(
                                     } else if (uiState.currentUserId != null) {
                                         this += OptionId.Mute.toOption()
                                         this += OptionId.Block.toOption()
+                                        this += OptionId.ReportUser.toOption()
+                                        this += OptionId.ReportEntry.toOption()
                                     }
                                 },
                             onOptionSelected = { optionId ->
@@ -349,6 +352,20 @@ class ForumListScreen(
                                     OptionId.Delete -> confirmDeleteEntryId = entry.id
                                     OptionId.Mute -> confirmMuteEntry = entry
                                     OptionId.Block -> confirmBlockEntry = entry
+                                    OptionId.ReportUser ->
+                                        entry.original.creator?.also { userToReport ->
+                                            detailOpener.openCreateReport(user = userToReport)
+                                        }
+
+                                    OptionId.ReportEntry ->
+                                        entry.original.also { entryToReport ->
+                                            entryToReport.creator?.also { userToReport ->
+                                                detailOpener.openCreateReport(
+                                                    user = userToReport,
+                                                    entry = entryToReport,
+                                                )
+                                            }
+                                        }
                                     else -> Unit
                                 }
                             },

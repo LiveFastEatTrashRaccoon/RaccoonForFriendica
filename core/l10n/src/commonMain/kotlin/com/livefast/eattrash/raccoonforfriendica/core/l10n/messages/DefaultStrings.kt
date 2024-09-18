@@ -316,4 +316,24 @@ internal open class DefaultStrings : Strings {
     override val actionSaveDraft = "Save draft"
     override val settingsItemDefaultPostVisibility = "Default visibility for posts"
     override val settingsItemDefaultReplyVisibility = "Default visibility for replies"
+    override val reportCategoryLegal = "Legal issue"
+    override val reportCategoryOther = "Other (please specify)"
+    override val reportCategorySpam = "Spam"
+    override val reportCategoryViolation = "Server rule violation"
+    override val messageMissingRules = "Please select at least one rule"
+    override val createReportTitleUser = "Report"
+    override val createReportTitleEntry = "Report post by"
+    override val createReportItemCategory = "Category"
+    override val createReportCommentPlaceholder = "Please describe the issue you encountered"
+    override val createReportItemRules = "Violated rules"
+
+    override fun createReportSelectedRules(count: Int) =
+        when (count) {
+            1 -> "rule selected"
+            else -> "rules selected"
+        }
+
+    override val createReportItemForward = "Forward report"
+    override val actionReportUser = "Report user"
+    override val actionReportEntry = "Report post"
 }

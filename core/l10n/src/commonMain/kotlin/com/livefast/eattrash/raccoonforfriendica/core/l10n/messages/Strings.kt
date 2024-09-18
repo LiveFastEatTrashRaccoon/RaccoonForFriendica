@@ -287,6 +287,22 @@ interface Strings {
     val actionSaveDraft: String
     val settingsItemDefaultPostVisibility: String
     val settingsItemDefaultReplyVisibility: String
+    val reportCategoryLegal: String
+    val reportCategoryOther: String
+    val reportCategorySpam: String
+    val reportCategoryViolation: String
+    val messageMissingRules: String
+    val createReportTitleUser: String
+    val createReportTitleEntry: String
+    val createReportItemCategory: String
+    val createReportCommentPlaceholder: String
+    val createReportItemRules: String
+
+    fun createReportSelectedRules(count: Int): String
+
+    val createReportItemForward: String
+    val actionReportUser: String
+    val actionReportEntry: String
 }
 
 object Locales {

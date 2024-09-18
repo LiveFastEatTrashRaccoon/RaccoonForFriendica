@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.ExplorePaginationManager
@@ -168,7 +169,7 @@ class ExploreViewModel(
 
     private fun List<TimelineEntryModel>.preloadImages() {
         flatMap { entry ->
-            val entryToDisplay = entry.reblog ?: entry
+            val entryToDisplay = entry.original
             buildList {
                 entryToDisplay.attachments
                     .mapNotNull { attachment ->

@@ -101,6 +101,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -227,6 +228,7 @@ class UserDetailScreen(
                                     } else {
                                         this += OptionId.Block.toOption()
                                     }
+                                    this += OptionId.ReportUser.toOption()
                                     this +=
                                         Option(
                                             id = OptionId.Edit,
@@ -307,7 +309,10 @@ class UserDetailScreen(
                                                         model.reduce(
                                                             UserDetailMviModel.Intent.TogglePersonalNoteEditMode,
                                                         )
-
+                                                    OptionId.ReportUser ->
+                                                        uiState.user?.also { userToReport ->
+                                                            detailOpener.openCreateReport(user = userToReport)
+                                                        }
                                                     else -> Unit
                                                 }
                                             },
@@ -621,6 +626,7 @@ class UserDetailScreen(
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
+                                    this += OptionId.ReportEntry.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -638,7 +644,15 @@ class UserDetailScreen(
                                             )
                                         }
                                     }
-
+                                    OptionId.ReportEntry ->
+                                        entry.original.also { entryToReport ->
+                                            entryToReport.creator?.also { userToReport ->
+                                                detailOpener.openCreateReport(
+                                                    user = userToReport,
+                                                    entry = entryToReport,
+                                                )
+                                            }
+                                        }
                                     else -> Unit
                                 }
                             },

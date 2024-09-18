@@ -203,20 +203,16 @@ internal class DefaultUserRepository(
     override suspend fun acceptFollowRequest(id: String) =
         withContext(Dispatchers.IO) {
             runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.followRequests.accept(id)
-                    true
-                }
+                provider.followRequests.accept(id)
+                true
             }.getOrElse { false }
         }
 
     override suspend fun rejectFollowRequest(id: String) =
         withContext(Dispatchers.IO) {
             runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.followRequests.reject(id)
-                    true
-                }
+                provider.followRequests.reject(id)
+                true
             }.getOrElse { false }
         }
 

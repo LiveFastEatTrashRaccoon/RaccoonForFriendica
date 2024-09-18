@@ -59,6 +59,8 @@ val TimelineEntryModel.safeKey: String
         }
     }
 
+val TimelineEntryModel.original: TimelineEntryModel get() = reblog ?: this
+
 val TimelineEntryModel.isNsfw: Boolean get() = reblog?.sensitive ?: sensitive
 
 val Duration.isOldEntry: Boolean

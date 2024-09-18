@@ -20,29 +20,29 @@ internal class DefaultNotificationRepository(
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
-                provider.notifications.get(
-                    types = types.mapNotNull { it.toDto() },
-                    maxId = pageCursor,
-                    includeAll = includeAll,
-                    limit = DEFAULT_PAGE_SIZE,
-                )
-            response.map { it.toModel() }
+                    provider.notifications.get(
+                        types = types.mapNotNull { it.toDto() },
+                        maxId = pageCursor,
+                        includeAll = includeAll,
+                        limit = DEFAULT_PAGE_SIZE,
+                    )
+                response.map { it.toModel() }
             }.getOrNull()
         }
 
     override suspend fun markAsRead(id: String): Boolean =
         withContext(Dispatchers.IO) {
             runCatching {
-                provider.notifications.dismiss(id)
-                true
+                val res = provider.notifications.dismiss(id)
+                res.isSuccessful
             }.getOrElse { false }
         }
 
     override suspend fun markAllAsRead(): Boolean =
         withContext(Dispatchers.IO) {
             runCatching {
-                provider.notifications.dismissAll()
-                true
+                val res = provider.notifications.dismissAll()
+                res.isSuccessful
             }.getOrElse { false }
         }
 

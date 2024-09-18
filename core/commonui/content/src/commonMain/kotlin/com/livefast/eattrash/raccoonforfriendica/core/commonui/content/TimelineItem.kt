@@ -34,6 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 
 @Composable
 fun TimelineItem(
@@ -61,7 +62,7 @@ fun TimelineItem(
 ) {
     val isReblog = entry.reblog != null
     val isReply = entry.inReplyTo != null
-    val entryToDisplay = entry.reblog ?: entry
+    val entryToDisplay = entry.original
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
     val spoiler = entryToDisplay.spoiler.orEmpty()
@@ -277,7 +278,7 @@ fun TimelineItem(
                                         .takeIf { !entryToDisplay.content.startsWith(it) }
                                         .orEmpty(),
                                 image = preview.image.takeIf { attachments.isEmpty() },
-                        ),
+                            ),
                         onOpen = onOpenUrl,
                         onOpenImage = { url ->
                             onOpenImage?.invoke(listOf(url), 0)

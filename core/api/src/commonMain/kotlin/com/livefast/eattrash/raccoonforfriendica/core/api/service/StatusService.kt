@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
+import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.DELETE
 import de.jensklingenberg.ktorfit.http.GET
@@ -114,7 +115,7 @@ interface StatusService {
     @DELETE("v1/statuses/{id}")
     suspend fun delete(
         @Path("id") id: String,
-    )
+    ): Response<Unit>
 
     @GET("v1/scheduled_statuses")
     suspend fun getScheduled(
@@ -137,5 +138,5 @@ interface StatusService {
     @DELETE("v1/scheduled_statuses/{id}")
     suspend fun deleteScheduled(
         @Path("id") id: String,
-    )
+    ): Response<Unit>
 }

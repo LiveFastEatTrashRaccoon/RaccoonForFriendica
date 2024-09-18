@@ -82,8 +82,8 @@ internal class DefaultMediaRepository(
     override suspend fun delete(id: String): Boolean =
         withContext(Dispatchers.IO) {
             runCatching {
-                provider.media.delete(id = id)
-                true
+                val res = provider.media.delete(id = id)
+                res.isSuccessful
             }
         }.getOrElse { false }
 }
