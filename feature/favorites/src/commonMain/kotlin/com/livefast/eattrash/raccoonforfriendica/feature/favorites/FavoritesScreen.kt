@@ -62,6 +62,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDuration
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toFavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
@@ -305,7 +306,7 @@ class FavoritesScreen(
                                     }
 
                                     OptionId.Edit -> {
-                                        (entry.reblog ?: entry).also { entryToEdit ->
+                                        entry.original.also { entryToEdit ->
                                             detailOpener.openComposer(
                                                 inReplyToId = entryToEdit.inReplyTo?.id,
                                                 inReplyToUser = entryToEdit.inReplyTo?.creator,
