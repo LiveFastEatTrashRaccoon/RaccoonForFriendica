@@ -19,3 +19,11 @@ data class AttachmentModel(
     @Transient
     val fromGallery: Boolean = false,
 )
+
+val AttachmentModel.aspectRatio: Float
+    get() =
+        if (originalHeight == null || originalHeight == 0) {
+            0f
+        } else {
+            (originalWidth ?: 0) / originalHeight.toFloat()
+        }

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.aspectRatio
 
 @Composable
 fun AttachmentsGrid(
@@ -35,8 +36,6 @@ fun AttachmentsGrid(
             .filter { it.type == MediaType.Image || it.type == MediaType.Video }
             .takeIf { it.isNotEmpty() } ?: return
     val firstAttachment = filteredAttachments.first()
-    val firstAttachmentWidth = firstAttachment.originalWidth ?: 0
-    val firstAttachmentHeight = firstAttachment.originalHeight ?: 0
     val interItemSpacing = Spacing.xxs
 
     if (filteredAttachments.size == 1) {
@@ -69,13 +68,19 @@ fun AttachmentsGrid(
                     onClick = {
                         onOpenImage?.invoke(urls, idx)
                     },
+                    contentScale =
+                        if (attachment.aspectRatio >= 1) {
+                            ContentScale.FillHeight
+                        } else {
+                            ContentScale.FillWidth
+                        },
                 )
             }
         }
     } else {
         val urls = filteredAttachments.map { it.url }
         val chunkSize = 4
-        if (firstAttachmentWidth < firstAttachmentHeight) {
+        if (firstAttachment.aspectRatio < 1) {
             Row(
                 modifier = modifier,
                 horizontalArrangement = Arrangement.spacedBy(interItemSpacing),
@@ -112,7 +117,12 @@ fun AttachmentsGrid(
                                 modifier = Modifier.weight(1f),
                                 attachment = attachment,
                                 sensitive = blurNsfw && sensitive,
-                                contentScale = ContentScale.FillWidth,
+                                contentScale =
+                                    if (attachment.aspectRatio >= 1) {
+                                        ContentScale.FillHeight
+                                    } else {
+                                        ContentScale.FillWidth
+                                    },
                                 onClick = {
                                     onOpenImage?.invoke(urls, index)
                                 },
@@ -127,15 +137,14 @@ fun AttachmentsGrid(
                 verticalArrangement = Arrangement.spacedBy(interItemSpacing),
             ) {
                 // first attachment
-                ContentImage(
+                GridElement(
                     modifier = Modifier.fillMaxWidth(),
-                    url = firstAttachment.url,
-                    altText = firstAttachment.description,
-                    blurHash = firstAttachment.blurHash,
-                    originalWidth = firstAttachment.originalWidth ?: 0,
-                    originalHeight = firstAttachment.originalHeight ?: 0,
+                    attachment = firstAttachment,
+                    contentScale = ContentScale.FillWidth,
                     sensitive = blurNsfw && sensitive,
-                    onClick = { onOpenImage?.invoke(urls, 0) },
+                    onClick = {
+                        onOpenImage?.invoke(urls, 0)
+                    },
                 )
 
                 // rest of attachments arranged vertically in chunks
@@ -153,7 +162,12 @@ fun AttachmentsGrid(
                                 attachment = attachment,
                                 sensitive = blurNsfw && sensitive,
                                 maxHeight = 180.dp,
-                                contentScale = ContentScale.FillHeight,
+                                contentScale =
+                                    if (attachment.aspectRatio >= 1) {
+                                        ContentScale.FillHeight
+                                    } else {
+                                        ContentScale.FillWidth
+                                    },
                                 onClick = {
                                     onOpenImage?.invoke(urls, index)
                                 },
@@ -168,12 +182,12 @@ fun AttachmentsGrid(
 
 @Composable
 private fun GridElement(
-    modifier: Modifier,
     attachment: AttachmentModel,
+    contentScale: ContentScale,
+    modifier: Modifier = Modifier,
     blurNsfw: Boolean = true,
     sensitive: Boolean = false,
     onClick: (() -> Unit)? = null,
-    contentScale: ContentScale? = null,
     maxHeight: Dp = Dp.Unspecified,
 ) {
     val attachmentWidth = attachment.originalWidth ?: 0
@@ -190,12 +204,7 @@ private fun GridElement(
                 originalHeight = attachmentHeight,
                 sensitive = blurNsfw && sensitive,
                 maxHeight = maxHeight,
-                contentScale =
-                    contentScale ?: if (attachmentHeight < attachmentWidth) {
-                        ContentScale.FillHeight
-                    } else {
-                        ContentScale.FillWidth
-                    },
+                contentScale = contentScale,
                 onClick = onClick,
             )
 
@@ -207,12 +216,7 @@ private fun GridElement(
                 originalWidth = attachmentWidth,
                 originalHeight = attachmentHeight,
                 sensitive = blurNsfw && sensitive,
-                contentScale =
-                    contentScale ?: if (attachmentHeight < attachmentWidth) {
-                        ContentScale.FillHeight
-                    } else {
-                        ContentScale.FillWidth
-                    },
+                contentScale = contentScale,
                 onClick = onClick,
             )
 
