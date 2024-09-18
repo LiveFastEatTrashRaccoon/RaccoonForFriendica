@@ -246,8 +246,8 @@ internal class DefaultTimelineEntryRepository(
     override suspend fun delete(id: String): Boolean =
         withContext(Dispatchers.IO) {
             runCatching {
-                provider.statuses.delete(id)
-                true
+                val res = provider.statuses.delete(id)
+                res.isSuccessful
             }.getOrElse { false }
         }
 

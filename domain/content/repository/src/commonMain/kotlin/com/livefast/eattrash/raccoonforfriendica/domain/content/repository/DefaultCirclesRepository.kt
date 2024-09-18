@@ -92,8 +92,8 @@ internal class DefaultCirclesRepository(
     override suspend fun delete(id: String): Boolean =
         withContext(Dispatchers.IO) {
             runCatching {
-                provider.lists.delete(id)
-                true
+                val res = provider.lists.delete(id)
+                res.isSuccessful
             }.getOrElse { false }
         }
 
@@ -104,8 +104,8 @@ internal class DefaultCirclesRepository(
         withContext(Dispatchers.IO) {
             runCatching {
                 val data = EditListMembersForm(accountIds = userIds)
-                provider.lists.addMembers(id = id, data = data)
-                true
+                val res = provider.lists.addMembers(id = id, data = data)
+                res.isSuccessful
             }.getOrElse { false }
         }
 
@@ -116,8 +116,8 @@ internal class DefaultCirclesRepository(
         withContext(Dispatchers.IO) {
             runCatching {
                 val data = EditListMembersForm(accountIds = userIds)
-                provider.lists.removeMembers(id = id, data = data)
-                true
+                val res = provider.lists.removeMembers(id = id, data = data)
+                res.isSuccessful
             }.getOrElse { false }
         }
 }

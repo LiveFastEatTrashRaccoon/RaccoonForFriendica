@@ -27,7 +27,7 @@ internal class DefaultReportRepository(
                         Parameters.build {
                             append("account_id", userId)
                             if (entryIds != null) {
-                                append("status_ids[]", entryIds.joinToString(","))
+                                append("status_ids", entryIds.joinToString(","))
                             }
                             append("forward", forward.toString())
                             append("category", category.toDto())
@@ -35,12 +35,12 @@ internal class DefaultReportRepository(
                                 append("comment", comment)
                             }
                             if (ruleIds != null) {
-                                append("rule_ids[]", ruleIds.joinToString(","))
+                                append("rule_ids", ruleIds.joinToString(","))
                             }
                         },
                     )
-                provider.reports.create(data)
-                true
+                val res = provider.reports.create(data)
+                res.isSuccessful
             }.getOrElse { false }
         }
 }

@@ -53,8 +53,8 @@ internal class DefaultScheduledEntryRepository(
     override suspend fun delete(id: String): Boolean =
         withContext(Dispatchers.IO) {
             runCatching {
-                provider.statuses.deleteScheduled(id)
-                true
+                val res = provider.statuses.deleteScheduled(id)
+                res.isSuccessful
             }.getOrElse { false }
         }
 
