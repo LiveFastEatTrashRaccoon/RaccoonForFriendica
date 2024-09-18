@@ -87,4 +87,9 @@ interface DetailOpener {
     )
 
     fun openUnpublished()
+
+    fun openCreateReport(
+        user: UserModel,
+        entry: TimelineEntryModel? = null,
+    )
 }

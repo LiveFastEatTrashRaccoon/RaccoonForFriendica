@@ -28,6 +28,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetail
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.ManageBlocksScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
@@ -279,6 +280,22 @@ class DefaultDetailOpener(
 
     override fun openUnpublished() {
         val screen = UnpublishedScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openCreateReport(
+        user: UserModel,
+        entry: TimelineEntryModel?,
+    ) {
+        userCache.put(user.id, user)
+        if (entry != null) {
+            entryCache.put(entry.id, entry)
+        }
+        val screen =
+            CreateReportScreen(
+                userId = user.id,
+                entryId = entry?.id,
+            )
         navigationCoordinator.push(screen)
     }
 }
