@@ -262,6 +262,7 @@ class SettingsScreen : Screen {
             val languages =
                 listOf(
                     Locales.EN,
+                    Locales.DE,
                     Locales.IT,
                 )
             CustomModalBottomSheet(

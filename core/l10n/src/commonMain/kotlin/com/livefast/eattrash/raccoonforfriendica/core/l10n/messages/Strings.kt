@@ -54,6 +54,7 @@ interface Strings {
     val accountSectionMedia: String
     val postTitle: String
     val languageEn: String
+    val languageDe: String
     val languageIt: String
     val settingsTitle: String
     val settingsHeaderGeneral: String
@@ -307,12 +308,14 @@ interface Strings {
 
 object Locales {
     const val EN = "en"
+    const val DE = "de"
     const val IT = "it"
 }
 
 internal val localizableStrings: Map<LanguageTag, Strings> =
     mapOf(
         Locales.EN to EnStrings,
+        Locales.DE to DeStrings,
         Locales.IT to ItStrings,
     )
 

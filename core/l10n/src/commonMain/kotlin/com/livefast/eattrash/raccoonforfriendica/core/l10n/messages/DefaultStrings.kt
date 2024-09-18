@@ -52,6 +52,7 @@ internal open class DefaultStrings : Strings {
     override val postTitle = "Post"
     override val languageEn = "English"
     override val languageIt = "Italiano"
+    override val languageDe = "Deutsch"
     override val settingsTitle = "Settings"
     override val settingsHeaderGeneral = "General"
     override val settingsItemLanguage = "Language"
