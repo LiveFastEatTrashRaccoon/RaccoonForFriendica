@@ -23,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.ProvideStrin
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ProvideCustomFontScale
@@ -37,6 +38,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun App(onLoadingFinished: (() -> Unit)? = null) {
+    // initialize crash reporting as soon as possible
+    val crashReportManager = remember { getCrashReportManager() }
+    LaunchedEffect(crashReportManager) {
+        crashReportManager.initialize()
+    }
+
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val l10nManager = remember { getL10nManager() }
     val themeRepository = remember { getThemeRepository() }
