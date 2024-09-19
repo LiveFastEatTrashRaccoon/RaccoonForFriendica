@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FriendicaCircle(
-    @SerialName("name") val title: String = "",
     @SerialName("gid") val id: String,
+    @SerialName("name") val title: String = "",
 )

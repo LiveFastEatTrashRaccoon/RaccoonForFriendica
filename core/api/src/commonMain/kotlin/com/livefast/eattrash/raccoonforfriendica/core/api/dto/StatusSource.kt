@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class StatusSource(
     @SerialName("id") val id: String,
-    @SerialName("text") val text: String? = null,
     @SerialName("spoiler_text") val spoilerText: String? = null,
+    @SerialName("text") val text: String? = null,
 )
