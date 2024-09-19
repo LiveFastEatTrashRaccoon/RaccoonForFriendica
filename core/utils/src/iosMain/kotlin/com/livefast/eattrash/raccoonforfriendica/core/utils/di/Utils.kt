@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.DefaultAppInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.DefaultCrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.DefaultFileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.DefaultGalleryHelper
@@ -27,6 +29,8 @@ actual fun getShareHelper(): ShareHelper = CoreUtilsDiHelper.shareHelper
 actual fun getAppInfoRepository(): AppInfoRepository = CoreUtilsDiHelper.appInfoRepository
 
 actual fun getBlurHashDecoder(): BlurHashDecoder = CoreUtilsDiHelper.blurHashDecoder
+
+actual fun getCrashReportManager(): CrashReportManager = CoreUtilsDiHelper.crashReportManager
 
 actual val coreUtilsFileSystemModule =
     module {
@@ -70,10 +74,18 @@ actual val coreHapticFeedbackModule =
         }
     }
 
+actual val coreCrashReportModule =
+    module {
+        single<CrashReportManager> {
+            DefaultCrashReportManager()
+        }
+    }
+
 internal object CoreUtilsDiHelper : KoinComponent {
     val imageLoaderProvider: ImageLoaderProvider by inject()
     val galleryHelper: GalleryHelper by inject()
     val shareHelper: ShareHelper by inject()
     val appInfoRepository: AppInfoRepository by inject()
     val blurHashDecoder: BlurHashDecoder by inject()
+    val crashReportManager by inject<CrashReportManager>()
 }
