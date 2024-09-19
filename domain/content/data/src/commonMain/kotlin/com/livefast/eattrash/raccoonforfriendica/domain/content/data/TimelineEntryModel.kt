@@ -7,42 +7,38 @@ import kotlin.time.Duration.Companion.days
 data class TimelineEntryModel(
     val attachments: List<AttachmentModel> = emptyList(),
     val bookmarked: Boolean = false,
-    @Transient
-    val bookmarkLoading: Boolean = false,
+    @Transient val bookmarkLoading: Boolean = false,
     val card: PreviewCardModel? = null,
     val content: String,
     val created: String? = null,
     val creator: UserModel? = null,
+    @Transient val depth: Int = 0,
     val favorite: Boolean = false,
-    @Transient
-    val favoriteLoading: Boolean = false,
     val favoriteCount: Int = 0,
+    @Transient val favoriteLoading: Boolean = false,
     val id: String,
     val inReplyTo: TimelineEntryModel? = null,
+    @Transient val isSpoilerActive: Boolean = false,
     val lang: String? = null,
+    @Transient val loadMoreButtonVisible: Boolean = false,
     val parentId: String? = null,
     val pinned: Boolean = false,
+    val poll: PollModel? = null,
     val reblog: TimelineEntryModel? = null,
     val reblogCount: Int = 0,
+    @Transient val reblogLoading: Boolean = false,
     val reblogged: Boolean = false,
-    @Transient
-    val reblogLoading: Boolean = false,
     val replyCount: Int = 0,
     val scheduled: String? = null,
     val sensitive: Boolean = false,
+    val sourcePlatform: String? = null,
+    val sourceProtocol: String? = null,
     val spoiler: String? = null,
     val tags: List<TagModel> = emptyList(),
     val title: String? = null,
     val updated: String? = null,
     val url: String? = null,
     val visibility: Visibility = Visibility.Public,
-    @Transient
-    val depth: Int = 0,
-    @Transient
-    val loadMoreButtonVisible: Boolean = false,
-    val poll: PollModel? = null,
-    @Transient
-    val isSpoilerActive: Boolean = false,
 )
 
 val TimelineEntryModel.safeKey: String

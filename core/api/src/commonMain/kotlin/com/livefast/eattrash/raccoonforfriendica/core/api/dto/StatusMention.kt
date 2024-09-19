@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class StatusMention(
-    @SerialName("id") val id: String,
-    @SerialName("username") val username: String,
-    @SerialName("url") val url: String,
     @SerialName("acct") val acct: String,
+    @SerialName("id") val id: String,
+    @SerialName("url") val url: String,
+    @SerialName("username") val username: String,
 )

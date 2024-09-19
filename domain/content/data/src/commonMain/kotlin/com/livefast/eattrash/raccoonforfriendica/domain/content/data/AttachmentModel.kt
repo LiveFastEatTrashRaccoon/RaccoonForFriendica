@@ -3,21 +3,19 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 import kotlin.jvm.Transient
 
 data class AttachmentModel(
-    val description: String? = null,
+    val album: String? = null,
     val blurHash: String? = null,
+    val description: String? = null,
+    @Transient val fromGallery: Boolean = false,
     val id: String,
     val mediaId: String = "",
+    @Transient val loading: Boolean = false,
+    val originalHeight: Int? = null,
+    val originalWidth: Int? = null,
     val previewUrl: String? = null,
+    val thumbnail: String? = null,
     val type: MediaType = MediaType.Unknown,
     val url: String,
-    val thumbnail: String? = null,
-    @Transient
-    val loading: Boolean = false,
-    val album: String? = null,
-    val originalWidth: Int? = null,
-    val originalHeight: Int? = null,
-    @Transient
-    val fromGallery: Boolean = false,
 )
 
 val AttachmentModel.aspectRatio: Float

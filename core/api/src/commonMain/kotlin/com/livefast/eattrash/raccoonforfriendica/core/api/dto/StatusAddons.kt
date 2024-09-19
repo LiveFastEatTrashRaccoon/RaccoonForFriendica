@@ -8,4 +8,6 @@ data class StatusAddons(
     @SerialName("title") val title: String? = null,
     @SerialName("disliked") val disliked: Boolean? = null,
     @SerialName("dislikes_count") val dislikesCount: Int? = null,
+    @SerialName("platform") val platform: String? = null,
+    @SerialName("network") val network: String? = null,
 )

@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FollowUserForm(
-    @SerialName("reblogs") val reblogs: Boolean = true,
     @SerialName("notify") val notify: Boolean = false,
+    @SerialName("reblogs") val reblogs: Boolean = true,
 )

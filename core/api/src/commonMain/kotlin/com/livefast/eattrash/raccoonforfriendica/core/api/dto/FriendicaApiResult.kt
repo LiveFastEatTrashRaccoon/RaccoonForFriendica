@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FriendicaApiResult(
-    @SerialName("result") val result: String,
     @SerialName("message") val message: String? = null,
+    @SerialName("result") val result: String,
 )

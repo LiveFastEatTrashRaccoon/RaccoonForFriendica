@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class InstanceIcon(
-    @SerialName("url") val url: String? = null,
     @SerialName("size") val size: String? = null,
+    @SerialName("url") val url: String? = null,
 )
