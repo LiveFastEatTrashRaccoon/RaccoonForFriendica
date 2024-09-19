@@ -70,29 +70,31 @@ internal fun Status.toModelWithReply() =
 internal fun Status.toModel() =
     TimelineEntryModel(
         attachments = attachments.map { it.toModel() },
-        id = id,
         content = content,
-        sensitive = sensitive,
         bookmarked = bookmarked,
         card = card?.toModel(),
         created = createdAt,
         creator = account?.toModel(),
         favorite = favourited,
         favoriteCount = favoritesCount,
+        id = id,
         lang = lang,
         parentId = inReplyToId,
         pinned = pinned,
+        poll = poll?.toModel(),
         reblogCount = reblogsCount,
         reblogged = reblogged,
         replyCount = repliesCount,
+        sensitive = sensitive,
+        sourcePlatform = addons?.platform,
+        sourceProtocol = addons?.network,
         // needed because, for compatibility, Friendica titles are replicated as spoilers on Mastodon
         spoiler = spoiler.takeIf { it != addons?.title },
         tags = tags.map { it.toModel() },
+        title = addons?.title?.takeIf { it.isNotBlank() },
         updated = editedAt,
         url = url,
         visibility = visibility.toVisibility(),
-        title = addons?.title?.takeIf { it.isNotBlank() },
-        poll = poll?.toModel(),
     )
 
 internal fun StatusSource.toModel() =
@@ -126,14 +128,14 @@ internal fun StatusContext.toModel() =
 
 internal fun MediaAttachment.toModel() =
     AttachmentModel(
-        id = id,
+        blurHash = blurHash,
         description = description,
-        url = url,
+        id = id,
+        originalHeight = meta?.original?.height,
+        originalWidth = meta?.original?.width,
         previewUrl = previewUrl,
         type = type.toModel(),
-        blurHash = blurHash,
-        originalWidth = meta?.original?.width,
-        originalHeight = meta?.original?.height,
+        url = url,
     )
 
 internal fun MediaTypeDto.toModel(): MediaType =
@@ -169,6 +171,7 @@ internal fun Account.toModel() =
         bio = note,
         bot = bot,
         created = createdAt,
+        discoverable = discoverable ?: true,
         displayName = displayName,
         entryCount = statusesCount,
         fields = fields.map { it.toModel() },
@@ -179,10 +182,9 @@ internal fun Account.toModel() =
         header = header,
         id = id,
         locked = locked,
-        username = username,
-        discoverable = discoverable ?: true,
         noIndex = noIndex,
         url = url,
+        username = username,
     )
 
 internal fun CredentialAccount.toModel() =
@@ -191,6 +193,7 @@ internal fun CredentialAccount.toModel() =
         bio = source?.note ?: note,
         bot = bot,
         created = createdAt,
+        discoverable = discoverable ?: true,
         displayName = displayName,
         entryCount = statusesCount,
         fields = (source?.fields ?: fields).map { it.toModel() },
@@ -201,10 +204,9 @@ internal fun CredentialAccount.toModel() =
         header = header,
         id = id,
         locked = locked,
-        username = username,
-        discoverable = discoverable ?: true,
         noIndex = noIndex,
         url = url,
+        username = username,
     )
 
 internal fun Field.toModel() =
@@ -217,16 +219,16 @@ internal fun Field.toModel() =
 internal fun HistoryItem.toModel() =
     HashtagHistoryItem(
         day = day,
-        uses = uses,
         users = accounts,
+        uses = uses,
     )
 
 internal fun Tag.toModel() =
     TagModel(
-        url = url,
-        name = name,
-        following = following,
         history = history?.map { it.toModel() }.orEmpty(),
+        following = following,
+        name = name,
+        url = url,
     )
 
 internal fun NotificationType.toDto(): NotificationTypeDto? =
@@ -257,45 +259,45 @@ internal fun NotificationTypeDto.toModel(): NotificationType =
 
 internal fun Notification.toModel() =
     NotificationModel(
-        id = id,
-        type = type.toModel(),
-        read = dismissed,
-        user = account?.toModel(),
         entry = status?.toModelWithReply(),
+        id = id,
+        read = dismissed,
+        type = type.toModel(),
+        user = account?.toModel(),
     )
 
 internal fun Relationship.toModel() =
     RelationshipModel(
-        id = id,
-        following = following,
-        notifying = notifying,
-        followedBy = followedBy,
         blocking = blocking,
+        followedBy = followedBy,
+        following = following,
+        id = id,
         muting = muting,
         mutingNotifications = mutingNotifications,
+        note = note,
+        notifying = notifying,
         requested = requested,
         requestedBy = requestedBy,
-        note = note,
     )
 
 internal fun TrendsLink.toModel() =
     LinkModel(
-        url = url.orEmpty(),
-        title = title.orEmpty(),
         authorName = authorName,
         description = description,
         image = image,
+        title = title.orEmpty(),
+        url = url.orEmpty(),
     )
 
 internal fun FriendicaPhoto.toModel() =
     AttachmentModel(
+        album = album,
+        description = desc,
         id = id,
         mediaId = mediaId.orEmpty(),
-        url = link.firstOrNull().orEmpty(),
-        type = MediaType.Image,
-        description = desc,
-        album = album,
         thumbnail = thumb,
+        type = MediaType.Image,
+        url = link.firstOrNull().orEmpty(),
     )
 
 internal fun UserListReplyPolicy.toModel(): CircleReplyPolicy =
@@ -314,29 +316,29 @@ internal fun CircleReplyPolicy.toDto(): String =
 
 internal fun UserList.toModel() =
     CircleModel(
-        name = title,
-        id = id,
         exclusive = exclusive,
+        id = id,
+        name = title,
         replyPolicy = repliesPolicy?.toModel() ?: CircleReplyPolicy.List,
     )
 
 internal fun FriendicaCircle.toModel() =
     CircleModel(
-        name = title,
         id = id,
+        name = title,
     )
 
 internal fun Poll.toModel() =
     PollModel(
-        id = id,
-        expiresAt = expiresAt,
         expired = expired,
+        expiresAt = expiresAt,
+        id = id,
         multiple = multiple,
-        votes = votesCount ?: 0,
-        voters = votersCount ?: 0,
         options = options.map { it.toModel() },
-        voted = voted,
         ownVotes = ownVotes,
+        voted = voted,
+        voters = votersCount ?: 0,
+        votes = votesCount ?: 0,
     )
 
 internal fun PollOption.toModel() =
@@ -347,19 +349,19 @@ internal fun PollOption.toModel() =
 
 internal fun Instance.toModel() =
     NodeInfoModel(
-        uri = uri,
-        title = title,
-        domain = domain,
-        version = version,
-        sourceUrl = sourceUrl,
-        description = description,
         activeUsers = usage?.users?.activeMonth,
-        thumbnail = thumbnail,
+        attachmentLimit = configuration?.statuses?.maxMediaAttachments,
+        characterLimit = configuration?.statuses?.maxCharacters,
+        contact = contactAccount?.toModel(),
+        description = description,
+        domain = domain,
         languages = languages,
         rules = rules.map { it.toModel() },
-        contact = contactAccount?.toModel(),
-        characterLimit = configuration?.statuses?.maxCharacters,
-        attachmentLimit = configuration?.statuses?.maxMediaAttachments,
+        sourceUrl = sourceUrl,
+        thumbnail = thumbnail,
+        title = title,
+        uri = uri,
+        version = version,
     )
 
 internal fun InstanceRule.toModel() =
@@ -370,17 +372,16 @@ internal fun InstanceRule.toModel() =
 
 internal fun FriendicaContact.toModel() =
     UserModel(
-        id = id.toString(),
-        displayName = screenName,
-        username = name,
-        url = url,
         avatar = profileImageUrl,
         bio = description,
+        displayName = screenName,
+        id = id.toString(),
+        url = url,
+        username = name,
     )
 
 internal fun FriendicaPrivateMessage.toModel() =
     DirectMessageModel(
-        id = id.toString(),
         created =
             createdAt?.let { date ->
                 parseDate(
@@ -388,17 +389,17 @@ internal fun FriendicaPrivateMessage.toModel() =
                     format = FriendicaDateFormats.PRIVATE_MESSAGES,
                 )
             },
-        text = text,
-        title = title,
-        sender = sender?.toModel(),
-        recipient = recipient?.toModel(),
+        id = id.toString(),
         parentUri = parentUri,
         read = seen ?: true,
+        recipient = recipient?.toModel(),
+        sender = sender?.toModel(),
+        text = text,
+        title = title,
     )
 
 internal fun FriendicaPhotoAlbum.toModel() =
     MediaAlbumModel(
-        name = name,
         created =
             created?.let { date ->
                 parseDate(
@@ -407,6 +408,7 @@ internal fun FriendicaPhotoAlbum.toModel() =
                 )
             },
         items = count,
+        name = name,
     )
 
 internal fun SearchResultType.toDto(): String =
@@ -418,15 +420,15 @@ internal fun SearchResultType.toDto(): String =
 
 internal fun ScheduledStatus.toModel() =
     TimelineEntryModel(
-        id = id,
-        content = params?.text.orEmpty(),
-        scheduled = scheduledAt,
         attachments = attachments.map { it.toModel() },
+        content = params?.text.orEmpty(),
+        id = id,
         parentId = params?.inReplyToId,
+        poll = params?.poll?.toModel(),
+        scheduled = scheduledAt,
         sensitive = params?.sensitive ?: false,
         spoiler = params?.spoilerText,
         visibility = params?.visibility?.toVisibility() ?: Visibility.Public,
-        poll = params?.poll?.toModel(),
     )
 
 internal fun ReportCategory.toDto(): String =
