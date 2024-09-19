@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeyStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.withTimeoutOrNull
 
 internal class DefaultApiConfigurationRepository(
     private val serviceProvider: ServiceProvider,
@@ -20,7 +21,10 @@ internal class DefaultApiConfigurationRepository(
         changeNode(node)
 
         val credentials = retrieveFromKeyStore()
-        val isValid = validateCredentials(credentials = credentials, node = node)
+        val isValid =
+            withTimeoutOrNull(STARTUP_TIMEOUT) {
+                validateCredentials(credentials = credentials, node = node)
+            } ?: false
         if (isValid) {
             setAuth(credentials)
         }
@@ -117,5 +121,6 @@ internal class DefaultApiConfigurationRepository(
         private const val METHOD_OAUTH_2 = "OAuth2"
         private const val DEFAULT_NODE = "poliverso.org"
         private const val DEFAULT_METHOD = METHOD_BASIC
+        private const val STARTUP_TIMEOUT = 2000L
     }
 }
