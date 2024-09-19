@@ -57,6 +57,23 @@ val TimelineEntryModel.safeKey: String
 
 val TimelineEntryModel.original: TimelineEntryModel get() = reblog ?: this
 
+val TimelineEntryModel.urlsForPreload: List<String>
+    get() =
+        buildList {
+            attachments
+                .mapNotNull { attachment ->
+                    if (attachment.type != MediaType.Image) {
+                        null
+                    } else {
+                        attachment.url.takeUnless { it.isNotBlank() }
+                    }
+                }.also { urls ->
+                    addAll(urls)
+                }
+            creator?.avatar?.takeUnless { it.isNotBlank() }?.also { add(it) }
+            card?.image?.takeUnless { it.isNotBlank() }?.also { add(it) }
+        }
+
 val TimelineEntryModel.isNsfw: Boolean get() = reblog?.sensitive ?: sensitive
 
 val Duration.isOldEntry: Boolean

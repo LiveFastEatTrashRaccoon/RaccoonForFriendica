@@ -6,10 +6,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
@@ -110,25 +110,7 @@ class UnpublishedViewModel(
 
     private fun List<TimelineEntryModel>.preloadImages() {
         flatMap { entry ->
-            val entryToDisplay = entry.original
-            buildList {
-                entryToDisplay.attachments
-                    .mapNotNull { attachment ->
-                        if (attachment.type != MediaType.Image) {
-                            null
-                        } else {
-                            attachment.url.takeUnless { it.isNotBlank() }
-                        }
-                    }.also { urls ->
-                        addAll(urls)
-                    }
-                entryToDisplay.card
-                    ?.image
-                    ?.takeUnless { it.isNotBlank() }
-                    ?.also { url ->
-                        add(url)
-                    }
-            }
+            entry.original.urlsForPreload
         }.forEach { url ->
             imagePreloadManager.preload(url)
         }
