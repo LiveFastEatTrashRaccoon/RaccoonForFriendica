@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -39,6 +40,7 @@ kotlin {
                 implementation(libs.kotlincrypto.md5)
                 implementation(libs.coil)
                 implementation(libs.coil.network.ktor)
+                implementation(libs.sentry)
 
                 implementation(projects.core.l10n)
             }
@@ -80,4 +82,13 @@ android {
                 .get()
                 .toInt()
     }
+
+    buildTypes {
+        all {
+            val props = loadProperties("./build.properties")
+            resValue("string", "sentry_dsn", props.getProperty("sentry_dsn"))
+        }
+    }
 }
+
+private fun loadProperties(name: String): Properties = File("$projectDir/$name").inputStream().use { Properties().apply { load(it) } }

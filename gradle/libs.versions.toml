@@ -32,6 +32,7 @@ materialKolor = "1.7.0"
 mockk = "1.13.12"
 multiplatform-settings = "1.1.1"
 room = "2.7.0-alpha07"
+sentry = "0.9.0"
 stately = "2.0.7"
 turbine = "1.1.0"
 voyager = "1.0.0"
@@ -89,6 +90,7 @@ exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "androi
 exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "androidx-media3" }
 exoplayer-ui = { module = "androidx.media3:media3-ui", version.ref = "androidx-media3" }
 
+sentry = { module = "io.sentry:sentry-kotlin-multiplatform", version.ref = "sentry" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately" }
 
 room-sqlite = { module = "androidx.sqlite:sqlite-bundled", version.ref = "androidx-sqlite" }

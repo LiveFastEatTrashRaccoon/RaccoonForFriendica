@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.DefaultAppInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.DefaultCrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.DefaultFileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.DefaultGalleryHelper
@@ -40,6 +42,11 @@ actual fun getAppInfoRepository(): AppInfoRepository {
 
 actual fun getBlurHashDecoder(): BlurHashDecoder {
     val res: BlurHashDecoder by KoinJavaComponent.inject(BlurHashDecoder::class.java)
+    return res
+}
+
+actual fun getCrashReportManager(): CrashReportManager {
+    val res by KoinJavaComponent.inject<CrashReportManager>(CrashReportManager::class.java)
     return res
 }
 
@@ -92,6 +99,15 @@ actual val coreHapticFeedbackModule =
     module {
         single<HapticFeedback> {
             DefaultHapticFeedback(
+                context = get(),
+            )
+        }
+    }
+
+actual val coreCrashReportModule =
+    module {
+        single<CrashReportManager> {
+            DefaultCrashReportManager(
                 context = get(),
             )
         }
