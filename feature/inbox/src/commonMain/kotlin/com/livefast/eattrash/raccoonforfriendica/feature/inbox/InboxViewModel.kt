@@ -4,12 +4,12 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
@@ -118,34 +118,7 @@ class InboxViewModel(
 
     private fun List<NotificationModel>.preloadImages() {
         flatMap { notification ->
-            val entry = notification.entry
-            val user = notification.user
-            buildList {
-                entry
-                    ?.attachments
-                    ?.mapNotNull { attachment ->
-                        if (attachment.type != MediaType.Image) {
-                            null
-                        } else {
-                            attachment.url.takeUnless { it.isNotBlank() }
-                        }
-                    }?.also { urls ->
-                        addAll(urls)
-                    }
-                entry
-                    ?.card
-                    ?.image
-                    ?.takeUnless { it.isNotBlank() }
-                    ?.also { url ->
-                        add(url)
-                    }
-                user
-                    ?.header
-                    ?.takeUnless { it.isNotBlank() }
-                    ?.also { url ->
-                        add(url)
-                    }
-            }
+            notification.urlsForPreload
         }.forEach { url ->
             imagePreloadManager.preload(url)
         }

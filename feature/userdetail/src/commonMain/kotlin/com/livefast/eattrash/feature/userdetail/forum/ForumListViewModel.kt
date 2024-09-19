@@ -7,10 +7,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
@@ -136,25 +136,7 @@ class ForumListViewModel(
 
     private fun List<TimelineEntryModel>.preloadImages() {
         flatMap { entry ->
-            val entryToDisplay = entry.original
-            buildList {
-                entryToDisplay.attachments
-                    .mapNotNull { attachment ->
-                        if (attachment.type != MediaType.Image) {
-                            null
-                        } else {
-                            attachment.url.takeUnless { it.isNotBlank() }
-                        }
-                    }.also { urls ->
-                        addAll(urls)
-                    }
-                entryToDisplay.card
-                    ?.image
-                    ?.takeUnless { it.isNotBlank() }
-                    ?.also { url ->
-                        add(url)
-                    }
-            }
+            entry.original.urlsForPreload
         }.forEach { url ->
             imagePreloadManager.preload(url)
         }
