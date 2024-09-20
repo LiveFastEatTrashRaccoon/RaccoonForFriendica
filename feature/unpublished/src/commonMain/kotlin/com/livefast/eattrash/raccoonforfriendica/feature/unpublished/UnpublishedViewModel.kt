@@ -4,7 +4,9 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
@@ -36,6 +38,16 @@ class UnpublishedViewModel(
                 .subscribe(DraftDeletedEvent::class)
                 .onEach { event ->
                     removeEntryFromState(event.id)
+                }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryUpdatedEvent::class)
+                .onEach { event ->
+                    updateEntryInState(event.entry.id) { event.entry }
+                }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryCreatedEvent::class)
+                .onEach {
+                    refresh()
                 }.launchIn(this)
             identityRepository.currentUser
                 .onEach { currentUser ->

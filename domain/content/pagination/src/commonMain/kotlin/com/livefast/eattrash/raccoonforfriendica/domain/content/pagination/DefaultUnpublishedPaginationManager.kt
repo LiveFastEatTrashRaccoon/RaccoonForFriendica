@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
@@ -37,6 +38,16 @@ internal class DefaultUnpublishedPaginationManager(
                     val idx = history.indexOfFirst { e -> e.id == event.id }
                     if (idx >= 0) {
                         history.removeAt(idx)
+                    }
+                }
+            }.launchIn(scope)
+        notificationCenter
+            .subscribe(TimelineEntryUpdatedEvent::class)
+            .onEach { event ->
+                mutex.withLock {
+                    val idx = history.indexOfFirst { e -> e.id == event.entry.id }
+                    if (idx >= 0) {
+                        history[idx] = event.entry
                     }
                 }
             }.launchIn(scope)

@@ -82,6 +82,11 @@ class MyAccountViewModel(
                 .onEach { event ->
                     updateEntryInState(event.entry.id) { event.entry }
                 }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryDeletedEvent::class)
+                .onEach { event ->
+                    removeEntryFromState(event.id)
+                }.launchIn(this)
         }
     }
 

@@ -8,6 +8,10 @@ data class UserUpdatedEvent(
     val user: UserModel,
 ) : NotificationCenterEvent
 
+data class TimelineEntryCreatedEvent(
+    val entry: TimelineEntryModel,
+) : NotificationCenterEvent
+
 data class TimelineEntryUpdatedEvent(
     val entry: TimelineEntryModel,
 ) : NotificationCenterEvent
