@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.entrydetail
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
@@ -49,6 +50,29 @@ class EntryDetailViewModel(
                 .subscribe(TimelineEntryUpdatedEvent::class)
                 .onEach { event ->
                     updateEntryInState(event.entry.id) { event.entry }
+                }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryDeletedEvent::class)
+                .onEach { event ->
+                    removeEntryFromState(event.id)
+                }.launchIn(this)
+            notificationCenter
+                .subscribe(TimelineEntryCreatedEvent::class)
+                .onEach { event ->
+                    val currentEntries = uiState.value.entries
+                    val idx = currentEntries.indexOfFirst { it.id == event.entry.parentId }
+                    if (idx >= 0) {
+                        updateState {
+                            it.copy(
+                                entries =
+                                    currentEntries
+                                        .toMutableList()
+                                        .apply {
+                                            add(idx + 1, event.entry)
+                                        }.toList(),
+                            )
+                        }
+                    }
                 }.launchIn(this)
 
             if (uiState.value.initial) {
