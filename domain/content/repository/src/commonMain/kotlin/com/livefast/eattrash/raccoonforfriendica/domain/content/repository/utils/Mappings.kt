@@ -75,6 +75,7 @@ internal fun Status.toModel() =
         card = card?.toModel(),
         created = createdAt,
         creator = account?.toModel(),
+        dislikesCount = addons?.dislikesCount ?: 0,
         favorite = favourited,
         favoriteCount = favoritesCount,
         id = id,
