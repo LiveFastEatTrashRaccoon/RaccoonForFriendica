@@ -36,6 +36,7 @@ kotlin {
                 implementation(libs.ktorfit.lib)
 
                 implementation(projects.core.l10n)
+                implementation(projects.core.utils)
             }
         }
     }

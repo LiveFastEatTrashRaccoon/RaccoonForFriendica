@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
 import kotlin.jvm.Transient
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -73,6 +74,27 @@ val TimelineEntryModel.urlsForPreload: List<String>
                 }
             creator?.avatar?.takeUnless { it.isNotBlank() }?.also { add(it) }
             card?.image?.takeUnless { it.isNotBlank() }?.also { add(it) }
+        }
+
+val TimelineEntryModel.blurHashParamsForPreload: List<BlurHashParams>
+    get() =
+        buildList {
+            attachments
+                .mapNotNull { attachment ->
+                    if (attachment.type != MediaType.Image) {
+                        null
+                    } else {
+                        attachment.blurHash?.takeUnless { it.isNotBlank() }?.let {
+                            BlurHashParams(
+                                hash = it,
+                                width = attachment.originalWidth ?: 0,
+                                height = attachment.originalHeight ?: 0,
+                            )
+                        }
+                    }
+                }.also { hashes ->
+                    addAll(hashes)
+                }
         }
 
 val TimelineEntryModel.isNsfw: Boolean get() = reblog?.sensitive ?: sensitive
