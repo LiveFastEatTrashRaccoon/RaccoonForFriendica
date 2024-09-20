@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelper
-import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashDecoder
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
 import org.koin.core.module.Module
@@ -16,7 +16,7 @@ expect fun getShareHelper(): ShareHelper
 
 expect fun getAppInfoRepository(): AppInfoRepository
 
-expect fun getBlurHashDecoder(): BlurHashDecoder
+expect fun getBlurHashRepository(): BlurHashRepository
 
 expect fun getCrashReportManager(): CrashReportManager
 
