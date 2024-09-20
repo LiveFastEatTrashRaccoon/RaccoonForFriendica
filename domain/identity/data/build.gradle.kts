@@ -30,9 +30,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.material3)
                 implementation(libs.koin.core)
 
                 implementation(projects.core.appearance)

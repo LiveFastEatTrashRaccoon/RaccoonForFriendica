@@ -73,6 +73,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getEntryActionRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -104,6 +105,7 @@ class ForumListScreen(
         val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
         val snackbarHostState = remember { SnackbarHostState() }
         val shareHelper = remember { getShareHelper() }
+        val actionRepository = remember { getEntryActionRepository() }
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
         var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
@@ -262,40 +264,36 @@ class ForumListScreen(
                                 detailOpener.openImageDetail(urls = urls, initialIndex = imageIdx)
                             },
                             onReblog =
-                                uiState.currentUserId?.let {
-                                    { e ->
-                                        val timeSinceCreation =
-                                            e.created?.run {
-                                                getDurationFromDateToNow(this)
-                                            } ?: Duration.ZERO
-                                        when {
-                                            !e.reblogged && timeSinceCreation.isOldEntry ->
-                                                confirmReblogEntry = e
+                                { e: TimelineEntryModel ->
+                                    val timeSinceCreation =
+                                        e.created?.run {
+                                            getDurationFromDateToNow(this)
+                                        } ?: Duration.ZERO
+                                    when {
+                                        !e.reblogged && timeSinceCreation.isOldEntry ->
+                                            confirmReblogEntry = e
 
-                                            else ->
-                                                model.reduce(
-                                                    ForumListMviModel.Intent.ToggleReblog(e),
-                                                )
-                                        }
+                                        else ->
+                                            model.reduce(
+                                                ForumListMviModel.Intent.ToggleReblog(e),
+                                            )
                                     }
-                                },
+                                }.takeIf { actionRepository.canReblog(entry.original) },
                             onBookmark =
-                                uiState.currentUserId?.let {
-                                    { e -> model.reduce(ForumListMviModel.Intent.ToggleBookmark(e)) }
-                                },
+                                { e: TimelineEntryModel ->
+                                    model.reduce(ForumListMviModel.Intent.ToggleBookmark(e))
+                                }.takeIf { actionRepository.canBookmark(entry.original) },
                             onFavorite =
-                                uiState.currentUserId?.let {
-                                    { e -> model.reduce(ForumListMviModel.Intent.ToggleFavorite(e)) }
-                                },
+                                { e: TimelineEntryModel ->
+                                    model.reduce(ForumListMviModel.Intent.ToggleFavorite(e))
+                                }.takeIf { actionRepository.canReact(entry.original) },
                             onReply =
-                                uiState.currentUserId?.let {
-                                    { e ->
-                                        detailOpener.openComposer(
-                                            inReplyToId = e.id,
-                                            inReplyToUser = e.creator,
-                                        )
-                                    }
-                                },
+                                { e: TimelineEntryModel ->
+                                    detailOpener.openComposer(
+                                        inReplyToId = e.id,
+                                        inReplyToUser = e.creator,
+                                    )
+                                }.takeIf { actionRepository.canReply(entry.original) },
                             onPollVote =
                                 uiState.currentUserId?.let {
                                     { e, choices ->
@@ -312,16 +310,23 @@ class ForumListScreen(
                             },
                             options =
                                 buildList {
-                                    if (!entry.reblog?.url.isNullOrBlank()) {
+                                    if (actionRepository.canShare(entry.original)) {
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
-                                    if (entry.reblog?.creator?.id == uiState.currentUserId) {
+                                    if (actionRepository.canEdit(entry.original)) {
                                         this += OptionId.Edit.toOption()
+                                    }
+                                    if (actionRepository.canDelete(entry.original)) {
                                         this += OptionId.Delete.toOption()
-                                    } else if (uiState.currentUserId != null) {
+                                    }
+                                    if (actionRepository.canMute(entry)) {
                                         this += OptionId.Mute.toOption()
+                                    }
+                                    if (actionRepository.canBlock(entry)) {
                                         this += OptionId.Block.toOption()
+                                    }
+                                    if (actionRepository.canReport(entry)) {
                                         this += OptionId.ReportUser.toOption()
                                         this += OptionId.ReportEntry.toOption()
                                     }
