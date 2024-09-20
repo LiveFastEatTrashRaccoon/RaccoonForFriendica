@@ -5,10 +5,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
@@ -37,6 +39,7 @@ class TimelineViewModel(
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
     private val imagePreloadManager: ImagePreloadManager,
+    private val blurHashRepository: BlurHashRepository,
 ) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
         initialState = TimelineMviModel.State(),
     ),
@@ -201,11 +204,16 @@ class TimelineViewModel(
         }
     }
 
-    private fun List<TimelineEntryModel>.preloadImages() {
+    private suspend fun List<TimelineEntryModel>.preloadImages() {
         flatMap { entry ->
             entry.original.urlsForPreload
         }.forEach { url ->
             imagePreloadManager.preload(url)
+        }
+        flatMap { entry ->
+            entry.blurHashParamsForPreload
+        }.forEach {
+            blurHashRepository.preload(it)
         }
     }
 

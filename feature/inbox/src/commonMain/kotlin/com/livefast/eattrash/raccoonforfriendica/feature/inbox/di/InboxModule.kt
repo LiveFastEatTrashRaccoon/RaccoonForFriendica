@@ -16,6 +16,7 @@ val featureInboxModule =
                 inboxManager = get(),
                 hapticFeedback = get(),
                 imagePreloadManager = get(),
+                blurHashRepository = get(),
             )
         }
     }

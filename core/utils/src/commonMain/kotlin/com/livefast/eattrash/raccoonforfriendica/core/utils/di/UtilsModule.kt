@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashDecoder
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.DefaultBlurHashDecoder
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.DefaultBlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.DefaultImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.DefaultImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
@@ -25,5 +27,10 @@ val coreUtilsModule =
         }
         single<BlurHashDecoder> {
             DefaultBlurHashDecoder()
+        }
+        single<BlurHashRepository> {
+            DefaultBlurHashRepository(
+                decoder = get(),
+            )
         }
     }

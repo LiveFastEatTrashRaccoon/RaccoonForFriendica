@@ -20,6 +20,7 @@ val featureUserDetailModule =
                 userCache = get(),
                 notificationCenter = get(),
                 imagePreloadManager = get(),
+                blurHashRepository = get(),
             )
         }
         factory<ForumListMviModel> { params ->
@@ -34,6 +35,7 @@ val featureUserDetailModule =
                 userCache = get(),
                 notificationCenter = get(),
                 imagePreloadManager = get(),
+                blurHashRepository = get(),
             )
         }
     }

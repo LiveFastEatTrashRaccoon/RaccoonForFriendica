@@ -17,6 +17,7 @@ val featureEntryDetailModule =
                 entryCache = get(),
                 notificationCenter = get(),
                 imagePreloadManager = get(),
+                blurHashRepository = get(),
             )
         }
     }
