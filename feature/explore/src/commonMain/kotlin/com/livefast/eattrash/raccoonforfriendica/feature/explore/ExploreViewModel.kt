@@ -156,6 +156,7 @@ class ExploreViewModel(
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()
         entries.mapNotNull { (it as? ExploreItemModel.Entry)?.entry }.preloadImages()
+        entries.mapNotNull { (it as? ExploreItemModel.User)?.user }.preloadAvatars()
         updateState {
             it.copy(
                 items = entries,
@@ -171,6 +172,14 @@ class ExploreViewModel(
         flatMap { entry ->
             entry.original.urlsForPreload
         }.forEach { url ->
+            imagePreloadManager.preload(url)
+        }
+    }
+
+    private fun List<UserModel>.preloadAvatars() {
+        mapNotNull { user ->
+            user.avatar?.takeIf { it.isNotEmpty() }
+        }.onEach { url ->
             imagePreloadManager.preload(url)
         }
     }

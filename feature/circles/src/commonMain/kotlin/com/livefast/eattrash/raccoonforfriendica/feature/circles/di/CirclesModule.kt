@@ -20,6 +20,7 @@ val featureCirclesModule =
                 paginationManager = get(),
                 circlesRepository = get(),
                 searchPaginationManager = get(),
+                imagePreloadManager = get(),
             )
         }
     }
