@@ -337,4 +337,5 @@ internal open class DefaultStrings : Strings {
     override val createReportItemForward = "Forward report"
     override val actionReportUser = "Report user"
     override val actionReportEntry = "Report post"
+    override val actionViewDetails = "Details"
 }

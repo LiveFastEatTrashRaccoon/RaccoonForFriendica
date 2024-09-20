@@ -347,4 +347,5 @@ internal val ItStrings =
         override val createReportItemForward = "Inoltra segnalazione"
         override val actionReportUser = "Segnala utente"
         override val actionReportEntry = "Segnala post"
+        override val actionViewDetails = "Dettagli"
     }
