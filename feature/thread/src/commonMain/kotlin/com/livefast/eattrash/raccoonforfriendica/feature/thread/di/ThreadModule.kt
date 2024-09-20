@@ -25,6 +25,7 @@ val featureThreadModule =
                 entryCache = get(),
                 notificationCenter = get(),
                 imagePreloadManager = get(),
+                blurHashRepository = get(),
             )
         }
     }
