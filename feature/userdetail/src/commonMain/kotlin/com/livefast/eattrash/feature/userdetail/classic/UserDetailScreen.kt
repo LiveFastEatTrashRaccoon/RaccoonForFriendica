@@ -76,6 +76,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Sectio
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
@@ -155,6 +156,7 @@ class UserDetailScreen(
         var confirmMuteUserDialogOpen by remember { mutableStateOf(false) }
         var confirmBlockUserDialogOpen by remember { mutableStateOf(false) }
         var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -619,6 +621,7 @@ class UserDetailScreen(
                                     if (actionRepository.canReport(entry)) {
                                         this += OptionId.ReportEntry.toOption()
                                     }
+                                    this += OptionId.ViewDetails.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -645,6 +648,7 @@ class UserDetailScreen(
                                                 )
                                             }
                                         }
+                                    OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                     else -> Unit
                                 }
                             },
@@ -793,6 +797,15 @@ class UserDetailScreen(
                     if (confirm && e != null) {
                         model.reduce(UserDetailMviModel.Intent.ToggleReblog(e))
                     }
+                },
+            )
+        }
+
+        seeDetailsEntry?.let { entry ->
+            EntryDetailDialog(
+                entry = entry,
+                onClose = {
+                    seeDetailsEntry = null
                 },
             )
         }

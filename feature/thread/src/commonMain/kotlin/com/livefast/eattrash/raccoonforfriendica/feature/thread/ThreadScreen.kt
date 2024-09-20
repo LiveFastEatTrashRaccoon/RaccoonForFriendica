@@ -62,6 +62,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -111,6 +112,7 @@ class ThreadScreen(
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
+        var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -320,6 +322,7 @@ class ThreadScreen(
                                             this += OptionId.Share.toOption()
                                             this += OptionId.CopyUrl.toOption()
                                         }
+                                        this += OptionId.ViewDetails.toOption()
                                     },
                                 onOptionSelected = { optionId ->
                                     when (optionId) {
@@ -335,7 +338,7 @@ class ThreadScreen(
                                                 snackbarHostState.showSnackbar(copyToClipboardSuccess)
                                             }
                                         }
-
+                                        OptionId.ViewDetails -> seeDetailsEntry = uiState.entry?.original
                                         else -> Unit
                                     }
                                 },
@@ -426,6 +429,7 @@ class ThreadScreen(
                                         this += OptionId.ReportUser.toOption()
                                         this += OptionId.ReportEntry.toOption()
                                     }
+                                    this += OptionId.ViewDetails.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -467,6 +471,7 @@ class ThreadScreen(
                                                 )
                                             }
                                         }
+                                    OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                     else -> Unit
                                 }
                             },
@@ -606,6 +611,15 @@ class ThreadScreen(
                     if (confirm && e != null) {
                         model.reduce(ThreadMviModel.Intent.ToggleReblog(e))
                     }
+                },
+            )
+        }
+
+        seeDetailsEntry?.let { entry ->
+            EntryDetailDialog(
+                entry = entry,
+                onClose = {
+                    seeDetailsEntry = null
                 },
             )
         }
