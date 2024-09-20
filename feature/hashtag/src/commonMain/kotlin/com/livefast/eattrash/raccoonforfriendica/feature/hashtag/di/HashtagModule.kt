@@ -20,6 +20,7 @@ val featureHashtagModule =
                 hapticFeedback = get(),
                 notificationCenter = get(),
                 imagePreloadManager = get(),
+                blurHashRepository = get(),
             )
         }
         factory<FollowedHashtagsMviModel> {
