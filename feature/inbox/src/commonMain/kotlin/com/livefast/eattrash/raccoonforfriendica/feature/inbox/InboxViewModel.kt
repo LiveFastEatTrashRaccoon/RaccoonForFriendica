@@ -2,11 +2,13 @@ package com.livefast.eattrash.raccoonforfriendica.feature.inbox
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
@@ -30,6 +32,7 @@ class InboxViewModel(
     private val inboxManager: InboxManager,
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
+    private val blurHashRepository: BlurHashRepository,
 ) : DefaultMviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>(
         initialState = InboxMviModel.State(),
     ),
@@ -116,11 +119,16 @@ class InboxViewModel(
         }
     }
 
-    private fun List<NotificationModel>.preloadImages() {
+    private suspend fun List<NotificationModel>.preloadImages() {
         flatMap { notification ->
             notification.urlsForPreload
         }.forEach { url ->
             imagePreloadManager.preload(url)
+        }
+        flatMap { entry ->
+            entry.blurHashParamsForPreload
+        }.forEach {
+            blurHashRepository.preload(it)
         }
     }
 
