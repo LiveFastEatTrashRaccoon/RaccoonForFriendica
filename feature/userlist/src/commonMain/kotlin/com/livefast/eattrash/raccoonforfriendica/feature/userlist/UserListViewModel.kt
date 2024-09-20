@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -26,6 +27,7 @@ internal class UserListViewModel(
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
     private val hapticFeedback: HapticFeedback,
+    private val imagePreloadManager: ImagePreloadManager,
     private val notificationCenter: NotificationCenter,
     private val userCache: LocalItemCache<UserModel>,
 ) : DefaultMviModel<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>(
@@ -118,6 +120,7 @@ internal class UserListViewModel(
                         user
                     }
                 }
+        users.preloadImages()
         val wasRefreshing = currentState.refreshing
         updateState {
             it.copy(
@@ -130,6 +133,14 @@ internal class UserListViewModel(
         }
         if (wasRefreshing) {
             emitEffect(UserListMviModel.Effect.BackToTop)
+        }
+    }
+
+    private fun List<UserModel>.preloadImages() {
+        mapNotNull { user ->
+            user.avatar?.takeIf { it.isNotEmpty() }
+        }.onEach { url ->
+            imagePreloadManager.preload(url)
         }
     }
 

@@ -15,6 +15,7 @@ val featureUserListModule =
                 userRepository = get(),
                 identityRepository = get(),
                 hapticFeedback = get(),
+                imagePreloadManager = get(),
                 notificationCenter = get(),
                 userCache = get(),
             )

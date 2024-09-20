@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.circles.detail
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
@@ -22,6 +23,7 @@ class CircleDetailViewModel(
     private val paginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
     private val searchPaginationManager: UserPaginationManager,
+    private val imagePreloadManager: ImagePreloadManager,
 ) : DefaultMviModel<CircleDetailMviModel.Intent, CircleDetailMviModel.State, CircleDetailMviModel.Effect>(
         initialState = CircleDetailMviModel.State(),
     ),
@@ -93,6 +95,7 @@ class CircleDetailViewModel(
         updateState { it.copy(loading = true) }
         while (paginationManager.canFetchMore) {
             val users = paginationManager.loadNextPage()
+            users.preloadImages()
             updateState {
                 it.copy(
                     users = users,
@@ -104,6 +107,14 @@ class CircleDetailViewModel(
         }
         updateState {
             it.copy(loading = false)
+        }
+    }
+
+    private fun List<UserModel>.preloadImages() {
+        mapNotNull { user ->
+            user.avatar?.takeIf { it.isNotEmpty() }
+        }.onEach { url ->
+            imagePreloadManager.preload(url)
         }
     }
 
