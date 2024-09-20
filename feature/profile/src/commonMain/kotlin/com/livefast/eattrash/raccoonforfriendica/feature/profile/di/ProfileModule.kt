@@ -36,6 +36,7 @@ val featureProfileModule =
                 hapticFeedback = get(),
                 notificationCenter = get(),
                 imagePreloadManager = get(),
+                blurHashRepository = get(),
             )
         }
         factory<AnonymousMviModel> {

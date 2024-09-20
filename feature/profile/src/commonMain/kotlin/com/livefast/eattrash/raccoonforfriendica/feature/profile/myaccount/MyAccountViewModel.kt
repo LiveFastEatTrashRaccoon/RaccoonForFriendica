@@ -6,9 +6,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSecti
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
@@ -34,6 +36,7 @@ class MyAccountViewModel(
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
     private val imagePreloadManager: ImagePreloadManager,
+    private val blurHashRepository: BlurHashRepository,
 ) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
         initialState = MyAccountMviModel.State(),
     ),
@@ -173,11 +176,16 @@ class MyAccountViewModel(
         }
     }
 
-    private fun List<TimelineEntryModel>.preloadImages() {
+    private suspend fun List<TimelineEntryModel>.preloadImages() {
         flatMap { entry ->
             entry.original.urlsForPreload
         }.forEach { url ->
             imagePreloadManager.preload(url)
+        }
+        flatMap { entry ->
+            entry.blurHashParamsForPreload
+        }.forEach {
+            blurHashRepository.preload(it)
         }
     }
 
