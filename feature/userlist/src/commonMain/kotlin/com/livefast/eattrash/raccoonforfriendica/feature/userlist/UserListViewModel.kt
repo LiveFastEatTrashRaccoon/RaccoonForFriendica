@@ -39,17 +39,16 @@ internal class UserListViewModel(
                     updateState {
                         it.copy(currentUserId = currentUser?.id)
                     }
+                    if (uiState.value.initial) {
+                        loadUser()
+                        refresh(initial = true)
+                    }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(UserUpdatedEvent::class)
                 .onEach { event ->
                     updateUserInState(event.user.id) { event.user }
                 }.launchIn(this)
-
-            if (uiState.value.initial) {
-                loadUser()
-                refresh(initial = true)
-            }
         }
     }
 
@@ -94,7 +93,6 @@ internal class UserListViewModel(
                 is UserListType.Following -> UserPaginationSpecification.Following(userId.orEmpty())
                 is UserListType.UsersFavorite ->
                     UserPaginationSpecification.EntryUsersFavorite(entryId.orEmpty())
-
                 is UserListType.UsersReblog -> UserPaginationSpecification.EntryUsersReblog(entryId.orEmpty())
             },
         )
