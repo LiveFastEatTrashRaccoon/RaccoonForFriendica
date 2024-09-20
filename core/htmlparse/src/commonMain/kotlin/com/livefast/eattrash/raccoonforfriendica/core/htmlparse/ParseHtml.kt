@@ -14,7 +14,7 @@ fun String.parseHtml(
     linkColor: Color,
     requiresHtmlDecode: Boolean = true,
 ): AnnotatedString {
-    val string = AnnotatedString.Builder()
+    val builder = AnnotatedString.Builder()
 
     val handler =
         KsoupHtmlHandler
@@ -22,16 +22,16 @@ fun String.parseHtml(
             .onOpenTag { name, attributes, _ ->
                 when (name) {
                     "p" ->
-                        if (string.length != 0) {
+                        if (builder.length != 0) {
                             // separate paragraphs with a blank line
-                            string.append("\n\n")
+                            builder.append("\n\n")
                         }
 
                     "span" -> Unit
-                    "br" -> string.append('\n')
+                    "br" -> builder.append('\n')
                     "a" -> {
-                        string.pushStringAnnotation("link", attributes["href"] ?: "")
-                        string.pushStyle(
+                        builder.pushStringAnnotation("link", attributes["href"] ?: "")
+                        builder.pushStyle(
                             SpanStyle(
                                 color = linkColor,
                                 textDecoration = TextDecoration.Underline,
@@ -39,29 +39,29 @@ fun String.parseHtml(
                         )
                     }
 
-                    "b", "strong" -> string.pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
-                    "u" -> string.pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
-                    "i", "em" -> string.pushStyle(SpanStyle(fontStyle = FontStyle.Italic))
-                    "s" -> string.pushStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
+                    "b", "strong" -> builder.pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
+                    "u" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
+                    "i", "em" -> builder.pushStyle(SpanStyle(fontStyle = FontStyle.Italic))
+                    "s" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
                     "ul", "ol" -> Unit
-                    "li" -> string.append(" • ")
+                    "li" -> builder.append(" • ")
                     else -> println("onOpenTag: Unhandled span $name")
                 }
             }.onCloseTag { name, _ ->
                 when (name) {
-                    "p" -> string.append(' ')
+                    "p" -> builder.append(' ')
                     "span", "br" -> Unit
-                    "b", "strong", "u", "i", "em", "s" -> string.pop()
+                    "b", "strong", "u", "i", "em", "s" -> builder.pop()
                     "a" -> {
-                        string.pop() // corresponds to pushStyle
-                        string.pop() // corresponds to pushStringAnnotation
+                        builder.pop() // corresponds to pushStyle
+                        builder.pop() // corresponds to pushStringAnnotation
                     }
                     "ul", "ol" -> Unit
-                    "li" -> string.append('\n')
+                    "li" -> builder.append('\n')
                     else -> println("onCloseTag: Unhandled span $name")
                 }
             }.onText { text ->
-                string.append(text)
+                builder.append(text)
             }.build()
 
     val ksoupHtmlParser = KsoupHtmlParser(handler)
@@ -69,5 +69,5 @@ fun String.parseHtml(
     ksoupHtmlParser.write(html)
     ksoupHtmlParser.end()
 
-    return string.toAnnotatedString()
+    return builder.toAnnotatedString()
 }

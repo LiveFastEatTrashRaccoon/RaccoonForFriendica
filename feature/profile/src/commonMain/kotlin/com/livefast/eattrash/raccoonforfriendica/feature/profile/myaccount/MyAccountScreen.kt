@@ -46,6 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
@@ -106,6 +107,7 @@ class MyAccountScreen : Screen {
                 0.dp
             },
         )
+        var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -310,6 +312,7 @@ class MyAccountScreen : Screen {
                                         this += OptionId.Pin.toOption()
                                     }
                                 }
+                                this += OptionId.ViewDetails.toOption()
                             },
                         onOptionSelected = { optionId ->
                             when (optionId) {
@@ -347,6 +350,7 @@ class MyAccountScreen : Screen {
                                     model.reduce(
                                         MyAccountMviModel.Intent.TogglePin(entry),
                                     )
+                                OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                 else -> Unit
                             }
                         },
@@ -438,6 +442,15 @@ class MyAccountScreen : Screen {
                     if (confirm && e != null) {
                         model.reduce(MyAccountMviModel.Intent.ToggleReblog(e))
                     }
+                },
+            )
+        }
+
+        seeDetailsEntry?.let { entry ->
+            EntryDetailDialog(
+                entry = entry,
+                onClose = {
+                    seeDetailsEntry = null
                 },
             )
         }

@@ -51,6 +51,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -102,6 +103,7 @@ class HashtagScreen(
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
+        var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -314,6 +316,7 @@ class HashtagScreen(
                                         this += OptionId.ReportUser.toOption()
                                         this += OptionId.ReportEntry.toOption()
                                     }
+                                    this += OptionId.ViewDetails.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -359,6 +362,7 @@ class HashtagScreen(
                                                 )
                                             }
                                         }
+                                    OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                     else -> Unit
                                 }
                             },
@@ -499,6 +503,15 @@ class HashtagScreen(
                     if (confirm && e != null) {
                         model.reduce(HashtagMviModel.Intent.ToggleReblog(e))
                     }
+                },
+            )
+        }
+
+        seeDetailsEntry?.let { entry ->
+            EntryDetailDialog(
+                entry = entry,
+                onClose = {
+                    seeDetailsEntry = null
                 },
             )
         }

@@ -347,4 +347,5 @@ internal val DeStrings =
         override val createReportItemForward = "Bericht vorwärts"
         override val actionReportUser = "Benutzer melden"
         override val actionReportEntry = "Beitrag melden"
+        override val actionViewDetails = "Einzelheiten"
     }

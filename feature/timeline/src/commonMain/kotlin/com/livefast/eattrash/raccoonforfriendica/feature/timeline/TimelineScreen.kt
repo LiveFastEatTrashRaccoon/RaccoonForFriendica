@@ -64,6 +64,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -120,6 +121,7 @@ class TimelineScreen : Screen {
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
+        var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -363,6 +365,7 @@ class TimelineScreen : Screen {
                                         this += OptionId.ReportUser.toOption()
                                         this += OptionId.ReportEntry.toOption()
                                     }
+                                    this += OptionId.ViewDetails.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -409,6 +412,7 @@ class TimelineScreen : Screen {
                                                 )
                                             }
                                         }
+                                    OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                     else -> Unit
                                 }
                             },
@@ -565,6 +569,15 @@ class TimelineScreen : Screen {
                     if (confirm && e != null) {
                         model.reduce(TimelineMviModel.Intent.ToggleReblog(e))
                     }
+                },
+            )
+        }
+
+        seeDetailsEntry?.let { entry ->
+            EntryDetailDialog(
+                entry = entry,
+                onClose = {
+                    seeDetailsEntry = null
                 },
             )
         }

@@ -304,6 +304,7 @@ interface Strings {
     val createReportItemForward: String
     val actionReportUser: String
     val actionReportEntry: String
+    val actionViewDetails: String
 }
 
 object Locales {

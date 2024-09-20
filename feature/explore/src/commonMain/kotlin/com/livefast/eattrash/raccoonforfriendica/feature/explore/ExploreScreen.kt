@@ -54,6 +54,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.HashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.LinkItem
@@ -118,6 +119,7 @@ class ExploreScreen : Screen {
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
+        var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -393,6 +395,7 @@ class ExploreScreen : Screen {
                                                 this += OptionId.ReportUser.toOption()
                                                 this += OptionId.ReportEntry.toOption()
                                             }
+                                            this += OptionId.ViewDetails.toOption()
                                         },
                                     onOptionSelected = { optionId ->
                                         when (optionId) {
@@ -441,6 +444,7 @@ class ExploreScreen : Screen {
                                                         )
                                                     }
                                                 }
+                                            OptionId.ViewDetails -> seeDetailsEntry = item.entry.original
                                             else -> Unit
                                         }
                                     },
@@ -650,6 +654,15 @@ class ExploreScreen : Screen {
                     if (confirm && e != null) {
                         model.reduce(ExploreMviModel.Intent.ToggleReblog(e))
                     }
+                },
+            )
+        }
+
+        seeDetailsEntry?.let { entry ->
+            EntryDetailDialog(
+                entry = entry,
+                onClose = {
+                    seeDetailsEntry = null
                 },
             )
         }
