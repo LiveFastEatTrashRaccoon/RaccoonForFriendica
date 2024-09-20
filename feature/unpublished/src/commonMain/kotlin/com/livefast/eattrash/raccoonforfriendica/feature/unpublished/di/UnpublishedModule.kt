@@ -14,6 +14,7 @@ val featureUnpublishedModule =
                 draftRepository = get(),
                 notificationCenter = get(),
                 imagePreloadManager = get(),
+                blurHashRepository = get(),
             )
         }
     }

@@ -7,9 +7,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Draft
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationManager
@@ -28,6 +30,7 @@ class UnpublishedViewModel(
     private val draftRepository: DraftRepository,
     private val notificationCenter: NotificationCenter,
     private val imagePreloadManager: ImagePreloadManager,
+    private val blurHashRepository: BlurHashRepository,
 ) : DefaultMviModel<UnpublishedMviModel.Intent, UnpublishedMviModel.State, UnpublishedMviModel.Effect>(
         initialState = UnpublishedMviModel.State(),
     ),
@@ -120,11 +123,16 @@ class UnpublishedViewModel(
         }
     }
 
-    private fun List<TimelineEntryModel>.preloadImages() {
+    private suspend fun List<TimelineEntryModel>.preloadImages() {
         flatMap { entry ->
             entry.original.urlsForPreload
         }.forEach { url ->
             imagePreloadManager.preload(url)
+        }
+        flatMap { entry ->
+            entry.blurHashParamsForPreload
+        }.forEach {
+            blurHashRepository.preload(it)
         }
     }
 
