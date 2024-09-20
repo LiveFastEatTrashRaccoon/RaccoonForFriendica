@@ -13,10 +13,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getBlurHashDecoder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.withContext
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getBlurHashRepository
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
 
 @Composable
 internal fun BlurredPreview(
@@ -26,19 +24,20 @@ internal fun BlurredPreview(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.FillWidth,
 ) {
-    val decoder = remember { getBlurHashDecoder() }
+    val repository = remember { getBlurHashRepository() }
 
     if (originalWidth > 0 && originalHeight > 0) {
         var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
 
         LaunchedEffect(blurHash) {
-            withContext(Dispatchers.IO) {
-                imageBitmap =
-                    decoder.decode(
-                        blurHash = blurHash,
+            if (blurHash != null) {
+                val params =
+                    BlurHashParams(
+                        hash = blurHash,
                         width = originalWidth,
                         height = originalHeight,
                     )
+                imageBitmap = repository.get(params)
             }
         }
 
