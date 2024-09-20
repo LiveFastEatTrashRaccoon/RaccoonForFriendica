@@ -16,6 +16,7 @@ val featureSearchModule =
                 hapticFeedback = get(),
                 notificationCenter = get(),
                 imagePreloadManager = get(),
+                blurHashRepository = get(),
             )
         }
     }
