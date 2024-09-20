@@ -7,6 +7,8 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Timestamp
@@ -751,10 +753,40 @@ class ComposerViewModel(
                     }
                 updateState { it.copy(loading = false) }
                 if (res != null) {
-                    val draftToDeleteId = draftId
-                    if (currentState.publicationType != PublicationType.Draft && draftToDeleteId != null) {
-                        draftRepository.delete(draftToDeleteId)
-                        notificationCenter.send(DraftDeletedEvent(draftToDeleteId))
+                    when (currentState.publicationType) {
+                        is PublicationType.Scheduled -> {
+                            val draftToDeleteId = draftId
+                            if (draftToDeleteId != null) {
+                                draftRepository.delete(draftToDeleteId)
+                                notificationCenter.send(DraftDeletedEvent(draftToDeleteId))
+                            }
+
+                            if (editId != null) {
+                                notificationCenter.send(TimelineEntryUpdatedEvent(res))
+                            } else {
+                                notificationCenter.send(TimelineEntryCreatedEvent(res))
+                            }
+                        }
+                        PublicationType.Draft -> {
+                            if (draftId != null) {
+                                notificationCenter.send(TimelineEntryUpdatedEvent(res))
+                            } else {
+                                notificationCenter.send(TimelineEntryCreatedEvent(res))
+                            }
+                        }
+                        PublicationType.Default -> {
+                            val draftToDeleteId = draftId
+                            if (draftToDeleteId != null) {
+                                draftRepository.delete(draftToDeleteId)
+                                notificationCenter.send(DraftDeletedEvent(draftToDeleteId))
+                            }
+
+                            if (editId != null) {
+                                notificationCenter.send(TimelineEntryUpdatedEvent(res))
+                            } else {
+                                notificationCenter.send(TimelineEntryCreatedEvent(res))
+                            }
+                        }
                     }
 
                     emitEffect(ComposerMviModel.Effect.Success)
