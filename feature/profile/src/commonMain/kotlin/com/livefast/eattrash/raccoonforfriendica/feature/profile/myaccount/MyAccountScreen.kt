@@ -61,18 +61,17 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getEntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.LocalProfileTopAppBarStateWrapper
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlin.time.Duration
 
 class MyAccountScreen : Screen {
     @OptIn(
@@ -92,6 +91,7 @@ class MyAccountScreen : Screen {
         val snackbarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
         val shareHelper = remember { getShareHelper() }
+        val actionRepository = remember { getEntryActionRepository() }
         val genericError = LocalStrings.current.messageGenericError
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
@@ -280,47 +280,30 @@ class MyAccountScreen : Screen {
                         onOpenImage = { urls, imageIdx ->
                             detailOpener.openImageDetail(urls = urls, initialIndex = imageIdx)
                         },
-                        onReblog = { e ->
-                            val timeSinceCreation =
-                                e.created?.run {
-                                    getDurationFromDateToNow(this)
-                                } ?: Duration.ZERO
-                            when {
-                                !e.reblogged && timeSinceCreation.isOldEntry ->
-                                    confirmReblogEntry = e
-
-                                else ->
-                                    model.reduce(
-                                        MyAccountMviModel.Intent.ToggleReblog(e),
-                                    )
-                            }
-                        },
-                        onBookmark = { e ->
-                            model.reduce(MyAccountMviModel.Intent.ToggleBookmark(e))
-                        },
-                        onFavorite = { e ->
-                            model.reduce(MyAccountMviModel.Intent.ToggleFavorite(e))
-                        },
-                        onReply = { e ->
-                            detailOpener.openComposer(
-                                inReplyToId = e.id,
-                                inReplyToUser = e.creator,
-                            )
-                        },
+                        onBookmark =
+                            { e: TimelineEntryModel ->
+                                model.reduce(MyAccountMviModel.Intent.ToggleBookmark(e))
+                            }.takeIf { actionRepository.canBookmark(entry.original) },
+                        onFavorite =
+                            { e: TimelineEntryModel ->
+                                model.reduce(MyAccountMviModel.Intent.ToggleFavorite(e))
+                            }.takeIf { actionRepository.canReact(entry.original) },
                         onToggleSpoilerActive = { e ->
                             model.reduce(MyAccountMviModel.Intent.ToggleSpoilerActive(e))
                         },
                         options =
                             buildList {
-                                if (!entry.url.isNullOrBlank()) {
+                                if (actionRepository.canShare(entry.original)) {
                                     this += OptionId.Share.toOption()
                                     this += OptionId.CopyUrl.toOption()
                                 }
-                                if (entry.reblog == null || entry.creator?.group == true) {
+                                if (actionRepository.canEdit(entry.original)) {
                                     this += OptionId.Edit.toOption()
+                                }
+                                if (actionRepository.canDelete(entry.original)) {
                                     this += OptionId.Delete.toOption()
                                 }
-                                if (entry.reblog == null) {
+                                if (actionRepository.canTogglePin(entry)) {
                                     if (entry.pinned) {
                                         this += OptionId.Unpin.toOption()
                                     } else {

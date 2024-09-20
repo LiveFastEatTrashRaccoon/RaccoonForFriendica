@@ -82,6 +82,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getEntryActionRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -110,6 +111,7 @@ class TimelineScreen : Screen {
             }
         val snackbarHostState = remember { SnackbarHostState() }
         val shareHelper = remember { getShareHelper() }
+        val actionRepository = remember { getEntryActionRepository() }
         val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
         val clipboardManager = LocalClipboardManager.current
         var timelineTypeSelectorOpen by remember { mutableStateOf(false) }
@@ -288,29 +290,39 @@ class TimelineScreen : Screen {
                                 detailOpener.openImageDetail(urls = urls, initialIndex = imageIdx)
                             },
                             onReblog =
-                                uiState.currentUserId?.let {
-                                    { e ->
-                                        val timeSinceCreation =
-                                            e.created?.run {
-                                                getDurationFromDateToNow(this)
-                                            } ?: Duration.ZERO
-                                        when {
-                                            !e.reblogged && timeSinceCreation.isOldEntry ->
-                                                confirmReblogEntry = e
+                                { e: TimelineEntryModel ->
+                                    val timeSinceCreation =
+                                        e.created?.run {
+                                            getDurationFromDateToNow(this)
+                                        } ?: Duration.ZERO
+                                    when {
+                                        !e.reblogged && timeSinceCreation.isOldEntry ->
+                                            confirmReblogEntry = e
 
-                                            else ->
-                                                model.reduce(TimelineMviModel.Intent.ToggleReblog(e))
-                                        }
+                                        else ->
+                                            model.reduce(
+                                                TimelineMviModel.Intent.ToggleReblog(e),
+                                            )
                                     }
-                                },
+                                }.takeIf { actionRepository.canReblog(entry.original) },
                             onBookmark =
-                                uiState.currentUserId?.let {
-                                    { e -> model.reduce(TimelineMviModel.Intent.ToggleBookmark(e)) }
-                                },
+                                { e: TimelineEntryModel ->
+                                    model.reduce(TimelineMviModel.Intent.ToggleBookmark(e))
+                                }.takeIf { actionRepository.canBookmark(entry.original) },
                             onFavorite =
-                                uiState.currentUserId?.let {
-                                    { e -> model.reduce(TimelineMviModel.Intent.ToggleFavorite(e)) }
-                                },
+                                { e: TimelineEntryModel ->
+                                    model.reduce(TimelineMviModel.Intent.ToggleFavorite(e))
+                                }.takeIf { actionRepository.canReact(entry.original) },
+                            onReply =
+                                { e: TimelineEntryModel ->
+                                    detailOpener.openComposer(
+                                        inReplyToId = e.id,
+                                        inReplyToUser = e.creator,
+                                    )
+                                }.takeIf { actionRepository.canReply(entry.original) },
+                            onToggleSpoilerActive = { e ->
+                                model.reduce(TimelineMviModel.Intent.ToggleSpoilerActive(e))
+                            },
                             onPollVote =
                                 uiState.currentUserId?.let {
                                     { e, choices ->
@@ -320,41 +332,34 @@ class TimelineScreen : Screen {
                                                 choices = choices,
                                             ),
                                         )
-                                    }
+                                }
                                 },
-                            onReply =
-                                uiState.currentUserId?.let {
-                                    { e ->
-                                        detailOpener.openComposer(
-                                            inReplyToId = e.id,
-                                            inReplyToUser = e.creator,
-                                        )
-                                    }
-                                },
-                            onToggleSpoilerActive = { e ->
-                                model.reduce(TimelineMviModel.Intent.ToggleSpoilerActive(e))
-                            },
                             options =
                                 buildList {
-                                    if (!entry.url.isNullOrBlank()) {
+                                    if (actionRepository.canShare(entry.original)) {
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
-                                    val currentUserId = uiState.currentUserId
-                                    val creatorId = entry.reblog?.creator?.id ?: entry.creator?.id
-                                    if (creatorId == currentUserId) {
+                                    if (actionRepository.canEdit(entry.original)) {
                                         this += OptionId.Edit.toOption()
+                                    }
+                                    if (actionRepository.canDelete(entry.original)) {
                                         this += OptionId.Delete.toOption()
-                                        if (entry.reblog == null) {
-                                            if (entry.pinned) {
-                                                this += OptionId.Unpin.toOption()
-                                            } else {
-                                                this += OptionId.Pin.toOption()
-                                            }
+                                    }
+                                    if (actionRepository.canTogglePin(entry)) {
+                                        if (entry.pinned) {
+                                            this += OptionId.Unpin.toOption()
+                                        } else {
+                                            this += OptionId.Pin.toOption()
                                         }
-                                    } else if (currentUserId != null) {
+                                    }
+                                    if (actionRepository.canMute(entry)) {
                                         this += OptionId.Mute.toOption()
+                                    }
+                                    if (actionRepository.canBlock(entry)) {
                                         this += OptionId.Block.toOption()
+                                    }
+                                    if (actionRepository.canReport(entry)) {
                                         this += OptionId.ReportUser.toOption()
                                         this += OptionId.ReportEntry.toOption()
                                     }
