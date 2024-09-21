@@ -64,11 +64,19 @@ actual fun Long.concatDateWithTime(
 ): Long {
     val calendar = GregorianCalendar.getInstance()
     calendar.timeInMillis = this
-    calendar.set(Calendar.HOUR, hours)
+    calendar.set(Calendar.HOUR_OF_DAY, hours)
     calendar.set(Calendar.MINUTE, minutes)
     calendar.set(Calendar.SECOND, seconds)
     calendar.set(Calendar.MILLISECOND, 0)
     return calendar.timeInMillis
+}
+
+actual fun Long.extractTimePart(): Pair<Int, Int> {
+    val calendar = GregorianCalendar.getInstance()
+    calendar.timeInMillis = this
+    val hours = calendar.get(Calendar.HOUR_OF_DAY)
+    val minutes = calendar.get(Calendar.MINUTE)
+    return hours to minutes
 }
 
 actual fun getFormattedDate(
