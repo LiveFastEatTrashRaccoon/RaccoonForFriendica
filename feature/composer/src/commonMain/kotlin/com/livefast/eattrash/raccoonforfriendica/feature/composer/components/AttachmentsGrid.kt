@@ -3,12 +3,17 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AlbumImageItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 
 @Composable
@@ -23,6 +28,18 @@ internal fun AttachmentsGrid(
             attachments.filterIndexed { i, _ -> (i % 2) == 0 },
             attachments.filterIndexed { i, _ -> (i % 2) == 1 },
         )
+
+    Text(
+        modifier =
+            Modifier.padding(
+                top = Spacing.m,
+                start = 10.dp,
+                end = 10.dp,
+            ),
+        text = LocalStrings.current.createPostAttachmentsSection,
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onBackground,
+    )
 
     Row(
         modifier = modifier,
