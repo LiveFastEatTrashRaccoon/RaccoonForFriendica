@@ -1,10 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusAddons
+import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreatePollForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.SubmitPollVoteForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -16,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration
 
 internal class DefaultTimelineEntryRepository(
     private val provider: ServiceProvider,
@@ -188,9 +191,26 @@ internal class DefaultTimelineEntryRepository(
         visibility: Visibility,
         lang: String?,
         scheduled: String?,
+        pollOptions: List<String>?,
+        pollExpirationDate: String?,
+        pollMultiple: Boolean?,
     ): TimelineEntryModel? =
         withContext(Dispatchers.IO) {
             runCatching {
+                val pollData =
+                    if (pollOptions != null && pollMultiple != null && pollExpirationDate != null) {
+                        val pollDuration =
+                            getDurationFromNowToDate(
+                                pollExpirationDate,
+                            ) ?: Duration.ZERO
+                        CreatePollForm(
+                            options = pollOptions,
+                            multiple = pollMultiple,
+                            expiresIn = pollDuration.inWholeSeconds,
+                        )
+                    } else {
+                        null
+                    }
                 val data =
                     CreateStatusForm(
                         status = text,
@@ -202,6 +222,7 @@ internal class DefaultTimelineEntryRepository(
                         lang = lang,
                         spoilerText = spoilerText,
                         scheduledAt = scheduled,
+                        poll = pollData,
                     )
                 provider.statuses
                     .create(
@@ -221,9 +242,26 @@ internal class DefaultTimelineEntryRepository(
         mediaIds: List<String>?,
         visibility: Visibility,
         lang: String?,
+        pollOptions: List<String>?,
+        pollExpirationDate: String?,
+        pollMultiple: Boolean?,
     ): TimelineEntryModel? =
         withContext(Dispatchers.IO) {
             runCatching {
+                val pollData =
+                    if (pollOptions != null && pollMultiple != null && pollExpirationDate != null) {
+                        val pollDuration =
+                            getDurationFromNowToDate(
+                                pollExpirationDate,
+                            ) ?: Duration.ZERO
+                        CreatePollForm(
+                            options = pollOptions,
+                            multiple = pollMultiple,
+                            expiresIn = pollDuration.inWholeSeconds,
+                        )
+                    } else {
+                        null
+                    }
                 val data =
                     CreateStatusForm(
                         status = text,
@@ -234,6 +272,7 @@ internal class DefaultTimelineEntryRepository(
                         inReplyTo = inReplyTo,
                         lang = lang,
                         spoilerText = spoilerText,
+                        poll = pollData,
                     )
                 provider.statuses
                     .update(
