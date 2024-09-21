@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.htmlparse
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -45,13 +46,14 @@ fun String.parseHtml(
                     "s" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
                     "ul", "ol" -> Unit
                     "li" -> builder.append(" • ")
+                    "code" -> builder.pushStyle(SpanStyle(fontFamily = FontFamily.Monospace))
                     else -> println("onOpenTag: Unhandled span $name")
                 }
             }.onCloseTag { name, _ ->
                 when (name) {
                     "p" -> builder.append(' ')
                     "span", "br" -> Unit
-                    "b", "strong", "u", "i", "em", "s" -> builder.pop()
+                    "b", "strong", "u", "i", "em", "s", "code" -> builder.pop()
                     "a" -> {
                         builder.pop() // corresponds to pushStyle
                         builder.pop() // corresponds to pushStringAnnotation
