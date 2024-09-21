@@ -39,6 +39,8 @@ sealed interface OptionId {
     data object ReportEntry : OptionId
 
     data object ViewDetails : OptionId
+
+    interface Custom : OptionId
 }
 
 @Composable
@@ -62,10 +64,13 @@ private fun OptionId.toReadableName(): String =
         OptionId.ReportUser -> LocalStrings.current.actionReportUser
         OptionId.ReportEntry -> LocalStrings.current.actionReportEntry
         OptionId.ViewDetails -> LocalStrings.current.actionViewDetails
+        else -> ""
     }
 
 @Composable
 fun OptionId.toOption() = Option(id = this, label = toReadableName())
+
+fun OptionId.Custom.toOption(label: String) = Option(id = this, label = label)
 
 data class Option(
     val id: OptionId,
