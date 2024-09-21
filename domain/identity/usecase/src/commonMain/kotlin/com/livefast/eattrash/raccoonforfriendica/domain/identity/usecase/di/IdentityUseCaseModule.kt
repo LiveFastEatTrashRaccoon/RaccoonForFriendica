@@ -70,6 +70,7 @@ val domainIdentityUseCaseModule =
                 identityRepository = get(),
                 settingsRepository = get(),
                 accountCredentialsCache = get(),
+                supportedFeatureRepository = get(),
             )
         }
     }

@@ -10,7 +10,7 @@ val featureDrawerModule =
             DrawerViewModel(
                 apiConfigurationRepository = get(),
                 identityRepository = get(),
-                nodeInfoRepository = get(),
+                supportedFeatureRepository = get(),
             )
         }
     }

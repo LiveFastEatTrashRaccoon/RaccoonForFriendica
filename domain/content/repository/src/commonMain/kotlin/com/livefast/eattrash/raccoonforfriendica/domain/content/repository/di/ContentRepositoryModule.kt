@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultReportRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultSearchRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultSupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineRepository
@@ -33,6 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Photo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReportRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
@@ -133,6 +135,11 @@ val domainContentRepositoryModule =
         single<ReportRepository> {
             DefaultReportRepository(
                 provider = get(named("default")),
+            )
+        }
+        single<SupportedFeatureRepository> {
+            DefaultSupportedFeatureRepository(
+                nodeInfoRepository = get(),
             )
         }
     }

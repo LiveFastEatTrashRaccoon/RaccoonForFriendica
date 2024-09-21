@@ -15,12 +15,3 @@ data class NodeInfoModel(
     val uri: String? = null,
     val version: String? = null,
 )
-
-private val FRIENDICA_REGEX =
-    Regex("\\(compatible; Friendica (?<version>[a-zA-Z0-9.-_]*)\\)")
-
-val NodeInfoModel.isFriendica: Boolean
-    get() =
-        version
-            .orEmpty()
-            .contains(FRIENDICA_REGEX)

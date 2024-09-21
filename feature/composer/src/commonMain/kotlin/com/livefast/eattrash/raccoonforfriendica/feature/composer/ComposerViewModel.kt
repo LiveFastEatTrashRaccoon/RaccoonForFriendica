@@ -18,7 +18,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isFriendica
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationSpecification
@@ -32,6 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeI
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -57,6 +57,7 @@ class ComposerViewModel(
     private val userPaginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
     private val nodeInfoRepository: NodeInfoRepository,
+    private val supportedFeatureRepository: SupportedFeatureRepository,
     private val mediaRepository: MediaRepository,
     private val albumRepository: PhotoAlbumRepository,
     private val albumPhotoPaginationManager: AlbumPhotoPaginationManager,
@@ -73,12 +74,6 @@ class ComposerViewModel(
     private var editedPostId: String? = null
     private var draftId: String? = null
 
-    /*
-     * Attachments work differently on Friendica so a flag is needed in order to determine
-     * how attachments will be uploaded/edited/deleted.
-     */
-    private var isFriendica = true
-
     init {
         screenModelScope.launch {
             uiState
@@ -94,14 +89,30 @@ class ComposerViewModel(
                 .onEach { currentUser ->
                     updateState { it.copy(author = currentUser) }
                 }.launchIn(this)
-            val nodeInfo = nodeInfoRepository.getInfo()
-            isFriendica = nodeInfo?.isFriendica != false
             val currentSettings = settingsRepository.current.value
+            val nodeInfo = nodeInfoRepository.getInfo()
+            supportedFeatureRepository.features
+                .onEach { features ->
+                    updateState {
+                        it.copy(
+                            titleFeatureSupported = features.supportsEntryTitles,
+                            galleryFeatureSupported = features.supportsPhotoGallery,
+                            pollFeatureSupported = features.supportsPolls,
+                            availableVisibilities =
+                                buildList {
+                                    this += Visibility.Public
+                                    this += Visibility.Unlisted
+                                    this += Visibility.Private
+                                    this += Visibility.Direct
+                                    if (features.supportsCustomCircles) {
+                                        this += Visibility.Circle()
+                                    }
+                                },
+                        )
+                    }
+                }.launchIn(this)
             updateState {
                 it.copy(
-                    titleFeatureSupported = isFriendica,
-                    galleryFeatureSupported = isFriendica,
-                    pollFeatureSupported = !isFriendica,
                     characterLimit = nodeInfo?.characterLimit,
                     attachmentLimit = nodeInfo?.attachmentLimit,
                     visibility =
@@ -506,7 +517,7 @@ class ComposerViewModel(
                 )
             }
             val attachment =
-                if (isFriendica) {
+                if (supportedFeatureRepository.features.value.supportsPhotoGallery) {
                     photoRepository.create(byteArray)
                 } else {
                     mediaRepository.create(byteArray)
@@ -553,7 +564,7 @@ class ComposerViewModel(
     ) {
         screenModelScope.launch {
             val successful =
-                if (isFriendica) {
+                if (supportedFeatureRepository.features.value.supportsPhotoGallery) {
                     photoRepository.update(
                         id = attachment.id,
                         album = attachment.album.orEmpty(),
@@ -582,7 +593,7 @@ class ComposerViewModel(
                 removeAttachmentFromState(attachmentId)
             } else {
                 val success =
-                    if (isFriendica) {
+                    if (supportedFeatureRepository.features.value.supportsPhotoGallery) {
                         photoRepository.delete(attachmentId)
                     } else {
                         mediaRepository.delete(attachmentId)
