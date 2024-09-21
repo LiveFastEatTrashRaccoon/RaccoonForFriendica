@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountCredentialsCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
@@ -32,24 +33,38 @@ internal class DefaultActiveAccountMonitor(
                 .getActiveAsFlow()
                 .distinctUntilChanged()
                 .onEach { account ->
-                    if (account == null) {
-                        apiConfigurationRepository.setAuth(null)
-                        identityRepository.refreshCurrentUser(null)
-                    } else {
-                        val node =
-                            account.handle
-                                .substringAfter("@")
-                                .takeIf { it.isNotEmpty() } ?: apiConfigurationRepository.defaultNode
-                        apiConfigurationRepository.changeNode(node)
-                        val credentials = accountCredentialsCache.get(account.id)
-                        apiConfigurationRepository.setAuth(credentials)
-
-                        identityRepository.refreshCurrentUser(account.remoteId)
-
-                        val defaultSettings = settingsRepository.get(account.id) ?: SettingsModel()
-                        settingsRepository.changeCurrent(defaultSettings)
-                    }
+                    process(account)
                 }.launchIn(this)
         }
+    }
+
+    override suspend fun isNotLoggedButItShould(): Boolean {
+        val localAccountHasRemoteId = !accountRepository.getActive()?.remoteId.isNullOrEmpty()
+        val remoteUser = identityRepository.currentUser.value
+        return localAccountHasRemoteId && remoteUser == null
+    }
+
+    override suspend fun forceRefresh() {
+        val account = accountRepository.getActive()
+        process(account)
+    }
+
+    private suspend fun process(account: AccountModel?) {
+        if (account == null) {
+            apiConfigurationRepository.setAuth(null)
+            identityRepository.refreshCurrentUser(null)
+            return
+        }
+        val node =
+            account.handle.substringAfter("@").takeIf { it.isNotEmpty() }
+                ?: apiConfigurationRepository.defaultNode
+        apiConfigurationRepository.changeNode(node)
+        val credentials = accountCredentialsCache.get(account.id)
+        apiConfigurationRepository.setAuth(credentials)
+
+        identityRepository.refreshCurrentUser(account.remoteId)
+
+        val defaultSettings = settingsRepository.get(account.id) ?: SettingsModel()
+        settingsRepository.changeCurrent(defaultSettings)
     }
 }
