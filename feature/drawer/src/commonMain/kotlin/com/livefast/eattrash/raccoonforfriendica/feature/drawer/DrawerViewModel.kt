@@ -20,20 +20,18 @@ class DrawerViewModel(
     DrawerMviModel {
     init {
         screenModelScope.launch {
-            apiConfigurationRepository.node
-                .onEach { node ->
+            identityRepository.currentUser
+                .onEach { currentUser ->
+                    val node = apiConfigurationRepository.node.value
                     val isFriendica = nodeInfoRepository.getInfo()?.isFriendica == true
                     updateState {
                         it.copy(
+                            user = currentUser,
                             node = node,
                             hasDirectMessages = isFriendica,
                             hasGallery = isFriendica,
                         )
                     }
-                }.launchIn(this)
-            identityRepository.currentUser
-                .onEach { currentUser ->
-                    updateState { it.copy(user = currentUser) }
                 }.launchIn(this)
         }
     }
