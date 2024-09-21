@@ -15,4 +15,5 @@ class CreateStatusForm(
     @SerialName("spoiler_text") val spoilerText: String? = null,
     @SerialName("status") val status: String? = null,
     @SerialName("visibility") val visibility: String? = null,
+    @SerialName("poll") val poll: CreatePollForm? = null,
 )

@@ -134,7 +134,7 @@ internal val ItStrings =
 
         override val actionMuteNotifications = "Silenzia notifiche"
         override val createPostTitle = "Nuovo post"
-        override val messagePostEmptyText = "È necessario postare almeno un allegato o del testo"
+        override val messagePostEmptyText = "Inserire almeno un allegato, del testo o un sondaggio"
         override val visibilityPublic = "Pubblico"
         override val visibilityUnlisted = "Non in lista"
         override val visibilityPrivate = "Privato"
@@ -348,4 +348,14 @@ internal val ItStrings =
         override val actionReportUser = "Segnala utente"
         override val actionReportEntry = "Segnala post"
         override val actionViewDetails = "Dettagli"
+        override val actionAddImageFromGallery = "Add from gallery"
+        override val actionAddPoll = "Add poll"
+        override val actionRemovePoll = "Remove poll"
+        override val createPostPollSection = "Poll"
+        override val createPostPollOptionLabel = "Option"
+        override val createPostPollItemMultiple = "Allow multiple choice"
+        override val createPostPollItemExpirationDate = "Expiration date"
+
+        override val messageInvalidPollError =
+            "Sondaggio non valido, controllare le opzioni e la data di fine"
     }

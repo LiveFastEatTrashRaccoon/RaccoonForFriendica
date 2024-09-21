@@ -63,6 +63,9 @@ interface TimelineEntryRepository {
         visibility: Visibility,
         lang: String? = null,
         scheduled: String? = null,
+        pollOptions: List<String>? = null,
+        pollExpirationDate: String? = null,
+        pollMultiple: Boolean? = null,
     ): TimelineEntryModel?
 
     suspend fun update(
@@ -75,6 +78,9 @@ interface TimelineEntryRepository {
         mediaIds: List<String>? = null,
         visibility: Visibility,
         lang: String? = null,
+        pollOptions: List<String>? = null,
+        pollExpirationDate: String? = null,
+        pollMultiple: Boolean? = null,
     ): TimelineEntryModel?
 
     suspend fun delete(id: String): Boolean

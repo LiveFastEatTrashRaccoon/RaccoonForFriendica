@@ -138,7 +138,7 @@ internal val DeStrings =
         override val actionMuteNotifications = "Benachrichtigungen stummschalten"
         override val createPostTitle = "Beitrag erstellen"
         override val messagePostEmptyText =
-            "Bitte geben Sie entweder einen Anhang oder einen Text an"
+            "Bitte stellen Sie entweder einen Anhang oder eine Umfrage oder einen Text zur Verfügung"
         override val visibilityPublic = "Öffentlich"
         override val visibilityUnlisted = "Ungelistet"
         override val visibilityPrivate = "Privat"
@@ -348,4 +348,13 @@ internal val DeStrings =
         override val actionReportUser = "Benutzer melden"
         override val actionReportEntry = "Beitrag melden"
         override val actionViewDetails = "Einzelheiten"
+        override val actionAddImageFromGallery = "Aus Galerie hinzufügen"
+        override val actionAddPoll = "Umfrage hinzufügen"
+        override val actionRemovePoll = "Umfrage entfernen"
+        override val createPostPollSection = "Umfrage"
+        override val createPostPollOptionLabel = "Option"
+        override val createPostPollItemMultiple = "Mehrfachauswahl zulassen"
+        override val createPostPollItemExpirationDate = "Verfallsdatum"
+        override val messageInvalidPollError =
+            "Ungültige Umfrage, bitte überprüfen Sie die Optionen und das Verfallsdatum"
     }

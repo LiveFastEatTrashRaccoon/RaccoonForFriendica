@@ -130,7 +130,8 @@ internal open class DefaultStrings : Strings {
 
     override val actionMuteNotifications = "Mute notifications"
     override val createPostTitle = "Create post"
-    override val messagePostEmptyText = "Please provide either an attachment or some text"
+    override val messagePostEmptyText =
+        "Please provider either an attachment or a poll or some text"
     override val visibilityPublic = "Public"
     override val visibilityUnlisted = "Unlisted"
     override val visibilityPrivate = "Private"
@@ -338,4 +339,13 @@ internal open class DefaultStrings : Strings {
     override val actionReportUser = "Report user"
     override val actionReportEntry = "Report post"
     override val actionViewDetails = "Details"
+    override val actionAddImageFromGallery = "Add from gallery"
+    override val actionAddPoll = "Add poll"
+    override val actionRemovePoll = "Remove poll"
+    override val createPostPollSection = "Poll"
+    override val createPostPollOptionLabel = "Option"
+    override val createPostPollItemMultiple = "Allow multiple choice"
+    override val createPostPollItemExpirationDate = "Expiration date"
+    override val messageInvalidPollError =
+        "Invalid poll, please check the options and expiration date"
 }

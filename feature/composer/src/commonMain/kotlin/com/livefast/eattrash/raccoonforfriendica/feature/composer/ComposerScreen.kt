@@ -20,9 +20,6 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material3.Button
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
@@ -35,12 +32,9 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,7 +43,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
@@ -77,20 +70,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
-import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.concatDateWithTime
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormattedDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
-import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Timestamp
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostHeader
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.DateTimeSelectionFlow
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.GalleryPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InReplyToInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InsertLinkDialog
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.PollForm
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SelectCircleDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
 import kotlinx.coroutines.flow.launchIn
@@ -122,6 +115,7 @@ class ComposerScreen(
         val invalidVisibilityError = LocalStrings.current.messagePostInvalidVisibility
         val characterLimitExceededError = LocalStrings.current.messageCharacterLimitExceeded
         val pastScheduleDateError = LocalStrings.current.messageScheduleDateInThePast
+        val invalidPollError = LocalStrings.current.messageInvalidPollError
         val genericError = LocalStrings.current.messageGenericError
         var openImagePicker by remember { mutableStateOf(false) }
         if (openImagePicker) {
@@ -140,10 +134,10 @@ class ComposerScreen(
         var hasSpoilerFieldFocus by remember { mutableStateOf(false) }
         var hasTitleFocus by remember { mutableStateOf(false) }
         val isBeingEdited = remember { scheduledPostId != null || editedPostId != null }
-        var schedulePickerDateMillis by remember { mutableStateOf<Long?>(null) }
-        var datePickerOpen by remember { mutableStateOf(false) }
-        var timePickerOpen by remember { mutableStateOf(false) }
-        var scheduleDateSelected by remember { mutableStateOf<Long?>(null) }
+        var scheduleDateMillis by remember { mutableStateOf<Long?>(null) }
+        var scheduleDatePickerOpen by remember { mutableStateOf(false) }
+        var pollExpirationMillis by remember { mutableStateOf<Long?>(null) }
+        var pollExpirationDatePickerOpen by remember { mutableStateOf(false) }
 
         LaunchedEffect(model) {
             when {
@@ -172,7 +166,7 @@ class ComposerScreen(
                         is ComposerMviModel.Effect.Failure ->
                             snackbarHostState.showSnackbar(message = event.message ?: genericError)
 
-                        ComposerMviModel.Effect.ValidationError.TextOrImagesMandatory ->
+                        ComposerMviModel.Effect.ValidationError.TextOrImagesOrPollMandatory ->
                             snackbarHostState.showSnackbar(message = missingDataError)
 
                         ComposerMviModel.Effect.ValidationError.InvalidVisibility ->
@@ -183,6 +177,9 @@ class ComposerScreen(
 
                         ComposerMviModel.Effect.ValidationError.ScheduleDateInThePast ->
                             snackbarHostState.showSnackbar(message = pastScheduleDateError)
+
+                        ComposerMviModel.Effect.ValidationError.InvalidPoll ->
+                            snackbarHostState.showSnackbar(message = invalidPollError)
 
                         ComposerMviModel.Effect.Success -> navigationCoordinator.pop()
                     }
@@ -241,6 +238,24 @@ class ComposerScreen(
                                         this += OptionId.SetSchedule.toOption()
                                     }
                                 }
+
+                                if (uiState.galleryFeatureSupported && uiState.poll == null) {
+                                    this +=
+                                        CustomOptions.SelectFromGallery.toOption(
+                                            label = LocalStrings.current.actionAddImageFromGallery,
+                                        )
+                                }
+                                if (uiState.pollFeatureSupported && uiState.attachments.isEmpty()) {
+                                    this +=
+                                        CustomOptions.TogglePoll.toOption(
+                                            label =
+                                                if (uiState.poll != null) {
+                                                    LocalStrings.current.actionRemovePoll
+                                                } else {
+                                                    LocalStrings.current.actionAddPoll
+                                                },
+                                        )
+                                }
                             }
                         Box {
                             var optionsOffset by remember { mutableStateOf(Offset.Zero) }
@@ -282,16 +297,16 @@ class ComposerScreen(
                                             optionsMenuOpen = false
                                             when (option.id) {
                                                 OptionId.SetSchedule -> {
-                                                    schedulePickerDateMillis = epochMillis()
-                                                    datePickerOpen = true
+                                                    scheduleDateMillis = epochMillis()
+                                                    scheduleDatePickerOpen = true
                                                 }
 
                                                 OptionId.ChangeSchedule -> {
-                                                    schedulePickerDateMillis =
+                                                    scheduleDateMillis =
                                                         (uiState.publicationType as? PublicationType.Scheduled)
                                                             ?.date
                                                             ?.toEpochMillis()
-                                                    datePickerOpen = true
+                                                    scheduleDatePickerOpen = true
                                                 }
 
                                                 OptionId.PublishDefault ->
@@ -307,6 +322,22 @@ class ComposerScreen(
                                                             PublicationType.Draft,
                                                         ),
                                                     )
+
+                                                CustomOptions.SelectFromGallery -> {
+                                                    val limit =
+                                                        uiState.attachmentLimit ?: Int.MAX_VALUE
+                                                    if (uiState.attachments.size < limit) {
+                                                        photoGalleryPickerOpen = true
+                                                    }
+                                                }
+
+                                                CustomOptions.TogglePoll -> {
+                                                    if (uiState.poll == null) {
+                                                        model.reduce(ComposerMviModel.Intent.AddPoll)
+                                                    } else {
+                                                        model.reduce(ComposerMviModel.Intent.RemovePoll)
+                                                    }
+                                                }
 
                                                 else -> Unit
                                             }
@@ -355,13 +386,8 @@ class ComposerScreen(
                             openImagePicker = true
                         }
                     },
-                    hasGallery = uiState.hasGallery,
-                    onAttachmentFromGalleryClicked = {
-                        val limit = uiState.attachmentLimit ?: Int.MAX_VALUE
-                        if (uiState.attachments.size < limit) {
-                            photoGalleryPickerOpen = true
-                        }
-                    },
+                    supportsTitleFeature = uiState.titleFeatureSupported,
+                    hasPoll = uiState.poll != null,
                     onLinkClicked = {
                         linkDialogOpen = true
                     },
@@ -418,6 +444,7 @@ class ComposerScreen(
                         Modifier
                             .padding(
                                 top = padding.calculateTopPadding(),
+                                bottom = padding.calculateBottomPadding(),
                             ).consumeWindowInsets(padding)
                             .verticalScroll(rememberScrollState()),
                 ) {
@@ -594,33 +621,47 @@ class ComposerScreen(
 
                     // attachments
                     if (uiState.attachments.isNotEmpty()) {
-                        Text(
+                        AttachmentsGrid(
                             modifier =
                                 Modifier.padding(
-                                    top = Spacing.m,
+                                    top = Spacing.s,
                                     start = Spacing.s,
                                     end = Spacing.s,
                                 ),
-                            text = LocalStrings.current.createPostAttachmentsSection,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            attachments = uiState.attachments,
+                            onDelete = { attachment ->
+                                model.reduce(ComposerMviModel.Intent.RemoveAttachment(attachment))
+                            },
+                            onEditDescription = { attachment ->
+                                attachmentWithDescriptionBeingEdited = attachment
+                            },
                         )
                     }
-                    AttachmentsGrid(
-                        modifier =
-                            Modifier.padding(
-                                top = Spacing.s,
-                                start = Spacing.s,
-                                end = Spacing.s,
-                            ),
-                        attachments = uiState.attachments,
-                        onDelete = { attachment ->
-                            model.reduce(ComposerMviModel.Intent.RemoveAttachment(attachment))
-                        },
-                        onEditDescription = { attachment ->
-                            attachmentWithDescriptionBeingEdited = attachment
-                        },
-                    )
+
+                    // poll
+                    uiState.poll?.let { poll ->
+                        PollForm(
+                            poll = poll,
+                            optionLimit = uiState.pollOptionLimit ?: Int.MAX_VALUE,
+                            onChangeMultiple = {
+                                model.reduce(ComposerMviModel.Intent.SetPollMultiple(it))
+                            },
+                            onAddOption = {
+                                model.reduce(ComposerMviModel.Intent.AddPollOption)
+                            },
+                            onEditOption = { idx, text ->
+                                model.reduce(ComposerMviModel.Intent.EditPollOption(idx, text))
+                            },
+                            onRemoveOption = { idx ->
+                                model.reduce(ComposerMviModel.Intent.RemovePollOption(idx))
+                            },
+                            onEditExpirationDate = {
+                                pollExpirationMillis =
+                                    poll.expiresAt?.toEpochMillis() ?: epochMillis()
+                                pollExpirationDatePickerOpen = true
+                            },
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(Spacing.xxxl))
                 }
@@ -735,99 +776,42 @@ class ComposerScreen(
             )
         }
 
-        if (datePickerOpen) {
-            val datePickerState =
-                rememberDatePickerState(
-                    initialSelectedDateMillis = schedulePickerDateMillis,
-                )
-            DatePickerDialog(
-                onDismissRequest = {
-                    datePickerOpen = false
-                    scheduleDateSelected = null
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            datePickerOpen = false
-                            scheduleDateSelected = datePickerState.selectedDateMillis
-                            if (scheduleDateSelected != null) {
-                                timePickerOpen = true
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+        if (scheduleDatePickerOpen) {
+            DateTimeSelectionFlow(
+                initialDateMillis = scheduleDateMillis ?: epochMillis(),
+                onClose = { date ->
+                    scheduleDatePickerOpen = false
+                    scheduleDateMillis = null
+                    if (date != null) {
+                        model.reduce(
+                            ComposerMviModel.Intent.ChangePublicationType(
+                                PublicationType.Scheduled(date),
+                            ),
+                        )
                     }
                 },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            datePickerOpen = false
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-            ) {
-                DatePicker(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    state = datePickerState,
-                )
-            }
+            )
         }
 
-        if (timePickerOpen) {
-            val timePickerState =
-                rememberTimePickerState(
-                    initialMinute = 0,
-                    initialHour = 0,
-                )
-            DatePickerDialog(
-                onDismissRequest = {
-                    timePickerOpen = false
-                    scheduleDateSelected = null
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            timePickerOpen = false
-                            val hour = timePickerState.hour
-                            val minute = timePickerState.minute
-                            if (scheduleDateSelected != null) {
-                                val resultingScheduleDate =
-                                    scheduleDateSelected
-                                        ?.concatDateWithTime(hour, minute, 0)
-                                        ?.toIso8601Timestamp(withLocalTimezone = false)
-                                if (resultingScheduleDate != null) {
-                                    model.reduce(
-                                        ComposerMviModel.Intent.ChangePublicationType(
-                                            PublicationType.Scheduled(resultingScheduleDate),
-                                        ),
-                                    )
-                                }
-                            }
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonConfirm)
+        if (pollExpirationDatePickerOpen) {
+            DateTimeSelectionFlow(
+                initialDateMillis = pollExpirationMillis ?: epochMillis(),
+                onClose = { date ->
+                    pollExpirationDatePickerOpen = false
+                    pollExpirationMillis = null
+                    if (date != null) {
+                        model.reduce(
+                            ComposerMviModel.Intent.SetPollExpirationDate(date),
+                        )
                     }
                 },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            timePickerOpen = false
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonCancel)
-                    }
-                },
-            ) {
-                TimePicker(
-                    modifier =
-                        Modifier
-                            .padding(top = Spacing.s)
-                            .align(Alignment.CenterHorizontally),
-                    state = timePickerState,
-                )
-            }
+            )
         }
     }
+}
+
+private sealed interface CustomOptions : OptionId.Custom {
+    data object SelectFromGallery : CustomOptions
+
+    data object TogglePoll : CustomOptions
 }
