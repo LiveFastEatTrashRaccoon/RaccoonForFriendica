@@ -166,14 +166,7 @@ interface ComposerMviModel :
         val bodyValue: TextFieldValue = TextFieldValue(),
         val spoilerValue: TextFieldValue = TextFieldValue(),
         val visibility: Visibility = Visibility.Public,
-        val availableVisibilities: List<Visibility> =
-            listOf(
-                Visibility.Public,
-                Visibility.Unlisted,
-                Visibility.Private,
-                Visibility.Direct,
-                Visibility.Circle(),
-            ),
+        val availableVisibilities: List<Visibility> = emptyList(),
         val sensitive: Boolean = false,
         val attachments: List<AttachmentModel> = emptyList(),
         val poll: PollModel? = null,

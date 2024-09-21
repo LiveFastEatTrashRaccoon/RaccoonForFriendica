@@ -15,6 +15,7 @@ val featureComposerModule =
                 userPaginationManager = get(),
                 circlesRepository = get(),
                 nodeInfoRepository = get(),
+                supportedFeatureRepository = get(),
                 mediaRepository = get(),
                 albumRepository = get(),
                 albumPhotoPaginationManager = get(),
