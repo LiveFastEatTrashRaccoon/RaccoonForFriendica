@@ -41,7 +41,9 @@ fun String.prettifyHtml(requiresHtmlDecode: Boolean = true): String {
                 if (name == "br") {
                     builder.append("<br />")
                 } else {
-                    builder.append("  ".repeat(nestingIndent))
+                    if (name.isBlockElement) {
+                        builder.append("  ".repeat(nestingIndent))
+                    }
                     builder.append("</$name>")
                 }
             }.onText { text ->
