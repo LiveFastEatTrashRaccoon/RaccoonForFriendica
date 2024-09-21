@@ -305,6 +305,14 @@ interface Strings {
     val actionReportUser: String
     val actionReportEntry: String
     val actionViewDetails: String
+    val actionAddImageFromGallery: String
+    val actionAddPoll: String
+    val actionRemovePoll: String
+    val messageInvalidPollError: String
+    val createPostPollSection: String
+    val createPostPollOptionLabel: String
+    val createPostPollItemMultiple: String
+    val createPostPollItemExpirationDate: String
 }
 
 object Locales {
