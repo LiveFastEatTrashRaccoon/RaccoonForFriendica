@@ -5,16 +5,19 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isFriendica
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReportRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CreateReportViewModel(
     private val userId: String,
     private val entryId: String?,
     private val nodeInfoRepository: NodeInfoRepository,
+    private val supportedFeatureRepository: SupportedFeatureRepository,
     private val reportRepository: ReportRepository,
     private val userCache: LocalItemCache<UserModel>,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
@@ -24,25 +27,30 @@ class CreateReportViewModel(
     CreateReportMviModel {
     init {
         screenModelScope.launch {
+            supportedFeatureRepository.features
+                .onEach { features ->
+                    updateState {
+                        it.copy(
+                            availableCategories =
+                                buildList {
+                                    this += ReportCategory.Other
+                                    this += ReportCategory.Spam
+                                    this += ReportCategory.Legal
+                                    if (features.supportReportCategoryRuleViolation) {
+                                        this += ReportCategory.Violation
+                                    }
+                                },
+                        )
+                    }
+                }.launchIn(this)
             val user = userCache.get(userId)
             val entry = entryId?.let { entryCache.get(it) }
-            val rules = nodeInfoRepository.getRules()
-            val isFriendica = nodeInfoRepository.getInfo()?.isFriendica == true
-            val categories =
-                buildList {
-                    this += ReportCategory.Other
-                    this += ReportCategory.Spam
-                    this += ReportCategory.Legal
-                    if (!isFriendica) {
-                        this += ReportCategory.Violation
-                    }
-            }
+            val rules = nodeInfoRepository.getRules().orEmpty()
             updateState {
                 it.copy(
                     user = user,
                     entry = entry,
-                    availableCategories = categories,
-                    availableRules = rules.orEmpty(),
+                    availableRules = rules,
                 )
             }
         }

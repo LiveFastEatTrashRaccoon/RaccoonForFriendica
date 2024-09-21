@@ -11,6 +11,7 @@ val featureReportModule =
                 userId = params[0],
                 entryId = params[1],
                 nodeInfoRepository = get(),
+                supportedFeatureRepository = get(),
                 reportRepository = get(),
                 userCache = get(),
                 entryCache = get(),
