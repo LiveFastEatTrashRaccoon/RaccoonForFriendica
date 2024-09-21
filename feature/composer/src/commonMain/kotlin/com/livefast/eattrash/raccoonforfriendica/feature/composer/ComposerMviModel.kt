@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 
@@ -133,6 +134,29 @@ interface ComposerMviModel :
         data class ChangePublicationType(
             val type: PublicationType,
         ) : Intent
+
+        data object AddPoll : Intent
+
+        data object RemovePoll : Intent
+
+        data object AddPollOption : Intent
+
+        data class EditPollOption(
+            val index: Int,
+            val title: String,
+        ) : Intent
+
+        data class RemovePollOption(
+            val index: Int,
+        ) : Intent
+
+        data class SetPollMultiple(
+            val multiple: Boolean,
+        ) : Intent
+
+        data class SetPollExpirationDate(
+            val date: String,
+        ) : Intent
     }
 
     data class State(
@@ -152,6 +176,7 @@ interface ComposerMviModel :
             ),
         val sensitive: Boolean = false,
         val attachments: List<AttachmentModel> = emptyList(),
+        val poll: PollModel? = null,
         val loading: Boolean = false,
         val userSearchUsers: List<UserModel> = emptyList(),
         val userSearchLoading: Boolean = false,
@@ -160,7 +185,9 @@ interface ComposerMviModel :
         val availableCircles: List<CircleModel> = emptyList(),
         val hasSpoiler: Boolean = false,
         val hasTitle: Boolean = false,
-        val hasGallery: Boolean = false,
+        val titleFeatureSupported: Boolean = false,
+        val galleryFeatureSupported: Boolean = false,
+        val pollFeatureSupported: Boolean = false,
         val galleryCurrentAlbum: String? = null,
         val galleryAlbums: List<MediaAlbumModel> = emptyList(),
         val galleryCanFetchMore: Boolean = true,
@@ -168,18 +195,21 @@ interface ComposerMviModel :
         val galleryCurrentAlbumPhotos: List<AttachmentModel> = emptyList(),
         val characterLimit: Int? = null,
         val attachmentLimit: Int? = null,
+        val pollOptionLimit: Int? = null,
         val publicationType: PublicationType = PublicationType.Default,
     )
 
     sealed interface Effect {
         sealed interface ValidationError : Effect {
-            data object TextOrImagesMandatory : ValidationError
+            data object TextOrImagesOrPollMandatory : ValidationError
 
             data object InvalidVisibility : ValidationError
 
             data object CharacterLimitExceeded : ValidationError
 
             data object ScheduleDateInThePast : ValidationError
+
+            data object InvalidPoll : ValidationError
         }
 
         data object Success : Effect

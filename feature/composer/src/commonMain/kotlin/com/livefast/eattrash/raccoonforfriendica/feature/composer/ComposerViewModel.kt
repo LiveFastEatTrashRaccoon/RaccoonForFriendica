@@ -14,6 +14,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDuration
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Timestamp
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isFriendica
@@ -97,7 +99,9 @@ class ComposerViewModel(
             val currentSettings = settingsRepository.current.value
             updateState {
                 it.copy(
-                    hasGallery = isFriendica,
+                    titleFeatureSupported = isFriendica,
+                    galleryFeatureSupported = isFriendica,
+                    pollFeatureSupported = !isFriendica,
                     characterLimit = nodeInfo?.characterLimit,
                     attachmentLimit = nodeInfo?.attachmentLimit,
                     visibility =
@@ -289,6 +293,91 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.ChangePublicationType ->
                 screenModelScope.launch {
                     updateState { it.copy(publicationType = intent.type) }
+                }
+
+            ComposerMviModel.Intent.AddPoll ->
+                screenModelScope.launch {
+                    updateState {
+                        it.copy(
+                            poll =
+                                PollModel(
+                                    id = "",
+                                    options =
+                                        buildList {
+                                            this += PollOptionModel(title = "")
+                                            this += PollOptionModel(title = "")
+                                        },
+                                ),
+                        )
+                    }
+                }
+
+            is ComposerMviModel.Intent.SetPollMultiple ->
+                screenModelScope.launch {
+                    updateState { it.copy(poll = it.poll?.copy(multiple = intent.multiple)) }
+                }
+
+            is ComposerMviModel.Intent.SetPollExpirationDate ->
+                screenModelScope.launch {
+                    updateState { it.copy(poll = it.poll?.copy(expiresAt = intent.date)) }
+                }
+
+            is ComposerMviModel.Intent.AddPollOption ->
+                screenModelScope.launch {
+                    updateState {
+                        it.copy(
+                            poll =
+                                it.poll?.let { p ->
+                                    p.copy(
+                                        options =
+                                            buildList {
+                                                addAll(p.options)
+                                                this += PollOptionModel(title = "")
+                                            },
+                                    )
+                                },
+                        )
+                    }
+                }
+
+            is ComposerMviModel.Intent.RemovePollOption ->
+                screenModelScope.launch {
+                    updateState {
+                        it.copy(
+                            poll =
+                                it.poll?.let { p ->
+                                    p.copy(
+                                        options = p.options.filterIndexed { idx, _ -> idx != intent.index },
+                                    )
+                                },
+                        )
+                    }
+                }
+
+            is ComposerMviModel.Intent.EditPollOption ->
+                screenModelScope.launch {
+                    updateState {
+                        it.copy(
+                            poll =
+                                it.poll?.let { p ->
+                                    p.copy(
+                                        options =
+                                            p.options.mapIndexed { idx, option ->
+                                                if (idx != intent.index) {
+                                                    option
+                                                } else {
+                                                    option.copy(title = intent.title)
+                                                }
+                                            },
+                                    )
+                                },
+                        )
+                    }
+                }
+
+            ComposerMviModel.Intent.RemovePoll ->
+                screenModelScope.launch {
+                    updateState { it.copy(poll = null) }
                 }
 
             ComposerMviModel.Intent.Submit -> submit()
@@ -625,6 +714,7 @@ class ComposerViewModel(
                 hasSpoiler = !entry.spoiler.isNullOrEmpty(),
                 titleValue = TextFieldValue(text = entry.title.orEmpty()),
                 hasTitle = !entry.title.isNullOrEmpty(),
+                poll = entry.poll,
                 loading = false,
             )
         }
@@ -639,6 +729,7 @@ class ComposerViewModel(
         val spoiler = currentState.spoilerValue.text.takeIf { currentState.hasSpoiler }
         val title = currentState.titleValue.text.takeIf { it.isNotBlank() && currentState.hasTitle }
         val text = currentState.bodyValue.text
+        val poll = currentState.poll
         // use the mediaId for this call otherwise the backend returns a 500
         val attachmentIds = currentState.attachments.map { it.mediaId }
         val visibility = currentState.visibility
@@ -648,9 +739,18 @@ class ComposerViewModel(
         val scheduleDate = (publicationType as? PublicationType.Scheduled)?.date
 
         screenModelScope.launch {
-            if (text.isBlank() && attachmentIds.isEmpty()) {
-                emitEffect(ComposerMviModel.Effect.ValidationError.TextOrImagesMandatory)
+            if (text.isBlank() && attachmentIds.isEmpty() && poll == null) {
+                emitEffect(ComposerMviModel.Effect.ValidationError.TextOrImagesOrPollMandatory)
                 return@launch
+            }
+
+            if (poll != null) {
+                val timeSpan = poll.expiresAt?.let { getDurationFromNowToDate(it) } ?: Duration.ZERO
+                val optionsPopulated = poll.options.all { it.title.isNotBlank() }
+                if (poll.options.size < 2 || !optionsPopulated || timeSpan <= Duration.ZERO) {
+                    emitEffect(ComposerMviModel.Effect.ValidationError.InvalidPoll)
+                    return@launch
+                }
             }
 
             if (text.length > characterLimit) {
@@ -694,6 +794,9 @@ class ComposerViewModel(
                                     lang = currentState.lang,
                                     mediaIds = attachmentIds,
                                     scheduled = publicationType.date,
+                                    pollMultiple = poll?.multiple,
+                                    pollOptions = poll?.options?.map { it.title },
+                                    pollExpirationDate = poll?.expiresAt,
                                 )
                             }
                         }
@@ -710,6 +813,9 @@ class ComposerViewModel(
                                     visibility = visibility,
                                     lang = currentState.lang,
                                     mediaIds = attachmentIds,
+                                    pollMultiple = poll?.multiple,
+                                    pollOptions = poll?.options?.map { it.title },
+                                    pollExpirationDate = poll?.expiresAt,
                                 )
                             } else {
                                 timelineEntryRepository.create(
@@ -722,6 +828,9 @@ class ComposerViewModel(
                                     visibility = visibility,
                                     lang = currentState.lang,
                                     mediaIds = attachmentIds,
+                                    pollMultiple = poll?.multiple,
+                                    pollOptions = poll?.options?.map { it.title },
+                                    pollExpirationDate = poll?.expiresAt,
                                 )
                             }
                         }
@@ -743,6 +852,7 @@ class ComposerViewModel(
                                         attachmentIds.map {
                                             AttachmentModel(id = it, url = "")
                                         },
+                                    poll = poll,
                                 )
                             if (draftId != null) {
                                 draftRepository.update(entry)
