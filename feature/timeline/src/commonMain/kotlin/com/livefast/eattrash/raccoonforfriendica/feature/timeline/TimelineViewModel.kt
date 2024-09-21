@@ -22,6 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -31,6 +32,7 @@ import kotlin.time.Duration
 class TimelineViewModel(
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
+    private val activeAccountMonitor: ActiveAccountMonitor,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
@@ -166,6 +168,9 @@ class TimelineViewModel(
     }
 
     private suspend fun refresh(initial: Boolean = false) {
+        if (activeAccountMonitor.isNotLoggedButItShould()) {
+            activeAccountMonitor.forceRefresh()
+        }
         // needed as a last-resort to update circles if edited elsewhere
         val isLogged = identityRepository.currentUser.value != null
         refreshCirclesInTimelineTypes(isLogged)

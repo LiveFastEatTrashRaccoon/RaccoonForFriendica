@@ -11,6 +11,7 @@ val featureTimelineModule =
                 paginationManager = get(),
                 identityRepository = get(),
                 apiConfigurationRepository = get(),
+                activeAccountMonitor = get(),
                 timelineEntryRepository = get(),
                 settingsRepository = get(),
                 userRepository = get(),
