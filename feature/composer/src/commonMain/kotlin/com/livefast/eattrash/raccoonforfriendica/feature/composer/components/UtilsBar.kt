@@ -1,14 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
-import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Explicit
 import androidx.compose.material.icons.filled.FormatBold
 import androidx.compose.material.icons.filled.FormatItalic
@@ -17,20 +16,21 @@ import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Title
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 
 @Composable
 internal fun UtilsBar(
     modifier: Modifier = Modifier,
-    hasGallery: Boolean = false,
+    supportsTitleFeature: Boolean = false,
+    hasPoll: Boolean = false,
     onLinkClicked: (() -> Unit)? = null,
     onMentionClicked: (() -> Unit)? = null,
     onAttachmentClicked: (() -> Unit)? = null,
-    onAttachmentFromGalleryClicked: (() -> Unit)? = null,
     onBoldClicked: (() -> Unit)? = null,
     onItalicClicked: (() -> Unit)? = null,
     onUnderlineClicked: (() -> Unit)? = null,
@@ -41,112 +41,103 @@ internal fun UtilsBar(
         modifier =
             modifier
                 .background(MaterialTheme.colorScheme.surfaceVariant)
+                .horizontalScroll(rememberScrollState())
                 .padding(
-                    horizontal = Spacing.s,
                     vertical = Spacing.xs,
                 ),
-        horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround,
     ) {
-        Icon(
-            modifier =
-                Modifier
-                    .clickable {
-                        onAttachmentClicked?.invoke()
-                    }.padding(Spacing.xs)
-                    .size(IconSize.m),
-            imageVector = Icons.Default.PhotoCamera,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        if (hasGallery) {
+        IconButton(
+            enabled = !hasPoll,
+            onClick = {
+                onAttachmentClicked?.invoke()
+            },
+        ) {
             Icon(
-                modifier =
-                    Modifier
-                        .clickable {
-                            onAttachmentFromGalleryClicked?.invoke()
-                        }.padding(Spacing.xs)
-                        .size(IconSize.m),
-                imageVector = Icons.Default.Dashboard,
+                imageVector = Icons.Default.PhotoCamera,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        Icon(
-            modifier =
-                Modifier
-                    .clickable {
-                        onLinkClicked?.invoke()
-                    }.padding(Spacing.xs)
-                    .size(IconSize.m),
-            imageVector = Icons.Default.Link,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Icon(
-            modifier =
-                Modifier
-                    .clickable {
-                        onMentionClicked?.invoke()
-                    }.padding(Spacing.xs)
-                    .size(IconSize.m),
-            imageVector = Icons.Default.AlternateEmail,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Icon(
-            modifier =
-                Modifier
-                    .clickable {
-                        onTitleClicked?.invoke()
-                    }.padding(Spacing.xs)
-                    .size(IconSize.m),
-            imageVector = Icons.Default.Title,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Icon(
-            modifier =
-                Modifier
-                    .clickable {
-                        onSpoilerClicked?.invoke()
-                    }.padding(Spacing.xs)
-                    .size(IconSize.m),
-            imageVector = Icons.Default.Explicit,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Icon(
-            modifier =
-                Modifier
-                    .clickable {
-                        onBoldClicked?.invoke()
-                    }.padding(Spacing.xs)
-                    .size(IconSize.m),
-            imageVector = Icons.Default.FormatBold,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Icon(
-            modifier =
-                Modifier
-                    .clickable {
-                        onItalicClicked?.invoke()
-                    }.padding(Spacing.xs)
-                    .size(IconSize.m),
-            imageVector = Icons.Default.FormatItalic,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Icon(
-            modifier =
-                Modifier
-                    .clickable {
-                        onUnderlineClicked?.invoke()
-                    }.padding(Spacing.xs)
-                    .size(IconSize.m),
-            imageVector = Icons.Default.FormatUnderlined,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        IconButton(
+            onClick = {
+                onLinkClicked?.invoke()
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Default.Link,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        IconButton(
+            onClick = {
+                onMentionClicked?.invoke()
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Default.AlternateEmail,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        if (supportsTitleFeature) {
+            IconButton(
+                onClick = {
+                    onTitleClicked?.invoke()
+                },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Title,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        IconButton(
+            onClick = {
+                onSpoilerClicked?.invoke()
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Default.Explicit,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        IconButton(
+            onClick = {
+                onBoldClicked?.invoke()
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Default.FormatBold,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        IconButton(
+            onClick = {
+                onItalicClicked?.invoke()
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Default.FormatItalic,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        IconButton(
+            onClick = {
+                onUnderlineClicked?.invoke()
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Default.FormatUnderlined,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
