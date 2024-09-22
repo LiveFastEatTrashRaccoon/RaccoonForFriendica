@@ -70,8 +70,9 @@ class TimelineViewModel(
 
             combine(
                 settingsRepository.current,
+                apiConfigurationRepository.node,
                 identityRepository.currentUser,
-            ) { _, user ->
+            ) { _, _, user ->
                 // wait until either there is a logged user if there are valid credentials stored
                 if (user != null || !apiConfigurationRepository.hasCachedAuthCredentials()) {
                     refresh(initial = true)

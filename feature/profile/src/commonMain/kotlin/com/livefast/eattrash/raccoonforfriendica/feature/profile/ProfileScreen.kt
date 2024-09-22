@@ -98,17 +98,17 @@ class ProfileScreen : Screen {
                             }
                         },
                         actions = {
+                            IconButton(
+                                onClick = {
+                                    manageAccountsDialogOpened = true
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ManageAccounts,
+                                    contentDescription = null,
+                                )
+                            }
                             if (uiState.currentUserId != null) {
-                                IconButton(
-                                    onClick = {
-                                        manageAccountsDialogOpened = true
-                                    },
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.ManageAccounts,
-                                        contentDescription = null,
-                                    )
-                                }
                                 IconButton(
                                     onClick = {
                                         confirmLogoutDialogOpened = true

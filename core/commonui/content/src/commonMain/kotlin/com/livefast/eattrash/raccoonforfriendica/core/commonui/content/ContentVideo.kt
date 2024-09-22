@@ -34,7 +34,7 @@ fun ContentVideo(
     contentScale: ContentScale = ContentScale.FillWidth,
     onClick: (() -> Unit)? = null,
 ) {
-    // TODO: add support for click ot open
+    // TODO: add support for click to open
     var revealing by remember { mutableStateOf(!sensitive) }
     var hasFinishedLoadingSuccessfully by remember { mutableStateOf(false) }
     val ratio =
