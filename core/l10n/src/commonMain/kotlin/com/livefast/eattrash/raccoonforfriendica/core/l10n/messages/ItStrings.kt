@@ -83,7 +83,7 @@ internal val ItStrings =
         override val fieldUsername = "Username"
         override val fieldPassword = "Password"
         override val actionLogout = "Logout"
-        override val relationshipStatusFollowing = "Stai seguendo"
+        override val relationshipStatusFollowing = "Segui già"
         override val relationshipStatusFollowsYou = "Ti segue"
         override val relationshipStatusMutual = "Reciproci"
         override val relationshipStatusRequestedToOther = "Richiesta inviata"
@@ -361,4 +361,5 @@ internal val ItStrings =
         override val userFeedbackFieldComment = "Feedback"
         override val userFeedbackCommentPlaceholder =
             "Descrivi il problema che hai riscontrato o lascia un feedback 🖋️"
+        override val changeNodeDialogTitle = "Cambia istanza"
     }

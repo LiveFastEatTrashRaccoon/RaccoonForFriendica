@@ -361,4 +361,5 @@ internal val DeStrings =
         override val userFeedbackFieldComment = "Feedback"
         override val userFeedbackCommentPlaceholder =
             "Beschreiben Sie das aufgetretene Problem oder hinterlassen Sie einfach ein Feedback 🖋️"
+        override val changeNodeDialogTitle = "Instanz ändern"
     }
