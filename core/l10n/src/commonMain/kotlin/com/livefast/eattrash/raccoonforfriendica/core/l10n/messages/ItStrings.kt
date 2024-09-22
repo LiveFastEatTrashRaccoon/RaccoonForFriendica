@@ -187,7 +187,7 @@ internal val ItStrings =
         override val settingsAboutAppVersion = "Versione"
         override val settingsAboutChangelog = "Elenco modifiche"
         override val settingsAboutViewGithub = "Vedi su GitHub"
-        override val settingsAboutReportIssue = "Apri una segnalazione"
+        override val settingsAboutReportIssue = "Segnala un problema"
         override val settingsAboutViewFriendica = "Vedi su Friendica"
         override val manageCirclesTitle = "Cerchie"
         override val createCircleTitle = "Crea cerchia"
@@ -355,7 +355,10 @@ internal val ItStrings =
         override val createPostPollOptionLabel = "Option"
         override val createPostPollItemMultiple = "Allow multiple choice"
         override val createPostPollItemExpirationDate = "Expiration date"
-
         override val messageInvalidPollError =
             "Sondaggio non valido, controllare le opzioni e la data di fine"
+        override val userFeedbackFieldEmail = "Email o username (opzionale)"
+        override val userFeedbackFieldComment = "Feedback"
+        override val userFeedbackCommentPlaceholder =
+            "Descrivi il problema che hai riscontrato o lascia un feedback 🖋️"
     }
