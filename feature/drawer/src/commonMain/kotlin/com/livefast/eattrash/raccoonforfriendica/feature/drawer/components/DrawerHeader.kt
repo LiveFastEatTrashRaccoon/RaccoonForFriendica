@@ -34,6 +34,7 @@ internal fun DrawerHeader(
     modifier: Modifier = Modifier,
     user: UserModel? = null,
     node: String? = null,
+    canSwitchAccount: Boolean = false,
     onOpenChangeInstance: (() -> Unit)? = null,
     onOpenSwitchAccount: (() -> Unit)? = null,
 ) {
@@ -72,9 +73,11 @@ internal fun DrawerHeader(
                 )
             }
 
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.xxxs),
                 ) {
                     Text(
                         text = username,
@@ -97,15 +100,17 @@ internal fun DrawerHeader(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(
-                    onClick = {
-                        onOpenSwitchAccount?.invoke()
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = null,
-                    )
+                if (canSwitchAccount) {
+                    IconButton(
+                        onClick = {
+                            onOpenSwitchAccount?.invoke()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
         } else {
@@ -115,16 +120,25 @@ internal fun DrawerHeader(
                 title = anonymousTitle,
             )
             Column(
-                verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
+                verticalArrangement = Arrangement.spacedBy(Spacing.xxxs),
             ) {
                 Text(
                     text = anonymousTitle,
                     style = MaterialTheme.typography.titleMedium,
                     color = fullColor,
                 )
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
-                        text = node.orEmpty(),
+                        text =
+                            buildString {
+                                append(LocalStrings.current.nodeVia)
+                                append(" ")
+                                append(node)
+                            },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.titleMedium,
                         color = ancillaryColor,
                     )
