@@ -10,7 +10,7 @@ internal class DefaultEntryActionRepository(
 
     override fun canShare(entry: TimelineEntryModel): Boolean = !entry.url.isNullOrBlank()
 
-    override fun canReply(entry: TimelineEntryModel): Boolean = entry.isFromOtherUser
+    override fun canReply(entry: TimelineEntryModel): Boolean = isLogged
 
     override fun canReact(entry: TimelineEntryModel): Boolean = isLogged
 
