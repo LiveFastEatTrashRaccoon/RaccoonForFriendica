@@ -313,6 +313,9 @@ interface Strings {
     val createPostPollOptionLabel: String
     val createPostPollItemMultiple: String
     val createPostPollItemExpirationDate: String
+    val userFeedbackFieldEmail: String
+    val userFeedbackFieldComment: String
+    val userFeedbackCommentPlaceholder: String
 }
 
 object Locales {

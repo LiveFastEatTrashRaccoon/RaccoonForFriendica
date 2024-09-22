@@ -357,4 +357,8 @@ internal val DeStrings =
         override val createPostPollItemExpirationDate = "Verfallsdatum"
         override val messageInvalidPollError =
             "Ungültige Umfrage, bitte überprüfen Sie die Optionen und das Verfallsdatum"
+        override val userFeedbackFieldEmail = "E-Mail oder Benutzername (optional)"
+        override val userFeedbackFieldComment = "Feedback"
+        override val userFeedbackCommentPlaceholder =
+            "Beschreiben Sie das aufgetretene Problem oder hinterlassen Sie einfach ein Feedback 🖋️"
     }

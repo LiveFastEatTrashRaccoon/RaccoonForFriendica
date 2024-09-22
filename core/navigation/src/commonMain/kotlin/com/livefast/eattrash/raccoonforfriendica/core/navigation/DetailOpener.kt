@@ -92,4 +92,6 @@ interface DetailOpener {
         user: UserModel,
         entry: TimelineEntryModel? = null,
     )
+
+    fun openUserFeedback()
 }

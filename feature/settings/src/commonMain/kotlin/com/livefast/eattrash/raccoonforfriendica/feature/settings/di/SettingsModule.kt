@@ -2,6 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.settings.di
 
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback.UserFeedbackMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback.UserFeedbackViewModel
 import org.koin.dsl.module
 
 val featureSettingsModule =
@@ -14,6 +16,11 @@ val featureSettingsModule =
                 colorSchemeProvider = get(),
                 themeColorRepository = get(),
                 identityRepository = get(),
+            )
+        }
+        factory<UserFeedbackMviModel> {
+            UserFeedbackViewModel(
+                crashReportManager = get(),
             )
         }
     }

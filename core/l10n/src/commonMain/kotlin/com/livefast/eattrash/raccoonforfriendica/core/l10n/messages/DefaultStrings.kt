@@ -348,4 +348,8 @@ internal open class DefaultStrings : Strings {
     override val createPostPollItemExpirationDate = "Expiration date"
     override val messageInvalidPollError =
         "Invalid poll, please check the options and expiration date"
+    override val userFeedbackFieldEmail = "Email or username (optional)"
+    override val userFeedbackFieldComment = "Feedback"
+    override val userFeedbackCommentPlaceholder =
+        "Describe the issue you encountered or just leave a feedback 🖋️"
 }

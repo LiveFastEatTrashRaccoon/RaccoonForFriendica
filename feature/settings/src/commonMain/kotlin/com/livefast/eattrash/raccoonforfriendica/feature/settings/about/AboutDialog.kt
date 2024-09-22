@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getAppInfoRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,6 +42,7 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
     val uriHandler = LocalUriHandler.current
     val appInfoRepository = remember { getAppInfoRepository() }
     val appInfo by appInfoRepository.appInfo.collectAsState()
+    val detailOpener = remember { getDetailOpener() }
 
     BasicAlertDialog(
         modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
@@ -87,7 +89,7 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                 item {
                     Button(
                         onClick = {
-                            uriHandler.openUri(AboutConstants.REPORT_URL)
+                            detailOpener.openUserFeedback()
                         },
                     ) {
                         Text(
