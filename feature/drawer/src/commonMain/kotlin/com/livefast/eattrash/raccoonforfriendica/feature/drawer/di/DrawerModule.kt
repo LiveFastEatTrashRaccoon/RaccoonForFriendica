@@ -11,6 +11,9 @@ val featureDrawerModule =
                 apiConfigurationRepository = get(),
                 identityRepository = get(),
                 supportedFeatureRepository = get(),
+                credentialsRepository = get(),
+                accountRepository = get(),
+                switchAccountUseCase = get(),
             )
         }
     }
