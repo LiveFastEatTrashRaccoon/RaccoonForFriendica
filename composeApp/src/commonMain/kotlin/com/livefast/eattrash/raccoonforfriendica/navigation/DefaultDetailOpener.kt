@@ -30,6 +30,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback.UserFeedbackScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
@@ -296,6 +297,11 @@ class DefaultDetailOpener(
                 userId = user.id,
                 entryId = entry?.id,
             )
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openUserFeedback() {
+        val screen = UserFeedbackScreen()
         navigationCoordinator.push(screen)
     }
 }
