@@ -11,6 +11,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,10 +19,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayer
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import kotlinx.coroutines.delay
+import kotlin.math.roundToInt
 
 @Composable
 fun ContentVideo(
@@ -36,16 +43,37 @@ fun ContentVideo(
 ) {
     // TODO: add support for click to open
     var revealing by remember { mutableStateOf(!sensitive) }
-    var hasFinishedLoadingSuccessfully by remember { mutableStateOf(false) }
+    var initialLoadDelay by remember { mutableStateOf(true) }
     val ratio =
         if (originalWidth != 0 && originalHeight != 0) {
             originalWidth / originalHeight.toFloat()
         } else {
             16 / 9f
         }
+    val density = LocalDensity.current
+    var availableWidth by remember { mutableStateOf(0.dp) }
+    var videoSize by remember(availableWidth) {
+        mutableStateOf(
+            DpSize(
+                width = availableWidth,
+                height = (availableWidth.value / ratio).roundToInt().dp,
+            ),
+        )
+    }
+
+    LaunchedEffect(Unit) {
+        // this delay is needed in order to allow the compent to settle after the zoom,
+        // so that the onResize callback in VideoPlayer gets called with the correct values
+        delay(INITIAL_LOAD_DELAY)
+        initialLoadDelay = false
+    }
 
     Box(
-        modifier = modifier.fillMaxWidth(),
+        modifier =
+            modifier.fillMaxWidth().onGloballyPositioned {
+                val w = it.size.toSize().width
+                availableWidth = with(density) { w.toDp() }
+            },
         contentAlignment = Alignment.Center,
     ) {
         if (!revealing) {
@@ -71,7 +99,7 @@ fun ContentVideo(
                 }
             }
         } else {
-            if (!hasFinishedLoadingSuccessfully) {
+            if (initialLoadDelay) {
                 Box(
                     modifier = Modifier.fillMaxWidth().aspectRatio(ratio),
                     contentAlignment = Alignment.Center,
@@ -81,20 +109,24 @@ fun ContentVideo(
                     )
                 }
             }
-            VideoPlayer(
-                modifier =
-                    Modifier.fillMaxWidth().aspectRatio(ratio),
-                url = url,
-                onPlaybackStarted = {
-                    hasFinishedLoadingSuccessfully = true
-                },
-            )
-            if (!hasFinishedLoadingSuccessfully) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(25.dp),
-                    color = MaterialTheme.colorScheme.primary,
+
+            if (!initialLoadDelay) {
+                VideoPlayer(
+                    modifier = Modifier.size(videoSize),
+                    url = url,
+                    onResize = { newSize ->
+                        videoSize =
+                            with(density) {
+                                DpSize(
+                                    width = newSize.width.toDp(),
+                                    height = newSize.height.toDp(),
+                                )
+                            }
+                    },
                 )
             }
         }
     }
 }
+
+private const val INITIAL_LOAD_DELAY = 350L

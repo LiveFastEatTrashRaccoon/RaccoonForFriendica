@@ -4,11 +4,15 @@ import android.media.session.PlaybackState
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.annotation.OptIn
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -20,6 +24,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import kotlin.math.abs
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -27,8 +32,10 @@ actual fun VideoPlayer(
     url: String,
     modifier: Modifier,
     onPlaybackStarted: (() -> Unit)?,
+    onResize: ((IntSize) -> Unit)?,
 ) {
     val context = LocalContext.current
+    var started = false
     val exoPlayer =
         remember {
             ExoPlayer
@@ -52,33 +59,45 @@ actual fun VideoPlayer(
                             override fun onPlaybackStateChanged(playbackState: Int) {
                                 super.onPlaybackStateChanged(playbackState)
                                 if (playbackState == PlaybackState.STATE_PLAYING) {
-                                    onPlaybackStarted?.invoke()
+                                    if (!started) {
+                                        onPlaybackStarted?.invoke()
+                                        started = true
+                                    }
                                 }
                             }
                         },
                     )
                     prepare()
                 }.apply {
-                    playWhenReady = true
                     videoScalingMode = C.VIDEO_SCALING_MODE_DEFAULT
-                    repeatMode = Player.REPEAT_MODE_ONE
-                    volume = 0f
+                    repeatMode = Player.REPEAT_MODE_ALL
                 }
         }
 
-    AndroidView(
+    Box(
         modifier = modifier,
-        factory = {
-            PlayerView(context).apply {
-                controllerAutoShow = true
-                controllerHideOnTouch = true
-                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        contentAlignment = Alignment.Center,
+    ) {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = {
+                PlayerView(context).apply {
+                    controllerAutoShow = true
+                    controllerHideOnTouch = true
+                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
-                player = exoPlayer
-                layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            }
-        },
-    )
+                    videoSurfaceView?.addOnLayoutChangeListener { _, left, top, right, bottom, _, _, _, _ ->
+                        val newHeight = abs(bottom - top)
+                        val newWidth = abs(right - left)
+                        onResize?.invoke(IntSize(width = newWidth, height = newHeight))
+                    }
+
+                    player = exoPlayer
+                }
+            },
+        )
+    }
 
     DisposableEffect(Unit) {
         onDispose {
