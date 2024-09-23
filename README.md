@@ -119,7 +119,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] advanced media visualization (videos, GIFs, multiple images)
 - [x] scheduled posts and drafts
 - [x] report posts and users
-- [ ] custom emojis
+- [x] custom emojis (in posts, for user accounts they do not seem to be returned by the back-end)
 
 ## Technologies used
 
@@ -133,6 +133,8 @@ The app is under ongoing development, here is a list of the features that are be
   preferences
 - [MaterialKolor](https://github.com/jordond/MaterialKolor) for custom theme generation
 - [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing
+- [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for custom color selection
+- [Sentry](https://sentry.io) for crash reporting and user feedback collection
 
 ## Disclaimer
 
