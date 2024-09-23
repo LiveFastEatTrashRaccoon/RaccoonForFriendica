@@ -58,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -73,7 +74,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getEntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -113,6 +114,7 @@ class ForumListScreen(
         var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
+        var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -326,10 +328,14 @@ class ForumListScreen(
                                     if (actionRepository.canBlock(entry)) {
                                         this += OptionId.Block.toOption()
                                     }
-                                    if (actionRepository.canReport(entry)) {
+                                    if (actionRepository.canReport(entry.original)) {
                                         this += OptionId.ReportUser.toOption()
                                         this += OptionId.ReportEntry.toOption()
                                     }
+                                    if (actionRepository.canQuote(entry.original)) {
+                                        this += OptionId.Quote.toOption()
+                                    }
+                                    this += OptionId.ViewDetails.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -371,6 +377,14 @@ class ForumListScreen(
                                                 )
                                             }
                                         }
+                                    OptionId.Quote -> {
+                                        entry.original.also { entryToShare ->
+                                            detailOpener.openComposer(
+                                                urlToShare = entryToShare.url,
+                                            )
+                                        }
+                                    }
+                                    OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                     else -> Unit
                                 }
                             },
@@ -510,6 +524,15 @@ class ForumListScreen(
                     if (confirm && e != null) {
                         model.reduce(ForumListMviModel.Intent.ToggleReblog(e))
                     }
+                },
+            )
+        }
+
+        seeDetailsEntry?.let { entry ->
+            EntryDetailDialog(
+                entry = entry,
+                onClose = {
+                    seeDetailsEntry = null
                 },
             )
         }

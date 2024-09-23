@@ -68,7 +68,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getEntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.LocalProfileTopAppBarStateWrapper
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -312,6 +312,9 @@ class MyAccountScreen : Screen {
                                         this += OptionId.Pin.toOption()
                                     }
                                 }
+                                if (actionRepository.canQuote(entry.original)) {
+                                    this += OptionId.Quote.toOption()
+                                }
                                 this += OptionId.ViewDetails.toOption()
                             },
                         onOptionSelected = { optionId ->
@@ -351,6 +354,13 @@ class MyAccountScreen : Screen {
                                         MyAccountMviModel.Intent.TogglePin(entry),
                                     )
                                 OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                OptionId.Quote -> {
+                                    entry.original.also { entryToShare ->
+                                        detailOpener.openComposer(
+                                            urlToShare = entryToShare.url,
+                                        )
+                                    }
+                                }
                                 else -> Unit
                             }
                         },

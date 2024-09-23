@@ -67,7 +67,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getEntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -312,9 +312,12 @@ class HashtagScreen(
                                     if (actionRepository.canBlock(entry)) {
                                         this += OptionId.Block.toOption()
                                     }
-                                    if (actionRepository.canReport(entry)) {
+                                    if (actionRepository.canReport(entry.original)) {
                                         this += OptionId.ReportUser.toOption()
                                         this += OptionId.ReportEntry.toOption()
+                                    }
+                                    if (actionRepository.canQuote(entry.original)) {
+                                        this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()
                                 },
@@ -363,6 +366,13 @@ class HashtagScreen(
                                             }
                                         }
                                     OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                    OptionId.Quote -> {
+                                        entry.original.also { entryToShare ->
+                                            detailOpener.openComposer(
+                                                urlToShare = entryToShare.url,
+                                            )
+                                        }
+                                    }
                                     else -> Unit
                                 }
                             },

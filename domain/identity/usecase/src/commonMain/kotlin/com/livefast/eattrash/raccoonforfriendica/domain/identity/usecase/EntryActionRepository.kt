@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
+package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -26,4 +26,6 @@ interface EntryActionRepository {
     fun canTogglePin(entry: TimelineEntryModel): Boolean
 
     fun canBlock(entry: TimelineEntryModel): Boolean
+
+    fun canQuote(entry: TimelineEntryModel): Boolean
 }

@@ -73,6 +73,7 @@ class ComposerViewModel(
     private var uploadJobs = mutableMapOf<String, Job>()
     private var editedPostId: String? = null
     private var draftId: String? = null
+    private val useBBCode: Boolean get() = supportedFeatureRepository.features.value.supportsBBCode
 
     init {
         screenModelScope.launch {
@@ -148,6 +149,8 @@ class ComposerViewModel(
                 loadEditedPost()
             }
 
+            is ComposerMviModel.Intent.AddShareUrl -> addShareUrl(intent.url)
+
             is ComposerMviModel.Intent.LoadScheduled ->
                 screenModelScope.launch {
                     editedPostId = intent.id
@@ -205,51 +208,19 @@ class ComposerViewModel(
                 updateAttachmentDescription(intent.attachment, intent.description)
 
             is ComposerMviModel.Intent.RemoveAttachment -> removeAttachment(intent.attachment)
-            is ComposerMviModel.Intent.AddLink -> {
-                screenModelScope.launch {
-                    val (anchor, url) = intent.link
-                    val before = "<a href=\"$url\">"
-                    val after = "</a>"
-                    val newValue =
-                        getNewTextFieldValue(
-                            value = uiState.value.bodyValue,
-                            additionalPart =
-                                buildString {
-                                    append(before)
-                                    append(anchor)
-                                    append(after)
-                                },
-                            offsetAfter = before.length,
-                        )
-                    updateState { it.copy(bodyValue = newValue) }
-                }
-            }
+            is ComposerMviModel.Intent.AddLink ->
+                addLink(
+                    anchor = intent.link.first,
+                    url = intent.link.second,
+                )
 
-            is ComposerMviModel.Intent.AddMention -> {
-                screenModelScope.launch {
-                    val additionalPart = "@${intent.handle}"
-                    val newValue =
-                        getNewTextFieldValue(
-                            value = uiState.value.bodyValue,
-                            additionalPart = additionalPart,
-                            offsetAfter = additionalPart.length,
-                        )
-                    updateState { it.copy(bodyValue = newValue) }
-                }
-            }
+            is ComposerMviModel.Intent.AddMention -> addMention(handle = intent.handle)
 
-            is ComposerMviModel.Intent.AddGroupReference -> {
-                screenModelScope.launch {
-                    val additionalPart = "!${intent.handle}"
-                    val newValue =
-                        getNewTextFieldValue(
-                            value = uiState.value.bodyValue,
-                            additionalPart = additionalPart,
-                            offsetAfter = additionalPart.length,
-                        )
-                    updateState { it.copy(bodyValue = newValue) }
-                }
-            }
+            is ComposerMviModel.Intent.AddGroupReference ->
+                addMention(
+                    handle = intent.handle,
+                    privateToGroup = true,
+                )
 
             is ComposerMviModel.Intent.UserSearchSetQuery ->
                 screenModelScope.launch {
@@ -408,6 +379,79 @@ class ComposerViewModel(
         }
     }
 
+    private fun addLink(
+        anchor: String,
+        url: String,
+    ) {
+        screenModelScope.launch {
+            val before =
+                if (useBBCode) {
+                    "[url=\"$url\"]"
+                } else {
+                    "<a href=\"$url\">"
+                }
+            val after =
+                if (useBBCode) {
+                    "[/url]"
+                } else {
+                    "</a>"
+                }
+            val newValue =
+                getNewTextFieldValue(
+                    value = uiState.value.bodyValue,
+                    additionalPart =
+                        buildString {
+                            append(before)
+                            append(anchor)
+                            append(after)
+                        },
+                    offsetAfter = before.length,
+                )
+            updateState { it.copy(bodyValue = newValue) }
+        }
+    }
+
+    private fun addMention(
+        handle: String,
+        privateToGroup: Boolean = false,
+    ) {
+        screenModelScope.launch {
+            val additionalPart =
+                buildString {
+                    if (privateToGroup) {
+                        append("!")
+                    } else {
+                        append("@")
+                    }
+                    append(handle)
+                }
+            val newValue =
+                getNewTextFieldValue(
+                    value = uiState.value.bodyValue,
+                    additionalPart = additionalPart,
+                    offsetAfter = additionalPart.length,
+                )
+            updateState { it.copy(bodyValue = newValue) }
+        }
+    }
+
+    private fun addShareUrl(url: String) {
+        screenModelScope.launch {
+            val additionalPart =
+                buildString {
+                    append("\n")
+                    append("[share]$url[/share]")
+                }
+            val newValue =
+                getNewTextFieldValue(
+                    value = uiState.value.bodyValue,
+                    additionalPart = additionalPart,
+                    offsetAfter = additionalPart.length,
+                )
+            updateState { it.copy(bodyValue = newValue) }
+        }
+    }
+
     private fun addBoldFormat(fieldType: ComposerFieldType) {
         screenModelScope.launch {
             val value =
@@ -422,12 +466,28 @@ class ComposerViewModel(
                         uiState.value.titleValue
                 }
             val selectedText = value.getSelectedText().text
-            val additionalPart = "<b>$selectedText</b>"
+            val before =
+                if (useBBCode) {
+                    "[b]"
+                } else {
+                    "<b>"
+                }
+            val after =
+                if (useBBCode) {
+                    "[/b]"
+                } else {
+                    "</b>"
+                }
             val newValue =
                 getNewTextFieldValue(
                     value = value,
-                    additionalPart = additionalPart,
-                    offsetAfter = 3,
+                    additionalPart =
+                        buildString {
+                            append(before)
+                            append(selectedText)
+                            append(after)
+                        },
+                    offsetAfter = before.length,
                 )
             updateState {
                 when (fieldType) {
@@ -453,13 +513,28 @@ class ComposerViewModel(
                         uiState.value.titleValue
                 }
             val selectedText = value.getSelectedText().text
-            val additionalPart = "<i>$selectedText</i>"
-
+            val before =
+                if (useBBCode) {
+                    "[i]"
+                } else {
+                    "<i>"
+                }
+            val after =
+                if (useBBCode) {
+                    "[/i]"
+                } else {
+                    "</i>"
+                }
             val newValue =
                 getNewTextFieldValue(
                     value = value,
-                    additionalPart = additionalPart,
-                    offsetAfter = 3,
+                    additionalPart =
+                        buildString {
+                            append(before)
+                            append(selectedText)
+                            append(after)
+                        },
+                    offsetAfter = before.length,
                 )
             updateState {
                 when (fieldType) {
@@ -485,13 +560,28 @@ class ComposerViewModel(
                         uiState.value.titleValue
                 }
             val selectedText = value.getSelectedText().text
-            val additionalPart = "<u>$selectedText</u>"
-
+            val before =
+                if (useBBCode) {
+                    "[u]"
+                } else {
+                    "<u>"
+                }
+            val after =
+                if (useBBCode) {
+                    "[/u]"
+                } else {
+                    "</u>"
+                }
             val newValue =
                 getNewTextFieldValue(
                     value = value,
-                    additionalPart = additionalPart,
-                    offsetAfter = 3,
+                    additionalPart =
+                        buildString {
+                            append(before)
+                            append(selectedText)
+                            append(after)
+                        },
+                    offsetAfter = before.length,
                 )
             updateState {
                 when (fieldType) {

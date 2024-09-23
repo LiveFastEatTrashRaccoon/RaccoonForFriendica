@@ -317,6 +317,7 @@ interface Strings {
     val userFeedbackFieldComment: String
     val userFeedbackCommentPlaceholder: String
     val changeNodeDialogTitle: String
+    val actionQuote: String
 }
 
 object Locales {

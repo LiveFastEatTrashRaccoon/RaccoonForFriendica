@@ -5,11 +5,13 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.CustomU
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultDeleteAccountUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultEntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultLoginUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultLogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultSwitchAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DeleteAccountUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
@@ -70,6 +72,12 @@ val domainIdentityUseCaseModule =
                 identityRepository = get(),
                 settingsRepository = get(),
                 accountCredentialsCache = get(),
+                supportedFeatureRepository = get(),
+            )
+        }
+        single<EntryActionRepository> {
+            DefaultEntryActionRepository(
+                identityRepository = get(),
                 supportedFeatureRepository = get(),
             )
         }

@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di
 import androidx.compose.ui.platform.UriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.CustomUriHandler
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
 import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent
@@ -26,5 +27,10 @@ actual fun getCustomUriHandler(fallback: UriHandler): CustomUriHandler {
             },
         )
     val res by inject
+    return res
+}
+
+actual fun getEntryActionRepository(): EntryActionRepository {
+    val res by KoinJavaComponent.inject<EntryActionRepository>(EntryActionRepository::class.java)
     return res
 }
