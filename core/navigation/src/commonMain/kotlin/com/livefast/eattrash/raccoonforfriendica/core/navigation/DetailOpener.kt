@@ -39,6 +39,7 @@ interface DetailOpener {
         inReplyToId: String? = null,
         inReplyToUser: UserModel? = null,
         editedPostId: String? = null,
+        urlToShare: String? = null,
         inGroup: Boolean = false,
     )
 

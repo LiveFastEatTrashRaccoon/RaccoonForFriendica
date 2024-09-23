@@ -144,6 +144,7 @@ class DefaultDetailOpener(
         inReplyToId: String?,
         inReplyToUser: UserModel?,
         editedPostId: String?,
+        urlToShare: String?,
         inGroup: Boolean,
     ) {
         if (!isLogged) {
@@ -161,6 +162,7 @@ class DefaultDetailOpener(
                 groupUsername = inReplyToUser?.username.takeIf { isGroup },
                 groupHandle = inReplyToUser?.handle.takeIf { isGroup },
                 editedPostId = editedPostId,
+                urlToShare = urlToShare,
             )
         navigationCoordinator.push(screen)
     }
