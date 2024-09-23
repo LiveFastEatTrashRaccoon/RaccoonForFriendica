@@ -11,6 +11,7 @@ data class Account(
     @SerialName("created_at") val createdAt: String? = null,
     @SerialName("discoverable") val discoverable: Boolean? = null,
     @SerialName("display_name") val displayName: String? = null,
+    @SerialName("emojis") val emojis: List<CustomEmoji>? = null,
     @SerialName("fields") val fields: List<Field> = emptyList(),
     @SerialName("followers_count") val followersCount: Int = 0,
     @SerialName("following_count") val followingCount: Int = 0,

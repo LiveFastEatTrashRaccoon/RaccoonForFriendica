@@ -11,6 +11,7 @@ data class Status(
     @SerialName("content") val content: String = "",
     @SerialName("created_at") val createdAt: String? = null,
     @SerialName("edited_at") val editedAt: String? = null,
+    @SerialName("emojis") val emojis: List<CustomEmoji>? = null,
     @SerialName("favourited") val favourited: Boolean = false,
     @SerialName("favourites_count") val favoritesCount: Int = 0,
     @SerialName("friendica") val addons: StatusAddons? = null,
