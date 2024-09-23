@@ -40,6 +40,8 @@ sealed interface OptionId {
 
     data object ViewDetails : OptionId
 
+    data object Quote : OptionId
+
     interface Custom : OptionId
 }
 
@@ -64,6 +66,7 @@ private fun OptionId.toReadableName(): String =
         OptionId.ReportUser -> LocalStrings.current.actionReportUser
         OptionId.ReportEntry -> LocalStrings.current.actionReportEntry
         OptionId.ViewDetails -> LocalStrings.current.actionViewDetails
+        OptionId.Quote -> LocalStrings.current.actionQuote
         else -> ""
     }
 
