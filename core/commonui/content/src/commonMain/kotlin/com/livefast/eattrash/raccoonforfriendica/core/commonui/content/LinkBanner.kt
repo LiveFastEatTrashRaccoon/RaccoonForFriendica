@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -21,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 fun LinkBanner(
     modifier: Modifier = Modifier,
     url: String,
+    onClick: (() -> Unit)? = null,
 ) {
     if (url.isNotEmpty()) {
         Row(
@@ -29,7 +32,11 @@ fun LinkBanner(
                     .background(
                         color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(CornerSize.l),
-                    ).padding(
+                    ).clip(
+                        RoundedCornerShape(CornerSize.l),
+                    ).clickable {
+                        onClick?.invoke()
+                    }.padding(
                         horizontal = Spacing.m,
                         vertical = Spacing.s,
                     ),

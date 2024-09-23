@@ -94,7 +94,7 @@ fun ContentPreview(
             Column(
                 modifier =
                     Modifier.padding(
-                        top = if (hasMediaInfo) Spacing.xs else Spacing.s,
+                        top = Spacing.s,
                         end = contentPadding,
                         start = contentPadding,
                     ),
@@ -128,11 +128,11 @@ fun ContentPreview(
 
     if (type == PreviewType.Link && url.isNotEmpty()) {
         LinkBanner(
-            modifier =
-                modifier.clickable {
-                    onOpen?.invoke(url)
-                },
+            modifier = Modifier.padding(top = Spacing.s),
             url = url,
+            onClick = {
+                onOpen?.invoke(url)
+            },
         )
     }
 }
