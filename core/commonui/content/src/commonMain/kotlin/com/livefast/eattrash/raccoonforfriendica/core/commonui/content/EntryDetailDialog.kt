@@ -37,6 +37,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.prettifyHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,13 +81,13 @@ fun EntryDetailDialog(
                     item {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                         ) {
                             Text(
                                 style = MaterialTheme.typography.labelMedium,
                                 text = sourcePlatform,
                                 color = fullColor,
                             )
-                            Spacer(modifier = Modifier.weight(1f))
                             if (sourceProtocol.isNotEmpty()) {
                                 Text(
                                     style = MaterialTheme.typography.labelMedium,
@@ -99,6 +100,12 @@ fun EntryDetailDialog(
                                     color = fullColor,
                                 )
                             }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                modifier = Modifier.size(IconSize.s),
+                                imageVector = entry.visibility.toIcon(),
+                                contentDescription = null,
+                            )
                         }
                     }
 
