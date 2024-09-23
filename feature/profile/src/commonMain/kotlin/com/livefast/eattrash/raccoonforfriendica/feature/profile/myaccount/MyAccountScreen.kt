@@ -312,6 +312,9 @@ class MyAccountScreen : Screen {
                                         this += OptionId.Pin.toOption()
                                     }
                                 }
+                                if (actionRepository.canQuote(entry.original)) {
+                                    this += OptionId.Quote.toOption()
+                                }
                                 this += OptionId.ViewDetails.toOption()
                             },
                         onOptionSelected = { optionId ->
@@ -351,6 +354,13 @@ class MyAccountScreen : Screen {
                                         MyAccountMviModel.Intent.TogglePin(entry),
                                     )
                                 OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                OptionId.Quote -> {
+                                    entry.original.also { entryToShare ->
+                                        detailOpener.openComposer(
+                                            urlToShare = entryToShare.url,
+                                        )
+                                    }
+                                }
                                 else -> Unit
                             }
                         },

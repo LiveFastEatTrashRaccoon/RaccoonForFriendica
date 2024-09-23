@@ -618,8 +618,11 @@ class UserDetailScreen(
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
-                                    if (actionRepository.canReport(entry)) {
+                                    if (actionRepository.canReport(entry.original)) {
                                         this += OptionId.ReportEntry.toOption()
+                                    }
+                                    if (actionRepository.canQuote(entry.original)) {
+                                        this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()
                                 },
@@ -649,6 +652,13 @@ class UserDetailScreen(
                                             }
                                         }
                                     OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                    OptionId.Quote -> {
+                                        entry.original.also { entryToShare ->
+                                            detailOpener.openComposer(
+                                                urlToShare = entryToShare.url,
+                                            )
+                                        }
+                                    }
                                     else -> Unit
                                 }
                             },
