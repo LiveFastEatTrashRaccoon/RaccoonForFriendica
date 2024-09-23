@@ -8,10 +8,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Defa
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultAccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultCredentialsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultEntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultIdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultSettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import org.koin.core.qualifier.named
@@ -53,11 +51,6 @@ val domainIdentityRepositoryModule =
         single<AccountCredentialsCache> {
             DefaultAccountCredentialsCache(
                 keyStore = get(),
-            )
-        }
-        single<EntryActionRepository> {
-            DefaultEntryActionRepository(
-                identityRepository = get(),
             )
         }
     }
