@@ -362,4 +362,5 @@ internal val ItStrings =
         override val userFeedbackCommentPlaceholder =
             "Descrivi il problema che hai riscontrato o lascia un feedback 🖋️"
         override val changeNodeDialogTitle = "Cambia istanza"
+        override val actionQuote = "Cita"
     }
