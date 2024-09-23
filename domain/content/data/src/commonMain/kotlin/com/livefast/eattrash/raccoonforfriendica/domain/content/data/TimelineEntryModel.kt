@@ -15,6 +15,7 @@ data class TimelineEntryModel(
     val creator: UserModel? = null,
     @Transient val depth: Int = 0,
     val dislikesCount: Int = 0,
+    val emojis: List<EmojiModel> = emptyList(),
     val favorite: Boolean = false,
     val favoriteCount: Int = 0,
     @Transient val favoriteLoading: Boolean = false,

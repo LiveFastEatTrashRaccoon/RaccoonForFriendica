@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.util
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CustomEmoji
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Field
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaContact
@@ -37,6 +38,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHistoryItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
@@ -76,6 +78,7 @@ internal fun Status.toModel() =
         created = createdAt,
         creator = account?.toModel(),
         dislikesCount = addons?.dislikesCount ?: 0,
+        emojis = emojis?.map { it.toModel() }.orEmpty(),
         favorite = favourited,
         favoriteCount = favoritesCount,
         id = id,
@@ -174,6 +177,7 @@ internal fun Account.toModel() =
         created = createdAt,
         discoverable = discoverable ?: true,
         displayName = displayName,
+        emojis = emojis?.map { it.toModel() }.orEmpty(),
         entryCount = statusesCount,
         fields = fields.map { it.toModel() },
         followers = followersCount,
@@ -439,6 +443,15 @@ internal fun ReportCategory.toDto(): String =
         ReportCategory.Spam -> "spam"
         ReportCategory.Violation -> "violation"
     }
+
+internal fun CustomEmoji.toModel() =
+    EmojiModel(
+        url = url,
+        code = shortCode,
+        staticUrl = staticUrl,
+        category = category,
+        visibleInPicker = visibleInPicker,
+    )
 
 private object FriendicaDateFormats {
     const val PRIVATE_MESSAGES = "EEE MMM dd HH:mm:ss xxxx yyyy"

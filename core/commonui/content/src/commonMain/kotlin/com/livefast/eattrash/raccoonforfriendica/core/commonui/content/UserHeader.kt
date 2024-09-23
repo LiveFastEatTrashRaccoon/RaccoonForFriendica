@@ -31,7 +31,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -216,13 +215,14 @@ fun UserHeader(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
-                    Text(
-                        text = (user?.displayName ?: user?.username ?: "").ellipsize(30),
+                    TextWithCustomEmojis(
+                        text = user?.displayName ?: user?.username ?: "",
+                        emojis = user?.emojis.orEmpty(),
                         style = MaterialTheme.typography.titleMedium,
                         color = fullColor,
                     )
                     Text(
-                        text = (user?.handle ?: user?.username ?: "").ellipsize(25),
+                        text = user?.handle ?: user?.username ?: "",
                         style = MaterialTheme.typography.titleMedium,
                         color = ancillaryColor,
                     )
@@ -231,6 +231,7 @@ fun UserHeader(
             user?.bio?.takeIf { it.isNotEmpty() }?.let { bio ->
                 ContentBody(
                     content = bio,
+                    emojis = user.emojis,
                     onOpenUrl = onOpenUrl,
                 )
             }

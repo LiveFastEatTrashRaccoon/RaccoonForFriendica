@@ -198,6 +198,7 @@ fun TimelineItem(
                                 end = contentHorizontalPadding,
                             ),
                         content = title,
+                        emojis = entryToDisplay.emojis,
                         onClick = { onClick?.invoke(entryToDisplay) },
                         onOpenUrl = onOpenUrl,
                     )
@@ -223,6 +224,7 @@ fun TimelineItem(
                                 },
                             ),
                         content = body,
+                        emojis = entryToDisplay.emojis,
                         onClick = { onClick?.invoke(entryToDisplay) },
                         onOpenUrl = onOpenUrl,
                     )

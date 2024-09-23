@@ -86,8 +86,9 @@ fun ContentHeader(
         Column(
             modifier = Modifier.weight(1f),
         ) {
-            Text(
+            TextWithCustomEmojis(
                 text = creatorName,
+                emojis = user?.emojis.orEmpty(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = fullColor,
             )
