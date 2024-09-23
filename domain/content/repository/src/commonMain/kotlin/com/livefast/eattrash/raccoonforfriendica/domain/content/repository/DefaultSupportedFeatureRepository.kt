@@ -20,6 +20,8 @@ internal class DefaultSupportedFeatureRepository(
                 supportsCustomCircles = info?.isFriendica == true,
                 supportReportCategoryRuleViolation = info?.isFriendica == false,
                 supportsPolls = info?.isFriendica == false,
+                supportsBBCode = info?.isFriendica == true,
+                supportsEntryShare = info?.isFriendica == true,
             )
         }
     }
