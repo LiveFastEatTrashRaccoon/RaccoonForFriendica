@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.commonui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntSize
 
 /*
  * CREDITS:
@@ -12,4 +13,5 @@ expect fun VideoPlayer(
     url: String,
     modifier: Modifier = Modifier,
     onPlaybackStarted: (() -> Unit)? = null,
+    onResize: ((IntSize) -> Unit)? = null,
 )

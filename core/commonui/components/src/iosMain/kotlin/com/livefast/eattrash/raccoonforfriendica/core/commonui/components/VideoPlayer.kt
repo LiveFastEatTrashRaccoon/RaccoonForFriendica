@@ -5,19 +5,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.interop.UIKitView
+import androidx.compose.ui.unit.IntSize
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.useContents
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerLayer
-import platform.AVFoundation.play
+import platform.AVFoundation.rate
 import platform.AVKit.AVPlayerViewController
 import platform.CoreGraphics.CGRect
 import platform.Foundation.NSURL
 import platform.QuartzCore.CATransaction
 import platform.QuartzCore.kCATransactionDisableActions
 import platform.UIKit.UIView
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable
@@ -25,6 +29,7 @@ actual fun VideoPlayer(
     url: String,
     modifier: Modifier,
     onPlaybackStarted: (() -> Unit)?,
+    onResize: ((IntSize) -> Unit)?,
 ) {
     val player = remember { AVPlayer(uRL = NSURL.URLWithString(url)!!) }
     val playerLayer = remember { AVPlayerLayer() }
@@ -33,6 +38,7 @@ actual fun VideoPlayer(
     avPlayerViewController.showsPlaybackControls = true
     playerLayer.player = player
     val scope = rememberCoroutineScope()
+    var started = false
 
     UIKitView(
         factory = {
@@ -47,15 +53,26 @@ actual fun VideoPlayer(
             playerLayer.setFrame(rect)
             avPlayerViewController.view.layer.frame = rect
             CATransaction.commit()
-        },
-        update = { _ ->
-            player.play()
+            val (width, height) =
+                rect.useContents {
+                    size.width to size.height
+                }
+            onResize?.invoke(
+                IntSize(
+                    width = width.roundToInt(),
+                    height = height.roundToInt(),
+                ),
+            )
             scope.launch {
-                // TODO: detect playback rate == 1 (not easy KV observing from Kotlin)
-                delay(500)
-                onPlaybackStarted?.invoke()
+                while (isActive && !started) {
+                    val rate = player.rate
+                    if (rate > 1) {
+                        started = true
+                        onPlaybackStarted?.invoke()
+                    }
+                    delay(500)
+                }
             }
-            avPlayerViewController.player!!.play()
         },
         modifier = modifier,
     )
