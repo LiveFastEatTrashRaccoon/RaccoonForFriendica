@@ -44,6 +44,10 @@ interface ComposerMviModel :
             val id: String,
         ) : Intent
 
+        data class AddShareUrl(
+            val url: String,
+        ) : Intent
+
         data class SetFieldValue(
             val value: TextFieldValue,
             val fieldType: ComposerFieldType,

@@ -99,6 +99,7 @@ class ComposerScreen(
     private val editedPostId: String? = null,
     private val scheduledPostId: String? = null,
     private val draftId: String? = null,
+    private val urlToShare: String? = null,
 ) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -154,6 +155,9 @@ class ComposerScreen(
 
                 !groupHandle.isNullOrEmpty() ->
                     model.reduce(ComposerMviModel.Intent.AddGroupReference(groupHandle))
+
+                !urlToShare.isNullOrEmpty() ->
+                    model.reduce(ComposerMviModel.Intent.AddShareUrl(urlToShare))
 
                 else -> Unit
             }
