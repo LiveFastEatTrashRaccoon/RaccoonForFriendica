@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResul
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,6 +26,7 @@ import kotlinx.coroutines.sync.withLock
 internal class DefaultSearchPaginationManager(
     private val searchRepository: SearchRepository,
     private val userRepository: UserRepository,
+    private val emojiRepository: EmojiRepository,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : SearchPaginationManager {
@@ -118,6 +120,7 @@ internal class DefaultSearchPaginationManager(
                         )?.determineUserRelationshipStatus()
             }?.deduplicate()
                 ?.updatePaginationData()
+                ?.fixupCreatorEmojis()
                 .orEmpty()
         mutex.withLock {
             history.addAll(results)
@@ -158,6 +161,17 @@ internal class DefaultSearchPaginationManager(
                                 notificationStatus = relationship?.toNotificationStatus(),
                             ),
                     )
+                }
+            }
+        }
+
+    private suspend fun List<ExploreItemModel>.fixupCreatorEmojis(): List<ExploreItemModel> =
+        with(emojiRepository) {
+            map {
+                when (it) {
+                    is ExploreItemModel.Entry -> it.copy(entry = it.entry.withEmojisIfMissing())
+                    is ExploreItemModel.User -> it.copy(user = it.user.withEmojisIfMissing())
+                    else -> it
                 }
             }
         }

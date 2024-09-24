@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +19,7 @@ import kotlinx.coroutines.sync.withLock
 
 internal class DefaultFavoritesPaginationManager(
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val emojiRepository: EmojiRepository,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : FavoritesPaginationManager {
@@ -75,6 +77,7 @@ internal class DefaultFavoritesPaginationManager(
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
             }?.deduplicate()
+                ?.fixupCreatorEmojis()
                 .orEmpty()
         mutex.withLock {
             history.addAll(results)
@@ -98,4 +101,11 @@ internal class DefaultFavoritesPaginationManager(
         }.distinctBy { it.id }
 
     private fun List<TimelineEntryModel>.filterNsfw(included: Boolean): List<TimelineEntryModel> = filter { included || !it.isNsfw }
+
+    private suspend fun List<TimelineEntryModel>.fixupCreatorEmojis(): List<TimelineEntryModel> =
+        with(emojiRepository) {
+            map {
+                it.withEmojisIfMissing()
+            }
+        }
 }

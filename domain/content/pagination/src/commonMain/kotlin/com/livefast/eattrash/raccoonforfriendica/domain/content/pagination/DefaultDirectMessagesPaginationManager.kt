@@ -2,9 +2,11 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 
 internal class DefaultDirectMessagesPaginationManager(
     private val directMessageRepository: DirectMessageRepository,
+    private val emojiRepository: EmojiRepository,
 ) : DirectMessagesPaginationManager {
     private var specification: DirectMessagesPaginationSpecification? = null
     private var page = 1
@@ -30,6 +32,7 @@ internal class DefaultDirectMessagesPaginationManager(
                             limit = 40,
                         )?.deduplicate()
                         ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
 
                 is DirectMessagesPaginationSpecification.Replies ->
@@ -37,6 +40,7 @@ internal class DefaultDirectMessagesPaginationManager(
                         .getReplies(specification.parentUri)
                         ?.deduplicate()
                         ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
             }
         history.addAll(results)
@@ -58,4 +62,14 @@ internal class DefaultDirectMessagesPaginationManager(
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
         }.distinctBy { it.id }
+
+    private suspend fun List<DirectMessageModel>.fixupCreatorEmojis(): List<DirectMessageModel> =
+        with(emojiRepository) {
+            map {
+                it.copy(
+                    recipient = it.recipient?.withEmojisIfMissing(),
+                    sender = it.sender?.withEmojisIfMissing(),
+                )
+            }
+        }
 }

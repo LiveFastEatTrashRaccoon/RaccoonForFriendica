@@ -5,12 +5,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 
 internal class DefaultNotificationsPaginationManager(
     private val notificationRepository: NotificationRepository,
     private val userRepository: UserRepository,
+    private val emojiRepository: EmojiRepository,
 ) : NotificationsPaginationManager {
     private var specification: NotificationsPaginationSpecification? = null
     private var pageCursor: String? = null
@@ -40,6 +42,7 @@ internal class DefaultNotificationsPaginationManager(
                         ?.filterNsfw(specification.includeNsfw)
                         .orEmpty()
             }.deduplicate()
+                .fixupCreatorEmojis()
         history.addAll(results)
 
         // return a copy
@@ -78,4 +81,13 @@ internal class DefaultNotificationsPaginationManager(
 
     private fun List<NotificationModel>.filterNsfw(included: Boolean): List<NotificationModel> =
         filter { included || it.entry?.isNsfw != true }
+
+    private suspend fun List<NotificationModel>.fixupCreatorEmojis(): List<NotificationModel> =
+        with(emojiRepository) {
+            map {
+                it.copy(
+                    user = it.user?.withEmojisIfMissing(),
+                )
+            }
+        }
 }
