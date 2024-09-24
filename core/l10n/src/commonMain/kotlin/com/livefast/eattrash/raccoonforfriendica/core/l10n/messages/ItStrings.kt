@@ -363,4 +363,8 @@ internal val ItStrings =
             "Descrivi il problema che hai riscontrato o lascia un feedback 🖋️"
         override val changeNodeDialogTitle = "Cambia istanza"
         override val actionQuote = "Cita"
+        override val actionAddTitle = "Aggiungi titolo"
+        override val actionRemoveTitle = "Rimuovi titolo"
+        override val actionAddSpoiler = "Aggiungi spoiler"
+        override val actionRemoveSpoiler = "Rimuovi spoiler"
     }
