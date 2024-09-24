@@ -59,6 +59,7 @@ interface DetailOpener {
     fun openImageDetail(
         urls: List<String>,
         initialIndex: Int,
+        videoIndices: List<Int> = emptyList(),
     )
 
     fun openBlockedAndMuted()
