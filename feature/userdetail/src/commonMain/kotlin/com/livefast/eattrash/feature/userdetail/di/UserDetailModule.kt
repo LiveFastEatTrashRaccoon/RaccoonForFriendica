@@ -21,6 +21,7 @@ val featureUserDetailModule =
                 notificationCenter = get(),
                 imagePreloadManager = get(),
                 blurHashRepository = get(),
+                emojiRepository = get(),
             )
         }
         factory<ForumListMviModel> { params ->
