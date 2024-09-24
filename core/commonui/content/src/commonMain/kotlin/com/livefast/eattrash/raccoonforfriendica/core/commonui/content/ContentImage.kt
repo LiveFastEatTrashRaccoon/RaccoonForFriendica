@@ -56,6 +56,7 @@ fun ContentImage(
     maxHeight: Dp = Dp.Unspecified,
     contentScale: ContentScale = ContentScale.FillWidth,
     onClick: (() -> Unit)? = null,
+    centerComposable: (@Composable () -> Unit) = {},
 ) {
     var revealing by remember { mutableStateOf(!sensitive) }
     var showingAltText by remember { mutableStateOf(false) }
@@ -98,6 +99,12 @@ fun ContentImage(
                 hasFinishedLoadingSuccessfully = true
             },
         )
+
+        Box(
+            modifier = Modifier.align(Alignment.Center),
+        ) {
+            centerComposable()
+        }
 
         Row(
             modifier =
