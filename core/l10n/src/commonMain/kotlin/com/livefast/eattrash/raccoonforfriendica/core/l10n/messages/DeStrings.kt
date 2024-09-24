@@ -363,4 +363,8 @@ internal val DeStrings =
             "Beschreiben Sie das aufgetretene Problem oder hinterlassen Sie einfach ein Feedback 🖋️"
         override val changeNodeDialogTitle = "Instanz ändern"
         override val actionQuote = "Zitieren"
+        override val actionAddTitle = "Titel hinzufügen"
+        override val actionRemoveTitle = "Titel entfernen"
+        override val actionAddSpoiler = "Spoiler hinzufügen"
+        override val actionRemoveSpoiler = "Spoiler entfernen"
     }

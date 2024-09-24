@@ -354,4 +354,8 @@ internal open class DefaultStrings : Strings {
         "Describe the issue you encountered or just leave a feedback 🖋️"
     override val changeNodeDialogTitle = "Change instance"
     override val actionQuote = "Quote"
+    override val actionAddTitle = "Add title"
+    override val actionRemoveTitle = "Remove title"
+    override val actionAddSpoiler = "Add spoiler"
+    override val actionRemoveSpoiler = "Remove spoiler"
 }

@@ -318,6 +318,10 @@ interface Strings {
     val userFeedbackCommentPlaceholder: String
     val changeNodeDialogTitle: String
     val actionQuote: String
+    val actionAddTitle: String
+    val actionRemoveTitle: String
+    val actionAddSpoiler: String
+    val actionRemoveSpoiler: String
 }
 
 object Locales {

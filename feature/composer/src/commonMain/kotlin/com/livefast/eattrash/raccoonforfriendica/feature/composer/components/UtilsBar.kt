@@ -8,13 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
-import androidx.compose.material.icons.filled.Explicit
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.FormatBold
 import androidx.compose.material.icons.filled.FormatItalic
+import androidx.compose.material.icons.filled.FormatStrikethrough
 import androidx.compose.material.icons.filled.FormatUnderlined
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material.icons.filled.Title
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,7 +26,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 @Composable
 internal fun UtilsBar(
     modifier: Modifier = Modifier,
-    supportsTitleFeature: Boolean = false,
     hasPoll: Boolean = false,
     onLinkClicked: (() -> Unit)? = null,
     onMentionClicked: (() -> Unit)? = null,
@@ -34,8 +33,8 @@ internal fun UtilsBar(
     onBoldClicked: (() -> Unit)? = null,
     onItalicClicked: (() -> Unit)? = null,
     onUnderlineClicked: (() -> Unit)? = null,
-    onSpoilerClicked: (() -> Unit)? = null,
-    onTitleClicked: (() -> Unit)? = null,
+    onStrikethroughClicked: (() -> Unit)? = null,
+    onCodeClicked: (() -> Unit)? = null,
 ) {
     Row(
         modifier =
@@ -82,30 +81,6 @@ internal fun UtilsBar(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        if (supportsTitleFeature) {
-            IconButton(
-                onClick = {
-                    onTitleClicked?.invoke()
-                },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Title,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-        IconButton(
-            onClick = {
-                onSpoilerClicked?.invoke()
-            },
-        ) {
-            Icon(
-                imageVector = Icons.Default.Explicit,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
         IconButton(
             onClick = {
                 onBoldClicked?.invoke()
@@ -135,6 +110,28 @@ internal fun UtilsBar(
         ) {
             Icon(
                 imageVector = Icons.Default.FormatUnderlined,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        IconButton(
+            onClick = {
+                onStrikethroughClicked?.invoke()
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Default.FormatStrikethrough,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        IconButton(
+            onClick = {
+                onCodeClicked?.invoke()
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Default.Code,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
