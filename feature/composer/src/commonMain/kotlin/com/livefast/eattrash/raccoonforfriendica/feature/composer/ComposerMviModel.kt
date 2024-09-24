@@ -121,6 +121,14 @@ interface ComposerMviModel :
             val fieldType: ComposerFieldType,
         ) : Intent
 
+        data class AddStrikethroughFormat(
+            val fieldType: ComposerFieldType,
+        ) : Intent
+
+        data class AddCodeFormat(
+            val fieldType: ComposerFieldType,
+        ) : Intent
+
         data object ToggleHasSpoiler : Intent
 
         data object ToggleHasTitle : Intent

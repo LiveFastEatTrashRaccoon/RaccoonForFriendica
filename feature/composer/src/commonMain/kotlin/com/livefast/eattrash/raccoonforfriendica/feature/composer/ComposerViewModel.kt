@@ -245,6 +245,8 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.AddBoldFormat -> addBoldFormat(intent.fieldType)
             is ComposerMviModel.Intent.AddItalicFormat -> addItalicFormat(intent.fieldType)
             is ComposerMviModel.Intent.AddUnderlineFormat -> addUnderlineFormat(intent.fieldType)
+            is ComposerMviModel.Intent.AddStrikethroughFormat -> addStrikethroughFormat(intent.fieldType)
+            is ComposerMviModel.Intent.AddCodeFormat -> addCodeFormat(intent.fieldType)
             is ComposerMviModel.Intent.AddAttachmentsFromGallery ->
                 addAttachmentsFromGallery(intent.attachments)
 
@@ -571,6 +573,100 @@ class ComposerViewModel(
                     "[/u]"
                 } else {
                     "</u>"
+                }
+            val newValue =
+                getNewTextFieldValue(
+                    value = value,
+                    additionalPart =
+                        buildString {
+                            append(before)
+                            append(selectedText)
+                            append(after)
+                        },
+                    offsetAfter = before.length,
+                )
+            updateState {
+                when (fieldType) {
+                    ComposerFieldType.Body -> it.copy(bodyValue = newValue)
+                    ComposerFieldType.Spoiler -> it.copy(spoilerValue = newValue)
+                    ComposerFieldType.Title -> it.copy(titleValue = newValue)
+                }
+            }
+        }
+    }
+
+    private fun addStrikethroughFormat(fieldType: ComposerFieldType) {
+        screenModelScope.launch {
+            val value =
+                when (fieldType) {
+                    ComposerFieldType.Body ->
+                        uiState.value.bodyValue
+
+                    ComposerFieldType.Spoiler ->
+                        uiState.value.spoilerValue
+
+                    ComposerFieldType.Title ->
+                        uiState.value.titleValue
+                }
+            val selectedText = value.getSelectedText().text
+            val before =
+                if (useBBCode) {
+                    "[s]"
+                } else {
+                    "<s>"
+                }
+            val after =
+                if (useBBCode) {
+                    "[/s]"
+                } else {
+                    "</s>"
+                }
+            val newValue =
+                getNewTextFieldValue(
+                    value = value,
+                    additionalPart =
+                        buildString {
+                            append(before)
+                            append(selectedText)
+                            append(after)
+                        },
+                    offsetAfter = before.length,
+                )
+            updateState {
+                when (fieldType) {
+                    ComposerFieldType.Body -> it.copy(bodyValue = newValue)
+                    ComposerFieldType.Spoiler -> it.copy(spoilerValue = newValue)
+                    ComposerFieldType.Title -> it.copy(titleValue = newValue)
+                }
+            }
+        }
+    }
+
+    private fun addCodeFormat(fieldType: ComposerFieldType) {
+        screenModelScope.launch {
+            val value =
+                when (fieldType) {
+                    ComposerFieldType.Body ->
+                        uiState.value.bodyValue
+
+                    ComposerFieldType.Spoiler ->
+                        uiState.value.spoilerValue
+
+                    ComposerFieldType.Title ->
+                        uiState.value.titleValue
+                }
+            val selectedText = value.getSelectedText().text
+            val before =
+                if (useBBCode) {
+                    "[code]"
+                } else {
+                    "<code>"
+                }
+            val after =
+                if (useBBCode) {
+                    "[/code]"
+                } else {
+                    "</code>"
                 }
             val newValue =
                 getNewTextFieldValue(

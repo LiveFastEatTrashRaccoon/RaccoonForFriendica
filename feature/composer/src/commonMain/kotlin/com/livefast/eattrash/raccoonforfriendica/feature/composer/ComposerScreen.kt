@@ -248,12 +248,35 @@ class ComposerScreen(
                                     }
                                 }
 
+                                this +=
+                                    CustomOptions.ToggleSpoiler.toOption(
+                                        label =
+                                            if (uiState.hasSpoiler) {
+                                                LocalStrings.current.actionRemoveSpoiler
+                                            } else {
+                                                LocalStrings.current.actionAddSpoiler
+                                            },
+                                    )
+
+                                if (uiState.titleFeatureSupported) {
+                                    this +=
+                                        CustomOptions.ToggleTitle.toOption(
+                                            label =
+                                                if (uiState.hasTitle) {
+                                                    LocalStrings.current.actionRemoveTitle
+                                                } else {
+                                                    LocalStrings.current.actionAddTitle
+                                                },
+                                        )
+                                }
+
                                 if (uiState.galleryFeatureSupported && uiState.poll == null) {
                                     this +=
                                         CustomOptions.SelectFromGallery.toOption(
                                             label = LocalStrings.current.actionAddImageFromGallery,
                                         )
                                 }
+
                                 if (uiState.pollFeatureSupported && uiState.attachments.isEmpty()) {
                                     this +=
                                         CustomOptions.TogglePoll.toOption(
@@ -348,6 +371,14 @@ class ComposerScreen(
                                                     }
                                                 }
 
+                                                CustomOptions.ToggleTitle -> {
+                                                    model.reduce(ComposerMviModel.Intent.ToggleHasTitle)
+                                                }
+
+                                                CustomOptions.ToggleSpoiler -> {
+                                                    model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
+                                                }
+
                                                 else -> Unit
                                             }
                                         },
@@ -395,7 +426,6 @@ class ComposerScreen(
                             openImagePicker = true
                         }
                     },
-                    supportsTitleFeature = uiState.titleFeatureSupported,
                     hasPoll = uiState.poll != null,
                     onLinkClicked = {
                         linkDialogOpen = true
@@ -439,11 +469,29 @@ class ComposerScreen(
                             ),
                         )
                     },
-                    onSpoilerClicked = {
-                        model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
+                    onStrikethroughClicked = {
+                        model.reduce(
+                            ComposerMviModel.Intent.AddStrikethroughFormat(
+                                fieldType =
+                                    when {
+                                        hasTitleFocus -> ComposerFieldType.Title
+                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                        else -> ComposerFieldType.Body
+                                    },
+                            ),
+                        )
                     },
-                    onTitleClicked = {
-                        model.reduce(ComposerMviModel.Intent.ToggleHasTitle)
+                    onCodeClicked = {
+                        model.reduce(
+                            ComposerMviModel.Intent.AddCodeFormat(
+                                fieldType =
+                                    when {
+                                        hasTitleFocus -> ComposerFieldType.Title
+                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                        else -> ComposerFieldType.Body
+                                    },
+                            ),
+                        )
                     },
                 )
             },
@@ -635,7 +683,7 @@ class ComposerScreen(
                                 onSend = {
                                     model.reduce(ComposerMviModel.Intent.Submit)
                                 },
-                        ),
+                            ),
                         onValueChange = { value ->
                             model.reduce(
                                 ComposerMviModel.Intent.SetFieldValue(
@@ -850,4 +898,8 @@ private sealed interface CustomOptions : OptionId.Custom {
     data object SelectFromGallery : CustomOptions
 
     data object TogglePoll : CustomOptions
+
+    data object ToggleTitle : CustomOptions
+
+    data object ToggleSpoiler : CustomOptions
 }
