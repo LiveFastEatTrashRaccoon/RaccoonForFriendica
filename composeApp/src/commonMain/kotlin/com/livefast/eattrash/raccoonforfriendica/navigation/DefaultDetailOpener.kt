@@ -207,11 +207,13 @@ class DefaultDetailOpener(
     override fun openImageDetail(
         urls: List<String>,
         initialIndex: Int,
+        videoIndices: List<Int>,
     ) {
         val screen =
             ImageDetailScreen(
                 urls = urls,
                 initialIndex = initialIndex,
+                videoIndices = videoIndices,
             )
         navigationCoordinator.push(screen)
     }

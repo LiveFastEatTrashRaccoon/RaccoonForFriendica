@@ -87,7 +87,7 @@ actual fun VideoPlayer(
                     resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
-                    videoSurfaceView?.addOnLayoutChangeListener { _, left, top, right, bottom, _, _, _, _ ->
+                    addOnLayoutChangeListener { _, left, top, right, bottom, _, _, _, _ ->
                         val newHeight = abs(bottom - top)
                         val newWidth = abs(right - left)
                         onResize?.invoke(IntSize(width = newWidth, height = newHeight))

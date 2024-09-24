@@ -1,10 +1,17 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +25,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
@@ -29,7 +37,7 @@ fun AttachmentsGrid(
     modifier: Modifier = Modifier,
     blurNsfw: Boolean = true,
     sensitive: Boolean = false,
-    onOpenImage: ((List<String>, Int) -> Unit)? = null,
+    onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
 ) {
     val filteredAttachments =
         attachments
@@ -37,6 +45,14 @@ fun AttachmentsGrid(
             .takeIf { it.isNotEmpty() } ?: return
     val firstAttachment = filteredAttachments.first()
     val interItemSpacing = Spacing.xxs
+    val videoIndices =
+        filteredAttachments.mapIndexedNotNull { index, attachmentModel ->
+            if (attachmentModel.type == MediaType.Video) {
+                index
+            } else {
+                null
+            }
+        }
 
     if (filteredAttachments.size == 1) {
         if (firstAttachment.url.isNotBlank()) {
@@ -49,6 +65,7 @@ fun AttachmentsGrid(
                     onOpenImage?.invoke(
                         listOf(firstAttachment.url),
                         0,
+                        videoIndices,
                     )
                 },
             )
@@ -59,14 +76,18 @@ fun AttachmentsGrid(
             modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(interItemSpacing),
         ) {
-            filteredAttachments.forEachIndexed { idx, attachment ->
+            filteredAttachments.forEachIndexed { index, attachment ->
                 GridElement(
                     modifier = Modifier.weight(1f),
                     attachment = attachment,
                     maxHeight = 200.dp,
                     sensitive = blurNsfw && sensitive,
                     onClick = {
-                        onOpenImage?.invoke(urls, idx)
+                        onOpenImage?.invoke(
+                            urls,
+                            index,
+                            videoIndices,
+                        )
                     },
                     contentScale =
                         if (attachment.aspectRatio >= 1) {
@@ -96,7 +117,11 @@ fun AttachmentsGrid(
                     sensitive = blurNsfw && sensitive,
                     contentScale = ContentScale.FillWidth,
                     onClick = {
-                        onOpenImage?.invoke(urls, 0)
+                        onOpenImage?.invoke(
+                            urls,
+                            0,
+                            videoIndices,
+                        )
                     },
                 )
 
@@ -124,7 +149,11 @@ fun AttachmentsGrid(
                                         ContentScale.FillWidth
                                     },
                                 onClick = {
-                                    onOpenImage?.invoke(urls, index)
+                                    onOpenImage?.invoke(
+                                        urls,
+                                        index,
+                                        videoIndices,
+                                    )
                                 },
                             )
                         }
@@ -143,7 +172,11 @@ fun AttachmentsGrid(
                     contentScale = ContentScale.FillWidth,
                     sensitive = blurNsfw && sensitive,
                     onClick = {
-                        onOpenImage?.invoke(urls, 0)
+                        onOpenImage?.invoke(
+                            urls,
+                            0,
+                            videoIndices,
+                        )
                     },
                 )
 
@@ -169,7 +202,11 @@ fun AttachmentsGrid(
                                         ContentScale.FillWidth
                                     },
                                 onClick = {
-                                    onOpenImage?.invoke(urls, index)
+                                    onOpenImage?.invoke(
+                                        urls,
+                                        index,
+                                        videoIndices,
+                                    )
                                 },
                             )
                         }
@@ -194,7 +231,7 @@ private fun GridElement(
     val attachmentHeight = attachment.originalHeight ?: 0
 
     when (attachment.type) {
-        MediaType.Image ->
+        MediaType.Image -> {
             ContentImage(
                 modifier = modifier,
                 url = attachment.url,
@@ -207,19 +244,54 @@ private fun GridElement(
                 contentScale = contentScale,
                 onClick = onClick,
             )
+        }
 
-        MediaType.Video ->
-            ContentVideo(
-                modifier = modifier,
-                url = attachment.url,
-                blurHash = attachment.blurHash,
-                originalWidth = attachmentWidth,
-                originalHeight = attachmentHeight,
-                sensitive = blurNsfw && sensitive,
-                contentScale = contentScale,
-                onClick = onClick,
-            )
+        MediaType.Video -> {
+            if (attachment.blurHash.isNullOrBlank() || attachmentWidth == 0 || attachmentHeight == 0) {
+                ContentImage(
+                    modifier =
+                        modifier
+                            .fillMaxWidth()
+                            .aspectRatio(16 / 9f)
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
+                    url = attachment.previewUrl.orEmpty(),
+                    altText = attachment.description,
+                    maxHeight = maxHeight,
+                    contentScale = contentScale,
+                    onClick = onClick,
+                    centerComposable = {
+                        Icon(
+                            modifier = Modifier.size(IconSize.xl),
+                            imageVector = Icons.Default.PlayCircle,
+                            contentDescription = null,
+                        )
+                    },
+                )
+            } else {
+                ContentImage(
+                    modifier = modifier,
+                    url = attachment.previewUrl.orEmpty(),
+                    altText = attachment.description,
+                    blurHash = attachment.blurHash,
+                    originalWidth = attachmentWidth,
+                    originalHeight = attachmentHeight,
+                    sensitive = blurNsfw && sensitive,
+                    maxHeight = maxHeight,
+                    contentScale = contentScale,
+                    onClick = onClick,
+                    centerComposable = {
+                        Icon(
+                            modifier = Modifier.size(IconSize.xl),
+                            imageVector = Icons.Default.PlayCircle,
+                            contentDescription = null,
+                        )
+                    },
+                )
+            }
+        }
 
-        else -> Unit
+        else -> {
+            Unit
+        }
     }
 }

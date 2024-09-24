@@ -55,7 +55,7 @@ fun TimelineItem(
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
-    onOpenImage: ((List<String>, Int) -> Unit)? = null,
+    onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
     onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
     onToggleSpoilerActive: ((TimelineEntryModel) -> Unit)? = null,
@@ -283,7 +283,7 @@ fun TimelineItem(
                             ),
                         onOpen = onOpenUrl,
                         onOpenImage = { url ->
-                            onOpenImage?.invoke(listOf(url), 0)
+                            onOpenImage?.invoke(listOf(url), 0, emptyList())
                         },
                     )
                 }

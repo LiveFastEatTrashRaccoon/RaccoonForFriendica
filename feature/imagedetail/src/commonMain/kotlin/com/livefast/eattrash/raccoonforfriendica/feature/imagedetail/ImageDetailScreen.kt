@@ -41,6 +41,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayer
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ZoomableImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
@@ -52,6 +53,7 @@ import org.koin.core.parameter.parametersOf
 class ImageDetailScreen(
     private val urls: List<String>,
     private val initialIndex: Int = 0,
+    private val videoIndices: List<Int> = emptyList(),
 ) : Screen {
     override val key: ScreenKey
         get() = super.key + urls.joinToString("-")
@@ -81,6 +83,8 @@ class ImageDetailScreen(
             )
         var shareModeBottomSheetOpened by remember { mutableStateOf(false) }
         var scaleModeBottomSheetOpened by remember { mutableStateOf(false) }
+        val url = urls.getOrNull(uiState.currentIndex)
+        val isVideo = videoIndices.contains(uiState.currentIndex)
 
         LaunchedEffect(pagerState) {
             snapshotFlow { pagerState.currentPage }
@@ -165,15 +169,17 @@ class ImageDetailScreen(
                                 contentDescription = null,
                             )
                         }
-                        IconButton(
-                            onClick = {
-                                scaleModeBottomSheetOpened = true
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.AspectRatio,
-                                contentDescription = null,
-                            )
+                        if (!isVideo) {
+                            IconButton(
+                                onClick = {
+                                    scaleModeBottomSheetOpened = true
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AspectRatio,
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     },
                 )
@@ -202,12 +208,18 @@ class ImageDetailScreen(
                                     .background(Color.Black),
                             contentAlignment = Alignment.Center,
                         ) {
-                            val url = urls.getOrNull(uiState.currentIndex)
                             if (!url.isNullOrEmpty()) {
-                                ZoomableImage(
-                                    url = url,
-                                    contentScale = uiState.contentScale,
-                                )
+                                if (isVideo) {
+                                    VideoPlayer(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        url = url,
+                                    )
+                                } else {
+                                    ZoomableImage(
+                                        url = url,
+                                        contentScale = uiState.contentScale,
+                                    )
+                                }
                             }
                         }
                     }

@@ -60,7 +60,7 @@ fun TimelineReplyItem(
     onReblog: ((TimelineEntryModel) -> Unit)? = null,
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
-    onOpenImage: ((List<String>, Int) -> Unit)? = null,
+    onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
 ) {
     val entryToDisplay = entry.original

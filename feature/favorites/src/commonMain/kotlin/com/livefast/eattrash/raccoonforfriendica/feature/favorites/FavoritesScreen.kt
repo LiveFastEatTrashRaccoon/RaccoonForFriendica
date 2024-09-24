@@ -219,8 +219,12 @@ class FavoritesScreen(
                             onOpenUser = {
                                 detailOpener.openUserDetail(it)
                             },
-                            onOpenImage = { urls, imageIdx ->
-                                detailOpener.openImageDetail(urls = urls, initialIndex = imageIdx)
+                            onOpenImage = { urls, imageIdx, videoIndices ->
+                                detailOpener.openImageDetail(
+                                    urls = urls,
+                                    initialIndex = imageIdx,
+                                    videoIndices = videoIndices,
+                                )
                             },
                             onReblog =
                                 { e: TimelineEntryModel ->
