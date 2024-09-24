@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
@@ -13,6 +15,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
@@ -24,6 +30,8 @@ fun EditFieldItem(
     onValueChange: ((String, String) -> Unit)? = null,
     onDelete: (() -> Unit)? = null,
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
@@ -36,6 +44,17 @@ fun EditFieldItem(
             textStyle = MaterialTheme.typography.bodySmall,
             maxLines = 1,
             value = field.key,
+            keyboardOptions =
+                KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Text,
+                ),
+            keyboardActions =
+                KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    },
+                ),
             onValueChange = {
                 onValueChange?.invoke(it, field.value)
             },
@@ -56,6 +75,17 @@ fun EditFieldItem(
             textStyle = MaterialTheme.typography.bodySmall,
             maxLines = 1,
             value = field.value,
+            keyboardOptions =
+                KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Text,
+                ),
+            keyboardActions =
+                KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    },
+                ),
             onValueChange = {
                 onValueChange?.invoke(field.key, it)
             },

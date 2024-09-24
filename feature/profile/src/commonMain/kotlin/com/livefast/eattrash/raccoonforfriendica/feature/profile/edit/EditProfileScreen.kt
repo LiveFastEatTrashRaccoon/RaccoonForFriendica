@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
@@ -42,8 +44,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -83,6 +89,7 @@ class EditProfileScreen : Screen {
         var confirmBackWithUnsavedChangesDialog by remember { mutableStateOf(false) }
         var openAvatarPicker by remember { mutableStateOf(false) }
         var openHeaderPicker by remember { mutableStateOf(false) }
+        val focusManager = LocalFocusManager.current
 
         fun goBackToTop() {
             runCatching {
@@ -194,6 +201,17 @@ class EditProfileScreen : Screen {
                         },
                         value = uiState.displayName,
                         maxLines = 1,
+                        keyboardOptions =
+                            KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Text,
+                            ),
+                        keyboardActions =
+                            KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                },
+                            ),
                         onValueChange = {
                             model.reduce(EditProfileMviModel.Intent.ChangeDisplayName(it))
                         },
@@ -210,6 +228,17 @@ class EditProfileScreen : Screen {
                             Text(text = LocalStrings.current.editProfileItemBio)
                         },
                         value = uiState.bio,
+                        keyboardOptions =
+                            KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Text,
+                            ),
+                        keyboardActions =
+                            KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                },
+                            ),
                         onValueChange = {
                             model.reduce(EditProfileMviModel.Intent.ChangeBio(it))
                         },

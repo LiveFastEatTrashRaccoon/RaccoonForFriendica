@@ -47,8 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.AutofillType
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -80,9 +79,6 @@ class LegacyLoginScreen : Screen {
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val genericError = LocalStrings.current.messageGenericError
         val successMessage = LocalStrings.current.messageSuccess
-        val instanceFocusRequester = remember { FocusRequester() }
-        val usernameFocusRequester = remember { FocusRequester() }
-        val passwordFocusRequester = remember { FocusRequester() }
         val focusManager = LocalFocusManager.current
 
         LaunchedEffect(model) {
@@ -163,9 +159,7 @@ class LegacyLoginScreen : Screen {
                 // instance name
                 TextField(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .focusRequester(instanceFocusRequester),
+                        Modifier.fillMaxWidth(),
                     label = {
                         Text(text = LocalStrings.current.fieldNodeName)
                     },
@@ -175,7 +169,7 @@ class LegacyLoginScreen : Screen {
                     keyboardActions =
                         KeyboardActions(
                             onNext = {
-                                usernameFocusRequester.requestFocus()
+                                focusManager.moveFocus(FocusDirection.Down)
                             },
                         ),
                     keyboardOptions =
@@ -226,7 +220,7 @@ class LegacyLoginScreen : Screen {
                                 onFill = { value ->
                                     model.reduce(LegacyLoginMviModel.Intent.SetUsername(value))
                                 },
-                            ).focusRequester(usernameFocusRequester),
+                            ),
                     label = {
                         Text(text = LocalStrings.current.fieldUsername)
                     },
@@ -236,7 +230,7 @@ class LegacyLoginScreen : Screen {
                     keyboardActions =
                         KeyboardActions(
                             onNext = {
-                                passwordFocusRequester.requestFocus()
+                                focusManager.moveFocus(FocusDirection.Down)
                             },
                         ),
                     keyboardOptions =
@@ -272,7 +266,7 @@ class LegacyLoginScreen : Screen {
                                 onFill = { value ->
                                     model.reduce(LegacyLoginMviModel.Intent.SetPassword(value))
                                 },
-                            ).focusRequester(passwordFocusRequester),
+                            ),
                     label = {
                         Text(text = LocalStrings.current.fieldPassword)
                     },
@@ -282,9 +276,15 @@ class LegacyLoginScreen : Screen {
                     keyboardOptions =
                         KeyboardOptions(
                             keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Next,
+                            imeAction = ImeAction.Done,
                         ),
-                    onValueChange = { value ->
+                    keyboardActions =
+                        KeyboardActions(
+                            onDone = {
+                                model.reduce(LegacyLoginMviModel.Intent.Submit)
+                            },
+                        ),
+                        onValueChange = { value ->
                         model.reduce(LegacyLoginMviModel.Intent.SetPassword(value))
                     },
                     visualTransformation = transformation,

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -38,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -157,8 +159,15 @@ class LoginScreen : Screen {
                         KeyboardOptions(
                             keyboardType = KeyboardType.Email,
                             autoCorrect = false,
+                            imeAction = ImeAction.Done,
                         ),
-                    onValueChange = { value ->
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = {
+                                model.reduce(LoginMviModel.Intent.Submit)
+                            },
+                        ),
+                        onValueChange = { value ->
                         model.reduce(LoginMviModel.Intent.SetNodeName(value))
                     },
                     supportingText = {

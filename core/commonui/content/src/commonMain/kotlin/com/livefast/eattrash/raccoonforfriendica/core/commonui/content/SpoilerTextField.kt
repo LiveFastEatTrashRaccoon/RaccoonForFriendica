@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,6 +39,7 @@ fun SpoilerTextField(
     onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     var height by remember { mutableStateOf(0f) }
     val heightDp = with(LocalDensity.current) { height.toDp() }
@@ -50,6 +52,7 @@ fun SpoilerTextField(
         value = value,
         onValueChange = onValueChange,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         maxLines = 1,
         cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
         textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onBackground),
