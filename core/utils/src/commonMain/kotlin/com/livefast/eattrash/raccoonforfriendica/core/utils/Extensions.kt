@@ -12,3 +12,5 @@ fun String?.ellipsize(
     }
     return take(length - 1) + ellipsis
 }
+
+val String?.nodeName: String? get() = orEmpty().substringAfter('@').takeIf { it.isNotEmpty() }

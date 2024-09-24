@@ -1,10 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 
 internal class DefaultFollowRequestPaginationManager(
     private val userRepository: UserRepository,
+    private val emojiRepository: EmojiRepository,
 ) : FollowRequestPaginationManager {
     private var pageCursor: String? = null
     override var canFetchMore: Boolean = true
@@ -22,7 +24,8 @@ internal class DefaultFollowRequestPaginationManager(
                 .getFollowRequests(pageCursor)
                 ?.let { (list, cursor) ->
                     list.deduplicate().updatePaginationData(cursor)
-                }.orEmpty()
+                }?.fixupCreatorEmojis()
+                .orEmpty()
 
         history.addAll(results)
 
@@ -40,4 +43,11 @@ internal class DefaultFollowRequestPaginationManager(
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
         }.distinctBy { it.id }
+
+    private suspend fun List<UserModel>.fixupCreatorEmojis(): List<UserModel> =
+        with(emojiRepository) {
+            map {
+                it.withEmojisIfMissing()
+            }
+        }
 }

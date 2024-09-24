@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,6 +23,7 @@ internal class DefaultUserPaginationManager(
     private val userRepository: UserRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val circlesRepository: CirclesRepository,
+    private val emojiRepository: EmojiRepository,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : UserPaginationManager {
@@ -67,6 +69,7 @@ internal class DefaultUserPaginationManager(
                         )?.deduplicate()
                         ?.determineRelationshipStatus()
                         ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
 
                 is UserPaginationSpecification.Following ->
@@ -77,6 +80,7 @@ internal class DefaultUserPaginationManager(
                         )?.deduplicate()
                         ?.determineRelationshipStatus()
                         ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
 
                 is UserPaginationSpecification.EntryUsersFavorite ->
@@ -87,6 +91,7 @@ internal class DefaultUserPaginationManager(
                         )?.determineRelationshipStatus()
                         ?.deduplicate()
                         ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
 
                 is UserPaginationSpecification.EntryUsersReblog ->
@@ -97,6 +102,7 @@ internal class DefaultUserPaginationManager(
                         )?.deduplicate()
                         ?.determineRelationshipStatus()
                         ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
 
                 is UserPaginationSpecification.Search ->
@@ -115,6 +121,7 @@ internal class DefaultUserPaginationManager(
                                 it
                             }
                         }?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
 
                 UserPaginationSpecification.Blocked ->
@@ -123,6 +130,7 @@ internal class DefaultUserPaginationManager(
                             pageCursor = pageCursor,
                         )?.deduplicate()
                         ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
 
                 UserPaginationSpecification.Muted ->
@@ -131,6 +139,7 @@ internal class DefaultUserPaginationManager(
                             pageCursor = pageCursor,
                         )?.deduplicate()
                         ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
 
                 is UserPaginationSpecification.CircleMembers ->
@@ -141,6 +150,7 @@ internal class DefaultUserPaginationManager(
                         )?.deduplicate()
                         ?.updatePaginationData()
                         ?.filter(specification.query)
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
 
                 is UserPaginationSpecification.SearchFollowing ->
@@ -158,7 +168,8 @@ internal class DefaultUserPaginationManager(
                         }?.updatePaginationData()
                         ?.filter {
                             it.id !in specification.excludeIds
-                        }.orEmpty()
+                        }?.fixupCreatorEmojis()
+                        .orEmpty()
             }
         mutex.withLock {
             history.addAll(results)
@@ -199,5 +210,12 @@ internal class DefaultUserPaginationManager(
             query.isEmpty() ||
                 it.displayName?.contains(query, ignoreCase = true) == true ||
                 it.username?.contains(query, ignoreCase = true) == true
+        }
+
+    private suspend fun List<UserModel>.fixupCreatorEmojis(): List<UserModel> =
+        with(emojiRepository) {
+            map {
+                it.withEmojisIfMissing()
+            }
         }
 }

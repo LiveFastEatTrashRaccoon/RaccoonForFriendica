@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,6 +22,7 @@ import kotlinx.coroutines.sync.withLock
 internal class DefaultTimelinePaginationManager(
     private val timelineRepository: TimelineRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val emojiRepository: EmojiRepository,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : TimelinePaginationManager {
@@ -93,6 +95,7 @@ internal class DefaultTimelinePaginationManager(
                     }?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.deduplicate()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
                 }
 
@@ -104,6 +107,7 @@ internal class DefaultTimelinePaginationManager(
                         )?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.deduplicate()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
                 }
 
@@ -121,6 +125,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
 
                 is TimelinePaginationSpecification.Forum ->
@@ -133,6 +138,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.filterNsfw(specification.includeNsfw)
                         ?.filter { it.inReplyTo == null }
                         ?.deduplicate()
+                        ?.fixupCreatorEmojis()
                         .orEmpty()
             }
         mutex.withLock {
@@ -177,4 +183,11 @@ internal class DefaultTimelinePaginationManager(
         }.distinctBy { it.id }
 
     private fun List<TimelineEntryModel>.filterNsfw(included: Boolean): List<TimelineEntryModel> = filter { included || !it.isNsfw }
+
+    private suspend fun List<TimelineEntryModel>.fixupCreatorEmojis(): List<TimelineEntryModel> =
+        with(emojiRepository) {
+            map {
+                it.withEmojisIfMissing()
+            }
+        }
 }

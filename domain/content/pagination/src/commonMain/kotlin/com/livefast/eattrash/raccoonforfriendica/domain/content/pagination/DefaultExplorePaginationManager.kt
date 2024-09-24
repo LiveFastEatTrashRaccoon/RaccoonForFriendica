@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,6 +25,7 @@ import kotlinx.coroutines.sync.withLock
 internal class DefaultExplorePaginationManager(
     private val trendingRepository: TrendingRepository,
     private val userRepository: UserRepository,
+    private val emojiRepository: EmojiRepository,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ExplorePaginationManager {
@@ -122,6 +124,7 @@ internal class DefaultExplorePaginationManager(
                         }?.determineUserRelationshipStatus()
             }?.deduplicate()
                 ?.updatePaginationData()
+                ?.fixupCreatorEmojis()
                 .orEmpty()
         mutex.withLock {
             history.addAll(results)
@@ -160,6 +163,17 @@ internal class DefaultExplorePaginationManager(
                                 notificationStatus = relationship?.toNotificationStatus(),
                             ),
                     )
+                }
+            }
+        }
+
+    private suspend fun List<ExploreItemModel>.fixupCreatorEmojis(): List<ExploreItemModel> =
+        with(emojiRepository) {
+            map {
+                when (it) {
+                    is ExploreItemModel.Entry -> it.copy(entry = it.entry.withEmojisIfMissing())
+                    is ExploreItemModel.User -> it.copy(user = it.user.withEmojisIfMissing())
+                    else -> it
                 }
             }
         }

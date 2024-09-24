@@ -226,7 +226,7 @@ class ConversationViewModel(
                 updateMessageInState(localId) {
                     remoteMessage.copy(
                         // the title is appended in a newline before the body
-                        text = remoteMessage.text?.substringAfter("\n"),
+                        text = remoteMessage.text?.substringAfter('\n'),
                     )
                 }
                 updateState {
