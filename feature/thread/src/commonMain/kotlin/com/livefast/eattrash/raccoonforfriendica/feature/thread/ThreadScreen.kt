@@ -251,8 +251,12 @@ class ThreadScreen(
                                 onOpenUser = {
                                     detailOpener.openUserDetail(it)
                                 },
-                                onOpenImage = { urls, idx ->
-                                    detailOpener.openImageDetail(urls = urls, initialIndex = idx)
+                                onOpenImage = { urls, imageIdx, videoIndices ->
+                                    detailOpener.openImageDetail(
+                                        urls = urls,
+                                        initialIndex = imageIdx,
+                                        videoIndices = videoIndices,
+                                    )
                                 },
                                 onReblog =
                                     uiState.currentUserId?.let {
@@ -383,8 +387,12 @@ class ThreadScreen(
                             onOpenUser = {
                                 detailOpener.openUserDetail(it)
                             },
-                            onOpenImage = { urls, index ->
-                                detailOpener.openImageDetail(urls = urls, initialIndex = index)
+                            onOpenImage = { urls, imageIdx, videoIndices ->
+                                detailOpener.openImageDetail(
+                                    urls = urls,
+                                    initialIndex = imageIdx,
+                                    videoIndices = videoIndices,
+                                )
                             },
                             onReblog =
                                 { e: TimelineEntryModel ->

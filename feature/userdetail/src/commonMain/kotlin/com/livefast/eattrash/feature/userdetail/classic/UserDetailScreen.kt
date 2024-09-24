@@ -561,10 +561,11 @@ class UserDetailScreen(
                                     detailOpener.openUserDetail(user)
                                 }
                             },
-                            onOpenImage = { urls, imageIdx ->
+                            onOpenImage = { urls, imageIdx, videoIndices ->
                                 detailOpener.openImageDetail(
                                     urls = urls,
                                     initialIndex = imageIdx,
+                                    videoIndices = videoIndices,
                                 )
                             },
                             onReblog =

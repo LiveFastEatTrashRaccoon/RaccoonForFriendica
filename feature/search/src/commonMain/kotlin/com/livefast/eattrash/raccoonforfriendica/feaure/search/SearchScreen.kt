@@ -314,10 +314,11 @@ class SearchScreen : Screen {
                                     onOpenUser = {
                                         detailOpener.openUserDetail(it)
                                     },
-                                    onOpenImage = { urls, imageIdx ->
+                                    onOpenImage = { urls, imageIdx, videoIndices ->
                                         detailOpener.openImageDetail(
                                             urls = urls,
                                             initialIndex = imageIdx,
+                                            videoIndices = videoIndices,
                                         )
                                     },
                                     onReblog =
