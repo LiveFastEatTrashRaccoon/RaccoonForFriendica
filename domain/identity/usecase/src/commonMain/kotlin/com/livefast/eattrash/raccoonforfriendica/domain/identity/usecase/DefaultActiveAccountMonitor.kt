@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
+import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
@@ -59,9 +60,7 @@ internal class DefaultActiveAccountMonitor(
             return
         }
 
-        val node =
-            account.handle.substringAfter("@").takeIf { it.isNotEmpty() }
-                ?: apiConfigurationRepository.defaultNode
+        val node = account.handle.nodeName ?: apiConfigurationRepository.defaultNode
         apiConfigurationRepository.changeNode(node)
         val credentials = accountCredentialsCache.get(account.id)
         apiConfigurationRepository.setAuth(credentials)
