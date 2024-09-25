@@ -88,7 +88,7 @@ internal open class DefaultStrings : Strings {
     override val notificationTypeFavorite = "added your post to favorites"
     override val notificationTypeFollow = "started following you"
     override val notificationTypeFollowRequest = "sent you a follow request"
-    override val notificationTypeMention = "mentioned you in a post"
+    override val notificationTypeReply = "replied to you"
     override val notificationTypePoll = "a poll you participated in was closed"
     override val notificationTypeReblog = "re-shared your post"
     override val notificationTypeUpdate = "updated a post you re-shared"

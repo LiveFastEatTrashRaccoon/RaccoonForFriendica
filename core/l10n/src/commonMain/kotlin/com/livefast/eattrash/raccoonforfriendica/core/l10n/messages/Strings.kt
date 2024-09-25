@@ -92,7 +92,7 @@ interface Strings {
     val notificationTypeFavorite: String
     val notificationTypeFollow: String
     val notificationTypeFollowRequest: String
-    val notificationTypeMention: String
+    val notificationTypeReply: String
     val notificationTypePoll: String
     val notificationTypeReblog: String
     val notificationTypeUpdate: String
