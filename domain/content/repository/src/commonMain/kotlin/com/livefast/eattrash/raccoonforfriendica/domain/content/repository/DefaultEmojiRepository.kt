@@ -51,7 +51,7 @@ internal class DefaultEmojiRepository(
             creator = creator?.withEmojisIfMissing(),
             inReplyTo =
                 inReplyTo?.copy(
-                    creator = reblog?.creator?.withEmojisIfMissing(),
+                    creator = inReplyTo?.creator?.withEmojisIfMissing(),
                 ),
             reblog =
                 reblog?.copy(

@@ -367,4 +367,5 @@ internal val DeStrings =
         override val actionRemoveTitle = "Titel entfernen"
         override val actionAddSpoiler = "Spoiler hinzufügen"
         override val actionRemoveSpoiler = "Spoiler entfernen"
+        override val actionRevealContent = "Inhalt enthüllen"
     }

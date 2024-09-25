@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -31,7 +32,6 @@ import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
@@ -175,117 +175,100 @@ fun TimelineItem(
                             vertical = Spacing.s,
                             horizontal = contentHorizontalPadding,
                         ),
-                    content =
-                        if (entryToDisplay.isSpoilerActive) {
-                            LocalStrings.current.actionHideContent
-                        } else {
-                            spoiler
-                        },
+                    content = spoiler,
+                    active = entryToDisplay.isSpoilerActive,
                     onClick = {
                         onToggleSpoilerActive?.invoke(entryToDisplay)
                     },
                 )
             }
 
-            if (entryToDisplay.isSpoilerActive || spoiler.isEmpty()) {
-                // post title
-                val title = entryToDisplay.title
-                if (!title.isNullOrBlank()) {
-                    ContentTitle(
-                        modifier =
-                            Modifier.fillMaxWidth().padding(
-                                start = contentHorizontalPadding,
-                                end = contentHorizontalPadding,
-                            ),
-                        content = title,
-                        emojis = entryToDisplay.emojis,
-                        onClick = { onClick?.invoke(entryToDisplay) },
-                        onOpenUrl = onOpenUrl,
-                    )
-                }
+            val contentVisible = entryToDisplay.isSpoilerActive || spoiler.isEmpty()
+            AnimatedVisibility(
+                modifier = modifier.padding(horizontal = contentHorizontalPadding),
+                visible = contentVisible,
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                ) {
+                    // post title
+                    val title = entryToDisplay.title
+                    if (!title.isNullOrBlank()) {
+                        ContentTitle(
+                            modifier = Modifier.fillMaxWidth(),
+                            content = title,
+                            emojis = entryToDisplay.emojis,
+                            onClick = { onClick?.invoke(entryToDisplay) },
+                            onOpenUrl = onOpenUrl,
+                        )
+                    }
 
-                // post body
-                val body = entryToDisplay.content
-                if (body.isNotBlank()) {
-                    ContentBody(
-                        modifier =
-                            Modifier.fillMaxWidth().then(
-                                if (title == null) {
-                                    Modifier.padding(
-                                        start = contentHorizontalPadding,
-                                        end = contentHorizontalPadding,
-                                    )
-                                } else {
-                                    Modifier.padding(
-                                        top = Spacing.xxxs,
-                                        start = contentHorizontalPadding,
-                                        end = contentHorizontalPadding,
-                                    )
-                                },
-                            ),
-                        content = body,
-                        emojis = entryToDisplay.emojis,
-                        onClick = { onClick?.invoke(entryToDisplay) },
-                        onOpenUrl = onOpenUrl,
-                    )
-                }
-
-                // attachment (single or grid)
-                AttachmentsGrid(
-                    modifier =
-                        Modifier.fillMaxWidth().padding(
-                            top = Spacing.s,
-                            bottom = Spacing.xxxs,
-                            start = contentHorizontalPadding,
-                            end = contentHorizontalPadding,
-                        ),
-                    attachments = entryToDisplay.attachments,
-                    blurNsfw = blurNsfw,
-                    sensitive = entryToDisplay.sensitive,
-                    onOpenImage = onOpenImage,
-                )
-
-                // poll
-                entryToDisplay.poll?.also { poll ->
-                    PollCard(
-                        modifier =
-                            Modifier.fillMaxWidth().padding(
-                                start = contentHorizontalPadding,
-                                end = contentHorizontalPadding,
-                            ),
-                        poll = poll,
-                        enabled = pollEnabled,
-                        onVote = { choices ->
-                            onPollVote?.invoke(entryToDisplay, choices)
-                        },
-                    )
-                }
-
-                // preview
-                entryToDisplay.card?.also { preview ->
-                    val attachments = entryToDisplay.attachments
-                    ContentPreview(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    top = Spacing.s,
-                                    start = contentHorizontalPadding,
-                                    end = contentHorizontalPadding,
+                    // post body
+                    val body = entryToDisplay.content
+                    if (body.isNotBlank()) {
+                        ContentBody(
+                            modifier =
+                                Modifier.fillMaxWidth().then(
+                                    if (title == null) {
+                                        Modifier
+                                    } else {
+                                        Modifier.padding(top = Spacing.xxxs)
+                                    },
                                 ),
-                        card =
-                            preview.copy(
-                                title =
-                                    preview.title
-                                        .takeIf { !entryToDisplay.content.startsWith(it) }
-                                        .orEmpty(),
-                                image = preview.image.takeIf { attachments.isEmpty() },
+                            content = body,
+                            emojis = entryToDisplay.emojis,
+                            onClick = { onClick?.invoke(entryToDisplay) },
+                            onOpenUrl = onOpenUrl,
+                        )
+                    }
+
+                    // attachment (single or grid)
+                    AttachmentsGrid(
+                        modifier =
+                            Modifier.fillMaxWidth().padding(
+                                top = Spacing.s,
+                                bottom = Spacing.xxxs,
                             ),
-                        onOpen = onOpenUrl,
-                        onOpenImage = { url ->
-                            onOpenImage?.invoke(listOf(url), 0, emptyList())
-                        },
+                        attachments = entryToDisplay.attachments,
+                        blurNsfw = blurNsfw,
+                        sensitive = entryToDisplay.sensitive,
+                        onOpenImage = onOpenImage,
                     )
+
+                    // poll
+                    entryToDisplay.poll?.also { poll ->
+                        PollCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            poll = poll,
+                            enabled = pollEnabled,
+                            onVote = { choices ->
+                                onPollVote?.invoke(entryToDisplay, choices)
+                            },
+                        )
+                    }
+
+                    // preview
+                    entryToDisplay.card?.also { preview ->
+                        val attachments = entryToDisplay.attachments
+                        ContentPreview(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = Spacing.s),
+                            card =
+                                preview.copy(
+                                    title =
+                                        preview.title
+                                            .takeIf { !entryToDisplay.content.startsWith(it) }
+                                            .orEmpty(),
+                                    image = preview.image.takeIf { attachments.isEmpty() },
+                                ),
+                            onOpen = onOpenUrl,
+                            onOpenImage = { url ->
+                                onOpenImage?.invoke(listOf(url), 0, emptyList())
+                            },
+                        )
+                    }
                 }
             }
 

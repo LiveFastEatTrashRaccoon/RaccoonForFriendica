@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,11 +28,13 @@ import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
 @Composable
 fun SpoilerCard(
     content: String,
     modifier: Modifier = Modifier,
+    active: Boolean = false,
     onClick: (() -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
@@ -66,15 +69,27 @@ fun SpoilerCard(
                     .weight(1f)
                     .onGloballyPositioned {
                         contentHeightPx = it.size.toSize().height
-                    },
+                    }.padding(
+                        vertical = Spacing.m,
+                        horizontal = Spacing.s,
+                    ),
+            verticalArrangement = Arrangement.spacedBy(Spacing.s),
         ) {
             ClickableText(
-                modifier = Modifier.padding(vertical = Spacing.m),
                 style = MaterialTheme.typography.titleMedium.copy(color = fullColor),
                 text = annotatedContent,
                 onClick = { _ ->
                     onClick?.invoke()
                 },
+            )
+            Text(
+                text =
+                    if (active) {
+                        LocalStrings.current.actionHideContent
+                    } else {
+                        LocalStrings.current.actionRevealContent
+                    },
+                style = MaterialTheme.typography.labelMedium.copy(color = fullColor),
             )
         }
         SpoilerBar(
