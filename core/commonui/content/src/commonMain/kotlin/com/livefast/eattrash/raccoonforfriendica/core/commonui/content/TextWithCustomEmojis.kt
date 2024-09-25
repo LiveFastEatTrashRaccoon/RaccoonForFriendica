@@ -25,6 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
 private val EMOJI_REGEX = Regex(":(\\w+):")
+private val EMOJI_SIZE = 1.15.em
 
 @Composable
 fun TextWithCustomEmojis(
@@ -77,8 +78,8 @@ fun TextWithCustomEmojis(
                 InlineTextContent(
                     placeholder =
                         Placeholder(
-                            width = 1.5.em,
-                            height = 1.5.em,
+                            width = EMOJI_SIZE,
+                            height = EMOJI_SIZE,
                             placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter,
                         ),
                 ) {
