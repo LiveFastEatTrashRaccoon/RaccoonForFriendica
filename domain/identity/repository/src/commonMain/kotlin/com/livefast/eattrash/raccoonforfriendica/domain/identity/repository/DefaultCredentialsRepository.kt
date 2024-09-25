@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ClientApplicationModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.preparePost
 import io.ktor.client.request.setBody
@@ -27,7 +28,14 @@ internal class DefaultCredentialsRepository(
     private val provider: ServiceProvider,
     engine: HttpClientEngine = provideHttpClientEngine(),
 ) : CredentialsRepository {
-    private val httpClient = HttpClient(engine)
+    private val httpClient =
+        HttpClient(engine) {
+            install(HttpTimeout) {
+                requestTimeoutMillis = 60_000
+                connectTimeoutMillis = 30_000
+                socketTimeoutMillis = 30_000
+            }
+        }
 
     override suspend fun validate(
         node: String,
