@@ -676,13 +676,6 @@ class ComposerScreen(
                                 keyboardType = KeyboardType.Text,
                                 autoCorrect = true,
                                 capitalization = KeyboardCapitalization.Sentences,
-                                imeAction = ImeAction.Send,
-                            ),
-                        keyboardActions =
-                            KeyboardActions(
-                                onSend = {
-                                    model.reduce(ComposerMviModel.Intent.Submit)
-                                },
                             ),
                         onValueChange = { value ->
                             model.reduce(
