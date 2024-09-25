@@ -87,6 +87,7 @@ internal class DefaultNotificationsPaginationManager(
             map {
                 it.copy(
                     user = it.user?.withEmojisIfMissing(),
+                    entry = it.entry?.withEmojisIfMissing(),
                 )
             }
         }
