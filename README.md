@@ -119,7 +119,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] advanced media visualization (videos, GIFs, multiple images)
 - [x] scheduled posts and drafts
 - [x] report posts and users
-- [x] custom emojis (in posts, for user accounts they do not seem to be returned by the back-end)
+- [x] custom emojis
 
 ## Technologies used
 
