@@ -322,6 +322,7 @@ interface Strings {
     val actionRemoveTitle: String
     val actionAddSpoiler: String
     val actionRemoveSpoiler: String
+    val actionRevealContent: String
 }
 
 object Locales {

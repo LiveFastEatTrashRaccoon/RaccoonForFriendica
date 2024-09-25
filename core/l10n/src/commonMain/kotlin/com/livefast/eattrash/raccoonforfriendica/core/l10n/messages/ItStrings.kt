@@ -367,4 +367,5 @@ internal val ItStrings =
         override val actionRemoveTitle = "Rimuovi titolo"
         override val actionAddSpoiler = "Aggiungi spoiler"
         override val actionRemoveSpoiler = "Rimuovi spoiler"
+        override val actionRevealContent = "Rivela contenuto"
     }

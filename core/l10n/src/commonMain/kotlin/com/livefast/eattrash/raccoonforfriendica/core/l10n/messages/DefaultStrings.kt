@@ -358,4 +358,5 @@ internal open class DefaultStrings : Strings {
     override val actionRemoveTitle = "Remove title"
     override val actionAddSpoiler = "Add spoiler"
     override val actionRemoveSpoiler = "Remove spoiler"
+    override val actionRevealContent = "Reveal content"
 }
