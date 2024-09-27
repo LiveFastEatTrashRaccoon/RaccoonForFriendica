@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineTyp
 sealed interface TimelinePaginationSpecification {
     data class Feed(
         val timelineType: TimelineType,
+        val excludeReplies: Boolean = false,
         val includeNsfw: Boolean = true,
     ) : TimelinePaginationSpecification
 
