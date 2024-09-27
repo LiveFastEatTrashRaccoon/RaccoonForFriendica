@@ -19,4 +19,5 @@ data class SettingsModel(
     val urlOpeningMode: UrlOpeningMode = UrlOpeningMode.External,
     val defaultPostVisibility: Int = 0,
     val defaultReplyVisibility: Int = 0,
+    val excludeRepliesFromTimeline: Boolean = false,
 )

@@ -93,6 +93,7 @@ internal class DefaultTimelinePaginationManager(
                                 pageCursor = pageCursor,
                             )
                     }?.updatePaginationData()
+                        ?.filterReplies(included = !specification.excludeReplies)
                         ?.filterNsfw(specification.includeNsfw)
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
@@ -181,6 +182,11 @@ internal class DefaultTimelinePaginationManager(
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
         }.distinctBy { it.id }
+
+    private fun List<TimelineEntryModel>.filterReplies(included: Boolean): List<TimelineEntryModel> =
+        filter {
+            included || it.inReplyTo == null
+        }
 
     private fun List<TimelineEntryModel>.filterNsfw(included: Boolean): List<TimelineEntryModel> = filter { included || !it.isNsfw }
 

@@ -19,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -178,10 +179,12 @@ class TimelineViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
+        val settings = settingsRepository.current.value ?: SettingsModel()
         paginationManager.reset(
             TimelinePaginationSpecification.Feed(
                 timelineType = uiState.value.timelineType ?: TimelineType.Local,
-                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                includeNsfw = settings.includeNsfw,
+                excludeReplies = settings.excludeRepliesFromTimeline,
             ),
         )
         loadNextPage()

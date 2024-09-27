@@ -323,6 +323,7 @@ interface Strings {
     val actionAddSpoiler: String
     val actionRemoveSpoiler: String
     val actionRevealContent: String
+    val settingsItemExcludeRepliesFromTimeline: String
 }
 
 object Locales {

@@ -96,6 +96,7 @@ class SettingsViewModel(
                                 urlOpeningMode = settings.urlOpeningMode,
                                 defaultPostVisibility = settings.defaultPostVisibility.toVisibility(),
                                 defaultReplyVisibility = settings.defaultReplyVisibility.toVisibility(),
+                                excludeRepliesFromTimeline = settings.excludeRepliesFromTimeline,
                             )
                         }
                     }
@@ -171,6 +172,11 @@ class SettingsViewModel(
                 screenModelScope.launch {
                     changeDefaultReplyVisibility(intent.visibility)
                 }
+
+            is SettingsMviModel.Intent.ChangeExcludeRepliesFromTimeline ->
+                screenModelScope.launch {
+                    changeExcludeRepliesFromTimeline(intent.value)
+                }
         }
     }
 
@@ -243,6 +249,12 @@ class SettingsViewModel(
     private suspend fun changeUrlOpeningMode(value: UrlOpeningMode) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(urlOpeningMode = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeExcludeRepliesFromTimeline(value: Boolean) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(excludeRepliesFromTimeline = value)
         saveSettings(newSettings)
     }
 

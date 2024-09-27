@@ -359,4 +359,5 @@ internal open class DefaultStrings : Strings {
     override val actionAddSpoiler = "Add spoiler"
     override val actionRemoveSpoiler = "Remove spoiler"
     override val actionRevealContent = "Reveal content"
+    override val settingsItemExcludeRepliesFromTimeline = "Exclude replies from timeline"
 }
