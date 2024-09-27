@@ -368,4 +368,5 @@ internal val DeStrings =
         override val actionAddSpoiler = "Spoiler hinzufügen"
         override val actionRemoveSpoiler = "Spoiler entfernen"
         override val actionRevealContent = "Inhalt enthüllen"
+        override val settingsItemExcludeRepliesFromTimeline = "Antworten aus der Zeitleiste ausschließen"
     }
