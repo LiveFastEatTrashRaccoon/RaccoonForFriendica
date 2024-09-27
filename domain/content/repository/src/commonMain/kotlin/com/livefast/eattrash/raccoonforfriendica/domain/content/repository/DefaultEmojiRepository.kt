@@ -53,10 +53,7 @@ internal class DefaultEmojiRepository(
                 inReplyTo?.copy(
                     creator = inReplyTo?.creator?.withEmojisIfMissing(),
                 ),
-            reblog =
-                reblog?.copy(
-                    creator = reblog?.creator?.withEmojisIfMissing(),
-                ),
+            reblog = reblog?.copy(reblog = null)?.withEmojisIfMissing(),
         )
 
     private suspend fun retrieve(node: String?): List<EmojiModel>? =

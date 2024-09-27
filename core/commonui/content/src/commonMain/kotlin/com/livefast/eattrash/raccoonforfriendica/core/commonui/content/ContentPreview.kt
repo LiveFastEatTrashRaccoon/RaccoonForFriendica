@@ -42,8 +42,8 @@ fun ContentPreview(
     val url = card.url
     val title = card.title
     val description = card.description.takeIf { !it.startsWith(title) }.orEmpty()
-    val hasMediaInfo = image.isNotEmpty() || (type == PreviewType.Video && url.isNotEmpty())
-    val hasTextualInfo = title.isNotEmpty() || description.isNotEmpty()
+    val hasMediaInfo = image.isNotBlank() || (type == PreviewType.Video && url.isNotBlank())
+    val hasTextualInfo = title.isNotBlank() || description.isNotBlank()
     val cornerSize = CornerSize.xl
     val contentPadding = 12.dp
 
@@ -67,7 +67,7 @@ fun ContentPreview(
                     ),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
-            if (image.isNotEmpty()) {
+            if (image.isNotBlank()) {
                 CustomImage(
                     modifier =
                         Modifier
@@ -83,7 +83,7 @@ fun ContentPreview(
                     quality = FilterQuality.Low,
                     contentScale = ContentScale.FillWidth,
                 )
-            } else if (type == PreviewType.Video) {
+            } else if (type == PreviewType.Video && url.isNotBlank()) {
                 VideoPlayer(
                     modifier =
                         Modifier.fillMaxWidth().aspectRatio(16 / 9f),
@@ -100,7 +100,7 @@ fun ContentPreview(
                     ),
                 verticalArrangement = Arrangement.spacedBy(Spacing.s),
             ) {
-                if (title.isNotEmpty()) {
+                if (title.isNotBlank()) {
                     val annotatedTitle =
                         title.parseHtml(
                             linkColor = MaterialTheme.colorScheme.primary,
@@ -111,7 +111,7 @@ fun ContentPreview(
                         color = fullColor,
                     )
                 }
-                if (description.isNotEmpty() && !description.startsWith(title)) {
+                if (description.isNotBlank()) {
                     val annotatedDescription =
                         description.parseHtml(
                             linkColor = MaterialTheme.colorScheme.primary,
