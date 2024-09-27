@@ -64,6 +64,10 @@ interface SettingsMviModel :
         data class ChangeDefaultReplyVisibility(
             val visibility: Visibility,
         ) : Intent
+
+        data class ChangeExcludeRepliesFromTimeline(
+            val value: Boolean,
+        ) : Intent
     }
 
     data class State(
@@ -83,6 +87,7 @@ interface SettingsMviModel :
         val urlOpeningMode: UrlOpeningMode = UrlOpeningMode.External,
         val defaultPostVisibility: Visibility = Visibility.Public,
         val defaultReplyVisibility: Visibility = Visibility.Public,
+        val excludeRepliesFromTimeline: Boolean = false,
     )
 
     sealed interface Effect

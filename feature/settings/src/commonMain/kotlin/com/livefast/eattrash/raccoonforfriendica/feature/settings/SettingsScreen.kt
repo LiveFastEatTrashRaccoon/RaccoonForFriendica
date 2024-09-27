@@ -167,6 +167,15 @@ class SettingsScreen : Screen {
                                 urlOpeningModeBottomSheetOpened = true
                             },
                         )
+                        SettingsSwitchRow(
+                            title = LocalStrings.current.settingsItemExcludeRepliesFromTimeline,
+                            value = uiState.excludeRepliesFromTimeline,
+                            onValueChanged = {
+                                model.reduce(
+                                    SettingsMviModel.Intent.ChangeExcludeRepliesFromTimeline(it),
+                                )
+                            },
+                        )
 
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderLookAndFeel,
