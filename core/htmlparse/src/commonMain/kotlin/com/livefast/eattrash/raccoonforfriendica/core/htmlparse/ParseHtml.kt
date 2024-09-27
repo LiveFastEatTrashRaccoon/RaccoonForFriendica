@@ -67,9 +67,18 @@ fun String.parseHtml(
             }.build()
 
     val ksoupHtmlParser = KsoupHtmlParser(handler)
-    val html = if (requiresHtmlDecode) KsoupEntities.decodeHtml(this) else this
+    val html = sanitize(requiresHtmlDecode)
     ksoupHtmlParser.write(html)
     ksoupHtmlParser.end()
 
     return builder.toAnnotatedString()
 }
+
+private fun String.sanitize(requiresHtmlDecode: Boolean): String =
+    run {
+        if (requiresHtmlDecode) {
+            KsoupEntities.decodeHtml(this)
+        } else {
+            this
+        }.replace(Regex("<p><br\\s*/?></p>"), "<p></p>")
+    }
