@@ -278,7 +278,7 @@ internal class DefaultTimelineEntryRepository(
                     .update(
                         id = id,
                         data = data,
-                    ).toModel()
+                    ).toModelWithReply()
             }.getOrNull()
         }
 
