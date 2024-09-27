@@ -52,6 +52,7 @@ private fun SettingsEntity.toModel() =
         urlOpeningMode = urlOpeningMode.toUrlOpeningMode(),
         defaultPostVisibility = defaultPostVisibility,
         defaultReplyVisibility = defaultReplyVisibility,
+        excludeRepliesFromTimeline = excludeRepliesFromTimeline,
     )
 
 private fun SettingsModel.toEntity() =
@@ -70,4 +71,5 @@ private fun SettingsModel.toEntity() =
         urlOpeningMode = urlOpeningMode.toInt(),
         defaultPostVisibility = defaultPostVisibility,
         defaultReplyVisibility = defaultReplyVisibility,
+        excludeRepliesFromTimeline = excludeRepliesFromTimeline,
     )
