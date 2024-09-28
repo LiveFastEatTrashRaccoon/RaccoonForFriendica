@@ -324,6 +324,7 @@ interface Strings {
     val actionRemoveSpoiler: String
     val actionRevealContent: String
     val settingsItemExcludeRepliesFromTimeline: String
+    val insertEmojiTitle: String
 }
 
 object Locales {
