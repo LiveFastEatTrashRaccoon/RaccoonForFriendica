@@ -103,7 +103,7 @@ fun GalleryPickerDialog(
                     style = MaterialTheme.typography.titleMedium,
                     color = fullColor,
                 )
-                Spacer(modifier = Modifier.height(Spacing.xs))
+                Spacer(modifier = Modifier.height(Spacing.s))
             }
             LazyVerticalStaggeredGrid(
                 modifier =

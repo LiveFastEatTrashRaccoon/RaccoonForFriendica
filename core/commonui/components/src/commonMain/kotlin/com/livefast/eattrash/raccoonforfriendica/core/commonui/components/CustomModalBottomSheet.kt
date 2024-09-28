@@ -70,7 +70,7 @@ fun CustomModalBottomSheet(
                     style = MaterialTheme.typography.titleMedium,
                     color = fullColor,
                 )
-                Spacer(modifier = Modifier.height(Spacing.xs))
+                Spacer(modifier = Modifier.height(Spacing.s))
                 LazyColumn {
                     itemsIndexed(items = items) { idx, item ->
                         Surface(
@@ -82,18 +82,20 @@ fun CustomModalBottomSheet(
                                         .fillMaxWidth()
                                         .combinedClickable(
                                             onClick = {
-                                                sheetScope.launch {
-                                                    sheetState.hide()
-                                                }.invokeOnCompletion {
-                                                    onSelected?.invoke(idx)
-                                                }
+                                                sheetScope
+                                                    .launch {
+                                                        sheetState.hide()
+                                                    }.invokeOnCompletion {
+                                                        onSelected?.invoke(idx)
+                                                    }
                                             },
                                             onLongClick = {
-                                                sheetScope.launch {
-                                                    sheetState.hide()
-                                                }.invokeOnCompletion {
-                                                    onLongPress?.invoke(idx)
-                                                }
+                                                sheetScope
+                                                    .launch {
+                                                        sheetState.hide()
+                                                    }.invokeOnCompletion {
+                                                        onLongPress?.invoke(idx)
+                                                    }
                                             },
                                         ).padding(
                                             horizontal = Spacing.s,
