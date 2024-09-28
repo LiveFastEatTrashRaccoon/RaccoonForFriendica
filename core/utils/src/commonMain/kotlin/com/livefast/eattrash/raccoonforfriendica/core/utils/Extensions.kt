@@ -13,4 +13,13 @@ fun String?.ellipsize(
     return take(length - 1) + ellipsis
 }
 
-val String?.nodeName: String? get() = orEmpty().substringAfter('@').takeIf { it.isNotEmpty() }
+val String?.nodeName: String?
+    get() =
+        orEmpty()
+            .let {
+                if (it.contains('@')) {
+                    it.substringAfter('@')
+                } else {
+                    ""
+        }
+    }.takeIf { it.isNotEmpty() }
