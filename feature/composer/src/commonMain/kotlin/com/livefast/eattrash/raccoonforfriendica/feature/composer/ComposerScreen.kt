@@ -66,6 +66,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTextualInfoDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.InsertEmojiBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SelectUserDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
@@ -144,6 +145,7 @@ class ComposerScreen(
         var scheduleDatePickerOpen by remember { mutableStateOf(false) }
         var pollExpirationMillis by remember { mutableStateOf<Long?>(null) }
         var pollExpirationDatePickerOpen by remember { mutableStateOf(false) }
+        var insertEmojiModalOpen by remember { mutableStateOf(false) }
 
         LaunchedEffect(model) {
             when {
@@ -257,6 +259,13 @@ class ComposerScreen(
                                                 LocalStrings.current.actionAddSpoiler
                                             },
                                     )
+
+                                if (uiState.availableEmojis.isNotEmpty()) {
+                                    this +=
+                                        CustomOptions.InsertCustomEmoji.toOption(
+                                            label = LocalStrings.current.insertEmojiTitle,
+                                        )
+                                }
 
                                 if (uiState.titleFeatureSupported) {
                                     this +=
@@ -377,6 +386,10 @@ class ComposerScreen(
 
                                                 CustomOptions.ToggleSpoiler -> {
                                                     model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
+                                                }
+
+                                                CustomOptions.InsertCustomEmoji -> {
+                                                    insertEmojiModalOpen = true
                                                 }
 
                                                 else -> Unit
@@ -884,6 +897,28 @@ class ComposerScreen(
                 },
             )
         }
+
+        if (insertEmojiModalOpen) {
+            InsertEmojiBottomSheet(
+                emojis = uiState.availableEmojis,
+                onClose = {
+                    insertEmojiModalOpen = false
+                },
+                onInsert = { emoji ->
+                    model.reduce(
+                        ComposerMviModel.Intent.InsertCustomEmoji(
+                            fieldType =
+                                when {
+                                    hasTitleFocus -> ComposerFieldType.Title
+                                    hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                    else -> ComposerFieldType.Body
+                                },
+                            emoji = emoji,
+                        ),
+                    )
+                },
+            )
+        }
     }
 }
 
@@ -895,4 +930,6 @@ private sealed interface CustomOptions : OptionId.Custom {
     data object ToggleTitle : CustomOptions
 
     data object ToggleSpoiler : CustomOptions
+
+    data object InsertCustomEmoji : CustomOptions
 }

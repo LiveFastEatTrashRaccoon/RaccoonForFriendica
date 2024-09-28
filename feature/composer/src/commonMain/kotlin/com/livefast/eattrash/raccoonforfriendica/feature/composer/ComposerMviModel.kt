@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -169,6 +170,11 @@ interface ComposerMviModel :
         data class SetPollExpirationDate(
             val date: String,
         ) : Intent
+
+        data class InsertCustomEmoji(
+            val fieldType: ComposerFieldType,
+            val emoji: EmojiModel,
+        ) : Intent
     }
 
     data class State(
@@ -202,6 +208,7 @@ interface ComposerMviModel :
         val attachmentLimit: Int? = null,
         val pollOptionLimit: Int? = null,
         val publicationType: PublicationType = PublicationType.Default,
+        val availableEmojis: List<EmojiModel> = emptyList(),
     )
 
     sealed interface Effect {

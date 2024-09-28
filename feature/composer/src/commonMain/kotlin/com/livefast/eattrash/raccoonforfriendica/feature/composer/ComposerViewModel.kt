@@ -14,6 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDuration
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Timestamp
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -25,6 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MediaRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
@@ -65,6 +67,7 @@ class ComposerViewModel(
     private val scheduledEntryRepository: ScheduledEntryRepository,
     private val draftRepository: DraftRepository,
     private val settingsRepository: SettingsRepository,
+    private val emojiRepository: EmojiRepository,
     private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
         initialState = ComposerMviModel.State(),
@@ -126,6 +129,11 @@ class ComposerViewModel(
             }
 
             loadAvailableCircles()
+
+            val customEmojis = emojiRepository.getAll().orEmpty()
+            updateState {
+                it.copy(availableEmojis = customEmojis)
+            }
         }
     }
 
@@ -363,6 +371,9 @@ class ComposerViewModel(
                 screenModelScope.launch {
                     updateState { it.copy(poll = null) }
                 }
+
+            is ComposerMviModel.Intent.InsertCustomEmoji ->
+                insertCustomEmoji(intent.fieldType, intent.emoji)
 
             ComposerMviModel.Intent.Submit -> submit()
         }
@@ -678,6 +689,44 @@ class ComposerViewModel(
                             append(after)
                         },
                     offsetAfter = before.length,
+                )
+            updateState {
+                when (fieldType) {
+                    ComposerFieldType.Body -> it.copy(bodyValue = newValue)
+                    ComposerFieldType.Spoiler -> it.copy(spoilerValue = newValue)
+                    ComposerFieldType.Title -> it.copy(titleValue = newValue)
+                }
+            }
+        }
+    }
+
+    private fun insertCustomEmoji(
+        fieldType: ComposerFieldType,
+        emoji: EmojiModel,
+    ) {
+        screenModelScope.launch {
+            val value =
+                when (fieldType) {
+                    ComposerFieldType.Body ->
+                        uiState.value.bodyValue
+
+                    ComposerFieldType.Spoiler ->
+                        uiState.value.spoilerValue
+
+                    ComposerFieldType.Title ->
+                        uiState.value.titleValue
+                }
+            val additionalPart =
+                buildString {
+                    append(":")
+                    append(emoji.code)
+                    append(":")
+                }
+            val newValue =
+                getNewTextFieldValue(
+                    value = value,
+                    additionalPart = additionalPart,
+                    offsetAfter = additionalPart.length,
                 )
             updateState {
                 when (fieldType) {
