@@ -37,6 +37,7 @@ val featureProfileModule =
                 notificationCenter = get(),
                 imagePreloadManager = get(),
                 blurHashRepository = get(),
+                emojiRepository = get(),
             )
         }
         factory<AnonymousMviModel> {
@@ -50,6 +51,7 @@ val featureProfileModule =
         factory<EditProfileMviModel> {
             EditProfileViewModel(
                 userRepository = get(),
+                emojiRepository = get(),
             )
         }
     }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 
 @Stable
@@ -77,6 +78,11 @@ interface EditProfileMviModel :
             override fun hashCode(): Int = value.contentHashCode()
         }
 
+        data class InsertCustomEmoji(
+            val fieldType: EditProfilerFieldType,
+            val emoji: EmojiModel,
+        ) : Intent
+
         data object Submit : Intent
     }
 
@@ -95,6 +101,7 @@ interface EditProfileMviModel :
         val noIndex: Boolean = false,
         val fields: List<FieldModel> = emptyList(),
         val canAddFields: Boolean = false,
+        val availableEmojis: List<EmojiModel> = emptyList(),
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -126,6 +133,7 @@ interface EditProfileMviModel :
             if (noIndex != other.noIndex) return false
             if (fields != other.fields) return false
             if (canAddFields != other.canAddFields) return false
+            if (availableEmojis != other.availableEmojis) return false
 
             return true
         }
@@ -145,6 +153,7 @@ interface EditProfileMviModel :
             result = 31 * result + noIndex.hashCode()
             result = 31 * result + fields.hashCode()
             result = 31 * result + canAddFields.hashCode()
+            result = 31 * result + availableEmojis.hashCode()
             return result
         }
     }

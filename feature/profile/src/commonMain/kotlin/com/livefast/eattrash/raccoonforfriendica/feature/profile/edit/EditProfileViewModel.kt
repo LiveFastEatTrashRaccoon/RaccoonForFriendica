@@ -1,16 +1,26 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile.edit
 
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 
+sealed interface EditProfilerFieldType {
+    data object DisplayName : EditProfilerFieldType
+
+    data object Bio : EditProfilerFieldType
+}
+
 class EditProfileViewModel(
     private val userRepository: UserRepository,
+    private val emojiRepository: EmojiRepository,
 ) : DefaultMviModel<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect>(
         initialState = EditProfileMviModel.State(),
     ),
@@ -33,6 +43,9 @@ class EditProfileViewModel(
                     )
                 }
             }
+
+            val customEmojis = emojiRepository.getAll().orEmpty()
+            updateState { it.copy(availableEmojis = customEmojis) }
         }
     }
 
@@ -107,14 +120,10 @@ class EditProfileViewModel(
                     value = intent.value,
                 )
 
-            is EditProfileMviModel.Intent.AvatarSelected -> {
-                loadImageAvatar(intent.value)
-            }
-
-            is EditProfileMviModel.Intent.HeaderSelected -> {
-                loadImageHeader(intent.value)
-            }
-
+            is EditProfileMviModel.Intent.AvatarSelected -> loadImageAvatar(intent.value)
+            is EditProfileMviModel.Intent.HeaderSelected -> loadImageHeader(intent.value)
+            is EditProfileMviModel.Intent.InsertCustomEmoji ->
+                insertCustomEmoji(intent.fieldType, intent.emoji)
             EditProfileMviModel.Intent.Submit -> submit()
         }
     }
@@ -192,6 +201,70 @@ class EditProfileViewModel(
                     headerBytes = bytes,
                     hasUnsavedChanges = true,
                 )
+            }
+        }
+    }
+
+    private fun getNewTextFieldValue(
+        value: TextFieldValue,
+        additionalPart: String,
+        offsetAfter: Int,
+    ): TextFieldValue {
+        val (text, selection) = value.let { it.text to it.selection }
+        val newText =
+            buildString {
+                append(text.substring(0, selection.start))
+                append(additionalPart)
+                append(
+                    text.substring(
+                        selection.end,
+                        text.length,
+                    ),
+                )
+            }
+
+        val newSelection =
+            if (selection.collapsed) {
+                TextRange(index = selection.start + offsetAfter)
+            } else {
+                TextRange(
+                    start = selection.start + offsetAfter,
+                    end = selection.end + offsetAfter,
+                )
+            }
+        return value.copy(text = newText, selection = newSelection)
+    }
+
+    private fun insertCustomEmoji(
+        fieldType: EditProfilerFieldType,
+        emoji: EmojiModel,
+    ) {
+        screenModelScope.launch {
+            val value =
+                when (fieldType) {
+                    EditProfilerFieldType.DisplayName ->
+                        uiState.value.displayName
+
+                    EditProfilerFieldType.Bio ->
+                        uiState.value.bio
+                }
+            val additionalPart =
+                buildString {
+                    append(":")
+                    append(emoji.code)
+                    append(":")
+                }
+            val newValue =
+                getNewTextFieldValue(
+                    value = value,
+                    additionalPart = additionalPart,
+                    offsetAfter = additionalPart.length,
+                )
+            updateState {
+                when (fieldType) {
+                    EditProfilerFieldType.DisplayName -> it.copy(displayName = newValue)
+                    EditProfilerFieldType.Bio -> it.copy(bio = newValue)
+                }
             }
         }
     }
