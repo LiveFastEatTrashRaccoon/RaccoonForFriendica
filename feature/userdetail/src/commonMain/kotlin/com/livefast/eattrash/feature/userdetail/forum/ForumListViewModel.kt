@@ -124,7 +124,15 @@ class ForumListViewModel(
         }
 
         updateState { it.copy(loading = true) }
-        val entries = paginationManager.loadNextPage()
+        val entries =
+            run {
+                // must wait until some content is fetched (due to replies being filtered out)
+                var res: List<TimelineEntryModel> = emptyList()
+                while (paginationManager.canFetchMore && res.isEmpty()) {
+                    res = paginationManager.loadNextPage()
+                }
+                res
+            }
         entries.preloadImages()
         updateState {
             it.copy(
