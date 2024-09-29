@@ -91,12 +91,13 @@ fun UserItem(
         Column(
             modifier = Modifier.weight(1f),
         ) {
-            Text(
+            TextWithCustomEmojis(
                 text = (user.displayName ?: user.username ?: "").ellipsize(30),
                 style = MaterialTheme.typography.titleMedium,
                 color = fullColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                emojis = user.emojis,
             )
             Text(
                 text = (user.handle ?: user.username ?: "").ellipsize(25),
