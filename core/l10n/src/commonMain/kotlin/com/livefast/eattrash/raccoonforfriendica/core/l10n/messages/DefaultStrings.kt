@@ -319,7 +319,7 @@ internal open class DefaultStrings : Strings {
     override val settingsItemDefaultPostVisibility = "Default visibility for posts"
     override val settingsItemDefaultReplyVisibility = "Default visibility for replies"
     override val reportCategoryLegal = "Legal issue"
-    override val reportCategoryOther = "Other (please specify)"
+    override val itemOther = "Other"
     override val reportCategorySpam = "Spam"
     override val reportCategoryViolation = "Server rule violation"
     override val messageMissingRules = "Please select at least one rule"

@@ -17,7 +17,7 @@ sealed interface ReportCategory {
 fun ReportCategory.toReadableName(): String =
     when (this) {
         ReportCategory.Legal -> LocalStrings.current.reportCategoryLegal
-        ReportCategory.Other -> LocalStrings.current.reportCategoryOther
+        ReportCategory.Other -> LocalStrings.current.itemOther
         ReportCategory.Spam -> LocalStrings.current.reportCategorySpam
         ReportCategory.Violation -> LocalStrings.current.reportCategoryViolation
     }
