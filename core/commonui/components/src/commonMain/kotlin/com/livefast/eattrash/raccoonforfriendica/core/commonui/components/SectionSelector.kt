@@ -65,8 +65,9 @@ fun SectionSelector(
                         text = {
                             Text(
                                 text = title,
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.titleSmall,
                                 color = MaterialTheme.colorScheme.onBackground,
+                                maxLines = 1,
                             )
                         },
                         onClick = {
@@ -88,8 +89,9 @@ fun SectionSelector(
                         text = {
                             Text(
                                 text = title,
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.titleSmall,
                                 color = MaterialTheme.colorScheme.onBackground,
+                                maxLines = 1,
                             )
                         },
                         onClick = {

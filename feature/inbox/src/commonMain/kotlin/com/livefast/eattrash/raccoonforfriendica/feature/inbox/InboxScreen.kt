@@ -49,6 +49,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.ConfigureNotificationTypeDialog
@@ -232,8 +233,7 @@ class InboxScreen : Screen {
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        val isNearTheEnd =
-                            idx == uiState.notifications.lastIndex - 5 || uiState.notifications.size < 5
+                        val isNearTheEnd = idx.isNearTheEnd(uiState.notifications)
                         if (isNearTheEnd && canFetchMore) {
                             model.reduce(InboxMviModel.Intent.LoadNextPage)
                         }

@@ -47,6 +47,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Search
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
 import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
+import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -147,7 +148,7 @@ fun SelectUserDialog(
                         },
                     )
 
-                    val isNearTheEnd = idx == users.lastIndex - 5 || users.size < 5
+                    val isNearTheEnd = idx.isNearTheEnd(users)
                     if (isNearTheEnd && !loading && canFetchMore) {
                         onLoadMoreUsers?.invoke()
                     }
