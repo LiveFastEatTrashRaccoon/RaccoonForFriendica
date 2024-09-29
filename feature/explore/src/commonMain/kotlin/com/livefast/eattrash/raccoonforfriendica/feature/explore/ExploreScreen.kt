@@ -237,7 +237,6 @@ class ExploreScreen : Screen {
                                 uiState.availableSections.map {
                                     it.toReadableName()
                                 },
-                            scrollable = true,
                             currentSection = uiState.section.toInt(),
                             onSectionSelected = {
                                 val section = it.toExploreSection()
