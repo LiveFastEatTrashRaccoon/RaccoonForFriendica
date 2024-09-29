@@ -56,6 +56,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.toManageBlocksSection
@@ -238,8 +239,7 @@ class ManageBlocksScreen : Screen {
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        val isNearTheEnd =
-                            idx == uiState.items.lastIndex - 5 || uiState.items.size < 5
+                        val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                         if (isNearTheEnd && canFetchMore) {
                             model.reduce(ManageBlocksMviModel.Intent.LoadNextPage)
                         }

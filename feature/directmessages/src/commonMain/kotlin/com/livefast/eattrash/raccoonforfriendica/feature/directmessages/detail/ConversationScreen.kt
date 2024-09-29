@@ -68,6 +68,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
+import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItem
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItemPlaceholder
@@ -342,8 +343,7 @@ class ConversationScreen(
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        val isNearTheEnd =
-                            idx == uiState.items.lastIndex - 5 || uiState.items.size < 5
+                        val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                         if (isNearTheEnd && canFetchMore) {
                             model.reduce(ConversationMviModel.Intent.LoadNextPage)
                         }

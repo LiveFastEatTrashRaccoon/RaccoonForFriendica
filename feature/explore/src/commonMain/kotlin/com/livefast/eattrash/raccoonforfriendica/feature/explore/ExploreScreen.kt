@@ -72,6 +72,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoo
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -523,8 +524,7 @@ class ExploreScreen : Screen {
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        val isNearTheEnd =
-                            idx == uiState.items.lastIndex - 5 || uiState.items.size < 5
+                        val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                         if (isNearTheEnd && canFetchMore) {
                             model.reduce(ExploreMviModel.Intent.LoadNextPage)
                         }

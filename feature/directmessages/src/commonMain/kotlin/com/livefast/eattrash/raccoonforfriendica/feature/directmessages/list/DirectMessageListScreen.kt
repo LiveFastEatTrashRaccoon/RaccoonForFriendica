@@ -54,6 +54,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SelectUse
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.ConversationItem
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -215,8 +216,7 @@ class DirectMessageListScreen : Screen {
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        val isNearTheEnd =
-                            idx == uiState.items.lastIndex - 5 || uiState.items.size < 5
+                        val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                         if (isNearTheEnd && canFetchMore) {
                             model.reduce(DirectMessageListMviModel.Intent.LoadNextPage)
                         }

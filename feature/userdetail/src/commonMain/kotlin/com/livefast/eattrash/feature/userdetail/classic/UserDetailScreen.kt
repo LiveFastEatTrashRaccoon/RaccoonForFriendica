@@ -97,6 +97,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePaddi
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
@@ -672,8 +673,7 @@ class UserDetailScreen(
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        val isNearTheEnd =
-                            idx == uiState.entries.lastIndex - 5 || uiState.entries.size < 5
+                        val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
                         if (isNearTheEnd && canFetchMore) {
                             model.reduce(UserDetailMviModel.Intent.LoadNextPage)
                         }

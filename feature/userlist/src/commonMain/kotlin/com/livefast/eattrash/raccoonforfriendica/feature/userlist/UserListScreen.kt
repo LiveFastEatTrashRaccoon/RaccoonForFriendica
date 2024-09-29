@@ -47,6 +47,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemP
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toUserListType
@@ -270,8 +271,7 @@ class UserListScreen(
                         )
                         Spacer(modifier = Modifier.height(Spacing.interItem))
 
-                        val isNearTheEnd =
-                            idx == uiState.users.lastIndex - 5 || uiState.users.size < 5
+                        val isNearTheEnd = idx.isNearTheEnd(uiState.users)
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
                         if (isNearTheEnd && canFetchMore) {
