@@ -73,9 +73,11 @@ class TimelineViewModel(
                 settingsRepository.current,
                 apiConfigurationRepository.node,
                 identityRepository.currentUser,
-            ) { _, _, user ->
+            ) { settings, _, user ->
+                val hasSettings = settings != null
                 // wait until either there is a logged user if there are valid credentials stored
-                if (user != null || !apiConfigurationRepository.hasCachedAuthCredentials()) {
+                val hasUser = user != null || !apiConfigurationRepository.hasCachedAuthCredentials()
+                if (hasSettings && hasUser) {
                     refresh(initial = true)
                 }
             }.launchIn(this)
