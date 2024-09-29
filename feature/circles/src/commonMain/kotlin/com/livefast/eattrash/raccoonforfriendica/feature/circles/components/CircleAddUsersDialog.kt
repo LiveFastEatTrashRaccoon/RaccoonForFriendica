@@ -43,6 +43,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SearchField
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
 import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
@@ -245,12 +246,13 @@ private fun UserResultItem(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
-            Text(
+            TextWithCustomEmojis(
                 text = (user.displayName ?: user.username ?: "").ellipsize(30),
                 style = MaterialTheme.typography.bodyMedium,
                 color = fullColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                emojis = user.emojis,
             )
             Text(
                 text = (user.handle ?: "").ellipsize(25),
