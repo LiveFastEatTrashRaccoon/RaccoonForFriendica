@@ -369,4 +369,5 @@ internal val DeStrings =
         override val actionRemoveSpoiler = "Spoiler entfernen"
         override val actionRevealContent = "Inhalt enthüllen"
         override val settingsItemExcludeRepliesFromTimeline = "Antworten aus der Zeitleiste ausschließen"
+        override val insertEmojiTitle = "Emoji einfügen"
     }

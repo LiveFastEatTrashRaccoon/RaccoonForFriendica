@@ -15,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
@@ -37,6 +38,7 @@ class MyAccountViewModel(
     private val notificationCenter: NotificationCenter,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
+    private val emojiRepository: EmojiRepository,
 ) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
         initialState = MyAccountMviModel.State(),
     ),
@@ -52,11 +54,20 @@ class MyAccountViewModel(
                     val cachedPaginationState = myAccountCache.retrievePaginationState()
                     if (cachedUser?.id != userId) {
                         delay(50)
-                        val currentUser = userRepository.getById(userId)
+                        val currentUser =
+                            with(emojiRepository) {
+                                userRepository.getById(userId)?.withEmojisIfMissing()
+                            }
                         updateState { it.copy(user = currentUser) }
                         refresh(initial = true)
                     } else {
-                        updateState { it.copy(user = cachedUser) }
+                        val currentUser =
+                            with(emojiRepository) {
+                                cachedUser.withEmojisIfMissing()
+                            }
+                        updateState {
+                            it.copy(user = currentUser)
+                        }
                         if (cachedPaginationState != null) {
                             paginationManager.restoreState(cachedPaginationState)
                             val cachedHistory = paginationManager.history

@@ -93,7 +93,7 @@ fun ConfirmMuteUserBottomSheet(
                 style = MaterialTheme.typography.titleMedium,
             )
 
-            Spacer(modifier = Modifier.height(Spacing.xs))
+            Spacer(modifier = Modifier.height(Spacing.s))
 
             SettingsRow(
                 title = LocalStrings.current.muteDurationItem,

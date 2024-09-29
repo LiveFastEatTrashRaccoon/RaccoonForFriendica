@@ -25,7 +25,7 @@ fun UserFields(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
     Column(
-        modifier = modifier.padding(horizontal = Spacing.m),
+        modifier = modifier.padding(horizontal = Spacing.s),
     ) {
         for (field in fields) {
             Row {

@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.edit
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,8 +20,10 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.BuildCircle
 import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,24 +48,34 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EditFieldItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.InsertEmojiBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsImageInfo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
@@ -90,6 +103,9 @@ class EditProfileScreen : Screen {
         var openAvatarPicker by remember { mutableStateOf(false) }
         var openHeaderPicker by remember { mutableStateOf(false) }
         val focusManager = LocalFocusManager.current
+        var hasDisplayNameFocus by remember { mutableStateOf(false) }
+        var hasBioFocus by remember { mutableStateOf(false) }
+        var insertEmojiModalOpen by remember { mutableStateOf(false) }
 
         fun goBackToTop() {
             runCatching {
@@ -152,6 +168,68 @@ class EditProfileScreen : Screen {
                         }
                     },
                     actions = {
+                        val options =
+                            buildList {
+                                if (uiState.availableEmojis.isNotEmpty()) {
+                                    this +=
+                                        CustomOptions.InsertCustomEmoji.toOption(
+                                            label = LocalStrings.current.insertEmojiTitle,
+                                        )
+                                }
+                            }
+                        if (options.isNotEmpty()) {
+                            Box {
+                                var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+                                var optionsMenuOpen by remember { mutableStateOf(false) }
+                                IconButton(
+                                    modifier =
+                                        Modifier.onGloballyPositioned {
+                                            optionsOffset = it.positionInParent()
+                                        },
+                                    onClick = {
+                                        optionsMenuOpen = true
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.MoreVert,
+                                        contentDescription = null,
+                                    )
+                                }
+
+                                CustomDropDown(
+                                    expanded = optionsMenuOpen,
+                                    onDismiss = {
+                                        optionsMenuOpen = false
+                                    },
+                                    offset =
+                                        with(LocalDensity.current) {
+                                            DpOffset(
+                                                x = optionsOffset.x.toDp(),
+                                                y = optionsOffset.y.toDp(),
+                                            )
+                                        },
+                                ) {
+                                    for (option in options) {
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(option.label)
+                                            },
+                                            onClick = {
+                                                optionsMenuOpen = false
+                                                when (option.id) {
+                                                    CustomOptions.InsertCustomEmoji -> {
+                                                        insertEmojiModalOpen = true
+                                                    }
+
+                                                    else -> Unit
+                                                }
+                                            },
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
                         Button(
                             enabled = uiState.hasUnsavedChanges,
                             onClick = {
@@ -195,7 +273,10 @@ class EditProfileScreen : Screen {
                         modifier =
                             Modifier
                                 .padding(horizontal = Spacing.s)
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                .onFocusChanged {
+                                    hasDisplayNameFocus = it.hasFocus
+                                },
                         label = {
                             Text(text = LocalStrings.current.editProfileItemDisplayName)
                         },
@@ -223,7 +304,10 @@ class EditProfileScreen : Screen {
                             Modifier
                                 .padding(horizontal = Spacing.s)
                                 .fillMaxWidth()
-                                .height(200.dp),
+                                .height(200.dp)
+                                .onFocusChanged {
+                                    hasBioFocus = it.hasFocus
+                                },
                         label = {
                             Text(text = LocalStrings.current.editProfileItemBio)
                         },
@@ -382,6 +466,27 @@ class EditProfileScreen : Screen {
             }
         }
 
+        if (insertEmojiModalOpen) {
+            InsertEmojiBottomSheet(
+                emojis = uiState.availableEmojis,
+                onClose = {
+                    insertEmojiModalOpen = false
+                },
+                onInsert = { emoji ->
+                    model.reduce(
+                        EditProfileMviModel.Intent.InsertCustomEmoji(
+                            fieldType =
+                                when {
+                                    hasDisplayNameFocus -> EditProfilerFieldType.DisplayName
+                                    else -> EditProfilerFieldType.Bio
+                                },
+                            emoji = emoji,
+                        ),
+                    )
+                },
+            )
+        }
+
         if (confirmBackWithUnsavedChangesDialog) {
             CustomConfirmDialog(
                 title = LocalStrings.current.unsavedChangesTitle,
@@ -395,4 +500,8 @@ class EditProfileScreen : Screen {
             )
         }
     }
+}
+
+private sealed interface CustomOptions : OptionId.Custom {
+    data object InsertCustomEmoji : CustomOptions
 }

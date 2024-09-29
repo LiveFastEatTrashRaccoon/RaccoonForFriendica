@@ -23,6 +23,7 @@ val featureComposerModule =
                 scheduledEntryRepository = get(),
                 draftRepository = get(),
                 settingsRepository = get(),
+                emojiRepository = get(),
                 notificationCenter = get(),
             )
         }
