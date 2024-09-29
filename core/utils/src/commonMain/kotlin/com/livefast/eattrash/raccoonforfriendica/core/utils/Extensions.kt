@@ -23,3 +23,5 @@ val String?.nodeName: String?
                     ""
         }
     }.takeIf { it.isNotEmpty() }
+
+fun Int.isNearTheEnd(list: List<*>): Boolean = this >= list.lastIndex - 5 || list.size <= 5
