@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
@@ -26,6 +28,8 @@ internal class DefaultActiveAccountMonitor(
     private val accountCredentialsCache: AccountCredentialsCache,
     private val settingsRepository: SettingsRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
+    private val inboxManager: InboxManager,
+    private val contentPreloadManager: ContentPreloadManager,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ActiveAccountMonitor {
     private val scope = CoroutineScope(SupervisorJob() + coroutineDispatcher)
@@ -37,6 +41,12 @@ internal class DefaultActiveAccountMonitor(
                 .distinctUntilChanged()
                 .onEach { account ->
                     process(account)
+                }.launchIn(this)
+            apiConfigurationRepository.node
+                .onEach {
+                    if (accountRepository.getActive()?.remoteId.isNullOrEmpty()) {
+                        process(null)
+                    }
                 }.launchIn(this)
         }
     }
@@ -55,20 +65,35 @@ internal class DefaultActiveAccountMonitor(
     private suspend fun process(account: AccountModel?) {
         if (account == null) {
             apiConfigurationRepository.setAuth(null)
+
             identityRepository.refreshCurrentUser(null)
+
             supportedFeatureRepository.refresh()
+
+            contentPreloadManager.preload()
+
             return
         }
 
         val node = account.handle.nodeName ?: apiConfigurationRepository.defaultNode
         apiConfigurationRepository.changeNode(node)
+
         val credentials = accountCredentialsCache.get(account.id)
         apiConfigurationRepository.setAuth(credentials)
 
+        val defaultSettings = settingsRepository.get(account.id) ?: SettingsModel()
+
+        contentPreloadManager.preload(
+            userRemoteId = account.remoteId,
+            defaultTimelineType = defaultSettings.defaultTimelineType.toTimelineType(),
+        )
+
         identityRepository.refreshCurrentUser(account.remoteId)
+
         supportedFeatureRepository.refresh()
 
-        val defaultSettings = settingsRepository.get(account.id) ?: SettingsModel()
         settingsRepository.changeCurrent(defaultSettings)
+
+        inboxManager.refreshUnreadCount()
     }
 }
