@@ -102,9 +102,6 @@ class InboxScreen : Screen {
                     }
                 }.launchIn(this)
         }
-        LaunchedEffect(uiState.currentUserId) {
-            goBackToTop()
-        }
 
         Scaffold(
             topBar = {
