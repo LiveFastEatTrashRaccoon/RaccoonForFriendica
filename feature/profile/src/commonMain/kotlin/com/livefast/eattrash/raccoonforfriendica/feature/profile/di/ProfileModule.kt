@@ -4,8 +4,6 @@ import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.AnonymousMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.AnonymousViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.DefaultMyAccountCache
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.MyAccountCache
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
@@ -21,7 +19,6 @@ val featureProfileModule =
                 logoutUseCase = get(),
                 switchAccountUseCase = get(),
                 deleteAccountUseCase = get(),
-                myAccountCache = get(),
                 authManager = get(),
             )
         }
@@ -31,7 +28,6 @@ val featureProfileModule =
                 userRepository = get(),
                 paginationManager = get(),
                 timelineEntryRepository = get(),
-                myAccountCache = get(),
                 settingsRepository = get(),
                 hapticFeedback = get(),
                 notificationCenter = get(),
@@ -44,9 +40,6 @@ val featureProfileModule =
             AnonymousViewModel(
                 authManager = get(),
             )
-        }
-        single<MyAccountCache> {
-            DefaultMyAccountCache()
         }
         factory<EditProfileMviModel> {
             EditProfileViewModel(
