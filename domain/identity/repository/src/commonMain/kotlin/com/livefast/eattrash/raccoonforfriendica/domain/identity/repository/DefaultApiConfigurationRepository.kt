@@ -14,10 +14,11 @@ internal class DefaultApiConfigurationRepository(
     override val node = MutableStateFlow("")
     override val isLogged = MutableStateFlow(false)
 
-    override val defaultNode: String = DEFAULT_NODE
+    override val defaultNode: String
+        get() = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
 
     override suspend fun initialize() {
-        val node = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
+        val node = defaultNode
         changeNode(node)
 
         val credentials = retrieveFromKeyStore()
