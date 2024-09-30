@@ -7,6 +7,7 @@ sealed interface TimelinePaginationSpecification {
         val timelineType: TimelineType,
         val excludeReplies: Boolean = false,
         val includeNsfw: Boolean = true,
+        val refresh: Boolean = false,
     ) : TimelinePaginationSpecification
 
     data class Hashtag(
@@ -21,6 +22,8 @@ sealed interface TimelinePaginationSpecification {
         val excludeReblogs: Boolean = false,
         val pinned: Boolean = false,
         val includeNsfw: Boolean = true,
+        val enableCache: Boolean = false,
+        val refresh: Boolean = false,
     ) : TimelinePaginationSpecification
 
     data class Forum(

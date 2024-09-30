@@ -95,10 +95,14 @@ internal class DefaultExplorePaginationManager(
 
         val results =
             when (specification) {
-                ExplorePaginationSpecification.Hashtags ->
-                    trendingRepository.getHashtags(offset)?.map {
-                        ExploreItemModel.HashTag(it)
-                    }
+                is ExplorePaginationSpecification.Hashtags ->
+                    trendingRepository
+                        .getHashtags(
+                            offset = offset,
+                            refresh = specification.refresh,
+                        )?.map {
+                            ExploreItemModel.HashTag(it)
+                        }
 
                 ExplorePaginationSpecification.Links ->
                     trendingRepository.getLinks(offset)?.mapNotNull {

@@ -9,7 +9,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SwitchAccountUseCase
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.MyAccountCache
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -20,7 +19,6 @@ class ProfileViewModel(
     private val logoutUseCase: LogoutUseCase,
     private val switchAccountUseCase: SwitchAccountUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
-    private val myAccountCache: MyAccountCache,
     private val authManager: AuthManager,
 ) : DefaultMviModel<ProfileMviModel.Intent, ProfileMviModel.State, ProfileMviModel.Effect>(
         initialState = ProfileMviModel.State(),
@@ -33,9 +31,6 @@ class ProfileViewModel(
                     updateState {
                         it.copy(currentUserId = currentUser?.id)
                     }
-                    if (currentUser == null) {
-                        myAccountCache.clear()
-                    }
                 }.launchIn(this)
 
             accountRepository
@@ -47,11 +42,6 @@ class ProfileViewModel(
                     }
                 }.launchIn(this)
         }
-    }
-
-    override fun onDispose() {
-        super.onDispose()
-        myAccountCache.clear()
     }
 
     override fun reduce(intent: ProfileMviModel.Intent) {

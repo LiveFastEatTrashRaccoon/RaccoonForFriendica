@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ContentPreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.CustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultActiveAccountMonitor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultContentPreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultDeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultEntryActionRepository
@@ -73,12 +75,23 @@ val domainIdentityUseCaseModule =
                 settingsRepository = get(),
                 accountCredentialsCache = get(),
                 supportedFeatureRepository = get(),
+                inboxManager = get(),
+                contentPreloadManager = get(),
             )
         }
         single<EntryActionRepository> {
             DefaultEntryActionRepository(
                 identityRepository = get(),
                 supportedFeatureRepository = get(),
+            )
+        }
+        single<ContentPreloadManager> {
+            DefaultContentPreloadManager(
+                timelineRepository = get(),
+                timelineEntryRepository = get(),
+                trendingRepository = get(),
+                notificationRepository = get(),
+                userRepository = get(),
             )
         }
     }

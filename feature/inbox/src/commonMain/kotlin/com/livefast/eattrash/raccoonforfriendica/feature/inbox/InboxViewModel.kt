@@ -42,7 +42,7 @@ class InboxViewModel(
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState {
-                        it.copy(isLogged = currentUser != null)
+                        it.copy(currentUserId = currentUser?.id)
                     }
                     refresh(initial = true)
                 }.launchIn(this)
@@ -64,7 +64,6 @@ class InboxViewModel(
                 screenModelScope.launch {
                     markAllAsRead()
                     refresh()
-                    inboxManager.refreshUnreadCount()
                 }
 
             is InboxMviModel.Intent.ChangeSelectedNotificationTypes ->
@@ -91,9 +90,14 @@ class InboxViewModel(
             NotificationsPaginationSpecification.Default(
                 types = uiState.value.selectedNotificationTypes,
                 includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                refresh = !initial,
             ),
         )
         loadNextPage()
+
+        if (!initial) {
+            inboxManager.refreshUnreadCount()
+        }
     }
 
     private suspend fun loadNextPage() {

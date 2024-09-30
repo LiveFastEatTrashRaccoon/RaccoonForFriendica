@@ -10,32 +10,73 @@ import kotlinx.coroutines.withContext
 internal class DefaultTimelineRepository(
     private val provider: ServiceProvider,
 ) : TimelineRepository {
-    override suspend fun getPublic(pageCursor: String?): List<TimelineEntryModel>? =
+    private val cachedValues: MutableList<TimelineEntryModel> = mutableListOf()
+
+    override suspend fun getPublic(
+        pageCursor: String?,
+        refresh: Boolean,
+    ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
+            if (refresh) {
+                cachedValues.clear()
+            }
+            if (pageCursor == null && cachedValues.isNotEmpty()) {
+                return@withContext cachedValues
+            }
             runCatching {
                 val response =
                     provider.timeline.getPublic(
                         maxId = pageCursor,
                         limit = DEFAULT_PAGE_SIZE,
                     )
-                response.map { it.toModelWithReply() }
+                response
+                    .map { it.toModelWithReply() }
+                    .also {
+                        if (pageCursor == null) {
+                            cachedValues.addAll(it)
+                        }
+                    }
             }.getOrNull()
         }
 
-    override suspend fun getHome(pageCursor: String?): List<TimelineEntryModel>? =
+    override suspend fun getHome(
+        pageCursor: String?,
+        refresh: Boolean,
+    ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
+            if (refresh) {
+                cachedValues.clear()
+            }
+            if (pageCursor == null && cachedValues.isNotEmpty()) {
+                return@withContext cachedValues
+            }
             runCatching {
                 val response =
                     provider.timeline.getHome(
                         maxId = pageCursor,
                         limit = DEFAULT_PAGE_SIZE,
                     )
-                response.map { it.toModelWithReply() }
+                response
+                    .map { it.toModelWithReply() }
+                    .also {
+                        if (pageCursor == null) {
+                            cachedValues.addAll(it)
+                        }
+                    }
             }.getOrNull()
         }
 
-    override suspend fun getLocal(pageCursor: String?): List<TimelineEntryModel>? =
+    override suspend fun getLocal(
+        pageCursor: String?,
+        refresh: Boolean,
+    ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
+            if (refresh) {
+                cachedValues.clear()
+            }
+            if (pageCursor == null && cachedValues.isNotEmpty()) {
+                return@withContext cachedValues
+            }
             runCatching {
                 val response =
                     provider.timeline.getPublic(
@@ -43,7 +84,13 @@ internal class DefaultTimelineRepository(
                         limit = DEFAULT_PAGE_SIZE,
                         local = true,
                     )
-                response.map { it.toModelWithReply() }
+                response
+                    .map { it.toModelWithReply() }
+                    .also {
+                        if (pageCursor == null) {
+                            cachedValues.addAll(it)
+                        }
+                    }
             }.getOrNull()
         }
 

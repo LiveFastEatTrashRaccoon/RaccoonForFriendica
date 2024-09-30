@@ -102,6 +102,9 @@ class InboxScreen : Screen {
                     }
                 }.launchIn(this)
         }
+        LaunchedEffect(uiState.currentUserId) {
+            goBackToTop()
+        }
 
         Scaffold(
             topBar = {
@@ -254,7 +257,7 @@ class InboxScreen : Screen {
                             Text(
                                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
                                 text =
-                                    if (uiState.isLogged) {
+                                    if (uiState.currentUserId != null) {
                                         LocalStrings.current.messageEmptyInbox
                                     } else {
                                         LocalStrings.current.messageUserUnlogged

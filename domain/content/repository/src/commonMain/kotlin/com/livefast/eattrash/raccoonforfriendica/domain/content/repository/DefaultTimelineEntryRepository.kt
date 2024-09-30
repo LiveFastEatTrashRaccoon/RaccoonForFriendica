@@ -23,6 +23,10 @@ import kotlin.time.Duration
 internal class DefaultTimelineEntryRepository(
     private val provider: ServiceProvider,
 ) : TimelineEntryRepository {
+    private val cachedValues: MutableList<TimelineEntryModel> = mutableListOf()
+
+    override fun getCachedOwnEntries(): List<TimelineEntryModel> = cachedValues
+
     override suspend fun getByUser(
         userId: String,
         pageCursor: String?,
@@ -30,8 +34,16 @@ internal class DefaultTimelineEntryRepository(
         excludeReblogs: Boolean,
         pinned: Boolean,
         onlyMedia: Boolean,
+        enableCache: Boolean,
+        refresh: Boolean,
     ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
+            if (refresh) {
+                cachedValues.clear()
+            }
+            if (pageCursor == null && cachedValues.isNotEmpty() && enableCache) {
+                return@withContext cachedValues
+            }
             runCatching {
                 provider.users
                     .getStatuses(
@@ -43,6 +55,11 @@ internal class DefaultTimelineEntryRepository(
                         onlyMedia = onlyMedia,
                         limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
                     ).map { it.toModelWithReply() }
+                    .also {
+                        if (pageCursor == null && enableCache) {
+                            cachedValues.addAll(it)
+                        }
+                    }
             }.getOrNull()
         }
 

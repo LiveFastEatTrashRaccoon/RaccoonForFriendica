@@ -139,8 +139,11 @@ class ExploreViewModel(
         }
         paginationManager.reset(
             when (uiState.value.section) {
-                ExploreSection.Hashtags -> ExplorePaginationSpecification.Hashtags
-                ExploreSection.Links -> ExplorePaginationSpecification.Links
+                ExploreSection.Hashtags ->
+                    ExplorePaginationSpecification.Hashtags(refresh = !initial)
+
+                ExploreSection.Links ->
+                    ExplorePaginationSpecification.Links
                 ExploreSection.Posts ->
                     ExplorePaginationSpecification.Posts(
                         includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,

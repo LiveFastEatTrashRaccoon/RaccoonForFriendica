@@ -72,19 +72,22 @@ internal class DefaultTimelinePaginationManager(
             when (specification) {
                 is TimelinePaginationSpecification.Feed -> {
                     when (specification.timelineType) {
-                        TimelineType.All ->
+                        is TimelineType.All ->
                             timelineRepository.getPublic(
                                 pageCursor = pageCursor,
+                                refresh = specification.refresh,
                             )
 
-                        TimelineType.Subscriptions ->
+                        is TimelineType.Subscriptions ->
                             timelineRepository.getHome(
                                 pageCursor = pageCursor,
+                                refresh = specification.refresh,
                             )
 
-                        TimelineType.Local ->
+                        is TimelineType.Local ->
                             timelineRepository.getLocal(
                                 pageCursor = pageCursor,
+                                refresh = specification.refresh,
                             )
 
                         is TimelineType.Circle ->
@@ -121,6 +124,8 @@ internal class DefaultTimelinePaginationManager(
                             excludeReblogs = specification.excludeReblogs,
                             onlyMedia = specification.onlyMedia,
                             pinned = specification.pinned,
+                            enableCache = specification.enableCache,
+                            refresh = specification.refresh,
                         )
                         // intended: there is a bug in user pagination
                         ?.deduplicate()

@@ -13,6 +13,8 @@ import kotlinx.coroutines.withContext
 internal class DefaultTrendingRepository(
     private val provider: ServiceProvider,
 ) : TrendingRepository {
+    private val cachedTags: MutableList<TagModel> = mutableListOf()
+
     override suspend fun getEntries(offset: Int): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
@@ -26,8 +28,17 @@ internal class DefaultTrendingRepository(
             }.getOrNull()
         }
 
-    override suspend fun getHashtags(offset: Int): List<TagModel>? =
+    override suspend fun getHashtags(
+        offset: Int,
+        refresh: Boolean,
+    ): List<TagModel>? =
         withContext(Dispatchers.IO) {
+            if (refresh) {
+                cachedTags.clear()
+            }
+            if (offset == 0 && cachedTags.isNotEmpty()) {
+                return@withContext cachedTags
+            }
             runCatching {
                 val response =
                     provider.trends
@@ -35,7 +46,13 @@ internal class DefaultTrendingRepository(
                             offset = offset,
                             limit = DEFAULT_PAGE_SIZE,
                         )
-                response.map { it.toModel() }
+                response
+                    .map { it.toModel() }
+                    .also {
+                        if (offset == 0) {
+                            cachedTags.addAll(it)
+                        }
+                    }
             }.getOrNull()
         }
 

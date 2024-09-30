@@ -5,7 +5,9 @@ sealed interface ExplorePaginationSpecification {
         val includeNsfw: Boolean = true,
     ) : ExplorePaginationSpecification
 
-    data object Hashtags : ExplorePaginationSpecification
+    data class Hashtags(
+        val refresh: Boolean = false,
+    ) : ExplorePaginationSpecification
 
     data object Links : ExplorePaginationSpecification
 
