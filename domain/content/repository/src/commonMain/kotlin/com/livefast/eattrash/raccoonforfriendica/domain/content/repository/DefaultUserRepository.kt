@@ -23,6 +23,8 @@ import kotlinx.coroutines.withContext
 internal class DefaultUserRepository(
     private val provider: ServiceProvider,
 ) : UserRepository {
+    private var cachedUser: UserModel? = null
+
     override suspend fun getById(id: String): UserModel? =
         withContext(Dispatchers.IO) {
             runCatching {
@@ -63,11 +65,20 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
-    override suspend fun getCurrent(): UserModel? =
+    override suspend fun getCurrent(refresh: Boolean): UserModel? =
         withContext(Dispatchers.IO) {
+            if (refresh) {
+                cachedUser = null
+            }
+            val fromCache = cachedUser
+            if (fromCache != null) {
+                return@withContext fromCache
+            }
             runCatching {
                 provider.users.verifyCredentials().toModel()
-            }.getOrNull()
+            }.getOrNull().also {
+                cachedUser = it
+            }
         }
 
     override suspend fun getRelationships(ids: List<String>): List<RelationshipModel>? =

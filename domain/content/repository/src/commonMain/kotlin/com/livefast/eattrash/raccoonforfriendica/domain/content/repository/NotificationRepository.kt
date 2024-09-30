@@ -5,9 +5,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 
 interface NotificationRepository {
     suspend fun getAll(
-        types: List<NotificationType> = emptyList(),
+        types: List<NotificationType> = NotificationType.ALL,
         includeAll: Boolean = false,
         pageCursor: String? = null,
+        refresh: Boolean = false,
     ): List<NotificationModel>?
 
     suspend fun markAsRead(id: String): Boolean

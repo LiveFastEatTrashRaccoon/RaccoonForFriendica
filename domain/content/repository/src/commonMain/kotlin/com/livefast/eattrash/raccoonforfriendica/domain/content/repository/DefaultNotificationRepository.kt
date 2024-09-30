@@ -12,12 +12,21 @@ import kotlinx.coroutines.withContext
 internal class DefaultNotificationRepository(
     private val provider: ServiceProvider,
 ) : NotificationRepository {
+    private val cachedValues: MutableList<NotificationModel> = mutableListOf()
+
     override suspend fun getAll(
         types: List<NotificationType>,
         includeAll: Boolean,
         pageCursor: String?,
+        refresh: Boolean,
     ): List<NotificationModel>? =
         withContext(Dispatchers.IO) {
+            if (refresh) {
+                cachedValues.clear()
+            }
+            if (pageCursor == null && cachedValues.isNotEmpty()) {
+                return@withContext cachedValues
+            }
             runCatching {
                 val response =
                     provider.notifications.get(
@@ -26,7 +35,13 @@ internal class DefaultNotificationRepository(
                         includeAll = includeAll,
                         limit = DEFAULT_PAGE_SIZE,
                     )
-                response.map { it.toModel() }
+                response
+                    .map { it.toModel() }
+                    .also {
+                        if (pageCursor == null) {
+                            cachedValues.addAll(it)
+                        }
+                    }
             }.getOrNull()
         }
 
