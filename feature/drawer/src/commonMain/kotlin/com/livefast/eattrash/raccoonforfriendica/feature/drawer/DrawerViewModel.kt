@@ -94,6 +94,7 @@ class DrawerViewModel(
                 if (newNode.isBlank()) {
                     ValidationError.MissingField
                 } else {
+                    updateState { it.copy(anonymousChangeNodeValidationInProgress = true) }
                     val isNodeValid = credentialsRepository.validateNode(newNode)
                     if (!isNodeValid) {
                         ValidationError.InvalidField
@@ -104,6 +105,7 @@ class DrawerViewModel(
             updateState {
                 it.copy(
                     anonymousChangeNodeNameError = nodeNameError,
+                    anonymousChangeNodeValidationInProgress = false,
                 )
             }
 

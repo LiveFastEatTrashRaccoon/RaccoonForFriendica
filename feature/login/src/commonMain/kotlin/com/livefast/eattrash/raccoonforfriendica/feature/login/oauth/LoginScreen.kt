@@ -15,7 +15,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,7 +25,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -46,8 +44,10 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.DefaultFriendicaInstances
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
 import kotlinx.coroutines.flow.launchIn
@@ -147,12 +147,20 @@ class LoginScreen : Screen {
                 Spacer(modifier = Modifier.height(Spacing.s))
 
                 // instance name
-                TextField(
+                SpinnerField(
                     modifier = Modifier.fillMaxWidth(),
                     label = {
-                        Text(text = LocalStrings.current.fieldNodeName)
+                        Text(
+                            text = LocalStrings.current.fieldNodeName,
+                        )
                     },
-                    singleLine = true,
+                    values =
+                        buildList {
+                            for (instance in DefaultFriendicaInstances) {
+                                this += instance to instance
+                            }
+                            this += LocalStrings.current.itemOther to ""
+                        },
                     value = uiState.nodeName,
                     isError = uiState.nodeNameError != null,
                     keyboardOptions =
@@ -167,7 +175,7 @@ class LoginScreen : Screen {
                                 model.reduce(LoginMviModel.Intent.Submit)
                             },
                         ),
-                        onValueChange = { value ->
+                    onValueChange = { value ->
                         model.reduce(LoginMviModel.Intent.SetNodeName(value))
                     },
                     supportingText = {
@@ -177,20 +185,6 @@ class LoginScreen : Screen {
                                 text = error.toReadableMessage(),
                                 color = MaterialTheme.colorScheme.error,
                             )
-                        }
-                    },
-                    trailingIcon = {
-                        if (uiState.nodeName.isNotEmpty()) {
-                            IconButton(
-                                onClick = {
-                                    model.reduce(LoginMviModel.Intent.SetNodeName(""))
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Clear,
-                                    contentDescription = null,
-                                )
-                            }
                         }
                     },
                 )

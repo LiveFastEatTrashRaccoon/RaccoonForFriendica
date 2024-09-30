@@ -289,7 +289,7 @@ interface Strings {
     val settingsItemDefaultPostVisibility: String
     val settingsItemDefaultReplyVisibility: String
     val reportCategoryLegal: String
-    val reportCategoryOther: String
+    val itemOther: String
     val reportCategorySpam: String
     val reportCategoryViolation: String
     val messageMissingRules: String
