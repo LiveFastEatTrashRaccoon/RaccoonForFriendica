@@ -23,6 +23,7 @@ internal class DefaultIdentityRepository(
                         username = user.username,
                         avatar = user.avatar,
                         displayName = user.displayName,
+                        header = user.header,
                     )
                 }
             } catch (e: Throwable) {
