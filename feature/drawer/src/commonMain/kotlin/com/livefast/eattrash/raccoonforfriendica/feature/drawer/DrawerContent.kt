@@ -62,8 +62,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.utils.DefaultFriendicaInstances
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerShortcut
 import kotlinx.coroutines.delay
@@ -306,7 +306,11 @@ class DrawerContent : Screen {
                         values =
                             buildList {
                                 for (instance in DefaultFriendicaInstances) {
-                                    this += instance to instance
+                                    this += buildString {
+                                        append(instance.value)
+                                        append("  ")
+                                        append(instance.lang)
+                                    } to instance.value
                                 }
                                 this += LocalStrings.current.itemOther to ""
                             },
