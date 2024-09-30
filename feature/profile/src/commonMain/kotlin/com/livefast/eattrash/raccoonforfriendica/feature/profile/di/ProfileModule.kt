@@ -37,7 +37,7 @@ val featureProfileModule =
                 notificationCenter = get(),
                 imagePreloadManager = get(),
                 blurHashRepository = get(),
-                emojiRepository = get(),
+                emojiHelper = get(),
             )
         }
         factory<AnonymousMviModel> {
