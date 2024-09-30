@@ -6,7 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,7 +23,7 @@ internal class DefaultUserPaginationManager(
     private val userRepository: UserRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val circlesRepository: CirclesRepository,
-    private val emojiRepository: EmojiRepository,
+    private val emojiHelper: EmojiHelper,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : UserPaginationManager {
@@ -213,7 +213,7 @@ internal class DefaultUserPaginationManager(
         }
 
     private suspend fun List<UserModel>.fixupCreatorEmojis(): List<UserModel> =
-        with(emojiRepository) {
+        with(emojiHelper) {
             map {
                 it.withEmojisIfMissing()
             }

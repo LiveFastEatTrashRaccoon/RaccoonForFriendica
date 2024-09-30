@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Circl
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultCirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultDirectMessageRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultDraftRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultEmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultEmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultInboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultLocalItemCache
@@ -25,6 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
@@ -148,6 +150,11 @@ val domainContentRepositoryModule =
             DefaultEmojiRepository(
                 provider = get(named("default")),
                 otherProvider = get(named("other")),
+            )
+        }
+        single<EmojiHelper> {
+            DefaultEmojiHelper(
+                repository = get(),
             )
         }
     }

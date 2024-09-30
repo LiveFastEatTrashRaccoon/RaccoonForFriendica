@@ -8,7 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,7 +25,7 @@ import kotlinx.coroutines.sync.withLock
 internal class DefaultExplorePaginationManager(
     private val trendingRepository: TrendingRepository,
     private val userRepository: UserRepository,
-    private val emojiRepository: EmojiRepository,
+    private val emojiHelper: EmojiHelper,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ExplorePaginationManager {
@@ -168,7 +168,7 @@ internal class DefaultExplorePaginationManager(
         }
 
     private suspend fun List<ExploreItemModel>.fixupCreatorEmojis(): List<ExploreItemModel> =
-        with(emojiRepository) {
+        with(emojiHelper) {
             map {
                 when (it) {
                     is ExploreItemModel.Entry -> it.copy(entry = it.entry.withEmojisIfMissing())

@@ -2,11 +2,11 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 
 internal class DefaultDirectMessagesPaginationManager(
     private val directMessageRepository: DirectMessageRepository,
-    private val emojiRepository: EmojiRepository,
+    private val emojiHelper: EmojiHelper,
 ) : DirectMessagesPaginationManager {
     private var specification: DirectMessagesPaginationSpecification? = null
     private var page = 1
@@ -64,7 +64,7 @@ internal class DefaultDirectMessagesPaginationManager(
         }.distinctBy { it.id }
 
     private suspend fun List<DirectMessageModel>.fixupCreatorEmojis(): List<DirectMessageModel> =
-        with(emojiRepository) {
+        with(emojiHelper) {
             map {
                 it.copy(
                     recipient = it.recipient?.withEmojisIfMissing(),
