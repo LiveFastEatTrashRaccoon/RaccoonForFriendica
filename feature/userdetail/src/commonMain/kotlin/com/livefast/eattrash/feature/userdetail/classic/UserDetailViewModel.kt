@@ -18,7 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -41,7 +41,7 @@ class UserDetailViewModel(
     private val notificationCenter: NotificationCenter,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
-    private val emojiRepository: EmojiRepository,
+    private val emojiHelper: EmojiHelper,
 ) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
         initialState = UserDetailMviModel.State(),
     ),
@@ -121,7 +121,7 @@ class UserDetailViewModel(
 
     private suspend fun loadUser() {
         val user =
-            with(emojiRepository) {
+            with(emojiHelper) {
                 userCache.get(id)?.withEmojisIfMissing()
             }
         updateState { it.copy(user = user) }
