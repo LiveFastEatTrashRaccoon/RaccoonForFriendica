@@ -17,6 +17,12 @@ val DefaultFriendicaInstances =
         this +=
             FriendicaInstance(
                 lang = "🇬🇧",
+                mau = 18,
+                value = "friendica.world",
+            )
+        this +=
+            FriendicaInstance(
+                lang = "🇬🇧",
                 mau = 194,
                 value = "libranet.de",
             )
@@ -49,12 +55,6 @@ val DefaultFriendicaInstances =
                 lang = "🇬🇧",
                 mau = 54,
                 value = "social.trom.tf",
-            )
-        this +=
-            FriendicaInstance(
-                lang = "🇩🇪",
-                mau = 83,
-                value = "squeet.me",
             )
         this +=
             FriendicaInstance(
