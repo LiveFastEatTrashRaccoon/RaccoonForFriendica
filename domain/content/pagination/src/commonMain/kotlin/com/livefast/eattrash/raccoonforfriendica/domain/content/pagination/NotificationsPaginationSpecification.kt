@@ -6,5 +6,6 @@ sealed interface NotificationsPaginationSpecification {
     data class Default(
         val types: List<NotificationType>,
         val includeNsfw: Boolean = true,
+        val refresh: Boolean = false,
     ) : NotificationsPaginationSpecification
 }

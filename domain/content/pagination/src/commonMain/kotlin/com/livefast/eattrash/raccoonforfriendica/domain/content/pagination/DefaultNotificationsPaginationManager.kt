@@ -37,6 +37,7 @@ internal class DefaultNotificationsPaginationManager(
                             pageCursor = pageCursor,
                             types = specification.types,
                             includeAll = specification.types.toSet() == NotificationType.ALL.toSet(),
+                            refresh = specification.refresh,
                         )?.determineRelationshipStatus()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
