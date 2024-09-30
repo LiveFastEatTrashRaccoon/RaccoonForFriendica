@@ -30,14 +30,14 @@ val domainContentPaginationModule =
             DefaultTimelinePaginationManager(
                 timelineRepository = get(),
                 timelineEntryRepository = get(),
-                emojiRepository = get(),
+                emojiHelper = get(),
                 notificationCenter = get(),
             )
         }
         factory<NotificationsPaginationManager> {
             DefaultNotificationsPaginationManager(
                 notificationRepository = get(),
-                emojiRepository = get(),
+                emojiHelper = get(),
                 userRepository = get(),
             )
         }
@@ -45,7 +45,7 @@ val domainContentPaginationModule =
             DefaultExplorePaginationManager(
                 trendingRepository = get(),
                 userRepository = get(),
-                emojiRepository = get(),
+                emojiHelper = get(),
                 notificationCenter = get(),
             )
         }
@@ -54,14 +54,14 @@ val domainContentPaginationModule =
                 userRepository = get(),
                 timelineEntryRepository = get(),
                 circlesRepository = get(),
-                emojiRepository = get(),
+                emojiHelper = get(),
                 notificationCenter = get(),
             )
         }
         factory<FavoritesPaginationManager> {
             DefaultFavoritesPaginationManager(
                 timelineEntryRepository = get(),
-                emojiRepository = get(),
+                emojiHelper = get(),
                 notificationCenter = get(),
             )
         }
@@ -74,20 +74,20 @@ val domainContentPaginationModule =
             DefaultSearchPaginationManager(
                 searchRepository = get(),
                 userRepository = get(),
-                emojiRepository = get(),
+                emojiHelper = get(),
                 notificationCenter = get(),
             )
         }
         factory<FollowRequestPaginationManager> {
             DefaultFollowRequestPaginationManager(
                 userRepository = get(),
-                emojiRepository = get(),
+                emojiHelper = get(),
             )
         }
         factory<DirectMessagesPaginationManager> {
             DefaultDirectMessagesPaginationManager(
                 directMessageRepository = get(),
-                emojiRepository = get(),
+                emojiHelper = get(),
             )
         }
         factory<AlbumPhotoPaginationManager> {

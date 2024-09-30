@@ -6,7 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,7 +22,7 @@ import kotlinx.coroutines.sync.withLock
 internal class DefaultTimelinePaginationManager(
     private val timelineRepository: TimelineRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
-    private val emojiRepository: EmojiRepository,
+    private val emojiHelper: EmojiHelper,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : TimelinePaginationManager {
@@ -191,7 +191,7 @@ internal class DefaultTimelinePaginationManager(
     private fun List<TimelineEntryModel>.filterNsfw(included: Boolean): List<TimelineEntryModel> = filter { included || !it.isNsfw }
 
     private suspend fun List<TimelineEntryModel>.fixupCreatorEmojis(): List<TimelineEntryModel> =
-        with(emojiRepository) {
+        with(emojiHelper) {
             map {
                 it.withEmojisIfMissing()
             }
