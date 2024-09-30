@@ -46,6 +46,7 @@ kotlin {
                 implementation(projects.core.navigation)
                 implementation(projects.core.utils)
 
+                implementation(projects.domain.content.data)
                 implementation(projects.domain.identity.data)
                 implementation(projects.domain.identity.repository)
                 implementation(projects.domain.identity.usecase)
@@ -66,4 +67,7 @@ android {
                 .get()
                 .toInt()
     }
+}
+dependencies {
+    implementation(project(":domain:content:data"))
 }
