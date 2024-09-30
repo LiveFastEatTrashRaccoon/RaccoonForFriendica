@@ -11,9 +11,8 @@ import kotlinx.coroutines.withContext
 internal class DefaultEmojiRepository(
     private val provider: ServiceProvider,
     private val otherProvider: ServiceProvider,
+    private val cache: LruCache<String, List<EmojiModel>> = LruCache(20),
 ) : EmojiRepository {
-    private val cache = LruCache<String, List<EmojiModel>>(20)
-
     override suspend fun getAll(
         node: String?,
         refresh: Boolean,
