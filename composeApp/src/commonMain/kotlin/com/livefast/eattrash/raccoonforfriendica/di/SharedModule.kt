@@ -12,7 +12,6 @@ internal val sharedModule =
     module {
         factory<MainMviModel> {
             MainViewModel(
-                identityRepository = get(),
                 inboxManager = get(),
             )
         }

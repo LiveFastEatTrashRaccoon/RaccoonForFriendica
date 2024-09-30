@@ -4,14 +4,12 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val inboxManager: InboxManager,
-    private val identityRepository: IdentityRepository,
 ) : DefaultMviModel<MainMviModel.Intent, MainMviModel.UiState, MainMviModel.Effect>(
         initialState = MainMviModel.UiState(),
     ),
@@ -23,10 +21,6 @@ class MainViewModel(
                     updateState {
                         it.copy(bottomNavigationSections = getSections(inboxUnread))
                     }
-                }.launchIn(this)
-            identityRepository.currentUser
-                .onEach {
-                    inboxManager.refreshUnreadCount()
                 }.launchIn(this)
         }
     }
