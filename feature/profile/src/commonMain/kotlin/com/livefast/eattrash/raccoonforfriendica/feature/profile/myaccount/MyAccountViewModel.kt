@@ -18,21 +18,17 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.domain.MyAccountCache
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class MyAccountViewModel(
     private val userRepository: UserRepository,
-    private val accountRepository: AccountRepository,
+    private val identityRepository: IdentityRepository,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
-    private val myAccountCache: MyAccountCache,
     private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
@@ -45,48 +41,28 @@ class MyAccountViewModel(
     MyAccountMviModel {
     init {
         screenModelScope.launch {
-            accountRepository
-                .getActiveAsFlow()
-                .distinctUntilChanged()
-                .onEach { account ->
-                    val userId = account?.remoteId.orEmpty()
-                    val cachedUser = myAccountCache.retrieveUser()
-                    val cachedPaginationState = myAccountCache.retrievePaginationState()
-                    if (cachedUser?.id != userId) {
-                        delay(50)
-                        val currentUser =
+            identityRepository
+                .currentUser
+                .onEach { user ->
+                    val currentUser =
+                        user?.run {
                             with(emojiHelper) {
-                                userRepository.getById(userId)?.withEmojisIfMissing()
+                                withEmojisIfMissing()
                             }
-                        updateState { it.copy(user = currentUser) }
+                        }
+                    val initialEntries = timelineEntryRepository.getCachedOwnEntries()
+                    updateState {
+                        it.copy(
+                            user = currentUser,
+                            entries = initialEntries,
+                            initial = initialEntries.isEmpty(),
+                        )
+                    }
+                    if (initialEntries.isEmpty()) {
                         refresh(initial = true)
-                    } else {
-                        val currentUser =
-                            with(emojiHelper) {
-                                cachedUser.withEmojisIfMissing()
-                            }
-                        updateState {
-                            it.copy(user = currentUser)
-                        }
-                        if (cachedPaginationState != null) {
-                            paginationManager.restoreState(cachedPaginationState)
-                            val cachedHistory = paginationManager.history
-                            if (cachedHistory.isEmpty()) {
-                                refresh(initial = true)
-                            } else {
-                                updateState {
-                                    it.copy(
-                                        entries = cachedHistory,
-                                        initial = false,
-                                        section = myAccountCache.retrieveSection(),
-                                    )
-                                }
-                            }
-                        } else {
-                            refresh(initial = true)
-                        }
                     }
                 }.launchIn(this)
+
             settingsRepository.current
                 .onEach { settings ->
                     updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
@@ -102,16 +78,6 @@ class MyAccountViewModel(
                     removeEntryFromState(event.id)
                 }.launchIn(this)
         }
-    }
-
-    override fun onDispose() {
-        super.onDispose()
-        val currentState = uiState.value
-        if (currentState.user != null) {
-            myAccountCache.store(currentState.user)
-        }
-        val paginationState = paginationManager.extractState()
-        myAccountCache.store(paginationState)
     }
 
     override fun reduce(intent: MyAccountMviModel.Intent) {
@@ -133,11 +99,7 @@ class MyAccountViewModel(
 
             MyAccountMviModel.Intent.Refresh ->
                 screenModelScope.launch {
-                    val userId =
-                        uiState.value.user
-                            ?.id
-                            .orEmpty()
-                    val currentUser = userRepository.getById(userId)
+                    val currentUser = userRepository.getCurrent(refresh = true)
                     updateState { it.copy(user = currentUser) }
                     refresh()
                 }
@@ -155,14 +117,17 @@ class MyAccountViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        val accountId = uiState.value.user?.id ?: ""
+        val currentState = uiState.value
+        val accountId = currentState.user?.id ?: ""
         paginationManager.reset(
             TimelinePaginationSpecification.User(
                 userId = accountId,
-                excludeReplies = uiState.value.section == UserSection.Posts,
-                onlyMedia = uiState.value.section == UserSection.Media,
-                pinned = uiState.value.section == UserSection.Pinned,
+                excludeReplies = currentState.section == UserSection.Posts,
+                onlyMedia = currentState.section == UserSection.Media,
+                pinned = currentState.section == UserSection.Pinned,
                 includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                enableCache = currentState.section == UserSection.Posts,
+                refresh = !initial,
             ),
         )
         loadNextPage()

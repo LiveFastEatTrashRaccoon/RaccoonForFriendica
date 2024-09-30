@@ -146,6 +146,9 @@ class MyAccountScreen : Screen {
                     }
                 }.launchIn(this)
         }
+        LaunchedEffect(uiState.user?.id) {
+            goBackToTop()
+        }
 
         val pullRefreshState =
             rememberPullRefreshState(
