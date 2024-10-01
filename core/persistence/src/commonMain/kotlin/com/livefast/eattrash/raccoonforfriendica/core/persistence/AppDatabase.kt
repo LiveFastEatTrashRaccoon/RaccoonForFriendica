@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.persistence
 
 import androidx.room.AutoMigration
+import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.AccountDao
@@ -27,6 +28,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.Setti
 
     ],
 )
+@ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getAccountDao(): AccountDao
 
