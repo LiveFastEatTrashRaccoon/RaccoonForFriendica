@@ -37,7 +37,7 @@ fun UserFields(
                     modifier = Modifier.weight(0.5f),
                     text = field.key.uppercase(),
                     color = ancillaryColor,
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight(350)),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight(350)),
                 )
                 Box(modifier = Modifier.weight(1f)) {
                     val annotatedContent =
@@ -45,7 +45,7 @@ fun UserFields(
                             linkColor = MaterialTheme.colorScheme.primary,
                         )
                     TextWithCustomEmojis(
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                         text = annotatedContent,
                         onClick = { offset ->
