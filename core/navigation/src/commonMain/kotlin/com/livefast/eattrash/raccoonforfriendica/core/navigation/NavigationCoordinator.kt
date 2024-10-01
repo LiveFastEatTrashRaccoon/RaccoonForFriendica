@@ -20,6 +20,10 @@ interface NavigationCoordinator {
 
     fun setBottomBarScrollConnection(connection: NestedScrollConnection?)
 
+    fun setCanGoBackCallback(value: (() -> Boolean)?)
+
+    fun getCanGoBackCallback(): (() -> Boolean)?
+
     fun setExitMessageVisible(value: Boolean)
 
     fun setRootNavigator(navigator: Navigator)

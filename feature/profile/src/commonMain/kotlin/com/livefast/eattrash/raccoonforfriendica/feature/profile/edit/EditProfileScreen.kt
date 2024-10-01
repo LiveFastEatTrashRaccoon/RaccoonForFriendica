@@ -38,6 +38,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -132,6 +133,18 @@ class EditProfileScreen : Screen {
                             )
                     }
                 }.launchIn(this)
+        }
+        DisposableEffect(key) {
+            navigationCoordinator.setCanGoBackCallback {
+                if (uiState.hasUnsavedChanges) {
+                    confirmBackWithUnsavedChangesDialog = true
+                    return@setCanGoBackCallback false
+                }
+                true
+            }
+            onDispose {
+                navigationCoordinator.setCanGoBackCallback(null)
+            }
         }
 
         Scaffold(

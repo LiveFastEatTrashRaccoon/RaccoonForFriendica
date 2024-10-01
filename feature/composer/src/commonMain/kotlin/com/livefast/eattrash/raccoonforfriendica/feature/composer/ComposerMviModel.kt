@@ -209,6 +209,7 @@ interface ComposerMviModel :
         val pollOptionLimit: Int? = null,
         val publicationType: PublicationType = PublicationType.Default,
         val availableEmojis: List<EmojiModel> = emptyList(),
+        val hasUnsavedChanges: Boolean = false,
     )
 
     sealed interface Effect {

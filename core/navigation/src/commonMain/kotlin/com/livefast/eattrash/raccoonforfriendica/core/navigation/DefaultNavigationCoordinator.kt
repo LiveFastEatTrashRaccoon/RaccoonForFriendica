@@ -23,6 +23,7 @@ internal class DefaultNavigationCoordinator(
 
     private var rootNavigator: Navigator? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
+    private var canGoBackCallback: (() -> Boolean)? = null
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
 
     override fun setCurrentSection(section: BottomNavigationSection) {
@@ -50,6 +51,12 @@ internal class DefaultNavigationCoordinator(
     }
 
     override fun getBottomBarScrollConnection() = bottomBarScrollConnection
+
+    override fun setCanGoBackCallback(value: (() -> Boolean)?) {
+        canGoBackCallback = value
+    }
+
+    override fun getCanGoBackCallback(): (() -> Boolean)? = canGoBackCallback
 
     override fun push(screen: Screen) {
         rootNavigator?.push(screen)

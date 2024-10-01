@@ -38,6 +38,12 @@ class MainActivity : ComponentActivity() {
                         return
                     }
 
+                    // back can be prevented by custom callback
+                    val canGoBackCallback = navigationCoordinator.getCanGoBackCallback()
+                    if (canGoBackCallback?.invoke() == false) {
+                        return
+                    }
+
                     // if in home, ask for confirmation
                     if (navigationCoordinator.currentSection.value == BottomNavigationSection.Home) {
                         // asks for confirmation
@@ -66,8 +72,10 @@ class MainActivity : ComponentActivity() {
                 backPressedCallback.isEnabled = !exitMessageVisible
                 finishBackPressedCallback.isEnabled = exitMessageVisible
             }.launchIn(lifecycleScope)
-        onBackPressedDispatcher.addCallback(backPressedCallback)
-        onBackPressedDispatcher.addCallback(finishBackPressedCallback)
+        with(onBackPressedDispatcher) {
+            addCallback(backPressedCallback)
+            addCallback(finishBackPressedCallback)
+        }
 
         setContent {
             App(

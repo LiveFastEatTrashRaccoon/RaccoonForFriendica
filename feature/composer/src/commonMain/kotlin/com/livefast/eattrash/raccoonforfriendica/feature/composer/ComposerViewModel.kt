@@ -189,16 +189,35 @@ class ComposerViewModel(
                 screenModelScope.launch {
                     updateState {
                         when (intent.fieldType) {
-                            ComposerFieldType.Body -> it.copy(bodyValue = intent.value)
-                            ComposerFieldType.Spoiler -> it.copy(spoilerValue = intent.value)
-                            ComposerFieldType.Title -> it.copy(titleValue = intent.value)
+                            ComposerFieldType.Body ->
+                                it.copy(
+                                    bodyValue = intent.value,
+                                    hasUnsavedChanges = true,
+                                )
+
+                            ComposerFieldType.Spoiler ->
+                                it.copy(
+                                    spoilerValue = intent.value,
+                                    hasUnsavedChanges = true,
+                                )
+
+                            ComposerFieldType.Title ->
+                                it.copy(
+                                    titleValue = intent.value,
+                                    hasUnsavedChanges = true,
+                                )
                         }
                     }
                 }
 
             ComposerMviModel.Intent.ToggleHasSpoiler ->
                 screenModelScope.launch {
-                    updateState { it.copy(hasSpoiler = !it.hasSpoiler) }
+                    updateState {
+                        it.copy(
+                            hasSpoiler = !it.hasSpoiler,
+                            hasUnsavedChanges = true,
+                        )
+                    }
                 }
 
             ComposerMviModel.Intent.ToggleHasTitle ->
@@ -208,7 +227,12 @@ class ComposerViewModel(
 
             is ComposerMviModel.Intent.SetVisibility ->
                 screenModelScope.launch {
-                    updateState { it.copy(visibility = intent.visibility) }
+                    updateState {
+                        it.copy(
+                            visibility = intent.visibility,
+                            hasUnsavedChanges = true,
+                        )
+                    }
                 }
 
             is ComposerMviModel.Intent.AddAttachment -> uploadAttachment(intent.byteArray)
@@ -247,7 +271,12 @@ class ComposerViewModel(
 
             is ComposerMviModel.Intent.SetSensitive ->
                 screenModelScope.launch {
-                    updateState { it.copy(sensitive = intent.sensitive) }
+                    updateState {
+                        it.copy(
+                            sensitive = intent.sensitive,
+                            hasUnsavedChanges = true,
+                        )
+                    }
                 }
 
             is ComposerMviModel.Intent.AddBoldFormat -> addBoldFormat(intent.fieldType)
@@ -300,18 +329,29 @@ class ComposerViewModel(
                                             this += PollOptionModel(title = "")
                                         },
                                 ),
+                            hasUnsavedChanges = true,
                         )
                     }
                 }
 
             is ComposerMviModel.Intent.SetPollMultiple ->
                 screenModelScope.launch {
-                    updateState { it.copy(poll = it.poll?.copy(multiple = intent.multiple)) }
+                    updateState {
+                        it.copy(
+                            poll = it.poll?.copy(multiple = intent.multiple),
+                            hasUnsavedChanges = true,
+                        )
+                    }
                 }
 
             is ComposerMviModel.Intent.SetPollExpirationDate ->
                 screenModelScope.launch {
-                    updateState { it.copy(poll = it.poll?.copy(expiresAt = intent.date)) }
+                    updateState {
+                        it.copy(
+                            poll = it.poll?.copy(expiresAt = intent.date),
+                            hasUnsavedChanges = true,
+                        )
+                    }
                 }
 
             is ComposerMviModel.Intent.AddPollOption ->
@@ -328,6 +368,7 @@ class ComposerViewModel(
                                             },
                                     )
                                 },
+                            hasUnsavedChanges = true,
                         )
                     }
                 }
@@ -342,6 +383,7 @@ class ComposerViewModel(
                                         options = p.options.filterIndexed { idx, _ -> idx != intent.index },
                                     )
                                 },
+                            hasUnsavedChanges = true,
                         )
                     }
                 }
@@ -363,13 +405,19 @@ class ComposerViewModel(
                                             },
                                     )
                                 },
+                            hasUnsavedChanges = true,
                         )
                     }
                 }
 
             ComposerMviModel.Intent.RemovePoll ->
                 screenModelScope.launch {
-                    updateState { it.copy(poll = null) }
+                    updateState {
+                        it.copy(
+                            poll = null,
+                            hasUnsavedChanges = true,
+                        )
+                    }
                 }
 
             is ComposerMviModel.Intent.InsertCustomEmoji ->
@@ -420,7 +468,7 @@ class ComposerViewModel(
                         },
                     offsetAfter = before.length,
                 )
-            updateState { it.copy(bodyValue = newValue) }
+            updateState { it.copy(bodyValue = newValue, hasUnsavedChanges = true) }
         }
     }
 
@@ -444,7 +492,7 @@ class ComposerViewModel(
                     additionalPart = additionalPart,
                     offsetAfter = additionalPart.length,
                 )
-            updateState { it.copy(bodyValue = newValue) }
+            updateState { it.copy(bodyValue = newValue, hasUnsavedChanges = true) }
         }
     }
 
@@ -461,7 +509,7 @@ class ComposerViewModel(
                     additionalPart = additionalPart,
                     offsetAfter = additionalPart.length,
                 )
-            updateState { it.copy(bodyValue = newValue) }
+            updateState { it.copy(bodyValue = newValue, hasUnsavedChanges = true) }
         }
     }
 
@@ -504,9 +552,23 @@ class ComposerViewModel(
                 )
             updateState {
                 when (fieldType) {
-                    ComposerFieldType.Body -> it.copy(bodyValue = newValue)
-                    ComposerFieldType.Spoiler -> it.copy(spoilerValue = newValue)
-                    ComposerFieldType.Title -> it.copy(titleValue = newValue)
+                    ComposerFieldType.Body ->
+                        it.copy(
+                            bodyValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
+
+                    ComposerFieldType.Spoiler ->
+                        it.copy(
+                            spoilerValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
+
+                    ComposerFieldType.Title ->
+                        it.copy(
+                            titleValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
                 }
             }
         }
@@ -551,9 +613,23 @@ class ComposerViewModel(
                 )
             updateState {
                 when (fieldType) {
-                    ComposerFieldType.Body -> it.copy(bodyValue = newValue)
-                    ComposerFieldType.Spoiler -> it.copy(spoilerValue = newValue)
-                    ComposerFieldType.Title -> it.copy(titleValue = newValue)
+                    ComposerFieldType.Body ->
+                        it.copy(
+                            bodyValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
+
+                    ComposerFieldType.Spoiler ->
+                        it.copy(
+                            spoilerValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
+
+                    ComposerFieldType.Title ->
+                        it.copy(
+                            titleValue = newValue,
+                        hasUnsavedChanges = true
+                    )
                 }
             }
         }
@@ -598,9 +674,22 @@ class ComposerViewModel(
                 )
             updateState {
                 when (fieldType) {
-                    ComposerFieldType.Body -> it.copy(bodyValue = newValue)
-                    ComposerFieldType.Spoiler -> it.copy(spoilerValue = newValue)
-                    ComposerFieldType.Title -> it.copy(titleValue = newValue)
+                    ComposerFieldType.Body ->
+                        it.copy(
+                            bodyValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
+
+                    ComposerFieldType.Spoiler ->
+                        it.copy(
+                            spoilerValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
+
+                    ComposerFieldType.Title -> it.copy(
+                        titleValue = newValue,
+                        hasUnsavedChanges = true
+                    )
                 }
             }
         }
@@ -645,9 +734,22 @@ class ComposerViewModel(
                 )
             updateState {
                 when (fieldType) {
-                    ComposerFieldType.Body -> it.copy(bodyValue = newValue)
-                    ComposerFieldType.Spoiler -> it.copy(spoilerValue = newValue)
-                    ComposerFieldType.Title -> it.copy(titleValue = newValue)
+                    ComposerFieldType.Body ->
+                        it.copy(
+                            bodyValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
+
+                    ComposerFieldType.Spoiler ->
+                        it.copy(
+                            spoilerValue = newValue,
+                            hasUnsavedChanges = true
+                    )
+
+                    ComposerFieldType.Title -> it.copy(
+                        titleValue = newValue,
+                        hasUnsavedChanges = true
+                    )
                 }
             }
         }
@@ -692,9 +794,22 @@ class ComposerViewModel(
                 )
             updateState {
                 when (fieldType) {
-                    ComposerFieldType.Body -> it.copy(bodyValue = newValue)
-                    ComposerFieldType.Spoiler -> it.copy(spoilerValue = newValue)
-                    ComposerFieldType.Title -> it.copy(titleValue = newValue)
+                    ComposerFieldType.Body ->
+                        it.copy(
+                            bodyValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
+
+                    ComposerFieldType.Spoiler ->
+                        it.copy(
+                            spoilerValue = newValue,
+                        hasUnsavedChanges = true
+                    )
+
+                    ComposerFieldType.Title -> it.copy(
+                        titleValue = newValue,
+                        hasUnsavedChanges = true
+                    )
                 }
             }
         }
@@ -730,9 +845,21 @@ class ComposerViewModel(
                 )
             updateState {
                 when (fieldType) {
-                    ComposerFieldType.Body -> it.copy(bodyValue = newValue)
-                    ComposerFieldType.Spoiler -> it.copy(spoilerValue = newValue)
-                    ComposerFieldType.Title -> it.copy(titleValue = newValue)
+                    ComposerFieldType.Body ->
+                        it.copy(
+                            bodyValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
+
+                    ComposerFieldType.Spoiler -> it.copy(
+                        spoilerValue = newValue,
+                        hasUnsavedChanges = true
+                    )
+
+                    ComposerFieldType.Title -> it.copy(
+                        titleValue = newValue,
+                        hasUnsavedChanges = true
+                    )
                 }
             }
         }
@@ -761,6 +888,7 @@ class ComposerViewModel(
                 updateState {
                     it.copy(
                         attachments = it.attachments.filter { a -> a.id != PLACEHOLDER_ID } + attachment,
+                        hasUnsavedChanges = true
                     )
                 }
             } else {
@@ -783,13 +911,17 @@ class ComposerViewModel(
                             attachment
                         }
                     },
+                hasUnsavedChanges = true
             )
         }
     }
 
     private suspend fun removeAttachmentFromState(attachmentId: String) {
         updateState {
-            it.copy(attachments = it.attachments.filter { attachment -> attachment.id != attachmentId })
+            it.copy(
+                attachments = it.attachments.filter { attachment -> attachment.id != attachmentId },
+                hasUnsavedChanges = true
+            )
         }
     }
 
