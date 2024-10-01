@@ -1,4 +1,6 @@
+import com.google.devtools.ksp.gradle.KspTaskMetadata
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -63,9 +65,17 @@ room {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", libs.room.ksp)
+    add("kspCommonMainMetadata", libs.ktorfit.ksp)
     add("kspAndroid", libs.room.ksp)
     add("kspIosX64", libs.room.ksp)
     add("kspIosArm64", libs.room.ksp)
     add("kspIosSimulatorArm64", libs.room.ksp)
+}
+
+kotlin.sourceSets.commonMain {
+    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+}
+
+tasks.withType<KotlinCompile> {
+    dependsOn(tasks.withType<KspTaskMetadata>())
 }

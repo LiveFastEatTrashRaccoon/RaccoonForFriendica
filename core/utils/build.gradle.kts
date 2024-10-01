@@ -85,7 +85,7 @@ android {
 
     buildTypes {
         all {
-            val props = loadProperties("./build.properties")
+            val props = loadProperties("build.properties")
             resValue("string", "sentry_dsn", props.getProperty("sentry_dsn"))
         }
     }
