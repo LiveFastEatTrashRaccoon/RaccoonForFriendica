@@ -53,7 +53,7 @@ internal class DefaultTimelineEntryRepository(
                         excludeReplies = excludeReplies,
                         pinned = pinned,
                         onlyMedia = onlyMedia,
-                        limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
+                        limit = DEFAULT_PAGE_SIZE,
                     ).map { it.toModelWithReply() }
                     .also {
                         if (pageCursor == null && enableCache) {
@@ -151,7 +151,7 @@ internal class DefaultTimelineEntryRepository(
                 provider.users
                     .getFavorites(
                         maxId = pageCursor,
-                        limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
+                        limit = DEFAULT_PAGE_SIZE,
                     ).map { it.toModelWithReply() }
             }.getOrNull()
         }
@@ -162,7 +162,7 @@ internal class DefaultTimelineEntryRepository(
                 provider.users
                     .getBookmarks(
                         maxId = pageCursor,
-                        limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
+                        limit = DEFAULT_PAGE_SIZE,
                     ).map { it.toModelWithReply() }
             }.getOrNull()
         }
@@ -177,7 +177,7 @@ internal class DefaultTimelineEntryRepository(
                     .getFavoritedBy(
                         id = id,
                         maxId = pageCursor,
-                        limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
+                        limit = DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
             }.getOrNull()
         }
@@ -192,7 +192,7 @@ internal class DefaultTimelineEntryRepository(
                     .getRebloggedBy(
                         id = id,
                         maxId = pageCursor,
-                        limit = DefaultTimelineRepository.DEFAULT_PAGE_SIZE,
+                        limit = DEFAULT_PAGE_SIZE,
                     ).map { it.toModel() }
             }.getOrNull()
         }
@@ -324,4 +324,8 @@ internal class DefaultTimelineEntryRepository(
                     ).toModel()
             }.getOrNull()
         }
+
+    companion object {
+        const val DEFAULT_PAGE_SIZE = 20
+    }
 }
