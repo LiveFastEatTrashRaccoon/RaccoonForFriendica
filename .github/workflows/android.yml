@@ -24,5 +24,11 @@ jobs:
         with:
           gradle-version: 8.8
 
+      - name: Create Sentry config file
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          echo 'sentry_dsn=$SENTRY_DSN\n' > core/utils/build.properties
+
       - name: Build
         run: ./gradlew build
