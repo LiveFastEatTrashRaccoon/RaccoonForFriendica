@@ -4,16 +4,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Verified
+import androidx.compose.material.icons.outlined.Verified
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
@@ -32,14 +38,23 @@ fun UserFields(
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         for (field in fields) {
-            Row {
+            Row(
+                modifier = Modifier.padding(end = Spacing.xxs),
+                verticalAlignment = Alignment.Top,
+            ) {
                 Text(
                     modifier = Modifier.weight(0.5f),
                     text = field.key.uppercase(),
                     color = ancillaryColor,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight(350)),
+                    style =
+                        MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight(350),
+                        ),
                 )
-                Box(modifier = Modifier.weight(1f)) {
+                Box(
+                    contentAlignment = Alignment.CenterStart,
+                    modifier = Modifier.weight(1f),
+                ) {
                     val annotatedContent =
                         field.value.parseHtml(
                             linkColor = MaterialTheme.colorScheme.primary,
@@ -48,6 +63,8 @@ fun UserFields(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                         text = annotatedContent,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         onClick = { offset ->
                             val url =
                                 annotatedContent
@@ -62,10 +79,13 @@ fun UserFields(
                 }
                 if (field.verified) {
                     Icon(
-                        imageVector = Icons.Default.Verified,
+                        modifier = Modifier.size(IconSize.s),
+                        imageVector = Icons.Outlined.Verified,
                         contentDescription = null,
                         tint = Color.Green,
                     )
+                } else {
+                    Spacer(modifier = Modifier.width(IconSize.s))
                 }
             }
         }

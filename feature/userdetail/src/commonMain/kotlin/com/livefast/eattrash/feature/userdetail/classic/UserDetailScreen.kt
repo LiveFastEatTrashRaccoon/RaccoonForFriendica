@@ -479,24 +479,30 @@ class UserDetailScreen(
                         }
                     }
                     item {
-                        UserFields(
-                            modifier = Modifier.padding(top = Spacing.s),
-                            fields =
-                                buildList {
-                                    uiState.user?.created?.also { date ->
-                                        add(
-                                            FieldModel(
-                                                key = LocalStrings.current.accountAge,
-                                                value = date.prettifyDate(),
-                                            ),
-                                        )
-                                    }
-                                    addAll(uiState.user?.fields.orEmpty())
+                        val fields =
+                            buildList {
+                                uiState.user?.created?.also { date ->
+                                    add(
+                                        FieldModel(
+                                            key = LocalStrings.current.accountAge,
+                                            value = date.prettifyDate(),
+                                        ),
+                                    )
+                                }
+                                addAll(uiState.user?.fields.orEmpty())
+                            }
+                        if (fields.isNotEmpty()) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = Spacing.s),
+                            )
+                            UserFields(
+                                fields =
+                                fields,
+                                onOpenUrl = { url ->
+                                    uriHandler.openUri(url)
                                 },
-                            onOpenUrl = { url ->
-                                uriHandler.openUri(url)
-                            },
-                        )
+                            )
+                        }
                     }
 
                     stickyHeader {
