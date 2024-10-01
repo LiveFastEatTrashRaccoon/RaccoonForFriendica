@@ -4,6 +4,7 @@
   <img src="https://img.shields.io/badge/Android-26+-34A853?logo=android" />
   <img src="https://img.shields.io/badge/Compose-1.6.7-4285F4?logo=jetpackcompose" />
   <img src="https://img.shields.io/github/license/LiveFastEatTrashRaccoon/RaccoonForFriendica" />
+  <img src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/android.yml/badge.svg" />
 </div>
 
 # RaccoonForFriendica
