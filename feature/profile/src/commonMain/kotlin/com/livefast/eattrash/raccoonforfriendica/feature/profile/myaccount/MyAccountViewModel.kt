@@ -20,6 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -45,24 +46,19 @@ class MyAccountViewModel(
                 .currentUser
                 .onEach { user ->
                     val currentUser =
-                        user?.run {
-                            with(emojiHelper) {
-                                withEmojisIfMissing()
-                            }
+                        user?.let {
+                            with(emojiHelper) { it.withEmojisIfMissing() }
                         }
-                    val initialEntries = timelineEntryRepository.getCachedOwnEntries()
                     updateState {
-                        it.copy(
-                            user = currentUser,
-                            entries = initialEntries,
-                            initial = initialEntries.isEmpty(),
-                        )
-                    }
-                    if (initialEntries.isEmpty()) {
-                        refresh(initial = true)
+                        it.copy(user = currentUser)
                     }
                 }.launchIn(this)
-
+            identityRepository
+                .currentUser
+                .drop(1)
+                .onEach {
+                    refresh(initial = true)
+                }.launchIn(this)
             settingsRepository.current
                 .onEach { settings ->
                     updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
@@ -77,6 +73,10 @@ class MyAccountViewModel(
                 .onEach { event ->
                     removeEntryFromState(event.id)
                 }.launchIn(this)
+
+            if (uiState.value.initial) {
+                refresh(initial = true)
+            }
         }
     }
 
@@ -99,9 +99,13 @@ class MyAccountViewModel(
 
             MyAccountMviModel.Intent.Refresh ->
                 screenModelScope.launch {
-                    val currentUser = userRepository.getCurrent(refresh = true)
-                    updateState { it.copy(user = currentUser) }
-                    refresh()
+                    launch {
+                        val currentUser = userRepository.getCurrent(refresh = true)
+                        updateState { it.copy(user = currentUser) }
+                    }
+                    launch {
+                        refresh()
+                    }
                 }
 
             is MyAccountMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
@@ -118,7 +122,8 @@ class MyAccountViewModel(
             it.copy(initial = initial, refreshing = !initial)
         }
         val currentState = uiState.value
-        val accountId = currentState.user?.id ?: ""
+        val accountId =
+            identityRepository.currentUser.value?.id ?: ""
         paginationManager.reset(
             TimelinePaginationSpecification.User(
                 userId = accountId,
