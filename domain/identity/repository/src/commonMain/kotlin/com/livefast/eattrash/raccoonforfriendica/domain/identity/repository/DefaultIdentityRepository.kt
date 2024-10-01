@@ -21,6 +21,7 @@ internal class DefaultIdentityRepository(
                     UserModel(
                         avatar = user.avatar,
                         bio = user.note,
+                        created = user.createdAt,
                         displayName = user.displayName,
                         entryCount = user.statusesCount,
                         fields =
