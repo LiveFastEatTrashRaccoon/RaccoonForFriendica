@@ -97,7 +97,7 @@ class MainActivity : ComponentActivity() {
         if (uri.scheme == "raccoonforfriendica" && uri.host == "auth") {
             val authManager = getAuthManager()
             lifecycleScope.launch {
-                kotlin.runCatching {
+                runCatching {
                     authManager.performTokenExchange(uri.toString())
                 }
             }
