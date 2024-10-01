@@ -9,8 +9,4 @@ interface TimelinePaginationManager {
     suspend fun reset(specification: TimelinePaginationSpecification)
 
     suspend fun loadNextPage(): List<TimelineEntryModel>
-
-    fun extractState(): TimelinePaginationManagerState
-
-    suspend fun restoreState(state: TimelinePaginationManagerState)
 }

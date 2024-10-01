@@ -155,26 +155,6 @@ internal class DefaultTimelinePaginationManager(
         return history.map { it }
     }
 
-    override fun extractState(): TimelinePaginationManagerState =
-        DefaultTimelinePaginationManagerState(
-            specification = specification,
-            history = history,
-            pageCursor = pageCursor,
-            canFetchMore = canFetchMore,
-        )
-
-    override suspend fun restoreState(state: TimelinePaginationManagerState) {
-        (state as? DefaultTimelinePaginationManagerState)?.also {
-            specification = it.specification
-            pageCursor = it.pageCursor
-            canFetchMore = it.canFetchMore
-            mutex.withLock {
-                history.clear()
-                history.addAll(it.history)
-            }
-        }
-    }
-
     private fun List<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> =
         apply {
             lastOrNull()?.also {
