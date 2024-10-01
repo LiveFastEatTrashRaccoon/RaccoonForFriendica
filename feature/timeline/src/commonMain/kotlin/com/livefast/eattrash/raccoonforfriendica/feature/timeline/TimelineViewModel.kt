@@ -187,6 +187,7 @@ class TimelineViewModel(
                 timelineType = uiState.value.timelineType ?: TimelineType.Local,
                 includeNsfw = settings.includeNsfw,
                 excludeReplies = settings.excludeRepliesFromTimeline,
+                refresh = !initial,
             ),
         )
         loadNextPage()
