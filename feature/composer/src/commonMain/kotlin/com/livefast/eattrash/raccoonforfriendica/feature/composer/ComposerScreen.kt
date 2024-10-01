@@ -38,6 +38,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -66,6 +67,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTextualInfoDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.InsertEmojiBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SelectUserDialog
@@ -146,6 +148,7 @@ class ComposerScreen(
         var pollExpirationMillis by remember { mutableStateOf<Long?>(null) }
         var pollExpirationDatePickerOpen by remember { mutableStateOf(false) }
         var insertEmojiModalOpen by remember { mutableStateOf(false) }
+        var confirmBackWithUnsavedChangesDialog by remember { mutableStateOf(false) }
 
         LaunchedEffect(model) {
             when {
@@ -196,6 +199,18 @@ class ComposerScreen(
                     }
                 }.launchIn(this)
         }
+        DisposableEffect(key) {
+            navigationCoordinator.setCanGoBackCallback {
+                if (uiState.hasUnsavedChanges) {
+                    confirmBackWithUnsavedChangesDialog = true
+                    return@setCanGoBackCallback false
+                }
+                true
+            }
+            onDispose {
+                navigationCoordinator.setCanGoBackCallback(null)
+            }
+        }
 
         Scaffold(
             modifier =
@@ -217,7 +232,11 @@ class ComposerScreen(
                         if (navigationCoordinator.canPop.value) {
                             IconButton(
                                 onClick = {
-                                    navigationCoordinator.pop()
+                                    if (uiState.hasUnsavedChanges) {
+                                        confirmBackWithUnsavedChangesDialog = true
+                                    } else {
+                                        navigationCoordinator.pop()
+                                    }
                                 },
                             ) {
                                 Icon(
@@ -916,6 +935,19 @@ class ComposerScreen(
                             emoji = emoji,
                         ),
                     )
+                },
+            )
+        }
+
+        if (confirmBackWithUnsavedChangesDialog) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.unsavedChangesTitle,
+                body = LocalStrings.current.messageAreYouSureExit,
+                onClose = { confirm ->
+                    confirmBackWithUnsavedChangesDialog = false
+                    if (confirm) {
+                        navigationCoordinator.pop()
+                    }
                 },
             )
         }
