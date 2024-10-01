@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -18,12 +19,26 @@ internal class DefaultIdentityRepository(
                 val user = provider.users.getById(userId)
                 currentUser.update {
                     UserModel(
-                        id = user.id,
-                        handle = user.acct,
-                        username = user.username,
                         avatar = user.avatar,
+                        bio = user.note,
                         displayName = user.displayName,
+                        entryCount = user.statusesCount,
+                        fields =
+                            user.fields.map {
+                                FieldModel(
+                                    key = it.name,
+                                    value = it.value,
+                                    verified = it.verifiedAt != null,
+                                )
+                            },
+                        followers = user.followersCount,
+                        following = user.followingCount,
+                        group = user.group,
+                        handle = user.acct,
                         header = user.header,
+                        id = user.id,
+                        url = user.url,
+                        username = user.username,
                     )
                 }
             } catch (e: Throwable) {

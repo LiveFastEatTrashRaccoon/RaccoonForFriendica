@@ -201,11 +201,7 @@ class MyAccountScreen : Screen {
 
                 item {
                     UserFields(
-                        modifier =
-                            Modifier.padding(
-                                top = Spacing.m,
-                                bottom = Spacing.s,
-                            ),
+                        modifier = Modifier.padding(top = Spacing.s),
                         fields =
                             buildList {
                                 uiState.user?.created?.also { date ->
