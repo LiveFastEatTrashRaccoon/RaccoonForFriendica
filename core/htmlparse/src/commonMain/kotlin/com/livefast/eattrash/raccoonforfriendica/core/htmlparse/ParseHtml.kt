@@ -25,7 +25,7 @@ fun String.parseHtml(
                     "p" ->
                         if (builder.length != 0) {
                             // separate paragraphs with a blank line
-                            builder.append("\n\n")
+                            builder.append('\n')
                         }
 
                     "span" -> Unit
@@ -51,8 +51,7 @@ fun String.parseHtml(
                 }
             }.onCloseTag { name, _ ->
                 when (name) {
-                    "p" -> builder.append(' ')
-                    "span", "br" -> Unit
+                    "p", "span", "br" -> Unit
                     "b", "strong", "u", "i", "em", "s", "code" -> builder.pop()
                     "a" -> {
                         builder.pop() // corresponds to pushStyle
@@ -80,5 +79,5 @@ private fun String.sanitize(requiresHtmlDecode: Boolean): String =
             KsoupEntities.decodeHtml(this)
         } else {
             this
-        }.replace(Regex("<p><br\\s*/?></p>"), "<p></p>")
+        }
     }

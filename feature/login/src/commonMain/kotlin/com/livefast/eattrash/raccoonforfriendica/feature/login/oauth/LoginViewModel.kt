@@ -8,10 +8,13 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiC
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 class LoginViewModel(
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val credentialsRepository: CredentialsRepository,
@@ -24,6 +27,7 @@ class LoginViewModel(
     init {
         screenModelScope.launch {
             authManager.credentialFlow
+                .debounce(250)
                 .onEach { credentials ->
                     finalizeLogin(credentials)
                 }.launchIn(this)
