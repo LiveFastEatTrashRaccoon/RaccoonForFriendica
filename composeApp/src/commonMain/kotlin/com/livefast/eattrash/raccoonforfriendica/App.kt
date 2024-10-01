@@ -148,23 +148,16 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                                     return@Navigator false
                                 }
 
-                                true
+                                // otherwise use the screen-provided callback
+                                val callback = navigationCoordinator.getCanGoBackCallback()
+                                callback?.let { it() } ?: true
                             },
                         ) { navigator ->
                             LaunchedEffect(navigationCoordinator) {
                                 navigationCoordinator.setRootNavigator(navigator)
                             }
 
-                            ModalNavigationDrawer(
-                                modifier = Modifier.fillMaxSize(),
-                                drawerState = drawerState,
-                                gesturesEnabled = drawerGesturesEnabled,
-                                drawerContent = {
-                                    Navigator(DrawerContent())
-                                },
-                            ) {
-                                CurrentScreen()
-                            }
+                            CurrentScreen()
                         }
                     }
                 }
