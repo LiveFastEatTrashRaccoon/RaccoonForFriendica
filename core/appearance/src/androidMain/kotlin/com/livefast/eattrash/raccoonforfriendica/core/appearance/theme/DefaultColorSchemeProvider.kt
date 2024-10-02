@@ -9,6 +9,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.ui.graphics.Color
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
+import com.materialkolor.PaletteStyle
 import com.materialkolor.dynamicColorScheme
 
 internal class DefaultColorSchemeProvider(
@@ -39,6 +40,7 @@ internal class DefaultColorSchemeProvider(
                             seedColor = customSeed,
                             isDark = true,
                             isAmoled = false,
+                            style = defaultStyle,
                         )
                     }
 
@@ -59,6 +61,7 @@ internal class DefaultColorSchemeProvider(
                             seedColor = customSeed,
                             isDark = true,
                             isAmoled = true,
+                            style = defaultStyle,
                         )
                     }
 
@@ -79,6 +82,7 @@ internal class DefaultColorSchemeProvider(
                             seedColor = customSeed,
                             isDark = false,
                             isAmoled = false,
+                            style = defaultStyle,
                         )
                     }
 
@@ -102,6 +106,7 @@ internal class DefaultColorSchemeProvider(
                             seedColor = customSeed,
                             isDark = isSystemInDarkTheme,
                             isAmoled = false,
+                            style = defaultStyle,
                         )
                     }
 
@@ -115,4 +120,8 @@ internal class DefaultColorSchemeProvider(
                 }
             }
         }
+
+    companion object {
+        private val defaultStyle = PaletteStyle.Rainbow
+    }
 }
