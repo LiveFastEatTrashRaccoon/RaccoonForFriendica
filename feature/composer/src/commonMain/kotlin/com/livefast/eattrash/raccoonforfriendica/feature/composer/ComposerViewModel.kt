@@ -248,6 +248,28 @@ class ComposerViewModel(
 
             is ComposerMviModel.Intent.AddMention -> addMention(handle = intent.handle)
 
+            is ComposerMviModel.Intent.AddInitialMentions -> {
+                val mentions =
+                    buildList {
+                        val initialValue = intent.initialHandle.orEmpty()
+                        if (initialValue.isNotEmpty()) {
+                            this += initialValue
+                        }
+                        val mentions =
+                            inReplyToId
+                                ?.let { entryCache.get(it) }
+                                ?.mentions
+                                .orEmpty()
+                                .mapNotNull { it.handle }
+                                .filterNot { it == initialValue }
+                        addAll(mentions)
+                    }
+
+                for (mention in mentions) {
+                    addMention(handle = mention)
+                }
+            }
+
             is ComposerMviModel.Intent.AddGroupReference ->
                 addMention(
                     handle = intent.handle,
@@ -485,6 +507,7 @@ class ComposerViewModel(
                         append("@")
                     }
                     append(handle)
+                    append(" ")
                 }
             val newValue =
                 getNewTextFieldValue(

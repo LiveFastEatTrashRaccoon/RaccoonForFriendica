@@ -106,6 +106,10 @@ interface ComposerMviModel :
             val handle: String,
         ) : Intent
 
+        data class AddInitialMentions(
+            val initialHandle: String?,
+        ) : Intent
+
         data class AddGroupReference(
             val handle: String,
         ) : Intent
