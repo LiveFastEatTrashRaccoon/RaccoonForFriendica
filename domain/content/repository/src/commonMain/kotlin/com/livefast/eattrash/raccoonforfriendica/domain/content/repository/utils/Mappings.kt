@@ -28,6 +28,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ScheduledStatus
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusMention
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
@@ -83,6 +84,7 @@ internal fun Status.toModel() =
         favoriteCount = favoritesCount,
         id = id,
         lang = lang,
+        mentions = mentions.map { it.toModel() },
         parentId = inReplyToId,
         pinned = pinned,
         poll = poll?.toModel(),
@@ -99,6 +101,14 @@ internal fun Status.toModel() =
         updated = editedAt,
         url = url,
         visibility = visibility.toVisibility(),
+    )
+
+private fun StatusMention.toModel() =
+    UserModel(
+        id = id,
+        username = username,
+        handle = acct,
+        url = url,
     )
 
 internal fun StatusSource.toModel() =
