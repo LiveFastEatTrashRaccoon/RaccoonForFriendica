@@ -274,7 +274,7 @@ class HashtagScreen(
                             onReply =
                                 { e: TimelineEntryModel ->
                                     detailOpener.openComposer(
-                                        inReplyToId = e.id,
+                                        inReplyTo = e,
                                         inReplyToUser = e.creator,
                                     )
                                 }.takeIf { actionRepository.canReply(entry.original) },
@@ -344,7 +344,7 @@ class HashtagScreen(
                                     OptionId.Edit -> {
                                         entry.original.also { entryToEdit ->
                                             detailOpener.openComposer(
-                                                inReplyToId = entryToEdit.inReplyTo?.id,
+                                                inReplyTo = entryToEdit.inReplyTo,
                                                 inReplyToUser = entryToEdit.inReplyTo?.creator,
                                                 editedPostId = entryToEdit.id,
                                             )

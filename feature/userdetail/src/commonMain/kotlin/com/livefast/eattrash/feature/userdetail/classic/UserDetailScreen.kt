@@ -598,7 +598,7 @@ class UserDetailScreen(
                             onReply =
                                 { e: TimelineEntryModel ->
                                     detailOpener.openComposer(
-                                        inReplyToId = e.id,
+                                        inReplyTo = e,
                                         inReplyToUser = e.creator,
                                     )
                                 }.takeIf { actionRepository.canReply(entry.original) },

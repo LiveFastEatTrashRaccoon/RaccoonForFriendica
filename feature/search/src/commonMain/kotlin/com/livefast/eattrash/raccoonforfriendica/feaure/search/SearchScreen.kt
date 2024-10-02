@@ -349,7 +349,7 @@ class SearchScreen : Screen {
                                     onReply =
                                         { e: TimelineEntryModel ->
                                             detailOpener.openComposer(
-                                                inReplyToId = e.id,
+                                                inReplyTo = e,
                                                 inReplyToUser = e.creator,
                                             )
                                         }.takeIf { actionRepository.canReply(item.entry.original) },
@@ -423,7 +423,7 @@ class SearchScreen : Screen {
                                                         ?: item.entry
                                                 ).also { entryToEdit ->
                                                     detailOpener.openComposer(
-                                                        inReplyToId = entryToEdit.inReplyTo?.id,
+                                                        inReplyTo = entryToEdit.inReplyTo,
                                                         inReplyToUser = entryToEdit.inReplyTo?.creator,
                                                         editedPostId = entryToEdit.id,
                                                     )

@@ -297,6 +297,13 @@ class MyAccountScreen : Screen {
                             { e: TimelineEntryModel ->
                                 model.reduce(MyAccountMviModel.Intent.ToggleFavorite(e))
                             }.takeIf { actionRepository.canReact(entry.original) },
+                        onReply =
+                            { e: TimelineEntryModel ->
+                                detailOpener.openComposer(
+                                    inReplyTo = e,
+                                    inReplyToUser = e.creator,
+                                )
+                            }.takeIf { actionRepository.canReply(entry.original) },
                         onToggleSpoilerActive = { e ->
                             model.reduce(MyAccountMviModel.Intent.ToggleSpoilerActive(e))
                         },
@@ -330,14 +337,14 @@ class MyAccountScreen : Screen {
                                     if (entry.creator?.group == true) {
                                         // edit the original post reblogged by the group
                                         detailOpener.openComposer(
-                                            inReplyToId = entry.inReplyTo?.id,
+                                            inReplyTo = entry.inReplyTo,
                                             inReplyToUser = entry.creator,
                                             editedPostId = entry.reblog?.id,
                                             inGroup = true,
                                         )
                                     } else {
                                         detailOpener.openComposer(
-                                            inReplyToId = entry.inReplyTo?.id,
+                                            inReplyTo = entry.inReplyTo,
                                             inReplyToUser = entry.inReplyTo?.creator,
                                             editedPostId = entry.id,
                                         )
