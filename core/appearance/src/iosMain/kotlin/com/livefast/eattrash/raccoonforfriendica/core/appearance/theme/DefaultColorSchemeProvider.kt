@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.theme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
+import com.materialkolor.PaletteStyle
 import com.materialkolor.dynamicColorScheme
 
 internal class DefaultColorSchemeProvider : ColorSchemeProvider {
@@ -21,6 +22,7 @@ internal class DefaultColorSchemeProvider : ColorSchemeProvider {
                         seedColor = customSeed,
                         isDark = true,
                         isAmoled = false,
+                        style = defaultStyle,
                     )
                 } else {
                     DarkColors
@@ -33,6 +35,7 @@ internal class DefaultColorSchemeProvider : ColorSchemeProvider {
                         seedColor = customSeed,
                         isDark = true,
                         isAmoled = true,
+                        style = defaultStyle,
                     )
                 } else {
                     BlackColors
@@ -45,10 +48,11 @@ internal class DefaultColorSchemeProvider : ColorSchemeProvider {
                         seedColor = customSeed,
                         isDark = false,
                         isAmoled = false,
+                        style = defaultStyle,
                     )
                 } else {
                     LightColors
-            }
+                }
 
             else -> {
                 if (customSeed != null) {
@@ -56,6 +60,7 @@ internal class DefaultColorSchemeProvider : ColorSchemeProvider {
                         seedColor = customSeed,
                         isDark = isSystemInDarkTheme,
                         isAmoled = false,
+                        style = defaultStyle,
                     )
                 } else {
                     if (isSystemInDarkTheme) {
@@ -66,4 +71,8 @@ internal class DefaultColorSchemeProvider : ColorSchemeProvider {
                 }
             }
         }
+
+    companion object {
+        private val defaultStyle = PaletteStyle.Rainbow
+    }
 }
