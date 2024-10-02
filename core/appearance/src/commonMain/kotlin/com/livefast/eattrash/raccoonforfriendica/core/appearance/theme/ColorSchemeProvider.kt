@@ -17,7 +17,7 @@ interface ColorSchemeProvider {
     ): ColorScheme
 }
 
-fun ColorScheme.blackify(): ColorScheme =
+internal fun ColorScheme.blackify(): ColorScheme =
     copy(
         background = md_theme_black_background,
         onBackground = md_theme_black_onBackground,
