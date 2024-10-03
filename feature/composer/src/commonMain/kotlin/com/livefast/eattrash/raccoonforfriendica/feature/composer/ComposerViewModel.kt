@@ -469,7 +469,7 @@ class ComposerViewModel(
         screenModelScope.launch {
             val before =
                 if (useBBCode) {
-                    "[url=\"$url\"]"
+                    "[url=$url]"
                 } else {
                     "<a href=\"$url\">"
                 }
@@ -651,8 +651,8 @@ class ComposerViewModel(
                     ComposerFieldType.Title ->
                         it.copy(
                             titleValue = newValue,
-                        hasUnsavedChanges = true
-                    )
+                            hasUnsavedChanges = true,
+                        )
                 }
             }
         }
@@ -709,10 +709,11 @@ class ComposerViewModel(
                             hasUnsavedChanges = true,
                         )
 
-                    ComposerFieldType.Title -> it.copy(
-                        titleValue = newValue,
-                        hasUnsavedChanges = true
-                    )
+                    ComposerFieldType.Title ->
+                        it.copy(
+                            titleValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
                 }
             }
         }
@@ -766,13 +767,14 @@ class ComposerViewModel(
                     ComposerFieldType.Spoiler ->
                         it.copy(
                             spoilerValue = newValue,
-                            hasUnsavedChanges = true
-                    )
+                            hasUnsavedChanges = true,
+                        )
 
-                    ComposerFieldType.Title -> it.copy(
-                        titleValue = newValue,
-                        hasUnsavedChanges = true
-                    )
+                    ComposerFieldType.Title ->
+                        it.copy(
+                            titleValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
                 }
             }
         }
@@ -826,13 +828,14 @@ class ComposerViewModel(
                     ComposerFieldType.Spoiler ->
                         it.copy(
                             spoilerValue = newValue,
-                        hasUnsavedChanges = true
-                    )
+                            hasUnsavedChanges = true,
+                        )
 
-                    ComposerFieldType.Title -> it.copy(
-                        titleValue = newValue,
-                        hasUnsavedChanges = true
-                    )
+                    ComposerFieldType.Title ->
+                        it.copy(
+                            titleValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
                 }
             }
         }
@@ -874,15 +877,17 @@ class ComposerViewModel(
                             hasUnsavedChanges = true,
                         )
 
-                    ComposerFieldType.Spoiler -> it.copy(
-                        spoilerValue = newValue,
-                        hasUnsavedChanges = true
-                    )
+                    ComposerFieldType.Spoiler ->
+                        it.copy(
+                            spoilerValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
 
-                    ComposerFieldType.Title -> it.copy(
-                        titleValue = newValue,
-                        hasUnsavedChanges = true
-                    )
+                    ComposerFieldType.Title ->
+                        it.copy(
+                            titleValue = newValue,
+                            hasUnsavedChanges = true,
+                        )
                 }
             }
         }
@@ -911,7 +916,7 @@ class ComposerViewModel(
                 updateState {
                     it.copy(
                         attachments = it.attachments.filter { a -> a.id != PLACEHOLDER_ID } + attachment,
-                        hasUnsavedChanges = true
+                        hasUnsavedChanges = true,
                     )
                 }
             } else {
@@ -934,7 +939,7 @@ class ComposerViewModel(
                             attachment
                         }
                     },
-                hasUnsavedChanges = true
+                hasUnsavedChanges = true,
             )
         }
     }
@@ -943,7 +948,7 @@ class ComposerViewModel(
         updateState {
             it.copy(
                 attachments = it.attachments.filter { attachment -> attachment.id != attachmentId },
-                hasUnsavedChanges = true
+                hasUnsavedChanges = true,
             )
         }
     }
