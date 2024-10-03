@@ -154,20 +154,26 @@ class ComposerScreen(
             when {
                 draftId != null ->
                     model.reduce(ComposerMviModel.Intent.LoadDraft(draftId))
+
                 scheduledPostId != null ->
                     model.reduce(ComposerMviModel.Intent.LoadScheduled(scheduledPostId))
 
                 editedPostId != null ->
                     model.reduce(ComposerMviModel.Intent.LoadEditedPost(editedPostId))
 
-                !inReplyToHandle.isNullOrEmpty() ->
-                    model.reduce(ComposerMviModel.Intent.AddMention(inReplyToHandle))
-
                 !groupHandle.isNullOrEmpty() ->
                     model.reduce(ComposerMviModel.Intent.AddGroupReference(groupHandle))
 
                 !urlToShare.isNullOrEmpty() ->
                     model.reduce(ComposerMviModel.Intent.AddShareUrl(urlToShare))
+
+                inReplyToId != null ->
+                    model.reduce(
+                        ComposerMviModel.Intent.AddInitialMentions(initialHandle = inReplyToHandle),
+                    )
+
+                !inReplyToHandle.isNullOrEmpty() ->
+                    model.reduce(ComposerMviModel.Intent.AddMention(inReplyToHandle))
 
                 else -> Unit
             }

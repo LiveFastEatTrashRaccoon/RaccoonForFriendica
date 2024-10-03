@@ -189,7 +189,7 @@ class EntryDetailScreen(
                                 val entry = uiState.entries.firstOrNull { it.id == id }
                                 if (entry != null) {
                                     detailOpener.openComposer(
-                                        inReplyToId = id,
+                                        inReplyTo = entry,
                                         inReplyToUser = entry.creator,
                                     )
                                 }
@@ -299,7 +299,7 @@ class EntryDetailScreen(
                             onReply =
                                 { e: TimelineEntryModel ->
                                     detailOpener.openComposer(
-                                        inReplyToId = e.id,
+                                        inReplyTo = e,
                                         inReplyToUser = e.creator,
                                     )
                                 }.takeIf { actionRepository.canReply(entry.original) },
@@ -369,7 +369,7 @@ class EntryDetailScreen(
                                     OptionId.Edit -> {
                                         entry.original.also { entryToEdit ->
                                             detailOpener.openComposer(
-                                                inReplyToId = entryToEdit.inReplyTo?.id,
+                                                inReplyTo = entryToEdit.inReplyTo,
                                                 inReplyToUser = entryToEdit.inReplyTo?.creator,
                                                 editedPostId = entryToEdit.id,
                                             )

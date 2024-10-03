@@ -179,7 +179,7 @@ class ThreadScreen(
                                 val entry = uiState.entry
                                 if (entry != null) {
                                     detailOpener.openComposer(
-                                        inReplyToId = entry.id,
+                                        inReplyTo = entry,
                                         inReplyToUser = entry.creator,
                                     )
                                 }
@@ -300,7 +300,7 @@ class ThreadScreen(
                                     uiState.currentUserId?.let {
                                         { e ->
                                             detailOpener.openComposer(
-                                                inReplyToId = e.id,
+                                                inReplyTo = e,
                                                 inReplyToUser = e.creator,
                                             )
                                         }
@@ -421,7 +421,7 @@ class ThreadScreen(
                             onReply =
                                 { e: TimelineEntryModel ->
                                     detailOpener.openComposer(
-                                        inReplyToId = e.id,
+                                        inReplyTo = e,
                                         inReplyToUser = e.creator,
                                     )
                                 }.takeIf { actionRepository.canReply(entry.original) },

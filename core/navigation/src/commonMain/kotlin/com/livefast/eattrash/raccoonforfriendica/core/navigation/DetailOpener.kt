@@ -36,7 +36,7 @@ interface DetailOpener {
     )
 
     fun openComposer(
-        inReplyToId: String? = null,
+        inReplyTo: TimelineEntryModel? = null,
         inReplyToUser: UserModel? = null,
         editedPostId: String? = null,
         urlToShare: String? = null,

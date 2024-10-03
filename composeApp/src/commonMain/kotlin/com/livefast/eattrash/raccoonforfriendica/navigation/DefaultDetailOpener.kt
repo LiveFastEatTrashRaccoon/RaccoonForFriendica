@@ -141,7 +141,7 @@ class DefaultDetailOpener(
     }
 
     override fun openComposer(
-        inReplyToId: String?,
+        inReplyTo: TimelineEntryModel?,
         inReplyToUser: UserModel?,
         editedPostId: String?,
         urlToShare: String?,
@@ -150,13 +150,16 @@ class DefaultDetailOpener(
         if (!isLogged) {
             return
         }
+        if (inReplyTo != null) {
+            entryCache.put(inReplyTo.id, inReplyTo)
+        }
         if (inReplyToUser != null) {
             userCache.put(inReplyToUser.id, inReplyToUser)
         }
         val isGroup = inReplyToUser?.group == true && inGroup
         val screen =
             ComposerScreen(
-                inReplyToId = inReplyToId,
+                inReplyToId = inReplyTo?.id,
                 inReplyToUsername = inReplyToUser?.username.takeIf { !isGroup },
                 inReplyToHandle = inReplyToUser?.handle.takeIf { !isGroup },
                 groupUsername = inReplyToUser?.username.takeIf { isGroup },
