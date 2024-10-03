@@ -2,9 +2,8 @@ name: release-beta
 
 on:
   push:
-    branches: [ "master" ]
     tags:
-      - "*.*.*-beta*"
+      - '*.*.*-beta*'
 
 jobs:
   build:
