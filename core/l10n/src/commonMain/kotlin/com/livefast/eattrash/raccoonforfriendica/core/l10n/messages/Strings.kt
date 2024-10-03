@@ -320,11 +320,10 @@ interface Strings {
     val actionQuote: String
     val actionAddTitle: String
     val actionRemoveTitle: String
-    val actionAddSpoiler: String
-    val actionRemoveSpoiler: String
     val actionRevealContent: String
     val settingsItemExcludeRepliesFromTimeline: String
     val insertEmojiTitle: String
+    val messageLoadingUsers: String
 }
 
 object Locales {

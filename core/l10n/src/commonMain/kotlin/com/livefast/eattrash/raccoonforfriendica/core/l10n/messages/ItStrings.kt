@@ -365,9 +365,8 @@ internal val ItStrings =
         override val actionQuote = "Cita"
         override val actionAddTitle = "Aggiungi titolo"
         override val actionRemoveTitle = "Rimuovi titolo"
-        override val actionAddSpoiler = "Aggiungi spoiler"
-        override val actionRemoveSpoiler = "Rimuovi spoiler"
         override val actionRevealContent = "Rivela contenuto"
         override val settingsItemExcludeRepliesFromTimeline = "Escludi risposte dalla timeline"
         override val insertEmojiTitle = "Inserisci emoji"
+        override val messageLoadingUsers = "Caricamento utenti"
     }
