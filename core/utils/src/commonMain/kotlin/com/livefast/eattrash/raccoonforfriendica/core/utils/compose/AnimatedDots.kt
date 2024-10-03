@@ -11,7 +11,10 @@ import kotlinx.coroutines.yield
 import kotlin.math.roundToLong
 
 @Composable
-fun getAnimatedDots(durationMillis: Long = 2500): String {
+fun getAnimatedDots(
+    char: String = ".",
+    durationMillis: Long = 2500,
+): String {
     val maxStep = 4
     val interval = (durationMillis / maxStep.toFloat()).roundToLong()
     var step by remember { mutableStateOf(0) }
@@ -22,5 +25,5 @@ fun getAnimatedDots(durationMillis: Long = 2500): String {
             yield()
         }
     }
-    return ".".repeat(step)
+    return char.repeat(step)
 }
