@@ -3,7 +3,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -78,7 +77,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
-import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormattedDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
@@ -86,6 +84,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostHeader
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostSubHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.DateTimeSelectionFlow
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.GalleryPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InReplyToInfo
@@ -149,6 +148,11 @@ class ComposerScreen(
         var pollExpirationDatePickerOpen by remember { mutableStateOf(false) }
         var insertEmojiModalOpen by remember { mutableStateOf(false) }
         var confirmBackWithUnsavedChangesDialog by remember { mutableStateOf(false) }
+        val scheduleDate =
+            when (val type = uiState.publicationType) {
+                is PublicationType.Scheduled -> type.date
+                else -> null
+            }
 
         LaunchedEffect(model) {
             when {
@@ -573,48 +577,12 @@ class ComposerScreen(
                         },
                     )
 
-                    // schedule date and character count
-                    if (uiState.characterLimit != null) {
-                        Row(
-                            modifier =
-                                Modifier.padding(
-                                    top = Spacing.s,
-                                    start = Spacing.s,
-                                    end = Spacing.s,
-                                ),
-                        ) {
-                            val date =
-                                when (val type = uiState.publicationType) {
-                                    is PublicationType.Scheduled -> type.date
-                                    else -> null
-                                }
-                            if (date != null) {
-                                Text(
-                                    text =
-                                        buildString {
-                                            append(LocalStrings.current.scheduleDateIndication)
-                                            append(" ")
-                                            append(
-                                                getFormattedDate(
-                                                    iso8601Timestamp = date,
-                                                    format = "dd/MM/yy HH:mm",
-                                                ),
-                                            )
-                                        },
-                                    style = MaterialTheme.typography.labelSmall,
-                                )
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(
-                                text =
-                                    buildString {
-                                        append(uiState.bodyValue.text.length)
-                                        append("/")
-                                        append(uiState.characterLimit)
-                                    },
-                                style = MaterialTheme.typography.labelSmall,
-                            )
-                        }
+                    if (uiState.characterLimit != null || scheduleDate != null) {
+                        CreatePostSubHeader(
+                            date = scheduleDate,
+                            characters = uiState.bodyValue.text.length,
+                            characterLimit = uiState.characterLimit,
+                        )
                     }
 
                     // spoiler text
