@@ -356,9 +356,8 @@ internal open class DefaultStrings : Strings {
     override val actionQuote = "Quote"
     override val actionAddTitle = "Add title"
     override val actionRemoveTitle = "Remove title"
-    override val actionAddSpoiler = "Add spoiler"
-    override val actionRemoveSpoiler = "Remove spoiler"
     override val actionRevealContent = "Reveal content"
     override val settingsItemExcludeRepliesFromTimeline = "Exclude replies from timeline"
     override val insertEmojiTitle = "Insert emoji"
+    override val messageLoadingUsers = "Loading users"
 }

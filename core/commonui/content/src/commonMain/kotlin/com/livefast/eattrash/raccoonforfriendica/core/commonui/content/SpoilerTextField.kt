@@ -4,10 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -32,23 +34,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 @Composable
 fun SpoilerTextField(
     hint: String? = null,
-    hintTextStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    hintTextStyle: TextStyle = LocalTextStyle.current,
     value: TextFieldValue,
-    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    textStyle: TextStyle = LocalTextStyle.current,
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
     onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
-    var height by remember { mutableStateOf(0f) }
-    val heightDp = with(LocalDensity.current) { height.toDp() }
+    var contentHeightPx by remember { mutableStateOf(0f) }
+    val contentHeightDp = with(LocalDensity.current) { contentHeightPx.toDp() }
 
     BasicTextField(
-        modifier =
-            modifier.onGloballyPositioned {
-                height = it.size.toSize().height
-            },
+        modifier = modifier,
         value = value,
         onValueChange = onValueChange,
         keyboardOptions = keyboardOptions,
@@ -64,10 +63,15 @@ fun SpoilerTextField(
                     horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                 ) {
                     SpoilerBar(
-                        modifier = Modifier.size(width = 6.dp, height = heightDp),
+                        modifier = Modifier.size(width = 6.dp, height = contentHeightDp),
                     )
                     Box(
-                        modifier = Modifier.weight(1f),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .onGloballyPositioned {
+                                    contentHeightPx = it.size.toSize().height
+                                }.padding(Spacing.s),
                         contentAlignment = Alignment.CenterStart,
                     ) {
                         innerTextField()
@@ -84,7 +88,7 @@ fun SpoilerTextField(
                         }
                     }
                     SpoilerBar(
-                        modifier = Modifier.size(width = 6.dp, height = heightDp),
+                        modifier = Modifier.size(width = 6.dp, height = contentHeightDp),
                     )
                 }
             },

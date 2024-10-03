@@ -106,6 +106,10 @@ interface ComposerMviModel :
             val handle: String,
         ) : Intent
 
+        data class CompleteMention(
+            val handle: String,
+        ) : Intent
+
         data class AddInitialMentions(
             val initialHandle: String?,
         ) : Intent
@@ -214,6 +218,9 @@ interface ComposerMviModel :
         val publicationType: PublicationType = PublicationType.Default,
         val availableEmojis: List<EmojiModel> = emptyList(),
         val hasUnsavedChanges: Boolean = false,
+        val shouldShowMentionSuggestions: Boolean = false,
+        val mentionSuggestionsLoading: Boolean = false,
+        val mentionSuggestions: List<UserModel> = emptyList(),
     )
 
     sealed interface Effect {

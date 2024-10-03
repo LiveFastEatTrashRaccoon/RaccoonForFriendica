@@ -365,9 +365,8 @@ internal val DeStrings =
         override val actionQuote = "Zitieren"
         override val actionAddTitle = "Titel hinzufügen"
         override val actionRemoveTitle = "Titel entfernen"
-        override val actionAddSpoiler = "Spoiler hinzufügen"
-        override val actionRemoveSpoiler = "Spoiler entfernen"
         override val actionRevealContent = "Inhalt enthüllen"
         override val settingsItemExcludeRepliesFromTimeline = "Antworten aus der Zeitleiste ausschließen"
         override val insertEmojiTitle = "Emoji einfügen"
+        override val messageLoadingUsers = "Benutzer laden"
     }

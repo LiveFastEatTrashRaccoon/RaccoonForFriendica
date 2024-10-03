@@ -35,10 +35,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Photo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
@@ -68,6 +70,7 @@ class ComposerViewModel(
     private val draftRepository: DraftRepository,
     private val settingsRepository: SettingsRepository,
     private val emojiRepository: EmojiRepository,
+    private val userRepository: UserRepository,
     private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
         initialState = ComposerMviModel.State(),
@@ -77,6 +80,7 @@ class ComposerViewModel(
     private var editedPostId: String? = null
     private var draftId: String? = null
     private val useBBCode: Boolean get() = supportedFeatureRepository.features.value.supportsBBCode
+    private var mentionSuggestionJob: Job? = null
 
     init {
         screenModelScope.launch {
@@ -187,26 +191,25 @@ class ComposerViewModel(
 
             is ComposerMviModel.Intent.SetFieldValue ->
                 screenModelScope.launch {
-                    updateState {
-                        when (intent.fieldType) {
-                            ComposerFieldType.Body ->
-                                it.copy(
-                                    bodyValue = intent.value,
-                                    hasUnsavedChanges = true,
-                                )
+                    when (intent.fieldType) {
+                        ComposerFieldType.Body ->
+                            updateBody(intent.value)
 
-                            ComposerFieldType.Spoiler ->
+                        ComposerFieldType.Spoiler ->
+                            updateState {
                                 it.copy(
                                     spoilerValue = intent.value,
                                     hasUnsavedChanges = true,
                                 )
+                            }
 
-                            ComposerFieldType.Title ->
+                        ComposerFieldType.Title ->
+                            updateState {
                                 it.copy(
                                     titleValue = intent.value,
                                     hasUnsavedChanges = true,
                                 )
-                        }
+                            }
                     }
                 }
 
@@ -247,6 +250,8 @@ class ComposerViewModel(
                 )
 
             is ComposerMviModel.Intent.AddMention -> addMention(handle = intent.handle)
+
+            is ComposerMviModel.Intent.CompleteMention -> completeMention(handle = intent.handle)
 
             is ComposerMviModel.Intent.AddInitialMentions -> {
                 val mentions =
@@ -449,6 +454,58 @@ class ComposerViewModel(
         }
     }
 
+    private suspend fun updateBody(value: TextFieldValue) {
+        val wasShowingSuggestions = uiState.value.shouldShowMentionSuggestions
+        val currentText = value.text
+        val currentPosition =
+            if (value.selection.collapsed) {
+                value.selection.start - 1
+            } else {
+                null
+            }
+        val matches = USER_MENTION_REGEX.findAll(currentText).toList()
+        val currentMention = matches.firstOrNull { it.range.contains(currentPosition) }
+        val shouldShowSuggestions = currentMention != null
+        if (currentMention != null) {
+            val handlePrefix = currentMention.groups["handlePrefix"]?.value.orEmpty()
+            refreshMentionSuggestions(handlePrefix)
+        }
+        updateState {
+            it.copy(
+                bodyValue = value,
+                hasUnsavedChanges = true,
+                shouldShowMentionSuggestions = shouldShowSuggestions,
+                mentionSuggestions =
+                    if (shouldShowSuggestions && !wasShowingSuggestions) {
+                        emptyList()
+                    } else {
+                        it.mentionSuggestions
+                    },
+            )
+        }
+    }
+
+    private suspend fun refreshMentionSuggestions(prefix: String) {
+        updateState { it.copy(mentionSuggestionsLoading = true) }
+        if (prefix.isNotEmpty()) {
+            mentionSuggestionJob?.cancel()
+            mentionSuggestionJob =
+                screenModelScope.launch {
+                    launch {
+                        delay(750)
+                        val users = userRepository.search(prefix, 0).orEmpty()
+                        updateState {
+                            it.copy(
+                                mentionSuggestions = users,
+                                mentionSuggestionsLoading = users.isEmpty(),
+                            )
+                        }
+                        mentionSuggestionJob = null
+                    }
+                }
+        }
+    }
+
     private fun addAttachmentsFromGallery(attachments: List<AttachmentModel>) {
         screenModelScope.launch {
             val currentAttachments = uiState.value.attachments
@@ -516,6 +573,53 @@ class ComposerViewModel(
                     offsetAfter = additionalPart.length,
                 )
             updateState { it.copy(bodyValue = newValue, hasUnsavedChanges = true) }
+        }
+    }
+
+    private fun completeMention(handle: String) {
+        screenModelScope.launch {
+            val additionalPart =
+                buildString {
+                    append("@")
+                    append(handle)
+                }
+            val value = uiState.value.bodyValue
+            val text = value.text
+            val currentPosition =
+                if (value.selection.collapsed) {
+                    value.selection.start - 1
+                } else {
+                    null
+                }
+            val matches = USER_MENTION_REGEX.findAll(text).toList()
+            val currentMention = matches.firstOrNull { it.range.contains(currentPosition) }
+            if (currentMention != null) {
+                val indexOfDelimiter = currentMention.range.first
+                val endIndex = currentMention.range.last + 1
+                val newText =
+                    buildString {
+                        append(text.substring(0, indexOfDelimiter))
+                        append(additionalPart)
+                        if (endIndex < text.length) {
+                            append(text.substring(endIndex, text.length))
+                        }
+                    }
+
+                val newValue =
+                    uiState.value.bodyValue.copy(
+                        text = newText,
+                        selection = TextRange(newText.length),
+                    )
+                mentionSuggestionJob?.cancel()
+                mentionSuggestionJob = null
+                updateState {
+                    it.copy(
+                        bodyValue = newValue,
+                        hasUnsavedChanges = true,
+                        shouldShowMentionSuggestions = false,
+                    )
+                }
+            }
         }
     }
 
@@ -1314,5 +1418,10 @@ class ComposerViewModel(
                 emitEffect(ComposerMviModel.Effect.Failure(message = e.message))
             }
         }
+    }
+
+    companion object {
+        private val USER_MENTION_REGEX =
+            Regex("@(?<handlePrefix>[a-zA-Z0-9-_.]+?(@[a-zA-Z0-9_.]+)?)(?=\\b)")
     }
 }

@@ -3,7 +3,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -70,7 +69,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Progre
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.InsertEmojiBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SelectUserDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SpoilerTextField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
@@ -78,7 +76,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
-import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormattedDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
@@ -86,10 +83,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostHeader
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostSubHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.DateTimeSelectionFlow
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.GalleryPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InReplyToInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InsertLinkDialog
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.MentionsBar
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.PollForm
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SelectCircleDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
@@ -137,7 +136,6 @@ class ComposerScreen(
         }
         var photoGalleryPickerOpen by remember { mutableStateOf(false) }
         var linkDialogOpen by remember { mutableStateOf(false) }
-        var mentionDialogOpen by remember { mutableStateOf(false) }
         var selectCircleDialogOpen by remember { mutableStateOf(false) }
         var attachmentWithDescriptionBeingEdited by remember { mutableStateOf<AttachmentModel?>(null) }
         var hasSpoilerFieldFocus by remember { mutableStateOf(false) }
@@ -149,6 +147,11 @@ class ComposerScreen(
         var pollExpirationDatePickerOpen by remember { mutableStateOf(false) }
         var insertEmojiModalOpen by remember { mutableStateOf(false) }
         var confirmBackWithUnsavedChangesDialog by remember { mutableStateOf(false) }
+        val scheduleDate =
+            when (val type = uiState.publicationType) {
+                is PublicationType.Scheduled -> type.date
+                else -> null
+            }
 
         LaunchedEffect(model) {
             when {
@@ -275,16 +278,6 @@ class ComposerScreen(
                                     }
                                 }
 
-                                this +=
-                                    CustomOptions.ToggleSpoiler.toOption(
-                                        label =
-                                            if (uiState.hasSpoiler) {
-                                                LocalStrings.current.actionRemoveSpoiler
-                                            } else {
-                                                LocalStrings.current.actionAddSpoiler
-                                            },
-                                    )
-
                                 if (uiState.availableEmojis.isNotEmpty()) {
                                     this +=
                                         CustomOptions.InsertCustomEmoji.toOption(
@@ -409,10 +402,6 @@ class ComposerScreen(
                                                     model.reduce(ComposerMviModel.Intent.ToggleHasTitle)
                                                 }
 
-                                                CustomOptions.ToggleSpoiler -> {
-                                                    model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
-                                                }
-
                                                 CustomOptions.InsertCustomEmoji -> {
                                                     insertEmojiModalOpen = true
                                                 }
@@ -455,83 +444,101 @@ class ComposerScreen(
                 }
             },
             bottomBar = {
-                UtilsBar(
+                Column(
                     modifier =
-                        Modifier.fillMaxWidth(),
-                    onAttachmentClicked = {
-                        val limit = uiState.attachmentLimit ?: Int.MAX_VALUE
-                        if (uiState.attachments.size < limit) {
-                            openImagePicker = true
-                        }
-                    },
-                    hasPoll = uiState.poll != null,
-                    onLinkClicked = {
-                        linkDialogOpen = true
-                    },
-                    onMentionClicked = {
-                        mentionDialogOpen = true
-                    },
-                    onBoldClicked = {
-                        model.reduce(
-                            ComposerMviModel.Intent.AddBoldFormat(
-                                fieldType =
-                                    when {
-                                        hasTitleFocus -> ComposerFieldType.Title
-                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                        else -> ComposerFieldType.Body
-                                    },
-                            ),
+                        Modifier
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .padding(vertical = Spacing.xs),
+                ) {
+                    if (uiState.shouldShowMentionSuggestions) {
+                        MentionsBar(
+                            suggestions = uiState.mentionSuggestions,
+                            loading = uiState.mentionSuggestionsLoading,
+                            onSelected = { user ->
+                                user.handle?.also { handle ->
+                                    model.reduce(ComposerMviModel.Intent.CompleteMention(handle))
+                                }
+                            },
                         )
-                    },
-                    onItalicClicked = {
-                        model.reduce(
-                            ComposerMviModel.Intent.AddItalicFormat(
-                                fieldType =
-                                    when {
-                                        hasTitleFocus -> ComposerFieldType.Title
-                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                        else -> ComposerFieldType.Body
-                                    },
-                            ),
-                        )
-                    },
-                    onUnderlineClicked = {
-                        model.reduce(
-                            ComposerMviModel.Intent.AddUnderlineFormat(
-                                fieldType =
-                                    when {
-                                        hasTitleFocus -> ComposerFieldType.Title
-                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                        else -> ComposerFieldType.Body
-                                    },
-                            ),
-                        )
-                    },
-                    onStrikethroughClicked = {
-                        model.reduce(
-                            ComposerMviModel.Intent.AddStrikethroughFormat(
-                                fieldType =
-                                    when {
-                                        hasTitleFocus -> ComposerFieldType.Title
-                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                        else -> ComposerFieldType.Body
-                                    },
-                            ),
-                        )
-                    },
-                    onCodeClicked = {
-                        model.reduce(
-                            ComposerMviModel.Intent.AddCodeFormat(
-                                fieldType =
-                                    when {
-                                        hasTitleFocus -> ComposerFieldType.Title
-                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                        else -> ComposerFieldType.Body
-                                    },
-                            ),
-                        )
-                    },
-                )
+                    }
+                    UtilsBar(
+                        modifier = Modifier.fillMaxWidth(),
+                        onAttachmentClicked = {
+                            val limit = uiState.attachmentLimit ?: Int.MAX_VALUE
+                            if (uiState.attachments.size < limit) {
+                                openImagePicker = true
+                            }
+                        },
+                        hasPoll = uiState.poll != null,
+                        hasSpoiler = uiState.hasSpoiler,
+                        onLinkClicked = {
+                            linkDialogOpen = true
+                        },
+                        onBoldClicked = {
+                            model.reduce(
+                                ComposerMviModel.Intent.AddBoldFormat(
+                                    fieldType =
+                                        when {
+                                            hasTitleFocus -> ComposerFieldType.Title
+                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                            else -> ComposerFieldType.Body
+                                        },
+                                ),
+                            )
+                        },
+                        onItalicClicked = {
+                            model.reduce(
+                                ComposerMviModel.Intent.AddItalicFormat(
+                                    fieldType =
+                                        when {
+                                            hasTitleFocus -> ComposerFieldType.Title
+                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                            else -> ComposerFieldType.Body
+                                        },
+                                ),
+                            )
+                        },
+                        onUnderlineClicked = {
+                            model.reduce(
+                                ComposerMviModel.Intent.AddUnderlineFormat(
+                                    fieldType =
+                                        when {
+                                            hasTitleFocus -> ComposerFieldType.Title
+                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                            else -> ComposerFieldType.Body
+                                        },
+                                ),
+                            )
+                        },
+                        onStrikethroughClicked = {
+                            model.reduce(
+                                ComposerMviModel.Intent.AddStrikethroughFormat(
+                                    fieldType =
+                                        when {
+                                            hasTitleFocus -> ComposerFieldType.Title
+                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                            else -> ComposerFieldType.Body
+                                        },
+                                ),
+                            )
+                        },
+                        onCodeClicked = {
+                            model.reduce(
+                                ComposerMviModel.Intent.AddCodeFormat(
+                                    fieldType =
+                                        when {
+                                            hasTitleFocus -> ComposerFieldType.Title
+                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                            else -> ComposerFieldType.Body
+                                        },
+                                ),
+                            )
+                        },
+                        onSpoilerClicked = {
+                            model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
+                        },
+                    )
+                }
             },
             content = { padding ->
                 Column(
@@ -573,48 +580,12 @@ class ComposerScreen(
                         },
                     )
 
-                    // schedule date and character count
-                    if (uiState.characterLimit != null) {
-                        Row(
-                            modifier =
-                                Modifier.padding(
-                                    top = Spacing.s,
-                                    start = Spacing.s,
-                                    end = Spacing.s,
-                                ),
-                        ) {
-                            val date =
-                                when (val type = uiState.publicationType) {
-                                    is PublicationType.Scheduled -> type.date
-                                    else -> null
-                                }
-                            if (date != null) {
-                                Text(
-                                    text =
-                                        buildString {
-                                            append(LocalStrings.current.scheduleDateIndication)
-                                            append(" ")
-                                            append(
-                                                getFormattedDate(
-                                                    iso8601Timestamp = date,
-                                                    format = "dd/MM/yy HH:mm",
-                                                ),
-                                            )
-                                        },
-                                    style = MaterialTheme.typography.labelSmall,
-                                )
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(
-                                text =
-                                    buildString {
-                                        append(uiState.bodyValue.text.length)
-                                        append("/")
-                                        append(uiState.characterLimit)
-                                    },
-                                style = MaterialTheme.typography.labelSmall,
-                            )
-                        }
+                    if (uiState.characterLimit != null || scheduleDate != null) {
+                        CreatePostSubHeader(
+                            date = scheduleDate,
+                            characters = uiState.bodyValue.text.length,
+                            characterLimit = uiState.characterLimit,
+                        )
                     }
 
                     // spoiler text
@@ -802,30 +773,6 @@ class ComposerScreen(
             )
         }
 
-        if (mentionDialogOpen) {
-            SelectUserDialog(
-                query = uiState.userSearchQuery,
-                users = uiState.userSearchUsers,
-                loading = uiState.userSearchLoading,
-                canFetchMore = uiState.userSearchCanFetchMore,
-                onSearchChanged = {
-                    model.reduce(ComposerMviModel.Intent.UserSearchSetQuery(it))
-                },
-                onLoadMoreUsers = {
-                    model.reduce(ComposerMviModel.Intent.UserSearchLoadNextPage)
-                },
-                onClose = { user ->
-                    model.reduce(ComposerMviModel.Intent.UserSearchSetQuery(""))
-                    model.reduce(ComposerMviModel.Intent.UserSearchClear)
-                    mentionDialogOpen = false
-                    val handle = user?.handle
-                    if (handle != null) {
-                        model.reduce(ComposerMviModel.Intent.AddMention(handle))
-                    }
-                },
-            )
-        }
-
         if (attachmentWithDescriptionBeingEdited != null) {
             EditTextualInfoDialog(
                 label = LocalStrings.current.pictureDescriptionPlaceholder,
@@ -966,8 +913,6 @@ private sealed interface CustomOptions : OptionId.Custom {
     data object TogglePoll : CustomOptions
 
     data object ToggleTitle : CustomOptions
-
-    data object ToggleSpoiler : CustomOptions
 
     data object InsertCustomEmoji : CustomOptions
 }
