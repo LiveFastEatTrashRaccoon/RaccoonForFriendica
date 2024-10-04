@@ -21,9 +21,9 @@ actual val corePreferencesModule =
         }
         single<Settings> { params ->
             val sharedPreferencesProvider: SharedPreferencesProvider =
-                get(parameters = {
-                    parametersOf(params[0])
-                })
+                get(
+                    parameters = { parametersOf(params[0]) },
+                )
             SharedPreferencesSettings(
                 delegate = sharedPreferencesProvider.sharedPreferences,
                 commit = false,
