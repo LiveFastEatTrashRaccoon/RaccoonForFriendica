@@ -57,14 +57,6 @@ kotlin {
                 implementation(libs.ktor.darwin)
             }
         }
-        val androidUnitTest by getting {
-            dependencies {
-                implementation(libs.kotlinx.coroutines.test)
-                implementation(kotlin("test-junit"))
-                implementation(libs.mockk)
-                implementation(libs.turbine)
-            }
-        }
     }
 }
 
