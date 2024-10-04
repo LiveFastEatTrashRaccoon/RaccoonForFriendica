@@ -18,7 +18,6 @@ compose-colorpicker = "1.1.2"
 compose-plugin = "1.6.11"
 koin = "4.0.0"
 kotlin = "2.0.20"
-kotlincrypto = "0.5.3"
 kotlinx-coroutines = "1.9.0"
 kotlinx-serialization-json = "1.7.3"
 ksoup = "0.4.0"
@@ -94,9 +93,6 @@ stately-common = { module = "co.touchlab:stately-common", version.ref = "stately
 room-sqlite = { module = "androidx.sqlite:sqlite-bundled", version.ref = "androidx-sqlite" }
 room-ksp = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-
-kotlincrypto-bom = { module = "org.kotlincrypto.hash:bom", version.ref = "kotlincrypto" }
-kotlincrypto-md5 = { module = "org.kotlincrypto.hash:md" }
 
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
