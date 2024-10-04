@@ -36,8 +36,6 @@ kotlin {
 
                 implementation(libs.koin.core)
                 implementation(libs.ktor.cio)
-                implementation(project.dependencies.platform(libs.kotlincrypto.bom))
-                implementation(libs.kotlincrypto.md5)
                 implementation(libs.coil)
                 implementation(libs.coil.network.ktor)
                 implementation(libs.sentry)
