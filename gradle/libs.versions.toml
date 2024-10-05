@@ -27,7 +27,7 @@ ktorfit = "2.1.0"
 ktorfit-ksp = "2.1.0-1.0.25"
 lyricist = "1.7.0"
 materialKolor = "2.0.0"
-mockk = "1.13.12"
+mokkery = "2.3.0"
 multiplatform-settings = "1.2.0"
 room = "2.7.0-alpha08"
 sentry = "0.9.0"
@@ -100,7 +100,6 @@ voyager-tab = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.re
 voyager-transition = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
@@ -113,4 +112,5 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
+mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 room = { id = "androidx.room", version.ref = "room" }
