@@ -49,6 +49,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.turbine)
             }
         }
     }
