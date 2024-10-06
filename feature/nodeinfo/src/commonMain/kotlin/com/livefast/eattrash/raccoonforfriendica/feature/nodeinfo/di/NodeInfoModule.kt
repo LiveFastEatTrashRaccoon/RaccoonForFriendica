@@ -9,6 +9,7 @@ val featureNodeInfoModule =
         factory<NodeInfoMviModel> {
             NodeInfoViewModel(
                 nodeInfoRepository = get(),
+                emojiHelper = get(),
             )
         }
     }

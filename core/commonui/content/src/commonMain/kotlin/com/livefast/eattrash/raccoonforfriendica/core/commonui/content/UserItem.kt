@@ -38,7 +38,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
-import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
@@ -92,7 +91,7 @@ fun UserItem(
             modifier = Modifier.weight(1f),
         ) {
             TextWithCustomEmojis(
-                text = (user.displayName ?: user.username ?: "").ellipsize(30),
+                text = user.displayName ?: user.username ?: "",
                 style = MaterialTheme.typography.titleMedium,
                 color = fullColor,
                 maxLines = 1,
@@ -100,7 +99,7 @@ fun UserItem(
                 emojis = user.emojis,
             )
             Text(
-                text = (user.handle ?: user.username ?: "").ellipsize(25),
+                text = user.handle ?: user.username ?: "",
                 style = MaterialTheme.typography.titleMedium,
                 color = ancillaryColor,
                 maxLines = 1,

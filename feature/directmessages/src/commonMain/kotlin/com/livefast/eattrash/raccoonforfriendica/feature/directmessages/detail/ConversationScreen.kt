@@ -35,7 +35,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -52,7 +51,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -63,11 +61,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
-import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItem
@@ -96,7 +94,7 @@ class ConversationScreen(
         val snackbarHostState = remember { SnackbarHostState() }
         val lazyListState = rememberLazyListState()
         val scope = rememberCoroutineScope()
-        val otherUserName = uiState.otherUser?.let { it.displayName ?: it.username }.ellipsize(30)
+        val otherUserName = uiState.otherUser?.let { it.displayName ?: it.username } ?: ""
         val genericError = LocalStrings.current.messageGenericError
         val followRequiredMessage = LocalStrings.current.followRequiredMessage
 
@@ -158,8 +156,9 @@ class ConversationScreen(
                                     title = otherUserName,
                                 )
                             }
-                            Text(
+                            TextWithCustomEmojis(
                                 text = otherUserName,
+                                emojis = uiState.otherUser?.emojis.orEmpty(),
                                 style = MaterialTheme.typography.titleMedium,
                             )
                         }
@@ -293,15 +292,16 @@ class ConversationScreen(
                                                 vertical = Spacing.s,
                                                 horizontal = Spacing.s,
                                             ),
+                                    contentAlignment = Alignment.Center,
                                 ) {
-                                    Text(
+                                    TextWithCustomEmojis(
                                         text =
                                             buildString {
                                                 append(LocalStrings.current.messageEmptyConversation)
                                                 append(" ")
                                                 append(otherUserName)
                                             },
-                                        textAlign = TextAlign.Center,
+                                        emojis = uiState.otherUser?.emojis.orEmpty(),
                                         style = MaterialTheme.typography.bodyLarge,
                                     )
                                 }

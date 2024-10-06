@@ -46,7 +46,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Search
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
-import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.FlowPreview
@@ -248,7 +247,7 @@ private fun UserResultItem(
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             TextWithCustomEmojis(
-                text = (user.displayName ?: user.username ?: "").ellipsize(30),
+                text = user.displayName ?: user.username ?: "",
                 style = MaterialTheme.typography.bodyMedium,
                 color = fullColor,
                 maxLines = 1,
@@ -256,7 +255,7 @@ private fun UserResultItem(
                 emojis = user.emojis,
             )
             Text(
-                text = (user.handle ?: "").ellipsize(25),
+                text = user.handle ?: "",
                 style = MaterialTheme.typography.bodySmall,
                 color = ancillaryColor,
                 maxLines = 1,
