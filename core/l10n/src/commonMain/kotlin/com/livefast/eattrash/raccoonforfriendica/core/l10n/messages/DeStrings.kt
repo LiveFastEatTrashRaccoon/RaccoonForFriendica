@@ -141,7 +141,7 @@ internal val DeStrings =
             "Bitte stellen Sie entweder einen Anhang oder eine Umfrage oder einen Text zur Verfügung"
         override val visibilityPublic = "Öffentlich"
         override val visibilityUnlisted = "Ungelistet"
-        override val visibilityPrivate = "Privat"
+        override val visibilityPrivate = "Privat (Friendica)"
         override val visibilityDirect = "Nur Erwähnungen"
         override val createPostBodyPlaceholder = "Ihr toller neuer Beitrag… 🪄"
         override val createPostAttachmentsSection = "Anhänge"

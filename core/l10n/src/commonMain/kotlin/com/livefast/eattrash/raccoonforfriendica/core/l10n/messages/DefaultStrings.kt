@@ -134,7 +134,7 @@ internal open class DefaultStrings : Strings {
         "Please provider either an attachment or a poll or some text"
     override val visibilityPublic = "Public"
     override val visibilityUnlisted = "Unlisted"
-    override val visibilityPrivate = "Private"
+    override val visibilityPrivate = "Private (Friendica)"
     override val visibilityDirect = "Only mentions"
     override val createPostBodyPlaceholder = "Your awesome new post… 🪄"
     override val createPostAttachmentsSection = "Attachments"
