@@ -85,7 +85,12 @@ internal class DefaultTimelineEntryRepository(
     override suspend fun reblog(id: String): TimelineEntryModel? =
         withContext(Dispatchers.IO) {
             runCatching {
-                val data = ReblogPostForm()
+                val data =
+                    FormDataContent(
+                        parameters {
+                            append("visibility", ContentVisibility.PUBLIC)
+                        },
+                    )
                 provider.statuses
                     .reblog(
                         id = id,

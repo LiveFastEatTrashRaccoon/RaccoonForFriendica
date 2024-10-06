@@ -6,7 +6,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
 import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.DELETE
@@ -36,10 +35,9 @@ interface StatusService {
     ): StatusSource
 
     @POST("v1/statuses/{id}/reblog")
-    @Headers("Content-Type: application/json")
     suspend fun reblog(
         @Path("id") id: String,
-        @Body data: ReblogPostForm,
+        @Body data: FormDataContent,
     ): Status
 
     @POST("v1/statuses/{id}/unreblog")
