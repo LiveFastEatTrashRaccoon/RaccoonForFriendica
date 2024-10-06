@@ -14,6 +14,7 @@ val featureDrawerModule =
                 credentialsRepository = get(),
                 accountRepository = get(),
                 switchAccountUseCase = get(),
+                emojiHelper = get(),
             )
         }
     }
