@@ -9,4 +9,5 @@ data class NodeFeatures(
     val supportReportCategoryRuleViolation: Boolean = false,
     val supportsBBCode: Boolean = false,
     val supportsEntryShare: Boolean = false,
+    val supportsPrivateVisibility: Boolean = false,
 )
