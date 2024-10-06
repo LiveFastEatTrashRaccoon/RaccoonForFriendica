@@ -528,7 +528,7 @@ class ComposerViewModel(
                 if (useBBCode) {
                     "[url=$url]"
                 } else {
-                    "<a href=\"$url\">"
+                    "<a href='$url'>"
                 }
             val after =
                 if (useBBCode) {

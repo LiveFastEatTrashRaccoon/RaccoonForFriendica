@@ -6,7 +6,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
 import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.DELETE
@@ -36,50 +35,42 @@ interface StatusService {
     ): StatusSource
 
     @POST("v1/statuses/{id}/reblog")
-    @Headers("Content-Type: application/json")
     suspend fun reblog(
         @Path("id") id: String,
-        @Body data: ReblogPostForm,
+        @Body data: FormDataContent,
     ): Status
 
     @POST("v1/statuses/{id}/unreblog")
-    @Headers("Content-Type: application/json")
     suspend fun unreblog(
         @Path("id") id: String,
     ): Status
 
     @POST("v1/statuses/{id}/pin")
-    @Headers("Content-Type: application/json")
     suspend fun pin(
         @Path("id") id: String,
     ): Status
 
     @POST("v1/statuses/{id}/unpin")
-    @Headers("Content-Type: application/json")
     suspend fun unpin(
         @Path("id") id: String,
     ): Status
 
     @POST("v1/statuses/{id}/bookmark")
-    @Headers("Content-Type: application/json")
     suspend fun bookmark(
         @Path("id") id: String,
     ): Status
 
     @POST("v1/statuses/{id}/unbookmark")
-    @Headers("Content-Type: application/json")
     suspend fun unbookmark(
         @Path("id") id: String,
     ): Status
 
     @POST("v1/statuses/{id}/favourite")
-    @Headers("Content-Type: application/json")
     suspend fun favorite(
         @Path("id") id: String,
     ): Status
 
     @POST("v1/statuses/{id}/unfavourite")
-    @Headers("Content-Type: application/json")
     suspend fun unfavorite(
         @Path("id") id: String,
     ): Status
