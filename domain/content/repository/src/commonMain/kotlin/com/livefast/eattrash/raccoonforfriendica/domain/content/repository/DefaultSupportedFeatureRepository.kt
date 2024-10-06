@@ -22,6 +22,7 @@ internal class DefaultSupportedFeatureRepository(
                 supportsPolls = info?.isFriendica == false,
                 supportsBBCode = info?.isFriendica == true,
                 supportsEntryShare = info?.isFriendica == true,
+                supportsPrivateVisibility = info?.isFriendica == true,
             )
         }
     }
