@@ -1,9 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusAddons
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreatePollForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.form.ReblogPostForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.SubmitPollVoteForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
@@ -15,6 +15,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
+import io.ktor.client.request.forms.FormDataContent
+import io.ktor.http.parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -329,6 +331,6 @@ internal class DefaultTimelineEntryRepository(
         }
 
     companion object {
-        const val DEFAULT_PAGE_SIZE = 20
+        private const val DEFAULT_PAGE_SIZE = 20
     }
 }
