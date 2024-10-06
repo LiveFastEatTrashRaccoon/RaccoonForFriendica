@@ -59,11 +59,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentTitle
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.launch
@@ -351,12 +351,13 @@ private fun ContactUserItem(
                 modifier = Modifier.weight(1f).padding(vertical = Spacing.s),
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
-                val title = (user.displayName ?: user.username ?: "").ellipsize(30)
+                val title = user.displayName ?: user.username ?: ""
                 val subtitle = user.handle ?: ""
                 if (title.isNotBlank()) {
-                    Text(
+                    TextWithCustomEmojis(
                         text = title,
                         style = MaterialTheme.typography.bodyMedium,
+                        emojis = user.emojis,
                         color = fullColor,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -364,7 +365,7 @@ private fun ContactUserItem(
                 }
                 if (subtitle.isNotBlank()) {
                     Text(
-                        text = (user.handle ?: "").ellipsize(25),
+                        text = user.handle ?: "",
                         style = MaterialTheme.typography.bodySmall,
                         color = ancillaryColor,
                         maxLines = 1,
