@@ -30,9 +30,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentTitle
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
-import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ConversationModel
 
 @Composable
@@ -84,15 +84,16 @@ internal fun ConversationItem(
             Column(
                 modifier = Modifier.weight(1f),
             ) {
-                Text(
-                    text = (user.displayName ?: user.username ?: "").ellipsize(30),
+                TextWithCustomEmojis(
+                    text = user.displayName ?: user.username ?: "",
+                    emojis = user.emojis,
                     style = MaterialTheme.typography.titleMedium,
                     color = fullColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    text = (user.handle ?: user.username ?: "").ellipsize(25),
+                    text = user.handle ?: user.username ?: "",
                     style = MaterialTheme.typography.titleMedium,
                     color = ancillaryColor,
                     maxLines = 1,
