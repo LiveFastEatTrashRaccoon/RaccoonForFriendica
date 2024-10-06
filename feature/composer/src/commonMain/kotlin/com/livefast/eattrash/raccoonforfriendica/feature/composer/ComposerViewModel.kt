@@ -110,7 +110,9 @@ class ComposerViewModel(
                                 buildList {
                                     this += Visibility.Public
                                     this += Visibility.Unlisted
-                                    this += Visibility.Private
+                                    if (features.supportsPrivateVisibility) {
+                                        this += Visibility.Private
+                                    }
                                     this += Visibility.Direct
                                     if (features.supportsCustomCircles) {
                                         this += Visibility.Circle()
