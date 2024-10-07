@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
@@ -97,10 +98,7 @@ fun CustomModalBottomSheet(
                                                         onLongPress?.invoke(idx)
                                                     }
                                             },
-                                        ).padding(
-                                            horizontal = Spacing.s,
-                                            vertical = Spacing.s,
-                                        ),
+                                        ).padding(10.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                             ) {
