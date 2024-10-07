@@ -59,7 +59,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
@@ -509,13 +508,7 @@ class SettingsScreen : Screen {
         }
 
         if (defaultPostVisibilityBottomSheetOpened) {
-            val types =
-                listOf(
-                    Visibility.Public,
-                    Visibility.Unlisted,
-                    Visibility.Direct,
-                    Visibility.Private,
-                )
+            val types = uiState.availableVisibilities
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemDefaultPostVisibility,
                 items =
@@ -543,13 +536,7 @@ class SettingsScreen : Screen {
         }
 
         if (defaultReplyVisibilityBottomSheetOpened) {
-            val types =
-                listOf(
-                    Visibility.Public,
-                    Visibility.Unlisted,
-                    Visibility.Direct,
-                    Visibility.Private,
-                )
+            val types = uiState.availableVisibilities
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemDefaultReplyVisibility,
                 items =
