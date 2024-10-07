@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -31,6 +32,7 @@ class SettingsViewModel(
     private val colorSchemeProvider: ColorSchemeProvider,
     private val themeColorRepository: ThemeColorRepository,
     private val identityRepository: IdentityRepository,
+    private val supportedFeatureRepository: SupportedFeatureRepository,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
@@ -99,6 +101,22 @@ class SettingsViewModel(
                                 excludeRepliesFromTimeline = settings.excludeRepliesFromTimeline,
                             )
                         }
+                    }
+                }.launchIn(this)
+            supportedFeatureRepository.features
+                .onEach { features ->
+                    updateState {
+                        it.copy(
+                            availableVisibilities =
+                                buildList {
+                                    this += Visibility.Public
+                                    this += Visibility.Unlisted
+                                    if (features.supportsPrivateVisibility) {
+                                        this += Visibility.Private
+                                    }
+                                    this += Visibility.Direct
+                                },
+                        )
                     }
                 }.launchIn(this)
 
