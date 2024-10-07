@@ -262,6 +262,10 @@ class ComposerViewModel(
                         if (initialValue.isNotEmpty()) {
                             this += initialValue
                         }
+                        val currentUserHandle =
+                            identityRepository.currentUser.value
+                                ?.handle
+                                .orEmpty()
                         val mentions =
                             inReplyToId
                                 ?.let { entryCache.get(it) }
@@ -269,6 +273,7 @@ class ComposerViewModel(
                                 .orEmpty()
                                 .mapNotNull { it.handle }
                                 .filterNot { it == initialValue }
+                                .filterNot { it == currentUserHandle }
                         addAll(mentions)
                     }
 
