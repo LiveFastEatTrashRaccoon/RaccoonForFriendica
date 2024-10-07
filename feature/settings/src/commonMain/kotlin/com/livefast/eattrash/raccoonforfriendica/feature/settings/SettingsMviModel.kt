@@ -88,6 +88,7 @@ interface SettingsMviModel :
         val defaultPostVisibility: Visibility = Visibility.Public,
         val defaultReplyVisibility: Visibility = Visibility.Public,
         val excludeRepliesFromTimeline: Boolean = false,
+        val availableVisibilities: List<Visibility> = emptyList(),
     )
 
     sealed interface Effect
