@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Timestamp
+import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
@@ -36,6 +37,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Sched
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.FlowPreview
@@ -71,6 +73,7 @@ class ComposerViewModel(
     private val settingsRepository: SettingsRepository,
     private val emojiRepository: EmojiRepository,
     private val userRepository: UserRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
     private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
         initialState = ComposerMviModel.State(),
@@ -456,6 +459,11 @@ class ComposerViewModel(
 
             is ComposerMviModel.Intent.InsertCustomEmoji ->
                 insertCustomEmoji(intent.fieldType, intent.emoji)
+
+            ComposerMviModel.Intent.CreatePreview ->
+                screenModelScope.launch {
+                    createPreview()
+                }
 
             ComposerMviModel.Intent.Submit -> submit()
         }
@@ -1237,6 +1245,30 @@ class ComposerViewModel(
         }
     }
 
+    private suspend fun createPreview() {
+        val currentState = uiState.value
+        val inReplyTo = inReplyToId?.let { entryCache.get(it) }
+        val localId = getUuid()
+        val entry =
+            TimelineEntryModel(
+                creator = currentState.author,
+                spoiler =
+                    currentState.spoilerValue.text
+                        .takeIf { currentState.hasSpoiler }
+                        ?.prepareForPreview(useBBCode),
+                title =
+                    currentState.titleValue.text
+                        .takeIf { currentState.hasTitle }
+                        ?.prepareForPreview(useBBCode),
+                content = currentState.bodyValue.text.prepareForPreview(useBBCode),
+                poll = currentState.poll,
+                attachments = currentState.attachments,
+                id = localId,
+                inReplyTo = inReplyTo,
+            )
+        emitEffect(ComposerMviModel.Effect.OpenPreview(entry))
+    }
+
     private fun submit() {
         val currentState = uiState.value
         if (currentState.loading) {
@@ -1427,8 +1459,96 @@ class ComposerViewModel(
         }
     }
 
+    private fun String.prepareForPreview(withBBCode: Boolean): String =
+        run {
+            if (withBBCode) {
+                convertBBCodeToHtml()
+            } else {
+                this
+            }
+        }.withMentions().withHashtags()
+
+    private fun String.convertBBCodeToHtml(): String =
+        replace("[u]", "<u>")
+            .replace("[/u]", "</u>")
+            .replace("[s]", "<s>")
+            .replace("[/s]", "</s>")
+            .replace("[i]", "<i>")
+            .replace("[/i]", "</i>")
+            .replace("[b]", "<b>")
+            .replace("[/b]", "</b>")
+            .replace("[code]", "<code>")
+            .replace("[/code]", "</code>")
+            .also { original ->
+                val matches = SHARE_REGEX.findAll(original).toList()
+                buildString {
+                    var index = 0
+                    for (match in matches) {
+                        val range = match.range
+                        append(original.substring(index, range.first))
+                        val url = match.groupValues.firstOrNull().orEmpty()
+                        append("<a href=\"$url\">#$url</a>")
+                        index = range.last + 1
+                    }
+                    if (index < original.length) {
+                        append(original.substring(index, original.length))
+                    }
+                }
+            }
+
+    private fun String.withMentions(): String =
+        also { original ->
+            val matches = USER_MENTION_REGEX.findAll(original).toList()
+            buildString {
+                var index = 0
+                for (match in matches) {
+                    val range = match.range
+                    append(original.substring(index, range.first))
+                    val handle = match.groupValues.firstOrNull().orEmpty()
+                    val currentNode = apiConfigurationRepository.node.value
+                    val node = handle.nodeName ?: currentNode
+                    val name = handle.substringBefore("@")
+                    val url =
+                        if (node == currentNode) {
+                            "https://$node/profile/$name"
+                        } else {
+                            "https://$node/users/$name"
+                        }
+                    append("<a href=\"$url\">#$handle</a>")
+                    index = range.last + 1
+                }
+                if (index < original.length) {
+                    append(original.substring(index, original.length))
+                }
+            }
+        }
+
+    private fun String.withHashtags(): String =
+        also { original ->
+            val matches = HASHTAG_REGEX.findAll(original).toList()
+            buildString {
+                var index = 0
+                for (match in matches) {
+                    val range = match.range
+                    append(original.substring(index, range.first))
+                    val tag = match.groupValues.firstOrNull().orEmpty()
+                    val node = apiConfigurationRepository.node.value
+                    val url = "https://$node/search?tag=$tag"
+                    append("<a href=\"$url\">#$tag</a>")
+                    index = range.last + 1
+                }
+                if (index < original.length) {
+                    append(original.substring(index, original.length))
+                }
+            }
+        }
+
     companion object {
         private val USER_MENTION_REGEX =
             Regex("@(?<handlePrefix>[a-zA-Z0-9-_.]+?(@[a-zA-Z0-9_.]+)?)(?=\\b)")
+        private val SHARE_REGEX =
+            Regex("\\[share](?<url>.*?)\\[share]")
+        private val HASHTAG_REGEX =
+            Regex("#(?<tag>.*?)(?=\\b)")
     }
 }

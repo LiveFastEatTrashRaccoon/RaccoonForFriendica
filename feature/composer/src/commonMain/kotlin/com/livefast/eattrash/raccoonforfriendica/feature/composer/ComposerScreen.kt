@@ -79,12 +79,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostSubHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.DateTimeSelectionFlow
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.EntryPreviewDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.GalleryPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InReplyToInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InsertLinkDialog
@@ -146,6 +148,7 @@ class ComposerScreen(
         var pollExpirationMillis by remember { mutableStateOf<Long?>(null) }
         var pollExpirationDatePickerOpen by remember { mutableStateOf(false) }
         var insertEmojiModalOpen by remember { mutableStateOf(false) }
+        var previewEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var confirmBackWithUnsavedChangesDialog by remember { mutableStateOf(false) }
         val scheduleDate =
             when (val type = uiState.publicationType) {
@@ -205,6 +208,8 @@ class ComposerScreen(
                             snackbarHostState.showSnackbar(message = invalidPollError)
 
                         ComposerMviModel.Effect.Success -> navigationCoordinator.pop()
+
+                        is ComposerMviModel.Effect.OpenPreview -> previewEntry = event.entry
                     }
                 }.launchIn(this)
         }
@@ -284,6 +289,11 @@ class ComposerScreen(
                                             label = LocalStrings.current.insertEmojiTitle,
                                         )
                                 }
+
+                                this +=
+                                    CustomOptions.OpenPreview.toOption(
+                                        label = LocalStrings.current.actionOpenPreview,
+                                    )
 
                                 if (uiState.titleFeatureSupported) {
                                     this +=
@@ -404,6 +414,10 @@ class ComposerScreen(
 
                                                 CustomOptions.InsertCustomEmoji -> {
                                                     insertEmojiModalOpen = true
+                                                }
+
+                                                CustomOptions.OpenPreview -> {
+                                                    model.reduce(ComposerMviModel.Intent.CreatePreview)
                                                 }
 
                                                 else -> Unit
@@ -904,6 +918,15 @@ class ComposerScreen(
                 },
             )
         }
+
+        previewEntry?.also { entry ->
+            EntryPreviewDialog(
+                entry = entry,
+                onDismiss = {
+                    previewEntry = null
+                },
+            )
+        }
     }
 }
 
@@ -915,4 +938,6 @@ private sealed interface CustomOptions : OptionId.Custom {
     data object ToggleTitle : CustomOptions
 
     data object InsertCustomEmoji : CustomOptions
+
+    data object OpenPreview : CustomOptions
 }
