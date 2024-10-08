@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 
@@ -183,6 +184,8 @@ interface ComposerMviModel :
             val fieldType: ComposerFieldType,
             val emoji: EmojiModel,
         ) : Intent
+
+        data object CreatePreview : Intent
     }
 
     data class State(
@@ -241,5 +244,9 @@ interface ComposerMviModel :
         data class Failure(
             val message: String? = null,
         ) : Effect
+
+        data class OpenPreview(
+            val entry: TimelineEntryModel,
+        ) : ValidationError
     }
 }

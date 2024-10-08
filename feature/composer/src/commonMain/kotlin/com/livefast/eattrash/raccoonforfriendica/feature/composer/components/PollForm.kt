@@ -83,7 +83,7 @@ internal fun PollForm(
                     text =
                         buildString {
                             append(LocalStrings.current.createPostPollOptionLabel)
-                            append(" $idx")
+                            append(" ${idx + 1}")
                         },
                 )
             },

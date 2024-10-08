@@ -25,6 +25,7 @@ val featureComposerModule =
                 settingsRepository = get(),
                 emojiRepository = get(),
                 userRepository = get(),
+                apiConfigurationRepository = get(),
                 notificationCenter = get(),
             )
         }

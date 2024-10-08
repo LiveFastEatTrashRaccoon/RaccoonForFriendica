@@ -369,4 +369,5 @@ internal val DeStrings =
         override val settingsItemExcludeRepliesFromTimeline = "Antworten aus der Zeitleiste ausschließen"
         override val insertEmojiTitle = "Emoji einfügen"
         override val messageLoadingUsers = "Benutzer laden"
+        override val actionOpenPreview = "Vorschau öffnen"
     }

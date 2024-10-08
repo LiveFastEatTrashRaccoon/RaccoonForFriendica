@@ -369,4 +369,5 @@ internal val ItStrings =
         override val settingsItemExcludeRepliesFromTimeline = "Escludi risposte dalla timeline"
         override val insertEmojiTitle = "Inserisci emoji"
         override val messageLoadingUsers = "Caricamento utenti"
+        override val actionOpenPreview = "Visualizza anteprima"
     }
