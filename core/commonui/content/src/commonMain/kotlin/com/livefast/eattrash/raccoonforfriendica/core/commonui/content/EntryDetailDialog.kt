@@ -105,6 +105,7 @@ fun EntryDetailDialog(
                                 modifier = Modifier.size(IconSize.s),
                                 imageVector = entry.visibility.toIcon(),
                                 contentDescription = null,
+                                tint = fullColor,
                             )
                         }
                     }
