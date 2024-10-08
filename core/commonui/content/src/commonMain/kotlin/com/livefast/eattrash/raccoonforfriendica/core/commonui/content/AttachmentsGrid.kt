@@ -143,10 +143,10 @@ fun AttachmentsGrid(
                                 attachment = attachment,
                                 sensitive = blurNsfw && sensitive,
                                 contentScale =
-                                    if (attachment.aspectRatio >= 1) {
-                                        ContentScale.FillHeight
-                                    } else {
+                                    if (chunkSize == chunk.size) {
                                         ContentScale.FillWidth
+                                    } else {
+                                        ContentScale.Crop
                                     },
                                 onClick = {
                                     onOpenImage?.invoke(
@@ -196,10 +196,10 @@ fun AttachmentsGrid(
                                 sensitive = blurNsfw && sensitive,
                                 maxHeight = 180.dp,
                                 contentScale =
-                                    if (attachment.aspectRatio >= 1) {
+                                    if (chunkSize == chunk.size) {
                                         ContentScale.FillHeight
                                     } else {
-                                        ContentScale.FillWidth
+                                        ContentScale.Crop
                                     },
                                 onClick = {
                                     onOpenImage?.invoke(
