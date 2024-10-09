@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.AlternateEmail
+import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.ripple.rememberRipple
@@ -59,6 +60,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentTitle
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -179,7 +181,7 @@ class NodeInfoScreen : Screen {
                         if (title != null) {
                             item {
                                 ContentTitle(
-                                    modifier = Modifier.padding(horizontal = Spacing.s),
+                                    modifier = Modifier.padding(horizontal = Spacing.m),
                                     content = title,
                                     onOpenUrl = {
                                         uriHandler.openUri(it)
@@ -192,7 +194,7 @@ class NodeInfoScreen : Screen {
                         if (description != null) {
                             item {
                                 ContentBody(
-                                    modifier = Modifier.padding(horizontal = Spacing.s),
+                                    modifier = Modifier.padding(horizontal = Spacing.m),
                                     content = description,
                                     onOpenUrl = {
                                         uriHandler.openUri(it)
@@ -236,13 +238,29 @@ class NodeInfoScreen : Screen {
                             }
                             items(rules) { rule ->
                                 RuleItem(
-                                    modifier = Modifier.padding(horizontal = 10.dp),
+                                    modifier = Modifier.padding(horizontal = Spacing.m),
                                     rule = rule,
                                     onOpenUrl = {
                                         uriHandler.openUri(it)
                                     },
                                 )
                             }
+                        }
+
+                        item {
+                            SettingsHeader(
+                                title = LocalStrings.current.itemOther,
+                                icon = Icons.Default.Hub,
+                            )
+                        }
+
+                        item {
+                            SettingsRow(
+                                title = LocalStrings.current.settingsAboutAppVersion,
+                                value =
+                                    uiState.info?.version
+                                        ?: LocalStrings.current.shortUnavailable,
+                            )
                         }
 
                         item {
