@@ -107,7 +107,11 @@ class InboxViewModel(
 
         val wasRefreshing = uiState.value.refreshing
         updateState { it.copy(loading = true) }
-        val notifications = paginationManager.loadNextPage()
+        val notifications =
+            paginationManager
+                .loadNextPage()
+                .takeIf { uiState.value.currentUserId != null }
+                .orEmpty()
         notifications.preloadImages()
         updateState {
             it.copy(
