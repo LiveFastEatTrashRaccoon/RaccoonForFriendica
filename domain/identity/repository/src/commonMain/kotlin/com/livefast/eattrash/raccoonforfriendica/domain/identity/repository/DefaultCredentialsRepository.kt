@@ -53,7 +53,7 @@ internal class DefaultCredentialsRepository(
         withContext(Dispatchers.IO) {
             runCatching {
                 provider.changeNode(node)
-                provider.timeline.getPublic()
+                provider.instance.getInfo()
                 true
             }.getOrElse { false }
         }
