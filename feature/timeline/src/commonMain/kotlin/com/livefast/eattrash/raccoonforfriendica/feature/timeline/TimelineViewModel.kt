@@ -172,8 +172,10 @@ class TimelineViewModel(
     }
 
     private suspend fun refresh(initial: Boolean = false) {
+        // workaround to handle refresh after initial network call failed
         if (activeAccountMonitor.isNotLoggedButItShould()) {
             activeAccountMonitor.forceRefresh()
+            return
         }
         // needed as a last-resort to update circles if edited elsewhere
         val isLogged = identityRepository.currentUser.value != null
