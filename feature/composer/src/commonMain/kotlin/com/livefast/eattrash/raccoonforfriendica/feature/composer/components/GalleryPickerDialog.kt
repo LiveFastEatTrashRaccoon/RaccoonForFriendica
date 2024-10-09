@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -18,9 +20,10 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,8 +49,10 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
@@ -97,169 +102,199 @@ fun GalleryPickerDialog(
             Column(
                 modifier = Modifier.padding(bottom = Spacing.xl),
             ) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = LocalStrings.current.pickFromGalleryDialogTitle,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = fullColor,
-                )
-                Spacer(modifier = Modifier.height(Spacing.s))
-            }
-            LazyVerticalStaggeredGrid(
-                modifier =
-                    Modifier
-                        .padding(horizontal = Spacing.s)
-                        .heightIn(min = 500.dp),
-                state = lazyGridState,
-                columns = StaggeredGridCells.Fixed(count = 2),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.s),
-                verticalItemSpacing = Spacing.s,
-            ) {
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    Row(
+                Box {
+                    Text(
+                        modifier = Modifier.fillMaxWidth().align(Alignment.Center),
+                        textAlign = TextAlign.Center,
+                        text = LocalStrings.current.pickFromGalleryDialogTitle,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = fullColor,
+                    )
+                    Button(
                         modifier =
-                            Modifier.clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                            ) {
-                                optionsMenuOpen = !optionsMenuOpen
-                            },
-                        verticalAlignment = Alignment.CenterVertically,
+                            Modifier
+                                .padding(end = Spacing.s)
+                                .align(Alignment.CenterEnd),
+                        onClick = {
+                            sheetScope
+                                .launch {
+                                    sheetState.hide()
+                                }.invokeOnCompletion {
+                                    if (selection.isNotEmpty()) {
+                                        onClose?.invoke(selection)
+                                    } else {
+                                        onClose?.invoke(null)
+                                    }
+                                }
+                        },
                     ) {
                         Text(
-                            modifier = Modifier.weight(1f),
-                            text = currentAlbum.orEmpty(),
-                            style = MaterialTheme.typography.titleMedium,
+                            text =
+                                buildString {
+                                    append(LocalStrings.current.buttonConfirm)
+                                    if (selection.isNotEmpty()) {
+                                        append(" (")
+                                        append(selection.size)
+                                        append(")")
+                                    }
+                                },
                         )
-                        Box {
-                            IconButton(
-                                modifier =
-                                    Modifier.onGloballyPositioned {
-                                        optionsOffset = it.positionInParent()
-                                    },
-                                onClick = {
-                                    optionsMenuOpen = !optionsMenuOpen
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowDropDown,
-                                    contentDescription = null,
-                                )
-                            }
+                    }
+                }
+                Spacer(modifier = Modifier.height(Spacing.s))
 
-                            CustomDropDown(
-                                expanded = optionsMenuOpen,
-                                onDismiss = {
-                                    optionsMenuOpen = false
-                                },
-                                offset =
-                                    with(LocalDensity.current) {
-                                        DpOffset(
-                                            x = optionsOffset.x.toDp(),
-                                            y = optionsOffset.y.toDp(),
-                                        )
+                LazyVerticalStaggeredGrid(
+                    modifier =
+                        Modifier
+                            .padding(horizontal = Spacing.s)
+                            .heightIn(min = 500.dp),
+                    state = lazyGridState,
+                    columns = StaggeredGridCells.Fixed(count = 2),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                    verticalItemSpacing = Spacing.s,
+                ) {
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        Row(
+                            modifier =
+                                Modifier
+                                    .border(
+                                        width = Dp.Hairline,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        shape = RoundedCornerShape(CornerSize.xl),
+                                    ).clickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null,
+                                    ) {
+                                        optionsMenuOpen = !optionsMenuOpen
                                     },
-                            ) {
-                                albums.forEach { album ->
-                                    DropdownMenuItem(
-                                        text = {
-                                            Text(album.name)
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .padding(start = Spacing.m),
+                                text = currentAlbum.orEmpty(),
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                            Box {
+                                IconButton(
+                                    modifier =
+                                        Modifier.onGloballyPositioned {
+                                            optionsOffset = it.positionInParent()
                                         },
-                                        onClick = {
-                                            optionsMenuOpen = false
-                                            onAlbumChanged?.invoke(album.name)
-                                        },
+                                    onClick = {
+                                        optionsMenuOpen = !optionsMenuOpen
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowDropDown,
+                                        contentDescription = null,
                                     )
+                                }
+
+                                CustomDropDown(
+                                    expanded = optionsMenuOpen,
+                                    onDismiss = {
+                                        optionsMenuOpen = false
+                                    },
+                                    offset =
+                                        with(LocalDensity.current) {
+                                            DpOffset(
+                                                x = optionsOffset.x.toDp(),
+                                                y = optionsOffset.y.toDp(),
+                                            )
+                                        },
+                                ) {
+                                    albums.forEach { album ->
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(album.name)
+                                            },
+                                            onClick = {
+                                                optionsMenuOpen = false
+                                                onAlbumChanged?.invoke(album.name)
+                                            },
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                if (!loading && photos.isEmpty()) {
-                    item(span = StaggeredGridItemSpan.FullLine) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
-                            text = LocalStrings.current.messageEmptyAlbum,
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    }
-                }
-
-                itemsIndexed(
-                    items = photos,
-                    key = { _, e -> e.id },
-                ) { idx, attachment ->
-                    val selected = selection.contains(attachment)
-                    Box {
-                        AlbumImageItem(
-                            attachment = attachment,
-                            onClick = {
-                                if (selected) {
-                                    selection -= attachment
-                                } else {
-                                    selection += attachment
-                                }
-                            },
-                        )
-                        if (selected) {
-                            Icon(
-                                modifier =
-                                    Modifier
-                                        .padding(
-                                            top = Spacing.xs,
-                                            end = Spacing.xs,
-                                        ).align(Alignment.TopEnd)
-                                        .size(IconSize.s),
-                                imageVector = Icons.Default.CheckCircle,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground,
+                    if (!loading && photos.isEmpty()) {
+                        item(span = StaggeredGridItemSpan.FullLine) {
+                            Text(
+                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                                text = LocalStrings.current.messageEmptyAlbum,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyLarge,
                             )
                         }
                     }
 
-                    val isNearTheEnd = idx.isNearTheEnd(photos)
-                    if (isNearTheEnd && !loading && canFetchMore) {
-                        onLoadMorePhotos?.invoke()
-                    }
-                }
-
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    if (loading && canFetchMore) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            ListLoadingIndicator()
-                        }
-                    }
-                }
-
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    Spacer(modifier = Modifier.height(Spacing.xl))
-                }
-            }
-
-            Button(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = {
-                    sheetScope
-                        .launch {
-                            sheetState.hide()
-                        }.invokeOnCompletion {
-                            if (selection.isNotEmpty()) {
-                                onClose?.invoke(selection)
-                            } else {
-                                onClose?.invoke(null)
+                    itemsIndexed(
+                        items = photos,
+                        key = { _, e -> e.id },
+                    ) { idx, attachment ->
+                        val selectionIndex = selection.indexOf(attachment)
+                        Box {
+                            AlbumImageItem(
+                                attachment = attachment,
+                                onClick = {
+                                    if (selectionIndex >= 0) {
+                                        selection -= attachment
+                                    } else {
+                                        selection += attachment
+                                    }
+                                },
+                            )
+                            if (selectionIndex >= 0) {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .padding(
+                                                top = Spacing.s,
+                                                end = Spacing.s,
+                                            ).align(Alignment.TopEnd)
+                                            .size(IconSize.s)
+                                            .background(
+                                                color = MaterialTheme.colorScheme.primaryContainer,
+                                                shape = CircleShape,
+                                            ),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = "${selectionIndex + 1}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                }
                             }
                         }
-                },
-            ) {
-                Text(text = LocalStrings.current.buttonConfirm)
+
+                        val isNearTheEnd = idx.isNearTheEnd(photos)
+                        if (isNearTheEnd && !loading && canFetchMore) {
+                            onLoadMorePhotos?.invoke()
+                        }
+                    }
+
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        if (loading && canFetchMore) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                ListLoadingIndicator()
+                            }
+                        }
+                    }
+
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        Spacer(modifier = Modifier.height(Spacing.xl))
+                    }
+                }
             }
-            Spacer(modifier = Modifier.height(Spacing.xl))
         },
     )
 }
