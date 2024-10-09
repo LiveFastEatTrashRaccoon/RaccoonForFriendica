@@ -2,9 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Application
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Instance
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.InstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ClientApplicationModel
@@ -31,12 +32,12 @@ class DefaultCredentialsRepositoryTest {
         mock<HttpClientEngine>(mode = MockMode.autofill) {
             every { coroutineContext } returns TestScope().coroutineContext
         }
-    private val timelineService = mock<TimelineService>(mode = MockMode.autoUnit)
+    private val instanceService = mock<InstanceService>(mode = MockMode.autoUnit)
     private val userService = mock<UserService>(mode = MockMode.autoUnit)
     private val appService = mock<AppService>(mode = MockMode.autoUnit)
     private val provider =
         mock<ServiceProvider>(mode = MockMode.autoUnit) {
-            every { timeline } returns timelineService
+            every { instance } returns instanceService
             every { users } returns userService
             every { apps } returns appService
         }
@@ -50,7 +51,7 @@ class DefaultCredentialsRepositoryTest {
     @Test
     fun `given timeline can be retrieved when validateNode then result is as expected`() =
         runTest {
-            everySuspend { timelineService.getPublic(any(), any(), any(), any()) } returns listOf()
+            everySuspend { instanceService.getInfo() } returns Instance(domain = "example.com")
             val node = "test-node"
 
             val res = sut.validateNode(node)
@@ -58,14 +59,14 @@ class DefaultCredentialsRepositoryTest {
             assertTrue(res)
             verifySuspend {
                 provider.changeNode(node)
-                timelineService.getPublic(any(), any(), any(), any())
+                instanceService.getInfo()
             }
         }
 
     @Test
     fun `given timeline can not be retrieved when validateNode then result is as expected`() =
         runTest {
-            everySuspend { timelineService.getPublic(any(), any(), any(), any()) } throws
+            everySuspend { instanceService.getInfo() } throws
                 IOException("Network call was not successful")
             val node = "test-node"
 
@@ -74,7 +75,7 @@ class DefaultCredentialsRepositoryTest {
             assertFalse(res)
             verifySuspend {
                 provider.changeNode(node)
-                timelineService.getPublic(any(), any(), any(), any())
+                instanceService.getInfo()
             }
         }
 
