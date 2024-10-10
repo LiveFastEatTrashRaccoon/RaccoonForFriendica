@@ -20,11 +20,15 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 class MyAccountViewModel(
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
@@ -44,6 +48,8 @@ class MyAccountViewModel(
         screenModelScope.launch {
             identityRepository
                 .currentUser
+                .drop(1)
+                .debounce(750)
                 .onEach { user ->
                     val currentUser =
                         user?.let {
@@ -52,12 +58,7 @@ class MyAccountViewModel(
                     updateState {
                         it.copy(user = currentUser)
                     }
-                }.launchIn(this)
-            identityRepository
-                .currentUser
-                .drop(1)
-                .onEach {
-                    refresh(initial = true)
+                    refresh(initial = true, forceRefresh = true)
                 }.launchIn(this)
             settingsRepository.current
                 .onEach { settings ->
@@ -75,7 +76,34 @@ class MyAccountViewModel(
                 }.launchIn(this)
 
             if (uiState.value.initial) {
-                refresh(initial = true)
+                val user = identityRepository.currentUser.first()
+                val currentUser =
+                    user?.let {
+                        with(emojiHelper) { it.withEmojisIfMissing() }
+                    }
+                val initialValues = timelineEntryRepository.getCachedByUser()
+                paginationManager.restoreHistory(initialValues)
+                if (initialValues.isNotEmpty()) {
+                    updateState {
+                        it.copy(
+                            initial = false,
+                            entries = initialValues,
+                            user = currentUser,
+                        )
+                    }
+                    paginationManager.reset(
+                        TimelinePaginationSpecification.User(
+                            userId = user?.id.orEmpty(),
+                            excludeReplies = true,
+                            includeNsfw =
+                                settingsRepository.current.value?.includeNsfw
+                                    ?: false,
+                            enableCache = true,
+                        ),
+                    )
+                } else {
+                    refresh(initial = true)
+                }
             }
         }
     }
@@ -117,7 +145,10 @@ class MyAccountViewModel(
         }
     }
 
-    private suspend fun refresh(initial: Boolean = false) {
+    private suspend fun refresh(
+        initial: Boolean = false,
+        forceRefresh: Boolean = false,
+    ) {
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
@@ -132,7 +163,7 @@ class MyAccountViewModel(
                 pinned = currentState.section == UserSection.Pinned,
                 includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
                 enableCache = currentState.section == UserSection.Posts,
-                refresh = !initial,
+                refresh = forceRefresh || !initial,
             ),
         )
         loadNextPage()
