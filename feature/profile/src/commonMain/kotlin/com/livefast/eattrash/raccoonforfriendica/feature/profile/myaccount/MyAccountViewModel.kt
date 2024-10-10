@@ -23,7 +23,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -76,9 +75,8 @@ class MyAccountViewModel(
                 }.launchIn(this)
 
             if (uiState.value.initial) {
-                val user = identityRepository.currentUser.first()
                 val currentUser =
-                    user?.let {
+                    identityRepository.currentUser.value?.let {
                         with(emojiHelper) { it.withEmojisIfMissing() }
                     }
                 val initialValues = timelineEntryRepository.getCachedByUser()
@@ -93,7 +91,7 @@ class MyAccountViewModel(
                     }
                     paginationManager.reset(
                         TimelinePaginationSpecification.User(
-                            userId = user?.id.orEmpty(),
+                            userId = currentUser?.id.orEmpty(),
                             excludeReplies = true,
                             includeNsfw =
                                 settingsRepository.current.value?.includeNsfw

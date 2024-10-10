@@ -2,15 +2,22 @@ package com.livefast.eattrash.raccoonforfriendica.feature.thread.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.data.ConversationNode
 import kotlinx.coroutines.coroutineScope
 
 internal class DefaultPopulateThreadUseCase(
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val emojiHelper: EmojiHelper,
 ) : PopulateThreadUseCase {
     override suspend fun invoke(entryId: String): List<TimelineEntryModel> {
-        val entry = timelineEntryRepository.getById(entryId) ?: return emptyList()
+        val entry =
+            timelineEntryRepository.getById(entryId)?.let {
+                with(emojiHelper) {
+                    it.withEmojisIfMissing()
+                }
+            } ?: return emptyList()
         val root = ConversationNode(entry)
         populateTree(root)
         return mutableListOf<TimelineEntryModel>()
@@ -37,7 +44,16 @@ internal class DefaultPopulateThreadUseCase(
             }
 
             // return all direct descendants
-            val descendants = timelineEntryRepository.getContext(entry.id)?.descendants.orEmpty()
+            val descendants =
+                timelineEntryRepository
+                    .getContext(entry.id)
+                    ?.descendants
+                    .orEmpty()
+                    .map {
+                        with(emojiHelper) {
+                            it.withEmojisIfMissing()
+                        }
+                    }
             val childNodes =
                 descendants
                     .mapNotNull { child ->
