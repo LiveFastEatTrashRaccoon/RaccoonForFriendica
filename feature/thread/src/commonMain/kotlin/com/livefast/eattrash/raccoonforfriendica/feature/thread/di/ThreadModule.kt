@@ -11,6 +11,7 @@ val featureThreadModule =
         single<PopulateThreadUseCase> {
             DefaultPopulateThreadUseCase(
                 timelineEntryRepository = get(),
+                emojiHelper = get(),
             )
         }
         factory<ThreadMviModel> { params ->
