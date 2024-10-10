@@ -7,6 +7,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 
 interface TimelineEntryRepository {
+    fun getCachedByUser(): List<TimelineEntryModel>
+
     suspend fun getByUser(
         userId: String,
         pageCursor: String? = null,
