@@ -87,11 +87,9 @@ val domainIdentityUseCaseModule =
         }
         single<ContentPreloadManager> {
             DefaultContentPreloadManager(
-                timelineRepository = get(),
                 timelineEntryRepository = get(),
                 trendingRepository = get(),
                 notificationRepository = get(),
-                userRepository = get(),
             )
         }
     }

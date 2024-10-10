@@ -9,4 +9,6 @@ interface TimelinePaginationManager {
     suspend fun reset(specification: TimelinePaginationSpecification)
 
     suspend fun loadNextPage(): List<TimelineEntryModel>
+
+    suspend fun restoreHistory(values: List<TimelineEntryModel>)
 }

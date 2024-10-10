@@ -27,6 +27,8 @@ internal class DefaultTimelineEntryRepository(
 ) : TimelineEntryRepository {
     private val cachedValues: MutableList<TimelineEntryModel> = mutableListOf()
 
+    override fun getCachedByUser(): List<TimelineEntryModel> = cachedValues
+
     override suspend fun getByUser(
         userId: String,
         pageCursor: String?,

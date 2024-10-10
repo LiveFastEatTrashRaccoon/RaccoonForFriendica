@@ -65,6 +65,14 @@ internal class DefaultTimelinePaginationManager(
         canFetchMore = true
     }
 
+    override suspend fun restoreHistory(values: List<TimelineEntryModel>) {
+        mutex.withLock {
+            history.clear()
+            history.addAll(values)
+            canFetchMore = true
+        }
+    }
+
     override suspend fun loadNextPage(): List<TimelineEntryModel> {
         val specification = this.specification ?: return emptyList()
 

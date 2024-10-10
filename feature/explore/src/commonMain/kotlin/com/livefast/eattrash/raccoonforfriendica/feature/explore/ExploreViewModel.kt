@@ -69,6 +69,10 @@ class ExploreViewModel(
                             currentUserId = currentUser?.id,
                         )
                     }
+
+                    if (uiState.value.initial) {
+                        refresh(initial = true)
+                    }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(UserUpdatedEvent::class)
@@ -80,10 +84,6 @@ class ExploreViewModel(
                 .onEach { event ->
                     updateEntryInState(event.entry.id) { event.entry }
                 }.launchIn(this)
-
-            if (uiState.value.initial) {
-                refresh(initial = true)
-            }
         }
     }
 
