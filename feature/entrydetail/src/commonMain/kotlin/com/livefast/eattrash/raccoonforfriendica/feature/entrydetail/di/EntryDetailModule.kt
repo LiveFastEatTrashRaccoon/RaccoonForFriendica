@@ -18,6 +18,7 @@ val featureEntryDetailModule =
                 notificationCenter = get(),
                 imagePreloadManager = get(),
                 blurHashRepository = get(),
+                emojiHelper = get(),
             )
         }
     }

@@ -13,12 +13,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -35,6 +35,7 @@ class EntryDetailViewModel(
     private val notificationCenter: NotificationCenter,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
+    private val emojiHelper: EmojiHelper,
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
         initialState = EntryDetailMviModel.State(),
     ),
@@ -125,13 +126,26 @@ class EntryDetailViewModel(
 
         val context = timelineEntryRepository.getContext(id)
         val entries =
-            coroutineScope {
-                buildList {
-                    addAll(context?.ancestors.orEmpty())
-                    add(entryCache.get(id))
-                    addAll(context?.descendants.orEmpty())
-                }.filterNotNull()
-            }
+            buildList {
+                addAll(
+                    context
+                        ?.ancestors
+                        .orEmpty()
+                        .map {
+                            with(emojiHelper) { it.withEmojisIfMissing() }
+                        },
+                )
+                add(entryCache.get(id))
+                addAll(
+                    context
+                        ?.descendants
+                        .orEmpty()
+                        .map {
+                            with(emojiHelper) { it.withEmojisIfMissing() }
+                        },
+                )
+            }.filterNotNull()
+
         entries.preloadImages()
         updateState {
             it.copy(
