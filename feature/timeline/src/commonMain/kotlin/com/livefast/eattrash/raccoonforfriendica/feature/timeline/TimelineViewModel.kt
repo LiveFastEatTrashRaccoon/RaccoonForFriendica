@@ -24,12 +24,16 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiC
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
+@OptIn(FlowPreview::class)
 class TimelineViewModel(
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
@@ -47,6 +51,8 @@ class TimelineViewModel(
         initialState = TimelineMviModel.State(),
     ),
     TimelineMviModel {
+    private var circlesRefreshed = false
+
     init {
         screenModelScope.launch {
             settingsRepository.current
@@ -74,13 +80,19 @@ class TimelineViewModel(
                 apiConfigurationRepository.node,
                 identityRepository.currentUser,
             ) { settings, _, user ->
-                val hasSettings = settings != null
-                // wait until either there is a logged user if there are valid credentials stored
-                val hasUser = user != null || !apiConfigurationRepository.hasCachedAuthCredentials()
-                if (hasSettings && hasUser) {
-                    refresh(initial = true)
-                }
-            }.launchIn(this)
+                settings to user
+            }.debounce(750)
+                .distinctUntilChanged()
+                .onEach { (settings, user) ->
+                    circlesRefreshed = false
+                    val hasSettings = settings != null
+                    // wait until either there is a logged user if there are valid credentials stored
+                    val hasUser =
+                        user != null || !apiConfigurationRepository.hasCachedAuthCredentials()
+                    if (hasSettings && hasUser) {
+                        refresh(initial = true, forceRefresh = true)
+                    }
+                }.launchIn(this)
         }
     }
 
@@ -171,25 +183,35 @@ class TimelineViewModel(
         }
     }
 
-    private suspend fun refresh(initial: Boolean = false) {
+    private suspend fun refresh(
+        initial: Boolean = false,
+        forceRefresh: Boolean = false,
+    ) {
+        // do not do anything if type is unknown
+        val timelineType = uiState.value.timelineType ?: return
+
         // workaround to handle refresh after initial network call failed
         if (activeAccountMonitor.isNotLoggedButItShould()) {
             activeAccountMonitor.forceRefresh()
             return
         }
-        // needed as a last-resort to update circles if edited elsewhere
-        val isLogged = identityRepository.currentUser.value != null
-        refreshCirclesInTimelineTypes(isLogged)
+        if (circlesRefreshed) {
+            // needed as a last-resort to update circles if edited elsewhere
+            circlesRefreshed = true
+            val isLogged = identityRepository.currentUser.value != null
+            refreshCirclesInTimelineTypes(isLogged)
+        }
+
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
         val settings = settingsRepository.current.value ?: SettingsModel()
         paginationManager.reset(
             TimelinePaginationSpecification.Feed(
-                timelineType = uiState.value.timelineType ?: TimelineType.Local,
+                timelineType = timelineType,
                 includeNsfw = settings.includeNsfw,
                 excludeReplies = settings.excludeRepliesFromTimeline,
-                refresh = !initial,
+                refresh = forceRefresh || !initial,
             ),
         )
         loadNextPage()
