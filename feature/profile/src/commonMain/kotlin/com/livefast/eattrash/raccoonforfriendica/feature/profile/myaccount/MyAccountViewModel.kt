@@ -79,7 +79,10 @@ class MyAccountViewModel(
                     identityRepository.currentUser.value?.let {
                         with(emojiHelper) { it.withEmojisIfMissing() }
                     }
-                val initialValues = timelineEntryRepository.getCachedByUser()
+                val initialValues =
+                    timelineEntryRepository.getCachedByUser().map {
+                        with(emojiHelper) { it.withEmojisIfMissing() }
+                    }
                 paginationManager.restoreHistory(initialValues)
                 if (initialValues.isNotEmpty()) {
                     updateState {
