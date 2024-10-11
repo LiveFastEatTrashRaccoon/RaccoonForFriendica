@@ -74,11 +74,16 @@ class MyAccountViewModel(
                     removeEntryFromState(event.id)
                 }.launchIn(this)
 
+            val currentUser =
+                identityRepository.currentUser.value?.let {
+                    with(emojiHelper) { it.withEmojisIfMissing() }
+                }
+            updateState {
+                it.copy(user = currentUser)
+            }
+
             if (uiState.value.initial) {
-                val currentUser =
-                    identityRepository.currentUser.value?.let {
-                        with(emojiHelper) { it.withEmojisIfMissing() }
-                    }
+
                 val initialValues =
                     timelineEntryRepository.getCachedByUser().map {
                         with(emojiHelper) { it.withEmojisIfMissing() }
@@ -89,7 +94,6 @@ class MyAccountViewModel(
                         it.copy(
                             initial = false,
                             entries = initialValues,
-                            user = currentUser,
                         )
                     }
                     paginationManager.reset(
