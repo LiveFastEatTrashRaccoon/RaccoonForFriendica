@@ -111,7 +111,10 @@ internal class DefaultCustomUriHandler(
             customTabsHelper.isSupported && mode == UrlOpeningMode.CustomTabs ->
                 customTabsHelper.handle(url)
 
-            else -> defaultHandler.openUri(url)
+            else ->
+                runCatching {
+                    defaultHandler.openUri(url)
+                }
         }
     }
 
