@@ -71,29 +71,27 @@ internal class DefaultActiveAccountMonitor(
             supportedFeatureRepository.refresh()
 
             contentPreloadManager.preload()
+        } else {
+            val node = account.handle.nodeName ?: apiConfigurationRepository.defaultNode
+            apiConfigurationRepository.changeNode(node)
 
-            return
+            val credentials = accountCredentialsCache.get(account.id)
+            apiConfigurationRepository.setAuth(credentials)
+
+            val defaultSettings = settingsRepository.get(account.id) ?: SettingsModel()
+
+            contentPreloadManager.preload(
+                userRemoteId = account.remoteId,
+                defaultTimelineType = defaultSettings.defaultTimelineType.toTimelineType(),
+            )
+
+            identityRepository.refreshCurrentUser(account.remoteId)
+
+            supportedFeatureRepository.refresh()
+
+            settingsRepository.changeCurrent(defaultSettings)
+
+            inboxManager.refreshUnreadCount()
         }
-
-        val node = account.handle.nodeName ?: apiConfigurationRepository.defaultNode
-        apiConfigurationRepository.changeNode(node)
-
-        val credentials = accountCredentialsCache.get(account.id)
-        apiConfigurationRepository.setAuth(credentials)
-
-        val defaultSettings = settingsRepository.get(account.id) ?: SettingsModel()
-
-        contentPreloadManager.preload(
-            userRemoteId = account.remoteId,
-            defaultTimelineType = defaultSettings.defaultTimelineType.toTimelineType(),
-        )
-
-        identityRepository.refreshCurrentUser(account.remoteId)
-
-        supportedFeatureRepository.refresh()
-
-        settingsRepository.changeCurrent(defaultSettings)
-
-        inboxManager.refreshUnreadCount()
     }
 }
