@@ -24,6 +24,7 @@ fun String.parseHtml(
                 when (name) {
                     "p" ->
                         if (builder.length != 0) {
+                            builder.append('\n')
                             // separate paragraphs with a blank line
                             builder.append('\n')
                         }
