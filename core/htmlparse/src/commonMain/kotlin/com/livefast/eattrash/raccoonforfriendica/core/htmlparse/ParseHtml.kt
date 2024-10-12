@@ -24,13 +24,15 @@ fun String.parseHtml(
                 when (name) {
                     "p" ->
                         if (builder.length != 0) {
-                            builder.append('\n')
                             // separate paragraphs with a blank line
-                            builder.append('\n')
+                            if (builder.toAnnotatedString().last() != '\n') {
+                                builder.appendLine()
+                            }
+                            builder.appendLine()
                         }
 
                     "span" -> Unit
-                    "br" -> builder.append('\n')
+                    "br" -> builder.appendLine()
                     "a" -> {
                         builder.pushStringAnnotation("link", attributes["href"] ?: "")
                         builder.pushStyle(
@@ -45,7 +47,7 @@ fun String.parseHtml(
                     "u" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
                     "i", "em" -> builder.pushStyle(SpanStyle(fontStyle = FontStyle.Italic))
                     "s" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
-                    "ul", "ol" -> Unit
+                    "ul", "ol" -> builder.appendLine()
                     "li" -> builder.append(" • ")
                     "code" -> builder.pushStyle(SpanStyle(fontFamily = FontFamily.Monospace))
                     else -> println("onOpenTag: Unhandled span $name")
@@ -59,7 +61,7 @@ fun String.parseHtml(
                         builder.pop() // corresponds to pushStringAnnotation
                     }
                     "ul", "ol" -> Unit
-                    "li" -> builder.append('\n')
+                    "li" -> builder.appendLine()
                     else -> println("onCloseTag: Unhandled span $name")
                 }
             }.onText { text ->
@@ -81,4 +83,4 @@ private fun String.sanitize(requiresHtmlDecode: Boolean): String =
         } else {
             this
         }
-    }
+    }.replace("<p><br></p>", "<br/>")
