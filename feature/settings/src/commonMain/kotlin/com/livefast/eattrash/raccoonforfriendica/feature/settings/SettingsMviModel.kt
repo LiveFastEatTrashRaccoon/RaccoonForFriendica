@@ -68,6 +68,10 @@ interface SettingsMviModel :
         data class ChangeExcludeRepliesFromTimeline(
             val value: Boolean,
         ) : Intent
+
+        data class ChangeOpenGroupsInForumModeByDefault(
+            val value: Boolean,
+        ) : Intent
     }
 
     data class State(
@@ -89,6 +93,7 @@ interface SettingsMviModel :
         val defaultReplyVisibility: Visibility = Visibility.Public,
         val excludeRepliesFromTimeline: Boolean = false,
         val availableVisibilities: List<Visibility> = emptyList(),
+        val openGroupsInForumModeByDefault: Boolean = true,
     )
 
     sealed interface Effect

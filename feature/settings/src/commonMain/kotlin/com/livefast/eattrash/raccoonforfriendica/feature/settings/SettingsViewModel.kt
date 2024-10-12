@@ -99,6 +99,7 @@ class SettingsViewModel(
                                 defaultPostVisibility = settings.defaultPostVisibility.toVisibility(),
                                 defaultReplyVisibility = settings.defaultReplyVisibility.toVisibility(),
                                 excludeRepliesFromTimeline = settings.excludeRepliesFromTimeline,
+                                openGroupsInForumModeByDefault = settings.openGroupsInForumModeByDefault,
                             )
                         }
                     }
@@ -195,6 +196,11 @@ class SettingsViewModel(
                 screenModelScope.launch {
                     changeExcludeRepliesFromTimeline(intent.value)
                 }
+
+            is SettingsMviModel.Intent.ChangeOpenGroupsInForumModeByDefault ->
+                screenModelScope.launch {
+                    changeOpenGroupsInForumModeByDefault(intent.value)
+                }
         }
     }
 
@@ -273,6 +279,12 @@ class SettingsViewModel(
     private suspend fun changeExcludeRepliesFromTimeline(value: Boolean) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(excludeRepliesFromTimeline = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeOpenGroupsInForumModeByDefault(value: Boolean) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(openGroupsInForumModeByDefault = value)
         saveSettings(newSettings)
     }
 
