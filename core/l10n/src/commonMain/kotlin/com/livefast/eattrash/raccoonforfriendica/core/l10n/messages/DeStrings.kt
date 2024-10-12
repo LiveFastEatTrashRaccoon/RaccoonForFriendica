@@ -370,4 +370,8 @@ internal val DeStrings =
         override val insertEmojiTitle = "Emoji einfügen"
         override val messageLoadingUsers = "Benutzer laden"
         override val actionOpenPreview = "Vorschau öffnen"
+        override val actionSwitchToClassicMode = "Zum klassischen Modus wechseln"
+        override val actionSwitchToForumMode = "Zum Forum-Modus wechseln"
+        override val settingsItemOpenGroupsInForumModeByDefault =
+            "Gruppen standardmäßig im Forum-Modus öffnen"
     }

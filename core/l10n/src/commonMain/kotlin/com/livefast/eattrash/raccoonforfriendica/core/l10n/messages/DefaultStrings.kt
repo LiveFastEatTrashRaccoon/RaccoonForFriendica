@@ -361,4 +361,7 @@ internal open class DefaultStrings : Strings {
     override val insertEmojiTitle = "Insert emoji"
     override val messageLoadingUsers = "Loading users"
     override val actionOpenPreview = "Open preview"
+    override val actionSwitchToClassicMode = "Switch to classic mode"
+    override val actionSwitchToForumMode = "Switch to forum mode"
+    override val settingsItemOpenGroupsInForumModeByDefault = "Open groups in forum mode by default"
 }
