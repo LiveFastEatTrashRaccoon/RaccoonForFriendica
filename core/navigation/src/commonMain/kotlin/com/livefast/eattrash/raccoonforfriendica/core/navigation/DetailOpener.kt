@@ -9,6 +9,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 interface DetailOpener {
     fun openUserDetail(user: UserModel)
 
+    fun switchUserDetailToClassicMode(user: UserModel)
+
+    fun switchUserDetailToForumMode(user: UserModel)
+
     fun openEntryDetail(entry: TimelineEntryModel)
 
     fun openSettings()
@@ -49,8 +53,6 @@ interface DetailOpener {
     )
 
     fun openSearch()
-
-    fun openInForumMode(group: UserModel)
 
     fun openThread(entry: TimelineEntryModel)
 

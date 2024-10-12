@@ -20,6 +20,7 @@ internal val sharedModule =
                 navigationCoordinator = get(),
                 identityRepository = get(),
                 userCache = get(),
+                settingsRepository = get(),
                 entryCache = get(),
             )
         }
