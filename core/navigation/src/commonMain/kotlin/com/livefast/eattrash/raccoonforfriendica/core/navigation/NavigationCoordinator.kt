@@ -28,6 +28,8 @@ interface NavigationCoordinator {
 
     fun setRootNavigator(navigator: Navigator)
 
+    fun replace(screen: Screen)
+
     fun push(screen: Screen)
 
     fun pop()

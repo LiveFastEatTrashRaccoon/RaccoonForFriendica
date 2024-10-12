@@ -24,16 +24,6 @@ sealed interface OptionId {
 
     data object Unpin : OptionId
 
-    data object Move : OptionId
-
-    data object SetSchedule : OptionId
-
-    data object ChangeSchedule : OptionId
-
-    data object PublishDefault : OptionId
-
-    data object SaveDraft : OptionId
-
     data object ReportUser : OptionId
 
     data object ReportEntry : OptionId
@@ -58,11 +48,6 @@ private fun OptionId.toReadableName(): String =
         OptionId.Unblock -> LocalStrings.current.actionUnblock
         OptionId.Pin -> LocalStrings.current.actionPin
         OptionId.Unpin -> LocalStrings.current.actionUnpin
-        OptionId.Move -> LocalStrings.current.actionMove
-        OptionId.SetSchedule -> LocalStrings.current.actionSetScheduleDate
-        OptionId.ChangeSchedule -> LocalStrings.current.actionUpdateScheduleDate
-        OptionId.PublishDefault -> LocalStrings.current.actionPublishDefault
-        OptionId.SaveDraft -> LocalStrings.current.actionSaveDraft
         OptionId.ReportUser -> LocalStrings.current.actionReportUser
         OptionId.ReportEntry -> LocalStrings.current.actionReportEntry
         OptionId.ViewDetails -> LocalStrings.current.actionViewDetails

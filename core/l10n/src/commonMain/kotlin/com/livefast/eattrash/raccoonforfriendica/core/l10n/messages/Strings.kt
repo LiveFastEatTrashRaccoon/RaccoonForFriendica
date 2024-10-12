@@ -325,6 +325,9 @@ interface Strings {
     val insertEmojiTitle: String
     val messageLoadingUsers: String
     val actionOpenPreview: String
+    val actionSwitchToClassicMode: String
+    val actionSwitchToForumMode: String
+    val settingsItemOpenGroupsInForumModeByDefault: String
 }
 
 object Locales {

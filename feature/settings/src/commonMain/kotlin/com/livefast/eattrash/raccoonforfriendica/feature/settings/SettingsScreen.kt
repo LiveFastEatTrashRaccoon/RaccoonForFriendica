@@ -175,6 +175,15 @@ class SettingsScreen : Screen {
                                 )
                             },
                         )
+                        SettingsSwitchRow(
+                            title = LocalStrings.current.settingsItemOpenGroupsInForumModeByDefault,
+                            value = uiState.openGroupsInForumModeByDefault,
+                            onValueChanged = {
+                                model.reduce(
+                                    SettingsMviModel.Intent.ChangeOpenGroupsInForumModeByDefault(it),
+                                )
+                            },
+                        )
 
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderLookAndFeel,

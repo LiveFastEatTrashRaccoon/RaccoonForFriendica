@@ -244,6 +244,12 @@ class UserDetailScreen(
                                                     LocalStrings.current.actionEditPersonalNote
                                                 },
                                         )
+                                    if (user.group) {
+                                        this +=
+                                            CustomOptions.SwitchToForumMode.toOption(
+                                                label = LocalStrings.current.actionSwitchToForumMode,
+                                            )
+                                    }
                                 }
                             }
                         if (options.isNotEmpty()) {
@@ -318,6 +324,12 @@ class UserDetailScreen(
                                                         uiState.user?.also { userToReport ->
                                                             detailOpener.openCreateReport(user = userToReport)
                                                         }
+
+                                                    CustomOptions.SwitchToForumMode -> {
+                                                        uiState.user?.also { user ->
+                                                            detailOpener.switchUserDetailToForumMode(user)
+                                                        }
+                                                    }
                                                     else -> Unit
                                                 }
                                             },
@@ -438,11 +450,6 @@ class UserDetailScreen(
                                 onOpenFollowing = {
                                     uiState.user?.also { user ->
                                         detailOpener.openFollowing(user)
-                                    }
-                                },
-                                onOpenInForumMode = {
-                                    uiState.user?.also { user ->
-                                        detailOpener.openInForumMode(user)
                                     }
                                 },
                             )
@@ -823,4 +830,8 @@ class UserDetailScreen(
             )
         }
     }
+}
+
+private sealed interface CustomOptions : OptionId.Custom {
+    data object SwitchToForumMode : CustomOptions
 }

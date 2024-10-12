@@ -254,7 +254,10 @@ class AlbumDetailScreen(
                                     this += OptionId.Delete.toOption()
                                     this += OptionId.Edit.toOption()
                                     if (uiState.albums.isNotEmpty()) {
-                                        this += OptionId.Move.toOption()
+                                        this +=
+                                            CustomOptions.Move.toOption(
+                                                label = LocalStrings.current.actionMove,
+                                            )
                                     }
                                 },
                             onOptionSelected = { optionId ->
@@ -263,7 +266,7 @@ class AlbumDetailScreen(
                                     OptionId.Edit ->
                                         attachmentWithDescriptionBeingEdited = attachment
 
-                                    OptionId.Move -> attachmentToMove = attachment
+                                    CustomOptions.Move -> attachmentToMove = attachment
 
                                     else -> Unit
                                 }
@@ -358,4 +361,8 @@ class AlbumDetailScreen(
             )
         }
     }
+}
+
+private sealed interface CustomOptions : OptionId.Custom {
+    data object Move : CustomOptions
 }

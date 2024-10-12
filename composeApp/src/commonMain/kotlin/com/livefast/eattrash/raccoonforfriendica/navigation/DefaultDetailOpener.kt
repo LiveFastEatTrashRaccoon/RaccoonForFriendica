@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.detail.CircleDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
@@ -39,6 +40,7 @@ import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
 class DefaultDetailOpener(
     private val navigationCoordinator: NavigationCoordinator,
     private val identityRepository: IdentityRepository,
+    private val settingsRepository: SettingsRepository,
     private val userCache: LocalItemCache<UserModel>,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
 ) : DetailOpener {
@@ -49,9 +51,26 @@ class DefaultDetailOpener(
         if (user.id == currentUserId) {
             return
         }
+        val openGroupsInForumModeByDefault =
+            settingsRepository.current.value?.openGroupsInForumModeByDefault ?: false
         userCache.put(user.id, user)
-        val screen = UserDetailScreen(user.id)
+        val screen =
+            if (user.group && openGroupsInForumModeByDefault) {
+                ForumListScreen(user.id)
+            } else {
+                UserDetailScreen(user.id)
+            }
         navigationCoordinator.push(screen)
+    }
+
+    override fun switchUserDetailToClassicMode(user: UserModel) {
+        val screen = UserDetailScreen(user.id)
+        navigationCoordinator.replace(screen)
+    }
+
+    override fun switchUserDetailToForumMode(user: UserModel) {
+        val screen = ForumListScreen(user.id)
+        navigationCoordinator.replace(screen)
     }
 
     override fun openEntryDetail(entry: TimelineEntryModel) {
@@ -185,12 +204,6 @@ class DefaultDetailOpener(
 
     override fun openSearch() {
         val screen = SearchScreen()
-        navigationCoordinator.push(screen)
-    }
-
-    override fun openInForumMode(group: UserModel) {
-        userCache.put(group.id, group)
-        val screen = ForumListScreen(group.id)
         navigationCoordinator.push(screen)
     }
 
