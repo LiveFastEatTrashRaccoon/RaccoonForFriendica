@@ -20,4 +20,5 @@ data class SettingsModel(
     val defaultPostVisibility: Int = 0,
     val defaultReplyVisibility: Int = 0,
     val excludeRepliesFromTimeline: Boolean = false,
+    val openGroupsInForumModeByDefault: Boolean = true,
 )

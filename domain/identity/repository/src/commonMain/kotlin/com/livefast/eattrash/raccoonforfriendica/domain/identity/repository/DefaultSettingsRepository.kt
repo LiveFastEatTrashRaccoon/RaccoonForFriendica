@@ -53,6 +53,7 @@ private fun SettingsEntity.toModel() =
         defaultPostVisibility = defaultPostVisibility,
         defaultReplyVisibility = defaultReplyVisibility,
         excludeRepliesFromTimeline = excludeRepliesFromTimeline,
+        openGroupsInForumModeByDefault = openGroupsInForumModeByDefault,
     )
 
 private fun SettingsModel.toEntity() =
@@ -72,4 +73,5 @@ private fun SettingsModel.toEntity() =
         defaultPostVisibility = defaultPostVisibility,
         defaultReplyVisibility = defaultReplyVisibility,
         excludeRepliesFromTimeline = excludeRepliesFromTimeline,
+        openGroupsInForumModeByDefault = openGroupsInForumModeByDefault,
     )
