@@ -16,9 +16,11 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -43,17 +45,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
@@ -169,6 +177,69 @@ class ForumListScreen(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
                                     contentDescription = null,
                                 )
+                            }
+                        }
+                    },
+                    actions = {
+                        val options =
+                            buildList {
+                                this +=
+                                    CustomOptions.SwitchToClassicMode.toOption(
+                                        label = LocalStrings.current.actionSwitchToClassicMode,
+                                    )
+                            }
+                        Box {
+                            var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+                            var optionsMenuOpen by remember { mutableStateOf(false) }
+                            IconButton(
+                                modifier =
+                                    Modifier.onGloballyPositioned {
+                                        optionsOffset = it.positionInParent()
+                                    },
+                                onClick = {
+                                    optionsMenuOpen = true
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = null,
+                                )
+                            }
+
+                            CustomDropDown(
+                                expanded = optionsMenuOpen,
+                                onDismiss = {
+                                    optionsMenuOpen = false
+                                },
+                                offset =
+                                    with(LocalDensity.current) {
+                                        DpOffset(
+                                            x = optionsOffset.x.toDp(),
+                                            y = optionsOffset.y.toDp(),
+                                        )
+                                    },
+                            ) {
+                                for (option in options) {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(option.label)
+                                        },
+                                        onClick = {
+                                            optionsMenuOpen = false
+                                            when (option.id) {
+                                                CustomOptions.SwitchToClassicMode -> {
+                                                    uiState.user?.also { user ->
+                                                        detailOpener.switchUserDetailToClassicMode(
+                                                            user,
+                                                        )
+                                                    }
+                                                }
+
+                                                else -> Unit
+                                            }
+                                        },
+                                    )
+                                }
                             }
                         }
                     },
@@ -541,4 +612,8 @@ class ForumListScreen(
             )
         }
     }
+}
+
+private sealed interface CustomOptions : OptionId.Custom {
+    data object SwitchToClassicMode : CustomOptions
 }
