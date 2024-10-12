@@ -265,21 +265,42 @@ class ComposerScreen(
                             buildList {
                                 when (uiState.publicationType) {
                                     is PublicationType.Scheduled -> {
-                                        this += OptionId.SaveDraft.toOption()
-                                        this += OptionId.ChangeSchedule.toOption()
+                                        this +=
+                                            CustomOptions.SaveDraft.toOption(
+                                                label = LocalStrings.current.actionSaveDraft,
+                                            )
+                                        this +=
+                                            CustomOptions.ChangeSchedule.toOption(
+                                                label = LocalStrings.current.actionUpdateScheduleDate,
+                                            )
                                         if (!isBeingEdited) {
-                                            this += OptionId.PublishDefault.toOption()
+                                            this +=
+                                                CustomOptions.PublishDefault.toOption(
+                                                    label = LocalStrings.current.actionPublishDefault,
+                                                )
                                         }
                                     }
 
                                     PublicationType.Draft -> {
-                                        this += OptionId.SetSchedule.toOption()
-                                        this += OptionId.PublishDefault.toOption()
+                                        this +=
+                                            CustomOptions.SetSchedule.toOption(
+                                                label = LocalStrings.current.actionSetScheduleDate,
+                                            )
+                                        this +=
+                                            CustomOptions.PublishDefault.toOption(
+                                                label = LocalStrings.current.actionPublishDefault,
+                                            )
                                     }
 
                                     PublicationType.Default -> {
-                                        this += OptionId.SaveDraft.toOption()
-                                        this += OptionId.SetSchedule.toOption()
+                                        this +=
+                                            CustomOptions.SaveDraft.toOption(
+                                                label = LocalStrings.current.actionSaveDraft,
+                                            )
+                                        this +=
+                                            CustomOptions.SetSchedule.toOption(
+                                                label = LocalStrings.current.actionSetScheduleDate,
+                                            )
                                     }
                                 }
 
@@ -365,12 +386,12 @@ class ComposerScreen(
                                         onClick = {
                                             optionsMenuOpen = false
                                             when (option.id) {
-                                                OptionId.SetSchedule -> {
+                                                CustomOptions.SetSchedule -> {
                                                     scheduleDateMillis = epochMillis()
                                                     scheduleDatePickerOpen = true
                                                 }
 
-                                                OptionId.ChangeSchedule -> {
+                                                CustomOptions.ChangeSchedule -> {
                                                     scheduleDateMillis =
                                                         (uiState.publicationType as? PublicationType.Scheduled)
                                                             ?.date
@@ -378,14 +399,14 @@ class ComposerScreen(
                                                     scheduleDatePickerOpen = true
                                                 }
 
-                                                OptionId.PublishDefault ->
+                                                CustomOptions.PublishDefault ->
                                                     model.reduce(
                                                         ComposerMviModel.Intent.ChangePublicationType(
                                                             PublicationType.Default,
                                                         ),
                                                     )
 
-                                                OptionId.SaveDraft ->
+                                                CustomOptions.SaveDraft ->
                                                     model.reduce(
                                                         ComposerMviModel.Intent.ChangePublicationType(
                                                             PublicationType.Draft,
@@ -936,8 +957,14 @@ private sealed interface CustomOptions : OptionId.Custom {
     data object TogglePoll : CustomOptions
 
     data object ToggleTitle : CustomOptions
-
     data object InsertCustomEmoji : CustomOptions
 
     data object OpenPreview : CustomOptions
+
+    data object SaveDraft : CustomOptions
+
+    data object ChangeSchedule : CustomOptions
+
+    data object SetSchedule : CustomOptions
+    data object PublishDefault : CustomOptions
 }
