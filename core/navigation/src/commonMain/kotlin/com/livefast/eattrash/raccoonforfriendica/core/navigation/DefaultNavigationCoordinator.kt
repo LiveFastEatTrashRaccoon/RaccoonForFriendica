@@ -65,6 +65,10 @@ internal class DefaultNavigationCoordinator(
         }
     }
 
+    override fun replace(screen: Screen) {
+        rootNavigator?.replace(screen)
+    }
+
     override fun pop() {
         rootNavigator?.pop()
         canPop.update {
