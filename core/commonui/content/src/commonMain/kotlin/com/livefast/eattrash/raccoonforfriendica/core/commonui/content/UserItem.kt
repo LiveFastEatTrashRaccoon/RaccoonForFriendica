@@ -97,6 +97,9 @@ fun UserItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 emojis = user.emojis,
+                onClick = {
+                    onClick?.invoke()
+                },
             )
             Text(
                 text = user.handle ?: user.username ?: "",
