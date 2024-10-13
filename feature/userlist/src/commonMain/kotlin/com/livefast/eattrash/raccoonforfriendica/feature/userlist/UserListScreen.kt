@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -233,6 +234,17 @@ class UserListScreen(
                         items(20) {
                             UserItemPlaceholder(modifier = Modifier.fillMaxWidth())
                             Spacer(modifier = Modifier.height(Spacing.interItem))
+                        }
+                    }
+
+                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.users.isEmpty()) {
+                        item {
+                            Text(
+                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                                text = LocalStrings.current.messageEmptyList,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
                         }
                     }
 
