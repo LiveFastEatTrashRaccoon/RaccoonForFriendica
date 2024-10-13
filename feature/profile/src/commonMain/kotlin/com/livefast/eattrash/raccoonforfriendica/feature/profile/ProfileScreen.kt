@@ -44,6 +44,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.ScreenContent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.AnonymousScreen
@@ -130,9 +131,9 @@ class ProfileScreen : Screen {
                                 .nestedScroll(scrollBehavior.nestedScrollConnection),
                     ) {
                         if (uiState.currentUserId != null) {
-                            MyAccountScreen.Content()
+                            ScreenContent(MyAccountScreen)
                         } else {
-                            AnonymousScreen.Content()
+                            ScreenContent(AnonymousScreen)
                         }
                     }
                 },
