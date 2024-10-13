@@ -1509,6 +1509,14 @@ class ComposerViewModel(
             .replace("[/b]", "</b>")
             .replace("[code]", "<code>")
             .replace("[/code]", "</code>")
+            .replace("[ul]", "<ul>")
+            .replace("[/ul]", "</ul>")
+            .replace("[ol]", "<ol>")
+            .replace("[/ol]", "</ol>")
+            .replace("[li]", "<li>")
+            .replace("[/li]", "</li>")
+            .replace(Regex("\n\n"), "<br /><br />")
+            .replace("\n", " ")
             .also { original ->
                 val matches = SHARE_REGEX.findAll(original).toList()
                 buildString {
