@@ -26,9 +26,7 @@ fun String.parseHtml(
                     "p" ->
                         if (builder.length != 0) {
                             // separate paragraphs with a blank line
-                            if (builder.toAnnotatedString().last() != '\n') {
-                                builder.appendLine()
-                            }
+                            builder.appendLineIfNeeded()
                             builder.appendLine()
                         }
 
@@ -48,9 +46,9 @@ fun String.parseHtml(
                     "u" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
                     "i", "em" -> builder.pushStyle(SpanStyle(fontStyle = FontStyle.Italic))
                     "s" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
-                    "ul" -> builder.appendLine()
+                    "ul" -> builder.appendLineIfNeeded()
                     "ol" -> {
-                        builder.appendLine()
+                        builder.appendLineIfNeeded()
                         inOrderedList = true
                     }
 
@@ -90,6 +88,12 @@ fun String.parseHtml(
     ksoupHtmlParser.end()
 
     return builder.toAnnotatedString()
+}
+
+private fun AnnotatedString.Builder.appendLineIfNeeded() {
+    if (toAnnotatedString().last() != '\n') {
+        appendLine()
+    }
 }
 
 private fun String.sanitize(requiresHtmlDecode: Boolean): String =
