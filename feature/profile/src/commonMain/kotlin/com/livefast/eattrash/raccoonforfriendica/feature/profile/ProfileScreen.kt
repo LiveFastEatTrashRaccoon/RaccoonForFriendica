@@ -205,6 +205,7 @@ class ProfileScreen : Screen {
                     }
                 },
                 onLongPress = { index ->
+                    manageAccountsDialogOpened = false
                     val selectedAccount = uiState.availableAccounts[index]
                     if (!selectedAccount.active) {
                         confirmDeleteAccount = selectedAccount
