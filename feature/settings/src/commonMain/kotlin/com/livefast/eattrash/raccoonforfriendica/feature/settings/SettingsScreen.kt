@@ -284,6 +284,7 @@ class SettingsScreen : Screen {
                 listOf(
                     Locales.EN,
                     Locales.DE,
+                    Locales.ES,
                     Locales.FR,
                     Locales.IT,
                 )
