@@ -74,14 +74,13 @@ class LoginViewModel(
                 return@launch
             }
 
-            updateState {
-                it.copy(loading = true)
-            }
+            updateState { it.copy(loading = true) }
             try {
                 val url = authManager.startOAuthFlow(node)
                 emitEffect(LoginMviModel.Effect.OpenUrl(url))
             } catch (e: Throwable) {
                 emitEffect(LoginMviModel.Effect.Failure(e.message))
+                updateState { it.copy(loading = false) }
             }
         }
     }
