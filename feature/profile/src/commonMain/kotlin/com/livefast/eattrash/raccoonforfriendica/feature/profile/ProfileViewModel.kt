@@ -29,7 +29,10 @@ class ProfileViewModel(
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState {
-                        it.copy(currentUserId = currentUser?.id)
+                        it.copy(
+                            currentUserId = currentUser?.id,
+                            loading = false,
+                        )
                     }
                 }.launchIn(this)
 
@@ -62,6 +65,9 @@ class ProfileViewModel(
             return
         }
         screenModelScope.launch {
+            updateState {
+                it.copy(loading = true)
+            }
             switchAccountUseCase(account)
         }
     }
