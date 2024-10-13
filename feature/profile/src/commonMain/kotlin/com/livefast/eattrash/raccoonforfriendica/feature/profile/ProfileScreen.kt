@@ -36,7 +36,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
-import cafe.adriel.voyager.navigator.Navigator
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
@@ -130,10 +129,10 @@ class ProfileScreen : Screen {
                                 .padding(padding)
                                 .nestedScroll(scrollBehavior.nestedScrollConnection),
                     ) {
-                        if (uiState.currentUserId == null) {
-                            Navigator(AnonymousScreen())
+                        if (uiState.currentUserId != null) {
+                            MyAccountScreen.Content()
                         } else {
-                            Navigator(MyAccountScreen())
+                            AnonymousScreen.Content()
                         }
                     }
                 },

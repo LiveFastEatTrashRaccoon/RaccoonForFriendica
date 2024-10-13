@@ -14,12 +14,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
-internal class AnonymousScreen : Screen {
+internal object AnonymousScreen : Tab {
+    override val options: TabOptions
+        @Composable get() =
+            TabOptions(
+                index = 0u,
+                title = "",
+            )
+
     @Composable
     override fun Content() {
         val model = getScreenModel<AnonymousMviModel>()
