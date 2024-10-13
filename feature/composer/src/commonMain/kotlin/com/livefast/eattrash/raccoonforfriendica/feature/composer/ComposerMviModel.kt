@@ -186,6 +186,8 @@ interface ComposerMviModel :
         ) : Intent
 
         data object CreatePreview : Intent
+
+        data object InsertList : Intent
     }
 
     data class State(

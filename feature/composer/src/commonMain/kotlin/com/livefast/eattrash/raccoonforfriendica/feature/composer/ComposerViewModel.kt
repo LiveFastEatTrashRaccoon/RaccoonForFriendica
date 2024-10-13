@@ -465,6 +465,8 @@ class ComposerViewModel(
                     createPreview()
                 }
 
+            is ComposerMviModel.Intent.InsertList -> insertList()
+
             ComposerMviModel.Intent.Submit -> submit()
         }
     }
@@ -1009,6 +1011,34 @@ class ComposerViewModel(
                         )
                 }
             }
+        }
+    }
+
+    private fun insertList() {
+        screenModelScope.launch {
+            val before =
+                if (useBBCode) {
+                    "\n[ul]\n[li]"
+                } else {
+                    "\n<ul>\n<li>"
+                }
+            val after =
+                if (useBBCode) {
+                    "[/li]\n[/ul]"
+                } else {
+                    "</li></ul>"
+                }
+            val newValue =
+                getNewTextFieldValue(
+                    value = uiState.value.bodyValue,
+                    additionalPart =
+                        buildString {
+                            append(before)
+                            append(after)
+                        },
+                    offsetAfter = before.length,
+                )
+            updateState { it.copy(bodyValue = newValue, hasUnsavedChanges = true) }
         }
     }
 
