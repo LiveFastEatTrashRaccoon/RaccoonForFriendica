@@ -42,7 +42,6 @@ internal val ItStrings =
                 else -> "seguiti"
             }
 
-        override val actionOpenInForumMode = "apri in modalità forum"
         override val accountAge = "età account"
         override val dateYearShort = "a"
         override val dateMonthShort = "m"

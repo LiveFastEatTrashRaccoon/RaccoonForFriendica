@@ -40,7 +40,6 @@ interface Strings {
 
     fun accountFollower(count: Int): String
 
-    val actionOpenInForumMode: String
     val accountAge: String
     val dateYearShort: String
     val dateMonthShort: String
@@ -55,6 +54,7 @@ interface Strings {
     val postTitle: String
     val languageEn: String
     val languageDe: String
+    val languageEs: String
     val languageFr: String
     val languageIt: String
     val settingsTitle: String
@@ -333,17 +333,19 @@ interface Strings {
 
 object Locales {
     const val EN = "en"
-    const val DE = "de"
     const val IT = "it"
+    const val DE = "de"
     const val FR = "fr"
+    const val ES = "es"
 }
 
 internal val localizableStrings: Map<LanguageTag, Strings> =
     mapOf(
         Locales.EN to EnStrings,
-        Locales.DE to DeStrings,
         Locales.IT to ItStrings,
+        Locales.DE to DeStrings,
         Locales.FR to FrStrings,
+        Locales.ES to EsStrings,
     )
 
 val LocalStrings: ProvidableCompositionLocal<Strings> =
