@@ -37,7 +37,6 @@ internal open class DefaultStrings : Strings {
 
     override fun accountFollowing(count: Int) = "following"
 
-    override val actionOpenInForumMode = "open in forum mode"
     override val accountAge = "account age"
     override val dateYearShort = "y"
     override val dateMonthShort = "m"
@@ -52,6 +51,7 @@ internal open class DefaultStrings : Strings {
     override val postTitle = "Post"
     override val languageEn = "English"
     override val languageDe = "Deutsch"
+    override val languageEs = "Español"
     override val languageFr = "Français"
     override val languageIt = "Italiano"
     override val settingsTitle = "Settings"

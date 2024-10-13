@@ -19,7 +19,7 @@ internal val FrStrings =
         override val settingsThemeBlack = "Noir (AMOLED)"
         override val sectionTitleHome = "Postes"
         override val sectionTitleExplore = "Explorer"
-        override val sectionTitleInbox = "Boîte"
+        override val sectionTitleInbox = "Notifications"
         override val sectionTitleProfile = "Profil"
         override val barThemeOpaque = "Opaque"
         override val barThemeTransparent = "Transparent"
@@ -42,7 +42,6 @@ internal val FrStrings =
                 else -> "suivis"
             }
 
-        override val actionOpenInForumMode = "ouvrir en mode forum"
         override val accountAge = "âge du compte"
         override val dateYearShort = "a"
         override val dateMonthShort = "m"
@@ -336,7 +335,7 @@ internal val FrStrings =
         override val reportCategoryViolation = "Violation des règles du serveur"
         override val messageMissingRules = "Veuillez sélectionner au moins une règle"
         override val createReportTitleUser = "Signaler"
-        override val createReportTitleEntry = "Signaler un message par"
+        override val createReportTitleEntry = "Signaler poste par"
         override val createReportItemCategory = "Catégorie"
         override val createReportCommentPlaceholder =
             "Veuillez décrire le problème que vous avez rencontré"
@@ -349,8 +348,8 @@ internal val FrStrings =
             }
 
         override val createReportItemForward = "Transmettre le rapport"
-        override val actionReportUser = "Signaler un utilisateur"
-        override val actionReportEntry = "Poste du rapport"
+        override val actionReportUser = "Signaler utilisateur"
+        override val actionReportEntry = "Signaler poste"
         override val actionViewDetails = "Détails"
         override val actionAddImageFromGallery = "Ajouter depuis la galerie"
         override val actionAddPoll = "Ajouter un sondage"

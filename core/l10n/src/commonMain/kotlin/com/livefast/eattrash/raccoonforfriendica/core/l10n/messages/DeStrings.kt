@@ -42,7 +42,6 @@ internal val DeStrings =
                 else -> "folgende"
             }
 
-        override val actionOpenInForumMode = "im Forum-Modus öffnen"
         override val accountAge = "Kontenalter"
         override val dateYearShort = "j"
         override val dateMonthShort = "m"

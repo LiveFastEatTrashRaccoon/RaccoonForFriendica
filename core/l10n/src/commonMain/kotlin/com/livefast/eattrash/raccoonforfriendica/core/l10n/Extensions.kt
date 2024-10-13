@@ -7,18 +7,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Locales
 @Composable
 fun String?.toLanguageName(): String? =
     when (this) {
-        Locales.IT -> LocalStrings.current.languageIt
         Locales.EN -> LocalStrings.current.languageEn
+        Locales.IT -> LocalStrings.current.languageIt
         Locales.DE -> LocalStrings.current.languageDe
         Locales.FR -> LocalStrings.current.languageFr
+        Locales.ES -> LocalStrings.current.languageEs
         else -> null
     }
 
 fun String?.toLanguageFlag(): String? =
     when (this) {
-        Locales.IT -> "🇮🇹"
         Locales.EN -> "🇬🇧"
+        Locales.IT -> "🇮🇹"
         Locales.DE -> "🇩🇪"
         Locales.FR -> "🇫🇷"
+        Locales.ES -> "🇪🇸"
         else -> null
     }
