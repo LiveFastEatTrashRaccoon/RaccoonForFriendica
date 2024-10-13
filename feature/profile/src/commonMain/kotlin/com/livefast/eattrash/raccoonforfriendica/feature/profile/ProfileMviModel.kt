@@ -26,6 +26,7 @@ interface ProfileMviModel :
     data class State(
         val currentUserId: String? = null,
         val availableAccounts: List<AccountModel> = emptyList(),
+        val loading: Boolean = false,
     )
 
     sealed interface Effect
