@@ -374,4 +374,5 @@ internal val EsStrings =
         override val actionSwitchToForumMode = "Cambiar al modo foro"
         override val settingsItemOpenGroupsInForumModeByDefault =
             "Abrir grupos en modo foro por defecto"
+        override val actionInsertList = "Insertar lista"
     }

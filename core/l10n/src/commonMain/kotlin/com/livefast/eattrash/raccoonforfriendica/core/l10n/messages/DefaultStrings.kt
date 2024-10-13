@@ -365,4 +365,5 @@ internal open class DefaultStrings : Strings {
     override val actionSwitchToClassicMode = "Switch to classic mode"
     override val actionSwitchToForumMode = "Switch to forum mode"
     override val settingsItemOpenGroupsInForumModeByDefault = "Open groups in forum mode by default"
+    override val actionInsertList = "Insert list"
 }

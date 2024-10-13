@@ -378,4 +378,5 @@ internal val FrStrings =
         override val actionSwitchToForumMode = "Passer en mode forum"
         override val settingsItemOpenGroupsInForumModeByDefault =
             "Ouvrir les groupes en mode forum par défaut"
+        override val actionInsertList = "Insérer une liste"
     }

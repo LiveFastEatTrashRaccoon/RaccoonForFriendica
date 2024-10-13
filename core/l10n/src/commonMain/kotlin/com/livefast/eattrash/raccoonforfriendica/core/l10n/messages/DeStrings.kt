@@ -373,4 +373,5 @@ internal val DeStrings =
         override val actionSwitchToForumMode = "Zum Forum-Modus wechseln"
         override val settingsItemOpenGroupsInForumModeByDefault =
             "Gruppen standardmäßig im Forum-Modus öffnen"
+        override val actionInsertList = "Liste einfügen"
     }

@@ -329,6 +329,7 @@ interface Strings {
     val actionSwitchToClassicMode: String
     val actionSwitchToForumMode: String
     val settingsItemOpenGroupsInForumModeByDefault: String
+    val actionInsertList: String
 }
 
 object Locales {
