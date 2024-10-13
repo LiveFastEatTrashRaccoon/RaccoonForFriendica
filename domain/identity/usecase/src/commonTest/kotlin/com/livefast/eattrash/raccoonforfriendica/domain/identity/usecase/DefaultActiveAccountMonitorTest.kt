@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
@@ -99,7 +98,7 @@ class DefaultActiveAccountMonitorTest {
                 apiConfigurationRepository.setAuth(credentials)
             }
             verifySuspend {
-                contentPreloadManager.preload(userId, settings.defaultTimelineType.toTimelineType())
+                contentPreloadManager.preload(userId)
                 identityRepository.refreshCurrentUser(userId)
                 supportedFeatureRepository.refresh()
                 settingsRepository.changeCurrent(settings)

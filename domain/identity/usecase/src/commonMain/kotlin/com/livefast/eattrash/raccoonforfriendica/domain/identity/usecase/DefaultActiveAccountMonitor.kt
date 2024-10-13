@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
@@ -80,10 +79,7 @@ internal class DefaultActiveAccountMonitor(
 
             val defaultSettings = settingsRepository.get(account.id) ?: SettingsModel()
 
-            contentPreloadManager.preload(
-                userRemoteId = account.remoteId,
-                defaultTimelineType = defaultSettings.defaultTimelineType.toTimelineType(),
-            )
+            contentPreloadManager.preload(userRemoteId = account.remoteId)
 
             identityRepository.refreshCurrentUser(account.remoteId)
 
