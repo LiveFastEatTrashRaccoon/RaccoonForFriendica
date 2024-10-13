@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
@@ -15,7 +14,6 @@ internal class DefaultContentPreloadManager(
 ) : ContentPreloadManager {
     override suspend fun preload(
         userRemoteId: String?,
-        defaultTimelineType: TimelineType,
     ) = coroutineScope {
         val tasks =
             buildList {
@@ -36,6 +34,10 @@ internal class DefaultContentPreloadManager(
                                 enableCache = true,
                                 excludeReplies = true,
                             )
+                        }
+
+                    this +=
+                        async {
                             notificationRepository.getAll(
                                 includeAll = true,
                                 refresh = true,
@@ -44,8 +46,6 @@ internal class DefaultContentPreloadManager(
                 }
             }
 
-        tasks.awaitAll()
-
-        Unit
+        tasks.awaitAll().let {}
     }
 }
