@@ -183,7 +183,10 @@ fun TimelineItem(
                 )
             }
 
-            val contentVisible = entryToDisplay.isSpoilerActive || spoiler.isEmpty()
+            val contentVisible =
+                remember(entryToDisplay.isSpoilerActive) {
+                    entryToDisplay.isSpoilerActive || spoiler.isEmpty()
+                }
             AnimatedVisibility(
                 modifier = modifier.padding(horizontal = contentHorizontalPadding),
                 visible = contentVisible,
