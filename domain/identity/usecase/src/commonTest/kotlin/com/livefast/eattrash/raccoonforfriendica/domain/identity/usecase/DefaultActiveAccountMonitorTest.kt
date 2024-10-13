@@ -19,9 +19,11 @@ import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify
 import dev.mokkery.verifySuspend
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
@@ -36,6 +38,8 @@ class DefaultActiveAccountMonitorTest {
         mock<SupportedFeatureRepository>(mode = MockMode.autoUnit)
     private val inboxManager = mock<InboxManager>(mode = MockMode.autoUnit)
     private val contentPreloadManager = mock<ContentPreloadManager>(mode = MockMode.autoUnit)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val sut =
         DefaultActiveAccountMonitor(
             accountRepository = accountRepository,
@@ -46,6 +50,7 @@ class DefaultActiveAccountMonitorTest {
             supportedFeatureRepository = supportedFeatureRepository,
             inboxManager = inboxManager,
             contentPreloadManager = contentPreloadManager,
+            coroutineDispatcher = UnconfinedTestDispatcher(),
         )
 
     @Test
