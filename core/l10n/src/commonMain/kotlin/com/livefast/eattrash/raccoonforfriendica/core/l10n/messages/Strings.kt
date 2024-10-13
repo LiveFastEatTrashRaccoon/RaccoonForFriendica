@@ -55,6 +55,7 @@ interface Strings {
     val postTitle: String
     val languageEn: String
     val languageDe: String
+    val languageFr: String
     val languageIt: String
     val settingsTitle: String
     val settingsHeaderGeneral: String
@@ -334,6 +335,7 @@ object Locales {
     const val EN = "en"
     const val DE = "de"
     const val IT = "it"
+    const val FR = "fr"
 }
 
 internal val localizableStrings: Map<LanguageTag, Strings> =
@@ -341,6 +343,7 @@ internal val localizableStrings: Map<LanguageTag, Strings> =
         Locales.EN to EnStrings,
         Locales.DE to DeStrings,
         Locales.IT to ItStrings,
+        Locales.FR to FrStrings,
     )
 
 val LocalStrings: ProvidableCompositionLocal<Strings> =
