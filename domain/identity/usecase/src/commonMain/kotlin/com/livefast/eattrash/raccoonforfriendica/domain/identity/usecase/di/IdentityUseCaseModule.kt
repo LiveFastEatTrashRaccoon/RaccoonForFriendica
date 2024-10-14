@@ -77,6 +77,7 @@ val domainIdentityUseCaseModule =
                 supportedFeatureRepository = get(),
                 inboxManager = get(),
                 contentPreloadManager = get(),
+                markerRepository = get(),
             )
         }
         single<EntryActionRepository> {

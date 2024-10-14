@@ -375,4 +375,5 @@ internal val EsStrings =
         override val settingsItemOpenGroupsInForumModeByDefault =
             "Abrir grupos en modo foro por defecto"
         override val actionInsertList = "Insertar lista"
+        override val actionDismissAllNotifications = "Desechar todas las notificaciones"
     }

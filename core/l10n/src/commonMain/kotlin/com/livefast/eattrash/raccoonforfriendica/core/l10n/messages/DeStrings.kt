@@ -374,4 +374,5 @@ internal val DeStrings =
         override val settingsItemOpenGroupsInForumModeByDefault =
             "Gruppen standardmäßig im Forum-Modus öffnen"
         override val actionInsertList = "Liste einfügen"
+        override val actionDismissAllNotifications = "Alle Benachrichtigungen ablehnen"
     }

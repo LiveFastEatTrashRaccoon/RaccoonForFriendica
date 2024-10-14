@@ -379,4 +379,5 @@ internal val FrStrings =
         override val settingsItemOpenGroupsInForumModeByDefault =
             "Ouvrir les groupes en mode forum par défaut"
         override val actionInsertList = "Insérer une liste"
+        override val actionDismissAllNotifications = "Supprimer toutes les notifications"
     }

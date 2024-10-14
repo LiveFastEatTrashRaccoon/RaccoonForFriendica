@@ -37,10 +37,7 @@ internal class DefaultContentPreloadManager(
 
                         this +=
                             async {
-                                notificationRepository.getAll(
-                                    includeAll = true,
-                                    refresh = true,
-                                )
+                                notificationRepository.getAll(refresh = true)
                             }
                     }
                 }

@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
@@ -37,6 +38,10 @@ class DefaultActiveAccountMonitorTest {
         mock<SupportedFeatureRepository>(mode = MockMode.autoUnit)
     private val inboxManager = mock<InboxManager>(mode = MockMode.autoUnit)
     private val contentPreloadManager = mock<ContentPreloadManager>(mode = MockMode.autoUnit)
+    private val markerRepository =
+        mock<MarkerRepository>(mode = MockMode.autoUnit) {
+            everySuspend { get(any(), any()) } returns null
+        }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val sut =
@@ -49,6 +54,7 @@ class DefaultActiveAccountMonitorTest {
             supportedFeatureRepository = supportedFeatureRepository,
             inboxManager = inboxManager,
             contentPreloadManager = contentPreloadManager,
+            markerRepository = markerRepository,
             coroutineDispatcher = UnconfinedTestDispatcher(),
         )
 

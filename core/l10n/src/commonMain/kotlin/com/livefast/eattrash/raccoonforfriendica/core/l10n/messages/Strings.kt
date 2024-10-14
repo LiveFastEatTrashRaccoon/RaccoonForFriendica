@@ -330,6 +330,7 @@ interface Strings {
     val actionSwitchToForumMode: String
     val settingsItemOpenGroupsInForumModeByDefault: String
     val actionInsertList: String
+    val actionDismissAllNotifications: String
 }
 
 object Locales {

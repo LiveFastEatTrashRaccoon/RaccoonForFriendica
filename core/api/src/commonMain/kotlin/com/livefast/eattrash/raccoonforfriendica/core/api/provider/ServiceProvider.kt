@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageS
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.InstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.MarkerService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.MediaService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoAlbumService
@@ -24,6 +25,7 @@ interface ServiceProvider {
     val followRequests: FollowRequestService
     val instance: InstanceService
     val lists: ListService
+    val markers: MarkerService
     val media: MediaService
     val notifications: NotificationService
     val photo: PhotoService

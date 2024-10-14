@@ -24,7 +24,7 @@ class DefaultContentPreloadManagerTest {
         }
     private val notificationRepository =
         mock<NotificationRepository> {
-            everySuspend { getAll(any(), any(), any(), any()) } returns listOf()
+            everySuspend { getAll(any(), any(), any()) } returns listOf()
         }
     private val sut =
         DefaultContentPreloadManager(
@@ -63,10 +63,7 @@ class DefaultContentPreloadManagerTest {
                     enableCache = true,
                     refresh = true,
                 )
-                notificationRepository.getAll(
-                    includeAll = true,
-                    refresh = true,
-                )
+                notificationRepository.getAll(refresh = true)
             }
         }
 }

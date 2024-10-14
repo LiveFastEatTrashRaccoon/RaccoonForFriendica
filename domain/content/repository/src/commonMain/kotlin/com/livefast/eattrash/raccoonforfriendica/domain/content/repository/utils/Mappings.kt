@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPrivateMe
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.HistoryItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Instance
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.InstanceRule
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Markers
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaAttachment
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.AUDIO
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType.GIFV
@@ -43,6 +44,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHistoryItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
@@ -467,3 +470,21 @@ private object FriendicaDateFormats {
     const val PRIVATE_MESSAGES = "EEE MMM dd HH:mm:ss xxxx yyyy"
     const val PHOTO_ALBUMS = "yyyy-MM-dd HH:mm:ss"
 }
+
+internal fun Markers.toModel(): List<MarkerModel> =
+    buildList {
+        this@toModel.home?.lastReadId?.also { lastReadId ->
+            this +=
+                MarkerModel(
+                    type = MarkerType.Home,
+                    lastReadId = lastReadId,
+                )
+        }
+        this@toModel.notifications?.lastReadId?.also { lastReadId ->
+            this +=
+                MarkerModel(
+                    type = MarkerType.Notifications,
+                    lastReadId = lastReadId,
+                )
+        }
+    }

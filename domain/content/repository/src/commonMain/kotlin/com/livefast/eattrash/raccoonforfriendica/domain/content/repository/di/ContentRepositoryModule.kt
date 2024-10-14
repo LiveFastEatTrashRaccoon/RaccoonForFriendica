@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultEmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultInboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultLocalItemCache
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultMarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultMediaRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNotificationRepository
@@ -30,6 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MediaRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
@@ -97,6 +99,7 @@ val domainContentRepositoryModule =
         single<InboxManager> {
             DefaultInboxManager(
                 notificationRepository = get(),
+                markerRepository = get(),
             )
         }
         single<NodeInfoRepository> {
@@ -155,6 +158,11 @@ val domainContentRepositoryModule =
         single<EmojiHelper> {
             DefaultEmojiHelper(
                 repository = get(),
+            )
+        }
+        single<MarkerRepository> {
+            DefaultMarkerRepository(
+                provider = get(named("default")),
             )
         }
     }

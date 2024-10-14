@@ -26,11 +26,15 @@ interface InboxMviModel :
             val types: List<NotificationType>,
         ) : Intent
 
+        data object DismissAll : Intent
+
         data class MarkAsRead(
             val notification: NotificationModel,
         ) : Intent
 
-        data object MarkAllAsRead : Intent
+        data class Dismiss(
+            val notification: NotificationModel,
+        ) : Intent
 
         data class ToggleSpoilerActive(
             val entry: TimelineEntryModel,
