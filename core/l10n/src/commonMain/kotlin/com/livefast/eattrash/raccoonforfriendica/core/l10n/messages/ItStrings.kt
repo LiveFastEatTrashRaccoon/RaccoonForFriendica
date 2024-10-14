@@ -374,4 +374,5 @@ internal val ItStrings =
         override val settingsItemOpenGroupsInForumModeByDefault =
             "Apri i gruppi in modalità forum di default"
         override val actionInsertList = "Inserisci lista"
+        override val actionDismissAllNotifications = "Elimina tutte le notifiche"
     }
