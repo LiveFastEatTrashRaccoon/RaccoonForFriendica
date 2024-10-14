@@ -16,7 +16,6 @@ internal class DefaultNotificationRepository(
 
     override suspend fun getAll(
         types: List<NotificationType>,
-        includeAll: Boolean,
         pageCursor: String?,
         refresh: Boolean,
     ): List<NotificationModel>? =
@@ -32,7 +31,6 @@ internal class DefaultNotificationRepository(
                     provider.notifications.get(
                         types = types.mapNotNull { it.toDto() },
                         maxId = pageCursor,
-                        includeAll = includeAll,
                         limit = DEFAULT_PAGE_SIZE,
                     )
                 response
@@ -45,7 +43,7 @@ internal class DefaultNotificationRepository(
             }.getOrNull()
         }
 
-    override suspend fun markAsRead(id: String): Boolean =
+    override suspend fun dismiss(id: String): Boolean =
         withContext(Dispatchers.IO) {
             runCatching {
                 val res = provider.notifications.dismiss(id)
@@ -53,10 +51,10 @@ internal class DefaultNotificationRepository(
             }.getOrElse { false }
         }
 
-    override suspend fun markAllAsRead(): Boolean =
+    override suspend fun dismissAll(): Boolean =
         withContext(Dispatchers.IO) {
             runCatching {
-                val res = provider.notifications.dismissAll()
+                val res = provider.notifications.clear()
                 res.isSuccessful
             }.getOrElse { false }
         }
