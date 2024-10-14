@@ -73,10 +73,17 @@ class DefaultDetailOpener(
         navigationCoordinator.replace(screen)
     }
 
-    override fun openEntryDetail(entry: TimelineEntryModel) {
+    override fun openEntryDetail(
+        entry: TimelineEntryModel,
+        replaceTop: Boolean,
+    ) {
         entryCache.put(entry.id, entry)
         val screen = EntryDetailScreen(entry.id)
-        navigationCoordinator.push(screen)
+        if (replaceTop) {
+            navigationCoordinator.replace(screen)
+        } else {
+            navigationCoordinator.push(screen)
+        }
     }
 
     override fun openSettings() {
