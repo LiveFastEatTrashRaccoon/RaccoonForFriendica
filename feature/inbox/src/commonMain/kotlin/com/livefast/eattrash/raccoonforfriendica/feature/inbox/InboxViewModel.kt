@@ -5,16 +5,19 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.hasPriorIdThen
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -33,6 +36,7 @@ class InboxViewModel(
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
+    private val markerRepository: MarkerRepository,
 ) : DefaultMviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>(
         initialState = InboxMviModel.State(),
     ),
@@ -60,11 +64,6 @@ class InboxViewModel(
                     loadNextPage()
                 }
 
-            InboxMviModel.Intent.MarkAllAsRead ->
-                screenModelScope.launch {
-                    markAllAsRead()
-                }
-
             InboxMviModel.Intent.Refresh ->
                 screenModelScope.launch {
                     refresh()
@@ -82,6 +81,8 @@ class InboxViewModel(
             is InboxMviModel.Intent.Follow -> follow(intent.userId)
             is InboxMviModel.Intent.Unfollow -> unfollow(intent.userId)
             is InboxMviModel.Intent.MarkAsRead -> markAsRead(intent.notification)
+            InboxMviModel.Intent.DismissAll -> dismissAll()
+            is InboxMviModel.Intent.Dismiss -> dismiss(intent.notification)
             is InboxMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
         }
     }
@@ -90,6 +91,11 @@ class InboxViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
+
+        if (!initial) {
+            updateLastPositionMarker()
+        }
+
         paginationManager.reset(
             NotificationsPaginationSpecification.Default(
                 types = uiState.value.selectedNotificationTypes,
@@ -109,6 +115,7 @@ class InboxViewModel(
             return
         }
 
+        val lastReadId = markerRepository.get(MarkerType.Notifications)?.lastReadId
         val wasRefreshing = uiState.value.refreshing
         updateState { it.copy(loading = true) }
         val notifications =
@@ -116,6 +123,7 @@ class InboxViewModel(
                 .loadNextPage()
                 .takeIf { uiState.value.currentUserId != null }
                 .orEmpty()
+                .map { it.copy(read = it.hasPriorIdThen(lastReadId)) }
         notifications.preloadImages()
         updateState {
             it.copy(
@@ -256,12 +264,17 @@ class InboxViewModel(
         }
     }
 
-    private suspend fun markAllAsRead() {
-        updateState { it.copy(markAllAsReadLoading = true) }
-        for (item in uiState.value.notifications.filterNot { it.read }) {
-            notificationRepository.markAsRead(item.id)
+    private suspend fun updateLastPositionMarker() {
+        val notifications = uiState.value.notifications
+        val mostRecentId = notifications.firstOrNull()?.id ?: return
+        markerRepository.update(
+            type = MarkerType.Notifications,
+            id = mostRecentId,
+        )
+        inboxManager.refreshUnreadCount()
+        notifications.forEach { n ->
+            updateItemInState(n.id) { it.copy(read = true) }
         }
-        updateState { it.copy(markAllAsReadLoading = false) }
     }
 
     private fun markAsRead(notification: NotificationModel) {
@@ -269,11 +282,30 @@ class InboxViewModel(
             return
         }
         screenModelScope.launch {
-            val success = notificationRepository.markAsRead(notification.id)
+            updateItemInState(notification.id) { it.copy(read = true) }
+            inboxManager.decrementUnreadCount()
+        }
+    }
+
+    private fun dismiss(notification: NotificationModel) {
+        if (notification.read) {
+            return
+        }
+        screenModelScope.launch {
+            val success = notificationRepository.dismiss(notification.id)
             if (success) {
                 updateItemInState(notification.id) { it.copy(read = true) }
                 inboxManager.decrementUnreadCount()
             }
+        }
+    }
+
+    private fun dismissAll() {
+        screenModelScope.launch {
+            updateState { it.copy(markAllAsReadLoading = true) }
+            notificationRepository.dismissAll()
+            updateState { it.copy(markAllAsReadLoading = false) }
+            refresh()
         }
     }
 

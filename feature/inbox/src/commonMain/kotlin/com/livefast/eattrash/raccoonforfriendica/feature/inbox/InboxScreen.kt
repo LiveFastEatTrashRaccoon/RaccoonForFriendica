@@ -80,6 +80,7 @@ class InboxScreen : Screen {
         val lazyListState = rememberLazyListState()
         var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
         var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
+        var confirmDismissAllDialogOpen by remember { mutableStateOf(false) }
         var configureSelectedTypesDialogOpen by remember { mutableStateOf(false) }
 
         suspend fun goBackToTop() {
@@ -145,9 +146,9 @@ class InboxScreen : Screen {
                                 )
                             }
                             IconButton(
-                                enabled = uiState.notifications.any { !it.read },
+                                enabled = uiState.notifications.isNotEmpty(),
                                 onClick = {
-                                    model.reduce(InboxMviModel.Intent.MarkAllAsRead)
+                                    confirmDismissAllDialogOpen = true
                                 },
                             ) {
                                 if (uiState.markAllAsReadLoading) {
@@ -337,6 +338,19 @@ class InboxScreen : Screen {
                     configureSelectedTypesDialogOpen = false
                     if (values != null) {
                         model.reduce(InboxMviModel.Intent.ChangeSelectedNotificationTypes(values))
+                    }
+                },
+            )
+        }
+
+        if (confirmDismissAllDialogOpen) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionDismissAllNotifications,
+                body = LocalStrings.current.messageAreYouSure,
+                onClose = { confirm ->
+                    confirmDismissAllDialogOpen = false
+                    if (confirm) {
+                        model.reduce(InboxMviModel.Intent.DismissAll)
                     }
                 },
             )
