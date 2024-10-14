@@ -24,5 +24,5 @@ interface NotificationService {
     ): Response<Unit>
 
     @POST("v1/notifications/clear")
-    suspend fun dismissAll(): Response<Unit>
+    suspend fun clear(): Response<Unit>
 }
