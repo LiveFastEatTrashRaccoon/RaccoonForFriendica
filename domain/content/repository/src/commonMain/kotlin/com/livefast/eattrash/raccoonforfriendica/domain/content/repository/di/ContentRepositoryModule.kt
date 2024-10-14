@@ -99,6 +99,7 @@ val domainContentRepositoryModule =
         single<InboxManager> {
             DefaultInboxManager(
                 notificationRepository = get(),
+                markerRepository = get(),
             )
         }
         single<NodeInfoRepository> {
