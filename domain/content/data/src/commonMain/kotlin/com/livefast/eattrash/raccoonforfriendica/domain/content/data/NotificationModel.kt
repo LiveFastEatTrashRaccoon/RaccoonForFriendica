@@ -60,3 +60,7 @@ val NotificationModel.blurHashParamsForPreload: List<BlurHashParams>
                     addAll(urls)
                 }
         }
+
+fun NotificationModel.hasLaterIdThan(referenceId: String?): Boolean = (id.toIntOrNull() ?: 0) > (referenceId?.toIntOrNull() ?: 0)
+
+fun NotificationModel.hasPriorIdThen(referenceId: String?): Boolean = !hasLaterIdThan(referenceId)
