@@ -60,9 +60,13 @@ class InboxViewModel(
                     loadNextPage()
                 }
 
-            InboxMviModel.Intent.Refresh ->
+            InboxMviModel.Intent.MarkAllAsRead ->
                 screenModelScope.launch {
                     markAllAsRead()
+                }
+
+            InboxMviModel.Intent.Refresh ->
+                screenModelScope.launch {
                     refresh()
                 }
 
@@ -253,9 +257,11 @@ class InboxViewModel(
     }
 
     private suspend fun markAllAsRead() {
+        updateState { it.copy(markAllAsReadLoading = true) }
         for (item in uiState.value.notifications.filterNot { it.read }) {
             notificationRepository.markAsRead(item.id)
         }
+        updateState { it.copy(markAllAsReadLoading = false) }
     }
 
     private fun markAsRead(notification: NotificationModel) {

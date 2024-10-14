@@ -5,16 +5,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -40,6 +43,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -129,15 +133,34 @@ class InboxScreen : Screen {
                         }
                     },
                     actions = {
-                        IconButton(
-                            onClick = {
-                                configureSelectedTypesDialogOpen = true
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.FilterList,
-                                contentDescription = null,
-                            )
+                        if (uiState.currentUserId != null) {
+                            IconButton(
+                                onClick = {
+                                    configureSelectedTypesDialogOpen = true
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.FilterList,
+                                    contentDescription = null,
+                                )
+                            }
+                            IconButton(
+                                enabled = uiState.notifications.any { !it.read },
+                                onClick = {
+                                    model.reduce(InboxMviModel.Intent.MarkAllAsRead)
+                                },
+                            ) {
+                                if (uiState.markAllAsReadLoading) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(IconSize.s),
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Default.DoneAll,
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
                         }
                     },
                 )
