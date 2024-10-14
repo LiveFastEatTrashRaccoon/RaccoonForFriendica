@@ -13,7 +13,10 @@ interface DetailOpener {
 
     fun switchUserDetailToForumMode(user: UserModel)
 
-    fun openEntryDetail(entry: TimelineEntryModel)
+    fun openEntryDetail(
+        entry: TimelineEntryModel,
+        replaceTop: Boolean = false,
+    )
 
     fun openSettings()
 

@@ -247,7 +247,10 @@ class EntryDetailScreen(
                             },
                             onClick = { e ->
                                 if (e.id != id) {
-                                    detailOpener.openEntryDetail(entry)
+                                    detailOpener.openEntryDetail(
+                                        entry = entry,
+                                        replaceTop = true,
+                                    )
                                 }
                             },
                             onOpenUser = {
