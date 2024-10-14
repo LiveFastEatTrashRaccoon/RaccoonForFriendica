@@ -30,6 +30,8 @@ interface InboxMviModel :
             val notification: NotificationModel,
         ) : Intent
 
+        data object MarkAllAsRead : Intent
+
         data class ToggleSpoilerActive(
             val entry: TimelineEntryModel,
         ) : Intent
@@ -44,6 +46,7 @@ interface InboxMviModel :
         val notifications: List<NotificationModel> = emptyList(),
         val blurNsfw: Boolean = true,
         val selectedNotificationTypes: List<NotificationType> = NotificationType.ALL,
+        val markAllAsReadLoading: Boolean = false,
     )
 
     sealed interface Effect {
