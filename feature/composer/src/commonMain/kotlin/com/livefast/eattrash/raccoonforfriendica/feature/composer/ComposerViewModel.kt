@@ -465,6 +465,8 @@ class ComposerViewModel(
                     createPreview()
                 }
 
+            is ComposerMviModel.Intent.InsertList -> insertList()
+
             ComposerMviModel.Intent.Submit -> submit()
         }
     }
@@ -1012,6 +1014,34 @@ class ComposerViewModel(
         }
     }
 
+    private fun insertList() {
+        screenModelScope.launch {
+            val before =
+                if (useBBCode) {
+                    "\n[ul]\n[li]"
+                } else {
+                    "\n<ul>\n<li>"
+                }
+            val after =
+                if (useBBCode) {
+                    "[/li]\n[/ul]"
+                } else {
+                    "</li></ul>"
+                }
+            val newValue =
+                getNewTextFieldValue(
+                    value = uiState.value.bodyValue,
+                    additionalPart =
+                        buildString {
+                            append(before)
+                            append(after)
+                        },
+                    offsetAfter = before.length,
+                )
+            updateState { it.copy(bodyValue = newValue, hasUnsavedChanges = true) }
+        }
+    }
+
     private fun uploadAttachment(byteArray: ByteArray) {
         screenModelScope.launch {
             updateState {
@@ -1479,6 +1509,14 @@ class ComposerViewModel(
             .replace("[/b]", "</b>")
             .replace("[code]", "<code>")
             .replace("[/code]", "</code>")
+            .replace("[ul]", "<ul>")
+            .replace("[/ul]", "</ul>")
+            .replace("[ol]", "<ol>")
+            .replace("[/ol]", "</ol>")
+            .replace("[li]", "<li>")
+            .replace("[/li]", "</li>")
+            .replace(Regex("\n\n"), "<br /><br />")
+            .replace("\n", " ")
             .also { original ->
                 val matches = SHARE_REGEX.findAll(original).toList()
                 buildString {

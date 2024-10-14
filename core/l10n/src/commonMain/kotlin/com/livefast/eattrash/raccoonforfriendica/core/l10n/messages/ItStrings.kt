@@ -347,13 +347,13 @@ internal val ItStrings =
         override val actionReportUser = "Segnala utente"
         override val actionReportEntry = "Segnala post"
         override val actionViewDetails = "Dettagli"
-        override val actionAddImageFromGallery = "Add from gallery"
-        override val actionAddPoll = "Add poll"
-        override val actionRemovePoll = "Remove poll"
-        override val createPostPollSection = "Poll"
-        override val createPostPollOptionLabel = "Option"
-        override val createPostPollItemMultiple = "Allow multiple choice"
-        override val createPostPollItemExpirationDate = "Expiration date"
+        override val actionAddImageFromGallery = "Aggiungi dalla galleria"
+        override val actionAddPoll = "Aggiungi sondaggio"
+        override val actionRemovePoll = "Rimuovi sondaggio"
+        override val createPostPollSection = "Sondaggio"
+        override val createPostPollOptionLabel = "Opzione"
+        override val createPostPollItemMultiple = "Permettere scelta multipla"
+        override val createPostPollItemExpirationDate = "Data di fine"
         override val messageInvalidPollError =
             "Sondaggio non valido, controllare le opzioni e la data di fine"
         override val userFeedbackFieldEmail = "Email o username (opzionale)"
@@ -373,4 +373,5 @@ internal val ItStrings =
         override val actionSwitchToForumMode = "Passa a modalità forum"
         override val settingsItemOpenGroupsInForumModeByDefault =
             "Apri i gruppi in modalità forum di default"
+        override val actionInsertList = "Inserisci lista"
     }

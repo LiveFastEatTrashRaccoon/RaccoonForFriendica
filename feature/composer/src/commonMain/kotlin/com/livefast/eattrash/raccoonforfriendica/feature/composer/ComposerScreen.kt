@@ -346,6 +346,10 @@ class ComposerScreen(
                                                 },
                                         )
                                 }
+                                this +=
+                                    CustomOptions.InsertList.toOption(
+                                        label = LocalStrings.current.actionInsertList,
+                                    )
                             }
                         Box {
                             var optionsOffset by remember { mutableStateOf(Offset.Zero) }
@@ -439,6 +443,10 @@ class ComposerScreen(
 
                                                 CustomOptions.OpenPreview -> {
                                                     model.reduce(ComposerMviModel.Intent.CreatePreview)
+                                                }
+
+                                                CustomOptions.InsertList -> {
+                                                    model.reduce(ComposerMviModel.Intent.InsertList)
                                                 }
 
                                                 else -> Unit
@@ -957,6 +965,7 @@ private sealed interface CustomOptions : OptionId.Custom {
     data object TogglePoll : CustomOptions
 
     data object ToggleTitle : CustomOptions
+
     data object InsertCustomEmoji : CustomOptions
 
     data object OpenPreview : CustomOptions
@@ -966,5 +975,8 @@ private sealed interface CustomOptions : OptionId.Custom {
     data object ChangeSchedule : CustomOptions
 
     data object SetSchedule : CustomOptions
+
     data object PublishDefault : CustomOptions
+
+    data object InsertList : CustomOptions
 }
