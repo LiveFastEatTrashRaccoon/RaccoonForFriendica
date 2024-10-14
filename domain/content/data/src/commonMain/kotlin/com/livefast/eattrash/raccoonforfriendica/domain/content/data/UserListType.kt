@@ -23,5 +23,5 @@ fun Int.toUserListType(): UserListType =
         3 -> UserListType.UsersReblog
         2 -> UserListType.UsersFavorite
         1 -> UserListType.Following
-    else -> UserListType.Follower
-}
+        else -> UserListType.Follower
+    }

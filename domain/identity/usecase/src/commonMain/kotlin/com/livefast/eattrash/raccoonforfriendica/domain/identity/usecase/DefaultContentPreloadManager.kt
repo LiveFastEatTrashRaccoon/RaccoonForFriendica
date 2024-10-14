@@ -12,40 +12,39 @@ internal class DefaultContentPreloadManager(
     private val trendingRepository: TrendingRepository,
     private val notificationRepository: NotificationRepository,
 ) : ContentPreloadManager {
-    override suspend fun preload(
-        userRemoteId: String?,
-    ) = coroutineScope {
-        val tasks =
-            buildList {
-                this +=
-                    async {
-                        trendingRepository.getHashtags(
-                            offset = 0,
-                            refresh = true,
-                        )
+    override suspend fun preload(userRemoteId: String?) =
+        coroutineScope {
+            val tasks =
+                buildList {
+                    this +=
+                        async {
+                            trendingRepository.getHashtags(
+                                offset = 0,
+                                refresh = true,
+                            )
+                        }
+
+                    if (userRemoteId != null) {
+                        this +=
+                            async {
+                                timelineEntryRepository.getByUser(
+                                    userId = userRemoteId,
+                                    refresh = true,
+                                    enableCache = true,
+                                    excludeReplies = true,
+                                )
+                            }
+
+                        this +=
+                            async {
+                                notificationRepository.getAll(
+                                    includeAll = true,
+                                    refresh = true,
+                                )
+                            }
                     }
-
-                if (userRemoteId != null) {
-                    this +=
-                        async {
-                            timelineEntryRepository.getByUser(
-                                userId = userRemoteId,
-                                refresh = true,
-                                enableCache = true,
-                                excludeReplies = true,
-                            )
-                        }
-
-                    this +=
-                        async {
-                            notificationRepository.getAll(
-                                includeAll = true,
-                                refresh = true,
-                            )
-                        }
                 }
-            }
 
-        tasks.awaitAll().let {}
-    }
+            tasks.awaitAll().let {}
+        }
 }

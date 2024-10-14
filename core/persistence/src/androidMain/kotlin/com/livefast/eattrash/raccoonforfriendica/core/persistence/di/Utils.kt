@@ -10,5 +10,5 @@ actual val nativePersistenceModule =
             DefaultDatabaseBuilderProvider(
                 context = get(),
             )
+        }
     }
-}

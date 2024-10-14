@@ -26,4 +26,4 @@ fun Int.toFavoritesType(): FavoritesType =
     when (this) {
         1 -> FavoritesType.Bookmarks
         else -> FavoritesType.Favorites
-}
+    }

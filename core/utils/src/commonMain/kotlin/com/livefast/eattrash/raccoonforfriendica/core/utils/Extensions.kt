@@ -21,7 +21,7 @@ val String?.nodeName: String?
                     it.substringAfter('@')
                 } else {
                     ""
-        }
-    }.takeIf { it.isNotEmpty() }
+                }
+            }.takeIf { it.isNotEmpty() }
 
 fun Int.isNearTheEnd(list: List<*>): Boolean = this >= list.lastIndex - 5 || list.size <= 5

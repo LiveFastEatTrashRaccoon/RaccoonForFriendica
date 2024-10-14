@@ -23,7 +23,8 @@ interface TagsService {
     @POST("v1/tags/{id}/unfollow")
     @Headers("Content-Type: application/json")
     suspend fun unfollow(
-        @Path("id") name: String): Tag?
+        @Path("id") name: String,
+    ): Tag?
 
     @GET("v1/tags/{id}")
     suspend fun get(
