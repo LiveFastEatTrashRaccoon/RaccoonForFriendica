@@ -170,7 +170,7 @@ class LoginScreen : Screen {
                     keyboardOptions =
                         KeyboardOptions(
                             keyboardType = KeyboardType.Email,
-                            autoCorrect = false,
+                            autoCorrectEnabled = false,
                             imeAction = ImeAction.Done,
                         ),
                     keyboardActions =

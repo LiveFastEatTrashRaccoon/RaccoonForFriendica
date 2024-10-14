@@ -186,7 +186,7 @@ class LegacyLoginScreen : Screen {
                     keyboardOptions =
                         KeyboardOptions(
                             keyboardType = KeyboardType.Email,
-                            autoCorrect = false,
+                            autoCorrectEnabled = false,
                             imeAction = ImeAction.Next,
                         ),
                     onValueChange = { value ->
@@ -233,7 +233,7 @@ class LegacyLoginScreen : Screen {
                     keyboardOptions =
                         KeyboardOptions(
                             keyboardType = KeyboardType.Email,
-                            autoCorrect = false,
+                            autoCorrectEnabled = false,
                             imeAction = ImeAction.Next,
                         ),
                     onValueChange = { value ->

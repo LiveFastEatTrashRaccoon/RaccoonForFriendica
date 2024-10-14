@@ -208,7 +208,6 @@ class ConversationScreen(
                         modifier = Modifier.weight(1f),
                         keyboardOptions =
                             KeyboardOptions(
-                                autoCorrect = true,
                                 keyboardType = KeyboardType.Text,
                             ),
                         value = uiState.newMessageValue,

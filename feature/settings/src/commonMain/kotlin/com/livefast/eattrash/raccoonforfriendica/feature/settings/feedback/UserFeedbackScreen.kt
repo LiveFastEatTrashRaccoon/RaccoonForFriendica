@@ -161,7 +161,7 @@ class UserFeedbackScreen : Screen {
                     keyboardOptions =
                         KeyboardOptions(
                             keyboardType = KeyboardType.Email,
-                            autoCorrect = false,
+                            autoCorrectEnabled = false,
                         ),
                     onValueChange = { value ->
                         model.reduce(UserFeedbackMviModel.Intent.SetEmail(value))
@@ -201,7 +201,6 @@ class UserFeedbackScreen : Screen {
                     keyboardOptions =
                         KeyboardOptions(
                             keyboardType = KeyboardType.Text,
-                            autoCorrect = true,
                             capitalization = KeyboardCapitalization.Sentences,
                         ),
                     placeholder = {

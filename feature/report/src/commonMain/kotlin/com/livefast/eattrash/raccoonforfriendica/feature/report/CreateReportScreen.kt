@@ -216,7 +216,6 @@ class CreateReportScreen(
                     keyboardOptions =
                         KeyboardOptions(
                             keyboardType = KeyboardType.Text,
-                            autoCorrect = true,
                             capitalization = KeyboardCapitalization.Sentences,
                         ),
                     onValueChange = { value ->

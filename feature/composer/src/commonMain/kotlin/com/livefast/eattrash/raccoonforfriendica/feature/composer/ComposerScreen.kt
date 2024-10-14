@@ -653,7 +653,6 @@ class ComposerScreen(
                                 KeyboardOptions(
                                     imeAction = ImeAction.Next,
                                     keyboardType = KeyboardType.Text,
-                                    autoCorrect = true,
                                     capitalization = KeyboardCapitalization.Sentences,
                                 ),
                             keyboardActions =
@@ -692,7 +691,6 @@ class ComposerScreen(
                                 KeyboardOptions(
                                     imeAction = ImeAction.Next,
                                     keyboardType = KeyboardType.Text,
-                                    autoCorrect = true,
                                     capitalization = KeyboardCapitalization.Sentences,
                                 ),
                             keyboardActions =
@@ -726,7 +724,6 @@ class ComposerScreen(
                         keyboardOptions =
                             KeyboardOptions(
                                 keyboardType = KeyboardType.Text,
-                                autoCorrect = true,
                                 capitalization = KeyboardCapitalization.Sentences,
                             ),
                         onValueChange = { value ->

@@ -96,16 +96,15 @@ internal fun PollForm(
             keyboardOptions =
                 KeyboardOptions(
                     keyboardType = KeyboardType.Text,
-                    autoCorrect = true,
                     imeAction = ImeAction.Next,
                 ),
             keyboardActions =
                 KeyboardActions(
                     onNext = {
                         focusManager.moveFocus(FocusDirection.Down)
-                }
-            ),
-                    trailingIcon = {
+                    },
+                ),
+            trailingIcon = {
                 IconButton(
                     onClick = {
                         onRemoveOption?.invoke(idx)
