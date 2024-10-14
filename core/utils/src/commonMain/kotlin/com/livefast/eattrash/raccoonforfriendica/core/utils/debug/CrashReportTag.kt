@@ -7,4 +7,4 @@ sealed interface CrashReportTag {
 internal fun CrashReportTag.toMessageTag(): String =
     when (this) {
         CrashReportTag.ReportFromAbout -> "AppFeedback"
-}
+    }

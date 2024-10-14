@@ -60,5 +60,5 @@ fun Int.toVisibility(): Visibility =
         3 -> Visibility.Private
         2 -> Visibility.Direct
         1 -> Visibility.Unlisted
-    else -> Visibility.Public
-}
+        else -> Visibility.Public
+    }

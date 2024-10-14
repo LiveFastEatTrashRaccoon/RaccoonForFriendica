@@ -105,10 +105,10 @@ private fun FooterItem(
     ) {
         Row(
             modifier =
-            Modifier
-                .clickable {
-                    onClick?.invoke()
-                },
+                Modifier
+                    .clickable {
+                        onClick?.invoke()
+                    },
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -120,9 +120,9 @@ private fun FooterItem(
                     ) {
                         CircularProgressIndicator(
                             color =
-                            MaterialTheme.colorScheme.onBackground.copy(
-                                ancillaryTextAlpha,
-                            ),
+                                MaterialTheme.colorScheme.onBackground.copy(
+                                    ancillaryTextAlpha,
+                                ),
                         )
                     }
                 }
@@ -138,11 +138,11 @@ private fun FooterItem(
             }
             Text(
                 modifier =
-                Modifier
-                    .padding(start = Spacing.xs)
-                    .alpha(
-                        if (loading || value == 0) 0f else 1f,
-                    ),
+                    Modifier
+                        .padding(start = Spacing.xs)
+                        .alpha(
+                            if (loading || value == 0) 0f else 1f,
+                        ),
                 text = value.toString(),
                 style = MaterialTheme.typography.labelMedium,
                 color = toggledColor.takeIf { toggled } ?: fullColor,
