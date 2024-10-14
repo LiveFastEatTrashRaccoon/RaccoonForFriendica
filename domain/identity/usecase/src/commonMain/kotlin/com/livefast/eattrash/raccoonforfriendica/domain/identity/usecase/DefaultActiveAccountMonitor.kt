@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
@@ -29,6 +31,7 @@ internal class DefaultActiveAccountMonitor(
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val inboxManager: InboxManager,
     private val contentPreloadManager: ContentPreloadManager,
+    private val markerRepository: MarkerRepository,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ActiveAccountMonitor {
     private val scope = CoroutineScope(SupervisorJob() + coroutineDispatcher)
@@ -87,6 +90,7 @@ internal class DefaultActiveAccountMonitor(
 
             settingsRepository.changeCurrent(defaultSettings)
 
+            markerRepository.get(MarkerType.Notifications, refresh = true)
             inboxManager.refreshUnreadCount()
         }
     }
