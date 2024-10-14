@@ -14,7 +14,8 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.RocketLaunch
+import androidx.compose.material.icons.outlined.RocketLaunch
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -59,7 +60,8 @@ fun ContentFooter(
         )
         FooterItem(
             modifier = Modifier.width(baseItemWidth),
-            icon = Icons.Default.Repeat,
+            icon = Icons.Outlined.RocketLaunch,
+            toggledIcon = Icons.Filled.RocketLaunch,
             value = reblogCount,
             toggled = reblogged,
             loading = reblogLoading,
@@ -103,10 +105,10 @@ private fun FooterItem(
     ) {
         Row(
             modifier =
-                Modifier
-                    .clickable {
-                        onClick?.invoke()
-                    },
+            Modifier
+                .clickable {
+                    onClick?.invoke()
+                },
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -118,9 +120,9 @@ private fun FooterItem(
                     ) {
                         CircularProgressIndicator(
                             color =
-                                MaterialTheme.colorScheme.onBackground.copy(
-                                    ancillaryTextAlpha,
-                                ),
+                            MaterialTheme.colorScheme.onBackground.copy(
+                                ancillaryTextAlpha,
+                            ),
                         )
                     }
                 }
@@ -136,11 +138,11 @@ private fun FooterItem(
             }
             Text(
                 modifier =
-                    Modifier
-                        .padding(start = Spacing.xs)
-                        .alpha(
-                            if (loading || value == 0) 0f else 1f,
-                        ),
+                Modifier
+                    .padding(start = Spacing.xs)
+                    .alpha(
+                        if (loading || value == 0) 0f else 1f,
+                    ),
                 text = value.toString(),
                 style = MaterialTheme.typography.labelMedium,
                 color = toggledColor.takeIf { toggled } ?: fullColor,
