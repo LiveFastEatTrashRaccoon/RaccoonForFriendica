@@ -110,7 +110,6 @@ fun InsertLinkDialog(
                 keyboardOptions =
                     KeyboardOptions(
                         keyboardType = KeyboardType.Text,
-                        autoCorrect = true,
                     ),
                 onValueChange = { value ->
                     anchorTextFieldValue = value
@@ -146,7 +145,6 @@ fun InsertLinkDialog(
                 keyboardOptions =
                     KeyboardOptions(
                         keyboardType = KeyboardType.Uri,
-                        autoCorrect = true,
                     ),
                 onValueChange = { value ->
                     urlTextFieldValue = value

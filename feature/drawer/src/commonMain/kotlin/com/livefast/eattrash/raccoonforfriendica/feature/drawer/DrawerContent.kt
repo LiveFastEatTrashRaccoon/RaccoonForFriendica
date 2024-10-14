@@ -318,7 +318,6 @@ class DrawerContent : Screen {
                         keyboardOptions =
                             KeyboardOptions(
                                 keyboardType = KeyboardType.Text,
-                                autoCorrect = true,
                             ),
                         onValueChange = { value ->
                             model.reduce(DrawerMviModel.Intent.SetAnonymousChangeNode(value))

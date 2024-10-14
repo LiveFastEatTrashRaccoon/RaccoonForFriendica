@@ -83,7 +83,6 @@ internal fun CircleEditorDialog(
                 keyboardOptions =
                     KeyboardOptions(
                         keyboardType = KeyboardType.Text,
-                        autoCorrect = true,
                     ),
                 isError = data.titleError != null,
                 supportingText = {

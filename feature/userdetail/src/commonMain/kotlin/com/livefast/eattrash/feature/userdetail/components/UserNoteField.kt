@@ -43,7 +43,6 @@ fun UserNoteField(
             keyboardOptions =
                 KeyboardOptions(
                     keyboardType = KeyboardType.Text,
-                    autoCorrect = true,
                     imeAction = ImeAction.Done,
                 ),
             keyboardActions =
