@@ -205,7 +205,10 @@ fun TimelineReplyItem(
 
                 if (actionsEnabled) {
                     ContentFooter(
-                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = Spacing.xxs),
                         favoriteCount = entryToDisplay.favoriteCount,
                         favorite = entryToDisplay.favorite,
                         favoriteLoading = entryToDisplay.favoriteLoading,

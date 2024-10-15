@@ -49,7 +49,7 @@ fun ContentFooter(
 ) {
     val baseItemWidth = 70.dp
     Row(
-        modifier = modifier,
+        modifier = modifier.padding(vertical = Spacing.xs),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         FooterItem(
