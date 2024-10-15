@@ -595,12 +595,22 @@ class ComposerScreen(
                 ) {
                     if (!inReplyToUsername.isNullOrBlank() && !inReplyToId.isNullOrBlank()) {
                         InReplyToInfo(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
+                            modifier =
+                                Modifier.padding(
+                                    start = Spacing.s,
+                                    end = Spacing.s,
+                                    bottom = Spacing.m,
+                                ),
                             username = inReplyToUsername,
                         )
                     } else if (!groupUsername.isNullOrBlank()) {
                         CreateInGroupInfo(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
+                            modifier =
+                                Modifier.padding(
+                                    start = Spacing.s,
+                                    end = Spacing.s,
+                                    bottom = Spacing.m,
+                                ),
                             username = groupUsername,
                         )
                     }

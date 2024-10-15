@@ -297,10 +297,12 @@ fun TimelineItem(
             if (actionsEnabled) {
                 ContentFooter(
                     modifier =
-                        Modifier.fillMaxWidth().padding(
-                            top = Spacing.xs,
-                            start = contentHorizontalPadding,
-                            end = contentHorizontalPadding,
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                top = Spacing.xxs,
+                                start = contentHorizontalPadding,
+                                end = contentHorizontalPadding,
                         ),
                     favoriteCount = entryToDisplay.favoriteCount,
                     favorite = entryToDisplay.favorite,
