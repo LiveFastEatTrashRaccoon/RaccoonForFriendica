@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,6 +24,7 @@ internal class DefaultTimelinePaginationManager(
     private val timelineRepository: TimelineRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val emojiHelper: EmojiHelper,
+    private val replyHelper: ReplyHelper,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : TimelinePaginationManager {
@@ -108,6 +110,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.filterNsfw(specification.includeNsfw)
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
+                        ?.fixupInReplyTo()
                         .orEmpty()
                 }
 
@@ -120,6 +123,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.filterNsfw(specification.includeNsfw)
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
+                        ?.fixupInReplyTo()
                         .orEmpty()
                 }
 
@@ -140,6 +144,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.fixupCreatorEmojis()
+                        ?.fixupInReplyTo()
                         .orEmpty()
 
                 is TimelinePaginationSpecification.Forum ->
@@ -150,7 +155,7 @@ internal class DefaultTimelinePaginationManager(
                             excludeReplies = true,
                         )?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
-                        ?.filter { it.inReplyTo == null }
+                        ?.filter { it.reblog != null && it.reblog?.inReplyTo == null }
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         .orEmpty()
@@ -187,6 +192,13 @@ internal class DefaultTimelinePaginationManager(
         with(emojiHelper) {
             map {
                 it.withEmojisIfMissing()
+            }
+        }
+
+    private suspend fun List<TimelineEntryModel>.fixupInReplyTo(): List<TimelineEntryModel> =
+        with(replyHelper) {
+            map {
+                it.withInReplyToIfMissing()
             }
         }
 }

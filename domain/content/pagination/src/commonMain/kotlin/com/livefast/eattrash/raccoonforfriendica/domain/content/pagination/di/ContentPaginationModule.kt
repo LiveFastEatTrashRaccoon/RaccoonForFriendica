@@ -31,6 +31,7 @@ val domainContentPaginationModule =
                 timelineRepository = get(),
                 timelineEntryRepository = get(),
                 emojiHelper = get(),
+                replyHelper = get(),
                 notificationCenter = get(),
             )
         }
@@ -38,6 +39,7 @@ val domainContentPaginationModule =
             DefaultNotificationsPaginationManager(
                 notificationRepository = get(),
                 emojiHelper = get(),
+                replyHelper = get(),
                 userRepository = get(),
             )
         }
@@ -46,6 +48,7 @@ val domainContentPaginationModule =
                 trendingRepository = get(),
                 userRepository = get(),
                 emojiHelper = get(),
+                replyHelper = get(),
                 notificationCenter = get(),
             )
         }
@@ -62,6 +65,7 @@ val domainContentPaginationModule =
             DefaultFavoritesPaginationManager(
                 timelineEntryRepository = get(),
                 emojiHelper = get(),
+                replyHelper = get(),
                 notificationCenter = get(),
             )
         }
@@ -75,6 +79,7 @@ val domainContentPaginationModule =
                 searchRepository = get(),
                 userRepository = get(),
                 emojiHelper = get(),
+                replyHelper = get(),
                 notificationCenter = get(),
             )
         }

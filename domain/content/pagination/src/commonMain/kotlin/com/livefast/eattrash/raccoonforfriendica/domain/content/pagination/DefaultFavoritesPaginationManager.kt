@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +21,7 @@ import kotlinx.coroutines.sync.withLock
 internal class DefaultFavoritesPaginationManager(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val emojiHelper: EmojiHelper,
+    private val replyHelper: ReplyHelper,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : FavoritesPaginationManager {
@@ -68,16 +70,16 @@ internal class DefaultFavoritesPaginationManager(
                 is FavoritesPaginationSpecification.Bookmarks ->
                     timelineEntryRepository
                         .getBookmarks(pageCursor = pageCursor)
-                        ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
 
                 is FavoritesPaginationSpecification.Favorites ->
                     timelineEntryRepository
                         .getFavorites(pageCursor = pageCursor)
-                        ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
             }?.deduplicate()
+                ?.updatePaginationData()
                 ?.fixupCreatorEmojis()
+                ?.fixupInReplyTo()
                 .orEmpty()
         mutex.withLock {
             history.addAll(results)
@@ -106,6 +108,13 @@ internal class DefaultFavoritesPaginationManager(
         with(emojiHelper) {
             map {
                 it.withEmojisIfMissing()
+            }
+        }
+
+    private suspend fun List<TimelineEntryModel>.fixupInReplyTo(): List<TimelineEntryModel> =
+        with(replyHelper) {
+            map {
+                it.withInReplyToIfMissing()
             }
         }
 }

@@ -6,12 +6,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificat
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 
 internal class DefaultNotificationsPaginationManager(
     private val notificationRepository: NotificationRepository,
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,
+    private val replyHelper: ReplyHelper,
 ) : NotificationsPaginationManager {
     private var specification: NotificationsPaginationSpecification? = null
     private var pageCursor: String? = null
@@ -42,6 +44,7 @@ internal class DefaultNotificationsPaginationManager(
                         .orEmpty()
             }.deduplicate()
                 .fixupCreatorEmojis()
+                .fixupInReplyTo()
         history.addAll(results)
 
         // return a copy
@@ -87,6 +90,15 @@ internal class DefaultNotificationsPaginationManager(
                 it.copy(
                     user = it.user?.withEmojisIfMissing(),
                     entry = it.entry?.withEmojisIfMissing(),
+                )
+            }
+        }
+
+    private suspend fun List<NotificationModel>.fixupInReplyTo(): List<NotificationModel> =
+        with(replyHelper) {
+            map {
+                it.copy(
+                    entry = it.entry?.withInReplyToIfMissing(),
                 )
             }
         }
