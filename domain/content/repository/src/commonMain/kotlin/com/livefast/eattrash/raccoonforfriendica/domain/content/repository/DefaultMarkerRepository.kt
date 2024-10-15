@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
@@ -25,7 +26,7 @@ internal class DefaultMarkerRepository(
             } else {
                 runCatching {
                     provider.markers
-                        .get()
+                        .get(timelines = listOf(type.toDto()))
                         .toModel()
                         .firstOrNull { it.type == type }
                         ?.also { cachedValues[type] = it }
@@ -39,11 +40,7 @@ internal class DefaultMarkerRepository(
     ): MarkerModel? =
         withContext(Dispatchers.IO) {
             runCatching {
-                val fieldName =
-                    when (type) {
-                        MarkerType.Home -> "home[last_read_id]"
-                        MarkerType.Notifications -> "notifications[last_read_id]"
-                    }
+                val fieldName = "${type.toDto()}[last_read_id]"
                 val data =
                     FormDataContent(
                         Parameters.build {
