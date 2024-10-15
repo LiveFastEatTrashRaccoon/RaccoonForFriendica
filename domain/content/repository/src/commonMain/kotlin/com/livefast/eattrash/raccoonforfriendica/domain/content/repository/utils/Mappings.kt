@@ -490,6 +490,12 @@ private object FriendicaDateFormats {
     const val PHOTO_ALBUMS = "yyyy-MM-dd HH:mm:ss"
 }
 
+internal fun MarkerType.toDto(): String =
+    when (this) {
+        MarkerType.Home -> "home"
+        MarkerType.Notifications -> "notifications"
+    }
+
 internal fun Markers.toModel(): List<MarkerModel> =
     buildList {
         this@toModel.home?.lastReadId?.also { lastReadId ->
