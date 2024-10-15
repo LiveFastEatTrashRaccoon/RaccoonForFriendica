@@ -15,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -36,6 +37,7 @@ class EntryDetailViewModel(
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
     private val emojiHelper: EmojiHelper,
+    private val replyHelper: ReplyHelper,
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
         initialState = EntryDetailMviModel.State(),
     ),
@@ -133,6 +135,8 @@ class EntryDetailViewModel(
                         .orEmpty()
                         .map {
                             with(emojiHelper) { it.withEmojisIfMissing() }
+                        }.map {
+                            with(replyHelper) { it.withInReplyToIfMissing() }
                         },
                 )
                 add(entryCache.get(id))
@@ -142,6 +146,8 @@ class EntryDetailViewModel(
                         .orEmpty()
                         .map {
                             with(emojiHelper) { it.withEmojisIfMissing() }
+                        }.map {
+                            with(replyHelper) { it.withInReplyToIfMissing() }
                         },
                 )
             }.filterNotNull()

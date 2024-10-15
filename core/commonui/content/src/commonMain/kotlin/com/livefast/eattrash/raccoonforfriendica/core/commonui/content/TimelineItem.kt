@@ -188,7 +188,7 @@ fun TimelineItem(
                     entryToDisplay.isSpoilerActive || spoiler.isEmpty()
                 }
             AnimatedVisibility(
-                modifier = modifier.padding(horizontal = contentHorizontalPadding),
+                modifier = Modifier.padding(horizontal = contentHorizontalPadding),
                 visible = contentVisible,
             ) {
                 Column(
@@ -303,7 +303,7 @@ fun TimelineItem(
                                 top = Spacing.xxs,
                                 start = contentHorizontalPadding,
                                 end = contentHorizontalPadding,
-                        ),
+                            ),
                     favoriteCount = entryToDisplay.favoriteCount,
                     favorite = entryToDisplay.favorite,
                     favoriteLoading = entryToDisplay.favoriteLoading,

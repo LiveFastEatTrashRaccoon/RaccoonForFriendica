@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPhotoRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultReportRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultSearchRepository
@@ -37,6 +38,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeI
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReportRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
@@ -163,6 +165,11 @@ val domainContentRepositoryModule =
         single<MarkerRepository> {
             DefaultMarkerRepository(
                 provider = get(named("default")),
+            )
+        }
+        single<ReplyHelper> {
+            DefaultReplyHelper(
+                entryRepository = get(),
             )
         }
     }

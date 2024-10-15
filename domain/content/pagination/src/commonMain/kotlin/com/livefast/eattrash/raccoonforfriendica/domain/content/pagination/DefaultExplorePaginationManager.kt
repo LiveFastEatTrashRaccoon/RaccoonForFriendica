@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,6 +27,7 @@ internal class DefaultExplorePaginationManager(
     private val trendingRepository: TrendingRepository,
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,
+    private val replyHelper: ReplyHelper,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ExplorePaginationManager {
@@ -129,6 +131,7 @@ internal class DefaultExplorePaginationManager(
             }?.deduplicate()
                 ?.updatePaginationData()
                 ?.fixupCreatorEmojis()
+                ?.fixupInReplyTo()
                 .orEmpty()
         mutex.withLock {
             history.addAll(results)
@@ -177,6 +180,16 @@ internal class DefaultExplorePaginationManager(
                 when (it) {
                     is ExploreItemModel.Entry -> it.copy(entry = it.entry.withEmojisIfMissing())
                     is ExploreItemModel.User -> it.copy(user = it.user.withEmojisIfMissing())
+                    else -> it
+                }
+            }
+        }
+
+    private suspend fun List<ExploreItemModel>.fixupInReplyTo(): List<ExploreItemModel> =
+        with(replyHelper) {
+            map {
+                when (it) {
+                    is ExploreItemModel.Entry -> it.copy(entry = it.entry.withInReplyToIfMissing())
                     else -> it
                 }
             }

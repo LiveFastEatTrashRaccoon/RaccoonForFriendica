@@ -69,8 +69,27 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType a
 
 internal fun Status.toModelWithReply() =
     toModel().copy(
-        inReplyTo = inReplyToStatus?.toModel(),
-        reblog = reblog?.toModel(),
+        inReplyTo =
+            inReplyToStatus?.toModel() ?: inReplyToId?.let { parentId ->
+                TimelineEntryModel(
+                    id = parentId,
+                    creator = inReplyToAccountId?.let { userId -> UserModel(id = userId) },
+                    content = "",
+                )
+            },
+        reblog =
+            reblog?.let {
+                it.toModel().copy(
+                    inReplyTo =
+                        it.inReplyToStatus?.toModel() ?: it.inReplyToId?.let { parentId ->
+                            TimelineEntryModel(
+                                id = parentId,
+                                creator = inReplyToAccountId?.let { userId -> UserModel(id = userId) },
+                                content = "",
+                            )
+                        },
+                )
+            },
     )
 
 internal fun Status.toModel() =

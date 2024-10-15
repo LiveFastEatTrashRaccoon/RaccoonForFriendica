@@ -50,9 +50,7 @@ internal class DefaultPopulateThreadUseCase(
                     ?.descendants
                     .orEmpty()
                     .map {
-                        with(emojiHelper) {
-                            it.withEmojisIfMissing()
-                        }
+                        with(emojiHelper) { it.withEmojisIfMissing() }
                     }
             val childNodes =
                 descendants

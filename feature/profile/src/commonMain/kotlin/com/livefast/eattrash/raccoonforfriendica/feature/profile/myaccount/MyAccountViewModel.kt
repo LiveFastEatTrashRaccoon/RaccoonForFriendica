@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPrel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -39,6 +40,7 @@ class MyAccountViewModel(
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
     private val emojiHelper: EmojiHelper,
+    private val replyHelper: ReplyHelper,
 ) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
         initialState = MyAccountMviModel.State(),
     ),
@@ -85,9 +87,13 @@ class MyAccountViewModel(
             if (uiState.value.initial) {
 
                 val initialValues =
-                    timelineEntryRepository.getCachedByUser().map {
-                        with(emojiHelper) { it.withEmojisIfMissing() }
-                    }
+                    timelineEntryRepository
+                        .getCachedByUser()
+                        .map {
+                            with(emojiHelper) { it.withEmojisIfMissing() }
+                        }.map {
+                            with(replyHelper) { it.withInReplyToIfMissing() }
+                        }
                 paginationManager.restoreHistory(initialValues)
                 if (initialValues.isNotEmpty()) {
                     updateState {
