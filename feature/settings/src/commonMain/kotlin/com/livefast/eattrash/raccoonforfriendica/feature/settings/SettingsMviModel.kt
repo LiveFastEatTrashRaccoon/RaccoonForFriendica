@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 
 @Stable
@@ -72,6 +73,10 @@ interface SettingsMviModel :
         data class ChangeOpenGroupsInForumModeByDefault(
             val value: Boolean,
         ) : Intent
+
+        data class ChangeMarkupMode(
+            val mode: MarkupMode,
+        ) : Intent
     }
 
     data class State(
@@ -94,6 +99,8 @@ interface SettingsMviModel :
         val excludeRepliesFromTimeline: Boolean = false,
         val availableVisibilities: List<Visibility> = emptyList(),
         val openGroupsInForumModeByDefault: Boolean = true,
+        val markupMode: MarkupMode = MarkupMode.HTML,
+        val availableMarkupModes: List<MarkupMode> = emptyList(),
     )
 
     sealed interface Effect

@@ -17,6 +17,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -100,6 +101,7 @@ class SettingsViewModel(
                                 defaultReplyVisibility = settings.defaultReplyVisibility.toVisibility(),
                                 excludeRepliesFromTimeline = settings.excludeRepliesFromTimeline,
                                 openGroupsInForumModeByDefault = settings.openGroupsInForumModeByDefault,
+                                markupMode = settings.markupMode,
                             )
                         }
                     }
@@ -116,6 +118,17 @@ class SettingsViewModel(
                                         this += Visibility.Private
                                     }
                                     this += Visibility.Direct
+                                },
+                            availableMarkupModes =
+                                buildList {
+                                    this += MarkupMode.PlainText
+                                    if (features.supportsBBCode) {
+                                        this += MarkupMode.BBCode
+                                    }
+                                    this += MarkupMode.HTML
+                                    if (features.supportsMarkdown) {
+                                        this += MarkupMode.Markdown
+                                    }
                                 },
                         )
                     }
@@ -201,6 +214,11 @@ class SettingsViewModel(
                 screenModelScope.launch {
                     changeOpenGroupsInForumModeByDefault(intent.value)
                 }
+
+            is SettingsMviModel.Intent.ChangeMarkupMode ->
+                screenModelScope.launch {
+                    changeMarkupMode(intent.mode)
+                }
         }
     }
 
@@ -285,6 +303,12 @@ class SettingsViewModel(
     private suspend fun changeOpenGroupsInForumModeByDefault(value: Boolean) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(openGroupsInForumModeByDefault = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeMarkupMode(value: MarkupMode) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(markupMode = value)
         saveSettings(newSettings)
     }
 

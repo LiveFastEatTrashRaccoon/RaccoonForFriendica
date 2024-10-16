@@ -88,6 +88,7 @@ class SettingsScreen : Screen {
         var customColorPickerDialogOpened by remember { mutableStateOf(false) }
         var defaultPostVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
         var defaultReplyVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
+        var markupModeBottomSheetOpened by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -188,6 +189,16 @@ class SettingsScreen : Screen {
                                 )
                             },
                         )
+
+                        if (uiState.isLogged) {
+                            SettingsRow(
+                                title = LocalStrings.current.settingsItemMarkupMode,
+                                value = uiState.markupMode.toReadableName(),
+                                onTap = {
+                                    markupModeBottomSheetOpened = true
+                                },
+                            )
+                        }
 
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderLookAndFeel,
@@ -573,6 +584,21 @@ class SettingsScreen : Screen {
                     if (index != null) {
                         val type = types[index]
                         model.reduce(SettingsMviModel.Intent.ChangeDefaultReplyVisibility(type))
+                    }
+                },
+            )
+        }
+
+        if (markupModeBottomSheetOpened) {
+            val modes = uiState.availableMarkupModes
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemMarkupMode,
+                items = modes.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+                onSelected = { index ->
+                    markupModeBottomSheetOpened = false
+                    if (index != null) {
+                        val mode = modes[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeMarkupMode(mode))
                     }
                 },
             )

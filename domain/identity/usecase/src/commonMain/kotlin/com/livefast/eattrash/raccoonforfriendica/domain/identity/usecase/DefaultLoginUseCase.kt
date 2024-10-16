@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountCredentialsCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
@@ -15,6 +17,7 @@ internal class DefaultLoginUseCase(
     private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
     private val accountCredentialsCache: AccountCredentialsCache,
+    private val supportedFeatureRepository: SupportedFeatureRepository,
 ) : LoginUseCase {
     override suspend fun invoke(
         node: String,
@@ -50,7 +53,21 @@ internal class DefaultLoginUseCase(
             val oldSettings = settingsRepository.get(account.id)
             val defaultSettings = settingsRepository.get(anonymousAccountId) ?: SettingsModel()
             if (oldSettings == null) {
-                settingsRepository.create(defaultSettings.copy(id = 0, accountId = account.id))
+                supportedFeatureRepository.refresh()
+                val supportsBBCode = supportedFeatureRepository.features.value.supportsBBCode
+                val defaultMarkupMode =
+                    if (supportsBBCode) {
+                        MarkupMode.BBCode
+                    } else {
+                        MarkupMode.HTML
+                    }
+                settingsRepository.create(
+                    defaultSettings.copy(
+                        id = 0,
+                        accountId = account.id,
+                        markupMode = defaultMarkupMode,
+                    ),
+                )
             }
 
             accountRepository.setActive(account, true)

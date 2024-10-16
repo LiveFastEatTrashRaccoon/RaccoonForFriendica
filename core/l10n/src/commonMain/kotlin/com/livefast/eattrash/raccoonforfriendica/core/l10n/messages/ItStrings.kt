@@ -375,4 +375,6 @@ internal val ItStrings =
             "Apri i gruppi in modalità forum di default"
         override val actionInsertList = "Inserisci lista"
         override val actionDismissAllNotifications = "Elimina tutte le notifiche"
+        override val settingsItemMarkupMode = "Markup per la composizione"
+        override val markupModePlainText = "Testo semplice"
     }

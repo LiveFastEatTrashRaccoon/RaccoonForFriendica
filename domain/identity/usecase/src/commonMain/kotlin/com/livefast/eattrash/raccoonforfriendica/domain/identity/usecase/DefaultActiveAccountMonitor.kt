@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Inbox
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountCredentialsCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
@@ -67,26 +68,34 @@ internal class DefaultActiveAccountMonitor(
     private suspend fun process(account: AccountModel?) {
         if (account == null) {
             apiConfigurationRepository.setAuth(null)
+            supportedFeatureRepository.refresh()
 
             identityRepository.refreshCurrentUser(null)
-
-            supportedFeatureRepository.refresh()
 
             contentPreloadManager.preload()
         } else {
             val node = account.handle.nodeName ?: apiConfigurationRepository.defaultNode
             apiConfigurationRepository.changeNode(node)
+            supportedFeatureRepository.refresh()
 
             val credentials = accountCredentialsCache.get(account.id)
             apiConfigurationRepository.setAuth(credentials)
 
-            val defaultSettings = settingsRepository.get(account.id) ?: SettingsModel()
+            val supportsBBCode = supportedFeatureRepository.features.value.supportsBBCode
+            val defaultMarkupMode =
+                if (supportsBBCode) {
+                    MarkupMode.BBCode
+                } else {
+                    MarkupMode.HTML
+                }
+            val defaultSettings =
+                settingsRepository.get(account.id) ?: SettingsModel(
+                    markupMode = defaultMarkupMode,
+                )
 
             contentPreloadManager.preload(userRemoteId = account.remoteId)
 
             identityRepository.refreshCurrentUser(account.remoteId)
-
-            supportedFeatureRepository.refresh()
 
             settingsRepository.changeCurrent(defaultSettings)
 

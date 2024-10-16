@@ -21,6 +21,7 @@ internal class DefaultSupportedFeatureRepository(
                 supportReportCategoryRuleViolation = info?.isFriendica == false,
                 supportsPolls = info?.isFriendica == false,
                 supportsBBCode = info?.isFriendica == true,
+                supportsMarkdown = info?.isFriendica == false,
                 supportsEntryShare = info?.isFriendica == true,
                 supportsPrivateVisibility = info?.isFriendica == true,
             )
