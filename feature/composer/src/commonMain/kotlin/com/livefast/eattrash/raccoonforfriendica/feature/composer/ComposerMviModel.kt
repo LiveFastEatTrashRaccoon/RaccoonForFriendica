@@ -226,6 +226,7 @@ interface ComposerMviModel :
         val shouldShowMentionSuggestions: Boolean = false,
         val mentionSuggestionsLoading: Boolean = false,
         val mentionSuggestions: List<UserModel> = emptyList(),
+        val supportsRichEditing: Boolean = false,
     )
 
     sealed interface Effect {

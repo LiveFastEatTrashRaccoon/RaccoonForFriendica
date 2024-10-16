@@ -311,10 +311,12 @@ class ComposerScreen(
                                         )
                                 }
 
-                                this +=
-                                    CustomOptions.OpenPreview.toOption(
-                                        label = LocalStrings.current.actionOpenPreview,
-                                    )
+                                if (uiState.supportsRichEditing) {
+                                    this +=
+                                        CustomOptions.OpenPreview.toOption(
+                                            label = LocalStrings.current.actionOpenPreview,
+                                        )
+                                }
 
                                 if (uiState.titleFeatureSupported) {
                                     this +=
@@ -346,10 +348,12 @@ class ComposerScreen(
                                                 },
                                         )
                                 }
-                                this +=
-                                    CustomOptions.InsertList.toOption(
-                                        label = LocalStrings.current.actionInsertList,
-                                    )
+                                if (uiState.supportsRichEditing) {
+                                    this +=
+                                        CustomOptions.InsertList.toOption(
+                                            label = LocalStrings.current.actionInsertList,
+                                        )
+                                }
                             }
                         Box {
                             var optionsOffset by remember { mutableStateOf(Offset.Zero) }
@@ -504,83 +508,85 @@ class ComposerScreen(
                             },
                         )
                     }
-                    UtilsBar(
-                        modifier = Modifier.fillMaxWidth(),
-                        onAttachmentClicked = {
-                            val limit = uiState.attachmentLimit ?: Int.MAX_VALUE
-                            if (uiState.attachments.size < limit) {
-                                openImagePicker = true
-                            }
-                        },
-                        hasPoll = uiState.poll != null,
-                        hasSpoiler = uiState.hasSpoiler,
-                        onLinkClicked = {
-                            linkDialogOpen = true
-                        },
-                        onBoldClicked = {
-                            model.reduce(
-                                ComposerMviModel.Intent.AddBoldFormat(
-                                    fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
-                                ),
-                            )
-                        },
-                        onItalicClicked = {
-                            model.reduce(
-                                ComposerMviModel.Intent.AddItalicFormat(
-                                    fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
-                                ),
-                            )
-                        },
-                        onUnderlineClicked = {
-                            model.reduce(
-                                ComposerMviModel.Intent.AddUnderlineFormat(
-                                    fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
-                                ),
-                            )
-                        },
-                        onStrikethroughClicked = {
-                            model.reduce(
-                                ComposerMviModel.Intent.AddStrikethroughFormat(
-                                    fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
-                                ),
-                            )
-                        },
-                        onCodeClicked = {
-                            model.reduce(
-                                ComposerMviModel.Intent.AddCodeFormat(
-                                    fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
-                                ),
-                            )
-                        },
-                        onSpoilerClicked = {
-                            model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
-                        },
-                    )
+                    if (uiState.supportsRichEditing) {
+                        UtilsBar(
+                            modifier = Modifier.fillMaxWidth(),
+                            onAttachmentClicked = {
+                                val limit = uiState.attachmentLimit ?: Int.MAX_VALUE
+                                if (uiState.attachments.size < limit) {
+                                    openImagePicker = true
+                                }
+                            },
+                            hasPoll = uiState.poll != null,
+                            hasSpoiler = uiState.hasSpoiler,
+                            onLinkClicked = {
+                                linkDialogOpen = true
+                            },
+                            onBoldClicked = {
+                                model.reduce(
+                                    ComposerMviModel.Intent.AddBoldFormat(
+                                        fieldType =
+                                            when {
+                                                hasTitleFocus -> ComposerFieldType.Title
+                                                hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                                else -> ComposerFieldType.Body
+                                            },
+                                    ),
+                                )
+                            },
+                            onItalicClicked = {
+                                model.reduce(
+                                    ComposerMviModel.Intent.AddItalicFormat(
+                                        fieldType =
+                                            when {
+                                                hasTitleFocus -> ComposerFieldType.Title
+                                                hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                                else -> ComposerFieldType.Body
+                                            },
+                                    ),
+                                )
+                            },
+                            onUnderlineClicked = {
+                                model.reduce(
+                                    ComposerMviModel.Intent.AddUnderlineFormat(
+                                        fieldType =
+                                            when {
+                                                hasTitleFocus -> ComposerFieldType.Title
+                                                hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                                else -> ComposerFieldType.Body
+                                            },
+                                    ),
+                                )
+                            },
+                            onStrikethroughClicked = {
+                                model.reduce(
+                                    ComposerMviModel.Intent.AddStrikethroughFormat(
+                                        fieldType =
+                                            when {
+                                                hasTitleFocus -> ComposerFieldType.Title
+                                                hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                                else -> ComposerFieldType.Body
+                                            },
+                                    ),
+                                )
+                            },
+                            onCodeClicked = {
+                                model.reduce(
+                                    ComposerMviModel.Intent.AddCodeFormat(
+                                        fieldType =
+                                            when {
+                                                hasTitleFocus -> ComposerFieldType.Title
+                                                hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                                else -> ComposerFieldType.Body
+                                            },
+                                    ),
+                                )
+                            },
+                            onSpoilerClicked = {
+                                model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
+                            },
+                        )
+                    }
                 }
             },
             content = { padding ->
