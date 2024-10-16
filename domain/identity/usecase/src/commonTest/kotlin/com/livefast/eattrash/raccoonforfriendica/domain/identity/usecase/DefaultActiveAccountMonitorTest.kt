@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeFeatures
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
@@ -35,7 +36,9 @@ class DefaultActiveAccountMonitorTest {
     private val accountCredentialsCache = mock<AccountCredentialsCache>(mode = MockMode.autoUnit)
     private val settingsRepository = mock<SettingsRepository>(mode = MockMode.autoUnit)
     private val supportedFeatureRepository =
-        mock<SupportedFeatureRepository>(mode = MockMode.autoUnit)
+        mock<SupportedFeatureRepository>(mode = MockMode.autoUnit) {
+            every { features } returns MutableStateFlow(NodeFeatures())
+        }
     private val inboxManager = mock<InboxManager>(mode = MockMode.autoUnit)
     private val contentPreloadManager = mock<ContentPreloadManager>(mode = MockMode.autoUnit)
     private val markerRepository =
