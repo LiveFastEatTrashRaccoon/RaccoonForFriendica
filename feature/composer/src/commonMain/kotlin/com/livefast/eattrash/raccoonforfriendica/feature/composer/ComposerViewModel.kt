@@ -12,7 +12,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Timestamp
-import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
@@ -37,9 +36,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Sched
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.PrepareForPreviewUseCase
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -73,7 +74,7 @@ class ComposerViewModel(
     private val settingsRepository: SettingsRepository,
     private val emojiRepository: EmojiRepository,
     private val userRepository: UserRepository,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val prepareForPreview: PrepareForPreviewUseCase,
     private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
         initialState = ComposerMviModel.State(),
@@ -82,8 +83,10 @@ class ComposerViewModel(
     private var uploadJobs = mutableMapOf<String, Job>()
     private var editedPostId: String? = null
     private var draftId: String? = null
-    private val useBBCode: Boolean get() = supportedFeatureRepository.features.value.supportsBBCode
     private var mentionSuggestionJob: Job? = null
+    private val markupMode: MarkupMode by lazy {
+        settingsRepository.current.value?.markupMode ?: MarkupMode.PlainText
+    }
 
     init {
         screenModelScope.launch {
@@ -134,6 +137,7 @@ class ComposerViewModel(
                         } else {
                             currentSettings?.defaultPostVisibility
                         }?.toVisibility() ?: Visibility.Public,
+                    supportsRichEditing = currentSettings?.markupMode?.supportsRichEditing == true,
                 )
             }
 
@@ -480,7 +484,7 @@ class ComposerViewModel(
             } else {
                 null
             }
-        val matches = USER_MENTION_REGEX.findAll(currentText).toList()
+        val matches = ComposerRegexes.USER_MENTION.findAll(currentText).toList()
         val currentMention = matches.firstOrNull { it.range.contains(currentPosition) }
         val shouldShowSuggestions = currentMention != null
         if (currentMention != null) {
@@ -542,16 +546,18 @@ class ComposerViewModel(
     ) {
         screenModelScope.launch {
             val before =
-                if (useBBCode) {
-                    "[url=$url]"
-                } else {
-                    "<a href='$url'>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "<a href='$url'>"
+                    MarkupMode.BBCode -> "[url=$url]"
+                    MarkupMode.Markdown -> "["
+                    else -> url
                 }
             val after =
-                if (useBBCode) {
-                    "[/url]"
-                } else {
-                    "</a>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "</a>"
+                    MarkupMode.BBCode -> "[/url]"
+                    MarkupMode.Markdown -> "]($url)"
+                    else -> ""
                 }
             val newValue =
                 getNewTextFieldValue(
@@ -608,7 +614,7 @@ class ComposerViewModel(
                 } else {
                     null
                 }
-            val matches = USER_MENTION_REGEX.findAll(text).toList()
+            val matches = ComposerRegexes.USER_MENTION.findAll(text).toList()
             val currentMention = matches.firstOrNull { it.range.contains(currentPosition) }
             if (currentMention != null) {
                 val indexOfDelimiter = currentMention.range.first
@@ -672,16 +678,18 @@ class ComposerViewModel(
                 }
             val selectedText = value.getSelectedText().text
             val before =
-                if (useBBCode) {
-                    "[b]"
-                } else {
-                    "<b>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "<b>"
+                    MarkupMode.BBCode -> "[b]"
+                    MarkupMode.Markdown -> "**"
+                    else -> ""
                 }
             val after =
-                if (useBBCode) {
-                    "[/b]"
-                } else {
-                    "</b>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "</b>"
+                    MarkupMode.BBCode -> "[/b]"
+                    MarkupMode.Markdown -> "**"
+                    else -> ""
                 }
             val newValue =
                 getNewTextFieldValue(
@@ -733,16 +741,18 @@ class ComposerViewModel(
                 }
             val selectedText = value.getSelectedText().text
             val before =
-                if (useBBCode) {
-                    "[i]"
-                } else {
-                    "<i>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "<i>"
+                    MarkupMode.BBCode -> "[i]"
+                    MarkupMode.Markdown -> "_"
+                    else -> ""
                 }
             val after =
-                if (useBBCode) {
-                    "[/i]"
-                } else {
-                    "</i>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "</i>"
+                    MarkupMode.BBCode -> "[/i]"
+                    MarkupMode.Markdown -> "_"
+                    else -> ""
                 }
             val newValue =
                 getNewTextFieldValue(
@@ -794,16 +804,18 @@ class ComposerViewModel(
                 }
             val selectedText = value.getSelectedText().text
             val before =
-                if (useBBCode) {
-                    "[u]"
-                } else {
-                    "<u>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "<u>"
+                    MarkupMode.BBCode -> "[u]"
+                    MarkupMode.Markdown -> "<u>"
+                    else -> ""
                 }
             val after =
-                if (useBBCode) {
-                    "[/u]"
-                } else {
-                    "</u>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "</u>"
+                    MarkupMode.BBCode -> "[/u]"
+                    MarkupMode.Markdown -> "</u>"
+                    else -> ""
                 }
             val newValue =
                 getNewTextFieldValue(
@@ -855,16 +867,18 @@ class ComposerViewModel(
                 }
             val selectedText = value.getSelectedText().text
             val before =
-                if (useBBCode) {
-                    "[s]"
-                } else {
-                    "<s>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "<s>"
+                    MarkupMode.BBCode -> "[s]"
+                    MarkupMode.Markdown -> "~~"
+                    else -> ""
                 }
             val after =
-                if (useBBCode) {
-                    "[/s]"
-                } else {
-                    "</s>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "</s>"
+                    MarkupMode.BBCode -> "[/s]"
+                    MarkupMode.Markdown -> "~~"
+                    else -> ""
                 }
             val newValue =
                 getNewTextFieldValue(
@@ -916,16 +930,18 @@ class ComposerViewModel(
                 }
             val selectedText = value.getSelectedText().text
             val before =
-                if (useBBCode) {
-                    "[code]"
-                } else {
-                    "<code>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "<code>"
+                    MarkupMode.BBCode -> "[code]"
+                    MarkupMode.Markdown -> "`"
+                    else -> ""
                 }
             val after =
-                if (useBBCode) {
-                    "[/code]"
-                } else {
-                    "</code>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "</code>"
+                    MarkupMode.BBCode -> "[/code]"
+                    MarkupMode.Markdown -> "`"
+                    else -> ""
                 }
             val newValue =
                 getNewTextFieldValue(
@@ -1017,16 +1033,18 @@ class ComposerViewModel(
     private fun insertList() {
         screenModelScope.launch {
             val before =
-                if (useBBCode) {
-                    "\n[ul]\n[li]"
-                } else {
-                    "\n<ul>\n<li>"
+                when (markupMode) {
+                    MarkupMode.BBCode -> "\n[ul]\n[li]"
+                    MarkupMode.HTML -> "\n<ul>\n<li>"
+                    MarkupMode.Markdown -> "\n\n* "
+                    else -> "\n- "
                 }
             val after =
-                if (useBBCode) {
-                    "[/li]\n[/ul]"
-                } else {
-                    "</li></ul>"
+                when (markupMode) {
+                    MarkupMode.HTML -> "</li></ul>"
+                    MarkupMode.BBCode -> "[/li]\n[/ul]"
+                    MarkupMode.Markdown -> "\n"
+                    else -> "\n"
                 }
             val newValue =
                 getNewTextFieldValue(
@@ -1268,16 +1286,25 @@ class ComposerViewModel(
                     attachment.copy(mediaId = attachment.id)
                 }
             }
+
+        val reference =
+            if (!uiState.value.supportsRichEditing) {
+                // retrieve field values from source to strip down all formatting
+                timelineEntryRepository.getSource(entry.id) ?: entry
+            } else {
+                entry
+            }
+
         updateState {
             it.copy(
-                bodyValue = TextFieldValue(text = entry.content),
+                bodyValue = TextFieldValue(reference.content),
                 sensitive = entry.sensitive,
                 attachments = attachments,
                 visibility = visibility,
-                spoilerValue = TextFieldValue(text = entry.spoiler.orEmpty()),
-                hasSpoiler = !entry.spoiler.isNullOrEmpty(),
-                titleValue = TextFieldValue(text = entry.title.orEmpty()),
-                hasTitle = !entry.title.isNullOrEmpty(),
+                spoilerValue = TextFieldValue(reference.spoiler.orEmpty()),
+                hasSpoiler = !reference.spoiler.isNullOrEmpty(),
+                titleValue = TextFieldValue(reference.title.orEmpty()),
+                hasTitle = !reference.title.isNullOrEmpty(),
                 poll = entry.poll,
                 loading = false,
             )
@@ -1294,12 +1321,19 @@ class ComposerViewModel(
                 spoiler =
                     currentState.spoilerValue.text
                         .takeIf { currentState.hasSpoiler }
-                        ?.prepareForPreview(useBBCode),
+                        ?.let {
+                            prepareForPreview(text = it, mode = markupMode)
+                        },
                 title =
                     currentState.titleValue.text
                         .takeIf { currentState.hasTitle }
-                        ?.prepareForPreview(useBBCode),
-                content = currentState.bodyValue.text.prepareForPreview(useBBCode),
+                        ?.let {
+                            prepareForPreview(text = it, mode = markupMode)
+                        },
+                content =
+                    currentState.bodyValue.text.let {
+                        prepareForPreview(text = it, mode = markupMode)
+                    },
                 poll = currentState.poll,
                 attachments = currentState.attachments,
                 id = localId,
@@ -1496,106 +1530,5 @@ class ComposerViewModel(
                 emitEffect(ComposerMviModel.Effect.Failure(message = e.message))
             }
         }
-    }
-
-    private fun String.prepareForPreview(withBBCode: Boolean): String =
-        run {
-            if (withBBCode) {
-                convertBBCodeToHtml()
-            } else {
-                this
-            }
-        }.withMentions().withHashtags()
-
-    private fun String.convertBBCodeToHtml(): String =
-        replace("[u]", "<u>")
-            .replace("[/u]", "</u>")
-            .replace("[s]", "<s>")
-            .replace("[/s]", "</s>")
-            .replace("[i]", "<i>")
-            .replace("[/i]", "</i>")
-            .replace("[b]", "<b>")
-            .replace("[/b]", "</b>")
-            .replace("[code]", "<code>")
-            .replace("[/code]", "</code>")
-            .replace("[ul]", "<ul>")
-            .replace("[/ul]", "</ul>")
-            .replace("[ol]", "<ol>")
-            .replace("[/ol]", "</ol>")
-            .replace("[li]", "<li>")
-            .replace("[/li]", "</li>")
-            .replace(Regex("\n\n"), "<br /><br />")
-            .replace("\n", " ")
-            .also { original ->
-                val matches = SHARE_REGEX.findAll(original).toList()
-                buildString {
-                    var index = 0
-                    for (match in matches) {
-                        val range = match.range
-                        append(original.substring(index, range.first))
-                        val url = match.groupValues.firstOrNull().orEmpty()
-                        append("<a href=\"$url\">#$url</a>")
-                        index = range.last + 1
-                    }
-                    if (index < original.length) {
-                        append(original.substring(index, original.length))
-                    }
-                }
-            }
-
-    private fun String.withMentions(): String =
-        also { original ->
-            val matches = USER_MENTION_REGEX.findAll(original).toList()
-            buildString {
-                var index = 0
-                for (match in matches) {
-                    val range = match.range
-                    append(original.substring(index, range.first))
-                    val handle = match.groupValues.firstOrNull().orEmpty()
-                    val currentNode = apiConfigurationRepository.node.value
-                    val node = handle.nodeName ?: currentNode
-                    val name = handle.substringBefore("@")
-                    val url =
-                        if (node == currentNode) {
-                            "https://$node/profile/$name"
-                        } else {
-                            "https://$node/users/$name"
-                        }
-                    append("<a href=\"$url\">#$handle</a>")
-                    index = range.last + 1
-                }
-                if (index < original.length) {
-                    append(original.substring(index, original.length))
-                }
-            }
-        }
-
-    private fun String.withHashtags(): String =
-        also { original ->
-            val matches = HASHTAG_REGEX.findAll(original).toList()
-            buildString {
-                var index = 0
-                for (match in matches) {
-                    val range = match.range
-                    append(original.substring(index, range.first))
-                    val tag = match.groupValues.firstOrNull().orEmpty()
-                    val node = apiConfigurationRepository.node.value
-                    val url = "https://$node/search?tag=$tag"
-                    append("<a href=\"$url\">#$tag</a>")
-                    index = range.last + 1
-                }
-                if (index < original.length) {
-                    append(original.substring(index, original.length))
-                }
-            }
-        }
-
-    companion object {
-        private val USER_MENTION_REGEX =
-            Regex("@(?<handlePrefix>[a-zA-Z0-9-_.]+?(@[a-zA-Z0-9_.]+)?)(?=\\b)")
-        private val SHARE_REGEX =
-            Regex("\\[share](?<url>.*?)\\[share]")
-        private val HASHTAG_REGEX =
-            Regex("#(?<tag>.*?)(?=\\b)")
     }
 }
