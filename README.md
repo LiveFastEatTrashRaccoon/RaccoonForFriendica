@@ -40,15 +40,16 @@ https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
 ## Screenshots
 
 <div align="center">
-
-  <img width="310" src="https://github.com/user-attachments/assets/42bf2862-6afa-4f26-9061-d8294b28221b" alt="timeline screen" />
-  <img width="310" src="https://github.com/user-attachments/assets/124ce939-a86c-441f-a959-97b98b3819d5" alt="user detail screen" />
-  <img width="310" src="https://github.com/user-attachments/assets/b582f0ec-a4fc-4e3b-9bd0-fea705fa3729" alt="post detail screen" />
-  <img width="310" src="https://github.com/user-attachments/assets/08804e47-4143-4f2b-ade1-baa1f7839c17" alt="settings screen" />
-  <img width="310" src="https://github.com/user-attachments/assets/3b9473e5-75ce-4569-9d20-c2e4a4f9bed9" alt="explore screen (hashtags tab)" />
-  <img width="310" src="https://github.com/user-attachments/assets/40b2a112-2aa4-49ab-b3b0-227a5bb680d3" alt="notifications screen" />
-  <img width="310" src="https://github.com/user-attachments/assets/ca54f189-fcc0-4bd5-ab4f-79c796741ea8" alt="group opened in forum mode" />
-  <img width="310" src="https://github.com/user-attachments/assets/08a9d437-d4af-48fa-b2de-efb56c21d0be" alt="thread screen within a group with replies" />
+  <img width="310" src="https://github.com/user-attachments/assets/0555f241-9339-43cc-8333-c58e3322f12a" alt="timeline screen with subscriptions" />
+  <img width="310" src="https://github.com/user-attachments/assets/9f1b934a-05a3-43ff-8a38-b82931a96174" alt="user detail screen" />
+  <img width="310" src="https://github.com/user-attachments/assets/27e92665-d84c-4e1c-98df-8f86c52304f4" alt="post detail screen" />
+  <img width="310" src="https://github.com/user-attachments/assets/827eba01-6af9-470f-8f19-30cb9b81b1b0" alt="list of posts containing a followed hashtag" />
+  <img width="310" src="https://github.com/user-attachments/assets/f071aa09-2141-4a92-b8d8-6c4440ddb277" alt="post editor with preview dialog" />
+  <img width="310" src="https://github.com/user-attachments/assets/1f9db2b4-1c2d-4707-868b-c9ded7b154cf" alt="settings screen with color bottom sheet" />
+  <img width="310" src="https://github.com/user-attachments/assets/f947c777-1fde-4dba-a0f2-e32776f5fbfe" alt="explore screen (hashtags tab)" />
+  <img width="310" src="https://github.com/user-attachments/assets/42f7d7ef-831b-4f80-9785-6ad0172a755b" alt="notifications screen" />
+  <img width="310" src="https://github.com/user-attachments/assets/a62480ad-0d4e-4fae-9cd3-6d050fb7b1d1" alt="group opened in forum mode" />
+  <img width="310" src="https://github.com/user-attachments/assets/0a1abb83-4a90-448a-8dc2-2a0cb069bae0" alt="thread screen within a group with replies" />
 </div>
 
 ## Why was the project started and why is it called like that?
