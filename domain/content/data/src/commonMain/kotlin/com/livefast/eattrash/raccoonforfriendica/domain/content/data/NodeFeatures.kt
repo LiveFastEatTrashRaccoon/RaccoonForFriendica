@@ -8,6 +8,7 @@ data class NodeFeatures(
     val supportsCustomCircles: Boolean = false,
     val supportReportCategoryRuleViolation: Boolean = false,
     val supportsBBCode: Boolean = false,
+    val supportsMarkdown: Boolean = false,
     val supportsEntryShare: Boolean = false,
     val supportsPrivateVisibility: Boolean = false,
 )
