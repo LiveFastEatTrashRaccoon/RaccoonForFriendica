@@ -51,6 +51,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -84,9 +85,11 @@ class ConversationScreen(
     @Composable
     override fun Content() {
         val model =
-            getScreenModel<ConversationMviModel>(parameters = {
-                parametersOf(otherUserId, parentUri)
-            })
+            getScreenModel<ConversationMviModel>(
+                parameters = {
+                    parametersOf(otherUserId, parentUri)
+                },
+            )
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val topAppBarState = rememberTopAppBarState()
@@ -160,6 +163,9 @@ class ConversationScreen(
                                 text = otherUserName,
                                 emojis = uiState.otherUser?.emojis.orEmpty(),
                                 style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                     },
