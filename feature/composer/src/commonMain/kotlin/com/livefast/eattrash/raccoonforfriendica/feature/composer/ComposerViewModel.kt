@@ -1243,6 +1243,7 @@ class ComposerViewModel(
     }
 
     private suspend fun loadEntry(entry: TimelineEntryModel) {
+        // workaround to make sure Friendica-specific circle visibility is preserved
         val visibility =
             entry.visibility.let { visibility ->
                 when (visibility) {
@@ -1258,12 +1259,20 @@ class ComposerViewModel(
                     }
                 }
             } ?: Visibility.Public
-
+        // workaround to make sure IDs are preserved
+        val attachments =
+            entry.attachments.map { attachment ->
+                if (attachment.mediaId.isNotEmpty()) {
+                    attachment
+                } else {
+                    attachment.copy(mediaId = attachment.id)
+                }
+            }
         updateState {
             it.copy(
                 bodyValue = TextFieldValue(text = entry.content),
                 sensitive = entry.sensitive,
-                attachments = entry.attachments,
+                attachments = attachments,
                 visibility = visibility,
                 spoilerValue = TextFieldValue(text = entry.spoiler.orEmpty()),
                 hasSpoiler = !entry.spoiler.isNullOrEmpty(),
