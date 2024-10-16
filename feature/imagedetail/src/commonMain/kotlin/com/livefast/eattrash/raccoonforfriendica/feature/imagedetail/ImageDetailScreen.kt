@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.imagedetail
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -204,16 +204,13 @@ class ImageDetailScreen(
                                 Modifier
                                     .padding(
                                         top = padding.calculateTopPadding(),
-                                    ).fillMaxWidth()
+                                    ).fillMaxSize()
                                     .background(Color.Black),
                             contentAlignment = Alignment.Center,
                         ) {
                             if (!url.isNullOrEmpty()) {
                                 if (isVideo) {
-                                    VideoPlayer(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        url = url,
-                                    )
+                                    VideoPlayer(url = url)
                                 } else {
                                     ZoomableImage(
                                         url = url,
