@@ -90,14 +90,19 @@ fun CustomModalBottomSheet(
                                                         onSelected?.invoke(idx)
                                                     }
                                             },
-                                            onLongClick = {
-                                                sheetScope
-                                                    .launch {
-                                                        sheetState.hide()
-                                                    }.invokeOnCompletion {
-                                                        onLongPress?.invoke(idx)
+                                            onLongClick =
+                                                if (onLongPress != null) {
+                                                    {
+                                                        sheetScope
+                                                            .launch {
+                                                                sheetState.hide()
+                                                            }.invokeOnCompletion {
+                                                                onLongPress(idx)
+                                                            }
                                                     }
-                                            },
+                                                } else {
+                                                    null
+                                                },
                                         ).padding(10.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.s),
