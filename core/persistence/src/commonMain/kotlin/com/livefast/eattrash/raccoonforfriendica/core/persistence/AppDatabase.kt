@@ -17,7 +17,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.Setti
         SettingsEntity::class,
         DraftEntity::class,
     ],
-    version = 8,
+    version = 9,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -26,7 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.Setti
         AutoMigration(from = 5, to = 6),
         AutoMigration(from = 6, to = 7),
         AutoMigration(from = 7, to = 8),
-
+        AutoMigration(from = 8, to = 9),
     ],
 )
 @ConstructedBy(AppDatabaseConstructor::class)
