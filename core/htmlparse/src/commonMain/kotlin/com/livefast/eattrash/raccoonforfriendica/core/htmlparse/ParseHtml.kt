@@ -91,7 +91,8 @@ fun String.parseHtml(
 }
 
 private fun AnnotatedString.Builder.appendLineIfNeeded() {
-    if (toAnnotatedString().last() != '\n') {
+    val lastChar = toAnnotatedString().lastOrNull()
+    if (lastChar != null && lastChar != '\n') {
         appendLine()
     }
 }
