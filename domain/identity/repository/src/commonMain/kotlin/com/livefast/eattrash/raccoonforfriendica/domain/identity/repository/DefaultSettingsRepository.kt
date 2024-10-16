@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiFontSc
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.SettingsEntity
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toUrlOpeningMode
@@ -54,6 +55,7 @@ private fun SettingsEntity.toModel() =
         defaultReplyVisibility = defaultReplyVisibility,
         excludeRepliesFromTimeline = excludeRepliesFromTimeline,
         openGroupsInForumModeByDefault = openGroupsInForumModeByDefault,
+        markupMode = markupMode.toMarkupMode(),
     )
 
 private fun SettingsModel.toEntity() =
@@ -74,4 +76,21 @@ private fun SettingsModel.toEntity() =
         defaultReplyVisibility = defaultReplyVisibility,
         excludeRepliesFromTimeline = excludeRepliesFromTimeline,
         openGroupsInForumModeByDefault = openGroupsInForumModeByDefault,
+        markupMode = markupMode.toInt(),
     )
+
+private fun Int.toMarkupMode(): MarkupMode =
+    when (this) {
+        1 -> MarkupMode.HTML
+        2 -> MarkupMode.BBCode
+        3 -> MarkupMode.Markdown
+        else -> MarkupMode.PlainText
+    }
+
+private fun MarkupMode.toInt() =
+    when (this) {
+        MarkupMode.HTML -> 1
+        MarkupMode.BBCode -> 2
+        MarkupMode.Markdown -> 3
+        MarkupMode.PlainText -> 0
+    }

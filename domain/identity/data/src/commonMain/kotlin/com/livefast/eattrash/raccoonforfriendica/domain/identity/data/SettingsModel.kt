@@ -21,4 +21,5 @@ data class SettingsModel(
     val defaultReplyVisibility: Int = 0,
     val excludeRepliesFromTimeline: Boolean = false,
     val openGroupsInForumModeByDefault: Boolean = true,
+    val markupMode: MarkupMode = MarkupMode.HTML,
 )
