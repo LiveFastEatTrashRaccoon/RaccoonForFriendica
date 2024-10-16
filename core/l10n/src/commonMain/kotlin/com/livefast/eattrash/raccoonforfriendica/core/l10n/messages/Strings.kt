@@ -331,6 +331,11 @@ interface Strings {
     val settingsItemOpenGroupsInForumModeByDefault: String
     val actionInsertList: String
     val actionDismissAllNotifications: String
+    val settingsItemMarkupMode: String
+    val markupModeBBCode: String
+    val markupModeHTML: String
+    val markupModeMarkdown: String
+    val markupModePlainText: String
 }
 
 object Locales {

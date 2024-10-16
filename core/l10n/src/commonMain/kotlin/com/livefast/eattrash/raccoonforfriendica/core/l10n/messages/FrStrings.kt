@@ -380,4 +380,6 @@ internal val FrStrings =
             "Ouvrir les groupes en mode forum par défaut"
         override val actionInsertList = "Insérer une liste"
         override val actionDismissAllNotifications = "Supprimer toutes les notifications"
+        override val settingsItemMarkupMode = "Balisage pour la composition"
+        override val markupModePlainText = "Texte brut"
     }

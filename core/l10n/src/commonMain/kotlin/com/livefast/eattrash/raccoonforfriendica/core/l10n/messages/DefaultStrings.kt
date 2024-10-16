@@ -367,4 +367,9 @@ internal open class DefaultStrings : Strings {
     override val settingsItemOpenGroupsInForumModeByDefault = "Open groups in forum mode by default"
     override val actionInsertList = "Insert list"
     override val actionDismissAllNotifications = "Dismiss all notifications"
+    override val settingsItemMarkupMode = "Markup for compositing"
+    override val markupModeBBCode = "BBCode"
+    override val markupModeHTML = "HTML"
+    override val markupModeMarkdown = "Markdown"
+    override val markupModePlainText = "Plain text"
 }

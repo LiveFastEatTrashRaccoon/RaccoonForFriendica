@@ -375,4 +375,6 @@ internal val DeStrings =
             "Gruppen standardmäßig im Forum-Modus öffnen"
         override val actionInsertList = "Liste einfügen"
         override val actionDismissAllNotifications = "Alle Benachrichtigungen ablehnen"
+        override val settingsItemMarkupMode = "Markierung für Compositing"
+        override val markupModePlainText = "Einfacher Text"
     }
