@@ -140,9 +140,12 @@ object MyAccountScreen : Tab {
                     when (event) {
                         MyAccountMviModel.Effect.BackToTop -> goBackToTop()
                         MyAccountMviModel.Effect.Failure ->
-                            snackbarHostState.showSnackbar(
-                                message = genericError,
-                            )
+                            snackbarHostState.showSnackbar(message = genericError)
+
+                        is MyAccountMviModel.Effect.TriggerCopy -> {
+                            clipboardManager.setText(AnnotatedString(event.text))
+                            snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                        }
                     }
                 }.launchIn(this)
         }
@@ -338,6 +341,7 @@ object MyAccountScreen : Tab {
                                     this += OptionId.Quote.toOption()
                                 }
                                 this += OptionId.ViewDetails.toOption()
+                                this += OptionId.CopyToClipboard.toOption()
                             },
                         onOptionSelected = { optionId ->
                             when (optionId) {
@@ -383,6 +387,8 @@ object MyAccountScreen : Tab {
                                         )
                                     }
                                 }
+                                OptionId.CopyToClipboard ->
+                                    model.reduce(MyAccountMviModel.Intent.CopyToClipboard(entry.original))
                                 else -> Unit
                             }
                         },

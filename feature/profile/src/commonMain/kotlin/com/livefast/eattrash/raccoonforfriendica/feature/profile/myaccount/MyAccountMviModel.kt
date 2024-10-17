@@ -43,6 +43,10 @@ interface MyAccountMviModel :
         data class ToggleSpoilerActive(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class CopyToClipboard(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -60,5 +64,9 @@ interface MyAccountMviModel :
         data object BackToTop : Effect
 
         data object Failure : Effect
+
+        data class TriggerCopy(
+            val text: String,
+        ) : Effect
     }
 }
