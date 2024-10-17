@@ -383,4 +383,5 @@ internal val DeStrings =
         override val messageAltTextMissingError =
             "Einige Anhänge haben keinen alternativen Text, fügen Sie ihn aus Gründen der Zugänglichkeit ein."
         override val buttonPublishAnyway = "Trotzdem veröffentlichen"
+        override val actionCopyToClipboard = "In die Zwischenablage kopieren"
     }

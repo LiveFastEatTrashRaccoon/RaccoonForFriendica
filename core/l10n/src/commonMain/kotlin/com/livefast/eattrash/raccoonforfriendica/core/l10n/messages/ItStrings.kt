@@ -383,4 +383,5 @@ internal val ItStrings =
         override val messageAltTextMissingError =
             "Alcuni allegati non hanno il testo alternativo, inserirlo può migliorare l'accessibilità"
         override val buttonPublishAnyway = "Pubblica comunque"
+        override val actionCopyToClipboard = "Copia negli appunti"
     }

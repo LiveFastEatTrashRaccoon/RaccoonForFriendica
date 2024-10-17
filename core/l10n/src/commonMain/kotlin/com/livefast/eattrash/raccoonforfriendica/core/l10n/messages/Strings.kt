@@ -341,6 +341,7 @@ interface Strings {
     val messageAltTextMissingError: String
     val buttonPublishAnyway: String
     val actionAddImage: String
+    val actionCopyToClipboard: String
 }
 
 object Locales {
