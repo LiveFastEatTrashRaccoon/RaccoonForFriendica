@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "235f00bc3deb358583f99d08274a7370",
+    "identityHash": "098dd730831c752d8281c058e9598482",
     "entities": [
       {
         "tableName": "AccountEntity",
@@ -63,7 +63,7 @@
       },
       {
         "tableName": "SettingsEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accountId` INTEGER NOT NULL DEFAULT 0, `lang` TEXT NOT NULL DEFAULT 'en', `theme` INTEGER NOT NULL DEFAULT 0, `fontFamily` INTEGER NOT NULL DEFAULT 0, `fontScale` INTEGER NOT NULL DEFAULT 0, `dynamicColors` INTEGER NOT NULL DEFAULT 0, `customSeedColor` INTEGER, `defaultTimelineType` INTEGER NOT NULL DEFAULT 0, `includeNsfw` INTEGER NOT NULL DEFAULT 0, `blurNsfw` INTEGER NOT NULL DEFAULT 0, `urlOpeningMode` INTEGER NOT NULL DEFAULT 0, `defaultPostVisibility` INTEGER NOT NULL DEFAULT 0, `defaultReplyVisibility` INTEGER NOT NULL DEFAULT 0, `excludeRepliesFromTimeline` INTEGER NOT NULL DEFAULT 0, `openGroupsInForumModeByDefault` INTEGER NOT NULL DEFAULT 1, `markupMode` INTEGER NOT NULL DEFAULT 0)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accountId` INTEGER NOT NULL DEFAULT 0, `lang` TEXT NOT NULL DEFAULT 'en', `theme` INTEGER NOT NULL DEFAULT 0, `fontFamily` INTEGER NOT NULL DEFAULT 0, `fontScale` INTEGER NOT NULL DEFAULT 0, `dynamicColors` INTEGER NOT NULL DEFAULT 0, `customSeedColor` INTEGER, `defaultTimelineType` INTEGER NOT NULL DEFAULT 0, `includeNsfw` INTEGER NOT NULL DEFAULT 0, `blurNsfw` INTEGER NOT NULL DEFAULT 0, `urlOpeningMode` INTEGER NOT NULL DEFAULT 0, `defaultPostVisibility` INTEGER NOT NULL DEFAULT 0, `defaultReplyVisibility` INTEGER NOT NULL DEFAULT 0, `excludeRepliesFromTimeline` INTEGER NOT NULL DEFAULT 0, `openGroupsInForumModeByDefault` INTEGER NOT NULL DEFAULT 1, `markupMode` INTEGER NOT NULL DEFAULT 1)",
         "fields": [
           {
             "fieldPath": "id",
@@ -179,7 +179,7 @@
             "columnName": "markupMode",
             "affinity": "INTEGER",
             "notNull": true,
-            "defaultValue": "0"
+            "defaultValue": "1"
           }
         ],
         "primaryKey": {
@@ -270,7 +270,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '235f00bc3deb358583f99d08274a7370')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '098dd730831c752d8281c058e9598482')"
     ]
   }
 }
