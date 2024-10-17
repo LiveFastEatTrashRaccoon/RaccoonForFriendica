@@ -3,12 +3,17 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 import androidx.compose.ui.platform.UriHandler
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.urlprocessor.ExternalUserProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.urlprocessor.FriendicaUserProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.urlprocessor.GuppeProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.urlprocessor.HashtagProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.urlprocessor.LemmyProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.urlprocessor.MastodonUserProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.urlprocessor.PeertubeProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.urlprocessor.PixelfedProcessor
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -16,6 +21,7 @@ import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify
+import dev.mokkery.verify.VerifyMode
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,11 +30,6 @@ import kotlin.test.Test
 
 class DefaultCustomUriHandlerTest {
     private val defaultHandler = mock<UriHandler>(mode = MockMode.autoUnit)
-    private val apiConfigurationRepository =
-        mock<ApiConfigurationRepository> {
-            every { node } returns MutableStateFlow(CURRENT_INSTANCE)
-        }
-    private val userRepository = mock<UserRepository>()
     private val detailOpener = mock<DetailOpener>(mode = MockMode.autoUnit)
     private val customTabsHelper =
         mock<CustomTabsHelper>(mode = MockMode.autoUnit) {
@@ -38,16 +39,53 @@ class DefaultCustomUriHandlerTest {
         mock<SettingsRepository> {
             every { current } returns MutableStateFlow(SettingsModel())
         }
+    private val hashtagProcessor =
+        mock<HashtagProcessor> {
+            everySuspend { process(any()) } returns false
+        }
+    private val friendicaUserProcessor =
+        mock<FriendicaUserProcessor> {
+            everySuspend { process(any()) } returns false
+        }
+    private val externalUserProcessor =
+        mock<ExternalUserProcessor> {
+            everySuspend { process(any()) } returns false
+        }
+    private val mastodonUserProcessor =
+        mock<MastodonUserProcessor> {
+            everySuspend { process(any()) } returns false
+        }
+    private val lemmyProcessor =
+        mock<LemmyProcessor> {
+            everySuspend { process(any()) } returns false
+        }
+    private val guppeProcessor =
+        mock<GuppeProcessor> {
+            everySuspend { process(any()) } returns false
+        }
+    private val peertubeProcessor =
+        mock<PeertubeProcessor> {
+            everySuspend { process(any()) } returns false
+        }
+    private val pixelfedProcessor =
+        mock<PixelfedProcessor> {
+            everySuspend { process(any()) } returns false
+        }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val sut =
         DefaultCustomUriHandler(
             defaultHandler = defaultHandler,
-            apiConfigurationRepository = apiConfigurationRepository,
-            userRepository = userRepository,
-            detailOpener = detailOpener,
             customTabsHelper = customTabsHelper,
             settingsRepository = settingsRepository,
+            hashtagProcessor = hashtagProcessor,
+            friendicaUserProcessor = friendicaUserProcessor,
+            externalUserProcessor = externalUserProcessor,
+            mastodonUserProcessor = mastodonUserProcessor,
+            lemmyProcessor = lemmyProcessor,
+            guppeProcessor = guppeProcessor,
+            peertubeProcessor = peertubeProcessor,
+            pixelfedProcessor = pixelfedProcessor,
             dispatcher = UnconfinedTestDispatcher(),
         )
 
@@ -96,47 +134,34 @@ class DefaultCustomUriHandlerTest {
         every {
             settingsRepository.current
         } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
+        everySuspend { hashtagProcessor.process(any()) } returns true
         val tag = "fake-hashtag"
         val url = "https://$CURRENT_INSTANCE/search?tag=$tag"
 
         sut.openUri(url)
 
-        verify {
-            detailOpener.openHashtag(tag)
+        verifySuspend {
+            hashtagProcessor.process(url)
+        }
+        verify(mode = VerifyMode.not) {
+            defaultHandler.openUri(url)
         }
     }
 
     @Test
-    fun `given local profile URL when openUri then interactions are as expected`() {
+    fun `given Friendica profile URL when openUri then interactions are as expected`() {
         every {
             settingsRepository.current
         } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
-        val name = "username"
-        val user = UserModel(id = "user-id", username = name)
-        everySuspend { userRepository.getByHandle(any()) } returns user
-        val url = "https://$CURRENT_INSTANCE/profile/$name"
+        everySuspend { friendicaUserProcessor.process(any()) } returns true
+        val url = "https://$CURRENT_INSTANCE/profile/username"
 
         sut.openUri(url)
 
         verifySuspend {
-            userRepository.getByHandle("$name@$CURRENT_INSTANCE")
-            detailOpener.openUserDetail(user)
+            friendicaUserProcessor.process(url)
         }
-    }
-
-    @Test
-    fun `given nonexistent local profile URL when openUri then interactions are as expected`() {
-        every {
-            settingsRepository.current
-        } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
-        val name = "username"
-        everySuspend { userRepository.getByHandle(any()) } returns null
-        val url = "https://$CURRENT_INSTANCE/profile/$name"
-
-        sut.openUri(url)
-
-        verifySuspend {
-            userRepository.getByHandle("$name@$CURRENT_INSTANCE")
+        verify(mode = VerifyMode.not) {
             defaultHandler.openUri(url)
         }
     }
@@ -146,32 +171,33 @@ class DefaultCustomUriHandlerTest {
         every {
             settingsRepository.current
         } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
-        val name = "username"
-        val user = UserModel(id = "user-id", username = name)
-        everySuspend { userRepository.getByHandle(any()) } returns user
-        val url = "https://$OTHER_INSTANCE/users/$name"
+        everySuspend { externalUserProcessor.process(any()) } returns true
+        val url = "https://$OTHER_INSTANCE/users/username"
 
         sut.openUri(url)
 
         verifySuspend {
-            userRepository.getByHandle("$name@$OTHER_INSTANCE")
-            detailOpener.openUserDetail(user)
+            externalUserProcessor.process(url)
+        }
+        verify(mode = VerifyMode.not) {
+            defaultHandler.openUri(url)
         }
     }
 
     @Test
-    fun `given nonexistent external profile URL when openUri then interactions are as expected`() {
+    fun `given Mastodon profile URL when openUri then interactions are as expected`() {
         every {
             settingsRepository.current
         } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
-        val name = "username"
-        everySuspend { userRepository.getByHandle(any()) } returns null
-        val url = "https://$OTHER_INSTANCE/users/$name"
+        everySuspend { mastodonUserProcessor.process(any()) } returns true
+        val url = "https://$OTHER_INSTANCE/@username"
 
         sut.openUri(url)
 
         verifySuspend {
-            userRepository.getByHandle("$name@$OTHER_INSTANCE")
+            mastodonUserProcessor.process(url)
+        }
+        verify(mode = VerifyMode.not) {
             defaultHandler.openUri(url)
         }
     }
@@ -181,32 +207,15 @@ class DefaultCustomUriHandlerTest {
         every {
             settingsRepository.current
         } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
-        val name = "username"
-        val user = UserModel(id = "user-id", username = name)
-        everySuspend { userRepository.getByHandle(any()) } returns user
-        val url = "https://$OTHER_INSTANCE/u/$name"
+        everySuspend { lemmyProcessor.process(any()) } returns true
+        val url = "https://$OTHER_INSTANCE/u/username"
 
         sut.openUri(url)
 
         verifySuspend {
-            userRepository.getByHandle("$name@$OTHER_INSTANCE")
-            detailOpener.openUserDetail(user)
+            lemmyProcessor.process(url)
         }
-    }
-
-    @Test
-    fun `given nonexistent Lemmy user URL when openUri then interactions are as expected`() {
-        every {
-            settingsRepository.current
-        } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
-        val name = "username"
-        everySuspend { userRepository.getByHandle(any()) } returns null
-        val url = "https://$OTHER_INSTANCE/u/$name"
-
-        sut.openUri(url)
-
-        verifySuspend {
-            userRepository.getByHandle("$name@$OTHER_INSTANCE")
+        verify(mode = VerifyMode.not) {
             defaultHandler.openUri(url)
         }
     }
@@ -216,32 +225,87 @@ class DefaultCustomUriHandlerTest {
         every {
             settingsRepository.current
         } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
-        val name = "community"
-        val user = UserModel(id = "user-id", username = name)
-        everySuspend { userRepository.getByHandle(any()) } returns user
-        val url = "https://$OTHER_INSTANCE/c/$name"
+        everySuspend { lemmyProcessor.process(any()) } returns true
+        val url = "https://$OTHER_INSTANCE/c/username"
 
         sut.openUri(url)
 
         verifySuspend {
-            userRepository.getByHandle("$name@$OTHER_INSTANCE")
-            detailOpener.openUserDetail(user)
+            lemmyProcessor.process(url)
+        }
+        verify(mode = VerifyMode.not) {
+            defaultHandler.openUri(url)
         }
     }
 
     @Test
-    fun `given nonexistent Lemmy community URL when openUri then interactions are as expected`() {
+    fun `given Guppe group URL when openUri then interactions are as expected`() {
         every {
             settingsRepository.current
         } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
-        val name = "community"
-        everySuspend { userRepository.getByHandle(any()) } returns null
-        val url = "https://$OTHER_INSTANCE/c/$name"
+        everySuspend { guppeProcessor.process(any()) } returns true
+        val url = "https://a.gup.pe/u/username"
 
         sut.openUri(url)
 
         verifySuspend {
-            userRepository.getByHandle("$name@$OTHER_INSTANCE")
+            guppeProcessor.process(url)
+        }
+        verify(mode = VerifyMode.not) {
+            defaultHandler.openUri(url)
+        }
+    }
+
+    @Test
+    fun `given Peertube channel URL when openUri then interactions are as expected`() {
+        every {
+            settingsRepository.current
+        } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
+        everySuspend { peertubeProcessor.process(any()) } returns true
+        val url = "https://$OTHER_INSTANCE/video-channels/username"
+
+        sut.openUri(url)
+
+        verifySuspend {
+            peertubeProcessor.process(url)
+        }
+        verify(mode = VerifyMode.not) {
+            defaultHandler.openUri(url)
+        }
+    }
+
+    @Test
+    fun `given Peertube user URL when openUri then interactions are as expected`() {
+        every {
+            settingsRepository.current
+        } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
+        everySuspend { peertubeProcessor.process(any()) } returns true
+        val url = "https://$OTHER_INSTANCE/accounts/username"
+
+        sut.openUri(url)
+
+        verifySuspend {
+            peertubeProcessor.process(url)
+        }
+        verify(mode = VerifyMode.not) {
+            defaultHandler.openUri(url)
+        }
+    }
+
+    @Test
+    fun `given Pixelfed user URL when openUri then interactions are as expected`() {
+        every {
+            settingsRepository.current
+        } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
+        everySuspend { pixelfedProcessor.process(any()) } returns true
+        val url = "https://$OTHER_INSTANCE/username"
+
+        sut.openUri(url)
+
+        verifySuspend {
+            pixelfedProcessor.process(url)
+        }
+        verify(mode = VerifyMode.not) {
             defaultHandler.openUri(url)
         }
     }
