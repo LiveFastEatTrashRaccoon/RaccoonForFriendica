@@ -340,7 +340,8 @@ internal open class DefaultStrings : Strings {
     override val actionReportUser = "Report user"
     override val actionReportEntry = "Report post"
     override val actionViewDetails = "Details"
-    override val actionAddImageFromGallery = "Add from gallery"
+    override val actionAddImage = "Add image"
+    override val actionAddImageFromGallery = "Add image (media gallery)"
     override val actionAddPoll = "Add poll"
     override val actionRemovePoll = "Remove poll"
     override val createPostPollSection = "Poll"
@@ -355,6 +356,8 @@ internal open class DefaultStrings : Strings {
         "Describe the issue you encountered or just leave a feedback 🖋️"
     override val changeNodeDialogTitle = "Change instance"
     override val actionQuote = "Quote"
+    override val actionAddSpoiler = "Add spoiler"
+    override val actionRemoveSpoiler = "Remove spoiler"
     override val actionAddTitle = "Add title"
     override val actionRemoveTitle = "Remove title"
     override val actionRevealContent = "Reveal content"
@@ -372,4 +375,7 @@ internal open class DefaultStrings : Strings {
     override val markupModeHTML = "HTML"
     override val markupModeMarkdown = "Markdown"
     override val markupModePlainText = "Plain text"
+    override val messageAltTextMissingError =
+        "Some attachments do not have an alternate text, consider inserting it for accessibility"
+    override val buttonPublishAnyway = "Publish anyway"
 }
