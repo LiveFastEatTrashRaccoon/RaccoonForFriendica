@@ -69,8 +69,9 @@ internal class DefaultDraftRepository(
             attachments =
                 mediaIds
                     ?.split(",")
+                    ?.filterNot { it.isEmpty() }
                     ?.mapNotNull { id ->
-                        provider.media.getBy(id)?.toModel()
+                        runCatching { provider.media.getBy(id) }.getOrNull()?.toModel()
                     }.orEmpty(),
             parentId = inReplyToId,
             lang = lang,
