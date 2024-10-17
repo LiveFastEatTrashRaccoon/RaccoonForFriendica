@@ -87,6 +87,9 @@ class ComposerViewModel(
     private val markupMode: MarkupMode by lazy {
         settingsRepository.current.value?.markupMode ?: MarkupMode.PlainText
     }
+    private val shouldUserPhotoRepository: Boolean by lazy {
+        supportedFeatureRepository.features.value.supportsPhotoGallery
+    }
 
     init {
         screenModelScope.launch {
@@ -1075,7 +1078,7 @@ class ComposerViewModel(
                 )
             }
             val attachment =
-                if (supportedFeatureRepository.features.value.supportsPhotoGallery) {
+                if (shouldUserPhotoRepository) {
                     photoRepository.create(byteArray)
                 } else {
                     mediaRepository.create(byteArray)
@@ -1127,7 +1130,7 @@ class ComposerViewModel(
     ) {
         screenModelScope.launch {
             val successful =
-                if (supportedFeatureRepository.features.value.supportsPhotoGallery) {
+                if (shouldUserPhotoRepository) {
                     photoRepository.update(
                         id = attachment.id,
                         album = attachment.album.orEmpty(),
@@ -1150,21 +1153,7 @@ class ComposerViewModel(
 
     private fun removeAttachment(attachment: AttachmentModel) {
         screenModelScope.launch {
-            val attachmentId = attachment.id
-            if (attachment.fromGallery || editedPostId != null || draftId != null) {
-                // soft removal
-                removeAttachmentFromState(attachmentId)
-            } else {
-                val success =
-                    if (supportedFeatureRepository.features.value.supportsPhotoGallery) {
-                        photoRepository.delete(attachmentId)
-                    } else {
-                        mediaRepository.delete(attachmentId)
-                    }
-                if (success) {
-                    removeAttachmentFromState(attachmentId)
-                }
-            }
+            removeAttachmentFromState(attachment.id)
         }
     }
 
@@ -1409,8 +1398,16 @@ class ComposerViewModel(
         val title = currentState.titleValue.text.takeIf { it.isNotBlank() && currentState.hasTitle }
         val text = currentState.bodyValue.text
         val poll = currentState.poll
-        // use the mediaId for this call otherwise the backend returns a 500
-        val attachmentIds = currentState.attachments.map { it.mediaId }
+        val attachmentIds =
+            currentState.attachments.map {
+                if (shouldUserPhotoRepository) {
+                    // use the mediaId for this call otherwise the backend returns a 500
+                    it.mediaId
+                } else {
+                    // otherwise the plain ID should be used
+                    it.id
+                }
+            }
         val visibility = currentState.visibility
 
         val key = getUuid()
