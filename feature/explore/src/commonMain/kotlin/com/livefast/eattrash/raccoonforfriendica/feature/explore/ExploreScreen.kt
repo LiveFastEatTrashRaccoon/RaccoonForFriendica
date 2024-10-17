@@ -136,6 +136,10 @@ class ExploreScreen : Screen {
                     when (event) {
                         ExploreMviModel.Effect.BackToTop -> goBackToTop()
                         ExploreMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                        is ExploreMviModel.Effect.TriggerCopy -> {
+                            clipboardManager.setText(AnnotatedString(event.text))
+                            snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                        }
                     }
                 }.launchIn(this)
         }
@@ -400,6 +404,7 @@ class ExploreScreen : Screen {
                                                 this += OptionId.Quote.toOption()
                                             }
                                             this += OptionId.ViewDetails.toOption()
+                                            this += OptionId.CopyToClipboard.toOption()
                                         },
                                     onOptionSelected = { optionId ->
                                         when (optionId) {
@@ -456,6 +461,12 @@ class ExploreScreen : Screen {
                                                     )
                                                 }
                                             }
+                                            OptionId.CopyToClipboard ->
+                                                model.reduce(
+                                                    ExploreMviModel.Intent.CopyToClipboard(
+                                                        item.entry.original,
+                                                    ),
+                                                )
                                             else -> Unit
                                         }
                                     },

@@ -129,6 +129,10 @@ class ThreadScreen(
                 .onEach { event ->
                     when (event) {
                         ThreadMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                        is ThreadMviModel.Effect.TriggerCopy -> {
+                            clipboardManager.setText(AnnotatedString(event.text))
+                            snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                        }
                     }
                 }.launchIn(this)
         }
@@ -330,6 +334,7 @@ class ThreadScreen(
                                             this += OptionId.Quote.toOption()
                                         }
                                         this += OptionId.ViewDetails.toOption()
+                                        this += OptionId.CopyToClipboard.toOption()
                                     },
                                 onOptionSelected = { optionId ->
                                     when (optionId) {
@@ -353,6 +358,10 @@ class ThreadScreen(
                                                 )
                                             }
                                         }
+                                        OptionId.CopyToClipboard ->
+                                            uiState.entry?.original?.also { entry ->
+                                                model.reduce(ThreadMviModel.Intent.CopyToClipboard(entry))
+                                            }
                                         else -> Unit
                                     }
                                 },
@@ -451,6 +460,7 @@ class ThreadScreen(
                                         this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()
+                                    this += OptionId.CopyToClipboard.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -500,6 +510,8 @@ class ThreadScreen(
                                             )
                                         }
                                     }
+                                    OptionId.CopyToClipboard ->
+                                        model.reduce(ThreadMviModel.Intent.CopyToClipboard(entry.original))
                                     else -> Unit
                                 }
                             },

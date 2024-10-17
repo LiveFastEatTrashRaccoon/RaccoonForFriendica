@@ -384,4 +384,5 @@ internal val EsStrings =
         override val messageAltTextMissingError =
             "Algunos archivos adjuntos no tienen un texto alternativo, insertarlo puede mejorar la accesibilidad"
         override val buttonPublishAnyway = "Publicar de todos modos"
+        override val actionCopyToClipboard = "Copiar al portapapeles"
     }

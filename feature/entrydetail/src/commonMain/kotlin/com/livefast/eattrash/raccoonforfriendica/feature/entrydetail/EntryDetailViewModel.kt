@@ -113,6 +113,7 @@ class EntryDetailViewModel(
             is EntryDetailMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is EntryDetailMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
             is EntryDetailMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
+            is EntryDetailMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
 
@@ -406,6 +407,23 @@ class EntryDetailViewModel(
     private fun toggleSpoiler(entry: TimelineEntryModel) {
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
+        }
+    }
+
+    private fun copyToClipboard(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val source = timelineEntryRepository.getSource(entry.id)
+            if (source != null) {
+                val text =
+                    buildString {
+                        if (!entry.title.isNullOrBlank()) {
+                            append(entry.title)
+                            append("\n")
+                        }
+                        append(source.content)
+                    }
+                emitEffect(EntryDetailMviModel.Effect.TriggerCopy(text))
+            }
         }
     }
 }

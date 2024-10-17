@@ -153,6 +153,7 @@ class MyAccountViewModel(
             is MyAccountMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is MyAccountMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is MyAccountMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
+            is MyAccountMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
 
@@ -387,6 +388,23 @@ class MyAccountViewModel(
     private fun toggleSpoiler(entry: TimelineEntryModel) {
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
+        }
+    }
+
+    private fun copyToClipboard(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val source = timelineEntryRepository.getSource(entry.id)
+            if (source != null) {
+                val text =
+                    buildString {
+                        if (!entry.title.isNullOrBlank()) {
+                            append(entry.title)
+                            append("\n")
+                        }
+                        append(source.content)
+                    }
+                emitEffect(MyAccountMviModel.Effect.TriggerCopy(text))
+            }
         }
     }
 }

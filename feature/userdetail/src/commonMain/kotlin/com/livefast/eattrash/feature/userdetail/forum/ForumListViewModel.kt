@@ -95,6 +95,7 @@ class ForumListViewModel(
 
             is ForumListMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
             is ForumListMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
+            is ForumListMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
 
@@ -365,6 +366,23 @@ class ForumListViewModel(
     private fun toggleSpoiler(entry: TimelineEntryModel) {
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
+        }
+    }
+
+    private fun copyToClipboard(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val source = timelineEntryRepository.getSource(entry.id)
+            if (source != null) {
+                val text =
+                    buildString {
+                        if (!entry.title.isNullOrBlank()) {
+                            append(entry.title)
+                            append("\n")
+                        }
+                        append(source.content)
+                    }
+                emitEffect(ForumListMviModel.Effect.TriggerCopy(text))
+            }
         }
     }
 }

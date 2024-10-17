@@ -183,6 +183,10 @@ class UserDetailScreen(
                         UserDetailMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
                         UserDetailMviModel.Effect.Failure ->
                             snackbarHostState.showSnackbar(genericError)
+                        is UserDetailMviModel.Effect.TriggerCopy -> {
+                            clipboardManager.setText(AnnotatedString(event.text))
+                            snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                        }
                     }
                 }.launchIn(this)
         }
@@ -636,6 +640,7 @@ class UserDetailScreen(
                                         this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()
+                                    this += OptionId.CopyToClipboard.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -670,6 +675,8 @@ class UserDetailScreen(
                                             )
                                         }
                                     }
+                                    OptionId.CopyToClipboard ->
+                                        model.reduce(UserDetailMviModel.Intent.CopyToClipboard(entry.original))
                                     else -> Unit
                                 }
                             },

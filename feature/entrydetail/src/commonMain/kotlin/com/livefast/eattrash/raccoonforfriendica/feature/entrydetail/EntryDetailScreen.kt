@@ -128,6 +128,10 @@ class EntryDetailScreen(
                             runCatching { lazyListState.scrollToItem(event.index) }
 
                         EntryDetailMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                        is EntryDetailMviModel.Effect.TriggerCopy -> {
+                            clipboardManager.setText(AnnotatedString(event.text))
+                            snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                        }
                     }
                 }.launchIn(this)
         }
@@ -353,6 +357,7 @@ class EntryDetailScreen(
                                         this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()
+                                    this += OptionId.CopyToClipboard.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -406,6 +411,8 @@ class EntryDetailScreen(
                                             )
                                         }
                                     }
+                                    OptionId.CopyToClipboard ->
+                                        model.reduce(EntryDetailMviModel.Intent.CopyToClipboard(entry.original))
                                     else -> Unit
                                 }
                             },

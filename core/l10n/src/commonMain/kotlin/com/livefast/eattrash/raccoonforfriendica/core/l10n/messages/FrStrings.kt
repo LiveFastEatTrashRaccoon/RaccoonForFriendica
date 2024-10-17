@@ -388,4 +388,5 @@ internal val FrStrings =
         override val messageAltTextMissingError =
             "Certaines pièces jointes n'ont pas de texte alternatif, pensez à l'insérer pour des raisons d'accessibilité"
         override val buttonPublishAnyway = "Publier quand même"
+        override val actionCopyToClipboard = "Copier dans le presse-papiers"
     }

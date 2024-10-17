@@ -136,6 +136,10 @@ class SearchScreen : Screen {
                     when (event) {
                         SearchMviModel.Effect.BackToTop -> goBackToTop()
                         SearchMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                        is SearchMviModel.Effect.TriggerCopy -> {
+                            clipboardManager.setText(AnnotatedString(event.text))
+                            snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                        }
                     }
                 }.launchIn(this)
         }
@@ -401,6 +405,7 @@ class SearchScreen : Screen {
                                                 this += OptionId.Quote.toOption()
                                             }
                                             this += OptionId.ViewDetails.toOption()
+                                            this += OptionId.CopyToClipboard.toOption()
                                         },
                                     onOptionSelected = { optionId ->
                                         when (optionId) {
@@ -458,6 +463,10 @@ class SearchScreen : Screen {
                                                     )
                                                 }
                                             }
+                                            OptionId.CopyToClipboard ->
+                                                model.reduce(
+                                                    SearchMviModel.Intent.CopyToClipboard(item.entry.original),
+                                                )
                                             else -> Unit
                                         }
                                     },

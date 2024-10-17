@@ -378,4 +378,5 @@ internal open class DefaultStrings : Strings {
     override val messageAltTextMissingError =
         "Some attachments do not have an alternate text, consider inserting it for accessibility"
     override val buttonPublishAnyway = "Publish anyway"
+    override val actionCopyToClipboard = "Copy to clipboard"
 }
