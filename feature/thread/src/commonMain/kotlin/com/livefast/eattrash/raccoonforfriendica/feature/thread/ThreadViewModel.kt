@@ -91,6 +91,7 @@ class ThreadViewModel(
                 )
             is ThreadMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
             is ThreadMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
+            is ThreadMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
 
@@ -376,6 +377,23 @@ class ThreadViewModel(
     private fun toggleSpoiler(entry: TimelineEntryModel) {
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
+        }
+    }
+
+    private fun copyToClipboard(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val source = timelineEntryRepository.getSource(entry.id)
+            if (source != null) {
+                val text =
+                    buildString {
+                        if (!entry.title.isNullOrBlank()) {
+                            append(entry.title)
+                            append("\n")
+                        }
+                        append(source.content)
+                    }
+                emitEffect(ThreadMviModel.Effect.TriggerCopy(text))
+            }
         }
     }
 }
