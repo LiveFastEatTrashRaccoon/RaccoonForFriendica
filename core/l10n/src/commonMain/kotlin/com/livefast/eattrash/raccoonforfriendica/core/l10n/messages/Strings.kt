@@ -319,6 +319,8 @@ interface Strings {
     val userFeedbackCommentPlaceholder: String
     val changeNodeDialogTitle: String
     val actionQuote: String
+    val actionAddSpoiler: String
+    val actionRemoveSpoiler: String
     val actionAddTitle: String
     val actionRemoveTitle: String
     val actionRevealContent: String
@@ -336,6 +338,9 @@ interface Strings {
     val markupModeHTML: String
     val markupModeMarkdown: String
     val markupModePlainText: String
+    val messageAltTextMissingError: String
+    val buttonPublishAnyway: String
+    val actionAddImage: String
 }
 
 object Locales {

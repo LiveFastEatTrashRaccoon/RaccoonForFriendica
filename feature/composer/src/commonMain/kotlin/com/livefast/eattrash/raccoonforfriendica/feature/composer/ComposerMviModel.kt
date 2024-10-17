@@ -143,7 +143,9 @@ interface ComposerMviModel :
 
         data object ToggleHasTitle : Intent
 
-        data object Submit : Intent
+        data class Submit(
+            val enableAltTextCheck: Boolean = true,
+        ) : Intent
 
         data object GalleryInitialLoad : Intent
 
@@ -240,6 +242,8 @@ interface ComposerMviModel :
             data object ScheduleDateInThePast : ValidationError
 
             data object InvalidPoll : ValidationError
+
+            data object AltTextMissing : ValidationError
         }
 
         data object Success : Effect

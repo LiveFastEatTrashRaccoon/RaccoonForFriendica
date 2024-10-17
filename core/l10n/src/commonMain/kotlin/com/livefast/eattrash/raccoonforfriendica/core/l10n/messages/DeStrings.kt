@@ -347,7 +347,8 @@ internal val DeStrings =
         override val actionReportUser = "Benutzer melden"
         override val actionReportEntry = "Beitrag melden"
         override val actionViewDetails = "Einzelheiten"
-        override val actionAddImageFromGallery = "Aus Galerie hinzufügen"
+        override val actionAddImage = "Bild hinzufügen"
+        override val actionAddImageFromGallery = "Bild hinzufügen (Galerie)"
         override val actionAddPoll = "Umfrage hinzufügen"
         override val actionRemovePoll = "Umfrage entfernen"
         override val createPostPollSection = "Umfrage"
@@ -362,6 +363,8 @@ internal val DeStrings =
             "Beschreiben Sie das aufgetretene Problem oder hinterlassen Sie einfach ein Feedback 🖋️"
         override val changeNodeDialogTitle = "Instanz ändern"
         override val actionQuote = "Zitieren"
+        override val actionAddSpoiler = "Spoiler hinzufügen"
+        override val actionRemoveSpoiler = "Spoiler entfernen"
         override val actionAddTitle = "Titel hinzufügen"
         override val actionRemoveTitle = "Titel entfernen"
         override val actionRevealContent = "Inhalt enthüllen"
@@ -377,4 +380,7 @@ internal val DeStrings =
         override val actionDismissAllNotifications = "Alle Benachrichtigungen ablehnen"
         override val settingsItemMarkupMode = "Markierung für Compositing"
         override val markupModePlainText = "Einfacher Text"
+        override val messageAltTextMissingError =
+            "Einige Anhänge haben keinen alternativen Text, fügen Sie ihn aus Gründen der Zugänglichkeit ein."
+        override val buttonPublishAnyway = "Trotzdem veröffentlichen"
     }

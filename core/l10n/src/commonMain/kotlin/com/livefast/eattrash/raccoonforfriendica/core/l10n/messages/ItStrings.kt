@@ -347,7 +347,8 @@ internal val ItStrings =
         override val actionReportUser = "Segnala utente"
         override val actionReportEntry = "Segnala post"
         override val actionViewDetails = "Dettagli"
-        override val actionAddImageFromGallery = "Aggiungi dalla galleria"
+        override val actionAddImage = "Aggiungi immagine"
+        override val actionAddImageFromGallery = "Aggiungi immagine (galleria)"
         override val actionAddPoll = "Aggiungi sondaggio"
         override val actionRemovePoll = "Rimuovi sondaggio"
         override val createPostPollSection = "Sondaggio"
@@ -362,6 +363,8 @@ internal val ItStrings =
             "Descrivi il problema che hai riscontrato o lascia un feedback 🖋️"
         override val changeNodeDialogTitle = "Cambia istanza"
         override val actionQuote = "Cita"
+        override val actionAddSpoiler = "Aggiungi spoiler"
+        override val actionRemoveSpoiler = "Rimuovi spoiler"
         override val actionAddTitle = "Aggiungi titolo"
         override val actionRemoveTitle = "Rimuovi titolo"
         override val actionRevealContent = "Rivela contenuto"
@@ -377,4 +380,7 @@ internal val ItStrings =
         override val actionDismissAllNotifications = "Elimina tutte le notifiche"
         override val settingsItemMarkupMode = "Markup per la composizione"
         override val markupModePlainText = "Testo semplice"
+        override val messageAltTextMissingError =
+            "Alcuni allegati non hanno il testo alternativo, inserirlo può migliorare l'accessibilità"
+        override val buttonPublishAnyway = "Pubblica comunque"
     }

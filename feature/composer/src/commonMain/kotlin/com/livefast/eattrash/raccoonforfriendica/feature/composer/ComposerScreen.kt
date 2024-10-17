@@ -149,7 +149,8 @@ class ComposerScreen(
         var pollExpirationDatePickerOpen by remember { mutableStateOf(false) }
         var insertEmojiModalOpen by remember { mutableStateOf(false) }
         var previewEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-        var confirmBackWithUnsavedChangesDialog by remember { mutableStateOf(false) }
+        var confirmBackWithUnsavedChangesDialogOpen by remember { mutableStateOf(false) }
+        var publishWithoutAltTextCheckDialogOpen by remember { mutableStateOf(false) }
         val scheduleDate =
             when (val type = uiState.publicationType) {
                 is PublicationType.Scheduled -> type.date
@@ -207,6 +208,9 @@ class ComposerScreen(
                         ComposerMviModel.Effect.ValidationError.InvalidPoll ->
                             snackbarHostState.showSnackbar(message = invalidPollError)
 
+                        ComposerMviModel.Effect.ValidationError.AltTextMissing ->
+                            publishWithoutAltTextCheckDialogOpen = true
+
                         ComposerMviModel.Effect.Success -> navigationCoordinator.pop()
 
                         is ComposerMviModel.Effect.OpenPreview -> previewEntry = event.entry
@@ -216,7 +220,7 @@ class ComposerScreen(
         DisposableEffect(key) {
             navigationCoordinator.setCanGoBackCallback {
                 if (uiState.hasUnsavedChanges) {
-                    confirmBackWithUnsavedChangesDialog = true
+                    confirmBackWithUnsavedChangesDialogOpen = true
                     return@setCanGoBackCallback false
                 }
                 true
@@ -247,7 +251,7 @@ class ComposerScreen(
                             IconButton(
                                 onClick = {
                                     if (uiState.hasUnsavedChanges) {
-                                        confirmBackWithUnsavedChangesDialog = true
+                                        confirmBackWithUnsavedChangesDialogOpen = true
                                     } else {
                                         navigationCoordinator.pop()
                                     }
@@ -318,6 +322,18 @@ class ComposerScreen(
                                         )
                                 }
 
+                                if (!uiState.supportsRichEditing) {
+                                    this +=
+                                        CustomOptions.ToggleSpoiler.toOption(
+                                            label =
+                                                if (uiState.hasSpoiler) {
+                                                    LocalStrings.current.actionRemoveSpoiler
+                                                } else {
+                                                    LocalStrings.current.actionAddSpoiler
+                                                },
+                                        )
+                                }
+
                                 if (uiState.titleFeatureSupported) {
                                     this +=
                                         CustomOptions.ToggleTitle.toOption(
@@ -327,6 +343,13 @@ class ComposerScreen(
                                                 } else {
                                                     LocalStrings.current.actionAddTitle
                                                 },
+                                        )
+                                }
+
+                                if (!uiState.supportsRichEditing) {
+                                    this +=
+                                        CustomOptions.SelectAttachment.toOption(
+                                            label = LocalStrings.current.actionAddImage,
                                         )
                                 }
 
@@ -421,6 +444,13 @@ class ComposerScreen(
                                                         ),
                                                     )
 
+                                                CustomOptions.SelectAttachment -> {
+                                                    val limit = uiState.attachmentLimit ?: Int.MAX_VALUE
+                                                    if (uiState.attachments.size < limit) {
+                                                        openImagePicker = true
+                                                    }
+                                                }
+
                                                 CustomOptions.SelectFromGallery -> {
                                                     val limit =
                                                         uiState.attachmentLimit ?: Int.MAX_VALUE
@@ -439,6 +469,10 @@ class ComposerScreen(
 
                                                 CustomOptions.ToggleTitle -> {
                                                     model.reduce(ComposerMviModel.Intent.ToggleHasTitle)
+                                                }
+
+                                                CustomOptions.ToggleSpoiler -> {
+                                                    model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
                                                 }
 
                                                 CustomOptions.InsertCustomEmoji -> {
@@ -463,7 +497,7 @@ class ComposerScreen(
 
                         FilledIconButton(
                             onClick = {
-                                model.reduce(ComposerMviModel.Intent.Submit)
+                                model.reduce(ComposerMviModel.Intent.Submit())
                             },
                         ) {
                             Icon(
@@ -948,14 +982,28 @@ class ComposerScreen(
             )
         }
 
-        if (confirmBackWithUnsavedChangesDialog) {
+        if (confirmBackWithUnsavedChangesDialogOpen) {
             CustomConfirmDialog(
                 title = LocalStrings.current.unsavedChangesTitle,
                 body = LocalStrings.current.messageAreYouSureExit,
                 onClose = { confirm ->
-                    confirmBackWithUnsavedChangesDialog = false
+                    confirmBackWithUnsavedChangesDialogOpen = false
                     if (confirm) {
                         navigationCoordinator.pop()
+                    }
+                },
+            )
+        }
+
+        if (publishWithoutAltTextCheckDialogOpen) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.dialogErrorTitle,
+                body = LocalStrings.current.messageAltTextMissingError,
+                confirmButtonLabel = LocalStrings.current.buttonPublishAnyway,
+                onClose = { confirm ->
+                    publishWithoutAltTextCheckDialogOpen = false
+                    if (confirm) {
+                        model.reduce(ComposerMviModel.Intent.Submit(enableAltTextCheck = false))
                     }
                 },
             )
@@ -973,11 +1021,15 @@ class ComposerScreen(
 }
 
 private sealed interface CustomOptions : OptionId.Custom {
+    data object SelectAttachment : CustomOptions
+
     data object SelectFromGallery : CustomOptions
 
     data object TogglePoll : CustomOptions
 
     data object ToggleTitle : CustomOptions
+
+    data object ToggleSpoiler : CustomOptions
 
     data object InsertCustomEmoji : CustomOptions
 

@@ -351,7 +351,8 @@ internal val FrStrings =
         override val actionReportUser = "Signaler utilisateur"
         override val actionReportEntry = "Signaler poste"
         override val actionViewDetails = "Détails"
-        override val actionAddImageFromGallery = "Ajouter depuis la galerie"
+        override val actionAddImage = "Ajouter image"
+        override val actionAddImageFromGallery = "Ajouter image (galerie)"
         override val actionAddPoll = "Ajouter un sondage"
         override val actionRemovePoll = "Supprimer un sondage"
         override val createPostPollSection = "Sondage"
@@ -366,8 +367,10 @@ internal val FrStrings =
             "Décrivez le problème que vous avez rencontré ou laissez simplement un commentaire 🖋️"
         override val changeNodeDialogTitle = "Modifier l'instance"
         override val actionQuote = "Citation"
-        override val actionAddTitle = "Ajouter un titre"
-        override val actionRemoveTitle = "Supprimer le titre"
+        override val actionAddSpoiler = "Ajouter spoiler"
+        override val actionRemoveSpoiler = "Supprimer spoiler"
+        override val actionAddTitle = "Ajouter titre"
+        override val actionRemoveTitle = "Supprimer titre"
         override val actionRevealContent = "Révéler le contenu"
         override val settingsItemExcludeRepliesFromTimeline =
             "Exclure les réponses de la chronologie"
@@ -382,4 +385,7 @@ internal val FrStrings =
         override val actionDismissAllNotifications = "Supprimer toutes les notifications"
         override val settingsItemMarkupMode = "Balisage pour la composition"
         override val markupModePlainText = "Texte brut"
+        override val messageAltTextMissingError =
+            "Certaines pièces jointes n'ont pas de texte alternatif, pensez à l'insérer pour des raisons d'accessibilité"
+        override val buttonPublishAnyway = "Publier quand même"
     }

@@ -471,7 +471,8 @@ class ComposerViewModel(
 
             is ComposerMviModel.Intent.InsertList -> insertList()
 
-            ComposerMviModel.Intent.Submit -> submit()
+            is ComposerMviModel.Intent.Submit ->
+                submit(enableAltTextCheck = intent.enableAltTextCheck)
         }
     }
 
@@ -1342,7 +1343,63 @@ class ComposerViewModel(
         emitEffect(ComposerMviModel.Effect.OpenPreview(entry))
     }
 
-    private fun submit() {
+    private suspend fun validate(enableAltTextCheck: Boolean): Boolean {
+        val currentState = uiState.value
+        val visibility = currentState.visibility
+        val text = currentState.bodyValue.text
+        val attachments = currentState.attachments
+        val poll = currentState.poll
+        val characterLimit = currentState.characterLimit ?: Int.MAX_VALUE
+        val publicationType = currentState.publicationType
+        val scheduleDate = (publicationType as? PublicationType.Scheduled)?.date
+
+        // either body or image or poll must be present
+        if (text.isBlank() && attachments.isEmpty() && poll == null) {
+            emitEffect(ComposerMviModel.Effect.ValidationError.TextOrImagesOrPollMandatory)
+            return false
+        }
+
+        // all images should have a description for a11y
+        if (enableAltTextCheck && attachments.any { it.description.isNullOrEmpty() }) {
+            emitEffect(ComposerMviModel.Effect.ValidationError.AltTextMissing)
+            return false
+        }
+
+        if (poll != null) {
+            // poll must have at least 2 options and an expiration date in the future
+            val timeSpan = poll.expiresAt?.let { getDurationFromNowToDate(it) } ?: Duration.ZERO
+            val optionsPopulated = poll.options.all { it.title.isNotBlank() }
+            if (poll.options.size < 2 || !optionsPopulated || timeSpan <= Duration.ZERO) {
+                emitEffect(ComposerMviModel.Effect.ValidationError.InvalidPoll)
+                return false
+            }
+        }
+
+        // character limit should not be exceeded
+        if (text.length > characterLimit) {
+            emitEffect(ComposerMviModel.Effect.ValidationError.CharacterLimitExceeded)
+            return false
+        }
+
+        // Circle visibility should be valid
+        if (visibility is Visibility.Circle && visibility.id == null) {
+            emitEffect(ComposerMviModel.Effect.ValidationError.InvalidVisibility)
+            return false
+        }
+
+        // schedule date must be in the future
+        if (scheduleDate != null) {
+            val timeSpan = getDurationFromNowToDate(scheduleDate) ?: Duration.ZERO
+            if (timeSpan <= Duration.ZERO) {
+                emitEffect(ComposerMviModel.Effect.ValidationError.ScheduleDateInThePast)
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private fun submit(enableAltTextCheck: Boolean) {
         val currentState = uiState.value
         if (currentState.loading) {
             return
@@ -1355,42 +1412,13 @@ class ComposerViewModel(
         // use the mediaId for this call otherwise the backend returns a 500
         val attachmentIds = currentState.attachments.map { it.mediaId }
         val visibility = currentState.visibility
-        val characterLimit = currentState.characterLimit ?: Int.MAX_VALUE
+
         val key = getUuid()
         val publicationType = currentState.publicationType
-        val scheduleDate = (publicationType as? PublicationType.Scheduled)?.date
 
         screenModelScope.launch {
-            if (text.isBlank() && attachmentIds.isEmpty() && poll == null) {
-                emitEffect(ComposerMviModel.Effect.ValidationError.TextOrImagesOrPollMandatory)
+            if (!validate(enableAltTextCheck = enableAltTextCheck)) {
                 return@launch
-            }
-
-            if (poll != null) {
-                val timeSpan = poll.expiresAt?.let { getDurationFromNowToDate(it) } ?: Duration.ZERO
-                val optionsPopulated = poll.options.all { it.title.isNotBlank() }
-                if (poll.options.size < 2 || !optionsPopulated || timeSpan <= Duration.ZERO) {
-                    emitEffect(ComposerMviModel.Effect.ValidationError.InvalidPoll)
-                    return@launch
-                }
-            }
-
-            if (text.length > characterLimit) {
-                emitEffect(ComposerMviModel.Effect.ValidationError.CharacterLimitExceeded)
-                return@launch
-            }
-
-            if (visibility is Visibility.Circle && visibility.id == null) {
-                emitEffect(ComposerMviModel.Effect.ValidationError.InvalidVisibility)
-                return@launch
-            }
-
-            if (scheduleDate != null) {
-                val timeSpan = getDurationFromNowToDate(scheduleDate) ?: Duration.ZERO
-                if (timeSpan <= Duration.ZERO) {
-                    emitEffect(ComposerMviModel.Effect.ValidationError.ScheduleDateInThePast)
-                    return@launch
-                }
             }
 
             updateState { it.copy(loading = true) }
