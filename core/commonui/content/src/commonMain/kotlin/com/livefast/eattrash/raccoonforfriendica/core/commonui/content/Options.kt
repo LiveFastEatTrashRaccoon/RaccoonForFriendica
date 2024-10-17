@@ -32,6 +32,8 @@ sealed interface OptionId {
 
     data object Quote : OptionId
 
+    data object CopyToClipboard : OptionId
+
     interface Custom : OptionId
 }
 
@@ -52,6 +54,7 @@ private fun OptionId.toReadableName(): String =
         OptionId.ReportEntry -> LocalStrings.current.actionReportEntry
         OptionId.ViewDetails -> LocalStrings.current.actionViewDetails
         OptionId.Quote -> LocalStrings.current.actionQuote
+        OptionId.CopyToClipboard -> LocalStrings.current.actionCopyToClipboard
         else -> ""
     }
 
