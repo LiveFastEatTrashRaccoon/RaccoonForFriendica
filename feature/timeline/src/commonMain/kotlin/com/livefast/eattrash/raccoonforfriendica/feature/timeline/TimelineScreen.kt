@@ -138,6 +138,10 @@ class TimelineScreen : Screen {
                     when (event) {
                         TimelineMviModel.Effect.BackToTop -> goBackToTop()
                         TimelineMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                        is TimelineMviModel.Effect.TriggerCopy -> {
+                            clipboardManager.setText(AnnotatedString(event.text))
+                            snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                        }
                     }
                 }.launchIn(this)
         }
@@ -374,6 +378,7 @@ class TimelineScreen : Screen {
                                         this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()
+                                    this += OptionId.CopyToClipboard.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -429,6 +434,8 @@ class TimelineScreen : Screen {
                                         }
                                     }
                                     OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                    OptionId.CopyToClipboard ->
+                                        model.reduce(TimelineMviModel.Intent.CopyToClipboard(entry.original))
                                     else -> Unit
                                 }
                             },
