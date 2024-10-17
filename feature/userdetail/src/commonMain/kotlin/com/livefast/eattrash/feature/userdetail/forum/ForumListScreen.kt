@@ -140,6 +140,10 @@ class ForumListScreen(
                 .onEach { event ->
                     when (event) {
                         ForumListMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                        is ForumListMviModel.Effect.TriggerCopy -> {
+                            clipboardManager.setText(AnnotatedString(event.text))
+                            snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                        }
                     }
                 }.launchIn(this)
         }
@@ -412,6 +416,7 @@ class ForumListScreen(
                                         this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()
+                                    this += OptionId.CopyToClipboard.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -461,6 +466,8 @@ class ForumListScreen(
                                         }
                                     }
                                     OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                    OptionId.CopyToClipboard ->
+                                        model.reduce(ForumListMviModel.Intent.CopyToClipboard(entry.original))
                                     else -> Unit
                                 }
                             },

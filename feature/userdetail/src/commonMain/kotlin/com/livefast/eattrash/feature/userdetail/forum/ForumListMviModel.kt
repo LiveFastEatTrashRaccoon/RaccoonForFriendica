@@ -53,6 +53,10 @@ interface ForumListMviModel :
         data class ToggleSpoilerActive(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class CopyToClipboard(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -68,5 +72,9 @@ interface ForumListMviModel :
 
     sealed interface Effect {
         data object PollVoteFailure : Effect
+
+        data class TriggerCopy(
+            val text: String,
+        ) : Effect
     }
 }
