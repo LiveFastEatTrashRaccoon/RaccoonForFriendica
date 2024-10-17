@@ -69,6 +69,10 @@ interface ExploreMviModel :
         data class ToggleSpoilerActive(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class CopyToClipboard(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -87,5 +91,9 @@ interface ExploreMviModel :
         data object BackToTop : Effect
 
         data object PollVoteFailure : Effect
+
+        data class TriggerCopy(
+            val text: String,
+        ) : Effect
     }
 }
