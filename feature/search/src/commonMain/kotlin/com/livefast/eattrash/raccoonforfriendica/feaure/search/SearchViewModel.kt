@@ -137,6 +137,7 @@ class SearchViewModel(
             is SearchMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is SearchMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
             is SearchMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
+            is SearchMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
 
@@ -510,6 +511,23 @@ class SearchViewModel(
     private fun toggleSpoiler(entry: TimelineEntryModel) {
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
+        }
+    }
+
+    private fun copyToClipboard(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val source = timelineEntryRepository.getSource(entry.id)
+            if (source != null) {
+                val text =
+                    buildString {
+                        if (!entry.title.isNullOrBlank()) {
+                            append(entry.title)
+                            append("\n")
+                        }
+                        append(source.content)
+                    }
+                emitEffect(SearchMviModel.Effect.TriggerCopy(text))
+            }
         }
     }
 }
