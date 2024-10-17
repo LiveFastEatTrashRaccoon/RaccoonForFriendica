@@ -22,5 +22,5 @@ data class SettingsEntity(
     @ColumnInfo(defaultValue = "0") val defaultReplyVisibility: Int = 0,
     @ColumnInfo(defaultValue = "0") val excludeRepliesFromTimeline: Boolean = false,
     @ColumnInfo(defaultValue = "1") val openGroupsInForumModeByDefault: Boolean = true,
-    @ColumnInfo(defaultValue = "0") val markupMode: Int = 1,
+    @ColumnInfo(defaultValue = "1") val markupMode: Int = 1,
 )
