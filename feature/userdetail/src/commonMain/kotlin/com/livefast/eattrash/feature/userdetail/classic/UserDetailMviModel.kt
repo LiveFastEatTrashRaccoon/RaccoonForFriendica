@@ -67,6 +67,10 @@ interface UserDetailMviModel :
         ) : Intent
 
         data object SubmitPersonalNote : Intent
+
+        data class CopyToClipboard(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -89,5 +93,9 @@ interface UserDetailMviModel :
         data object PollVoteFailure : Effect
 
         data object Failure : Effect
+
+        data class TriggerCopy(
+            val text: String,
+        ) : Effect
     }
 }

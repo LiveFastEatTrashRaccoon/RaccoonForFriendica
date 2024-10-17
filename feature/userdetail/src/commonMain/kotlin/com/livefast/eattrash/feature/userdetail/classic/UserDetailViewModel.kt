@@ -116,6 +116,7 @@ class UserDetailViewModel(
                 }
 
             UserDetailMviModel.Intent.SubmitPersonalNote -> updatePersonalNote()
+            is UserDetailMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
 
@@ -510,6 +511,23 @@ class UserDetailViewModel(
                 }
             } else {
                 emitEffect(UserDetailMviModel.Effect.Failure)
+            }
+        }
+    }
+
+    private fun copyToClipboard(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val source = timelineEntryRepository.getSource(entry.id)
+            if (source != null) {
+                val text =
+                    buildString {
+                        if (!entry.title.isNullOrBlank()) {
+                            append(entry.title)
+                            append("\n")
+                        }
+                        append(source.content)
+                    }
+                emitEffect(UserDetailMviModel.Effect.TriggerCopy(text))
             }
         }
     }
