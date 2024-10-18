@@ -14,7 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private const val DEFAULT_BASE_PATH = "RaccoonForLemmy"
+private const val DEFAULT_BASE_PATH = "RaccoonForFriendica"
 
 internal class DefaultGalleryHelper(
     private val context: Context,

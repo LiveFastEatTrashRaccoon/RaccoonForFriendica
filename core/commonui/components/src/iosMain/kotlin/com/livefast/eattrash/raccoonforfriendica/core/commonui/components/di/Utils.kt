@@ -4,8 +4,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FabNes
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-actual fun getFabNestedScrollConnection(): FabNestedScrollConnection = LemmyUiDiHelper.fabNestedScrollConnection
+actual fun getFabNestedScrollConnection(): FabNestedScrollConnection = UiComponentDiHelper.fabNestedScrollConnection
 
-object LemmyUiDiHelper : KoinComponent {
+object UiComponentDiHelper : KoinComponent {
     val fabNestedScrollConnection: FabNestedScrollConnection by inject()
 }

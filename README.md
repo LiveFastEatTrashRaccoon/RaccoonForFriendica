@@ -118,7 +118,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] OAuth and HTTP basic authentication modes
 - [x] pin/unpin status to profile
 - [x] manage one's own circles/following lists
-- [x] polls (read-only, voting it not supported yet by the back-end)
+- [x] polls (read-only, voting is not supported yet by the back-end)
 - [x] manage follow requests
 - [x] support for post addons (spoilers and titles)
 - [x] multi-account
@@ -129,8 +129,8 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] scheduled posts and drafts
 - [x] report posts and users
 - [x] custom emojis
-- [ ] content moderation
 - [ ] event calendar
+- [ ] content moderation
 
 ## Technologies used
 

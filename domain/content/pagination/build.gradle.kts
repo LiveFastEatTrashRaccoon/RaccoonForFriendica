@@ -19,7 +19,7 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "domain.lemmy.pagination"
+            baseName = "domain.content.pagination"
             isStatic = true
         }
     }
@@ -42,7 +42,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.livefast.eattrash.raccoonforfriendica.domain.lemmy.pagination"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.domain.content.pagination"
     compileSdk =
         libs.versions.android.targetSdk
             .get()
