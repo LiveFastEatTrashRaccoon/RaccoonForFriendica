@@ -51,6 +51,7 @@ class DrawerViewModel(
                         it.copy(
                             hasDirectMessages = features.supportsDirectMessages,
                             hasGallery = features.supportsPhotoGallery,
+                            hasCalendar = features.supportsCalendar,
                         )
                     }
                 }.launchIn(this)

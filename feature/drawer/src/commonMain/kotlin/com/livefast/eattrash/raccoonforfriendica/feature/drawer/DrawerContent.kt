@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Drafts
 import androidx.compose.material.icons.filled.Favorite
@@ -188,6 +189,15 @@ class DrawerContent : Screen {
                         handleOpen { detailOpener.openUnpublished() }
                     },
                 )
+                if (uiState.hasCalendar) {
+                    DrawerShortcut(
+                        title = LocalStrings.current.calendarTitle,
+                        icon = Icons.Default.CalendarMonth,
+                        onSelected = {
+                            handleOpen { detailOpener.openCalendar() }
+                        },
+                    )
+                }
             }
 
             DrawerShortcut(
