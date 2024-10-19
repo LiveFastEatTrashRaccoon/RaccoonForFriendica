@@ -100,6 +100,22 @@ actual fun Long.extractTimePart(): Pair<Int, Int> {
     return hours to minutes
 }
 
+actual fun Long.extractDatePart(): Pair<Int, Int> {
+    val date = NSDate(timeIntervalSinceReferenceDate = (this.toDouble() / 1000))
+    val calendar = NSCalendar(calendarIdentifier = NSCalendarIdentifierGregorian)
+    val dateComponents =
+        calendar.components(
+            unitFlags =
+                NSCalendarUnitSecond
+                    .or(NSCalendarUnitMonth)
+                    .or(NSCalendarUnitYear),
+            fromDate = date,
+        )
+    val year = dateComponents.year.toInt()
+    val month = dateComponents.month.toInt()
+    return year to month
+}
+
 actual fun getFormattedDate(
     iso8601Timestamp: String,
     format: String,

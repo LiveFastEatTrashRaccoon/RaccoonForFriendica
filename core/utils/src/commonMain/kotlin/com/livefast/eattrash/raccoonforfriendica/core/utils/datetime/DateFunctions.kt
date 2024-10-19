@@ -32,6 +32,11 @@ expect fun Long.concatDateWithTime(
 expect fun Long.extractTimePart(): Pair<Int, Int>
 
 /**
+ * Extract the date (year, month) from a timestamp (in milliseconds).
+ */
+expect fun Long.extractDatePart(): Pair<Int, Int>
+
+/**
  * Converts a date (in the ISO 8601 format) to another given format.
  */
 expect fun getFormattedDate(

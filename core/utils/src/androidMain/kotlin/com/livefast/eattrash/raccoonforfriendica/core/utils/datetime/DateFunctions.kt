@@ -79,6 +79,14 @@ actual fun Long.extractTimePart(): Pair<Int, Int> {
     return hours to minutes
 }
 
+actual fun Long.extractDatePart(): Pair<Int, Int> {
+    val calendar = GregorianCalendar.getInstance()
+    calendar.timeInMillis = this
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    return year to month
+}
+
 actual fun getFormattedDate(
     iso8601Timestamp: String,
     format: String,
