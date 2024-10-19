@@ -79,7 +79,7 @@ features such as media gallery, circle management, direct messages and support f
 groups.
 
 With this respect, it takes a different approach compared to other existing solutions
-like the very feature-complete [Relatica](https://gitlab.com/mysocialportal/relatica) app, in trying
+like the feature-complete [Relatica](https://gitlab.com/mysocialportal/relatica) app, in trying
 to look familiar to users with a UI they are already accustomed to, adding a thin layer on
 top of it to support the additional features.
 
@@ -129,8 +129,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] scheduled posts and drafts
 - [x] report posts and users
 - [x] custom emojis
-- [ ] event calendar
-- [ ] content moderation
+- [x] event calendar
 
 ## Technologies used
 
