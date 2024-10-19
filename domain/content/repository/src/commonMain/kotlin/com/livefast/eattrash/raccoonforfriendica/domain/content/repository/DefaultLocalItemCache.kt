@@ -23,6 +23,6 @@ internal class DefaultLocalItemCache<T> : LocalItemCache<T> {
     }
 
     companion object {
-        private const val MAX_SIZE = 10
+        private const val MAX_SIZE = 20
     }
 }

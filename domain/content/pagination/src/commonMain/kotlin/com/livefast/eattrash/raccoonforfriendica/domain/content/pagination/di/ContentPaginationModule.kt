@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultAlbumPhotoPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultDirectMessagesPaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultEventPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultExplorePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultFavoritesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultFollowRequestPaginationManager
@@ -13,6 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultUnpublishedPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultUserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EventPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.ExplorePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowRequestPaginationManager
@@ -105,6 +107,11 @@ val domainContentPaginationModule =
                 scheduledEntryRepository = get(),
                 draftRepository = get(),
                 notificationCenter = get(),
+            )
+        }
+        factory<EventPaginationManager> {
+            DefaultEventPaginationManager(
+                eventRepository = get(),
             )
         }
     }
