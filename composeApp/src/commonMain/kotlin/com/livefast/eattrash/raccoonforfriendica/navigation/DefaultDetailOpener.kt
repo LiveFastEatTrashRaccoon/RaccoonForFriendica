@@ -4,6 +4,7 @@ import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
@@ -13,6 +14,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.detail.CircleDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
@@ -43,6 +46,7 @@ class DefaultDetailOpener(
     private val settingsRepository: SettingsRepository,
     private val userCache: LocalItemCache<UserModel>,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
+    private val eventCache: LocalItemCache<EventModel>,
 ) : DetailOpener {
     private val currentUserId: String? get() = identityRepository.currentUser.value?.id
     private val isLogged: Boolean get() = currentUserId != null
@@ -329,6 +333,17 @@ class DefaultDetailOpener(
 
     override fun openUserFeedback() {
         val screen = UserFeedbackScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openCalendar() {
+        val screen = CalendarScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openEvent(event: EventModel) {
+        eventCache.put(event.id, event)
+        val screen = EventDetailScreen(event.id)
         navigationCoordinator.push(screen)
     }
 }

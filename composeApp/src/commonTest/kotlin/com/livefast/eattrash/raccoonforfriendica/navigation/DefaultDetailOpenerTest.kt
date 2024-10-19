@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.navigation
 import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -10,6 +11,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Local
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.detail.CircleDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
@@ -55,6 +58,7 @@ class DefaultDetailOpenerTest {
         }
     private val userCache = mock<LocalItemCache<UserModel>>(mode = MockMode.autoUnit)
     private val entryCache = mock<LocalItemCache<TimelineEntryModel>>(mode = MockMode.autoUnit)
+    private val eventCache = mock<LocalItemCache<EventModel>>(mode = MockMode.autoUnit)
     private val sut =
         DefaultDetailOpener(
             navigationCoordinator = navigationCoordinator,
@@ -62,6 +66,7 @@ class DefaultDetailOpenerTest {
             settingsRepository = settingsRepository,
             userCache = userCache,
             entryCache = entryCache,
+            eventCache = eventCache,
         )
 
     @Test
@@ -286,7 +291,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply when openBlockedAndMuted then interactions are as expected`() {
+    fun `when openBlockedAndMuted then interactions are as expected`() {
         sut.openBlockedAndMuted()
 
         verify {
@@ -295,7 +300,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply when openCircles then interactions are as expected`() {
+    fun `when openCircles then interactions are as expected`() {
         sut.openCircles()
 
         verify {
@@ -304,7 +309,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply when openCircle then interactions are as expected`() {
+    fun `when openCircle then interactions are as expected`() {
         sut.openCircle(groupId = "1")
 
         verify {
@@ -313,7 +318,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply when openFollowRequests then interactions are as expected`() {
+    fun `when openFollowRequests then interactions are as expected`() {
         sut.openFollowRequests()
 
         verify {
@@ -322,7 +327,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply openEditProfile then interactions are as expected`() {
+    fun `when openEditProfile then interactions are as expected`() {
         sut.openEditProfile()
 
         verify {
@@ -331,7 +336,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply openNodeInfo then interactions are as expected`() {
+    fun `when openNodeInfo then interactions are as expected`() {
         sut.openNodeInfo()
 
         verify {
@@ -340,7 +345,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply openDirectMessages then interactions are as expected`() {
+    fun `when openDirectMessages then interactions are as expected`() {
         sut.openDirectMessages()
 
         verify {
@@ -349,7 +354,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply openConversation then interactions are as expected`() {
+    fun `when openConversation then interactions are as expected`() {
         sut.openConversation(
             otherUser = UserModel(id = "1"),
             parentUri = "",
@@ -361,7 +366,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply openGallery then interactions are as expected`() {
+    fun `when openGallery then interactions are as expected`() {
         sut.openGallery()
 
         verify {
@@ -370,7 +375,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply openAlbum then interactions are as expected`() {
+    fun `when openAlbum then interactions are as expected`() {
         sut.openAlbum(name = "album")
 
         verify {
@@ -379,7 +384,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply openUnpublished then interactions are as expected`() {
+    fun `when openUnpublished then interactions are as expected`() {
         sut.openUnpublished()
 
         verify {
@@ -388,7 +393,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply openCreateReport for user then interactions are as expected`() {
+    fun `when openCreateReport for user then interactions are as expected`() {
         sut.openCreateReport(user = UserModel(id = "1"))
 
         verify {
@@ -397,7 +402,7 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply openCreateReport for entry then interactions are as expected`() {
+    fun `when openCreateReport for entry then interactions are as expected`() {
         sut.openCreateReport(
             user = UserModel(id = "1"),
             entry = TimelineEntryModel(id = "2", content = ""),
@@ -409,11 +414,38 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `given reply openUserFeedback for user then interactions are as expected`() {
+    fun `when openUserFeedback then interactions are as expected`() {
         sut.openUserFeedback()
 
         verify {
             navigationCoordinator.push(any<UserFeedbackScreen>())
+        }
+    }
+
+    @Test
+    fun `when openCalendar then interactions are as expected`() {
+        sut.openCalendar()
+
+        verify {
+            navigationCoordinator.push(any<CalendarScreen>())
+        }
+    }
+
+    @Test
+    fun `when openEvent then interactions are as expected`() {
+        val event =
+            EventModel(
+                id = "0",
+                uri = "www.example.com",
+                title = "test event",
+                description = "",
+                startTime = "",
+            )
+        sut.openEvent(event)
+
+        verify {
+            eventCache.put("0", event)
+            navigationCoordinator.push(any<EventDetailScreen>())
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.runtime.Stable
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -101,4 +102,8 @@ interface DetailOpener {
     )
 
     fun openUserFeedback()
+
+    fun openCalendar()
+
+    fun openEvent(event: EventModel)
 }
