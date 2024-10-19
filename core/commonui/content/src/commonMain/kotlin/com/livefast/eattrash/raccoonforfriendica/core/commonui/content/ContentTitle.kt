@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 fun ContentTitle(
     content: String = "",
     modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
     emojis: List<EmojiModel> = emptyList(),
     color: Color = MaterialTheme.colorScheme.onBackground,
     onClick: (() -> Unit)? = null,
@@ -25,6 +26,7 @@ fun ContentTitle(
         TextWithCustomEmojis(
             style = MaterialTheme.typography.titleMedium.copy(color = color),
             text = annotatedContent,
+            maxLines = maxLines,
             emojis = emojis,
             onClick = { offset ->
                 val url =
