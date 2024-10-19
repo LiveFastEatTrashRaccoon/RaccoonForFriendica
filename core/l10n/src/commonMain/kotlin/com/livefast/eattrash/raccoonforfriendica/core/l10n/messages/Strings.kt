@@ -342,6 +342,8 @@ interface Strings {
     val buttonPublishAnyway: String
     val actionAddImage: String
     val actionCopyToClipboard: String
+    val calendarTitle: String
+    val actionSaveToCalendar: String
 }
 
 object Locales {

@@ -389,4 +389,5 @@ internal val FrStrings =
             "Certaines pièces jointes n'ont pas de texte alternatif, pensez à l'insérer pour des raisons d'accessibilité"
         override val buttonPublishAnyway = "Publier quand même"
         override val actionCopyToClipboard = "Copier dans le presse-papiers"
+        override val actionSaveToCalendar = "Enregistrer dans le calendrier"
     }
