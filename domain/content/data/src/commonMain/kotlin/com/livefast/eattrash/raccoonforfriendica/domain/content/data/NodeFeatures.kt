@@ -11,4 +11,5 @@ data class NodeFeatures(
     val supportsMarkdown: Boolean = false,
     val supportsEntryShare: Boolean = false,
     val supportsPrivateVisibility: Boolean = false,
+    val supportsCalendar: Boolean = false,
 )
