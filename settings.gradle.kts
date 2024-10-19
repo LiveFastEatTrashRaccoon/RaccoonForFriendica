@@ -50,6 +50,7 @@ include(":domain:identity:data")
 include(":domain:identity:repository")
 include(":domain:identity:usecase")
 
+include(":feature:calendar")
 include(":feature:circles")
 include(":feature:composer")
 include(":feature:directmessages")

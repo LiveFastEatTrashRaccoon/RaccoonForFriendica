@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
+import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.CalendarHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.DefaultCalendarHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.DefaultAppInfoRepository
@@ -31,6 +33,8 @@ actual fun getAppInfoRepository(): AppInfoRepository = CoreUtilsDiHelper.appInfo
 actual fun getBlurHashRepository(): BlurHashRepository = CoreUtilsDiHelper.blurHashRepository
 
 actual fun getCrashReportManager(): CrashReportManager = CoreUtilsDiHelper.crashReportManager
+
+actual fun getCalendarHelper(): CalendarHelper = CoreUtilsDiHelper.calendarHelper
 
 actual val coreUtilsFileSystemModule =
     module {
@@ -81,6 +85,13 @@ actual val coreCrashReportModule =
         }
     }
 
+actual val coreUtilsCalendarModule =
+    module {
+        single<CalendarHelper> {
+            DefaultCalendarHelper()
+        }
+    }
+
 internal object CoreUtilsDiHelper : KoinComponent {
     val imageLoaderProvider: ImageLoaderProvider by inject()
     val galleryHelper: GalleryHelper by inject()
@@ -88,4 +99,5 @@ internal object CoreUtilsDiHelper : KoinComponent {
     val appInfoRepository: AppInfoRepository by inject()
     val blurHashRepository: BlurHashRepository by inject()
     val crashReportManager by inject<CrashReportManager>()
+    val calendarHelper by inject<CalendarHelper>()
 }
