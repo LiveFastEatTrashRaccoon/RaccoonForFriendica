@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CustomEmoji
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Event
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Field
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaContact
@@ -35,12 +36,16 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserListReplyPolicy
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.extractDatePart
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.parseDate
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHistoryItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
@@ -513,3 +518,36 @@ internal fun Markers.toModel(): List<MarkerModel> =
                 )
         }
     }
+
+private fun String.toEventType(): EventType =
+    when (this) {
+        "birthday" -> EventType.Birthday
+        else -> EventType.Event
+    }
+
+internal fun Event.toModel() =
+    EventModel(
+        id = id.toString(),
+        uri = uri,
+        title = name,
+        description = description,
+        startTime =
+            parseDate(
+                value = startTime,
+                format = FriendicaDateFormats.PHOTO_ALBUMS,
+            ),
+        endTime =
+            endTime?.let { date ->
+                parseDate(
+                    value = date,
+                    format = FriendicaDateFormats.PHOTO_ALBUMS,
+                ).takeIf {
+                    val t = it.toEpochMillis()
+                    val (y, _) = t.extractDatePart()
+                    y > 1970
+                }
+            },
+        type = type.toEventType(),
+        ongoing = noFinish != 0,
+        place = place,
+    )

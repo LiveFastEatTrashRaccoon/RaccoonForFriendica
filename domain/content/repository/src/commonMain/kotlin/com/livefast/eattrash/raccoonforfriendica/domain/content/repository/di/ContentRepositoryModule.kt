@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
@@ -8,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultDraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultEmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultEmojiRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultEventRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultInboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultLocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultMarkerRepository
@@ -30,6 +32,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Direc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EventRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
@@ -125,6 +128,9 @@ val domainContentRepositoryModule =
         single<LocalItemCache<TimelineEntryModel>> {
             DefaultLocalItemCache()
         }
+        single<LocalItemCache<EventModel>> {
+            DefaultLocalItemCache()
+        }
         single<ScheduledEntryRepository> {
             DefaultScheduledEntryRepository(
                 provider = get(named("default")),
@@ -170,6 +176,11 @@ val domainContentRepositoryModule =
         single<ReplyHelper> {
             DefaultReplyHelper(
                 entryRepository = get(),
+            )
+        }
+        single<EventRepository> {
+            DefaultEventRepository(
+                provider = get(named("default")),
             )
         }
     }
