@@ -13,6 +13,7 @@ fun ContentBody(
     content: String = "",
     color: Color = MaterialTheme.colorScheme.onBackground,
     modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
     emojis: List<EmojiModel> = emptyList(),
     onClick: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
@@ -25,6 +26,7 @@ fun ContentBody(
         TextWithCustomEmojis(
             style = MaterialTheme.typography.bodyMedium.copy(color = color),
             text = annotatedContent,
+            maxLines = maxLines,
             emojis = emojis,
             onClick = { offset ->
                 val url =

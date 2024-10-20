@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.di.corePersist
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.di.corePreferencesModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreCrashReportModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreHapticFeedbackModule
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsCalendarModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsDebugModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsFileSystemModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsGalleryModule
@@ -21,6 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.do
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.domainContentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.domainIdentityRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.domainIdentityUseCaseModule
+import com.livefast.eattrash.raccoonforfriendica.feature.calendar.di.featureCalendarModule
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.featureCirclesModule
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.featureComposerModule
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.featureDirectMessagesModule
@@ -61,6 +63,7 @@ val sharedHelperModule =
             coreNavigationModule,
             coreNotificationsModule,
             coreResourceModule,
+            coreUtilsCalendarModule,
             coreUtilsDebugModule,
             coreUtilsFileSystemModule,
             coreUtilsGalleryModule,
@@ -71,6 +74,7 @@ val sharedHelperModule =
             domainContentRepositoryModule,
             domainIdentityRepositoryModule,
             domainIdentityUseCaseModule,
+            featureCalendarModule,
             featureCirclesModule,
             featureComposerModule,
             featureTimelineModule,

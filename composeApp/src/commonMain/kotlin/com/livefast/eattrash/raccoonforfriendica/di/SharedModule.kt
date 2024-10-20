@@ -22,6 +22,7 @@ internal val sharedModule =
                 userCache = get(),
                 settingsRepository = get(),
                 entryCache = get(),
+                eventCache = get(),
             )
         }
         single<AuthManager> {

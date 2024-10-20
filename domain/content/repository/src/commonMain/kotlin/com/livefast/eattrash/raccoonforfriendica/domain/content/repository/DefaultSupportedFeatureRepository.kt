@@ -24,6 +24,7 @@ internal class DefaultSupportedFeatureRepository(
                 supportsMarkdown = info?.isFriendica == false,
                 supportsEntryShare = info?.isFriendica == true,
                 supportsPrivateVisibility = info?.isFriendica == true,
+                supportsCalendar = info?.isFriendica == true,
             )
         }
     }

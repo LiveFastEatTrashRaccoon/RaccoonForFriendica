@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
+import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.CalendarHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.DefaultCalendarHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.DefaultAppInfoRepository
@@ -47,6 +49,11 @@ actual fun getBlurHashRepository(): BlurHashRepository {
 
 actual fun getCrashReportManager(): CrashReportManager {
     val res by KoinJavaComponent.inject<CrashReportManager>(CrashReportManager::class.java)
+    return res
+}
+
+actual fun getCalendarHelper(): CalendarHelper {
+    val res by KoinJavaComponent.inject<CalendarHelper>(CalendarHelper::class.java)
     return res
 }
 
@@ -108,6 +115,15 @@ actual val coreCrashReportModule =
     module {
         single<CrashReportManager> {
             DefaultCrashReportManager(
+                context = get(),
+            )
+        }
+    }
+
+actual val coreUtilsCalendarModule =
+    module {
+        single<CalendarHelper> {
+            DefaultCalendarHelper(
                 context = get(),
             )
         }

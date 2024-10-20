@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
+import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.CalendarHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelper
@@ -20,6 +21,8 @@ expect fun getBlurHashRepository(): BlurHashRepository
 
 expect fun getCrashReportManager(): CrashReportManager
 
+expect fun getCalendarHelper(): CalendarHelper
+
 expect val coreUtilsFileSystemModule: Module
 
 expect val coreUtilsGalleryModule: Module
@@ -33,3 +36,5 @@ expect val coreUtilsDebugModule: Module
 expect val coreHapticFeedbackModule: Module
 
 expect val coreCrashReportModule: Module
+
+expect val coreUtilsCalendarModule: Module

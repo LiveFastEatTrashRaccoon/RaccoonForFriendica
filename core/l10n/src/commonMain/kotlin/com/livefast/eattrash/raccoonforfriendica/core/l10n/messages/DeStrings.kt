@@ -384,4 +384,5 @@ internal val DeStrings =
             "Einige Anhänge haben keinen alternativen Text, fügen Sie ihn aus Gründen der Zugänglichkeit ein."
         override val buttonPublishAnyway = "Trotzdem veröffentlichen"
         override val actionCopyToClipboard = "In die Zwischenablage kopieren"
+        override val actionSaveToCalendar = "Im Kalender speichern"
     }

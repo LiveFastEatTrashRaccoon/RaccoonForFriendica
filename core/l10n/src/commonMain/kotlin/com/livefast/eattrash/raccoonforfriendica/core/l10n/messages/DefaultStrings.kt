@@ -379,4 +379,6 @@ internal open class DefaultStrings : Strings {
         "Some attachments do not have an alternate text, consider inserting it for accessibility"
     override val buttonPublishAnyway = "Publish anyway"
     override val actionCopyToClipboard = "Copy to clipboard"
+    override val calendarTitle = "Calendar"
+    override val actionSaveToCalendar = "Save to calendar"
 }

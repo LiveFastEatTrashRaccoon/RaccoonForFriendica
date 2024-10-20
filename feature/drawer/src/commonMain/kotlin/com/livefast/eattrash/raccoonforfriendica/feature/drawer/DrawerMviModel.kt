@@ -28,6 +28,7 @@ interface DrawerMviModel :
         val node: String? = null,
         val hasDirectMessages: Boolean = false,
         val hasGallery: Boolean = false,
+        val hasCalendar: Boolean = false,
         val anonymousChangeNodeName: String = "",
         val anonymousChangeNodeValidationInProgress: Boolean = false,
         val anonymousChangeNodeNameError: ValidationError? = null,

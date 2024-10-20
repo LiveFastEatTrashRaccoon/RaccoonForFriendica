@@ -384,4 +384,6 @@ internal val ItStrings =
             "Alcuni allegati non hanno il testo alternativo, inserirlo può migliorare l'accessibilità"
         override val buttonPublishAnyway = "Pubblica comunque"
         override val actionCopyToClipboard = "Copia negli appunti"
+        override val calendarTitle = "Calendario"
+        override val actionSaveToCalendar = "Salva su calendario"
     }

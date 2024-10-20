@@ -385,4 +385,5 @@ internal val EsStrings =
             "Algunos archivos adjuntos no tienen un texto alternativo, insertarlo puede mejorar la accesibilidad"
         override val buttonPublishAnyway = "Publicar de todos modos"
         override val actionCopyToClipboard = "Copiar al portapapeles"
+        override val actionSaveToCalendar = "Guardar en el calendario"
     }
