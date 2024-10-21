@@ -89,6 +89,7 @@ class SettingsScreen : Screen {
         var defaultPostVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
         var defaultReplyVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
         var markupModeBottomSheetOpened by remember { mutableStateOf(false) }
+        var maxPostBodyLinesBottomSheetOpened by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -199,6 +200,14 @@ class SettingsScreen : Screen {
                                 },
                             )
                         }
+
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemMaxPostBodyLines,
+                            value = uiState.maxPostBodyLines.toMaxBodyLinesReadableName(),
+                            onTap = {
+                                maxPostBodyLinesBottomSheetOpened = true
+                            },
+                        )
 
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderLookAndFeel,
@@ -604,6 +613,20 @@ class SettingsScreen : Screen {
             )
         }
 
+        if (maxPostBodyLinesBottomSheetOpened) {
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemMaxPostBodyLines,
+                items = MAX_POST_BODY_LINES_OPTIONS.map { CustomModalBottomSheetItem(label = it.toMaxBodyLinesReadableName()) },
+                onSelected = { index ->
+                    maxPostBodyLinesBottomSheetOpened = false
+                    if (index != null) {
+                        val value = MAX_POST_BODY_LINES_OPTIONS[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeMaxPostBodyLines(value))
+                    }
+                },
+            )
+        }
+
         if (aboutDialogOpened) {
             AboutDialog(
                 onClose = {
@@ -613,3 +636,19 @@ class SettingsScreen : Screen {
         }
     }
 }
+
+private val MAX_POST_BODY_LINES_OPTIONS =
+    listOf(
+        Int.MAX_VALUE,
+        5,
+        10,
+        25,
+        50,
+    )
+
+@Composable
+private fun Int.toMaxBodyLinesReadableName(): String =
+    when (this) {
+        Int.MAX_VALUE -> LocalStrings.current.settingsOptionUnlimited
+        else -> this.toString()
+    }

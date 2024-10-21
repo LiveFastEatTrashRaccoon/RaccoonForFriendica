@@ -77,6 +77,10 @@ interface SettingsMviModel :
         data class ChangeMarkupMode(
             val mode: MarkupMode,
         ) : Intent
+
+        data class ChangeMaxPostBodyLines(
+            val value: Int,
+        ) : Intent
     }
 
     data class State(
@@ -101,6 +105,7 @@ interface SettingsMviModel :
         val openGroupsInForumModeByDefault: Boolean = true,
         val markupMode: MarkupMode = MarkupMode.HTML,
         val availableMarkupModes: List<MarkupMode> = emptyList(),
+        val maxPostBodyLines: Int = Int.MAX_VALUE,
     )
 
     sealed interface Effect

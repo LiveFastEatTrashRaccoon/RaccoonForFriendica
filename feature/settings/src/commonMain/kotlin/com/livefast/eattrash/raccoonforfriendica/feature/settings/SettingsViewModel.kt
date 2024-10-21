@@ -102,6 +102,7 @@ class SettingsViewModel(
                                 excludeRepliesFromTimeline = settings.excludeRepliesFromTimeline,
                                 openGroupsInForumModeByDefault = settings.openGroupsInForumModeByDefault,
                                 markupMode = settings.markupMode,
+                                maxPostBodyLines = settings.maxPostBodyLines,
                             )
                         }
                     }
@@ -217,6 +218,11 @@ class SettingsViewModel(
                 screenModelScope.launch {
                     changeMarkupMode(intent.mode)
                 }
+
+            is SettingsMviModel.Intent.ChangeMaxPostBodyLines ->
+                screenModelScope.launch {
+                    changeMaxPostBodyLines(intent.value)
+                }
         }
     }
 
@@ -307,6 +313,12 @@ class SettingsViewModel(
     private suspend fun changeMarkupMode(value: MarkupMode) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(markupMode = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeMaxPostBodyLines(value: Int) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(maxPostBodyLines = value)
         saveSettings(newSettings)
     }
 
