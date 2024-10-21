@@ -386,4 +386,6 @@ internal val EsStrings =
         override val buttonPublishAnyway = "Publicar de todos modos"
         override val actionCopyToClipboard = "Copiar al portapapeles"
         override val actionSaveToCalendar = "Guardar en el calendario"
+        override val settingsItemMaxPostBodyLines = "Número máximo líneas cuerpo post"
+        override val settingsOptionUnlimited = "Ilimitado"
     }
