@@ -29,7 +29,7 @@ multiplatform-settings = "1.2.0"
 room = "2.7.0-alpha09"
 sentry = "0.9.0"
 stately = "2.1.0"
-turbine = "1.1.0"
+turbine = "1.2.0"
 voyager = "1.0.0"
 
 [libraries]
