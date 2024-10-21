@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.bottomnavigation
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.AccountCircle
@@ -20,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
@@ -45,7 +43,7 @@ internal fun RowScope.BottomNavigationItem(
                     val unreadCount = (section as? BottomNavigationSection.Inbox)?.unreadItems ?: 0
                     if (unreadCount > 0) {
                         Badge(
-                            modifier = Modifier.align(Alignment.TopEnd).offset(x = (-5).dp),
+                            modifier = Modifier.align(Alignment.TopEnd),
                         ) {
                             Text(
                                 text = if (unreadCount <= 10) "$unreadCount" else "10+",

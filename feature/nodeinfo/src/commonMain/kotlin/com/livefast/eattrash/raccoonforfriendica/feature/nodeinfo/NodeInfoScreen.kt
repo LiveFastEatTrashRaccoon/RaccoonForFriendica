@@ -334,10 +334,12 @@ private fun ContactUserItem(
                     .clickable {
                         onClick?.invoke()
                     }.padding(
-                        horizontal = Spacing.s,
-                        vertical = Spacing.s,
+                        start = Spacing.m,
+                        end = Spacing.s,
+                        top = Spacing.s,
+                        bottom = Spacing.s,
                     ),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.m),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (avatar.isNotEmpty()) {
