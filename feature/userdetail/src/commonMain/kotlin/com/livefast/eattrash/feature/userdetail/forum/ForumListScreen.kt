@@ -329,6 +329,7 @@ class ForumListScreen(
                             entry = entry,
                             reshareAndReplyVisible = false,
                             blurNsfw = uiState.blurNsfw,
+                            maxBodyLines = uiState.maxBodyLines,
                             onClick = { e ->
                                 detailOpener.openThread(e)
                             },
