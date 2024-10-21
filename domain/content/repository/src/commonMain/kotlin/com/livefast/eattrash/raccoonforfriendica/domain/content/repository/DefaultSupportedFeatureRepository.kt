@@ -23,7 +23,6 @@ internal class DefaultSupportedFeatureRepository(
                 supportsBBCode = info?.isFriendica == true,
                 supportsMarkdown = info?.isFriendica == false,
                 supportsEntryShare = info?.isFriendica == true,
-                supportsPrivateVisibility = info?.isFriendica == true,
                 supportsCalendar = info?.isFriendica == true,
             )
         }

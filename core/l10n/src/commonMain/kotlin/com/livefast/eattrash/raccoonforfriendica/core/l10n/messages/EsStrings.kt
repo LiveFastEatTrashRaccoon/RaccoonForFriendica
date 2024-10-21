@@ -137,7 +137,7 @@ internal val EsStrings =
             "Por favor, proporcionar un archivo adjunto o una encuesta o algún texto"
         override val visibilityPublic = "Público"
         override val visibilityUnlisted = "Sin clasificar"
-        override val visibilityPrivate = "Privado (Friendica)"
+        override val visibilityPrivate = "Sólo seguidores"
         override val visibilityDirect = "Sólo menciones"
         override val createPostBodyPlaceholder = "Tu impresionante nuevo post… 🪄"
         override val createPostAttachmentsSection = "Archivos adjuntos"

@@ -137,7 +137,7 @@ internal val FrStrings =
             "Veuillez fournir une pièce jointe, un sondage ou un texte."
         override val visibilityPublic = "Public"
         override val visibilityUnlisted = "Non répertorié"
-        override val visibilityPrivate = "Privé (Friendica)"
+        override val visibilityPrivate = "Seuls suiveurs"
         override val visibilityDirect = "Seulement mentionnés"
         override val createPostBodyPlaceholder = "Votre nouveau poste génial… 🪄"
         override val createPostAttachmentsSection = "Annexes"
