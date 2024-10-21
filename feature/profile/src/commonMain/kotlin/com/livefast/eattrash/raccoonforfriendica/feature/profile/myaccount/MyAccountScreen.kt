@@ -284,6 +284,7 @@ object MyAccountScreen : Tab {
                         entry = entry,
                         blurNsfw = uiState.blurNsfw,
                         pollEnabled = false,
+                        maxBodyLines = uiState.maxBodyLines,
                         onClick = { e ->
                             detailOpener.openEntryDetail(e)
                         },
