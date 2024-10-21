@@ -172,6 +172,17 @@ android {
     buildFeatures {
         compose = true
     }
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "x86_64")
+            isUniversalApk = true
+        }
+    }
+    dependenciesInfo {
+        includeInApk = false
+    }
     dependencies {
         debugImplementation(compose.uiTooling)
     }

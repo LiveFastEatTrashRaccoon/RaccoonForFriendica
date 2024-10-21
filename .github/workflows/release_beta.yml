@@ -49,7 +49,7 @@ jobs:
         with:
           name: release-artifacts
           path: |
-            composeApp/build/outputs/apk/release/RaccoonForFriendica-release.apk
+            composeApp/build/outputs/apk/release/*.apk
 
       - name: Create Github release
         uses: softprops/action-gh-release@v2
@@ -57,4 +57,4 @@ jobs:
           generate_release_notes: true
           prerelease: true
           files: |
-            composeApp/build/outputs/apk/release/RaccoonForFriendica-release.apk
+            composeApp/build/outputs/apk/release/*.apk
