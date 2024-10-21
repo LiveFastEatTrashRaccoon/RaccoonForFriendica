@@ -51,6 +51,7 @@ interface InboxMviModel :
         val blurNsfw: Boolean = true,
         val selectedNotificationTypes: List<NotificationType> = NotificationType.ALL,
         val markAllAsReadLoading: Boolean = false,
+        val maxBodyLines: Int = Int.MAX_VALUE,
     )
 
     sealed interface Effect {

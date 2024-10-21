@@ -210,6 +210,7 @@ class InboxScreen : Screen {
                         NotificationItem(
                             notification = notification,
                             blurNsfw = uiState.blurNsfw,
+                            maxBodyLines = uiState.maxBodyLines,
                             onOpenEntry = { entry ->
                                 detailOpener.openEntryDetail(entry)
                                 model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
