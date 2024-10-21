@@ -293,10 +293,7 @@ class ConversationScreen(
                                                         5.dp,
                                                     ),
                                                 shape = RoundedCornerShape(CornerSize.xl),
-                                            ).padding(
-                                                vertical = Spacing.s,
-                                                horizontal = Spacing.s,
-                                            ),
+                                            ).padding(Spacing.m),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     TextWithCustomEmojis(
@@ -306,8 +303,9 @@ class ConversationScreen(
                                                 append(" ")
                                                 append(otherUserName)
                                             },
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onBackground,
                                         emojis = uiState.otherUser?.emojis.orEmpty(),
-                                        style = MaterialTheme.typography.bodyLarge,
                                     )
                                 }
                             }

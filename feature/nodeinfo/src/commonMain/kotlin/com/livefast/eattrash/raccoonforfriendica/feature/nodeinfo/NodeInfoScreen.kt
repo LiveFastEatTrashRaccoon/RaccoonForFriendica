@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +20,6 @@ import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Shield
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -333,13 +331,7 @@ private fun ContactUserItem(
         Row(
             modifier =
                 Modifier
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication =
-                            rememberRipple(
-                                color = MaterialTheme.colorScheme.onBackground.copy(0.5f),
-                            ),
-                    ) {
+                    .clickable {
                         onClick?.invoke()
                     }.padding(
                         horizontal = Spacing.s,
