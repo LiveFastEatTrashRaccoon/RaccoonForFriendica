@@ -19,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Unpub
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -26,6 +27,7 @@ import kotlinx.coroutines.launch
 class UnpublishedViewModel(
     private val paginationManager: UnpublishedPaginationManager,
     private val identityRepository: IdentityRepository,
+    private val settingsRepository: SettingsRepository,
     private val scheduledEntryRepository: ScheduledEntryRepository,
     private val draftRepository: DraftRepository,
     private val notificationCenter: NotificationCenter,
@@ -58,6 +60,15 @@ class UnpublishedViewModel(
 
                     if (uiState.value.initial) {
                         refresh(initial = true)
+                    }
+                }.launchIn(this)
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            blurNsfw = settings?.blurNsfw ?: true,
+                            maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                        )
                     }
                 }.launchIn(this)
         }

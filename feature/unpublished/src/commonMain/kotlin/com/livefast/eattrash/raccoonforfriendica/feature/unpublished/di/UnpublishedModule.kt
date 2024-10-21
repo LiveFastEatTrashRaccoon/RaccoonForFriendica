@@ -10,6 +10,7 @@ val featureUnpublishedModule =
             UnpublishedViewModel(
                 paginationManager = get(),
                 identityRepository = get(),
+                settingsRepository = get(),
                 scheduledEntryRepository = get(),
                 draftRepository = get(),
                 notificationCenter = get(),
