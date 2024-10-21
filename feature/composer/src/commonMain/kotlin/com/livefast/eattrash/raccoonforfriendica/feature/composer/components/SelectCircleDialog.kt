@@ -14,19 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
@@ -100,37 +98,33 @@ private fun CircleResultItem(
     val avatarSize = IconSize.m
     val fullColor = MaterialTheme.colorScheme.onBackground
 
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(CornerSize.xxl),
-        color = Color.Transparent,
+    Row(
+        modifier =
+            modifier
+                .clip(
+                    shape = RoundedCornerShape(CornerSize.xxl),
+                ).clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication =
+                        ripple(
+                            color = MaterialTheme.colorScheme.onBackground.copy(0.5f),
+                        ),
+                ) {
+                    onClick?.invoke()
+                }.padding(Spacing.s),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier =
-                Modifier
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication =
-                            rememberRipple(
-                                color = MaterialTheme.colorScheme.onBackground.copy(0.5f),
-                            ),
-                    ) {
-                        onClick?.invoke()
-                    }.padding(Spacing.s),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            PlaceholderImage(
-                size = avatarSize,
-                title = circle.name,
-            )
+        PlaceholderImage(
+            size = avatarSize,
+            title = circle.name,
+        )
 
-            Text(
-                modifier = Modifier.weight(1f),
-                text = circle.name,
-                style = MaterialTheme.typography.titleMedium,
-                color = fullColor,
-            )
-        }
+        Text(
+            modifier = Modifier.weight(1f),
+            text = circle.name,
+            style = MaterialTheme.typography.titleMedium,
+            color = fullColor,
+        )
     }
 }
