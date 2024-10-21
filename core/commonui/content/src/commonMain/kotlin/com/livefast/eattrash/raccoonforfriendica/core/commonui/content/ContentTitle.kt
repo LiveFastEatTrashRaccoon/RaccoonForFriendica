@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
@@ -27,6 +28,7 @@ fun ContentTitle(
             style = MaterialTheme.typography.titleMedium.copy(color = color),
             text = annotatedContent,
             maxLines = maxLines,
+            overflow = TextOverflow.Ellipsis,
             emojis = emojis,
             onClick = { offset ->
                 val url =
