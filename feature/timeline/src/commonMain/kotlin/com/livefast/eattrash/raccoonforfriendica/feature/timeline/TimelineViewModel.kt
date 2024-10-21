@@ -61,6 +61,7 @@ class TimelineViewModel(
                         it.copy(
                             timelineType = settings?.defaultTimelineType?.toTimelineType(),
                             blurNsfw = settings?.blurNsfw ?: true,
+                            maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                         )
                     }
                 }.launchIn(this)
