@@ -90,6 +90,7 @@ interface SearchMviModel :
         val section: SearchSection = SearchSection.Hashtags,
         val items: List<ExploreItemModel> = emptyList(),
         val blurNsfw: Boolean = true,
+        val maxBodyLines: Int = Int.MAX_VALUE,
     )
 
     sealed interface Effect {

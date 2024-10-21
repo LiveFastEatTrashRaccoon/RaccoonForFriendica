@@ -215,6 +215,7 @@ class FavoritesScreen(
                         TimelineItem(
                             entry = entry,
                             blurNsfw = uiState.blurNsfw,
+                            maxBodyLines = uiState.maxBodyLines,
                             onClick = { e ->
                                 detailOpener.openEntryDetail(e)
                             },

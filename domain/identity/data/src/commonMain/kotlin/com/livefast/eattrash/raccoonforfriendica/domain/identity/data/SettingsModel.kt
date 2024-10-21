@@ -22,4 +22,5 @@ data class SettingsModel(
     val excludeRepliesFromTimeline: Boolean = false,
     val openGroupsInForumModeByDefault: Boolean = true,
     val markupMode: MarkupMode = MarkupMode.HTML,
+    val maxPostBodyLines: Int = Int.MAX_VALUE,
 )

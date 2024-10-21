@@ -85,6 +85,7 @@ interface ExploreMviModel :
         val availableSections: List<ExploreSection> = emptyList(),
         val items: List<ExploreItemModel> = emptyList(),
         val blurNsfw: Boolean = true,
+        val maxBodyLines: Int = Int.MAX_VALUE,
     )
 
     sealed interface Effect {

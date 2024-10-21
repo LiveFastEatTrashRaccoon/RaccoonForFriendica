@@ -45,7 +45,12 @@ class HashtagViewModel(
         screenModelScope.launch {
             settingsRepository.current
                 .onEach { settings ->
-                    updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                    updateState {
+                        it.copy(
+                            blurNsfw = settings?.blurNsfw ?: true,
+                            maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                        )
+                    }
                 }.launchIn(this)
             identityRepository.currentUser
                 .onEach { currentUser ->

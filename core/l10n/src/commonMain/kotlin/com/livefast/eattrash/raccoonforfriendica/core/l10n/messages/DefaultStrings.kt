@@ -381,4 +381,6 @@ internal open class DefaultStrings : Strings {
     override val actionCopyToClipboard = "Copy to clipboard"
     override val calendarTitle = "Calendar"
     override val actionSaveToCalendar = "Save to calendar"
+    override val settingsItemMaxPostBodyLines = "Max post body lines"
+    override val settingsOptionUnlimited = "Unlimited"
 }

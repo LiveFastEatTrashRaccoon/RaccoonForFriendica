@@ -46,6 +46,7 @@ internal fun NotificationItem(
     notification: NotificationModel,
     modifier: Modifier = Modifier,
     blurNsfw: Boolean = false,
+    maxBodyLines: Int = Int.MAX_VALUE,
     onOpenUrl: ((String) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
@@ -127,6 +128,7 @@ internal fun NotificationItem(
                         ),
                     entry = entry,
                     blurNsfw = blurNsfw,
+                    maxBodyLines = maxBodyLines,
                     actionsEnabled = false,
                     pollEnabled = false,
                     onClick = {

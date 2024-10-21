@@ -75,6 +75,7 @@ interface HashtagMviModel :
         val canFetchMore: Boolean = true,
         val entries: List<TimelineEntryModel> = emptyList(),
         val blurNsfw: Boolean = true,
+        val maxBodyLines: Int = Int.MAX_VALUE,
     )
 
     sealed interface Effect {

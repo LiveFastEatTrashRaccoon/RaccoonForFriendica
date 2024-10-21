@@ -385,4 +385,6 @@ internal val DeStrings =
         override val buttonPublishAnyway = "Trotzdem veröffentlichen"
         override val actionCopyToClipboard = "In die Zwischenablage kopieren"
         override val actionSaveToCalendar = "Im Kalender speichern"
+        override val settingsItemMaxPostBodyLines = "Maximale Zeilenzahl für Beitragstext"
+        override val settingsOptionUnlimited = "Unbegrenzt"
     }

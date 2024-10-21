@@ -344,6 +344,8 @@ interface Strings {
     val actionCopyToClipboard: String
     val calendarTitle: String
     val actionSaveToCalendar: String
+    val settingsItemMaxPostBodyLines: String
+    val settingsOptionUnlimited: String
 }
 
 object Locales {

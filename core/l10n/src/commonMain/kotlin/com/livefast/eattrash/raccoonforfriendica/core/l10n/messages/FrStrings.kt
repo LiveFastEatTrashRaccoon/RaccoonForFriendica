@@ -390,4 +390,6 @@ internal val FrStrings =
         override val buttonPublishAnyway = "Publier quand même"
         override val actionCopyToClipboard = "Copier dans le presse-papiers"
         override val actionSaveToCalendar = "Enregistrer dans le calendrier"
+        override val settingsItemMaxPostBodyLines = "Nombre maximal lignes corps des postes"
+        override val settingsOptionUnlimited = "Illimité"
     }

@@ -212,6 +212,7 @@ class UnpublishedScreen : Screen {
                         TimelineItem(
                             entry = entry,
                             blurNsfw = uiState.blurNsfw,
+                            maxBodyLines = uiState.maxBodyLines,
                             actionsEnabled = false,
                             onToggleSpoilerActive = { e ->
                                 model.reduce(UnpublishedMviModel.Intent.ToggleSpoilerActive(e))

@@ -56,6 +56,7 @@ private fun SettingsEntity.toModel() =
         excludeRepliesFromTimeline = excludeRepliesFromTimeline,
         openGroupsInForumModeByDefault = openGroupsInForumModeByDefault,
         markupMode = markupMode.toMarkupMode(),
+        maxPostBodyLines = maxPostBodyLines.toDomainMaxLines(),
     )
 
 private fun SettingsModel.toEntity() =
@@ -77,6 +78,7 @@ private fun SettingsModel.toEntity() =
         excludeRepliesFromTimeline = excludeRepliesFromTimeline,
         openGroupsInForumModeByDefault = openGroupsInForumModeByDefault,
         markupMode = markupMode.toInt(),
+        maxPostBodyLines = maxPostBodyLines.toEntityMaxLines(),
     )
 
 private fun Int.toMarkupMode(): MarkupMode =
@@ -93,4 +95,17 @@ private fun MarkupMode.toInt() =
         MarkupMode.BBCode -> 2
         MarkupMode.Markdown -> 3
         MarkupMode.PlainText -> 0
+    }
+
+private fun Int.toDomainMaxLines(): Int =
+    when (this) {
+        // interpret null values as unlimited
+        0 -> Int.MAX_VALUE
+        else -> this
+    }
+
+private fun Int.toEntityMaxLines(): Int =
+    when (this) {
+        Int.MAX_VALUE -> 0
+        else -> this
     }

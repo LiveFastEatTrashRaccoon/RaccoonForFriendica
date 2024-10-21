@@ -76,6 +76,7 @@ interface TimelineMviModel :
         val availableTimelineTypes: List<TimelineType> = emptyList(),
         val entries: List<TimelineEntryModel> = emptyList(),
         val blurNsfw: Boolean = true,
+        val maxBodyLines: Int = Int.MAX_VALUE,
     )
 
     sealed interface Effect {

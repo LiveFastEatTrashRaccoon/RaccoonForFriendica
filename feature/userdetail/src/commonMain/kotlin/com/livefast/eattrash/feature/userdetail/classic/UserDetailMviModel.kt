@@ -85,6 +85,7 @@ interface UserDetailMviModel :
         val blurNsfw: Boolean = true,
         val personalNote: String? = null,
         val personalNoteEditEnabled: Boolean = false,
+        val maxBodyLines: Int = Int.MAX_VALUE,
     )
 
     sealed interface Effect {
