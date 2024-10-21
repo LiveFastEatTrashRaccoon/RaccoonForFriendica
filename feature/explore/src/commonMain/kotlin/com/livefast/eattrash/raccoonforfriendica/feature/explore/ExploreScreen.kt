@@ -309,6 +309,7 @@ class ExploreScreen : Screen {
                                 TimelineItem(
                                     entry = item.entry,
                                     blurNsfw = uiState.blurNsfw,
+                                    maxBodyLines = uiState.maxBodyLines,
                                     onClick = { e ->
                                         detailOpener.openEntryDetail(e)
                                     },

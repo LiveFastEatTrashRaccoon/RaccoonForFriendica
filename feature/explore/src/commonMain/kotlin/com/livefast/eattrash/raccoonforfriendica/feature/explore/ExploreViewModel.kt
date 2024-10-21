@@ -50,6 +50,7 @@ class ExploreViewModel(
                     updateState {
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
+                            maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                         )
                     }
                 }.launchIn(this)
