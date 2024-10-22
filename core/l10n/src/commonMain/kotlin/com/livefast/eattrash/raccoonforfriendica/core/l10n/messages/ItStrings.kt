@@ -388,4 +388,5 @@ internal val ItStrings =
         override val actionSaveToCalendar = "Salva su calendario"
         override val settingsItemMaxPostBodyLines = "Numero massimo righe testo post"
         override val settingsOptionUnlimited = "Illimitato"
+        override val settingsAboutLicences = "Licenze"
     }

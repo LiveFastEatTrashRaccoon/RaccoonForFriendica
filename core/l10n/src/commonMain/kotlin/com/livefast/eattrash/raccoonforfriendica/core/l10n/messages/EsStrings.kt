@@ -388,4 +388,5 @@ internal val EsStrings =
         override val actionSaveToCalendar = "Guardar en el calendario"
         override val settingsItemMaxPostBodyLines = "Número máximo líneas cuerpo post"
         override val settingsOptionUnlimited = "Ilimitado"
+        override val settingsAboutLicences = "Licencias"
     }

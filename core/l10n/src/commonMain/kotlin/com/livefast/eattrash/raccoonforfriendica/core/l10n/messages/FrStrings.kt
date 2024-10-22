@@ -392,4 +392,5 @@ internal val FrStrings =
         override val actionSaveToCalendar = "Enregistrer dans le calendrier"
         override val settingsItemMaxPostBodyLines = "Nombre maximal lignes corps des postes"
         override val settingsOptionUnlimited = "Illimité"
+        override val settingsAboutLicences = "Licences"
     }

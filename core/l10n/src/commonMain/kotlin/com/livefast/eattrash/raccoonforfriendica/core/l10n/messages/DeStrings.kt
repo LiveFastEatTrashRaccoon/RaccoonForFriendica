@@ -387,4 +387,5 @@ internal val DeStrings =
         override val actionSaveToCalendar = "Im Kalender speichern"
         override val settingsItemMaxPostBodyLines = "Maximale Zeilenzahl für Beitragstext"
         override val settingsOptionUnlimited = "Unbegrenzt"
+        override val settingsAboutLicences = "Lizenzen"
     }
