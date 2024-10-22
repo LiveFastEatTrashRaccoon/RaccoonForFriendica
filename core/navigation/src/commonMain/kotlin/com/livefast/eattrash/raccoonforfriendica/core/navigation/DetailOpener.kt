@@ -106,4 +106,6 @@ interface DetailOpener {
     fun openCalendar()
 
     fun openEvent(event: EventModel)
+
+    fun openLicences()
 }

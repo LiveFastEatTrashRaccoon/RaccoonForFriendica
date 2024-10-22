@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
@@ -116,6 +117,16 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                         textDecoration = TextDecoration.Underline,
                         onClick = {
                             uriHandler.openUri(AboutConstants.GROUP_URL)
+                        },
+                    )
+                }
+                item {
+                    AboutItem(
+                        text = LocalStrings.current.settingsAboutLicences,
+                        icon = Icons.Default.Gavel,
+                        textDecoration = TextDecoration.Underline,
+                        onClick = {
+                            detailOpener.openLicences()
                         },
                     )
                 }

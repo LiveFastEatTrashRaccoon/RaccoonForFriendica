@@ -89,6 +89,7 @@ kotlin {
             implementation(projects.feature.hashtag)
             implementation(projects.feature.imagedetail)
             implementation(projects.feature.inbox)
+            implementation(projects.feature.licences)
             implementation(projects.feature.login)
             implementation(projects.feature.manageblocks)
             implementation(projects.feature.nodeinfo)

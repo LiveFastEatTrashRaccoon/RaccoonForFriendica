@@ -36,6 +36,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
+import com.livefast.eattrash.raccoonforlemmy.unit.licences.LicencesScreen
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -446,6 +447,15 @@ class DefaultDetailOpenerTest {
         verify {
             eventCache.put("0", event)
             navigationCoordinator.push(any<EventDetailScreen>())
+        }
+    }
+
+    @Test
+    fun `when openLicences then interactions are as expected`() {
+        sut.openLicences()
+
+        verify {
+            navigationCoordinator.push(any<LicencesScreen>())
         }
     }
 }

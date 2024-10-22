@@ -46,6 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.timeline.di.featureTime
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.di.featureUnpublishedModule
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.featureUserListModule
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.di.featureSearchModule
+import com.livefast.eattrash.raccoonforlemmy.unit.licences.di.featureLicenceModule
 import org.koin.dsl.module
 
 val sharedHelperModule =
@@ -84,6 +85,7 @@ val sharedHelperModule =
             featureHashtagModule,
             featureImageDetailModule,
             featureInboxModule,
+            featureLicenceModule,
             featureLoginModule,
             featureManageBlocksModule,
             featureProfileModule,

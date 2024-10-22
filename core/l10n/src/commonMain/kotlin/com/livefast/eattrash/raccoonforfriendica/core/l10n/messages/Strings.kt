@@ -346,6 +346,7 @@ interface Strings {
     val actionSaveToCalendar: String
     val settingsItemMaxPostBodyLines: String
     val settingsOptionUnlimited: String
+    val settingsAboutLicences: String
 }
 
 object Locales {
