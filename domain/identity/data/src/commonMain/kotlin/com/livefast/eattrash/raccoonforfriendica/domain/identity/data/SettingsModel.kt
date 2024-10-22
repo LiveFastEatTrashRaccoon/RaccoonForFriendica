@@ -14,6 +14,7 @@ data class SettingsModel(
     val dynamicColors: Boolean = false,
     val customSeedColor: Int? = null,
     val defaultTimelineType: Int = 0,
+    val defaultTimelineId: String? = null,
     val includeNsfw: Boolean = false,
     val blurNsfw: Boolean = true,
     val urlOpeningMode: UrlOpeningMode = UrlOpeningMode.External,

@@ -35,6 +35,7 @@ fun TimelineType.toInt(): Int =
     when (this) {
         TimelineType.All -> 1
         TimelineType.Subscriptions -> 2
+        is TimelineType.Circle -> 3
         else -> 0
     }
 
@@ -42,6 +43,7 @@ fun Int.toTimelineType(): TimelineType =
     when (this) {
         1 -> TimelineType.All
         2 -> TimelineType.Subscriptions
+        3 -> TimelineType.Circle("", "")
         else -> TimelineType.Local
     }
 
