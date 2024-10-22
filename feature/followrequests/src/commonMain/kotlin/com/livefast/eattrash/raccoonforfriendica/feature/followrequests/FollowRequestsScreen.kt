@@ -9,12 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -24,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,7 +45,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.componen
 import kotlinx.coroutines.launch
 
 class FollowRequestsScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val model = getScreenModel<FollowRequestsMviModel>()
@@ -99,20 +96,16 @@ class FollowRequestsScreen : Screen {
                 )
             },
         ) { padding ->
-            val pullRefreshState =
-                rememberPullRefreshState(
-                    refreshing = uiState.refreshing,
-                    onRefresh = {
-                        model.reduce(FollowRequestsMviModel.Intent.Refresh)
-                    },
-                )
-            Box(
+            PullToRefreshBox(
                 modifier =
                     Modifier
                         .padding(padding)
                         .fillMaxWidth()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .pullRefresh(pullRefreshState),
+                        .nestedScroll(scrollBehavior.nestedScrollConnection),
+                isRefreshing = uiState.refreshing,
+                onRefresh = {
+                    model.reduce(FollowRequestsMviModel.Intent.Refresh)
+                },
             ) {
                 LazyColumn(
                     state = lazyListState,
@@ -181,14 +174,6 @@ class FollowRequestsScreen : Screen {
                         Spacer(modifier = Modifier.height(Spacing.xxxl))
                     }
                 }
-
-                PullRefreshIndicator(
-                    refreshing = uiState.refreshing,
-                    state = pullRefreshState,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    contentColor = MaterialTheme.colorScheme.primary,
-                )
             }
         }
     }
