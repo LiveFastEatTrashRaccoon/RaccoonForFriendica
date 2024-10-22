@@ -6,7 +6,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,13 +15,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Reply
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -37,6 +32,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,7 +42,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -88,7 +83,7 @@ import kotlin.time.Duration
 class ThreadScreen(
     private val entryId: String,
 ) : Screen {
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val model = getScreenModel<ThreadMviModel>(parameters = { parameterArrayOf(entryId) })
@@ -209,21 +204,17 @@ class ThreadScreen(
                 }
             },
         ) { padding ->
-            val pullRefreshState =
-                rememberPullRefreshState(
-                    refreshing = uiState.refreshing,
-                    onRefresh = {
-                        model.reduce(ThreadMviModel.Intent.Refresh)
-                    },
-                )
-            Box(
+            PullToRefreshBox(
                 modifier =
                     Modifier
                         .padding(padding)
                         .fillMaxWidth()
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .nestedScroll(fabNestedScrollConnection)
-                        .pullRefresh(pullRefreshState),
+                        .nestedScroll(fabNestedScrollConnection),
+                isRefreshing = uiState.refreshing,
+                onRefresh = {
+                    model.reduce(ThreadMviModel.Intent.Refresh)
+                },
             ) {
                 LazyColumn(
                     state = lazyListState,
@@ -557,14 +548,6 @@ class ThreadScreen(
                         Spacer(modifier = Modifier.height(Spacing.xxxl))
                     }
                 }
-
-                PullRefreshIndicator(
-                    refreshing = uiState.refreshing,
-                    state = pullRefreshState,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    contentColor = MaterialTheme.colorScheme.primary,
-                )
             }
         }
 

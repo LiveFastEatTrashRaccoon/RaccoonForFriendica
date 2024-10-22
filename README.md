@@ -2,10 +2,10 @@
   <img alt="badge for Kotlin" src="https://img.shields.io/badge/Kotlin-2.0.21-7F52FF?logo=kotlin" />
   <img alt="badge for Gradle" src="https://img.shields.io/badge/Gradle-8.8-02303A?logo=gradle" />
   <img alt="badge for Android" src="https://img.shields.io/badge/Android-26+-34A853?logo=android" />
-  <img alt="badge for Jetpack Compose" src="https://img.shields.io/badge/Compose-1.6.7-4285F4?logo=jetpackcompose" />
-  <img alt="badge for license" src="https://img.shields.io/github/license/LiveFastEatTrashRaccoon/RaccoonForFriendica" />
-  <img alt="badge for build workflow status" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/build.yml/badge.svg" />
-  <img alt="badge for unit test workflow status" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/unit_tests.yml/badge.svg" />
+  <img alt="badge for Compose Multiplatform" src="https://img.shields.io/badge/Compose-Multiplatform-1.7.0-4285F4?logo=jetpackcompose" />
+  <img alt="badge for project license" src="https://img.shields.io/github/license/LiveFastEatTrashRaccoon/RaccoonForFriendica" />
+  <img alt="badge for build status" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/build.yml/badge.svg" />
+  <img alt="badge for unit test status" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/unit_tests.yml/badge.svg" />
 </div>
 
 # RaccoonForFriendica

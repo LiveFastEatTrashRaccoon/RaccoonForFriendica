@@ -18,13 +18,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -37,6 +33,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -81,7 +78,7 @@ class ConversationScreen(
     private val otherUserId: String,
     private val parentUri: String,
 ) : Screen {
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val model =
@@ -236,19 +233,15 @@ class ConversationScreen(
                 }
             },
         ) { padding ->
-            val pullRefreshState =
-                rememberPullRefreshState(
-                    refreshing = uiState.refreshing,
-                    onRefresh = {
-                        model.reduce(ConversationMviModel.Intent.Refresh)
-                    },
-                )
-            Box(
+            PullToRefreshBox(
                 modifier =
                     Modifier
                         .padding(padding)
-                        .fillMaxSize()
-                        .pullRefresh(pullRefreshState),
+                        .fillMaxSize(),
+                isRefreshing = uiState.refreshing,
+                onRefresh = {
+                    model.reduce(ConversationMviModel.Intent.Refresh)
+                },
             ) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -356,14 +349,6 @@ class ConversationScreen(
                         Spacer(modifier = Modifier.height(Spacing.xl))
                     }
                 }
-
-                PullRefreshIndicator(
-                    refreshing = uiState.refreshing,
-                    state = pullRefreshState,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    contentColor = MaterialTheme.colorScheme.primary,
-                )
             }
         }
     }
