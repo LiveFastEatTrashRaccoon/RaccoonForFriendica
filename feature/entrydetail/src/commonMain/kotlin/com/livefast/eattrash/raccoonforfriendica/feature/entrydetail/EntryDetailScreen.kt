@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,13 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Reply
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -32,6 +27,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +37,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -84,7 +79,7 @@ class EntryDetailScreen(
     override val key: ScreenKey
         get() = super.key + id
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val model = getScreenModel<EntryDetailMviModel>(parameters = { parametersOf(id) })
@@ -219,21 +214,17 @@ class EntryDetailScreen(
                 }
             },
         ) { padding ->
-            val pullRefreshState =
-                rememberPullRefreshState(
-                    refreshing = uiState.refreshing,
-                    onRefresh = {
-                        model.reduce(EntryDetailMviModel.Intent.Refresh)
-                    },
-                )
-            Box(
+            PullToRefreshBox(
                 modifier =
                     Modifier
                         .padding(padding)
                         .fillMaxWidth()
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .nestedScroll(fabNestedScrollConnection)
-                        .pullRefresh(pullRefreshState),
+                        .nestedScroll(fabNestedScrollConnection),
+                isRefreshing = uiState.refreshing,
+                onRefresh = {
+                    model.reduce(EntryDetailMviModel.Intent.Refresh)
+                },
             ) {
                 LazyColumn(
                     state = lazyListState,
@@ -444,14 +435,6 @@ class EntryDetailScreen(
                         Spacer(modifier = Modifier.height(Spacing.xxxl))
                     }
                 }
-
-                PullRefreshIndicator(
-                    refreshing = uiState.refreshing,
-                    state = pullRefreshState,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    contentColor = MaterialTheme.colorScheme.primary,
-                )
             }
         }
 
