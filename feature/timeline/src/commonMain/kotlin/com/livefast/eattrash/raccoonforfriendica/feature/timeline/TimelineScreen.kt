@@ -15,13 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -35,6 +31,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -91,7 +88,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
 class TimelineScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val model = getScreenModel<TimelineMviModel>()
@@ -229,14 +226,7 @@ class TimelineScreen : Screen {
                 }
             },
         ) { padding ->
-            val pullRefreshState =
-                rememberPullRefreshState(
-                    refreshing = uiState.refreshing,
-                    onRefresh = {
-                        model.reduce(TimelineMviModel.Intent.Refresh)
-                    },
-                )
-            Box(
+            PullToRefreshBox(
                 modifier =
                     Modifier
                         .padding(padding)
@@ -248,8 +238,11 @@ class TimelineScreen : Screen {
                                 Modifier
                             },
                         ).nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .nestedScroll(fabNestedScrollConnection)
-                        .pullRefresh(pullRefreshState),
+                        .nestedScroll(fabNestedScrollConnection),
+                isRefreshing = uiState.refreshing,
+                onRefresh = {
+                    model.reduce(TimelineMviModel.Intent.Refresh)
+                },
             ) {
                 LazyColumn(
                     state = lazyListState,
@@ -470,14 +463,6 @@ class TimelineScreen : Screen {
                         Spacer(modifier = Modifier.height(Spacing.xxxl))
                     }
                 }
-
-                PullRefreshIndicator(
-                    refreshing = uiState.refreshing,
-                    state = pullRefreshState,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    contentColor = MaterialTheme.colorScheme.primary,
-                )
             }
         }
 
