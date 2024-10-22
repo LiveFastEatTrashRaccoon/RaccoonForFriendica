@@ -57,9 +57,23 @@ class TimelineViewModel(
         screenModelScope.launch {
             settingsRepository.current
                 .onEach { settings ->
+                    val defaultCircle =
+                        settings?.defaultTimelineId?.let { circlesRepository.get(it) }
+                    val defaultTimelineType =
+                        settings?.defaultTimelineType?.toTimelineType().let { type ->
+                            when (type) {
+                                is TimelineType.Circle ->
+                                    type.copy(
+                                        id = defaultCircle?.id.orEmpty(),
+                                        name = defaultCircle?.name.orEmpty(),
+                                    )
+
+                                else -> type
+                            }
+                        }
                     updateState {
                         it.copy(
-                            timelineType = settings?.defaultTimelineType?.toTimelineType(),
+                            timelineType = defaultTimelineType,
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                         )
@@ -152,7 +166,7 @@ class TimelineViewModel(
 
     private suspend fun refreshCirclesInTimelineTypes(isLogged: Boolean) {
         val circles = circlesRepository.getAll().orEmpty()
-        val settings = settingsRepository.current.value
+        val settings = settingsRepository.current.value ?: SettingsModel()
         val defaultTimelineTypes =
             buildList {
                 this += TimelineType.All
@@ -166,10 +180,15 @@ class TimelineViewModel(
         val currentTimelineType = uiState.value.timelineType
         val newTimelineType =
             if (currentTimelineType is TimelineType.Circle) {
-                val newCircle = circles.firstOrNull { it.id == currentTimelineType.id }
+                val currentCircleId = currentTimelineType.id
+                val newCircle = circles.firstOrNull { it.id == currentCircleId }
                 if (newCircle == null) {
                     // circle has been deleted
-                    settings?.defaultTimelineType?.toTimelineType()
+                    settings.defaultTimelineType
+                        .toTimelineType()
+                        .takeIf { type ->
+                            type !is TimelineType.Circle || settings.defaultTimelineId != currentCircleId
+                        } ?: TimelineType.Local
                 } else {
                     // circle has been renamed
                     TimelineType.Circle(id = currentTimelineType.id, name = newCircle.name)
