@@ -39,6 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
+import com.livefast.eattrash.raccoonforlemmy.unit.licences.LicencesScreen
 
 class DefaultDetailOpener(
     private val navigationCoordinator: NavigationCoordinator,
@@ -344,6 +345,11 @@ class DefaultDetailOpener(
     override fun openEvent(event: EventModel) {
         eventCache.put(event.id, event)
         val screen = EventDetailScreen(event.id)
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openLicences() {
+        val screen = LicencesScreen()
         navigationCoordinator.push(screen)
     }
 }
