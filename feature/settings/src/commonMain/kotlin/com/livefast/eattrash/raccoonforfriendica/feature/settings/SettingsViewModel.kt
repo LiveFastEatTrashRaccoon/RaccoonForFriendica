@@ -23,9 +23,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsMo
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications.PullNotificationChecker
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
@@ -36,6 +38,7 @@ class SettingsViewModel(
     private val identityRepository: IdentityRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val circlesRepository: CirclesRepository,
+    private val pullNotificationChecker: PullNotificationChecker,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
@@ -60,6 +63,8 @@ class SettingsViewModel(
                         it.copy(
                             availableTimelineTypes = timelineTypes,
                             isLogged = isLogged,
+                            supportsBackgroundNotificationCheck = pullNotificationChecker.isBackgroundCheckSupported,
+                            isBackgroundNotificationCheckRestricted = pullNotificationChecker.isBackgroundRestricted,
                         )
                     }
                 }.launchIn(this)
@@ -115,7 +120,7 @@ class SettingsViewModel(
 
                                                 else -> type
                                             }
-                                    },
+                                        },
                                 includeNsfw = settings.includeNsfw,
                                 blurNsfw = settings.blurNsfw,
                                 urlOpeningMode = settings.urlOpeningMode,
@@ -125,6 +130,7 @@ class SettingsViewModel(
                                 openGroupsInForumModeByDefault = settings.openGroupsInForumModeByDefault,
                                 markupMode = settings.markupMode,
                                 maxPostBodyLines = settings.maxPostBodyLines,
+                                backgroundNotificationCheckInterval = settings.pullNotificationCheckInterval,
                             )
                         }
                     }
@@ -245,6 +251,11 @@ class SettingsViewModel(
                 screenModelScope.launch {
                     changeMaxPostBodyLines(intent.value)
                 }
+
+            is SettingsMviModel.Intent.ChangeBackgroundNotificationCheckInterval ->
+                screenModelScope.launch {
+                    changePullNotificationCheckInterval(intent.duration)
+                }
         }
     }
 
@@ -345,6 +356,12 @@ class SettingsViewModel(
     private suspend fun changeMaxPostBodyLines(value: Int) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(maxPostBodyLines = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changePullNotificationCheckInterval(value: Duration?) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(pullNotificationCheckInterval = value)
         saveSettings(newSettings)
     }
 

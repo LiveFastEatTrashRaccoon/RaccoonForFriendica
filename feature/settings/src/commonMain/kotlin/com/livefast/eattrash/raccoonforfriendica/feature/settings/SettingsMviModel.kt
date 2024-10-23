@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineTyp
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
+import kotlin.time.Duration
 
 @Stable
 interface SettingsMviModel :
@@ -81,6 +82,10 @@ interface SettingsMviModel :
         data class ChangeMaxPostBodyLines(
             val value: Int,
         ) : Intent
+
+        data class ChangeBackgroundNotificationCheckInterval(
+            val duration: Duration?,
+        ) : Intent
     }
 
     data class State(
@@ -106,6 +111,9 @@ interface SettingsMviModel :
         val markupMode: MarkupMode = MarkupMode.HTML,
         val availableMarkupModes: List<MarkupMode> = emptyList(),
         val maxPostBodyLines: Int = Int.MAX_VALUE,
+        val supportsBackgroundNotificationCheck: Boolean = false,
+        val isBackgroundNotificationCheckRestricted: Boolean = false,
+        val backgroundNotificationCheckInterval: Duration? = null,
     )
 
     sealed interface Effect
