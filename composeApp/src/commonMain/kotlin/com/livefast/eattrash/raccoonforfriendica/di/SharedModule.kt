@@ -13,6 +13,8 @@ internal val sharedModule =
         factory<MainMviModel> {
             MainViewModel(
                 inboxManager = get(),
+                settingsRepository = get(),
+                notificationChecker = get(),
             )
         }
         single<DetailOpener> {
