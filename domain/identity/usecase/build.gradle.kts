@@ -28,6 +28,11 @@ kotlin {
     }
 
     sourceSets {
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.androidx.work.runtime)
+            }
+        }
         val commonMain by getting {
             dependencies {
                 implementation(compose.foundation)
@@ -36,8 +41,10 @@ kotlin {
                 implementation(libs.koin.core)
 
                 implementation(projects.core.appearance)
-                implementation(projects.core.preferences)
+                implementation(projects.core.l10n)
                 implementation(projects.core.navigation)
+                implementation(projects.core.preferences)
+                implementation(projects.core.resources)
                 implementation(projects.core.utils)
 
                 implementation(projects.domain.content.data)
