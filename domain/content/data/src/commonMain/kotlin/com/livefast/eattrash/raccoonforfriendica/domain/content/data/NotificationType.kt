@@ -25,12 +25,14 @@ sealed interface NotificationType {
     companion object {
         val ALL =
             listOf(
+                Entry,
+                Favorite,
                 Follow,
                 FollowRequest,
                 Mention,
-                Entry,
-                Update,
                 Poll,
+                Reblog,
+                Update,
             )
     }
 }

@@ -18,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultNotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPhotoRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultPushNotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultReportRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultScheduledEntryRepository
@@ -41,6 +42,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeI
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PushNotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReportRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
@@ -180,6 +182,11 @@ val domainContentRepositoryModule =
         }
         single<EventRepository> {
             DefaultEventRepository(
+                provider = get(named("default")),
+            )
+        }
+        single<PushNotificationRepository> {
+            DefaultPushNotificationRepository(
                 provider = get(named("default")),
             )
         }
