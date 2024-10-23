@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationSe
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoAlbumService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PollService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.PushService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ReportService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.SearchService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.StatusService
@@ -33,6 +34,7 @@ interface ServiceProvider {
     val photo: PhotoService
     val photoAlbum: PhotoAlbumService
     val polls: PollService
+    val push: PushService
     val reports: ReportService
     val search: SearchService
     val statuses: StatusService
