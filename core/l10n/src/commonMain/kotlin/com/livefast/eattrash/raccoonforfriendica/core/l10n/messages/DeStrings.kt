@@ -388,4 +388,18 @@ internal val DeStrings =
         override val settingsItemMaxPostBodyLines = "Maximale Zeilenzahl für Beitragstext"
         override val settingsOptionUnlimited = "Unbegrenzt"
         override val settingsAboutLicences = "Lizenzen"
+        override val settingsOptionBackgroundNotificationCheck =
+            "Prüfung auf Benachrichtigungen im Hintergrund"
+        override val settingsSubtitleBackgroundNotificationRestricted =
+            "Aktivieren Sie die Hintergrundaktivität für die Anwendung in den Systemeinstellungen"
+        override val settingsSubtitleBackgroundNotificationNotRestricted =
+            "Keine Systembeschränkung für Hintergrundaktivitäten "
+        override val durationNever = "Niemals"
+        override val unreadNotificationTitle = "Überprüfen Sie Ihre Benachrichtigungen!"
+
+        override fun unreadNotificationBody(count: Int) =
+            when (count) {
+                1 -> "Es gibt $count Artikel in der 🗑️"
+                else -> "Es gibt $count Artikel in der 🗑️"
+            }
     }

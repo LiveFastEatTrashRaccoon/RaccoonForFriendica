@@ -384,4 +384,17 @@ internal open class DefaultStrings : Strings {
     override val settingsItemMaxPostBodyLines = "Max post body lines"
     override val settingsOptionUnlimited = "Unlimited"
     override val settingsAboutLicences = "Licenses"
+    override val settingsOptionBackgroundNotificationCheck = "Check for notifications in background"
+    override val settingsSubtitleBackgroundNotificationRestricted =
+        "Please enable background activity for app in system settings"
+    override val settingsSubtitleBackgroundNotificationNotRestricted =
+        "No system restrictions for background activity"
+    override val durationNever = "Never"
+    override val unreadNotificationTitle = "Check out your notifications!"
+
+    override fun unreadNotificationBody(count: Int) =
+        when (count) {
+            1 -> "There is $count item in your 🗑️"
+            else -> "There are $count items in your 🗑️"
+        }
 }

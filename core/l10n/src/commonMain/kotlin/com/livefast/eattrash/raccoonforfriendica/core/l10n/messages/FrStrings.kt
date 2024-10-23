@@ -393,4 +393,17 @@ internal val FrStrings =
         override val settingsItemMaxPostBodyLines = "Nombre maximal lignes corps des postes"
         override val settingsOptionUnlimited = "Illimité"
         override val settingsAboutLicences = "Licences"
+        override val settingsOptionBackgroundNotificationCheck = "Vérifier les notifications en arrière-plan"
+        override val settingsSubtitleBackgroundNotificationRestricted =
+            "Veuillez activer l'activité en arrière-plan pour l'app dans les paramètres du système"
+        override val settingsSubtitleBackgroundNotificationNotRestricted =
+            "Pas de restriction du système pour l'activité en arrière-plan "
+        override val durationNever = "Jamais"
+        override val unreadNotificationTitle = "Consultez vos notifications !"
+
+        override fun unreadNotificationBody(count: Int) =
+            when (count) {
+                1 -> "Il y a $count article dans le 🗑️"
+                else -> "Il y a $count articles dans le 🗑️"
+            }
     }

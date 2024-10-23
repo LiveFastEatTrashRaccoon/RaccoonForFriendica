@@ -389,4 +389,17 @@ internal val ItStrings =
         override val settingsItemMaxPostBodyLines = "Numero massimo righe testo post"
         override val settingsOptionUnlimited = "Illimitato"
         override val settingsAboutLicences = "Licenze"
+        override val settingsOptionBackgroundNotificationCheck = "Controlla notifiche in background"
+        override val settingsSubtitleBackgroundNotificationRestricted =
+            "Abilita attività in background per l'app nelle impostazioni di sistema"
+        override val settingsSubtitleBackgroundNotificationNotRestricted =
+            "Nessuna restrizione di sistema per l'attività in background"
+        override val durationNever = "Mai"
+        override val unreadNotificationTitle = "Controlla le notifiche!"
+
+        override fun unreadNotificationBody(count: Int) =
+            when (count) {
+                1 -> "C'è $count elemento nel 🗑️"
+                else -> "Ci sono $count elementi nel 🗑️"
+            }
     }
