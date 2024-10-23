@@ -29,7 +29,7 @@ class DefaultLogoutUseCaseTest {
             val accountData = AccountModel(id = 2)
             everySuspend { accountRepository.getActive() } returns accountData
             val anonymousAccount = AccountModel(id = 1)
-            everySuspend { accountRepository.getBy(any()) } returns anonymousAccount
+            everySuspend { accountRepository.getBy(handle = any()) } returns anonymousAccount
 
             sut.invoke()
 
@@ -46,7 +46,7 @@ class DefaultLogoutUseCaseTest {
         runTest {
             val accountData = AccountModel(id = 2)
             everySuspend { accountRepository.getActive() } returns accountData
-            everySuspend { accountRepository.getBy(any()) } returns null
+            everySuspend { accountRepository.getBy(handle = any()) } returns null
 
             sut.invoke()
 
@@ -63,7 +63,7 @@ class DefaultLogoutUseCaseTest {
         runTest {
             everySuspend { accountRepository.getActive() } returns null
             val anonymousAccount = AccountModel(id = 1)
-            everySuspend { accountRepository.getBy(any()) } returns anonymousAccount
+            everySuspend { accountRepository.getBy(handle = any()) } returns anonymousAccount
 
             sut.invoke()
 

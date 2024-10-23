@@ -63,7 +63,7 @@ class DefaultLoginUseCaseTest {
                 credentialsRepository.validate(node, credentials)
             }
             verifySuspend(mode = VerifyMode.not) {
-                accountRepository.getBy(any())
+                accountRepository.getBy(handle = any())
                 accountRepository.create(any())
                 accountCredentialsCache.get(any())
                 settingsRepository.get(any())
@@ -87,7 +87,7 @@ class DefaultLoginUseCaseTest {
                     remoteId = userId,
                 )
             val credentials = ApiCredentials.OAuth2("fake-access-token", "")
-            everySuspend { accountRepository.getBy(any()) } sequentiallyReturns
+            everySuspend { accountRepository.getBy(handle = any()) } sequentiallyReturns
                 listOf(
                     null,
                     accountData,
@@ -127,7 +127,7 @@ class DefaultLoginUseCaseTest {
                     remoteId = userId,
                 )
             val credentials = ApiCredentials.OAuth2("fake-access-token", "")
-            everySuspend { accountRepository.getBy(any()) } returns accountData
+            everySuspend { accountRepository.getBy(handle = any()) } returns accountData
             everySuspend { settingsRepository.get(any()) } returns null
 
             sut.invoke(node = node, credentials = credentials)

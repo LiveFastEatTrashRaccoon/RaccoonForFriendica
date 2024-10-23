@@ -25,6 +25,7 @@ data class SettingsModel(
     val openGroupsInForumModeByDefault: Boolean = true,
     val markupMode: MarkupMode = MarkupMode.HTML,
     val maxPostBodyLines: Int = Int.MAX_VALUE,
+    val notificationMode: NotificationMode = NotificationMode.Disabled,
     val pullNotificationCheckInterval: Duration? = null,
     val autoloadImages: Boolean = true,
 )

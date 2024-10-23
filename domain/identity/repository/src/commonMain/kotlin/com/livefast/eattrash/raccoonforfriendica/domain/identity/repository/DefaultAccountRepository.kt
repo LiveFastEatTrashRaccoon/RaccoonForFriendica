@@ -16,6 +16,8 @@ internal class DefaultAccountRepository(
             list.map { it.toModel() }
         }
 
+    override suspend fun getBy(id: Long): AccountModel? = accountDao.getBy(id)?.toModel()
+
     override suspend fun getBy(handle: String): AccountModel? = accountDao.getBy(handle)?.toModel()
 
     override suspend fun getActive(): AccountModel? = accountDao.getActive()?.toModel()
@@ -44,6 +46,10 @@ internal class DefaultAccountRepository(
         }
     }
 
+    override suspend fun update(account: AccountModel) {
+        accountDao.update(account.toEntity())
+    }
+
     override suspend fun delete(account: AccountModel) {
         accountDao.delete(account.toEntity())
     }
@@ -57,6 +63,11 @@ private fun AccountModel.toEntity() =
         remoteId = remoteId,
         avatar = avatar,
         displayName = displayName,
+        pushAuth = pushAuth,
+        pushServerKey = pushServerKey,
+        pushPubKey = pushPubKey,
+        pushPrivKey = pushPrivKey,
+        unifiedPushUrl = unifiedPushUrl,
     )
 
 private fun AccountEntity.toModel() =
@@ -67,4 +78,9 @@ private fun AccountEntity.toModel() =
         remoteId = remoteId,
         avatar = avatar,
         displayName = displayName,
+        pushAuth = pushAuth,
+        pushServerKey = pushServerKey,
+        pushPubKey = pushPubKey,
+        pushPrivKey = pushPrivKey,
+        unifiedPushUrl = unifiedPushUrl,
     )

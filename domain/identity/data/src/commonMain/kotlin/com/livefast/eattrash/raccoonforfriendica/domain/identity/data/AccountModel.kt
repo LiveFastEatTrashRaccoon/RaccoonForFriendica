@@ -7,4 +7,9 @@ data class AccountModel(
     val id: Long = 0,
     val remoteId: String? = null,
     val displayName: String? = null,
+    val pushAuth: String? = null,
+    val pushPubKey: String? = null,
+    val pushPrivKey: String? = null,
+    val pushServerKey: String? = null,
+    val unifiedPushUrl: String? = null,
 )

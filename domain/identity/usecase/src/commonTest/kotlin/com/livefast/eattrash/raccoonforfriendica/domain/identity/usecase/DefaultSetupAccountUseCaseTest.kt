@@ -28,7 +28,7 @@ class DefaultSetupAccountUseCaseTest {
         runTest {
             everySuspend { accountRepository.getAll() } returns emptyList()
             val anonymousAccount = AccountModel(handle = "", id = 1)
-            everySuspend { accountRepository.getBy(any()) } returns anonymousAccount
+            everySuspend { accountRepository.getBy(handle = any()) } returns anonymousAccount
             everySuspend { settingsRepository.get(any()) } returns null
 
             sut.invoke()
