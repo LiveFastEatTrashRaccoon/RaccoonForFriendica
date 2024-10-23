@@ -15,4 +15,6 @@ internal class DefaultL10nManager : L10nManager {
     override fun changeLanguage(lang: String) {
         lyricist.languageTag = lang
     }
+
+    override fun messages(): Strings = lyricist.strings
 }
