@@ -57,6 +57,7 @@ private fun SettingsEntity.toModel() =
         openGroupsInForumModeByDefault = openGroupsInForumModeByDefault,
         markupMode = markupMode.toMarkupMode(),
         maxPostBodyLines = maxPostBodyLines.toDomainMaxLines(),
+        defaultTimelineId = defaultTimelineId,
     )
 
 private fun SettingsModel.toEntity() =
@@ -79,6 +80,7 @@ private fun SettingsModel.toEntity() =
         openGroupsInForumModeByDefault = openGroupsInForumModeByDefault,
         markupMode = markupMode.toInt(),
         maxPostBodyLines = maxPostBodyLines.toEntityMaxLines(),
+        defaultTimelineId = defaultTimelineId,
     )
 
 private fun Int.toMarkupMode(): MarkupMode =

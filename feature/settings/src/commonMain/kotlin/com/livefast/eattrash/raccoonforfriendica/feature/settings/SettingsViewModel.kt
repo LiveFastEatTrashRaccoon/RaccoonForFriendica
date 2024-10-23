@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
@@ -34,6 +35,7 @@ class SettingsViewModel(
     private val themeColorRepository: ThemeColorRepository,
     private val identityRepository: IdentityRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
+    private val circlesRepository: CirclesRepository,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
@@ -42,17 +44,21 @@ class SettingsViewModel(
         screenModelScope.launch {
             identityRepository.currentUser
                 .onEach { currentUser ->
+                    val circles = circlesRepository.getAll().orEmpty()
                     val isLogged = currentUser != null
+                    val defaultTimelineTypes =
+                        buildList {
+                            this += TimelineType.All
+                            if (isLogged) {
+                                this += TimelineType.Subscriptions
+                            }
+                            this += TimelineType.Local
+                        }
+                    val timelineTypes =
+                        defaultTimelineTypes + circles.map { TimelineType.Circle(it.id, it.name) }
                     updateState {
                         it.copy(
-                            availableTimelineTypes =
-                                buildList {
-                                    this += TimelineType.All
-                                    if (isLogged) {
-                                        this += TimelineType.Subscriptions
-                                    }
-                                    this += TimelineType.Local
-                                },
+                            availableTimelineTypes = timelineTypes,
                             isLogged = isLogged,
                         )
                     }
@@ -90,10 +96,26 @@ class SettingsViewModel(
             settingsRepository.current
                 .onEach { settings ->
                     if (settings != null) {
+                        val defaultCircle =
+                            settings.defaultTimelineId?.let { circlesRepository.get(it) }
                         updateState {
                             it.copy(
                                 dynamicColors = settings.dynamicColors,
-                                defaultTimelineType = settings.defaultTimelineType.toTimelineType(),
+                                defaultTimelineType =
+                                    settings.defaultTimelineType
+                                        .toTimelineType()
+                                        .let { type ->
+
+                                            when (type) {
+                                                is TimelineType.Circle ->
+                                                    type.copy(
+                                                        id = defaultCircle?.id.orEmpty(),
+                                                        name = defaultCircle?.name.orEmpty(),
+                                                    )
+
+                                                else -> type
+                                            }
+                                    },
                                 includeNsfw = settings.includeNsfw,
                                 blurNsfw = settings.blurNsfw,
                                 urlOpeningMode = settings.urlOpeningMode,
@@ -264,7 +286,11 @@ class SettingsViewModel(
 
     private suspend fun changeDefaultTimelineType(type: TimelineType) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(defaultTimelineType = type.toInt())
+        val newSettings =
+            currentSettings.copy(
+                defaultTimelineType = type.toInt(),
+                defaultTimelineId = (type as? TimelineType.Circle)?.id,
+            )
         saveSettings(newSettings)
     }
 

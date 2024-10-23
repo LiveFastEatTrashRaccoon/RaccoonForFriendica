@@ -17,6 +17,7 @@ val featureSettingsModule =
                 themeColorRepository = get(),
                 identityRepository = get(),
                 supportedFeatureRepository = get(),
+                circlesRepository = get(),
             )
         }
         factory<UserFeedbackMviModel> {
