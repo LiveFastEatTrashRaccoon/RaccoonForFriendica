@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toUrlOpeningMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlin.time.Duration.Companion.seconds
 
 internal class DefaultSettingsRepository(
     private val settingsDao: SettingsDao,
@@ -58,6 +59,7 @@ private fun SettingsEntity.toModel() =
         markupMode = markupMode.toMarkupMode(),
         maxPostBodyLines = maxPostBodyLines.toDomainMaxLines(),
         defaultTimelineId = defaultTimelineId,
+        pullNotificationCheckInterval = pullNotificationCheckInterval?.seconds,
     )
 
 private fun SettingsModel.toEntity() =
@@ -81,6 +83,7 @@ private fun SettingsModel.toEntity() =
         markupMode = markupMode.toInt(),
         maxPostBodyLines = maxPostBodyLines.toEntityMaxLines(),
         defaultTimelineId = defaultTimelineId,
+        pullNotificationCheckInterval = pullNotificationCheckInterval?.inWholeSeconds,
     )
 
 private fun Int.toMarkupMode(): MarkupMode =
