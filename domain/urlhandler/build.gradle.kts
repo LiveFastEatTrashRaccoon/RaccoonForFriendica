@@ -22,7 +22,7 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "domain.identity.repository"
+            baseName = "domain.urlhandler"
             isStatic = true
         }
     }
@@ -34,16 +34,18 @@ kotlin {
                 implementation(compose.runtime)
 
                 implementation(libs.koin.core)
-                implementation(libs.ktor.client.core)
 
-                implementation(projects.core.api)
                 implementation(projects.core.appearance)
-                implementation(projects.core.persistence)
+                implementation(projects.core.l10n)
+                implementation(projects.core.navigation)
                 implementation(projects.core.preferences)
+                implementation(projects.core.resources)
                 implementation(projects.core.utils)
 
                 implementation(projects.domain.content.data)
+                implementation(projects.domain.content.repository)
                 implementation(projects.domain.identity.data)
+                implementation(projects.domain.identity.repository)
             }
         }
         val commonTest by getting {
@@ -57,7 +59,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.livefast.eattrash.raccoonforfriendica.domain.identity.repository"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.domain.urlhandler"
     compileSdk =
         libs.versions.android.targetSdk
             .get()
