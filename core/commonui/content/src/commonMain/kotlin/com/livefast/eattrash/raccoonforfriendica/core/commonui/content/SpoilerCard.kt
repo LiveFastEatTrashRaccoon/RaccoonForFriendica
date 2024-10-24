@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
@@ -37,6 +38,7 @@ fun SpoilerCard(
     onClick: (() -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     var contentHeightPx by remember { mutableStateOf(0f) }
     val contentHeightDp = with(LocalDensity.current) { contentHeightPx.toDp() }
     val annotatedContent =
@@ -88,7 +90,7 @@ fun SpoilerCard(
                     } else {
                         LocalStrings.current.actionRevealContent
                     },
-                style = MaterialTheme.typography.labelMedium.copy(color = fullColor),
+                style = MaterialTheme.typography.labelMedium.copy(color = ancillaryColor),
             )
         }
         SpoilerBar(
