@@ -83,7 +83,7 @@ interface SearchMviModel :
         val loading: Boolean = false,
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
-        val section: SearchSection = SearchSection.Hashtags,
+        val section: SearchSection = SearchSection.Posts,
         val items: List<ExploreItemModel> = emptyList(),
         val blurNsfw: Boolean = true,
         val maxBodyLines: Int = Int.MAX_VALUE,
