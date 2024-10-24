@@ -57,6 +57,8 @@ interface Strings {
     val languageEs: String
     val languageFr: String
     val languageIt: String
+    val languagePl: String
+    val languagePt: String
     val settingsTitle: String
     val settingsHeaderGeneral: String
     val settingsItemLanguage: String
@@ -358,19 +360,34 @@ interface Strings {
 
 object Locales {
     const val EN = "en"
-    const val IT = "it"
     const val DE = "de"
-    const val FR = "fr"
     const val ES = "es"
+    const val FR = "fr"
+    const val IT = "it"
+    const val PL = "pl"
+    const val PT = "pt"
+
+    val AVAILABLE_LANGUAGES =
+        listOf(
+            EN,
+            DE,
+            ES,
+            FR,
+            IT,
+            PL,
+            PT,
+        )
 }
 
 internal val localizableStrings: Map<LanguageTag, Strings> =
     mapOf(
         Locales.EN to EnStrings,
-        Locales.IT to ItStrings,
         Locales.DE to DeStrings,
-        Locales.FR to FrStrings,
         Locales.ES to EsStrings,
+        Locales.FR to FrStrings,
+        Locales.IT to ItStrings,
+        Locales.PL to PlStrings,
+        Locales.PT to PtStrings,
     )
 
 val LocalStrings: ProvidableCompositionLocal<Strings> =

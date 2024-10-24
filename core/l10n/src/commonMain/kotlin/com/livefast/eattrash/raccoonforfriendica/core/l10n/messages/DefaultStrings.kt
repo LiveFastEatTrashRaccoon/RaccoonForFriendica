@@ -1,6 +1,14 @@
 package com.livefast.eattrash.raccoonforfriendica.core.l10n.messages
 
 internal open class DefaultStrings : Strings {
+    override val languageEn = "English"
+    override val languageDe = "Deutsch"
+    override val languageEs = "Español"
+    override val languageFr = "Français"
+    override val languageIt = "Italiano"
+    override val languagePl = "Polski"
+    override val languagePt = "Português"
+
     override val messageConfirmExit = "Tap 🔙 again to exit"
     override val messageAreYouSure = "Are you sure you want to continue?"
     override val messageSuccess = "Operation completed successfully!"
@@ -49,11 +57,6 @@ internal open class DefaultStrings : Strings {
     override val accountSectionPinned = "Pinned"
     override val accountSectionMedia = "Media"
     override val postTitle = "Post"
-    override val languageEn = "English"
-    override val languageDe = "Deutsch"
-    override val languageEs = "Español"
-    override val languageFr = "Français"
-    override val languageIt = "Italiano"
     override val settingsTitle = "Settings"
     override val settingsHeaderGeneral = "General"
     override val settingsItemLanguage = "Language"

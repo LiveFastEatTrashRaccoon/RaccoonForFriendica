@@ -8,19 +8,23 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Locales
 fun String?.toLanguageName(): String? =
     when (this) {
         Locales.EN -> LocalStrings.current.languageEn
-        Locales.IT -> LocalStrings.current.languageIt
         Locales.DE -> LocalStrings.current.languageDe
         Locales.FR -> LocalStrings.current.languageFr
         Locales.ES -> LocalStrings.current.languageEs
+        Locales.IT -> LocalStrings.current.languageIt
+        Locales.PL -> LocalStrings.current.languagePl
+        Locales.PT -> LocalStrings.current.languagePt
         else -> null
     }
 
 fun String?.toLanguageFlag(): String? =
     when (this) {
         Locales.EN -> "🇬🇧"
-        Locales.IT -> "🇮🇹"
         Locales.DE -> "🇩🇪"
-        Locales.FR -> "🇫🇷"
         Locales.ES -> "🇪🇸"
+        Locales.FR -> "🇫🇷"
+        Locales.IT -> "🇮🇹"
+        Locales.PL -> "🇵🇱"
+        Locales.PT -> "🇵🇹"
         else -> null
     }
