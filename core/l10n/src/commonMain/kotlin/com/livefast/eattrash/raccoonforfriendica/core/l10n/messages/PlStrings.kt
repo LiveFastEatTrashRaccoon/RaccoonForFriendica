@@ -39,10 +39,10 @@ internal val PlStrings =
         override fun accountFollowing(count: Int) = "śledzący"
 
         override val accountAge = "wiek konta"
-        override val dateYearShort = "y"
+        override val dateYearShort = "r"
         override val dateMonthShort = "m"
         override val dateDayShort = "d"
-        override val timeHourShort = "h"
+        override val timeHourShort = "g"
         override val timeMinuteShort = "min"
         override val timeSecondShort = "s"
         override val accountSectionPosts = "Posty"
