@@ -7,4 +7,6 @@ interface L10nManager {
     val lyricist: Lyricist<Strings>
 
     fun changeLanguage(lang: String)
+
+    fun messages(): Strings
 }

@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.data
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
+import kotlin.time.Duration
 
 data class SettingsModel(
     val id: Long = 0,
@@ -24,4 +25,5 @@ data class SettingsModel(
     val openGroupsInForumModeByDefault: Boolean = true,
     val markupMode: MarkupMode = MarkupMode.HTML,
     val maxPostBodyLines: Int = Int.MAX_VALUE,
+    val pullNotificationCheckInterval: Duration? = null,
 )

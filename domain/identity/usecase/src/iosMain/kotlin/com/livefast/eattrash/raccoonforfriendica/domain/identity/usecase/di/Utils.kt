@@ -5,9 +5,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveA
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.CustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications.DefaultPullNotificationChecker
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications.PullNotificationChecker
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import org.koin.dsl.module
 
 actual fun getActiveAccountMonitor(): ActiveAccountMonitor = DomainIdentityUseCaseDiHelper.activeAccountMonitor
 
@@ -16,6 +19,13 @@ actual fun getSetupAccountUseCase(): SetupAccountUseCase = DomainIdentityUseCase
 actual fun getCustomUriHandler(fallback: UriHandler): CustomUriHandler = DomainIdentityUseCaseDiHelper.getCustomUriHandler(fallback)
 
 actual fun getEntryActionRepository(): EntryActionRepository = DomainIdentityUseCaseDiHelper.entryActionRepository
+
+actual val domainIdentityUseCaseNativeModule =
+    module {
+        single<PullNotificationChecker> {
+            DefaultPullNotificationChecker()
+    }
+}
 
 internal object DomainIdentityUseCaseDiHelper : KoinComponent {
     val activeAccountMonitor: ActiveAccountMonitor by inject()

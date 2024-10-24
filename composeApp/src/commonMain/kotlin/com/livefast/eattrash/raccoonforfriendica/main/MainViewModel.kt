@@ -4,12 +4,18 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications.PullNotificationChecker
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val inboxManager: InboxManager,
+    private val settingsRepository: SettingsRepository,
+    private val notificationChecker: PullNotificationChecker,
 ) : DefaultMviModel<MainMviModel.Intent, MainMviModel.UiState, MainMviModel.Effect>(
         initialState = MainMviModel.UiState(),
     ),
@@ -20,6 +26,19 @@ class MainViewModel(
                 .onEach { inboxUnread ->
                     updateState {
                         it.copy(bottomNavigationSections = getSections(inboxUnread))
+                    }
+                }.launchIn(this)
+            settingsRepository.current
+                .map {
+                    it?.pullNotificationCheckInterval
+                }.distinctUntilChanged()
+                .onEach {
+                    val minutes = it?.inWholeMinutes
+                    if (minutes != null) {
+                        notificationChecker.setPeriod(minutes)
+                        notificationChecker.start()
+                    } else {
+                        notificationChecker.stop()
                     }
                 }.launchIn(this)
         }

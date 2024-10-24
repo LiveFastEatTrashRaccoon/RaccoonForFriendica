@@ -61,11 +61,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.about.AboutDialog
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 class SettingsScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -90,6 +93,7 @@ class SettingsScreen : Screen {
         var defaultReplyVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
         var markupModeBottomSheetOpened by remember { mutableStateOf(false) }
         var maxPostBodyLinesBottomSheetOpened by remember { mutableStateOf(false) }
+        var backgroundNotificationCheckIntervalDialogOpened by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -208,6 +212,29 @@ class SettingsScreen : Screen {
                                 maxPostBodyLinesBottomSheetOpened = true
                             },
                         )
+
+                        if (uiState.isLogged && uiState.supportsBackgroundNotificationCheck) {
+                            SettingsRow(
+                                title = LocalStrings.current.settingsOptionBackgroundNotificationCheck,
+                                subtitle =
+                                    if (uiState.isBackgroundNotificationCheckRestricted) {
+                                        LocalStrings.current.settingsSubtitleBackgroundNotificationRestricted
+                                    } else {
+                                        LocalStrings.current.settingsSubtitleBackgroundNotificationNotRestricted
+                                    },
+                                value =
+                                    uiState.backgroundNotificationCheckInterval?.getPrettyDuration(
+                                        secondsLabel = LocalStrings.current.timeSecondShort,
+                                        minutesLabel = LocalStrings.current.timeMinuteShort,
+                                        hoursLabel = LocalStrings.current.timeHourShort,
+                                        daysLabel = LocalStrings.current.dateDayShort,
+                                        finePrecision = false,
+                                    ) ?: LocalStrings.current.durationNever,
+                                onTap = {
+                                    backgroundNotificationCheckIntervalDialogOpened = true
+                                },
+                            )
+                        }
 
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderLookAndFeel,
@@ -627,6 +654,36 @@ class SettingsScreen : Screen {
             )
         }
 
+        if (backgroundNotificationCheckIntervalDialogOpened) {
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemMaxPostBodyLines,
+                items =
+                    BACKGROUND_NOTIFICATION_CHECK_INTERVALS.map {
+                        CustomModalBottomSheetItem(
+                            label =
+                                it?.getPrettyDuration(
+                                    secondsLabel = LocalStrings.current.timeSecondShort,
+                                    minutesLabel = LocalStrings.current.timeMinuteShort,
+                                    hoursLabel = LocalStrings.current.timeHourShort,
+                                    daysLabel = LocalStrings.current.dateDayShort,
+                                    finePrecision = false,
+                                ) ?: LocalStrings.current.durationNever,
+                        )
+                    },
+                onSelected = { index ->
+                    backgroundNotificationCheckIntervalDialogOpened = false
+                    if (index != null) {
+                        val value = BACKGROUND_NOTIFICATION_CHECK_INTERVALS[index]
+                        model.reduce(
+                            SettingsMviModel.Intent.ChangeBackgroundNotificationCheckInterval(
+                                value,
+                            ),
+                        )
+                    }
+                },
+            )
+        }
+
         if (aboutDialogOpened) {
             AboutDialog(
                 onClose = {
@@ -644,6 +701,15 @@ private val MAX_POST_BODY_LINES_OPTIONS =
         10,
         25,
         50,
+    )
+
+private val BACKGROUND_NOTIFICATION_CHECK_INTERVALS =
+    listOf(
+        null,
+        10.minutes,
+        30.minutes,
+        1.hours,
+        4.hours,
     )
 
 @Composable

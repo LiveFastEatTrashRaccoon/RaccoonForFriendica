@@ -389,4 +389,17 @@ internal val EsStrings =
         override val settingsItemMaxPostBodyLines = "Número máximo líneas cuerpo post"
         override val settingsOptionUnlimited = "Ilimitado"
         override val settingsAboutLicences = "Licencias"
+        override val settingsOptionBackgroundNotificationCheck = "Comprobar notificaciones en segundo plano"
+        override val settingsSubtitleBackgroundNotificationRestricted =
+            "Activar actividad en segundo plano para la app en los ajustes de sistema"
+        override val settingsSubtitleBackgroundNotificationNotRestricted =
+            "Sin restricción del sistema para la actividad en segundo plano "
+        override val durationNever = "Nunca"
+        override val unreadNotificationTitle = "¡Comprueba tus notificaciones!"
+
+        override fun unreadNotificationBody(count: Int) =
+            when (count) {
+                1 -> "Hay $count artículo en tu 🗑️"
+                else -> "Hay $count artículos en tu 🗑️"
+            }
     }

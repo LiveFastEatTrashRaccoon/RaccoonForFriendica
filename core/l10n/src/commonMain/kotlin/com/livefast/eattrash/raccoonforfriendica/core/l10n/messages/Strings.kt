@@ -346,7 +346,14 @@ interface Strings {
     val actionSaveToCalendar: String
     val settingsItemMaxPostBodyLines: String
     val settingsOptionUnlimited: String
+    val settingsOptionBackgroundNotificationCheck: String
+    val settingsSubtitleBackgroundNotificationRestricted: String
+    val settingsSubtitleBackgroundNotificationNotRestricted: String
+    val durationNever: String
     val settingsAboutLicences: String
+    val unreadNotificationTitle: String
+
+    fun unreadNotificationBody(count: Int): String
 }
 
 object Locales {

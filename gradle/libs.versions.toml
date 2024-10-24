@@ -10,6 +10,7 @@ androidx-crypto = "1.0.0"
 androidx-media3 = "1.4.1"
 androidx-splashscreen = "1.0.1"
 androidx-sqlite = "2.5.0-alpha10"
+androidx-work = "2.9.1"
 coil = "3.0.0-rc01"
 compose-colorpicker = "1.1.2"
 compose-plugin = "1.7.0"
@@ -38,6 +39,7 @@ androidx-activity = { module = "androidx.activity:activity", version.ref = "andr
 androidx-browser = { module = "androidx.browser:browser", version.ref = "androidx-browser" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidx-crypto" }
 androidx-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidx-splashscreen" }
+androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
 
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
