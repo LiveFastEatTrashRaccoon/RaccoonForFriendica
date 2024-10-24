@@ -19,8 +19,9 @@ fun UiFontFamily.toTypography(): Typography {
     val coreResources = remember { getCoreResources() }
     val fontFamily =
         when (this) {
-            UiFontFamily.NotoSans -> coreResources.notoSans
+            UiFontFamily.AtkinsonHyperlegible -> coreResources.atkinsonHyperlegible
             UiFontFamily.Exo2 -> coreResources.exo2
+            UiFontFamily.NotoSans -> coreResources.notoSans
             else -> FontFamily.Default
         }
     return Typography(
