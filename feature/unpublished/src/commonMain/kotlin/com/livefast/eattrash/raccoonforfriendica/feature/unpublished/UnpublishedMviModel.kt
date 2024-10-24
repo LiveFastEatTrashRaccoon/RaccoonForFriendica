@@ -18,10 +18,6 @@ interface UnpublishedMviModel :
             val section: UnpublishedType,
         ) : Intent
 
-        data class ToggleSpoilerActive(
-            val entry: TimelineEntryModel,
-        ) : Intent
-
         data class DeleteEntry(
             val entryId: String,
         ) : Intent

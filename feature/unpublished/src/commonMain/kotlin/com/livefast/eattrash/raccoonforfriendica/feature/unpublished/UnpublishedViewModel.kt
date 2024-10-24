@@ -96,8 +96,6 @@ class UnpublishedViewModel(
                 screenModelScope.launch {
                     refresh()
                 }
-
-            is UnpublishedMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
         }
     }
 
@@ -184,12 +182,6 @@ class UnpublishedViewModel(
                 notificationCenter.send(TimelineEntryDeletedEvent(entryId))
                 removeEntryFromState(entryId)
             }
-        }
-    }
-
-    private fun toggleSpoiler(entry: TimelineEntryModel) {
-        screenModelScope.launch {
-            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 }

@@ -201,9 +201,6 @@ class UnpublishedScreen : Screen {
                             blurNsfw = uiState.blurNsfw,
                             maxBodyLines = uiState.maxBodyLines,
                             actionsEnabled = false,
-                            onToggleSpoilerActive = { e ->
-                                model.reduce(UnpublishedMviModel.Intent.ToggleSpoilerActive(e))
-                            },
                             options =
                                 buildList {
                                     this += OptionId.Edit.toOption()
