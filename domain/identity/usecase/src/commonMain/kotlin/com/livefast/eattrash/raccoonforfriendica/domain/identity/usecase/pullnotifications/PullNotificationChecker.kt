@@ -9,4 +9,6 @@ interface PullNotificationChecker {
     fun start()
 
     fun stop()
+
+    fun cancelAll()
 }

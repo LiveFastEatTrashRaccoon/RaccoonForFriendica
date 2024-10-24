@@ -15,4 +15,8 @@ class DefaultPullNotificationChecker : PullNotificationChecker {
     override fun stop() {
         // NO-OP
     }
+
+    override fun cancelAll() {
+        // NO-OP
+    }
 }

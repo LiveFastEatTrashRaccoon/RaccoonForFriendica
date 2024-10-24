@@ -20,12 +20,16 @@ class DefaultPullNotificationChecker(
     override val isBackgroundRestricted: Boolean
         get() =
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
-                (context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).isBackgroundRestricted
+                activityManager.isBackgroundRestricted
             } else {
                 false
             }
 
     private var intervalMinutes = 15L
+    private val notificationManager: NotificationManager
+        get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val activityManager: ActivityManager
+        get() = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 
     override fun setPeriod(minutes: Long) {
         intervalMinutes = minutes
@@ -71,6 +75,10 @@ class DefaultPullNotificationChecker(
         WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
     }
 
+    override fun cancelAll() {
+        notificationManager.cancelAll()
+    }
+
     private fun createNotificationChannel() {
         val descriptionText = ""
         val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -82,8 +90,6 @@ class DefaultPullNotificationChecker(
             ).apply {
                 description = descriptionText
             }
-        val notificationManager: NotificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 
