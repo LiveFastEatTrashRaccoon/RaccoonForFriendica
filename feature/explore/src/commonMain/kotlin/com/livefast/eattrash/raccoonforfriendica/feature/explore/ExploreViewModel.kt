@@ -130,7 +130,6 @@ class ExploreViewModel(
                 )
             is ExploreMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is ExploreMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
-            is ExploreMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
             is ExploreMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
@@ -500,12 +499,6 @@ class ExploreViewModel(
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(ExploreMviModel.Effect.PollVoteFailure)
             }
-        }
-    }
-
-    private fun toggleSpoiler(entry: TimelineEntryModel) {
-        screenModelScope.launch {
-            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 

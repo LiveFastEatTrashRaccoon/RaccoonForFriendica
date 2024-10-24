@@ -357,9 +357,6 @@ class ExploreScreen : Screen {
                                                 )
                                             }
                                         },
-                                    onToggleSpoilerActive = { e ->
-                                        model.reduce(ExploreMviModel.Intent.ToggleSpoilerActive(e))
-                                    },
                                     options =
                                         buildList {
                                             val entry = item.entry
