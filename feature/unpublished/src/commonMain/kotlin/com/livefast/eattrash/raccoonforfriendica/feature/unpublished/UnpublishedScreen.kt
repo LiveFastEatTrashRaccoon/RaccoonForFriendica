@@ -51,9 +51,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toUnpublishedType
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -145,6 +143,11 @@ class UnpublishedScreen : Screen {
                     state = lazyListState,
                 ) {
                     stickyHeader {
+                        val titles =
+                            listOf(
+                                UnpublishedType.Scheduled,
+                                UnpublishedType.Drafts,
+                            )
                         SectionSelector(
                             modifier =
                                 Modifier
@@ -153,16 +156,11 @@ class UnpublishedScreen : Screen {
                                         top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
                                         bottom = Spacing.s,
                                     ),
-                            titles =
-                                listOf(
-                                    UnpublishedType.Scheduled.toReadableName(),
-                                    UnpublishedType.Drafts.toReadableName(),
-                                ),
-                            currentSection = uiState.section.toInt(),
+                            titles = titles.map { it.toReadableName() },
+                            currentSection = titles.indexOf(uiState.section),
                             onSectionSelected = {
-                                val section = it.toUnpublishedType()
                                 model.reduce(
-                                    UnpublishedMviModel.Intent.ChangeSection(section),
+                                    UnpublishedMviModel.Intent.ChangeSection(titles[it]),
                                 )
                             },
                         )

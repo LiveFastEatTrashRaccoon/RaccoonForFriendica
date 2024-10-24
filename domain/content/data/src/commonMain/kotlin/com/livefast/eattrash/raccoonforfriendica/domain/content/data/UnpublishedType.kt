@@ -15,15 +15,3 @@ fun UnpublishedType.toReadableName(): String =
         UnpublishedType.Drafts -> LocalStrings.current.unpublishedSectionDrafts
         UnpublishedType.Scheduled -> LocalStrings.current.unpublishedSectionScheduled
     }
-
-fun UnpublishedType.toInt(): Int =
-    when (this) {
-        UnpublishedType.Drafts -> 1
-        UnpublishedType.Scheduled -> 0
-    }
-
-fun Int.toUnpublishedType(): UnpublishedType =
-    when (this) {
-        1 -> UnpublishedType.Drafts
-        else -> UnpublishedType.Scheduled
-    }

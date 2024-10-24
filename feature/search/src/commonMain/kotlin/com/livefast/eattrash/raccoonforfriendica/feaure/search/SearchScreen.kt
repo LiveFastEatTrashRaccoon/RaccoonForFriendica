@@ -79,9 +79,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
-import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toSearchSection
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -202,6 +200,12 @@ class SearchScreen : Screen {
                     state = lazyListState,
                 ) {
                     stickyHeader {
+                        val titles =
+                            listOf(
+                                SearchSection.Posts,
+                                SearchSection.Users,
+                                SearchSection.Hashtags,
+                            )
                         SectionSelector(
                             modifier =
                                 Modifier
@@ -210,17 +214,11 @@ class SearchScreen : Screen {
                                         top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
                                         bottom = Spacing.s,
                                     ),
-                            titles =
-                                listOf(
-                                    SearchSection.Hashtags.toReadableName(),
-                                    SearchSection.Posts.toReadableName(),
-                                    SearchSection.Users.toReadableName(),
-                                ),
-                            currentSection = uiState.section.toInt(),
+                            titles = titles.map { it.toReadableName() },
+                            currentSection = titles.indexOf(uiState.section),
                             onSectionSelected = {
-                                val section = it.toSearchSection()
                                 model.reduce(
-                                    SearchMviModel.Intent.ChangeSection(section),
+                                    SearchMviModel.Intent.ChangeSection(titles[it]),
                                 )
                             },
                         )

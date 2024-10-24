@@ -55,8 +55,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
-import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.toInt
-import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.toManageBlocksSection
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.toReadableName
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -152,6 +150,11 @@ class ManageBlocksScreen : Screen {
                     state = lazyListState,
                 ) {
                     stickyHeader {
+                        val titles =
+                            listOf(
+                                ManageBlocksSection.Muted,
+                                ManageBlocksSection.Blocked,
+                            )
                         SectionSelector(
                             modifier =
                                 Modifier
@@ -160,16 +163,11 @@ class ManageBlocksScreen : Screen {
                                         top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
                                         bottom = Spacing.s,
                                     ),
-                            titles =
-                                listOf(
-                                    ManageBlocksSection.Muted.toReadableName(),
-                                    ManageBlocksSection.Blocked.toReadableName(),
-                                ),
-                            currentSection = uiState.section.toInt(),
+                            titles = titles.map { it.toReadableName() },
+                            currentSection = titles.indexOf(uiState.section),
                             onSectionSelected = {
-                                val section = it.toManageBlocksSection()
                                 model.reduce(
-                                    ManageBlocksMviModel.Intent.ChangeSection(section),
+                                    ManageBlocksMviModel.Intent.ChangeSection(titles[it]),
                                 )
                             },
                         )

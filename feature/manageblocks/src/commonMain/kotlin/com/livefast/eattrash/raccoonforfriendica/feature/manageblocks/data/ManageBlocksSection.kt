@@ -15,15 +15,3 @@ fun ManageBlocksSection.toReadableName(): String =
         ManageBlocksSection.Blocked -> LocalStrings.current.manageBlocksSectionBlocked
         ManageBlocksSection.Muted -> LocalStrings.current.manageBlocksSectionMuted
     }
-
-fun ManageBlocksSection.toInt(): Int =
-    when (this) {
-        ManageBlocksSection.Muted -> 0
-        ManageBlocksSection.Blocked -> 1
-    }
-
-fun Int.toManageBlocksSection(): ManageBlocksSection =
-    when (this) {
-        1 -> ManageBlocksSection.Blocked
-        else -> ManageBlocksSection.Muted
-    }

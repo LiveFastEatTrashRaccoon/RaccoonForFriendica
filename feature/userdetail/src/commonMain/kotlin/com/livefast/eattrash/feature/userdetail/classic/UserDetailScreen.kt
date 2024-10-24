@@ -83,8 +83,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserHeaderPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toAccountSection
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toInt
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -506,6 +504,13 @@ class UserDetailScreen(
                     }
 
                     stickyHeader {
+                        val titles =
+                            listOf(
+                                UserSection.Posts,
+                                UserSection.All,
+                                UserSection.Pinned,
+                                UserSection.Media,
+                            )
                         SectionSelector(
                             modifier =
                                 Modifier
@@ -514,21 +519,12 @@ class UserDetailScreen(
                                         top = stickyHeaderTopOffset,
                                         bottom = Spacing.s,
                                     ),
-                            titles =
-                                listOf(
-                                    UserSection.Posts.toReadableName(),
-                                    UserSection.All.toReadableName(),
-                                    UserSection.Pinned.toReadableName(),
-                                    UserSection.Media.toReadableName(),
-                                ),
+                            titles = titles.map { it.toReadableName() },
                             scrollable = true,
-                            currentSection = uiState.section.toInt(),
+                            currentSection = titles.indexOf(uiState.section),
                             onSectionSelected = {
-                                val section = it.toAccountSection()
                                 model.reduce(
-                                    UserDetailMviModel.Intent.ChangeSection(
-                                        section,
-                                    ),
+                                    UserDetailMviModel.Intent.ChangeSection(titles[it]),
                                 )
                             },
                         )

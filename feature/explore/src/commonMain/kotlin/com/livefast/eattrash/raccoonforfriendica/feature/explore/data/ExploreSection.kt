@@ -13,22 +13,6 @@ sealed interface ExploreSection {
     data object Suggestions : ExploreSection
 }
 
-fun ExploreSection.toInt(): Int =
-    when (this) {
-        ExploreSection.Hashtags -> 0
-        ExploreSection.Posts -> 1
-        ExploreSection.Links -> 2
-        ExploreSection.Suggestions -> 3
-    }
-
-fun Int.toExploreSection(): ExploreSection =
-    when (this) {
-        0 -> ExploreSection.Hashtags
-        2 -> ExploreSection.Links
-        3 -> ExploreSection.Suggestions
-        else -> ExploreSection.Posts
-    }
-
 @Composable
 fun ExploreSection.toReadableName(): String =
     when (this) {
