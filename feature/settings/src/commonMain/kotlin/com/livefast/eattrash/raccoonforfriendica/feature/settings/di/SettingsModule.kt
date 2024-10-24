@@ -18,7 +18,7 @@ val featureSettingsModule =
                 identityRepository = get(),
                 supportedFeatureRepository = get(),
                 circlesRepository = get(),
-                pullNotificationChecker = get(),
+                pullNotificationManager = get(),
             )
         }
         factory<UserFeedbackMviModel> {

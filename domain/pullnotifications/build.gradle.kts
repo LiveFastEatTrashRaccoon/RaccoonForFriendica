@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.mokkery)
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -21,47 +22,42 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "feature.inbox"
+            baseName = "domain.pullnotifications"
             isStatic = true
         }
     }
 
     sourceSets {
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.androidx.work.runtime)
+            }
+        }
         val commonMain by getting {
             dependencies {
-                implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.material3)
-                implementation(compose.materialIconsExtended)
+                implementation(compose.runtime)
 
                 implementation(libs.koin.core)
-                implementation(libs.voyager.navigator)
-                implementation(libs.voyager.screenmodel)
-                implementation(libs.voyager.koin)
 
                 implementation(projects.core.appearance)
-                implementation(projects.core.architecture)
-                implementation(projects.core.commonui.components)
-                implementation(projects.core.commonui.content)
                 implementation(projects.core.l10n)
                 implementation(projects.core.navigation)
+                implementation(projects.core.preferences)
+                implementation(projects.core.resources)
                 implementation(projects.core.utils)
 
                 implementation(projects.domain.content.data)
-                implementation(projects.domain.content.pagination)
                 implementation(projects.domain.content.repository)
                 implementation(projects.domain.identity.data)
                 implementation(projects.domain.identity.repository)
-                implementation(projects.domain.identity.usecase)
-                implementation(projects.domain.pullnotifications)
             }
         }
     }
 }
 
 android {
-    namespace = "com.livefast.eattrash.raccoonforfriendica.feature.inbox"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications"
     compileSdk =
         libs.versions.android.targetSdk
             .get()

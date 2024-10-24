@@ -1,6 +1,6 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications
+package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications
 
-interface PullNotificationChecker {
+interface PullNotificationManager {
     val isBackgroundCheckSupported: Boolean
     val isBackgroundRestricted: Boolean
 

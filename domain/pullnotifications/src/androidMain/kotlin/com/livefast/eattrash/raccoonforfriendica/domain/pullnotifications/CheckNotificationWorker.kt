@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications
+package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications
 
 import android.app.Notification
 import android.app.NotificationManager

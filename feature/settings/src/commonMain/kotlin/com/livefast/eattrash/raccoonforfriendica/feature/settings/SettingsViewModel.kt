@@ -23,7 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsMo
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications.PullNotificationChecker
+import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -38,7 +38,7 @@ class SettingsViewModel(
     private val identityRepository: IdentityRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val circlesRepository: CirclesRepository,
-    private val pullNotificationChecker: PullNotificationChecker,
+    private val pullNotificationManager: PullNotificationManager,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
@@ -63,8 +63,8 @@ class SettingsViewModel(
                         it.copy(
                             availableTimelineTypes = timelineTypes,
                             isLogged = isLogged,
-                            supportsBackgroundNotificationCheck = pullNotificationChecker.isBackgroundCheckSupported,
-                            isBackgroundNotificationCheckRestricted = pullNotificationChecker.isBackgroundRestricted,
+                            supportsBackgroundNotificationCheck = pullNotificationManager.isBackgroundCheckSupported,
+                            isBackgroundNotificationCheckRestricted = pullNotificationManager.isBackgroundRestricted,
                         )
                     }
                 }.launchIn(this)

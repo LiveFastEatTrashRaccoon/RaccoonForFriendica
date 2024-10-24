@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications
+package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications
 
 import android.app.ActivityManager
 import android.app.NotificationChannel
@@ -13,9 +13,9 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
 
-class DefaultPullNotificationChecker(
+class DefaultPullNotificationManager(
     private val context: Context,
-) : PullNotificationChecker {
+) : PullNotificationManager {
     override val isBackgroundCheckSupported = true
     override val isBackgroundRestricted: Boolean
         get() =
