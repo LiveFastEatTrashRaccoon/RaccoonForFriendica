@@ -99,7 +99,6 @@ class ForumListViewModel(
                 )
 
             is ForumListMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
-            is ForumListMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
             is ForumListMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
@@ -365,12 +364,6 @@ class ForumListViewModel(
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(ForumListMviModel.Effect.PollVoteFailure)
             }
-        }
-    }
-
-    private fun toggleSpoiler(entry: TimelineEntryModel) {
-        screenModelScope.launch {
-            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 
