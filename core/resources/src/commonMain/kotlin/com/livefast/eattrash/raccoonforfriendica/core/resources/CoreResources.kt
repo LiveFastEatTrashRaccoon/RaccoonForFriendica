@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 
 interface CoreResources {
-    val notoSans: FontFamily @Composable get
+    val atkinsonHyperlegible: FontFamily @Composable get
     val exo2: FontFamily @Composable get
+    val notoSans: FontFamily @Composable get
 }
