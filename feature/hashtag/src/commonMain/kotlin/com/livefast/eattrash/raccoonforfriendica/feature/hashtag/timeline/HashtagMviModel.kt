@@ -56,10 +56,6 @@ interface HashtagMviModel :
             val choices: List<Int>,
         ) : Intent
 
-        data class ToggleSpoilerActive(
-            val entry: TimelineEntryModel,
-        ) : Intent
-
         data class CopyToClipboard(
             val entry: TimelineEntryModel,
         ) : Intent

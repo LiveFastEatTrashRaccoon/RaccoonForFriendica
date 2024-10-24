@@ -325,9 +325,6 @@ class TimelineScreen : Screen {
                                         inReplyToUser = e.creator,
                                     )
                                 }.takeIf { actionRepository.canReply(entry.original) },
-                            onToggleSpoilerActive = { e ->
-                                model.reduce(TimelineMviModel.Intent.ToggleSpoilerActive(e))
-                            },
                             onPollVote =
                                 uiState.currentUserId?.let {
                                     { e, choices ->

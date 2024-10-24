@@ -60,7 +60,6 @@ fun TimelineItem(
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
     onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
-    onToggleSpoilerActive: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val isReblog = entry.reblog != null
     val isReply = entry.inReplyTo != null
@@ -170,6 +169,7 @@ fun TimelineItem(
             }
 
             // post spoiler
+            var spoilerActive by remember { mutableStateOf(false) }
             if (spoiler.isNotEmpty()) {
                 SpoilerCard(
                     modifier =
@@ -178,20 +178,16 @@ fun TimelineItem(
                             horizontal = contentHorizontalPadding,
                         ),
                     content = spoiler,
-                    active = entryToDisplay.isSpoilerActive,
+                    active = spoilerActive,
                     onClick = {
-                        onToggleSpoilerActive?.invoke(entryToDisplay)
+                        spoilerActive = !spoilerActive
                     },
                 )
             }
 
-            val contentVisible =
-                remember(entryToDisplay.isSpoilerActive) {
-                    entryToDisplay.isSpoilerActive || spoiler.isEmpty()
-                }
             AnimatedVisibility(
                 modifier = Modifier.padding(horizontal = contentHorizontalPadding),
-                visible = contentVisible,
+                visible = spoilerActive || spoiler.isEmpty(),
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
@@ -269,7 +265,7 @@ fun TimelineItem(
                                             .takeIf { !entryToDisplay.content.startsWith(it) }
                                             .orEmpty(),
                                     image = preview.image.takeIf { attachments.isEmpty() },
-                                ),
+                            ),
                             onOpen = onOpenUrl,
                             onOpenImage = { url ->
                                 onOpenImage?.invoke(listOf(url), 0, emptyList())

@@ -239,9 +239,6 @@ class InboxScreen : Screen {
                                     }
                                 }
                             },
-                            onToggleSpoilerActive = { e ->
-                                model.reduce(InboxMviModel.Intent.ToggleSpoilerActive(e))
-                            },
                         )
                         if (idx < uiState.notifications.lastIndex) {
                             HorizontalDivider(

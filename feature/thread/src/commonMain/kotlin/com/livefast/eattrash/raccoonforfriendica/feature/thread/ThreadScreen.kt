@@ -311,9 +311,6 @@ class ThreadScreen(
                                             )
                                         }
                                     },
-                                onToggleSpoilerActive = { e ->
-                                    model.reduce(ThreadMviModel.Intent.ToggleSpoilerActive(e))
-                                },
                                 options =
                                     buildList {
                                         val entry = uiState.entry ?: return@buildList

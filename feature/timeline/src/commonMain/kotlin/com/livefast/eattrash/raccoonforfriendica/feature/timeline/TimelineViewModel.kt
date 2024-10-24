@@ -159,7 +159,6 @@ class TimelineViewModel(
                     intent.choices,
                 )
 
-            is TimelineMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
             is TimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
@@ -493,12 +492,6 @@ class TimelineViewModel(
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(TimelineMviModel.Effect.PollVoteFailure)
             }
-        }
-    }
-
-    private fun toggleSpoiler(entry: TimelineEntryModel) {
-        screenModelScope.launch {
-            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 

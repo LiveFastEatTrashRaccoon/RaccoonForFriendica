@@ -378,9 +378,6 @@ class ForumListScreen(
                                         )
                                     }
                                 },
-                            onToggleSpoilerActive = { e ->
-                                model.reduce(ForumListMviModel.Intent.ToggleSpoilerActive(e))
-                            },
                             options =
                                 buildList {
                                     if (actionRepository.canShare(entry.original)) {

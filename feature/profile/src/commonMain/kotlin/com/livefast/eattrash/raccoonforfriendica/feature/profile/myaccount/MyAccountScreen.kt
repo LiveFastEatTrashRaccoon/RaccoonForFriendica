@@ -305,9 +305,6 @@ object MyAccountScreen : Tab {
                                     inReplyToUser = e.creator,
                                 )
                             }.takeIf { actionRepository.canReply(entry.original) },
-                        onToggleSpoilerActive = { e ->
-                            model.reduce(MyAccountMviModel.Intent.ToggleSpoilerActive(e))
-                        },
                         options =
                             buildList {
                                 if (actionRepository.canShare(entry.original)) {

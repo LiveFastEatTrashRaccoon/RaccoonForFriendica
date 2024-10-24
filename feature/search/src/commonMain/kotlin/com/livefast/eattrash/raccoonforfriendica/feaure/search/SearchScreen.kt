@@ -358,9 +358,6 @@ class SearchScreen : Screen {
                                                 )
                                             }
                                         },
-                                    onToggleSpoilerActive = { e ->
-                                        model.reduce(SearchMviModel.Intent.ToggleSpoilerActive(e))
-                                    },
                                     options =
                                         buildList {
                                             val entry = item.entry

@@ -614,9 +614,6 @@ class UserDetailScreen(
                                         )
                                     }
                                 },
-                            onToggleSpoilerActive = { e ->
-                                model.reduce(UserDetailMviModel.Intent.ToggleSpoilerActive(e))
-                            },
                             options =
                                 buildList {
                                     if (actionRepository.canShare(entry.original)) {

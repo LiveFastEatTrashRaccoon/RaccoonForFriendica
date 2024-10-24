@@ -90,7 +90,6 @@ class InboxViewModel(
             is InboxMviModel.Intent.MarkAsRead -> markAsRead(intent.notification)
             InboxMviModel.Intent.DismissAll -> dismissAll()
             is InboxMviModel.Intent.Dismiss -> dismiss(intent.notification)
-            is InboxMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
         }
     }
 
@@ -314,12 +313,6 @@ class InboxViewModel(
             notificationRepository.dismissAll()
             updateState { it.copy(markAllAsReadLoading = false) }
             refresh()
-        }
-    }
-
-    private fun toggleSpoiler(entry: TimelineEntryModel) {
-        screenModelScope.launch {
-            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 }

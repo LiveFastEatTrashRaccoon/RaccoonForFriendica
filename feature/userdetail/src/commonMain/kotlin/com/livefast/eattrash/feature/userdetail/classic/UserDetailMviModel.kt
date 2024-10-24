@@ -56,10 +56,6 @@ interface UserDetailMviModel :
             val blocked: Boolean,
         ) : Intent
 
-        data class ToggleSpoilerActive(
-            val entry: TimelineEntryModel,
-        ) : Intent
-
         data object TogglePersonalNoteEditMode : Intent
 
         data class SetPersonalNote(
