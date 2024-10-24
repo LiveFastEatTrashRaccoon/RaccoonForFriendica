@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Explicit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
@@ -66,7 +65,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.about.AboutDialog
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
@@ -87,7 +85,6 @@ class SettingsScreen : Screen {
         var themeColorBottomSheetOpened by remember { mutableStateOf(false) }
         var defaultTimelineTypeBottomSheetOpened by remember { mutableStateOf(false) }
         var urlOpeningModeBottomSheetOpened by remember { mutableStateOf(false) }
-        var aboutDialogOpened by remember { mutableStateOf(false) }
         var customColorPickerDialogOpened by remember { mutableStateOf(false) }
         var defaultPostVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
         var defaultReplyVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
@@ -305,18 +302,6 @@ class SettingsScreen : Screen {
                             value = uiState.blurNsfw,
                             onValueChanged = {
                                 model.reduce(SettingsMviModel.Intent.ChangeBlurNsfw(it))
-                            },
-                        )
-
-                        SettingsHeader(
-                            icon = Icons.Default.BugReport,
-                            title = LocalStrings.current.settingsSectionDebug,
-                        )
-                        SettingsRow(
-                            title = LocalStrings.current.settingsAbout,
-                            disclosureIndicator = true,
-                            onTap = {
-                                aboutDialogOpened = true
                             },
                         )
 
@@ -680,14 +665,6 @@ class SettingsScreen : Screen {
                             ),
                         )
                     }
-                },
-            )
-        }
-
-        if (aboutDialogOpened) {
-            AboutDialog(
-                onClose = {
-                    aboutDialogOpened = false
                 },
             )
         }

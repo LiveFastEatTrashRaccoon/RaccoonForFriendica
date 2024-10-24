@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.settings.about
+package com.livefast.eattrash.raccoonforfriendica.feature.drawer.about
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +45,11 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
     val appInfo by appInfoRepository.appInfo.collectAsState()
     val detailOpener = remember { getDetailOpener() }
 
+    fun handleAction(block: () -> Unit) {
+        onClose?.invoke()
+        block()
+    }
+
     BasicAlertDialog(
         modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
@@ -83,14 +88,18 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                         icon = Icons.AutoMirrored.Default.Article,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
-                            uriHandler.openUri(AboutConstants.CHANGELOG_URL)
+                            handleAction {
+                                uriHandler.openUri(AboutConstants.CHANGELOG_URL)
+                            }
                         },
                     )
                 }
                 item {
                     Button(
                         onClick = {
-                            detailOpener.openUserFeedback()
+                            handleAction {
+                                detailOpener.openUserFeedback()
+                            }
                         },
                     ) {
                         Text(
@@ -106,7 +115,9 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                         text = LocalStrings.current.settingsAboutViewGithub,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
-                            uriHandler.openUri(AboutConstants.WEBSITE_URL)
+                            handleAction {
+                                uriHandler.openUri(AboutConstants.WEBSITE_URL)
+                            }
                         },
                     )
                 }
@@ -116,7 +127,9 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                         text = LocalStrings.current.settingsAboutViewFriendica,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
-                            uriHandler.openUri(AboutConstants.GROUP_URL)
+                            handleAction {
+                                uriHandler.openUri(AboutConstants.GROUP_URL)
+                            }
                         },
                     )
                 }
@@ -126,7 +139,9 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                         icon = Icons.Default.Gavel,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
-                            detailOpener.openLicences()
+                            handleAction {
+                                detailOpener.openLicences()
+                            }
                         },
                     )
                 }

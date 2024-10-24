@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.settings.about
+package com.livefast.eattrash.raccoonforfriendica.feature.drawer.about
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

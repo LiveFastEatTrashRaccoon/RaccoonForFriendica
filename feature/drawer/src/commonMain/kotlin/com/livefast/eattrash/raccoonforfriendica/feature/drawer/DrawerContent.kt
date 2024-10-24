@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.ContactSupport
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Dashboard
@@ -65,6 +66,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoo
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
+import com.livefast.eattrash.raccoonforfriendica.feature.drawer.about.AboutDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerShortcut
 import kotlinx.coroutines.delay
@@ -83,9 +85,10 @@ class DrawerContent : Screen {
         val detailOpener = remember { getDetailOpener() }
         val scope = rememberCoroutineScope()
         var manageAccountsDialogOpened by remember { mutableStateOf(false) }
-        var changeInstanceDialogOpen by remember { mutableStateOf(false) }
+        var changeInstanceDialogOpened by remember { mutableStateOf(false) }
+        var aboutDialogOpened by remember { mutableStateOf(false) }
 
-        fun handleOpen(action: suspend () -> Unit) {
+        fun handleAction(action: suspend () -> Unit) {
             scope.launch {
                 navigationCoordinator.popUntilRoot()
                 drawerCoordinator.toggleDrawer()
@@ -99,7 +102,7 @@ class DrawerContent : Screen {
                 .onEach { event ->
                     when (event) {
                         DrawerMviModel.Effect.AnonymousChangeNodeSuccess -> {
-                            changeInstanceDialogOpen = false
+                            changeInstanceDialogOpened = false
                             drawerCoordinator.closeDrawer()
                         }
                     }
@@ -112,7 +115,7 @@ class DrawerContent : Screen {
                 node = uiState.node,
                 canSwitchAccount = uiState.availableAccounts.size > 1,
                 onOpenChangeInstance = {
-                    changeInstanceDialogOpen = true
+                    changeInstanceDialogOpened = true
                 },
                 onOpenSwitchAccount = {
                     manageAccountsDialogOpened = true
@@ -132,35 +135,35 @@ class DrawerContent : Screen {
                     title = LocalStrings.current.favoritesTitle,
                     icon = Icons.Default.Favorite,
                     onSelected = {
-                        handleOpen { detailOpener.openFavorites() }
+                        handleAction { detailOpener.openFavorites() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.bookmarksTitle,
                     icon = Icons.Default.Bookmarks,
                     onSelected = {
-                        handleOpen { detailOpener.openBookmarks() }
+                        handleAction { detailOpener.openBookmarks() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.followedHashtagsTitle,
                     icon = Icons.Default.Tag,
                     onSelected = {
-                        handleOpen { detailOpener.openFollowedHashtags() }
+                        handleAction { detailOpener.openFollowedHashtags() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.followRequestsTitle,
                     icon = Icons.Default.Flaky,
                     onSelected = {
-                        handleOpen { detailOpener.openFollowRequests() }
+                        handleAction { detailOpener.openFollowRequests() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.manageCirclesTitle,
                     icon = Icons.Default.Workspaces,
                     onSelected = {
-                        handleOpen { detailOpener.openCircles() }
+                        handleAction { detailOpener.openCircles() }
                     },
                 )
 
@@ -169,7 +172,7 @@ class DrawerContent : Screen {
                         title = LocalStrings.current.directMessagesTitle,
                         icon = Icons.AutoMirrored.Default.Chat,
                         onSelected = {
-                            handleOpen { detailOpener.openDirectMessages() }
+                            handleAction { detailOpener.openDirectMessages() }
                         },
                     )
                 }
@@ -178,7 +181,7 @@ class DrawerContent : Screen {
                         title = LocalStrings.current.galleryTitle,
                         icon = Icons.Default.Dashboard,
                         onSelected = {
-                            handleOpen { detailOpener.openGallery() }
+                            handleAction { detailOpener.openGallery() }
                         },
                     )
                 }
@@ -186,7 +189,7 @@ class DrawerContent : Screen {
                     title = LocalStrings.current.unpublishedTitle,
                     icon = Icons.Default.Drafts,
                     onSelected = {
-                        handleOpen { detailOpener.openUnpublished() }
+                        handleAction { detailOpener.openUnpublished() }
                     },
                 )
                 if (uiState.hasCalendar) {
@@ -194,7 +197,7 @@ class DrawerContent : Screen {
                         title = LocalStrings.current.calendarTitle,
                         icon = Icons.Default.CalendarMonth,
                         onSelected = {
-                            handleOpen { detailOpener.openCalendar() }
+                            handleAction { detailOpener.openCalendar() }
                         },
                     )
                 }
@@ -204,7 +207,7 @@ class DrawerContent : Screen {
                 title = LocalStrings.current.nodeInfoTitle,
                 icon = Icons.Default.Info,
                 onSelected = {
-                    handleOpen { detailOpener.openNodeInfo() }
+                    handleAction { detailOpener.openNodeInfo() }
                 },
             )
 
@@ -213,10 +216,21 @@ class DrawerContent : Screen {
             )
 
             DrawerShortcut(
+                title = LocalStrings.current.settingsAbout,
+                icon = Icons.AutoMirrored.Default.ContactSupport,
+                onSelected = {
+                    scope.launch {
+                        drawerCoordinator.closeDrawer()
+                    }
+                    aboutDialogOpened = true
+                },
+            )
+
+            DrawerShortcut(
                 title = LocalStrings.current.settingsTitle,
                 icon = Icons.Default.Settings,
                 onSelected = {
-                    handleOpen { detailOpener.openSettings() }
+                    handleAction { detailOpener.openSettings() }
                 },
             )
         }
@@ -273,11 +287,11 @@ class DrawerContent : Screen {
             )
         }
 
-        if (changeInstanceDialogOpen) {
+        if (changeInstanceDialogOpened) {
             BasicAlertDialog(
                 modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
                 onDismissRequest = {
-                    changeInstanceDialogOpen = false
+                    changeInstanceDialogOpened = false
                 },
             ) {
                 Column(
@@ -355,6 +369,14 @@ class DrawerContent : Screen {
                     }
                 }
             }
+        }
+
+        if (aboutDialogOpened) {
+            AboutDialog(
+                onClose = {
+                    aboutDialogOpened = false
+                },
+            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.settings.about
+package com.livefast.eattrash.raccoonforfriendica.feature.drawer.about
 
 internal object AboutConstants {
     const val CHANGELOG_URL =
