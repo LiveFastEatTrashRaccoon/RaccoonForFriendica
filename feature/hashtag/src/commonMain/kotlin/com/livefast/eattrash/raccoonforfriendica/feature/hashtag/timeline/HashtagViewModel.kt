@@ -105,7 +105,6 @@ class HashtagViewModel(
                 )
             is HashtagMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is HashtagMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
-            is HashtagMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
             is HashtagMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
@@ -391,12 +390,6 @@ class HashtagViewModel(
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(HashtagMviModel.Effect.PollVoteFailure)
             }
-        }
-    }
-
-    private fun toggleSpoiler(entry: TimelineEntryModel) {
-        screenModelScope.launch {
-            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 
