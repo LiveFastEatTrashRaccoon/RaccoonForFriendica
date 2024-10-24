@@ -256,9 +256,6 @@ class FavoritesScreen(
                                         inReplyToUser = e.creator,
                                     )
                                 }.takeIf { actionRepository.canReply(entry.original) },
-                            onToggleSpoilerActive = { e ->
-                                model.reduce(FavoritesMviModel.Intent.ToggleSpoilerActive(e))
-                            },
                             onPollVote =
                                 uiState.currentUserId?.let {
                                     { e, choices ->

@@ -96,7 +96,6 @@ class FavoritesViewModel(
                 )
             is FavoritesMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is FavoritesMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
-            is FavoritesMviModel.Intent.ToggleSpoilerActive -> toggleSpoiler(intent.entry)
             is FavoritesMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
@@ -383,12 +382,6 @@ class FavoritesViewModel(
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(FavoritesMviModel.Effect.PollVoteFailure)
             }
-        }
-    }
-
-    private fun toggleSpoiler(entry: TimelineEntryModel) {
-        screenModelScope.launch {
-            updateEntryInState(entry.id) { entry.copy(isSpoilerActive = !entry.isSpoilerActive) }
         }
     }
 
