@@ -366,7 +366,13 @@ class SettingsScreen : Screen {
         }
 
         if (fontFamilyBottomSheetOpened) {
-            val fonts = listOf(UiFontFamily.Default, UiFontFamily.Exo2, UiFontFamily.NotoSans)
+            val fonts =
+                listOf(
+                    UiFontFamily.AtkinsonHyperlegible,
+                    UiFontFamily.Exo2,
+                    UiFontFamily.NotoSans,
+                    UiFontFamily.Default,
+            )
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemFontFamily,
                 items =
