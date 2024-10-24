@@ -43,7 +43,7 @@ internal val PtStrings =
             }
 
         override val accountAge = "idade da conta"
-        override val dateYearShort = "y"
+        override val dateYearShort = "a"
         override val dateMonthShort = "m"
         override val dateDayShort = "d"
         override val timeHourShort = "h"
@@ -60,7 +60,7 @@ internal val PtStrings =
         override val settingsHeaderLookAndFeel = "Aspeto e sensação"
         override val settingsItemTheme = "Tema da interface do utilizador"
         override val settingsItemFontFamily = "Família de letras"
-        override val settingsItemDynamicColors = "Material Você"
+        override val settingsItemDynamicColors = "Material You"
         override val settingsItemDynamicColorsSubtitle = "gera uma paleta com base no seu fundo"
         override val settingsItemThemeColor = "Cor do tema"
         override val settingsItemThemeColorSubtitle =
