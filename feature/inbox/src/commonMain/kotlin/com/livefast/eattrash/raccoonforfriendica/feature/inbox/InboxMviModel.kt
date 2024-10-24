@@ -4,7 +4,6 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
 interface InboxMviModel :
     ScreenModel,
@@ -34,10 +33,6 @@ interface InboxMviModel :
 
         data class Dismiss(
             val notification: NotificationModel,
-        ) : Intent
-
-        data class ToggleSpoilerActive(
-            val entry: TimelineEntryModel,
         ) : Intent
     }
 
