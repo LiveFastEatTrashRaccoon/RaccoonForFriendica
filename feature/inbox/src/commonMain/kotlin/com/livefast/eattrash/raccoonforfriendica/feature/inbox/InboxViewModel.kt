@@ -22,6 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Notif
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -37,6 +38,7 @@ class InboxViewModel(
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
     private val markerRepository: MarkerRepository,
+    private val pullNotificationManager: PullNotificationManager,
 ) : DefaultMviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>(
         initialState = InboxMviModel.State(),
     ),
@@ -277,6 +279,7 @@ class InboxViewModel(
             id = mostRecentId,
         )
         inboxManager.refreshUnreadCount()
+        pullNotificationManager.cancelAll()
         notifications.forEach { n ->
             updateItemInState(n.id) { it.copy(read = true) }
         }

@@ -40,8 +40,6 @@ import org.koin.dsl.module
 
 val domainIdentityUseCaseModule =
     module {
-        includes(domainIdentityUseCaseNativeModule)
-
         single<SetupAccountUseCase> {
             DefaultSetupAccountUseCase(
                 accountRepository = get(),

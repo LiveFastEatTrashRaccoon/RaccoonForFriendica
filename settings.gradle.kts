@@ -49,6 +49,7 @@ include(":domain:content:repository")
 include(":domain:identity:data")
 include(":domain:identity:repository")
 include(":domain:identity:usecase")
+include(":domain:pullnotifications")
 
 include(":feature:calendar")
 include(":feature:circles")

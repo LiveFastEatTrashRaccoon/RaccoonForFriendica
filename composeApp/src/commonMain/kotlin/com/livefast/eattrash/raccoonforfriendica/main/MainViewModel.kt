@@ -5,7 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications.PullNotificationChecker
+import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val inboxManager: InboxManager,
     private val settingsRepository: SettingsRepository,
-    private val notificationChecker: PullNotificationChecker,
+    private val pullNotificationManager: PullNotificationManager,
 ) : DefaultMviModel<MainMviModel.Intent, MainMviModel.UiState, MainMviModel.Effect>(
         initialState = MainMviModel.UiState(),
     ),
@@ -35,10 +35,10 @@ class MainViewModel(
                 .onEach {
                     val minutes = it?.inWholeMinutes
                     if (minutes != null) {
-                        notificationChecker.setPeriod(minutes)
-                        notificationChecker.start()
+                        pullNotificationManager.setPeriod(minutes)
+                        pullNotificationManager.start()
                     } else {
-                        notificationChecker.stop()
+                        pullNotificationManager.stop()
                     }
                 }.launchIn(this)
         }

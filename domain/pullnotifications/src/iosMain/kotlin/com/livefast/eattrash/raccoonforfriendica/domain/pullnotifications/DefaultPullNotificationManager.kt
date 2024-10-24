@@ -1,6 +1,6 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications
+package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications
 
-class DefaultPullNotificationChecker : PullNotificationChecker {
+class DefaultPullNotificationManager : PullNotificationManager {
     override val isBackgroundCheckSupported = false
     override val isBackgroundRestricted = false
 
@@ -13,6 +13,10 @@ class DefaultPullNotificationChecker : PullNotificationChecker {
     }
 
     override fun stop() {
+        // NO-OP
+    }
+
+    override fun cancelAll() {
         // NO-OP
     }
 }

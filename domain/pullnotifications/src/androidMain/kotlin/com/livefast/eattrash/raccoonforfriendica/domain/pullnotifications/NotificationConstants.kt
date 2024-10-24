@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications
+package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications
 
 internal object NotificationConstants {
     const val CHANNEL_ID = "raccoon_for_friendica_notifications"

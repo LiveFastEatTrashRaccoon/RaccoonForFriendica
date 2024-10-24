@@ -54,6 +54,7 @@ kotlin {
                 implementation(projects.domain.identity.data)
                 implementation(projects.domain.identity.repository)
                 implementation(projects.domain.identity.usecase)
+                implementation(projects.domain.pullnotifications)
             }
         }
     }

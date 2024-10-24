@@ -22,6 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.do
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.domainContentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.domainIdentityRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.domainIdentityUseCaseModule
+import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di.domainPullNotificationModule
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.di.featureCalendarModule
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.featureCirclesModule
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.featureComposerModule
@@ -75,6 +76,7 @@ val sharedHelperModule =
             domainContentRepositoryModule,
             domainIdentityRepositoryModule,
             domainIdentityUseCaseModule,
+            domainPullNotificationModule,
             featureCalendarModule,
             featureCirclesModule,
             featureComposerModule,

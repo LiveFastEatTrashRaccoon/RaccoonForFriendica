@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.pullnotifications
+package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -22,6 +22,8 @@ internal class CheckNotificationWorker(
 ) : CoroutineWorker(context, parameters) {
     private val inboxManager by inject<InboxManager>(InboxManager::class.java)
     private val l10nManager by inject<L10nManager>(L10nManager::class.java)
+    private val notificationManager: NotificationManager
+        get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     override suspend fun getForegroundInfo(): ForegroundInfo =
         ForegroundInfo(
@@ -55,8 +57,6 @@ internal class CheckNotificationWorker(
                 .setContentIntent(getPendingIntent())
                 .setNumber(count)
                 .build()
-        val notificationManager: NotificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationId = getNextNotificationId()
         notificationManager.notify(
             NotificationConstants.NOTIFICATION_TAG,
@@ -82,8 +82,6 @@ internal class CheckNotificationWorker(
     }
 
     private fun getNextNotificationId(): Int {
-        val notificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val activeNotifications =
             notificationManager.activeNotifications.filter { it.tag == context.packageName }
         return if (activeNotifications.isEmpty()) {
