@@ -78,8 +78,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toExploreSection
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toReadableName
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -231,11 +229,10 @@ class ExploreScreen : Screen {
                                 uiState.availableSections.map {
                                     it.toReadableName()
                                 },
-                            currentSection = uiState.section.toInt(),
+                            currentSection = uiState.availableSections.indexOf(uiState.section),
                             onSectionSelected = {
-                                val section = it.toExploreSection()
                                 model.reduce(
-                                    ExploreMviModel.Intent.ChangeSection(section),
+                                    ExploreMviModel.Intent.ChangeSection(uiState.availableSections[it]),
                                 )
                             },
                         )
