@@ -36,7 +36,7 @@ fun SettingsSwitchRow(
     ) {
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Spacing.xxxs),
+            verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
             val fullColor = MaterialTheme.colorScheme.onBackground
             val ancillaryColor =

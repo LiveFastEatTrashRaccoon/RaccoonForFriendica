@@ -72,6 +72,7 @@ fun SettingsRow(
         }
         Column(
             modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
             Text(
                 text = title,
