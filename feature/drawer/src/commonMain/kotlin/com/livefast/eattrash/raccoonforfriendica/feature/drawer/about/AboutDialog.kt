@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.drawer.about
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,12 +13,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -102,11 +105,21 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                             }
                         },
                     ) {
-                        Text(
+                        Row(
                             modifier = Modifier.fillMaxWidth(),
-                            text = LocalStrings.current.settingsAboutReportIssue,
-                            style = MaterialTheme.typography.labelLarge,
-                        )
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                modifier = Modifier.weight(1f),
+                                text = LocalStrings.current.settingsAboutReportIssue,
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                            Icon(
+                                imageVector = Icons.Default.BugReport,
+                                contentDescription = "",
+                            )
+                        }
                     }
                 }
                 item {
