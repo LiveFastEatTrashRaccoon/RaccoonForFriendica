@@ -312,18 +312,11 @@ class SettingsScreen : Screen {
         )
 
         if (languageBottomSheetOpened) {
-            val languages =
-                listOf(
-                    Locales.EN,
-                    Locales.DE,
-                    Locales.ES,
-                    Locales.FR,
-                    Locales.IT,
-                )
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemLanguage,
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
                 items =
-                    languages.map { lang ->
+                    Locales.AVAILABLE_LANGUAGES.map { lang ->
                         CustomModalBottomSheetItem(
                             label = lang.toLanguageName().orEmpty(),
                             trailingContent = {
@@ -337,7 +330,7 @@ class SettingsScreen : Screen {
                 onSelected = { index ->
                     languageBottomSheetOpened = false
                     if (index != null) {
-                        val value = languages[index]
+                        val value = Locales.AVAILABLE_LANGUAGES[index]
                         model.reduce(SettingsMviModel.Intent.ChangeLanguage(value))
                     }
                 },
