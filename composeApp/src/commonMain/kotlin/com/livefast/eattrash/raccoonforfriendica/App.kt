@@ -24,12 +24,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCrashReportManager
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getSettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ProvideCustomFontScale
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ProvideCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getSetupAccountUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.ProvideCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
 import com.livefast.eattrash.raccoonforfriendica.main.MainScreen
 import kotlinx.coroutines.flow.launchIn
