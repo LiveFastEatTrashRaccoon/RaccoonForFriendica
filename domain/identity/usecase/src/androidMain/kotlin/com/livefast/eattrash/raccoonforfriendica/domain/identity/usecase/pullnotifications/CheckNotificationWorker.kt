@@ -10,7 +10,6 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
@@ -20,7 +19,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.R as resourcesR
 internal class CheckNotificationWorker(
     private val context: Context,
     parameters: WorkerParameters,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : CoroutineWorker(context, parameters) {
     private val inboxManager by inject<InboxManager>(InboxManager::class.java)
     private val l10nManager by inject<L10nManager>(L10nManager::class.java)
@@ -37,7 +35,7 @@ internal class CheckNotificationWorker(
         )
 
     override suspend fun doWork(): Result =
-        withContext(dispatcher) {
+        withContext(Dispatchers.IO) {
             inboxManager.refreshUnreadCount()
             val unread = inboxManager.unreadCount.value
             if (unread > 0) {
