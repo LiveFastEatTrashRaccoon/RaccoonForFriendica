@@ -8,6 +8,10 @@
   <img alt="badge for unit test status" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/unit_tests.yml/badge.svg" />
 </div>
 
+<div align="center">
+  <img alt="application icon" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher.webp" width="250" height="auto" />
+</div>
+
 # RaccoonForFriendica
 
 This is a client for the [Friendica](https://friendi.ca) federated social platform powered by
