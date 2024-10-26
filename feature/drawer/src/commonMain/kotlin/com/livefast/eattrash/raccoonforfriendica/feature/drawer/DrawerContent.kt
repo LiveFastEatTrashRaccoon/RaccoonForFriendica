@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.automirrored.filled.ContactSupport
@@ -124,115 +126,119 @@ class DrawerContent : Screen {
 
             HorizontalDivider()
 
-            if (uiState.user == null) {
-                Text(
-                    modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.s),
-                    text = LocalStrings.current.sidebarAnonymousMessage,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            } else {
-                DrawerShortcut(
-                    title = LocalStrings.current.favoritesTitle,
-                    icon = Icons.Default.Favorite,
-                    onSelected = {
-                        handleAction { detailOpener.openFavorites() }
-                    },
-                )
-                DrawerShortcut(
-                    title = LocalStrings.current.bookmarksTitle,
-                    icon = Icons.Default.Bookmarks,
-                    onSelected = {
-                        handleAction { detailOpener.openBookmarks() }
-                    },
-                )
-                DrawerShortcut(
-                    title = LocalStrings.current.followedHashtagsTitle,
-                    icon = Icons.Default.Tag,
-                    onSelected = {
-                        handleAction { detailOpener.openFollowedHashtags() }
-                    },
-                )
-                DrawerShortcut(
-                    title = LocalStrings.current.followRequestsTitle,
-                    icon = Icons.Default.Flaky,
-                    onSelected = {
-                        handleAction { detailOpener.openFollowRequests() }
-                    },
-                )
-                DrawerShortcut(
-                    title = LocalStrings.current.manageCirclesTitle,
-                    icon = Icons.Default.Workspaces,
-                    onSelected = {
-                        handleAction { detailOpener.openCircles() }
-                    },
-                )
-
-                if (uiState.hasDirectMessages) {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+            ) {
+                if (uiState.user == null) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.s),
+                        text = LocalStrings.current.sidebarAnonymousMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                } else {
                     DrawerShortcut(
-                        title = LocalStrings.current.directMessagesTitle,
-                        icon = Icons.AutoMirrored.Default.Chat,
+                        title = LocalStrings.current.favoritesTitle,
+                        icon = Icons.Default.Favorite,
                         onSelected = {
-                            handleAction { detailOpener.openDirectMessages() }
+                            handleAction { detailOpener.openFavorites() }
                         },
                     )
-                }
-                if (uiState.hasGallery) {
                     DrawerShortcut(
-                        title = LocalStrings.current.galleryTitle,
-                        icon = Icons.Default.Dashboard,
+                        title = LocalStrings.current.bookmarksTitle,
+                        icon = Icons.Default.Bookmarks,
                         onSelected = {
-                            handleAction { detailOpener.openGallery() }
+                            handleAction { detailOpener.openBookmarks() }
                         },
                     )
-                }
-                DrawerShortcut(
-                    title = LocalStrings.current.unpublishedTitle,
-                    icon = Icons.Default.Drafts,
-                    onSelected = {
-                        handleAction { detailOpener.openUnpublished() }
-                    },
-                )
-                if (uiState.hasCalendar) {
                     DrawerShortcut(
-                        title = LocalStrings.current.calendarTitle,
-                        icon = Icons.Default.CalendarMonth,
+                        title = LocalStrings.current.followedHashtagsTitle,
+                        icon = Icons.Default.Tag,
                         onSelected = {
-                            handleAction { detailOpener.openCalendar() }
+                            handleAction { detailOpener.openFollowedHashtags() }
                         },
                     )
-                }
-            }
+                    DrawerShortcut(
+                        title = LocalStrings.current.followRequestsTitle,
+                        icon = Icons.Default.Flaky,
+                        onSelected = {
+                            handleAction { detailOpener.openFollowRequests() }
+                        },
+                    )
+                    DrawerShortcut(
+                        title = LocalStrings.current.manageCirclesTitle,
+                        icon = Icons.Default.Workspaces,
+                        onSelected = {
+                            handleAction { detailOpener.openCircles() }
+                        },
+                    )
 
-            DrawerShortcut(
-                title = LocalStrings.current.nodeInfoTitle,
-                icon = Icons.Default.Info,
-                onSelected = {
-                    handleAction { detailOpener.openNodeInfo() }
-                },
-            )
-
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = Spacing.xs),
-            )
-
-            DrawerShortcut(
-                title = LocalStrings.current.settingsAbout,
-                icon = Icons.AutoMirrored.Default.ContactSupport,
-                onSelected = {
-                    scope.launch {
-                        drawerCoordinator.closeDrawer()
+                    if (uiState.hasDirectMessages) {
+                        DrawerShortcut(
+                            title = LocalStrings.current.directMessagesTitle,
+                            icon = Icons.AutoMirrored.Default.Chat,
+                            onSelected = {
+                                handleAction { detailOpener.openDirectMessages() }
+                            },
+                        )
                     }
-                    aboutDialogOpened = true
-                },
-            )
+                    if (uiState.hasGallery) {
+                        DrawerShortcut(
+                            title = LocalStrings.current.galleryTitle,
+                            icon = Icons.Default.Dashboard,
+                            onSelected = {
+                                handleAction { detailOpener.openGallery() }
+                            },
+                        )
+                    }
+                    DrawerShortcut(
+                        title = LocalStrings.current.unpublishedTitle,
+                        icon = Icons.Default.Drafts,
+                        onSelected = {
+                            handleAction { detailOpener.openUnpublished() }
+                        },
+                    )
+                    if (uiState.hasCalendar) {
+                        DrawerShortcut(
+                            title = LocalStrings.current.calendarTitle,
+                            icon = Icons.Default.CalendarMonth,
+                            onSelected = {
+                                handleAction { detailOpener.openCalendar() }
+                            },
+                        )
+                    }
+                }
 
-            DrawerShortcut(
-                title = LocalStrings.current.settingsTitle,
-                icon = Icons.Default.Settings,
-                onSelected = {
-                    handleAction { detailOpener.openSettings() }
-                },
-            )
+                DrawerShortcut(
+                    title = LocalStrings.current.nodeInfoTitle,
+                    icon = Icons.Default.Info,
+                    onSelected = {
+                        handleAction { detailOpener.openNodeInfo() }
+                    },
+                )
+
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = Spacing.xs),
+                )
+
+                DrawerShortcut(
+                    title = LocalStrings.current.settingsAbout,
+                    icon = Icons.AutoMirrored.Default.ContactSupport,
+                    onSelected = {
+                        scope.launch {
+                            drawerCoordinator.closeDrawer()
+                        }
+                        aboutDialogOpened = true
+                    },
+                )
+
+                DrawerShortcut(
+                    title = LocalStrings.current.settingsTitle,
+                    icon = Icons.Default.Settings,
+                    onSelected = {
+                        handleAction { detailOpener.openSettings() }
+                    },
+                )
+            }
         }
 
         if (manageAccountsDialogOpened) {
