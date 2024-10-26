@@ -14,7 +14,7 @@ class LruCache<K, V>(
     ) {
         if (keysSortedByLastAccess.contains(key)) {
             keysSortedByLastAccess.remove(key)
-        } else if (keysSortedByLastAccess.size > capacity) {
+        } else if (keysSortedByLastAccess.size >= capacity) {
             keysSortedByLastAccess.lastOrNull()?.also { lastKey ->
                 keysSortedByLastAccess.remove(lastKey)
                 map.remove(lastKey)
