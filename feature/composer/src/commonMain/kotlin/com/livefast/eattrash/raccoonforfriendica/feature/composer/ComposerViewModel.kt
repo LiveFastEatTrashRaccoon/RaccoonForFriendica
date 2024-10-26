@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Timestamp
+import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
@@ -616,34 +617,30 @@ class ComposerViewModel(
                 } else {
                     null
                 }
-            val matches = ComposerRegexes.USER_MENTION.findAll(text).toList()
-            val currentMention = matches.firstOrNull { it.range.contains(currentPosition) }
-            if (currentMention != null) {
-                val indexOfDelimiter = currentMention.range.first
-                val endIndex = currentMention.range.last + 1
-                val newText =
-                    buildString {
-                        append(text.substring(0, indexOfDelimiter))
+            val newText =
+                ComposerRegexes.USER_MENTION.substituteAllOccurrences(text) { match ->
+                    val isCurrentMention = match.range.contains(currentPosition)
+                    if (!isCurrentMention) {
+                        // skips occurrence
+                        append(match.value)
+                    } else {
                         append(additionalPart)
-                        if (endIndex < text.length) {
-                            append(text.substring(endIndex, text.length))
-                        }
                     }
-
-                val newValue =
-                    uiState.value.bodyValue.copy(
-                        text = newText,
-                        selection = TextRange(newText.length),
-                    )
-                mentionSuggestionJob?.cancel()
-                mentionSuggestionJob = null
-                updateState {
-                    it.copy(
-                        bodyValue = newValue,
-                        hasUnsavedChanges = true,
-                        shouldShowMentionSuggestions = false,
-                    )
                 }
+
+            val newValue =
+                uiState.value.bodyValue.copy(
+                    text = newText,
+                    selection = TextRange(newText.length),
+                )
+            mentionSuggestionJob?.cancel()
+            mentionSuggestionJob = null
+            updateState {
+                it.copy(
+                    bodyValue = newValue,
+                    hasUnsavedChanges = true,
+                    shouldShowMentionSuggestions = false,
+                )
             }
         }
     }
@@ -1522,6 +1519,7 @@ class ComposerViewModel(
                                 notificationCenter.send(TimelineEntryCreatedEvent(res))
                             }
                         }
+
                         PublicationType.Draft -> {
                             if (draftId != null) {
                                 notificationCenter.send(TimelineEntryUpdatedEvent(res))
@@ -1529,6 +1527,7 @@ class ComposerViewModel(
                                 notificationCenter.send(TimelineEntryCreatedEvent(res))
                             }
                         }
+
                         PublicationType.Default -> {
                             val draftToDeleteId = draftId
                             if (draftToDeleteId != null) {
