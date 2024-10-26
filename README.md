@@ -127,13 +127,13 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] support for post addons (spoilers and titles)
 - [x] multi-account
 - [x] edit one's own profile (custom fields and images not supported yet by the back-end)
-- [x] direct messages
-- [x] photo gallery
+- [x] direct messages (Friendica-specific)
+- [x] photo gallery (Friendica-specific)
 - [x] advanced media visualization (videos, GIFs, multiple images)
-- [x] scheduled posts and drafts
-- [x] report posts and users
+- [x] scheduled posts and local drafts
+- [x] create reports for posts and users 
 - [x] custom emojis
-- [x] event calendar
+- [x] calendar (Friendica-specific + read-only, creating events is not supported yet by the back-end)
 
 ## Technologies used
 
