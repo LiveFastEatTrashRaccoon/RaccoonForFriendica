@@ -86,7 +86,9 @@ Here is a list of the most important features of the app:
 - multi-account with easy ability to switch between accounts (and, in anonymous mode, to switch
   instance);
 - send direct messages (only on Friendica) to other users and see conversations;
-- manage one's own photo gallery (only on Friendica).
+- manage one's own photo gallery (only on Friendica);
+- view one's own calendar (only on Friendica) in read-only mode (creating events is not supported by
+  the back-end yet).
 
 # Acknowledgements
 
