@@ -18,14 +18,16 @@ import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.em
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
+import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
 private val EMOJI_REGEX = Regex(":(\\w+):")
 private val EMOJI_SIZE = 1.15.em
+private val IMAGE_REGEX = Regex("<img src=\"(?<url>.+?)\" />")
 
 @Composable
 fun TextWithCustomEmojis(
@@ -40,39 +42,36 @@ fun TextWithCustomEmojis(
     onTextLayout: (TextLayoutResult) -> Unit = {},
     onClick: ((Int) -> Unit) = {},
 ) {
-    var index = 0
-    val occurrences = EMOJI_REGEX.findAll(text)
     val foundEmojis = mutableListOf<EmojiModel>()
+    val foundImages = mutableMapOf<String, String>()
     val processedText =
-        buildAnnotatedString {
-            for (occurrence in occurrences) {
-                val (start, end) = occurrence.range.first to occurrence.range.last
-                if (start > index) {
-                    append(text.subSequence(startIndex = index, endIndex = start))
+        text
+            .run {
+                EMOJI_REGEX.substituteAllOccurrences(this) { occurrence ->
+                    val emojiCode = occurrence.groups[1]?.value.orEmpty()
+                    val foundEmoji = emojis.firstOrNull { it.code == emojiCode }
+                    if (foundEmoji != null) {
+                        appendInlineContent(
+                            id = emojiCode,
+                            alternateText = occurrence.value,
+                        )
+                        foundEmojis += foundEmoji
+                    } else {
+                        append(occurrence.value)
+                    }
                 }
-                val emojiCode =
-                    occurrence.groups
-                        .first()
-                        ?.value
-                        .orEmpty()
-                        .trim(':')
-                val foundEmoji = emojis.firstOrNull { it.code == emojiCode }
-                if (foundEmoji != null) {
+            }.run {
+                IMAGE_REGEX.substituteAllOccurrences(this) { occurrence ->
+                    val url = occurrence.groups["url"]?.value.orEmpty()
+                    val id = getUuid()
+                    foundImages[id] = url
                     appendInlineContent(
-                        id = emojiCode,
+                        id = id,
                         alternateText = occurrence.value,
                     )
-                    foundEmojis += foundEmoji
-                } else {
-                    append(occurrence.value)
                 }
-                index = end + 1
             }
-            if (index < text.length) {
-                append(text.subSequence(startIndex = index, endIndex = text.length))
-            }
-        }
-    val inlineContent =
+    val inlineContentEmojis =
         foundEmojis.associate { emoji ->
             emoji.code to
                 InlineTextContent(
@@ -90,6 +89,26 @@ fun TextWithCustomEmojis(
                     )
                 }
         }
+    val inlineContentImages =
+        foundImages.map {
+            val key = it.key
+            val url = it.value
+            key to
+                InlineTextContent(
+                    placeholder =
+                        Placeholder(
+                            width = 50.em,
+                            height = 50.em,
+                            placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter,
+                        ),
+                ) {
+                    CustomImage(
+                        modifier = Modifier.fillMaxSize(),
+                        url = url,
+                        contentScale = ContentScale.FillWidth,
+                    )
+                }
+        }
 
     val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
     val pressIndicator =
@@ -103,7 +122,7 @@ fun TextWithCustomEmojis(
     BasicText(
         modifier = modifier.then(pressIndicator),
         text = processedText,
-        inlineContent = inlineContent,
+        inlineContent = inlineContentEmojis + inlineContentImages,
         style = style,
         color = { color },
         softWrap = softWrap,
