@@ -60,11 +60,17 @@ fun String.parseHtml(
                             builder.append(" • ")
                         }
                     "code" -> builder.pushStyle(SpanStyle(fontFamily = FontFamily.Monospace))
+                    "img" -> {
+                        val url = attributes["src"]
+                        builder.appendLine()
+                        builder.append("<img src=\"$url\" />")
+                        builder.appendLine()
+                    }
                     else -> println("onOpenTag: Unhandled span $name")
                 }
             }.onCloseTag { name, _ ->
                 when (name) {
-                    "p", "span", "br" -> Unit
+                    "p", "span", "br", "img" -> Unit
                     "b", "strong", "u", "i", "em", "s", "code" -> builder.pop()
                     "a" -> {
                         builder.pop() // corresponds to pushStyle
