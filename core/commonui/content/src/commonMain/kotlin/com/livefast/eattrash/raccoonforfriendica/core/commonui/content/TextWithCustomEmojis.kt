@@ -18,10 +18,10 @@ import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.em
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
 private val EMOJI_REGEX = Regex(":(\\w+):")
@@ -40,36 +40,24 @@ fun TextWithCustomEmojis(
     onTextLayout: (TextLayoutResult) -> Unit = {},
     onClick: ((Int) -> Unit) = {},
 ) {
-    var index = 0
-    val occurrences = EMOJI_REGEX.findAll(text)
     val foundEmojis = mutableListOf<EmojiModel>()
     val processedText =
-        buildAnnotatedString {
-            for (occurrence in occurrences) {
-                val (start, end) = occurrence.range.first to occurrence.range.last
-                if (start > index) {
-                    append(text.subSequence(startIndex = index, endIndex = start))
-                }
-                val emojiCode =
-                    occurrence.groups
-                        .first()
-                        ?.value
-                        .orEmpty()
-                        .trim(':')
-                val foundEmoji = emojis.firstOrNull { it.code == emojiCode }
-                if (foundEmoji != null) {
-                    appendInlineContent(
-                        id = emojiCode,
-                        alternateText = occurrence.value,
-                    )
-                    foundEmojis += foundEmoji
-                } else {
-                    append(occurrence.value)
-                }
-                index = end + 1
-            }
-            if (index < text.length) {
-                append(text.subSequence(startIndex = index, endIndex = text.length))
+        EMOJI_REGEX.substituteAllOccurrences(text) { occurrence ->
+            val emojiCode =
+                occurrence.groups
+                    .first()
+                    ?.value
+                    .orEmpty()
+                    .trim(':')
+            val foundEmoji = emojis.firstOrNull { it.code == emojiCode }
+            if (foundEmoji != null) {
+                appendInlineContent(
+                    id = emojiCode,
+                    alternateText = occurrence.value,
+                )
+                foundEmojis += foundEmoji
+            } else {
+                append(occurrence.value)
             }
         }
     val inlineContent =
