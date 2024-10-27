@@ -100,7 +100,8 @@ internal fun Status.toModelWithReply() =
 internal fun Status.toModel() =
     TimelineEntryModel(
         attachments = attachments.map { it.toModel() },
-        content = content,
+        // taking HTML content from Friendica-specific add-ons if available (with embedded images)
+        content = addons?.content.takeIf { !it.isNullOrBlank() } ?: content,
         bookmarked = bookmarked,
         card = card?.toModel(),
         created = createdAt,
@@ -124,7 +125,8 @@ internal fun Status.toModel() =
         // needed because, for compatibility, Friendica titles are replicated as spoilers on Mastodon
         spoiler = spoiler.takeIf { it != addons?.title },
         tags = tags.map { it.toModel() },
-        title = addons?.title?.takeIf { it.isNotBlank() },
+        // taking content from Friendica-specific add-ons if available
+        title = addons?.title.takeIf { !it.isNullOrBlank() },
         updated = editedAt,
         url = url,
         visibility = visibility.toVisibility(),
