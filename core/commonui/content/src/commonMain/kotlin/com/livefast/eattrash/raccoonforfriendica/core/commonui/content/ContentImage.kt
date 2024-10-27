@@ -92,6 +92,7 @@ fun ContentImage(
                         onClick?.invoke()
                     },
             url = url,
+            contentDescription = altText,
             quality = FilterQuality.Low,
             blurred = !revealing,
             contentScale = contentScale,

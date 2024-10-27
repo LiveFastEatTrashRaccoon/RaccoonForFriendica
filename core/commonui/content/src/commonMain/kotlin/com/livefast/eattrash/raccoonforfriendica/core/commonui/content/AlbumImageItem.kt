@@ -90,6 +90,7 @@ fun AlbumImageItem(
                         onClick?.invoke()
                     },
             url = attachment.thumbnail ?: attachment.url,
+            contentDescription = attachment.description,
             quality = FilterQuality.Low,
             contentScale = ContentScale.FillWidth,
         )
