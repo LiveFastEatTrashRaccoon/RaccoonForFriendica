@@ -27,7 +27,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
 private val EMOJI_REGEX = Regex(":(\\w+):")
 private val EMOJI_SIZE = 1.15.em
-private val IMAGE_REGEX = Regex("<img src=\"(?<url>.+?)\" />")
+private val IMAGE_REGEX = Regex("<img src=\"(?<url>.+?)\"(alt=\"(?<alt>.+?)\")? />")
+
+private data class ImageData(
+    val url: String,
+    val description: String? = null,
+)
 
 @Composable
 fun TextWithCustomEmojis(
@@ -43,7 +48,7 @@ fun TextWithCustomEmojis(
     onClick: ((Int) -> Unit) = {},
 ) {
     val foundEmojis = mutableListOf<EmojiModel>()
-    val foundImages = mutableMapOf<String, String>()
+    val foundImages = mutableMapOf<String, ImageData>()
     val processedText =
         text
             .run {
@@ -63,8 +68,9 @@ fun TextWithCustomEmojis(
             }.run {
                 IMAGE_REGEX.substituteAllOccurrences(this) { occurrence ->
                     val url = occurrence.groups["url"]?.value.orEmpty()
+                    val alt = occurrence.groups["alt"]?.value.takeIf { !it.isNullOrBlank() }
                     val id = getUuid()
-                    foundImages[id] = url
+                    foundImages[id] = ImageData(url = url, description = alt)
                     appendInlineContent(
                         id = id,
                         alternateText = occurrence.value,
@@ -85,6 +91,7 @@ fun TextWithCustomEmojis(
                     CustomImage(
                         modifier = Modifier.fillMaxSize(),
                         url = emoji.url,
+                        contentDescription = emoji.code,
                         contentScale = ContentScale.FillWidth,
                     )
                 }
@@ -92,7 +99,7 @@ fun TextWithCustomEmojis(
     val inlineContentImages =
         foundImages.map {
             val key = it.key
-            val url = it.value
+            val imageData = it.value
             key to
                 InlineTextContent(
                     placeholder =
@@ -104,7 +111,8 @@ fun TextWithCustomEmojis(
                 ) {
                     CustomImage(
                         modifier = Modifier.fillMaxSize(),
-                        url = url,
+                        url = imageData.url,
+                        contentDescription = imageData.description,
                         contentScale = ContentScale.FillWidth,
                     )
                 }

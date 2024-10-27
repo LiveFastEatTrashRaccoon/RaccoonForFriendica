@@ -62,8 +62,13 @@ fun String.parseHtml(
                     "code" -> builder.pushStyle(SpanStyle(fontFamily = FontFamily.Monospace))
                     "img" -> {
                         val url = attributes["src"]
+                        val alt = attributes["alt"]
                         builder.appendLine()
-                        builder.append("<img src=\"$url\" />")
+                        builder.append("<img src=\"$url\"")
+                        if (!alt.isNullOrBlank()) {
+                            builder.append(" alt=\"$alt\"")
+                        }
+                        builder.append(" />")
                         builder.appendLine()
                     }
                     else -> println("onOpenTag: Unhandled span $name")
