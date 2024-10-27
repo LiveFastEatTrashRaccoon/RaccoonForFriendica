@@ -122,8 +122,9 @@ bugs, contribute with translations or tell your opinion, you can:
 
 - use the [Friendica group](https://poliverso.org/profile/raccoonforfriendicaapp) to receive updates
   about the
-  new releases, participate into public discussions, provide your feedback or just
-  share your memes about raccoons with any other people;
+  new releases, participate into public discussions, share your feedback or suggestions;
+- join the [Matrix room](https://matrix.to/#/#raccoonforfriendicaapp:matrix.org) of this project to
+  reach out to the developers or other users;
 - use the
   GitHub [issue tracker](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/issues)
   to report bugs or request features;
