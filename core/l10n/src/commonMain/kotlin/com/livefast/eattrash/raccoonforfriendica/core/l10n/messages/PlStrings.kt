@@ -400,4 +400,6 @@ internal val PlStrings =
                 1 -> "W koszu na 🗑️ znajduje się $count przedmiot"
                 else -> "W koszu na 🗑️ znajdują się $count przedmioty"
             }
+
+        override val settingsAboutUserManual = "Podręcznik użytkownika"
     }

@@ -407,4 +407,6 @@ internal val PtStrings =
                 1 -> "Existe um elemento $count no seu 🗑️"
                 else -> "Existem $count elementos no seu 🗑️"
             }
+
+        override val settingsAboutUserManual = "Manual do utilizador"
     }

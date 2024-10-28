@@ -17,7 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.AlternateEmail
-import androidx.compose.material.icons.filled.Hub
+import androidx.compose.material.icons.filled.Api
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -248,7 +248,7 @@ class NodeInfoScreen : Screen {
                         item {
                             SettingsHeader(
                                 title = LocalStrings.current.itemOther,
-                                icon = Icons.Default.Hub,
+                                icon = Icons.Default.Api,
                             )
                         }
 

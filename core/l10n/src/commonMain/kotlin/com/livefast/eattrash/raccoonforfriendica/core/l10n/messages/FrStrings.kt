@@ -406,4 +406,6 @@ internal val FrStrings =
                 1 -> "Il y a $count article dans le 🗑️"
                 else -> "Il y a $count articles dans le 🗑️"
             }
+
+        override val settingsAboutUserManual = "Manuel de l'utilisateur"
     }

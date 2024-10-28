@@ -402,4 +402,6 @@ internal val DeStrings =
                 1 -> "Es gibt $count Artikel in der 🗑️"
                 else -> "Es gibt $count Artikel in der 🗑️"
             }
+
+        override val settingsAboutUserManual = "Benutzerhandbuch"
     }
