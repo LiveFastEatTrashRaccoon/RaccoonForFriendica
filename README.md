@@ -150,6 +150,19 @@ The app is under ongoing development, here is a list of the features that are be
 - [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for custom color selection
 - [Sentry](https://sentry.io) for crash reporting and user feedback collection
 
+## Want to leave your feedback or report a bug?
+
+- use the "Report an issue" in-app form you can find in the "App information" dialog;
+- follow the [Friendica group](https://poliverso.org/profile/raccoonforfriendicaapp) to receive
+  updates about the new releases and participate in public discussions;
+- join our [Matrix room](https://matrix.to/#/#raccoonforfriendicaapp:matrix.org) to reach out to the
+  developers or other users;
+- use the
+  GitHub [issue tracker](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/issues)
+  to report bugs or request features;
+- finally, if none of the above methods fits your needs you
+  can write an [email](mailto://livefast.eattrash.raccoon@gmail.com).
+
 ## Disclaimer
 
 > [!WARNING]
