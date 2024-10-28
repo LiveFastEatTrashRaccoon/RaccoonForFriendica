@@ -31,6 +31,13 @@ class LicencesViewModel :
                             )
                         this +=
                             LicenceItem(
+                                type = LicenceItemType.Resource,
+                                title = "Atkinson Hyperlegible, Exo, Noto Sans",
+                                subtitle = "Fonts used in the app are released under the Open Font Library (OFL)",
+                                url = LicenceUrls.OFL,
+                            )
+                        this +=
+                            LicenceItem(
                                 type = LicenceItemType.Library,
                                 title = "Coil",
                                 subtitle = "An image loading library for Android",
@@ -42,13 +49,6 @@ class LicencesViewModel :
                                 title = "Compose ColorPicker",
                                 subtitle = "Kotlin Multiplatform color picker library",
                                 url = LicenceUrls.COMPOSE_COLORPICKER,
-                            )
-                        this +=
-                            LicenceItem(
-                                type = LicenceItemType.Resource,
-                                title = "Exo, Noto Sans",
-                                subtitle = "Fonts used in the app are released under the Open Font Library (OFL)",
-                                url = LicenceUrls.OFL,
                             )
                         this +=
                             LicenceItem(
