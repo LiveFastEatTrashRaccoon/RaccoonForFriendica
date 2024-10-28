@@ -193,7 +193,7 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
-    override suspend fun getFollowRequests(pageCursor: String?): Pair<List<UserModel>, String>? =
+    override suspend fun getFollowRequests(pageCursor: String?): Pair<List<UserModel>, String?>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -206,7 +206,7 @@ internal class DefaultUserRepository(
                 if (nextCursor != null) {
                     list to nextCursor
                 } else {
-                    null
+                    list to null
                 }
             }.getOrNull()
         }
