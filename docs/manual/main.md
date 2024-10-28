@@ -115,7 +115,9 @@ Moreover, from each single post it is possible to:
   - open a "Details" screen with the raw source and additional information;
   - edit or delete it (only if you are the author).
 
-<img width="310" alt="timeline screen" src="images/timeline.png" />
+<div align="center">
+  <img width="310" alt="timeline screen" src="images/timeline.png" />
+</div>
 
 ## Post detail
 
@@ -127,7 +129,9 @@ Moreover you can the list of users who re-shared it or added it to their favorit
 Apart from that, this screen is very similar to a regular [timeline](#timeline), and allows to
 perform the same actions and open user profiles or other post details.
 
-<img width="310" alt="post detail screen" src="images/post_detail.png" />
+<div align="center">
+  <img width="310" alt="post detail screen" src="images/post_detail.png" />
+</div>
 
 ## Image detail
 
@@ -137,7 +141,9 @@ tap to enter the pinch-to-zoom mode.
 From the top bar action menu, you can download the attachment to your device, share it as a file or
 as a URL and, for images, adjust the aspect ratio in case if were not displaying correctly.
 
-<img width="310" alt="zoomable image detail screen" src="images/image_detail.png" />
+<div align="center">
+  <img width="310" alt="zoomable image detail screen" src="images/image_detail.png" />
+</div>
 
 ## User profile
 
@@ -178,7 +184,9 @@ From the top app bar action menu, you can also:
 - add a personal note on the user;
 - switch to [forum mode](#forum-mode) (if it is a group).
 
-<img width="310" alt="user detail (classic mode) screen" src="images/user_detail.png" />
+<div align="center">
+  <img width="310" alt="user detail (classic mode) screen" src="images/user_detail.png" />
+</div>
 
 ### Forum mode
 
@@ -188,15 +196,19 @@ item you will enter the [thread detail](#thread-detail).
 
 From the top app bar action menu, you can also switch to [classic mode](#classic-mode).
 
-<img width="310" alt="user detail (forum mode) screen" src="images/forum_list.png" />
+<div align="center">
+  <img width="310" alt="user detail (forum mode) screen" src="images/forum_list.png" />
+</div>
 
 ## Thread detail
 
-This screen is similar to a [post detai](#post-detail) but comments are displayed in a Lemmy-like
+This screen is similar to a [post detail](#post-detail) but comments are displayed in a Lemmy-like
 layout, i.e. indented according to their nesting level and with a coloured bar which makes it easier
 to distinguish parent-child relationship between replies.
 
-<img width="310" alt="thread detail screen" src="images/thread_detail.png" />
+<div align="center">
+  <img width="310" alt="thread detail screen" src="images/thread_detail.png" />
+</div>
 
 ## Hashtag feed
 
@@ -205,7 +217,9 @@ given hashtag and it follows the same structure.
 
 From the top app bar, you will be able to follow or unfollow the hashtag.
 
-<img width="310" alt="hashtag feed screen" src="images/hashtag_feed.png" />
+<div align="center">
+  <img width="310" alt="hashtag feed screen" src="images/hashtag_feed.png" />
+</div>
 
 ## Favorites and bookmarks
 
@@ -215,8 +229,10 @@ structure.
 The only difference is that if you un-favorite or un-bookmark a post it will immediately disappear
 from the feed.
 
-<img width="310" alt="favorites screen" src="images/favorites.png" />
-<img width="310" alt="bookmarks screen" src="images/bookmarks.png" />
+<div align="center">
+  <img width="310" alt="favorites screen" src="images/favorites.png" />
+  <img width="310" alt="bookmarks screen" src="images/bookmarks.png" />
+</div>
 
 ## Followed hashtags
 
@@ -225,7 +241,9 @@ unfollow each one of them.
 
 Each item of this list allows to open the corresponding [feed](#hashtag-feed).
 
-<img width="310" alt="followed hashtags screen" src="images/followed_hashtags.png" />
+<div align="center">
+  <img width="310" alt="followed hashtags screen" src="images/followed_hashtags.png" />
+</div>
 
 ## Explore
 
@@ -234,7 +252,7 @@ screen is divided into the following sections:
 
 - **Hashtags** contains the list of trending hashtags, with the number of people talking about it
   and a
-  chart about its usage in the last 7 days;<a href="#hashtag-usage-disclaimer">(*)</a><
+  chart about its usage in the last week;<a href="#hashtag-usage-disclaimer">*</a>
 - **Posts** list of treding posts
 - **Links** aggregated view of the URLS used most frequently in posts;
 - (only for logged users) **For you** contains the list of follow suggestions for your user.
@@ -248,8 +266,10 @@ option selected in the [app settings](#application-settings).
   * note that on different backends the number or days may vary from 1 (single point) to more
 </p>
 
-<img width="310" alt="explore screen (hashtags section)" src="images/explore_hashtags.png" />
-<img width="310" alt="explore screen (links section)" src="images/explore_links.png" />
+<div align="center">
+  <img width="310" alt="explore screen (hashtags section)" src="images/explore_hashtags.png" />
+  <img width="310" alt="explore screen (links section)" src="images/explore_links.png" />
+</div>
 
 ## Search
 
@@ -261,7 +281,9 @@ Please notice that it is not possible to search unless a non-empty query has bee
 Opening a hashtag will lead you to the [dedicated feed](#hashtag-feed), opening a post to
 its [detail](#post-detail) and opening a user to the corresponding [profile](#user-profile).
 
-<img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="images/search.png" />
+<div align="center">
+  <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="images/search.png" />
+</div>
 
 ## Inbox
 
@@ -285,7 +307,9 @@ filter the results displayed in the list.
 Tapping on each item of the list, it is possible to open the [user profile](#user-profile)
 or [post detail](#post-detail).
 
-<img width="310" alt="inbox screen" src="images/inbox.png" />
+<div align="center">
+  <img width="310" alt="inbox screen" src="images/inbox.png" />
+</div>
 
 ## Profile
 
@@ -314,15 +338,19 @@ OAuth2 because:
   token can be used for;
 - tokens can be revoked at any time, making it easier to mitigate potentially unwanted accesses.
 
-<img width="310" alt="login intro screen" src="images/login_1.png" />
-<img width="310" alt="select instance screen" src="images/login_2.png" />
+<div align="center">
+  <img width="310" alt="login intro screen" src="images/login_1.png" />
+  <img width="310" alt="select instance screen" src="images/login_2.png" />
+</div>
 
 ### One's own user detail
 
 In the header, instead of the relationship/notification buttons you will find an "Edit profile"
 button to open your [profile preferences](#profile-settings).
 
-<img width="310" alt="profile screen" src="images/profile.png" />
+<div align="center">
+  <img width="310" alt="profile screen" src="images/profile.png" />
+</div>
 
 ## User list
 
@@ -334,7 +362,9 @@ the avatar, display name and username of users plus the corresponding relationsh
 You can use the follow/send request/mutuals button to modify your relationship with the given
 account.
 
-<img width="310" alt="user list screen (profile following)" src="images/user_list.png" />
+<div align="center">
+  <img width="310" alt="user list screen (profile following)" src="images/user_list.png" />
+</div>
 
 ## Follow requests
 
@@ -343,7 +373,9 @@ requests, this screen contains the list of pending follow request you have recei
 
 For each one of the items you can either accept or reject the request.
 
-<img width="310" alt="follow request screen" src="images/follow_requests.png" />
+<div align="center">
+  <img width="310" alt="follow request screen" src="images/follow_requests.png" />
+</div>
 
 ## Node info
 
@@ -356,7 +388,9 @@ This screen contains some information about the current instance you are connect
 - list of rules members of this server have to comply with;
 - backend type and version.
 
-<img width="310" alt="node info screen" src="images/node_info.png" />
+<div align="center">
+  <img width="310" alt="node info screen" src="images/node_info.png" />
+</div>
 
 ## App information
 
@@ -370,8 +404,10 @@ This dialog contains more information about the app:
 - a link to the project's Matrix room;
 - the entry point for the list of licences for the libraries and resources used in the app.
 
-<img width="310" alt="app information dialog" src="images/app_info.png" />
-<img width="310" alt="licenses screen" src="images/licenses.png" />
+<div align="center">
+  <img width="310" alt="app information dialog" src="images/app_info.png" />
+  <img width="310" alt="licenses screen" src="images/licenses.png" />
+</div>
 
 ## Profile settings
 
@@ -382,9 +418,9 @@ The profile data which can be edited are:
 
 - display name;
 - bio;
-- avatar;<a href="#user-profile-experimental-disclaimer">(*)</a>
-- banner;<a href="#user-profile-experimental-disclaimer">(*)</a>
-- custom fields;<a href="#user-profile-experimental-disclaimer">(*)</a>
+- avatar;<a href="#user-profile-experimental-disclaimer">*</a>
+- banner;<a href="#user-profile-experimental-disclaimer">*</a>
+- custom fields;<a href="#user-profile-experimental-disclaimer">*</a>
 - bot (mark account as bot);
 - manual approval of follow requests (`locked`);
 - make account visible in searches (`discoverable`);
@@ -396,7 +432,9 @@ The profile data which can be edited are:
 issues on some versions of Friendica
 </p>
 
-<img width="310" alt="edit profile screen" src="images/edit_profile.png" />
+<div align="center">
+  <img width="310" alt="edit profile screen" src="images/edit_profile.png" />
+</div>
 
 ## Application settings
 
@@ -415,7 +453,7 @@ sections:
   - **Open groups in forum mode** by default configures whether group accounts are going to be
     opened in forum mode (as opposed to classic mode) by default;
   - **Markup for compositing** determines the type of markup syntax used in new posts (plain text —
-    i.e. no markup — BBCode — Friendica-specific — HTML or Markdown — Mastodon specific);(*)
+    i.e. no markup — BBCode — Friendica-specific — HTML or Markdown — Mastodon specific);*
   - **Max post body lines** configures the maximum number of lines for posts which will be shown in
     feeds;
   - **Check for notifications in background** configures the time interval between background checks
@@ -432,7 +470,9 @@ sections:
   - **Blur NSFW media** allows, if sensitive contents are included, to blur images and hide videos
     when they occur in timelines.
 
-<img width="310" alt="edit profile screen" src="images/settings.png" />
+<div align="center">
+  <img width="310" alt="edit profile screen" src="images/settings.png" />
+</div>
 
 ## Manage filters
 
@@ -442,7 +482,9 @@ sections:
 - **Muted** for muted accounts;
 - **Bans** for banned ones.
 
-<img width="310" alt="manage bans screen" src="images/manage_bans.png" />
+<div align="center">
+  <img width="310" alt="manage bans screen" src="images/manage_bans.png" />
+</div>
 
 ## Post composer
 
@@ -490,7 +532,9 @@ formatting toolbar with the following buttons:
 - **Code** to insert monospaced font;
 - **Toggle spoiler** to add or remove a spoiler for the post.
 
-<img width="310" alt="composer screen" src="images/composer.png" />
+<div align="center">
+  <img width="310" alt="composer screen" src="images/composer.png" />
+</div>
 
 ## Create report
 
@@ -518,7 +562,9 @@ the server, so this option is hidden
 but it has no effect
 </p>
 
-<img width="310" alt="create report screen" src="images/report.png" />
+<div align="center">
+  <img width="310" alt="create report screen" src="images/report.png" />
+</div>
 
 ## Circles
 
@@ -541,8 +587,10 @@ Please remember that in Friendica by default all non-group contacts are added to
 circle and all group contacts are added to "Group" but, albeit being there by default, these are
 regulars circles that can be changed or deleted.
 
-<img width="310" alt="circle list screen" src="images/circles_list.png" />
-<img width="310" alt="circle detail screen" src="images/circle_detail.png" />
+<div align="center">
+  <img width="310" alt="circle list screen" src="images/circles_list.png" />
+  <img width="310" alt="circle detail screen" src="images/circle_detail.png" />
+</div>
 
 ## Direct messages (Friendica-only)
 
@@ -561,8 +609,10 @@ message bubbles and a text field in the bottom part of the screen to send new on
 Messages are being downloaded as long as they arrive while you are in this screen, otherwise you
 have to manually refresh the conversation list.
 
-<img width="310" alt="conversation list screen" src="images/dm_list.png" />
-<img width="310" alt="conversation  detail screen" src="images/dm_detail.png" />
+<div align="center">
+  <img width="310" alt="conversation list screen" src="images/dm_list.png" />
+  <img width="310" alt="conversation  detail screen" src="images/dm_detail.png" />
+</div>
 
 ## Gallery (Friendica-only)
 
@@ -575,8 +625,10 @@ For each picture, you will have the possibility to:
 - delete it from the Gallery;
 - move it to another album.
 
-<img width="310" alt="gallery list screen" src="images/gallery_list.png" />
-<img width="310" alt="gallery  detail screen" src="images/gallery_detail.png" />
+<div align="center">
+  <img width="310" alt="gallery list screen" src="images/gallery_list.png" />
+  <img width="310" alt="gallery  detail screen" src="images/gallery_detail.png" />
+</div>
 
 ## Unpublished items
 
@@ -596,7 +648,9 @@ date, so the preferred way to save a post and edit for later is:
   database and are not stored anywhere remotely, so will lose them if you change device or clear the
   application storage.
 
-<img width="310" alt="unpublished items screen" src="images/drafts.png" />
+<div align="center">
+  <img width="310" alt="unpublished items screen" src="images/drafts.png" />
+</div>
 
 ## Calendar
 
@@ -610,5 +664,7 @@ This screen shows the event calendar, i.e. the list of events divided by month w
 For each item, you can export it to your device calendar and, by tapping on the item, access a
 detail screen where more details (like a more extended description) are displayed.
 
-<img width="310" alt="calendar event list screen" src="images/calendar_list.png" />
-<img width="310" alt="event detail screen" src="images/calendar_detail.png" />
+<div align="center">
+  <img width="310" alt="calendar event list screen" src="images/calendar_list.png" />
+  <img width="310" alt="event detail screen" src="images/calendar_detail.png" />
+</div>
