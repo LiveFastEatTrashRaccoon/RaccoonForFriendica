@@ -402,4 +402,7 @@ internal val PlStrings =
             }
 
         override val settingsAboutUserManual = "Podręcznik użytkownika"
+        override val editProfileItemHideCollections =
+            "Prywatność list obserwujących i obserwowanych"
+        override val settingsAboutMatrix = "Dołącz do pokoju Matrix"
     }

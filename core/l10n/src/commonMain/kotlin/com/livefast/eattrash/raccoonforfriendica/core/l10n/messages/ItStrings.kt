@@ -404,4 +404,7 @@ internal val ItStrings =
             }
 
         override val settingsAboutUserManual = "Manuale utente"
+        override val editProfileItemHideCollections =
+            "Rendi privati gli elenchi di seguiti e seguaci"
+        override val settingsAboutMatrix = "Entra nella room Matrix"
     }

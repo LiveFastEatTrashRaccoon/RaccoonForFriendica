@@ -404,4 +404,6 @@ internal val DeStrings =
             }
 
         override val settingsAboutUserManual = "Benutzerhandbuch"
+        override val editProfileItemHideCollections = "Follower und Followerlisten privat machen"
+        override val settingsAboutMatrix = "Matrix-Raum beitreten"
     }
