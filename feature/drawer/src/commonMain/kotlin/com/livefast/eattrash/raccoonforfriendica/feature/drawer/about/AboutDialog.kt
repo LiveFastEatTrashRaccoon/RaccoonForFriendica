@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Code
@@ -143,6 +144,18 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                         onClick = {
                             handleAction {
                                 uriHandler.openUri(AboutConstants.GROUP_URL)
+                            }
+                        },
+                    )
+                }
+                item {
+                    AboutItem(
+                        icon = Icons.AutoMirrored.Default.Chat,
+                        text = LocalStrings.current.settingsAboutMatrix,
+                        textDecoration = TextDecoration.Underline,
+                        onClick = {
+                            handleAction {
+                                uriHandler.openUri(AboutConstants.MATRIX_URL)
                             }
                         },
                     )

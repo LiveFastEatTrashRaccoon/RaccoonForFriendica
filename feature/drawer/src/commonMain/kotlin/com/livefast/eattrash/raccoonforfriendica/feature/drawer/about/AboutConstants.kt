@@ -7,4 +7,5 @@ internal object AboutConstants {
     const val GROUP_URL = "https://poliverso.org/users/raccoonforfriendicaapp"
     const val MANUAL_URL =
         "https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/main"
+    const val MATRIX_URL = "https://matrix.to/#/#raccoonforfriendicaapp:matrix.org"
 }
