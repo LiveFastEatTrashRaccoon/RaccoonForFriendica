@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Gavel
@@ -142,6 +143,18 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                         onClick = {
                             handleAction {
                                 uriHandler.openUri(AboutConstants.GROUP_URL)
+                            }
+                        },
+                    )
+                }
+                item {
+                    AboutItem(
+                        text = LocalStrings.current.settingsAboutUserManual,
+                        icon = Icons.Default.Book,
+                        textDecoration = TextDecoration.Underline,
+                        onClick = {
+                            handleAction {
+                                uriHandler.openUri(AboutConstants.MANUAL_URL)
                             }
                         },
                     )
