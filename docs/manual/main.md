@@ -104,6 +104,18 @@ Moreover, from each single post it is possible to:
 
 - access the [profile](#user-profile) of all users involved (author, re-sharer or original poster);
 - enter the [post detail](#post-detail) screen;
+- open the a drop-down action menu to:
+  - share it via the system share mechanism;
+  - copy its URL to the clipboard;
+  - copy its title and content to clipboard;
+  - mute its author indefinitely or for a limited amount of time;
+  - block its author;
+  - report it or its author to administrators;
+  - quote it (i.e. cross-posting it, Friendica-only);
+  - open a "Details" screen with the raw source and additional information;
+  - edit or delete it (only if you are the author).
+
+<img width="310" alt="timeline screen" src="images/timeline.png" />
 
 ## Post detail
 
@@ -114,6 +126,18 @@ Moreover you can the list of users who re-shared it or added it to their favorit
 
 Apart from that, this screen is very similar to a regular [timeline](#timeline), and allows to
 perform the same actions and open user profiles or other post details.
+
+<img width="310" alt="post detail screen" src="images/post_detail.png" />
+
+## Image detail
+
+From a video or image attachment, you can open the full-screen image viewer. For images, use double
+tap to enter the pinch-to-zoom mode.
+
+From the top bar action menu, you can download the attachment to your device, share it as a file or
+as a URL and, for images, adjust the aspect ratio in case if were not displaying correctly.
+
+<img width="310" alt="zoomable image detail screen" src="images/image_detail.png" />
 
 ## User profile
 
@@ -154,6 +178,8 @@ From the top app bar action menu, you can also:
 - add a personal note on the user;
 - switch to [forum mode](#forum-mode) (if it is a group).
 
+<img width="310" alt="user detail (classic mode) screen" src="images/user_detail.png" />
+
 ### Forum mode
 
 In forum mode, you will be presented with all the top-level posts that have been re-shard by the
@@ -162,11 +188,15 @@ item you will enter the [thread detail](#thread-detail).
 
 From the top app bar action menu, you can also switch to [classic mode](#classic-mode).
 
+<img width="310" alt="user detail (forum mode) screen" src="images/forum_list.png" />
+
 ## Thread detail
 
 This screen is similar to a [post detai](#post-detail) but comments are displayed in a Lemmy-like
 layout, i.e. indented according to their nesting level and with a coloured bar which makes it easier
 to distinguish parent-child relationship between replies.
+
+<img width="310" alt="thread detail screen" src="images/thread_detail.png" />
 
 ## Hashtag feed
 
@@ -174,6 +204,8 @@ The hashtag feed is a special kind of [timeline](#timeline) featuring all the po
 given hashtag and it follows the same structure.
 
 From the top app bar, you will be able to follow or unfollow the hashtag.
+
+<img width="310" alt="hashtag feed screen" src="images/hashtag_feed.png" />
 
 ## Favorites and bookmarks
 
@@ -183,12 +215,17 @@ structure.
 The only difference is that if you un-favorite or un-bookmark a post it will immediately disappear
 from the feed.
 
+<img width="310" alt="favorites screen" src="images/favorites.png" />
+<img width="310" alt="bookmarks screen" src="images/bookmarks.png" />
+
 ## Followed hashtags
 
 This screen contains the list of all hashtags you are following in alphabetical order, and you can
 unfollow each one of them.
 
 Each item of this list allows to open the corresponding [feed](#hashtag-feed).
+
+<img width="310" alt="followed hashtags screen" src="images/followed_hashtags.png" />
 
 ## Explore
 
@@ -197,7 +234,7 @@ screen is divided into the following sections:
 
 - **Hashtags** contains the list of trending hashtags, with the number of people talking about it
   and a
-  chart about its usage in the last 7 days;<sup><a href="#hashtag-usage-disclaimer">(*)</a></sup>
+  chart about its usage in the last 7 days;<a href="#hashtag-usage-disclaimer">(*)</a><
 - **Posts** list of treding posts
 - **Links** aggregated view of the URLS used most frequently in posts;
 - (only for logged users) **For you** contains the list of follow suggestions for your user.
@@ -211,6 +248,9 @@ option selected in the [app settings](#application-settings).
   * note that on different backends the number or days may vary from 1 (single point) to more
 </p>
 
+<img width="310" alt="explore screen (hashtags section)" src="images/explore_hashtags.png" />
+<img width="310" alt="explore screen (links section)" src="images/explore_links.png" />
+
 ## Search
 
 This screen makes it possible to search in the Fediverse: it contains a search field to enter the
@@ -220,6 +260,8 @@ Please notice that it is not possible to search unless a non-empty query has bee
 
 Opening a hashtag will lead you to the [dedicated feed](#hashtag-feed), opening a post to
 its [detail](#post-detail) and opening a user to the corresponding [profile](#user-profile).
+
+<img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="images/search.png" />
 
 ## Inbox
 
@@ -243,6 +285,8 @@ filter the results displayed in the list.
 Tapping on each item of the list, it is possible to open the [user profile](#user-profile)
 or [post detail](#post-detail).
 
+<img width="310" alt="inbox screen" src="images/inbox.png" />
+
 ## Profile
 
 If you are running the app in anonymous mode, the Profile screen contains the Login button to start
@@ -261,7 +305,7 @@ There are two possible ways to login, depending on your preferences (or what you
 - **HTTP Basic** (legacy, available on Friendica) this in-app flows involves selecting the instance
   and inserting your credentials, all API calls will be using HTTP Basic auth header.
 
-Needless to say – but we'll repeat it for the sake of clarity – the recommended way to login is
+Needless to say — but we'll repeat it for the sake of clarity — the recommended way to login is
 OAuth2 because:
 
 - your username/password never go outside browser and remain unknown to all third-party subjects
@@ -270,10 +314,15 @@ OAuth2 because:
   token can be used for;
 - tokens can be revoked at any time, making it easier to mitigate potentially unwanted accesses.
 
+<img width="310" alt="login intro screen" src="images/login_1.png" />
+<img width="310" alt="select instance screen" src="images/login_2.png" />
+
 ### One's own user detail
 
 In the header, instead of the relationship/notification buttons you will find an "Edit profile"
 button to open your [profile preferences](#profile-settings).
+
+<img width="310" alt="profile screen" src="images/profile.png" />
 
 ## User list
 
@@ -285,12 +334,16 @@ the avatar, display name and username of users plus the corresponding relationsh
 You can use the follow/send request/mutuals button to modify your relationship with the given
 account.
 
+<img width="310" alt="user list screen (profile following)" src="images/user_list.png" />
+
 ## Follow requests
 
 If in your [profile settings](#profile-settings) you have enabled manual approval for follow
 requests, this screen contains the list of pending follow request you have received.
 
 For each one of the items you can either accept or reject the request.
+
+<img width="310" alt="follow request screen" src="images/follow_requests.png" />
 
 ## Node info
 
@@ -302,6 +355,8 @@ This screen contains some information about the current instance you are connect
 - contact account;
 - list of rules members of this server have to comply with;
 - backend type and version.
+
+<img width="310" alt="node info screen" src="images/node_info.png" />
 
 ## App information
 
@@ -315,6 +370,9 @@ This dialog contains more information about the app:
 - a link to the project's Matrix room;
 - the entry point for the list of licences for the libraries and resources used in the app.
 
+<img width="310" alt="app information dialog" src="images/app_info.png" />
+<img width="310" alt="licenses screen" src="images/licenses.png" />
+
 ## Profile settings
 
 This screen allows you to edit your profile data and configure (to some extent) the discoverability
@@ -324,9 +382,9 @@ The profile data which can be edited are:
 
 - display name;
 - bio;
-- avatar;<sup><a href="#user-profile-experimental-disclaimer">(*)</a></sup>
-- banner;<sup><a href="#user-profile-experimental-disclaimer">(*)</a></sup>
-- custom fields;<sup><a href="#user-profile-experimental-disclaimer">(*)</a></sup>
+- avatar;<a href="#user-profile-experimental-disclaimer">(*)</a>
+- banner;<a href="#user-profile-experimental-disclaimer">(*)</a>
+- custom fields;<a href="#user-profile-experimental-disclaimer">(*)</a>
 - bot (mark account as bot);
 - manual approval of follow requests (`locked`);
 - make account visible in searches (`discoverable`);
@@ -338,6 +396,8 @@ The profile data which can be edited are:
 issues on some versions of Friendica
 </p>
 
+<img width="310" alt="edit profile screen" src="images/edit_profile.png" />
+
 ## Application settings
 
 This screen allows to customize the application appearance and behaviour, it has the following
@@ -347,15 +407,15 @@ sections:
   - **Language**  configures the language for the user interface;
   - **Default timeline type** configures the timeline type used by default in the Timeline screen
   - **Default visibility for posts** configures the visibility (`public`, `unlisted`, `private` -
-    i.e. only followers - or `direct` - i.e. ony mentions) used for posts by default;
+    i.e. only followers — or `direct` — i.e. ony mentions) used for posts by default;
   - **Default visibility for replies** configures the visibility used for replies by default;
   - **URL opening mode** configures how URLs will be opened (external browser or custom tabs);
   - **Exclude replies from timeline** configures whether replies are included by default in the
     Timeline screen;
   - **Open groups in forum mode** by default configures whether group accounts are going to be
     opened in forum mode (as opposed to classic mode) by default;
-  - **Markup for compositing** determines the type of markup syntax used in new posts (plain text -
-    i.e. no markup – BBCode – Friendica-specific – HTML or Markdown – Mastodon specific);(*)
+  - **Markup for compositing** determines the type of markup syntax used in new posts (plain text —
+    i.e. no markup — BBCode — Friendica-specific — HTML or Markdown — Mastodon specific);(*)
   - **Max post body lines** configures the maximum number of lines for posts which will be shown in
     feeds;
   - **Check for notifications in background** configures the time interval between background checks
@@ -372,6 +432,8 @@ sections:
   - **Blur NSFW media** allows, if sensitive contents are included, to blur images and hide videos
     when they occur in timelines.
 
+<img width="310" alt="edit profile screen" src="images/settings.png" />
+
 ## Manage filters
 
 This screen allows to revoke current restrictions on other accounts. It is divided into two
@@ -379,6 +441,8 @@ sections:
 
 - **Muted** for muted accounts;
 - **Bans** for banned ones.
+
+<img width="310" alt="manage bans screen" src="images/manage_bans.png" />
 
 ## Post composer
 
@@ -413,9 +477,9 @@ Below the top bar there is a header containing:
 - the schedule date and time (for scheduled posts);
 - the current character count / character limit according to instance configuration.
 
-Afterwards you can find the main text field for the post body. In the bottom part of the screen,
-only if "Markup for compositing" option in Settings is _not_ plain text, you will find a formatting
-toolbar with the following buttons:
+Below the header you can find the main text field for the post body. In the bottom part of the
+screen, only if "Markup for compositing" option in Settings is _not_ plain text, you will find a
+formatting toolbar with the following buttons:
 
 - **Add image** to add an image from the device gallery;
 - **Add link** to add a hyperlink
@@ -423,5 +487,128 @@ toolbar with the following buttons:
 - **Italic** to insert some text in italic;
 - **Underline** to insert some underlined text;
 - **Strikethrough** to insert some text with a strikethrough effect;
-- Code to insert monospaced font;
-- Toggle spoiler to add or remove a spoiler for the post.
+- **Code** to insert monospaced font;
+- **Toggle spoiler** to add or remove a spoiler for the post.
+
+<img width="310" alt="composer screen" src="images/composer.png" />
+
+## Create report
+
+This screen allows to create a report for either a user or a specific post.
+
+It contains a selector to choose the kind of violation among:
+
+- **Spam** the post is spam or user is spamming;
+- **Legal** issue the post or user infringes some existing legislation;
+- **Rule** (Mastodon-only) the post or user does not follow the instance rules (in this case you
+  will have to select which rule is violated);<a href="#report-rule-disclaimer">*</a>
+- **Other** any other kind of issue.
+
+Below you can write the report body in a text field and, finally, the "Forward report" switch allows
+you to select whether this report should only be delivered to your instance admins or, if you are
+reporting a content coming from a federated instance, it should be handled by the admins of the
+source instance too.<a href="#report-forward-disclaimer">**</a>
+
+<p id="report-rule-disclaimer">
+* on Friendica rule violation are not supported yet and if they are submitted they get rejected by
+the server, so this option is hidden
+</p>
+<p id="report-forward-disclaimer">
+** on Friendica this switch is supported (does not cause the request to be rejected by the server)
+but it has no effect
+</p>
+
+<img width="310" alt="create report screen" src="images/report.png" />
+
+## Circles
+
+This screens contains all the custom feeds that can be used in the timeline, which comprise:
+
+- user-defined lists (like Mastodon lists or
+  Friendica [circles](https://wiki.friendi.ca/docs/groups-and-privacy));
+- Friendica [channels](https://wiki.friendi.ca/docs/channel);
+- one item for each group among the accounts you follow.
+
+> The reason why all these heterogeneous elements are in the same list is because they are all
+> returned by the same API for compatibility with Mastodon clients.
+
+Among these three categories, the only one which allow to be modified is the first one, for which:
+
+- you can use the "more" button to edit the name or delete it
+- you can enter a circle detail screen to see the contacts that belong to it.
+
+Please remember that in Friendica by default all non-group contacts are added to the "Friends"
+circle and all group contacts are added to "Group" but, albeit being there by default, these are
+regulars circles that can be changed or deleted.
+
+<img width="310" alt="circle list screen" src="images/circles_list.png" />
+<img width="310" alt="circle detail screen" src="images/circle_detail.png" />
+
+## Direct messages (Friendica-only)
+
+This section contains the list of private conversations with your contacts. For each
+item in the list, you can see:
+
+- the contact avatar, username and display name;
+- the title of the conversation (defaulting to the first message);
+- some lines of the last message;
+- the total number of messages;
+- the time elapsed since the last message was received.
+
+Tapping on each item you can open the conversation detail, in the form of a traditional hat with
+message bubbles and a text field in the bottom part of the screen to send new ones.
+
+Messages are being downloaded as long as they arrive while you are in this screen, otherwise you
+have to manually refresh the conversation list.
+
+<img width="310" alt="conversation list screen" src="images/dm_list.png" />
+<img width="310" alt="conversation  detail screen" src="images/dm_detail.png" />
+
+## Gallery (Friendica-only)
+
+This screen contains the list of albums in your multimedia gallery. For each album you can either
+edit its name or delete it or, tapping on the list item, access the pictures contained in it.
+
+For each picture, you will have the possibility to:
+
+- edit its description;
+- delete it from the Gallery;
+- move it to another album.
+
+<img width="310" alt="gallery list screen" src="images/gallery_list.png" />
+<img width="310" alt="gallery  detail screen" src="images/gallery_detail.png" />
+
+## Unpublished items
+
+This screen contains all the items awaiting publication and it is divided into two sections:
+
+- scheduled i.e. the list scheduled posts;
+- drafts i.e. the list of drafts you created;
+
+each item can be deleted or, by tapping on it, opened in edit mode.
+
+Beware that on most instances scheduled posts can **not** be modified except for their schedule
+date, so the preferred way to save a post and edit for later is:
+
+- create a post with the "Only mentions" (`direct`) visibility without mentioning any user so that
+  it is only visible to you;
+- create a draft, keeping in mind that draft are just **local records** saved in the application
+  database and are not stored anywhere remotely, so will lose them if you change device or clear the
+  application storage.
+
+<img width="310" alt="unpublished items screen" src="images/drafts.png" />
+
+## Calendar
+
+This screen shows the event calendar, i.e. the list of events divided by month with, for each item:
+
+- event title
+- start date;
+- (optional) end date;
+- (optional) location.
+
+For each item, you can export it to your device calendar and, by tapping on the item, access a
+detail screen where more details (like a more extended description) are displayed.
+
+<img width="310" alt="calendar event list screen" src="images/calendar_list.png" />
+<img width="310" alt="event detail screen" src="images/calendar_detail.png" />
