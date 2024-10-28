@@ -111,8 +111,9 @@ If what you have read so far sounds interesting to you and you want to know more
 useful
 links:
 
+- check out the [User manual](manual/main);
 - have a look at the
-  main [README](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/README.md)
+  project's [README](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/README.md)
 - consult
   the [CONTRIBUTING](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/CONTRIBUTING.md)
   guide.
@@ -123,11 +124,10 @@ bugs, contribute with translations or tell your opinion, you can:
 - use the [Friendica group](https://poliverso.org/profile/raccoonforfriendicaapp) to receive updates
   about the
   new releases, participate into public discussions, share your feedback or suggestions;
-- join the [Matrix room](https://matrix.to/#/#raccoonforfriendicaapp:matrix.org) of this project to
-  reach out to the developers or other users;
+- join out [Matrix room](https://matrix.to/#/#raccoonforfriendicaapp:matrix.org) to reach out to the
+  developers or other users;
 - use the
   GitHub [issue tracker](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/issues)
   to report bugs or request features;
 - finally, if none of the above methods fits your needs you
-  can write an [email](mailto://livefast.eattrash.raccoon@gmail.com) or reach out to me
-  on [Matrix](https://matrix.to/#/@dieguitux8623:matrix.org).
+  can write an [email](mailto://livefast.eattrash.raccoon@gmail.com).
