@@ -356,6 +356,8 @@ interface Strings {
     val unreadNotificationTitle: String
 
     fun unreadNotificationBody(count: Int): String
+
+    val settingsAboutUserManual: String
 }
 
 object Locales {

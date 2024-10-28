@@ -402,4 +402,6 @@ internal val ItStrings =
                 1 -> "C'è $count elemento nel 🗑️"
                 else -> "Ci sono $count elementi nel 🗑️"
             }
+
+        override val settingsAboutUserManual = "Manuale utente"
     }

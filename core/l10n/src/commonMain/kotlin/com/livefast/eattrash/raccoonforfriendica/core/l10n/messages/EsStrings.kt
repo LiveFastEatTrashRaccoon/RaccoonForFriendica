@@ -402,4 +402,6 @@ internal val EsStrings =
                 1 -> "Hay $count artículo en tu 🗑️"
                 else -> "Hay $count artículos en tu 🗑️"
             }
+
+        override val settingsAboutUserManual = "Manual del usuario"
     }

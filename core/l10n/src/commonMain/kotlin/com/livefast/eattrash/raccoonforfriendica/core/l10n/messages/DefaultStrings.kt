@@ -400,4 +400,6 @@ internal open class DefaultStrings : Strings {
             1 -> "There is $count item in your 🗑️"
             else -> "There are $count items in your 🗑️"
         }
+
+    override val settingsAboutUserManual = "User manual"
 }
