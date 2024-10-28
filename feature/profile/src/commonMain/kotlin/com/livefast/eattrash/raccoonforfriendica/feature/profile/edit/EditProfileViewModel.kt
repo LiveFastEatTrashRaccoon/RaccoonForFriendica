@@ -27,7 +27,7 @@ class EditProfileViewModel(
     EditProfileMviModel {
     init {
         screenModelScope.launch {
-            userRepository.getCurrent()?.also { currentUser ->
+            userRepository.getCurrent(refresh = true)?.also { currentUser ->
                 updateState {
                     it.copy(
                         displayName = TextFieldValue(text = currentUser.displayName.orEmpty()),
