@@ -105,7 +105,10 @@ class TimelineViewModel(
                     val hasUser =
                         user != null || !apiConfigurationRepository.hasCachedAuthCredentials()
                     if (hasSettings && hasUser) {
-                        refresh(initial = true, forceRefresh = true)
+                        refresh(
+                            initial = true,
+                            forceRefresh = true,
+                        )
                     }
                 }.launchIn(this)
         }
@@ -130,10 +133,16 @@ class TimelineViewModel(
                     }
 
                     updateState {
-                        it.copy(timelineType = intent.type, initial = true)
+                        it.copy(
+                            initial = true,
+                            timelineType = intent.type,
+                        )
                     }
                     emitEffect(TimelineMviModel.Effect.BackToTop)
-                    refresh(initial = true)
+                    refresh(
+                        initial = true,
+                        forceRefresh = true,
+                    )
                 }
 
             is TimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)

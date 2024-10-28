@@ -71,7 +71,7 @@ fun String.parseHtml(
                         builder.append(" />")
                         builder.appendLine()
                     }
-                    else -> println("onOpenTag: Unhandled span $name")
+                    else -> println("onOpenTag: Unhandled tag $name")
                 }
             }.onCloseTag { name, _ ->
                 when (name) {
@@ -87,7 +87,7 @@ fun String.parseHtml(
                         inOrderedList = false
                     }
                     "li" -> builder.appendLine()
-                    else -> println("onCloseTag: Unhandled span $name")
+                    else -> println("onCloseTag: Unhandled tag $name")
                 }
             }.onText { text ->
                 builder.append(text)
