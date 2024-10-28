@@ -101,6 +101,16 @@ class EditProfileViewModel(
                     }
                 }
 
+            is EditProfileMviModel.Intent.ChangeHideCollections ->
+                screenModelScope.launch {
+                    updateState {
+                        it.copy(
+                            hideCollections = intent.value,
+                            hasUnsavedChanges = true,
+                        )
+                    }
+                }
+
             is EditProfileMviModel.Intent.ChangeNoIndex ->
                 screenModelScope.launch {
                     updateState {
@@ -293,6 +303,7 @@ class EditProfileViewModel(
                     bot = currentState.bot,
                     locked = currentState.locked,
                     indexable = !currentState.noIndex,
+                    hideCollections = currentState.hideCollections,
                     discoverable = currentState.discoverable,
                     fields = fieldMap,
                     avatar = currentState.avatarBytes,
