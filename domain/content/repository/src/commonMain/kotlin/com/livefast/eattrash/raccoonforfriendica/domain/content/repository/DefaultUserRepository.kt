@@ -339,6 +339,9 @@ internal class DefaultUserRepository(
                         if (hideCollections != null) {
                             append("hide_collections", if (hideCollections) "1" else "0")
                         }
+                        if (indexable != null) {
+                            append("indexable", if (indexable) "1" else "0")
+                        }
                         if (fields != null) {
                             val serializedFields =
                                 buildList {

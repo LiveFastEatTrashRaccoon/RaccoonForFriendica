@@ -404,4 +404,7 @@ internal val EsStrings =
             }
 
         override val settingsAboutUserManual = "Manual del usuario"
+        override val editProfileItemHideCollections =
+            "Hacer privadas las listas de seguidores y seguidos"
+        override val settingsAboutMatrix = "Unirse a la sala Matrix"
     }

@@ -409,4 +409,7 @@ internal val PtStrings =
             }
 
         override val settingsAboutUserManual = "Manual do utilizador"
+        override val editProfileItemHideCollections =
+            "Tornar privadas as listas de seguidores e de seguidos"
+        override val settingsAboutMatrix = "Join Matrix room"
     }

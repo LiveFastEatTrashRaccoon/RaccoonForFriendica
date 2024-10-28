@@ -358,6 +358,8 @@ interface Strings {
     fun unreadNotificationBody(count: Int): String
 
     val settingsAboutUserManual: String
+    val editProfileItemHideCollections: String
+    val settingsAboutMatrix: String
 }
 
 object Locales {

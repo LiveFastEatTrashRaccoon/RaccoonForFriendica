@@ -448,6 +448,15 @@ class EditProfileScreen : Screen {
                 }
                 item {
                     SettingsSwitchRow(
+                        title = LocalStrings.current.editProfileItemHideCollections,
+                        value = uiState.hideCollections,
+                        onValueChanged = {
+                            model.reduce(EditProfileMviModel.Intent.ChangeHideCollections(it))
+                        },
+                    )
+                }
+                item {
+                    SettingsSwitchRow(
                         title = LocalStrings.current.editProfileItemNoIndex,
                         value = uiState.noIndex,
                         onValueChanged = {

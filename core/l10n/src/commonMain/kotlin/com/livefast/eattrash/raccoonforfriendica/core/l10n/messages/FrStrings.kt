@@ -408,4 +408,7 @@ internal val FrStrings =
             }
 
         override val settingsAboutUserManual = "Manuel de l'utilisateur"
+        override val editProfileItemHideCollections =
+            "Rendre les listes de suiveurs et de suivis privées"
+        override val settingsAboutMatrix = "Rejoindre la salle Matrix"
     }

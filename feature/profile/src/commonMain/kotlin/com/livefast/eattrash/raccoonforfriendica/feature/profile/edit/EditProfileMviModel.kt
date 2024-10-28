@@ -32,6 +32,10 @@ interface EditProfileMviModel :
             val value: Boolean,
         ) : Intent
 
+        data class ChangeHideCollections(
+            val value: Boolean,
+        ) : Intent
+
         data class ChangeNoIndex(
             val value: Boolean,
         ) : Intent
@@ -98,6 +102,7 @@ interface EditProfileMviModel :
         val bot: Boolean = false,
         val locked: Boolean = false,
         val discoverable: Boolean = false,
+        val hideCollections: Boolean = false,
         val noIndex: Boolean = false,
         val fields: List<FieldModel> = emptyList(),
         val canAddFields: Boolean = false,
@@ -130,6 +135,7 @@ interface EditProfileMviModel :
             if (bot != other.bot) return false
             if (locked != other.locked) return false
             if (discoverable != other.discoverable) return false
+            if (hideCollections != other.hideCollections) return false
             if (noIndex != other.noIndex) return false
             if (fields != other.fields) return false
             if (canAddFields != other.canAddFields) return false
@@ -150,6 +156,7 @@ interface EditProfileMviModel :
             result = 31 * result + bot.hashCode()
             result = 31 * result + locked.hashCode()
             result = 31 * result + discoverable.hashCode()
+            result = 31 * result + hideCollections.hashCode()
             result = 31 * result + noIndex.hashCode()
             result = 31 * result + fields.hashCode()
             result = 31 * result + canAddFields.hashCode()
