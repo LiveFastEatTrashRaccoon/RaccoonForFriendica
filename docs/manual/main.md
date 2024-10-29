@@ -86,7 +86,7 @@ All these features can be accessed using the official web application, but a lot
 open to third-party apps using their public APIs, Raccoon intends to do just that: be a client for
 Friendica which makes it easier to use it from a mobile device.
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Application UI general structure
 
@@ -109,7 +109,7 @@ The application UI is divided into three parts:
 The totality of the components used come from the [Material 3](https://m3.material.io/) design
 system.
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Timeline
 
@@ -169,7 +169,7 @@ Moreover, from each single post it is possible to:
   <img width="310" alt="timeline with mute user dialog" src="images/mute_bottom_sheet.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Post detail
 
@@ -185,7 +185,7 @@ perform the same actions and open user profiles or other post details.
   <img width="310" alt="post detail screen" src="images/post_detail.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Image detail
 
@@ -199,7 +199,7 @@ as a URL and, for images, adjust the aspect ratio in case if were not displaying
   <img width="310" alt="zoomable image detail screen" src="images/image_detail.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## User profile
 
@@ -256,7 +256,7 @@ From the top app bar action menu, you can also switch to [classic mode](#classic
   <img width="310" alt="user detail (forum mode) screen" src="images/forum_list.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Thread detail
 
@@ -268,7 +268,7 @@ to distinguish parent-child relationship between replies.
   <img width="310" alt="thread detail screen" src="images/thread_detail.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Hashtag feed
 
@@ -281,7 +281,7 @@ From the top app bar, you will be able to follow or unfollow the hashtag.
   <img width="310" alt="hashtag feed screen" src="images/hashtag_feed.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Favorites & bookmarks
 
@@ -296,7 +296,7 @@ from the feed.
   <img width="310" alt="bookmarks screen" src="images/bookmarks.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Followed hashtags
 
@@ -309,7 +309,7 @@ Each item of this list allows to open the corresponding [feed](#hashtag-feed).
   <img width="310" alt="followed hashtags screen" src="images/followed_hashtags.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Explore
 
@@ -337,7 +337,7 @@ option selected in the [app settings](#application-settings).
   <img width="310" alt="explore screen (links section)" src="images/explore_links.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Search
 
@@ -353,7 +353,7 @@ its [detail](#post-detail) and opening a user to the corresponding [profile](#us
   <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="images/search.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Inbox
 
@@ -389,7 +389,7 @@ or [post detail](#post-detail).
   <img width="310" alt="inbox screen" src="images/inbox.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Profile
 
@@ -432,7 +432,7 @@ button to open your [profile preferences](#profile-settings).
   <img width="310" alt="profile screen" src="images/profile.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## User list
 
@@ -448,7 +448,7 @@ account.
   <img width="310" alt="user list screen (profile following)" src="images/user_list.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Follow requests
 
@@ -461,7 +461,7 @@ For each one of the items you can either accept or reject the request.
   <img width="310" alt="follow request screen" src="images/follow_requests.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Node info
 
@@ -478,7 +478,7 @@ This screen contains some information about the current instance you are connect
   <img width="310" alt="node info screen" src="images/node_info.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## App information
 
@@ -497,7 +497,7 @@ This dialog contains more information about the app:
   <img width="310" alt="licenses screen" src="images/licenses.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Profile settings
 
@@ -526,7 +526,7 @@ issues on some versions of Friendica
   <img width="310" alt="edit profile screen" src="images/edit_profile.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Application settings
 
@@ -566,7 +566,7 @@ sections:
   <img width="310" alt="edit profile screen" src="images/settings.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Filter management
 
@@ -580,7 +580,7 @@ sections:
   <img width="310" alt="manage bans screen" src="images/manage_bans.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Post composer
 
@@ -632,7 +632,7 @@ formatting toolbar with the following buttons:
   <img width="310" alt="composer screen" src="images/composer.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Create report
 
@@ -664,7 +664,7 @@ but it has no effect
   <img width="310" alt="create report screen" src="images/report.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## User feedback
 
@@ -676,7 +676,7 @@ is just a utility screen for those who prefer not to use the issue tracker.
   <img width="310" alt="submit user feedback screen" src="images/user_feedback.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Circles
 
@@ -704,7 +704,7 @@ regulars circles that can be changed or deleted.
   <img width="310" alt="circle detail screen" src="images/circle_detail.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Direct messages (Friendica-only)
 
@@ -728,7 +728,7 @@ have to manually refresh the conversation list.
   <img width="310" alt="conversation  detail screen" src="images/dm_detail.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Gallery (Friendica-only)
 
@@ -746,7 +746,7 @@ For each picture, you will have the possibility to:
   <img width="310" alt="gallery  detail screen" src="images/gallery_detail.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Unpublished items
 
@@ -770,7 +770,7 @@ date, so the preferred way to save a post and edit for later is:
   <img width="310" alt="unpublished items screen" src="images/drafts.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
 
 ## Calendar (Friendica-only)
 
@@ -789,4 +789,4 @@ detail screen where more details (like a more extended description) are displaye
   <img width="310" alt="event detail screen" src="images/calendar_detail.png" />
 </div>
 
-[^ Back](#table-of-contents)
+[Back to top](#table-of-contents)
