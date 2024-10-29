@@ -2,6 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -97,7 +100,7 @@ internal class DefaultTimelineRepository(
     override suspend fun getHashtag(
         hashtag: String,
         pageCursor: String?,
-    ): List<TimelineEntryModel>? =
+    ): ListWithPageCursor<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -106,7 +109,9 @@ internal class DefaultTimelineRepository(
                         maxId = pageCursor,
                         limit = DEFAULT_PAGE_SIZE,
                     )
-                response.map { it.toModelWithReply() }
+                val list = response.body()?.map { it.toModel() }.orEmpty()
+                val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
+                ListWithPageCursor(list = list, cursor = nextCursor)
             }.getOrNull()
         }
 
