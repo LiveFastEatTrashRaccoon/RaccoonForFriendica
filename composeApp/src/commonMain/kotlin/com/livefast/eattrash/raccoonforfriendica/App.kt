@@ -69,8 +69,8 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                     )
 
                     if (!isInitialized) {
-                        apiConfigurationRepository.initialize()
                         isInitialized = true
+                        apiConfigurationRepository.initialize()
                         onLoadingFinished?.invoke()
                     }
                 }
