@@ -23,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -50,6 +51,7 @@ class MyAccountViewModel(
             identityRepository
                 .currentUser
                 .drop(1)
+                .distinctUntilChanged()
                 .debounce(750)
                 .onEach { user ->
                     val currentUser =
@@ -59,7 +61,7 @@ class MyAccountViewModel(
                     updateState {
                         it.copy(user = currentUser)
                     }
-                    refresh(initial = true, forceRefresh = true)
+                    refresh(initial = true)
                 }.launchIn(this)
             settingsRepository.current
                 .onEach { settings ->
