@@ -140,7 +140,7 @@ internal class DefaultTimelinePaginationManager(
                             enableCache = specification.enableCache,
                             refresh = specification.refresh,
                         )
-                        // intended: there is a bug in user pagination
+                        // intended: there is a bug in user post pagination
                         ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
