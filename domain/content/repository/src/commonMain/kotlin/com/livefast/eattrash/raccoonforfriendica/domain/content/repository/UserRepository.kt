@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 
 interface UserRepository {
     suspend fun getById(id: String): UserModel?
@@ -42,7 +43,7 @@ interface UserRepository {
 
     suspend fun unfollow(id: String): RelationshipModel?
 
-    suspend fun getFollowRequests(pageCursor: String? = null): Pair<List<UserModel>, String?>?
+    suspend fun getFollowRequests(pageCursor: String? = null): ListWithPageCursor<UserModel>?
 
     suspend fun acceptFollowRequest(id: String): Boolean
 
