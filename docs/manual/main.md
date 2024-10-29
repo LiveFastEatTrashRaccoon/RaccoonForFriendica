@@ -1,6 +1,43 @@
 # User manual
 
-This page contains a short description of the main features of the app.
+Welcome to the User Manual of Raccoon for Friendica! This guide contains an explanation of the most
+important features of the app and intends to be an near-exhaustive guide to all what you can (and
+can't) do from the app.
+
+## Table of contents
+
+- [Introduction](#introduction)
+- [General UI structure](#application-ui-general-structure)
+- [Timeline](#timeline)
+- [Post detail](#post-detail)
+- [Image detail](#image-detail)
+- [User profile](#user-profile)
+  - [Classic mode](#classic-mode)
+  - [Forum mode](#forum-mode)
+- [Thread detail](#thread-detail)
+- [Hashtag feed](#hashtag-feed)
+- [Favorites & Bookmarks](#favorites--bookmarks)
+- [Followed hashtags](#followed-hashtags)
+- [Explore](#explore)
+- [Search](#search)
+- [Inbox](#inbox)
+- [Profile](#profile)
+  - [Login](#login)
+  - [One's own user detail](#ones-own-user-detail)
+- [User list](#user-list)
+- [Follow requests](#follow-requests)
+- [Node info](#node-info)
+- [App information](#app-information)
+- [Profile settings](#profile-settings)
+- [Application settings](#application-settings)
+- [Filter management](#filter-management)
+- [Post composer](#post-composer)
+- [Create report](#create-report)
+- [Circles](#circles)
+- [Direct messages](#direct-messages-friendica-only)
+- [Gallery](#gallery-friendica-only)
+- [Unpublished items](#unpublished-items)
+- [Calendar](#calendar-friendica-only)
 
 ## Introduction
 
@@ -49,6 +86,8 @@ All these features can be accessed using the official web application, but a lot
 open to third-party apps using their public APIs, Raccoon intends to do just that: be a client for
 Friendica which makes it easier to use it from a mobile device.
 
+[˄ Back](#table-of-contents)
+
 ## Application UI general structure
 
 The application UI is divided into three parts:
@@ -58,9 +97,19 @@ The application UI is divided into three parts:
   the instance name in anonymous mode and a series of shortcuts to different app sections (e.g.
   settings or node info pages);
 - the bottom navigation bar, containing shortcuts for the most important app sections (Timeline,
-  Explore, Inbox and Profile);
-- the main screen which usually contains a top bar with a title and possibly some actions in the
-  top-end corner and the main content (all subsequent pages will follow this structure).
+  Explore, Inbox and Profile) which is visible only in top-level screens;
+- the main content which usually is structured in the following way:
+  - a top bar containing:
+    - a navigation icon (the hamburger or back button) in the start corner;
+    - the screen title;
+    - one or more (optional) actions in the end corner or a drop-down "⋮" menu;
+  - the screen content;
+  - an optional bottom bar (e.g. formatting toolbar and/or text field).
+
+The totality of the components used come from the [Material 3](https://m3.material.io/) design
+system.
+
+[˄ Back](#table-of-contents)
 
 ## Timeline
 
@@ -117,7 +166,10 @@ Moreover, from each single post it is possible to:
 
 <div align="center">
   <img width="310" alt="timeline screen" src="images/timeline.png" />
+  <img width="310" alt="timeline with mute user dialog" src="images/mute_bottom_sheet.png" />
 </div>
+
+[˄ Back](#table-of-contents)
 
 ## Post detail
 
@@ -133,6 +185,8 @@ perform the same actions and open user profiles or other post details.
   <img width="310" alt="post detail screen" src="images/post_detail.png" />
 </div>
 
+[˄ Back](#table-of-contents)
+
 ## Image detail
 
 From a video or image attachment, you can open the full-screen image viewer. For images, use double
@@ -144,6 +198,8 @@ as a URL and, for images, adjust the aspect ratio in case if were not displaying
 <div align="center">
   <img width="310" alt="zoomable image detail screen" src="images/image_detail.png" />
 </div>
+
+[˄ Back](#table-of-contents)
 
 ## User profile
 
@@ -200,6 +256,8 @@ From the top app bar action menu, you can also switch to [classic mode](#classic
   <img width="310" alt="user detail (forum mode) screen" src="images/forum_list.png" />
 </div>
 
+[˄ Back](#table-of-contents)
+
 ## Thread detail
 
 This screen is similar to a [post detail](#post-detail) but comments are displayed in a Lemmy-like
@@ -209,6 +267,8 @@ to distinguish parent-child relationship between replies.
 <div align="center">
   <img width="310" alt="thread detail screen" src="images/thread_detail.png" />
 </div>
+
+[˄ Back](#table-of-contents)
 
 ## Hashtag feed
 
@@ -221,7 +281,9 @@ From the top app bar, you will be able to follow or unfollow the hashtag.
   <img width="310" alt="hashtag feed screen" src="images/hashtag_feed.png" />
 </div>
 
-## Favorites and bookmarks
+[˄ Back](#table-of-contents)
+
+## Favorites & bookmarks
 
 Favorites and bookmarks are special kinds of [timelines](#timeline) and they follow the same
 structure.
@@ -234,6 +296,8 @@ from the feed.
   <img width="310" alt="bookmarks screen" src="images/bookmarks.png" />
 </div>
 
+[˄ Back](#table-of-contents)
+
 ## Followed hashtags
 
 This screen contains the list of all hashtags you are following in alphabetical order, and you can
@@ -244,6 +308,8 @@ Each item of this list allows to open the corresponding [feed](#hashtag-feed).
 <div align="center">
   <img width="310" alt="followed hashtags screen" src="images/followed_hashtags.png" />
 </div>
+
+[˄ Back](#table-of-contents)
 
 ## Explore
 
@@ -271,6 +337,8 @@ option selected in the [app settings](#application-settings).
   <img width="310" alt="explore screen (links section)" src="images/explore_links.png" />
 </div>
 
+[˄ Back](#table-of-contents)
+
 ## Search
 
 This screen makes it possible to search in the Fediverse: it contains a search field to enter the
@@ -284,6 +352,8 @@ its [detail](#post-detail) and opening a user to the corresponding [profile](#us
 <div align="center">
   <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="images/search.png" />
 </div>
+
+[˄ Back](#table-of-contents)
 
 ## Inbox
 
@@ -304,12 +374,22 @@ The main content presents the list of notifications, which can be of the followi
 From the top bar menu it is possible to select/unselect specific categories of notifications to
 filter the results displayed in the list.
 
+Moreover, it is possible to:
+
+- mark all notifications as read, by simply refresh the page (which will reset the unread counter);
+- dismiss all notifications by using the "Done all" button in the top bar.
+
+(Be careful, after being dismissed notifications are cleared from the server and you will not be
+able to browse the list any more!)
+
 Tapping on each item of the list, it is possible to open the [user profile](#user-profile)
 or [post detail](#post-detail).
 
 <div align="center">
   <img width="310" alt="inbox screen" src="images/inbox.png" />
 </div>
+
+[˄ Back](#table-of-contents)
 
 ## Profile
 
@@ -352,6 +432,8 @@ button to open your [profile preferences](#profile-settings).
   <img width="310" alt="profile screen" src="images/profile.png" />
 </div>
 
+[˄ Back](#table-of-contents)
+
 ## User list
 
 This screen contains a generic list of users; it can be opened either from
@@ -366,6 +448,8 @@ account.
   <img width="310" alt="user list screen (profile following)" src="images/user_list.png" />
 </div>
 
+[˄ Back](#table-of-contents)
+
 ## Follow requests
 
 If in your [profile settings](#profile-settings) you have enabled manual approval for follow
@@ -377,6 +461,8 @@ For each one of the items you can either accept or reject the request.
   <img width="310" alt="follow request screen" src="images/follow_requests.png" />
 </div>
 
+[˄ Back](#table-of-contents)
+
 ## Node info
 
 This screen contains some information about the current instance you are connected to:
@@ -386,11 +472,13 @@ This screen contains some information about the current instance you are connect
 - description;
 - contact account;
 - list of rules members of this server have to comply with;
-- backend type and version.
+- backend type and software version.
 
 <div align="center">
   <img width="310" alt="node info screen" src="images/node_info.png" />
 </div>
+
+[˄ Back](#table-of-contents)
 
 ## App information
 
@@ -408,6 +496,8 @@ This dialog contains more information about the app:
   <img width="310" alt="app information dialog" src="images/app_info.png" />
   <img width="310" alt="licenses screen" src="images/licenses.png" />
 </div>
+
+[˄ Back](#table-of-contents)
 
 ## Profile settings
 
@@ -435,6 +525,8 @@ issues on some versions of Friendica
 <div align="center">
   <img width="310" alt="edit profile screen" src="images/edit_profile.png" />
 </div>
+
+[˄ Back](#table-of-contents)
 
 ## Application settings
 
@@ -474,7 +566,9 @@ sections:
   <img width="310" alt="edit profile screen" src="images/settings.png" />
 </div>
 
-## Manage filters
+[˄ Back](#table-of-contents)
+
+## Filter management
 
 This screen allows to revoke current restrictions on other accounts. It is divided into two
 sections:
@@ -485,6 +579,8 @@ sections:
 <div align="center">
   <img width="310" alt="manage bans screen" src="images/manage_bans.png" />
 </div>
+
+[˄ Back](#table-of-contents)
 
 ## Post composer
 
@@ -536,6 +632,8 @@ formatting toolbar with the following buttons:
   <img width="310" alt="composer screen" src="images/composer.png" />
 </div>
 
+[˄ Back](#table-of-contents)
+
 ## Create report
 
 This screen allows to create a report for either a user or a specific post.
@@ -566,6 +664,20 @@ but it has no effect
   <img width="310" alt="create report screen" src="images/report.png" />
 </div>
 
+[˄ Back](#table-of-contents)
+
+## User feedback
+
+This form allows you to submit your feedback to the developers. Apart from writing your comment, you
+can optionally specify an email address (e.g. if you wish to be contacted for clarifications). This
+is just a utility screen for those who prefer not to use the issue tracker.
+
+<div align="center">
+  <img width="310" alt="submit user feedback screen" src="images/user_feedback.png" />
+</div>
+
+[˄ Back](#table-of-contents)
+
 ## Circles
 
 This screens contains all the custom feeds that can be used in the timeline, which comprise:
@@ -592,6 +704,8 @@ regulars circles that can be changed or deleted.
   <img width="310" alt="circle detail screen" src="images/circle_detail.png" />
 </div>
 
+[˄ Back](#table-of-contents)
+
 ## Direct messages (Friendica-only)
 
 This section contains the list of private conversations with your contacts. For each
@@ -614,6 +728,8 @@ have to manually refresh the conversation list.
   <img width="310" alt="conversation  detail screen" src="images/dm_detail.png" />
 </div>
 
+[˄ Back](#table-of-contents)
+
 ## Gallery (Friendica-only)
 
 This screen contains the list of albums in your multimedia gallery. For each album you can either
@@ -629,6 +745,8 @@ For each picture, you will have the possibility to:
   <img width="310" alt="gallery list screen" src="images/gallery_list.png" />
   <img width="310" alt="gallery  detail screen" src="images/gallery_detail.png" />
 </div>
+
+[˄ Back](#table-of-contents)
 
 ## Unpublished items
 
@@ -652,7 +770,9 @@ date, so the preferred way to save a post and edit for later is:
   <img width="310" alt="unpublished items screen" src="images/drafts.png" />
 </div>
 
-## Calendar
+[˄ Back](#table-of-contents)
+
+## Calendar (Friendica-only)
 
 This screen shows the event calendar, i.e. the list of events divided by month with, for each item:
 
@@ -668,3 +788,5 @@ detail screen where more details (like a more extended description) are displaye
   <img width="310" alt="calendar event list screen" src="images/calendar_list.png" />
   <img width="310" alt="event detail screen" src="images/calendar_detail.png" />
 </div>
+
+[˄ Back](#table-of-contents)
