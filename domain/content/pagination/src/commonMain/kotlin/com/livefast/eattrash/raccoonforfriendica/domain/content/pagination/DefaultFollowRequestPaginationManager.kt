@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 
 internal class DefaultFollowRequestPaginationManager(
     private val userRepository: UserRepository,
@@ -22,9 +23,9 @@ internal class DefaultFollowRequestPaginationManager(
         val results =
             userRepository
                 .getFollowRequests(pageCursor)
-                ?.let { (list, cursor) ->
-                    list.deduplicate().updatePaginationData(cursor)
-                }?.fixupCreatorEmojis()
+                ?.updatePaginationData()
+                ?.deduplicate()
+                ?.fixupCreatorEmojis()
                 .orEmpty()
 
         history.addAll(results)
@@ -33,10 +34,11 @@ internal class DefaultFollowRequestPaginationManager(
         return history.map { it }
     }
 
-    private fun List<UserModel>.updatePaginationData(cursor: String?): List<UserModel> =
-        apply {
+    private fun ListWithPageCursor<UserModel>.updatePaginationData(): List<UserModel> =
+        run {
             pageCursor = cursor
-            canFetchMore = isNotEmpty()
+            canFetchMore = list.isNotEmpty()
+            list
         }
 
     private fun List<UserModel>.deduplicate(): List<UserModel> =

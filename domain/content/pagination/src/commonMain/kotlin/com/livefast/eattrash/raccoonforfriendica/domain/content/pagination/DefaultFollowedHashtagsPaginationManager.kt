@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 
 internal class DefaultFollowedHashtagsPaginationManager(
     private val tagRepository: TagRepository,
@@ -20,9 +21,9 @@ internal class DefaultFollowedHashtagsPaginationManager(
         val results =
             tagRepository
                 .getFollowed(pageCursor)
-                ?.let { (tags, cursor) ->
-                    tags.deduplicate().updatePaginationData(cursor)
-                }.orEmpty()
+                ?.updatePaginationData()
+                ?.deduplicate()
+                .orEmpty()
 
         history.addAll(results)
 
@@ -30,10 +31,11 @@ internal class DefaultFollowedHashtagsPaginationManager(
         return history.map { it }
     }
 
-    private fun List<TagModel>.updatePaginationData(cursor: String?): List<TagModel> =
-        apply {
+    private fun ListWithPageCursor<TagModel>.updatePaginationData(): List<TagModel> =
+        run {
             pageCursor = cursor
-            canFetchMore = isNotEmpty()
+            canFetchMore = list.isNotEmpty()
+            list
         }
 
     private fun List<TagModel>.deduplicate(): List<TagModel> =

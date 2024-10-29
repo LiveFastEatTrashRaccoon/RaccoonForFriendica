@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -174,6 +175,13 @@ internal class DefaultTimelinePaginationManager(
                 pageCursor = it.id
             }
             canFetchMore = isNotEmpty()
+        }
+
+    private fun ListWithPageCursor<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> =
+        run {
+            pageCursor = cursor
+            canFetchMore = list.isNotEmpty()
+            list
         }
 
     private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> =
