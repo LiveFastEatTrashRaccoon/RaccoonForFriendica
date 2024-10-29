@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
+import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
@@ -27,7 +28,7 @@ interface TimelineService {
         @Query("max_id") maxId: String? = null,
         @Query("min_id") minId: String? = null,
         @Query("limit") limit: Int = 20,
-    ): List<Status>
+    ): Response<List<Status>>
 
     @GET("v1/timelines/list/{list_id}")
     suspend fun getList(

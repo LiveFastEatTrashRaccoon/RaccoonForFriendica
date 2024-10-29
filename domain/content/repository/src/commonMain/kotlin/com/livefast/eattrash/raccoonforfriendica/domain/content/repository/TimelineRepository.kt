@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 
 interface TimelineRepository {
     suspend fun getPublic(
@@ -21,7 +22,7 @@ interface TimelineRepository {
     suspend fun getHashtag(
         hashtag: String,
         pageCursor: String? = null,
-    ): List<TimelineEntryModel>?
+    ): ListWithPageCursor<TimelineEntryModel>?
 
     suspend fun getCircle(
         id: String,

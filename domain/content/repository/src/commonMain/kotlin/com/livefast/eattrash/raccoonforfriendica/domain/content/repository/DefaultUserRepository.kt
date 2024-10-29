@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
@@ -193,7 +194,7 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
-    override suspend fun getFollowRequests(pageCursor: String?): Pair<List<UserModel>, String?>? =
+    override suspend fun getFollowRequests(pageCursor: String?): ListWithPageCursor<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val response =
@@ -203,11 +204,7 @@ internal class DefaultUserRepository(
                     )
                 val list: List<UserModel> = response.body()?.map { it.toModel() }.orEmpty()
                 val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
-                if (nextCursor != null) {
-                    list to nextCursor
-                } else {
-                    list to null
-                }
+                ListWithPageCursor(list = list, cursor = nextCursor)
             }.getOrNull()
         }
 
