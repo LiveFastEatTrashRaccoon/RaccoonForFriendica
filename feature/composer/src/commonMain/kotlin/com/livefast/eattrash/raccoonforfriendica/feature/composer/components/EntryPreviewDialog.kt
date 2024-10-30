@@ -31,6 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 @Composable
 fun EntryPreviewDialog(
     entry: TimelineEntryModel,
+    autoloadImages: Boolean = true,
     onDismiss: (() -> Unit)? = null,
 ) {
     BasicAlertDialog(
@@ -54,6 +55,7 @@ fun EntryPreviewDialog(
                     TimelineItem(
                         modifier = Modifier.fillMaxWidth(),
                         entry = entry,
+                        autoloadImages = autoloadImages,
                         actionsEnabled = false,
                     )
                 }

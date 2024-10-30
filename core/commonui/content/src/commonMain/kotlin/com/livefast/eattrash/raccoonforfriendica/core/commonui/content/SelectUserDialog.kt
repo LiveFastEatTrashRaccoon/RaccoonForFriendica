@@ -58,6 +58,7 @@ fun SelectUserDialog(
     users: List<UserModel> = emptyList(),
     loading: Boolean = false,
     canFetchMore: Boolean = false,
+    autoloadImages: Boolean = true,
     onLoadMoreUsers: (() -> Unit)? = null,
     onSearchChanged: ((String) -> Unit)? = null,
     onClose: ((UserModel?) -> Unit)? = null,
@@ -140,6 +141,7 @@ fun SelectUserDialog(
                 itemsIndexed(users) { idx, user ->
                     UserResultItem(
                         user = user,
+                        autoloadImages = autoloadImages,
                         onClick = {
                             onClose?.invoke(user)
                         },
@@ -170,6 +172,7 @@ fun SelectUserDialog(
 private fun UserResultItem(
     user: UserModel,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {
     val avatar = user.avatar.orEmpty()
@@ -194,7 +197,7 @@ private fun UserResultItem(
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (avatar.isNotEmpty()) {
+        if (avatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
                     Modifier
@@ -222,6 +225,7 @@ private fun UserResultItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 emojis = user.emojis,
+                autoloadImages = autoloadImages,
                 onClick = {
                     onClick?.invoke()
                 },

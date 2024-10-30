@@ -71,6 +71,7 @@ fun GalleryPickerDialog(
     sheetState: SheetState = rememberModalBottomSheetState(),
     currentAlbum: String? = null,
     albums: List<MediaAlbumModel> = emptyList(),
+    autoloadImages: Boolean = true,
     canFetchMore: Boolean = false,
     loading: Boolean = false,
     onInitialLoad: (() -> Unit)? = null,
@@ -239,6 +240,7 @@ fun GalleryPickerDialog(
                         Box {
                             AlbumImageItem(
                                 attachment = attachment,
+                                autoload = autoloadImages,
                                 onClick = {
                                     if (selectionIndex >= 0) {
                                         selection -= attachment

@@ -58,6 +58,7 @@ import kotlinx.coroutines.flow.map
 internal fun CircleAddUserDialog(
     query: String,
     users: List<UserModel> = emptyList(),
+    autoloadImages: Boolean = true,
     loading: Boolean = false,
     canFetchMore: Boolean = false,
     onLoadMoreUsers: (() -> Unit)? = null,
@@ -143,6 +144,7 @@ internal fun CircleAddUserDialog(
                     val isSelected = selectedUsers.any { it.id == user.id }
                     UserResultItem(
                         user = user,
+                        autoloadImages = autoloadImages,
                         selected = isSelected,
                         onClick = {
                             if (isSelected) {
@@ -211,6 +213,7 @@ internal fun CircleAddUserDialog(
 private fun UserResultItem(
     user: UserModel,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     selected: Boolean = false,
     onClick: (() -> Unit)? = null,
 ) {
@@ -225,7 +228,7 @@ private fun UserResultItem(
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (avatar.isNotEmpty()) {
+        if (avatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
                     Modifier
@@ -251,6 +254,7 @@ private fun UserResultItem(
                 style = MaterialTheme.typography.bodyMedium,
                 color = fullColor,
                 maxLines = 1,
+                autoloadImages = autoloadImages,
                 overflow = TextOverflow.Ellipsis,
                 emojis = user.emojis,
             )
