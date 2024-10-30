@@ -64,6 +64,7 @@ interface ThreadMviModel :
         val entry: TimelineEntryModel? = null,
         val replies: List<TimelineEntryModel> = emptyList(),
         val blurNsfw: Boolean = true,
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect {
