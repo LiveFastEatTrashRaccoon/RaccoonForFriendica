@@ -41,6 +41,7 @@ interface CircleDetailMviModel :
         val searchUsers: List<UserModel> = emptyList(),
         val userSearchLoading: Boolean = false,
         val userSearchCanFetchMore: Boolean = true,
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect {

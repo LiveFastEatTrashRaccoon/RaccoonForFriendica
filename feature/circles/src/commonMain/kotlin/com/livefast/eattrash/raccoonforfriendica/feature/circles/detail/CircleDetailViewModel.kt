@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,6 +23,7 @@ class CircleDetailViewModel(
     private val id: String,
     private val paginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
+    private val settingsRepository: SettingsRepository,
     private val searchPaginationManager: UserPaginationManager,
     private val imagePreloadManager: ImagePreloadManager,
 ) : DefaultMviModel<CircleDetailMviModel.Intent, CircleDetailMviModel.State, CircleDetailMviModel.Effect>(
@@ -30,6 +32,14 @@ class CircleDetailViewModel(
     CircleDetailMviModel {
     init {
         screenModelScope.launch {
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            autoloadImages = settings?.autoloadImages ?: true,
+                        )
+                    }
+                }.launchIn(this)
             uiState
                 .map { it.searchUsersQuery }
                 .distinctUntilChanged()
