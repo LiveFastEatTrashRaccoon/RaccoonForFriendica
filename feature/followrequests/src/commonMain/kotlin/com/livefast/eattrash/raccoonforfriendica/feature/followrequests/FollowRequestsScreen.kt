@@ -140,6 +140,7 @@ class FollowRequestsScreen : Screen {
                     ) { idx, user ->
                         FollowRequestItem(
                             user = user,
+                            autoloadImages = uiState.autoloadImages,
                             onAccept = {
                                 model.reduce(FollowRequestsMviModel.Intent.Accept(user.id))
                             },
