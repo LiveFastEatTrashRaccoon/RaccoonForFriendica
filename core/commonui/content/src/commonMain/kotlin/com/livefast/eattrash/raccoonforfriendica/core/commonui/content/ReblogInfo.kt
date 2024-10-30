@@ -33,6 +33,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 internal fun ReblogInfo(
     modifier: Modifier = Modifier,
     user: UserModel?,
+    autoloadImages: Boolean = true,
     iconSize: Dp = IconSize.s,
     onOpenUser: ((UserModel) -> Unit)? = null,
 ) {
@@ -57,7 +58,7 @@ internal fun ReblogInfo(
             style = MaterialTheme.typography.bodyMedium,
             color = ancillaryColor,
         )
-        if (creatorAvatar.isNotEmpty()) {
+        if (creatorAvatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
                     Modifier
@@ -98,6 +99,7 @@ internal fun ReblogInfo(
             color = fullColor,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+            autoloadImages = autoloadImages,
         )
     }
 }

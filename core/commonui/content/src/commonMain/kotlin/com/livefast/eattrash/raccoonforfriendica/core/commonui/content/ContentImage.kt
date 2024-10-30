@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -48,6 +49,7 @@ fun ContentImage(
     url: String,
     modifier: Modifier = Modifier,
     sensitive: Boolean = false,
+    autoload: Boolean = true,
     altText: String? = null,
     blurHash: String? = null,
     originalWidth: Int = 0,
@@ -88,10 +90,12 @@ fun ContentImage(
             modifier =
                 Modifier
                     .clip(RoundedCornerShape(CornerSize.xl))
+                    .aspectRatio(originalWidth / originalHeight.toFloat())
                     .clickable {
                         onClick?.invoke()
                     },
             url = url,
+            autoload = autoload,
             contentDescription = altText,
             quality = FilterQuality.Low,
             blurred = !revealing,

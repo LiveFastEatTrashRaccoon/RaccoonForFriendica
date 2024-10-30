@@ -34,6 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 fun SpoilerCard(
     content: String,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     active: Boolean = false,
     onClick: (() -> Unit)? = null,
 ) {
@@ -79,6 +80,7 @@ fun SpoilerCard(
             TextWithCustomEmojis(
                 style = MaterialTheme.typography.titleMedium.copy(color = fullColor),
                 text = annotatedContent,
+                autoloadImages = autoloadImages,
                 onClick = { _ ->
                     onClick?.invoke()
                 },

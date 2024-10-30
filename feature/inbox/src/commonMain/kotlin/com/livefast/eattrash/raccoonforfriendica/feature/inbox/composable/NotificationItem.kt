@@ -47,6 +47,7 @@ internal fun NotificationItem(
     modifier: Modifier = Modifier,
     blurNsfw: Boolean = false,
     maxBodyLines: Int = Int.MAX_VALUE,
+    autoloadImages: Boolean = true,
     onOpenUrl: ((String) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
@@ -77,6 +78,7 @@ internal fun NotificationItem(
                 NotificationHeaderUserInfo(
                     modifier = Modifier.padding(start = Spacing.xs),
                     user = user,
+                    autoloadImages = autoloadImages,
                     onOpenUser = onOpenUser,
                 )
             }
@@ -128,6 +130,7 @@ internal fun NotificationItem(
                     entry = entry,
                     blurNsfw = blurNsfw,
                     maxBodyLines = maxBodyLines,
+                    autoloadImages = autoloadImages,
                     actionsEnabled = false,
                     pollEnabled = false,
                     onClick = {
@@ -143,6 +146,7 @@ internal fun NotificationItem(
                             bottom = Spacing.m,
                         ),
                     user = user,
+                    autoloadImages = autoloadImages,
                     onOpenUrl = onOpenUrl,
                     onClick = {
                         onOpenUser?.invoke(user)

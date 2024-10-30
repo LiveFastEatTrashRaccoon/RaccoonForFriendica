@@ -14,6 +14,7 @@ fun ContentTitle(
     content: String = "",
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
+    autoloadImages: Boolean = true,
     emojis: List<EmojiModel> = emptyList(),
     color: Color = MaterialTheme.colorScheme.onBackground,
     onClick: (() -> Unit)? = null,
@@ -28,6 +29,7 @@ fun ContentTitle(
             style = MaterialTheme.typography.titleMedium.copy(color = color),
             text = annotatedContent,
             maxLines = maxLines,
+            autoloadImages = autoloadImages,
             overflow = TextOverflow.Ellipsis,
             emojis = emojis,
             onClick = { offset ->

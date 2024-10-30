@@ -35,6 +35,7 @@ internal fun DrawerHeader(
     user: UserModel? = null,
     node: String? = null,
     canSwitchAccount: Boolean = false,
+    autoloadImages: Boolean = true,
     onOpenChangeInstance: (() -> Unit)? = null,
     onOpenSwitchAccount: (() -> Unit)? = null,
 ) {
@@ -55,7 +56,7 @@ internal fun DrawerHeader(
         if (user != null) {
             val username = user.displayName ?: user.username ?: ""
             val userAvatar = user.avatar.orEmpty()
-            if (userAvatar.isNotEmpty()) {
+            if (userAvatar.isNotEmpty() && autoloadImages) {
                 CustomImage(
                     modifier =
                         Modifier
@@ -86,6 +87,7 @@ internal fun DrawerHeader(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         color = fullColor,
+                        autoloadImages = autoloadImages,
                     )
                     Text(
                         text =

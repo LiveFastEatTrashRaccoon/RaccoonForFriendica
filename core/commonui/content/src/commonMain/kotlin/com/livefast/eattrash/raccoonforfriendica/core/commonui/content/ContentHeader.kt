@@ -36,6 +36,7 @@ fun ContentHeader(
     date: String? = null,
     scheduleDate: String? = null,
     isEdited: Boolean = false,
+    autoloadImages: Boolean = true,
     iconSize: Dp = IconSize.l,
     onOpenUser: ((UserModel) -> Unit)? = null,
 ) {
@@ -49,7 +50,7 @@ fun ContentHeader(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
-        if (creatorAvatar.isNotEmpty()) {
+        if (creatorAvatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
                     Modifier
@@ -64,6 +65,7 @@ fun ContentHeader(
                         .padding(Spacing.xxxs)
                         .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
+                autoload = autoloadImages,
                 quality = FilterQuality.Low,
                 contentScale = ContentScale.FillBounds,
             )
@@ -91,6 +93,7 @@ fun ContentHeader(
                 emojis = user?.emojis.orEmpty(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = fullColor,
+                autoloadImages = autoloadImages,
             )
 
             Text(

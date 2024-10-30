@@ -36,6 +36,7 @@ fun AttachmentsGrid(
     attachments: List<AttachmentModel>,
     modifier: Modifier = Modifier,
     blurNsfw: Boolean = true,
+    autoloadImages: Boolean = true,
     sensitive: Boolean = false,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
 ) {
@@ -60,6 +61,7 @@ fun AttachmentsGrid(
                 modifier = modifier,
                 attachment = firstAttachment,
                 sensitive = blurNsfw && sensitive,
+                autoload = autoloadImages,
                 contentScale = ContentScale.FillWidth,
                 onClick = {
                     onOpenImage?.invoke(
@@ -82,6 +84,7 @@ fun AttachmentsGrid(
                     attachment = attachment,
                     maxHeight = 200.dp,
                     sensitive = blurNsfw && sensitive,
+                    autoload = autoloadImages,
                     onClick = {
                         onOpenImage?.invoke(
                             urls,
@@ -115,6 +118,7 @@ fun AttachmentsGrid(
                         },
                     attachment = firstAttachment,
                     sensitive = blurNsfw && sensitive,
+                    autoload = autoloadImages,
                     contentScale = ContentScale.FillWidth,
                     onClick = {
                         onOpenImage?.invoke(
@@ -142,6 +146,7 @@ fun AttachmentsGrid(
                                 modifier = Modifier.weight(1f),
                                 attachment = attachment,
                                 sensitive = blurNsfw && sensitive,
+                                autoload = autoloadImages,
                                 contentScale =
                                     if (chunkSize == chunk.size) {
                                         ContentScale.FillWidth
@@ -171,6 +176,7 @@ fun AttachmentsGrid(
                     attachment = firstAttachment,
                     contentScale = ContentScale.FillWidth,
                     sensitive = blurNsfw && sensitive,
+                    autoload = autoloadImages,
                     onClick = {
                         onOpenImage?.invoke(
                             urls,
@@ -194,6 +200,7 @@ fun AttachmentsGrid(
                                 modifier = Modifier.weight(1f),
                                 attachment = attachment,
                                 sensitive = blurNsfw && sensitive,
+                                autoload = autoloadImages,
                                 maxHeight = 180.dp,
                                 contentScale =
                                     if (chunkSize == chunk.size) {
@@ -223,6 +230,7 @@ private fun GridElement(
     contentScale: ContentScale,
     modifier: Modifier = Modifier,
     blurNsfw: Boolean = true,
+    autoload: Boolean = true,
     sensitive: Boolean = false,
     onClick: (() -> Unit)? = null,
     maxHeight: Dp = Dp.Unspecified,
@@ -240,6 +248,7 @@ private fun GridElement(
                 originalWidth = attachmentWidth,
                 originalHeight = attachmentHeight,
                 sensitive = blurNsfw && sensitive,
+                autoload = autoload,
                 maxHeight = maxHeight,
                 contentScale = contentScale,
                 onClick = onClick,
@@ -255,6 +264,7 @@ private fun GridElement(
                             .aspectRatio(16 / 9f)
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                     url = attachment.previewUrl.orEmpty(),
+                    autoload = autoload,
                     altText = attachment.description,
                     maxHeight = maxHeight,
                     contentScale = contentScale,
@@ -276,6 +286,7 @@ private fun GridElement(
                     originalWidth = attachmentWidth,
                     originalHeight = attachmentHeight,
                     sensitive = blurNsfw && sensitive,
+                    autoload = autoload,
                     maxHeight = maxHeight,
                     contentScale = contentScale,
                     onClick = onClick,

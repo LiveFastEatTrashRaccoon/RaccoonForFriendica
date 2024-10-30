@@ -35,6 +35,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 fun UserHeader(
     user: UserModel?,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     editButtonEnabled: Boolean = false,
     onOpenImage: ((String) -> Unit)? = null,
     onOpenFollowers: (() -> Unit)? = null,
@@ -67,6 +68,7 @@ fun UserHeader(
                             }
                         },
                 url = banner,
+                autoload = autoloadImages,
                 contentScale = ContentScale.FillBounds,
             )
 
@@ -79,7 +81,7 @@ fun UserHeader(
                         ).padding(horizontal = Spacing.m),
                 verticalAlignment = Alignment.Bottom,
             ) {
-                if (avatar.isNotEmpty()) {
+                if (avatar.isNotEmpty() && autoloadImages) {
                     CustomImage(
                         modifier =
                             Modifier
@@ -202,6 +204,7 @@ fun UserHeader(
                         text = user?.displayName ?: user?.username ?: "",
                         emojis = user?.emojis.orEmpty(),
                         style = MaterialTheme.typography.titleMedium,
+                        autoloadImages = autoloadImages,
                         color = fullColor,
                     )
                     Text(

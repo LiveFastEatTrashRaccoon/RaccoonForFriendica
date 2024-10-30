@@ -28,6 +28,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 @Composable
 fun UserFields(
     fields: List<FieldModel> = emptyList(),
+    autoloadImages: Boolean = true,
     modifier: Modifier = Modifier,
     onOpenUrl: ((String) -> Unit)? = null,
 ) {
@@ -65,6 +66,7 @@ fun UserFields(
                         text = annotatedContent,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        autoloadImages = autoloadImages,
                         onClick = { offset ->
                             val url =
                                 annotatedContent

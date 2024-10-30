@@ -52,6 +52,7 @@ fun TimelineReplyItem(
     modifier: Modifier = Modifier,
     actionsEnabled: Boolean = true,
     blurNsfw: Boolean = true,
+    autoloadImages: Boolean = true,
     options: List<Option> = emptyList(),
     onOpenUrl: ((String) -> Unit)? = null,
     onClick: ((TimelineEntryModel) -> Unit)? = null,
@@ -116,6 +117,7 @@ fun TimelineReplyItem(
                     ContentHeader(
                         modifier = Modifier.weight(1f),
                         user = entryToDisplay.creator,
+                        autoloadImages = autoloadImages,
                         date = entryToDisplay.updated ?: entryToDisplay.created,
                         isEdited = entryToDisplay.updated != null,
                         onOpenUser = onOpenUser,
@@ -199,6 +201,7 @@ fun TimelineReplyItem(
                         ),
                     attachments = entryToDisplay.attachments,
                     blurNsfw = blurNsfw,
+                    autoloadImages = autoloadImages,
                     sensitive = entryToDisplay.sensitive,
                     onOpenImage = onOpenImage,
                 )

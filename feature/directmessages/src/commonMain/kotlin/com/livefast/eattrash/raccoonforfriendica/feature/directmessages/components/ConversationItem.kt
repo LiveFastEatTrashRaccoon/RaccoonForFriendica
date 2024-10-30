@@ -39,6 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Conversatio
 internal fun ConversationItem(
     conversation: ConversationModel,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     onClick: ((String) -> Unit)? = null,
 ) {
     val user = conversation.otherUser
@@ -64,7 +65,7 @@ internal fun ConversationItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         ) {
-            if (avatar.isNotEmpty()) {
+            if (avatar.isNotEmpty() && autoloadImages) {
                 CustomImage(
                     modifier =
                         Modifier
@@ -88,6 +89,7 @@ internal fun ConversationItem(
                     text = user.displayName ?: user.username ?: "",
                     emojis = user.emojis,
                     style = MaterialTheme.typography.titleMedium,
+                    autoloadImages = autoloadImages,
                     color = fullColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

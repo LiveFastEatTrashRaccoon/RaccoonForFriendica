@@ -31,6 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 @Composable
 fun ContentPreview(
     card: PreviewCardModel,
+    autoloadImages: Boolean = true,
     modifier: Modifier = Modifier,
     onOpen: ((String) -> Unit)? = null,
     onOpenImage: ((String) -> Unit)? = null,
@@ -67,7 +68,7 @@ fun ContentPreview(
                     ),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
-            if (image.isNotBlank()) {
+            if (image.isNotBlank() && autoloadImages) {
                 CustomImage(
                     modifier =
                         Modifier

@@ -36,6 +36,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 fun FollowRequestItem(
     user: UserModel,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     onAccept: (() -> Unit)? = null,
     onReject: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
@@ -63,7 +64,7 @@ fun FollowRequestItem(
             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (avatar.isNotEmpty()) {
+            if (avatar.isNotEmpty() && autoloadImages) {
                 CustomImage(
                     modifier = Modifier.size(avatarSize).clip(RoundedCornerShape(avatarSize / 2)),
                     url = avatar,
@@ -87,6 +88,7 @@ fun FollowRequestItem(
                     color = fullColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    autoloadImages = autoloadImages,
                 )
                 Text(
                     text = user.handle ?: user.username ?: "",

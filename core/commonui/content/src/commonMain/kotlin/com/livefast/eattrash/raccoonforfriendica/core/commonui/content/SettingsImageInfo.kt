@@ -30,6 +30,7 @@ fun SettingsImageInfo(
     modifier: Modifier = Modifier,
     imageModifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.FillBounds,
+    autoloadImages: Boolean = true,
     title: String = "",
     url: String? = null,
     bytes: ByteArray? = null,
@@ -82,6 +83,7 @@ fun SettingsImageInfo(
                 CustomImage(
                     modifier = imageModifier,
                     url = url,
+                    autoload = autoloadImages,
                     quality = FilterQuality.Low,
                     contentScale = contentScale,
                 )

@@ -25,6 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 internal fun NotificationHeaderUserInfo(
     modifier: Modifier = Modifier,
     user: UserModel,
+    autoloadImages: Boolean = true,
     onOpenUser: ((UserModel) -> Unit)? = null,
 ) {
     val iconSize = IconSize.s
@@ -37,7 +38,7 @@ internal fun NotificationHeaderUserInfo(
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (creatorAvatar.isNotEmpty()) {
+        if (creatorAvatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
                     Modifier
@@ -68,6 +69,7 @@ internal fun NotificationHeaderUserInfo(
             color = fullColor,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+            autoloadImages = autoloadImages,
         )
     }
 }
