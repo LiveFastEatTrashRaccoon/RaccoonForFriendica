@@ -542,8 +542,10 @@ sections:
   - **URL opening mode** configures how URLs will be opened (external browser or custom tabs);
   - **Exclude replies from timeline** configures whether replies are included by default in the
     Timeline screen;
-  - **Open groups in forum mode** by default configures whether group accounts are going to be
+  - **Open groups in forum mode by default** configures whether group accounts are going to be
     opened in forum mode (as opposed to classic mode) by default;
+  - **Load images automatically** if enabled, images are loaded automatically, if disabled images
+    are loaded on-demand (data saving mode);
   - **Markup for compositing** determines the type of markup syntax used in new posts (plain text —
     i.e. no markup — BBCode — Friendica-specific — HTML or Markdown — Mastodon specific);*
   - **Max post body lines** configures the maximum number of lines for posts which will be shown in
