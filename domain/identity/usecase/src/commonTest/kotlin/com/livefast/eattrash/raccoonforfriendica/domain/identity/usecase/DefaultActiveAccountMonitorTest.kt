@@ -31,7 +31,10 @@ import kotlin.test.Test
 class DefaultActiveAccountMonitorTest {
     private val accountRepository = mock<AccountRepository>(mode = MockMode.autoUnit)
     private val apiConfigurationRepository =
-        mock<ApiConfigurationRepository>(mode = MockMode.autoUnit)
+        mock<ApiConfigurationRepository>(mode = MockMode.autoUnit) {
+            every { defaultNode } returns "default-instance"
+            every { node } returns MutableStateFlow("test-instance")
+        }
     private val identityRepository = mock<IdentityRepository>(mode = MockMode.autoUnit)
     private val accountCredentialsCache = mock<AccountCredentialsCache>(mode = MockMode.autoUnit)
     private val settingsRepository = mock<SettingsRepository>(mode = MockMode.autoUnit)
@@ -68,7 +71,7 @@ class DefaultActiveAccountMonitorTest {
             val accountChannel = Channel<AccountModel?>()
             every { accountRepository.getActiveAsFlow() } returns accountChannel.receiveAsFlow()
             everySuspend { accountRepository.getActive() } returns account
-            every { apiConfigurationRepository.node } returns MutableStateFlow("test-instance")
+            val settings = SettingsModel()
 
             sut.start()
             accountChannel.send(account)
@@ -77,9 +80,12 @@ class DefaultActiveAccountMonitorTest {
                 apiConfigurationRepository.setAuth(null)
             }
             verifySuspend {
+                supportedFeatureRepository.refresh()
                 identityRepository.refreshCurrentUser(null)
                 supportedFeatureRepository.refresh()
                 contentPreloadManager.preload()
+                settingsRepository.changeCurrent(settings)
+                inboxManager.clearUnreadCount()
             }
         }
 
@@ -103,13 +109,12 @@ class DefaultActiveAccountMonitorTest {
             accountChannel.send(account)
 
             verify {
-                apiConfigurationRepository.changeNode("example.com")
                 apiConfigurationRepository.setAuth(credentials)
             }
             verifySuspend {
-                contentPreloadManager.preload(userId)
-                identityRepository.refreshCurrentUser(userId)
                 supportedFeatureRepository.refresh()
+                identityRepository.refreshCurrentUser(userId)
+                contentPreloadManager.preload(userId)
                 settingsRepository.changeCurrent(settings)
                 inboxManager.refreshUnreadCount()
             }
