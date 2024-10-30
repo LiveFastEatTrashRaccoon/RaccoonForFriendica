@@ -203,6 +203,7 @@ class InboxScreen : Screen {
                         NotificationItem(
                             notification = notification,
                             blurNsfw = uiState.blurNsfw,
+                            autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
                             onOpenEntry = { entry ->
                                 detailOpener.openEntryDetail(entry)

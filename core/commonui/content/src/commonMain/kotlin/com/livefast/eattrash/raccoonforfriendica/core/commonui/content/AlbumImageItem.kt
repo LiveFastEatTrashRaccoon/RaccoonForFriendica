@@ -55,6 +55,7 @@ import kotlin.math.roundToInt
 fun AlbumImageItem(
     attachment: AttachmentModel,
     modifier: Modifier = Modifier,
+    autoload: Boolean = true,
     minHeight: Dp = 50.dp,
     maxHeight: Dp = Dp.Unspecified,
     onClick: (() -> Unit)? = null,
@@ -90,6 +91,7 @@ fun AlbumImageItem(
                         onClick?.invoke()
                     },
             url = attachment.thumbnail ?: attachment.url,
+            autoload = autoload,
             contentDescription = attachment.description,
             quality = FilterQuality.Low,
             contentScale = ContentScale.FillWidth,

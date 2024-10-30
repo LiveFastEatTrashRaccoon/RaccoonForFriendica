@@ -82,6 +82,7 @@ interface UserDetailMviModel :
         val personalNote: String? = null,
         val personalNoteEditEnabled: Boolean = false,
         val maxBodyLines: Int = Int.MAX_VALUE,
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect {

@@ -8,8 +8,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 sealed interface EditProfilerFieldType {
@@ -21,12 +24,21 @@ sealed interface EditProfilerFieldType {
 class EditProfileViewModel(
     private val userRepository: UserRepository,
     private val emojiRepository: EmojiRepository,
+    private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect>(
         initialState = EditProfileMviModel.State(),
     ),
     EditProfileMviModel {
     init {
         screenModelScope.launch {
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            autoloadImages = settings?.autoloadImages ?: true,
+                        )
+                    }
+                }.launchIn(this)
             userRepository.getCurrent(refresh = true)?.also { currentUser ->
                 updateState {
                     it.copy(

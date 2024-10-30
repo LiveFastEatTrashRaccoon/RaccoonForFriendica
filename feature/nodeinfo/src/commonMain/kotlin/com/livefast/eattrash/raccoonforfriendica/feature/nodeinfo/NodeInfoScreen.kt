@@ -165,6 +165,7 @@ class NodeInfoScreen : Screen {
                                 modifier = Modifier.padding(horizontal = Spacing.s),
                                 thumbnail = info.thumbnail,
                                 uri = info.uri,
+                                autoloadImages = uiState.autoloadImages,
                             )
                         }
 
@@ -181,6 +182,7 @@ class NodeInfoScreen : Screen {
                                 ContentTitle(
                                     modifier = Modifier.padding(horizontal = Spacing.m),
                                     content = title,
+                                    autoloadImages = uiState.autoloadImages,
                                     onOpenUrl = {
                                         uriHandler.openUri(it)
                                     },
@@ -194,6 +196,7 @@ class NodeInfoScreen : Screen {
                                 ContentBody(
                                     modifier = Modifier.padding(horizontal = Spacing.m),
                                     content = description,
+                                    autoloadImages = uiState.autoloadImages,
                                     onOpenUrl = {
                                         uriHandler.openUri(it)
                                     },
@@ -216,6 +219,7 @@ class NodeInfoScreen : Screen {
                                             end = Spacing.s,
                                         ),
                                     user = contact,
+                                    autoloadImages = uiState.autoloadImages,
                                     onClick = {
                                         detailOpener.openUserDetail(contact)
                                     },
@@ -276,6 +280,7 @@ private fun HeaderItem(
     thumbnail: String?,
     uri: String?,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
 ) {
     val thumbnailSize = IconSize.xl
     val fullColor = MaterialTheme.colorScheme.onBackground
@@ -285,7 +290,7 @@ private fun HeaderItem(
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (!thumbnail.isNullOrEmpty()) {
+        if (!thumbnail.isNullOrEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
                     Modifier
@@ -315,6 +320,7 @@ private fun HeaderItem(
 @Composable
 private fun ContactUserItem(
     user: UserModel,
+    autoloadImages: Boolean = true,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
 ) {
@@ -342,7 +348,7 @@ private fun ContactUserItem(
             horizontalArrangement = Arrangement.spacedBy(Spacing.m),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (avatar.isNotEmpty()) {
+            if (avatar.isNotEmpty() && autoloadImages) {
                 CustomImage(
                     modifier =
                         Modifier
@@ -373,6 +379,7 @@ private fun ContactUserItem(
                         color = fullColor,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        autoloadImages = autoloadImages,
                     )
                 }
                 if (subtitle.isNotBlank()) {

@@ -172,6 +172,7 @@ object MyAccountScreen : Tab {
                     item {
                         UserHeader(
                             user = uiState.user,
+                            autoloadImages = uiState.autoloadImages,
                             editButtonEnabled = true,
                             onOpenUrl = { url ->
                                 uriHandler.openUri(url)
@@ -215,8 +216,8 @@ object MyAccountScreen : Tab {
                             modifier = Modifier.padding(vertical = Spacing.s),
                         )
                         UserFields(
-                            fields =
-                            fields,
+                            fields = fields,
+                            autoloadImages = uiState.autoloadImages,
                             onOpenUrl = { url ->
                                 uriHandler.openUri(url)
                             },
@@ -270,6 +271,7 @@ object MyAccountScreen : Tab {
                     TimelineItem(
                         entry = entry,
                         blurNsfw = uiState.blurNsfw,
+                        autoloadImages = uiState.autoloadImages,
                         pollEnabled = false,
                         maxBodyLines = uiState.maxBodyLines,
                         onClick = { e ->

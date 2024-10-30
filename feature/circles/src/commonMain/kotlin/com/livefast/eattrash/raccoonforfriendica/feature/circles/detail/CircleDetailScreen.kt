@@ -200,6 +200,7 @@ class CircleDetailScreen(
                     ) { _, user ->
                         UserItem(
                             user = user,
+                            autoloadImages = uiState.autoloadImages,
                             onClick = {
                                 detailOpener.openUserDetail(user)
                             },
@@ -262,6 +263,7 @@ class CircleDetailScreen(
             CircleAddUserDialog(
                 query = uiState.searchUsersQuery,
                 users = uiState.searchUsers,
+                autoloadImages = uiState.autoloadImages,
                 loading = uiState.userSearchLoading,
                 canFetchMore = uiState.userSearchCanFetchMore,
                 onLoadMoreUsers = {

@@ -44,6 +44,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
 @Composable
 fun LinkItem(
     link: LinkModel,
+    autoloadImages: Boolean = true,
     modifier: Modifier = Modifier,
     onOpen: ((String) -> Unit)? = null,
 ) {
@@ -90,6 +91,7 @@ fun LinkItem(
                                 imageHeight = it.size.toSize().height
                             },
                     url = image,
+                    autoload = autoloadImages,
                     quality = FilterQuality.Low,
                     contentScale = ContentScale.FillWidth,
                 )

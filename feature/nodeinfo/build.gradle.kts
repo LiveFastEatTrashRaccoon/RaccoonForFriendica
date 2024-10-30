@@ -50,6 +50,8 @@ kotlin {
 
                 implementation(projects.domain.content.data)
                 implementation(projects.domain.content.repository)
+                implementation(projects.domain.identity.data)
+                implementation(projects.domain.identity.repository)
             }
         }
     }

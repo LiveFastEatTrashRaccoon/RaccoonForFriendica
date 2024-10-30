@@ -29,6 +29,7 @@ interface ConversationMviModel :
         val sendInProgress: Boolean = false,
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
+        val autoloadImages: Boolean = true,
         val items: List<DirectMessageModel> = emptyList(),
         val newMessageValue: TextFieldValue = TextFieldValue(),
     )

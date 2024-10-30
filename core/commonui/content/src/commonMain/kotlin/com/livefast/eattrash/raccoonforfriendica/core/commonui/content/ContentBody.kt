@@ -15,6 +15,7 @@ fun ContentBody(
     color: Color = MaterialTheme.colorScheme.onBackground,
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
+    autoloadImages: Boolean = true,
     emojis: List<EmojiModel> = emptyList(),
     onClick: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
@@ -30,6 +31,7 @@ fun ContentBody(
             maxLines = maxLines,
             overflow = TextOverflow.Ellipsis,
             emojis = emojis,
+            autoloadImages = autoloadImages,
             onClick = { offset ->
                 val url =
                     annotatedContent

@@ -200,6 +200,7 @@ class ManageBlocksScreen : Screen {
                     ) { idx, item ->
                         UserItem(
                             user = item,
+                            autoloadImages = uiState.autoloadImages,
                             onClick = {
                                 detailOpener.openUserDetail(item)
                             },

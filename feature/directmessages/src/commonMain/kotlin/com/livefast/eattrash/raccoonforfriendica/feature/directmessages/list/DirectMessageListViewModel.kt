@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Direc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 class DirectMessageListViewModel(
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
+    private val settingsRepository: SettingsRepository,
     private val userPaginationManager: UserPaginationManager,
 ) : DefaultMviModel<DirectMessageListMviModel.Intent, DirectMessageListMviModel.State, DirectMessageListMviModel.Effect>(
         initialState = DirectMessageListMviModel.State(),
@@ -28,6 +30,14 @@ class DirectMessageListViewModel(
     DirectMessageListMviModel {
     init {
         screenModelScope.launch {
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            autoloadImages = settings?.autoloadImages ?: true,
+                        )
+                    }
+                }.launchIn(this)
             uiState
                 .map { it.userSearchQuery }
                 .distinctUntilChanged()

@@ -295,6 +295,7 @@ class ExploreScreen : Screen {
                                 TimelineItem(
                                     entry = item.entry,
                                     blurNsfw = uiState.blurNsfw,
+                                    autoloadImages = uiState.autoloadImages,
                                     maxBodyLines = uiState.maxBodyLines,
                                     onClick = { e ->
                                         detailOpener.openEntryDetail(e)
@@ -475,6 +476,7 @@ class ExploreScreen : Screen {
                             is ExploreItemModel.Link -> {
                                 LinkItem(
                                     link = item.link,
+                                    autoloadImages = uiState.autoloadImages,
                                     onOpen = { url ->
                                         uriHandler.openUri(url)
                                     },
@@ -485,6 +487,7 @@ class ExploreScreen : Screen {
                             is ExploreItemModel.User -> {
                                 UserItem(
                                     user = item.user,
+                                    autoloadImages = uiState.autoloadImages,
                                     onClick = {
                                         detailOpener.openUserDetail(item.user)
                                     },

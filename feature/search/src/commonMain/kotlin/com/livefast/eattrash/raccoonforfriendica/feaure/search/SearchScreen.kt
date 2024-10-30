@@ -297,6 +297,7 @@ class SearchScreen : Screen {
                                 TimelineItem(
                                     entry = item.entry,
                                     blurNsfw = uiState.blurNsfw,
+                                    autoloadImages = uiState.autoloadImages,
                                     maxBodyLines = uiState.maxBodyLines,
                                     onClick = { e ->
                                         detailOpener.openEntryDetail(e)
@@ -476,6 +477,7 @@ class SearchScreen : Screen {
                             is ExploreItemModel.User -> {
                                 UserItem(
                                     user = item.user,
+                                    autoloadImages = uiState.autoloadImages,
                                     onClick = {
                                         detailOpener.openUserDetail(item.user)
                                     },

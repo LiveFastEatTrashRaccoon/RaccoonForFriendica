@@ -65,6 +65,7 @@ interface ForumListMviModel :
         val entries: List<TimelineEntryModel> = emptyList(),
         val blurNsfw: Boolean = true,
         val maxBodyLines: Int = Int.MAX_VALUE,
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect {

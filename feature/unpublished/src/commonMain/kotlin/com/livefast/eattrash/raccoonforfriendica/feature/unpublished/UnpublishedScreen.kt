@@ -197,6 +197,7 @@ class UnpublishedScreen : Screen {
                         TimelineItem(
                             entry = entry,
                             blurNsfw = uiState.blurNsfw,
+                            autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
                             actionsEnabled = false,
                             options =

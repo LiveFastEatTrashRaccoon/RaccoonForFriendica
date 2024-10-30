@@ -75,6 +75,7 @@ class TimelineViewModel(
                         it.copy(
                             timelineType = defaultTimelineType,
                             blurNsfw = settings?.blurNsfw ?: true,
+                            autoloadImages = settings?.autoloadImages ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                         )
                     }

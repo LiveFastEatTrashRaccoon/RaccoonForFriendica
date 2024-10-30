@@ -13,6 +13,7 @@ interface NodeInfoMviModel :
 
     data class State(
         val info: NodeInfoModel? = null,
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect

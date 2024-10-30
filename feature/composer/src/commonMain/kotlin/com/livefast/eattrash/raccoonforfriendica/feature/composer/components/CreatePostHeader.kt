@@ -45,6 +45,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableN
 internal fun CreatePostHeader(
     modifier: Modifier = Modifier,
     author: UserModel? = null,
+    autoloadImages: Boolean = true,
     visibility: Visibility = Visibility.Public,
     availableVisibilities: List<Visibility> =
         listOf(
@@ -65,7 +66,7 @@ internal fun CreatePostHeader(
         val creatorName = author?.displayName ?: author?.username ?: ""
         val creatorAvatar = author?.avatar.orEmpty()
         val iconSize = IconSize.l
-        if (creatorAvatar.isNotEmpty()) {
+        if (creatorAvatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
                     Modifier
@@ -89,6 +90,7 @@ internal fun CreatePostHeader(
             TextWithCustomEmojis(
                 text = creatorName,
                 emojis = author?.emojis.orEmpty(),
+                autoloadImages = autoloadImages,
                 style = MaterialTheme.typography.bodyMedium,
                 color = fullColor,
             )

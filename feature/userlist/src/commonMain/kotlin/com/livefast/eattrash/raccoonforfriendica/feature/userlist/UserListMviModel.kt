@@ -29,6 +29,7 @@ interface UserListMviModel :
         val loading: Boolean = false,
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
+        val autoloadImages: Boolean = true,
         val user: UserModel? = null,
         val users: List<UserModel> = emptyList(),
     )

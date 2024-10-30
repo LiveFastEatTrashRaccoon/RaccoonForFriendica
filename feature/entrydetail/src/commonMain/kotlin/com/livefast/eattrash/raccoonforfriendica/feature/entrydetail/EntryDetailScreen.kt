@@ -237,6 +237,7 @@ class EntryDetailScreen(
                             entry = entry,
                             extendedSocialInfoEnabled = (entry.id == id),
                             blurNsfw = uiState.blurNsfw,
+                            autoloadImages = uiState.autoloadImages,
                             onOpenUrl = { url ->
                                 uriHandler.openUri(url)
                             },

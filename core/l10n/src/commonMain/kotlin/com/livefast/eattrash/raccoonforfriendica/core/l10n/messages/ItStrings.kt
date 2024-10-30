@@ -407,4 +407,5 @@ internal val ItStrings =
         override val editProfileItemHideCollections =
             "Rendi privati gli elenchi di seguiti e seguaci"
         override val settingsAboutMatrix = "Entra nella room Matrix"
+        override val settingsAutoloadImages = "Carica immagini automaticamente"
     }

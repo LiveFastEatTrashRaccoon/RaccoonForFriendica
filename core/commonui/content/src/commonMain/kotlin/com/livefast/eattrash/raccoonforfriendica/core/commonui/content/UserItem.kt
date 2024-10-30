@@ -45,6 +45,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 fun UserItem(
     user: UserModel,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     options: List<Option> = emptyList(),
     onClick: (() -> Unit)? = null,
     onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
@@ -70,7 +71,7 @@ fun UserItem(
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (avatar.isNotEmpty()) {
+        if (avatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
                     Modifier
@@ -97,6 +98,7 @@ fun UserItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 emojis = user.emojis,
+                autoloadImages = autoloadImages,
                 onClick = {
                     onClick?.invoke()
                 },

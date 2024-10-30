@@ -37,6 +37,7 @@ interface DirectMessageListMviModel :
         val userSearchLoading: Boolean = false,
         val userSearchCanFetchMore: Boolean = true,
         val userSearchQuery: String = "",
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect {

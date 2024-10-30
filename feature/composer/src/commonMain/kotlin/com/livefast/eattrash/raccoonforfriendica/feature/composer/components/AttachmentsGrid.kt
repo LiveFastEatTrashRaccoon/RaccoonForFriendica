@@ -19,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 @Composable
 internal fun AttachmentsGrid(
     attachments: List<AttachmentModel>,
+    autoloadImages: Boolean = true,
     modifier: Modifier = Modifier,
     onDelete: ((AttachmentModel) -> Unit)? = null,
     onEditDescription: ((AttachmentModel) -> Unit)? = null,
@@ -48,6 +49,7 @@ internal fun AttachmentsGrid(
         for (column in columns) {
             AttachmentsColumn(
                 modifier = Modifier.weight(0.5f),
+                autoloadImages = autoloadImages,
                 attachments = column,
                 onEditDescription = onEditDescription,
                 onDelete = onDelete,
@@ -60,6 +62,7 @@ internal fun AttachmentsGrid(
 private fun AttachmentsColumn(
     attachments: List<AttachmentModel>,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     onDelete: ((AttachmentModel) -> Unit)? = null,
     onEditDescription: ((AttachmentModel) -> Unit)? = null,
 ) {
@@ -70,6 +73,7 @@ private fun AttachmentsColumn(
         for (attachment in attachments) {
             AlbumImageItem(
                 attachment = attachment,
+                autoload = autoloadImages,
                 options =
                     buildList {
                         this += OptionId.Edit.toOption()

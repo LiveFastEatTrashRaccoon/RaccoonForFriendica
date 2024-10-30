@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountMod
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SwitchAccountUseCase
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val identityRepository: IdentityRepository,
     private val accountRepository: AccountRepository,
+    private val settingsRepository: SettingsRepository,
     private val logoutUseCase: LogoutUseCase,
     private val switchAccountUseCase: SwitchAccountUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
@@ -26,6 +28,14 @@ class ProfileViewModel(
     ProfileMviModel {
     init {
         screenModelScope.launch {
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            autoloadImages = settings?.autoloadImages ?: true,
+                        )
+                    }
+                }.launchIn(this)
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState {

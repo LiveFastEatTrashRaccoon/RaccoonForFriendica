@@ -12,6 +12,7 @@ val featureDirectMessagesModule =
             DirectMessageListViewModel(
                 paginationManager = get(),
                 identityRepository = get(),
+                settingsRepository = get(),
                 userPaginationManager = get(),
             )
         }
@@ -23,6 +24,7 @@ val featureDirectMessagesModule =
                 userRepository = get(),
                 identityRepository = get(),
                 messageRepository = get(),
+                settingsRepository = get(),
                 userCache = get(),
             )
         }

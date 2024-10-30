@@ -45,6 +45,7 @@ fun TimelineItem(
     extendedSocialInfoEnabled: Boolean = false,
     reshareAndReplyVisible: Boolean = true,
     blurNsfw: Boolean = true,
+    autoloadImages: Boolean = true,
     maxTitleLines: Int = Int.MAX_VALUE,
     maxBodyLines: Int = Int.MAX_VALUE,
     options: List<Option> = emptyList(),
@@ -92,6 +93,7 @@ fun TimelineItem(
                         entry.creator?.let {
                             ReblogInfo(
                                 user = it,
+                                autoloadImages = autoloadImages,
                                 onOpenUser = onOpenUser,
                             )
                         }
@@ -100,6 +102,7 @@ fun TimelineItem(
                         entry.inReplyTo?.creator?.let {
                             InReplyToInfo(
                                 user = it,
+                                autoloadImages = autoloadImages,
                                 onOpenUser = onOpenUser,
                             )
                         }
@@ -115,6 +118,7 @@ fun TimelineItem(
                 ContentHeader(
                     modifier = Modifier.weight(1f),
                     user = entryToDisplay.creator,
+                    autoloadImages = autoloadImages,
                     date = entryToDisplay.updated ?: entryToDisplay.created,
                     scheduleDate = entryToDisplay.scheduled,
                     isEdited = entryToDisplay.updated != null,
@@ -178,6 +182,7 @@ fun TimelineItem(
                             horizontal = contentHorizontalPadding,
                         ),
                     content = spoiler,
+                    autoloadImages = autoloadImages,
                     active = spoilerActive,
                     onClick = {
                         spoilerActive = !spoilerActive
@@ -199,6 +204,7 @@ fun TimelineItem(
                             modifier = Modifier.fillMaxWidth(),
                             content = title,
                             maxLines = maxTitleLines,
+                            autoloadImages = autoloadImages,
                             emojis = entryToDisplay.emojis,
                             onClick = { onClick?.invoke(entryToDisplay) },
                             onOpenUrl = onOpenUrl,
@@ -218,6 +224,7 @@ fun TimelineItem(
                                     },
                                 ),
                             content = body,
+                            autoloadImages = autoloadImages,
                             maxLines = maxBodyLines,
                             emojis = entryToDisplay.emojis,
                             onClick = { onClick?.invoke(entryToDisplay) },
@@ -234,6 +241,7 @@ fun TimelineItem(
                             ),
                         attachments = entryToDisplay.attachments,
                         blurNsfw = blurNsfw,
+                        autoloadImages = autoloadImages,
                         sensitive = entryToDisplay.sensitive,
                         onOpenImage = onOpenImage,
                     )
@@ -265,7 +273,8 @@ fun TimelineItem(
                                             .takeIf { !entryToDisplay.content.startsWith(it) }
                                             .orEmpty(),
                                     image = preview.image.takeIf { attachments.isEmpty() },
-                            ),
+                                ),
+                            autoloadImages = autoloadImages,
                             onOpen = onOpenUrl,
                             onOpenImage = { url ->
                                 onOpenImage?.invoke(listOf(url), 0, emptyList())

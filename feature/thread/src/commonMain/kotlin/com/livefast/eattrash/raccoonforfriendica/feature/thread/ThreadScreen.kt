@@ -240,6 +240,7 @@ class ThreadScreen(
                                 reshareAndReplyVisible = false,
                                 extendedSocialInfoEnabled = true,
                                 blurNsfw = uiState.blurNsfw,
+                                autoloadImages = uiState.autoloadImages,
                                 onOpenUrl = { url ->
                                     uriHandler.openUri(url)
                                 },
@@ -378,6 +379,7 @@ class ThreadScreen(
                     ) { idx, entry ->
                         TimelineReplyItem(
                             entry = entry,
+                            autoloadImages = uiState.autoloadImages,
                             onOpenUrl = { url ->
                                 uriHandler.openUri(url)
                             },

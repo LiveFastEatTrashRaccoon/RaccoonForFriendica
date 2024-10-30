@@ -20,6 +20,7 @@ val featureGalleryModule =
                 paginationManager = get(),
                 albumRepository = get(),
                 photoRepository = get(),
+                settingsRepository = get(),
                 notificationCenter = get(),
             )
         }

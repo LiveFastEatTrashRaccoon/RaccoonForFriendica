@@ -33,6 +33,7 @@ interface DrawerMviModel :
         val anonymousChangeNodeValidationInProgress: Boolean = false,
         val anonymousChangeNodeNameError: ValidationError? = null,
         val availableAccounts: List<AccountModel> = emptyList(),
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect {

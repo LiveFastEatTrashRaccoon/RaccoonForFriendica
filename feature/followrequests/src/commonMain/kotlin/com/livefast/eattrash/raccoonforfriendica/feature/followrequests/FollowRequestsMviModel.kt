@@ -29,6 +29,7 @@ interface FollowRequestsMviModel :
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
         val items: List<UserModel> = emptyList(),
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect {

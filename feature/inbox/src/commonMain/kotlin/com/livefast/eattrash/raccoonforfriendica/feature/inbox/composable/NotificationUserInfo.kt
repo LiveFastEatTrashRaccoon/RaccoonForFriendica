@@ -38,6 +38,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 fun NotificationUserInfo(
     user: UserModel,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     onClick: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
     onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
@@ -65,6 +66,7 @@ fun NotificationUserInfo(
                         .padding(bottom = avatarSize * 0.8f)
                         .aspectRatio(16 / 5f),
                 url = banner,
+                autoload = autoloadImages,
                 contentScale = ContentScale.Crop,
             )
 
@@ -77,7 +79,7 @@ fun NotificationUserInfo(
                         ).padding(horizontal = Spacing.m),
                 verticalAlignment = Alignment.Bottom,
             ) {
-                if (avatar.isNotEmpty()) {
+                if (avatar.isNotEmpty() && autoloadImages) {
                     CustomImage(
                         modifier =
                             Modifier
@@ -108,6 +110,7 @@ fun NotificationUserInfo(
                         emojis = user.emojis,
                         style = MaterialTheme.typography.titleMedium,
                         color = fullColor,
+                        autoloadImages = autoloadImages,
                     )
                     Text(
                         text = user.handle ?: user.username ?: "",

@@ -49,6 +49,7 @@ interface AlbumDetailMviModel :
         val loading: Boolean = false,
         val operationInProgress: Boolean = false,
         val refreshing: Boolean = false,
+        val autoloadImages: Boolean = true,
         val items: List<AttachmentModel> = emptyList(),
         val albums: List<MediaAlbumModel> = emptyList(),
     )
