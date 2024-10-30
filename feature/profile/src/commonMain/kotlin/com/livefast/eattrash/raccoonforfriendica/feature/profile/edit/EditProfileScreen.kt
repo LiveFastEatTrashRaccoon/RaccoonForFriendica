@@ -357,6 +357,7 @@ class EditProfileScreen : Screen {
                                 .size(avatarSize)
                                 .clip(RoundedCornerShape(avatarSize / 2)),
                         url = uiState.avatar,
+                        autoloadImages = uiState.autoloadImages,
                         bytes = uiState.avatarBytes,
                         onEdit = {
                             openAvatarPicker = true
@@ -369,6 +370,7 @@ class EditProfileScreen : Screen {
                         imageModifier = Modifier.fillMaxWidth().aspectRatio(3.5f),
                         contentScale = ContentScale.Crop,
                         url = uiState.header,
+                        autoloadImages = uiState.autoloadImages,
                         bytes = uiState.headerBytes,
                         onEdit = {
                             openHeaderPicker = true

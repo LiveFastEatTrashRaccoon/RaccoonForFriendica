@@ -107,6 +107,7 @@ interface EditProfileMviModel :
         val fields: List<FieldModel> = emptyList(),
         val canAddFields: Boolean = false,
         val availableEmojis: List<EmojiModel> = emptyList(),
+        val autoloadImages: Boolean = true,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

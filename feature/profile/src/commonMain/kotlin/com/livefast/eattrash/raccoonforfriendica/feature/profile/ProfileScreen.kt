@@ -151,7 +151,7 @@ class ProfileScreen : Screen {
                         leadingContent = {
                             val avatar = account.avatar.orEmpty()
                             val avatarSize = IconSize.xl
-                            if (avatar.isNotEmpty()) {
+                            if (avatar.isNotEmpty() && uiState.autoloadImages) {
                                 CustomImage(
                                     modifier =
                                         Modifier

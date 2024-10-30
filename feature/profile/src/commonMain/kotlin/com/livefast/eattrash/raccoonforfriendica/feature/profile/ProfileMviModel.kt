@@ -27,6 +27,7 @@ interface ProfileMviModel :
         val currentUserId: String? = null,
         val availableAccounts: List<AccountModel> = emptyList(),
         val loading: Boolean = false,
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect
