@@ -245,6 +245,7 @@ class UserListScreen(
                     ) { idx, user ->
                         UserItem(
                             user = user,
+                            autoloadImages = uiState.autoloadImages,
                             onClick = {
                                 detailOpener.openUserDetail(user)
                             },
