@@ -662,6 +662,7 @@ class ComposerScreen(
                                 vertical = Spacing.xxs,
                             ),
                         author = uiState.author,
+                        autoloadImages = uiState.autoloadImages,
                         visibility = uiState.visibility,
                         availableVisibilities = uiState.availableVisibilities,
                         onChangeVisibility = { visibility ->
@@ -805,6 +806,7 @@ class ComposerScreen(
                                     end = Spacing.s,
                                 ),
                             attachments = uiState.attachments,
+                            autoloadImages = uiState.autoloadImages,
                             onDelete = { attachment ->
                                 model.reduce(ComposerMviModel.Intent.RemoveAttachment(attachment))
                             },
@@ -909,6 +911,7 @@ class ComposerScreen(
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
                 currentAlbum = uiState.galleryCurrentAlbum,
                 albums = uiState.galleryAlbums,
+                autoloadImages = uiState.autoloadImages,
                 canFetchMore = uiState.galleryCanFetchMore,
                 loading = uiState.galleryLoading,
                 photos = uiState.galleryCurrentAlbumPhotos,
@@ -1014,6 +1017,7 @@ class ComposerScreen(
         previewEntry?.also { entry ->
             EntryPreviewDialog(
                 entry = entry,
+                autoloadImages = uiState.autoloadImages,
                 onDismiss = {
                     previewEntry = null
                 },
