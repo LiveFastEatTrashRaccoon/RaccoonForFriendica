@@ -1,0 +1,300 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 13,
+    "identityHash": "eb08674f192d3b2b31c1e9c4a3c00df2",
+    "entities": [
+      {
+        "tableName": "AccountEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `handle` TEXT NOT NULL, `active` INTEGER NOT NULL DEFAULT 0, `remoteId` TEXT, `avatar` TEXT, `displayName` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "handle",
+            "columnName": "handle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remoteId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "avatar",
+            "columnName": "avatar",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "displayName",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_AccountEntity_handle",
+            "unique": false,
+            "columnNames": [
+              "handle"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_AccountEntity_handle` ON `${TABLE_NAME}` (`handle`)"
+          }
+        ]
+      },
+      {
+        "tableName": "SettingsEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accountId` INTEGER NOT NULL DEFAULT 0, `lang` TEXT NOT NULL DEFAULT 'en', `theme` INTEGER NOT NULL DEFAULT 0, `fontFamily` INTEGER NOT NULL DEFAULT 0, `fontScale` INTEGER NOT NULL DEFAULT 0, `dynamicColors` INTEGER NOT NULL DEFAULT 0, `customSeedColor` INTEGER, `defaultTimelineType` INTEGER NOT NULL DEFAULT 0, `includeNsfw` INTEGER NOT NULL DEFAULT 0, `blurNsfw` INTEGER NOT NULL DEFAULT 0, `urlOpeningMode` INTEGER NOT NULL DEFAULT 0, `defaultPostVisibility` INTEGER NOT NULL DEFAULT 0, `defaultReplyVisibility` INTEGER NOT NULL DEFAULT 0, `excludeRepliesFromTimeline` INTEGER NOT NULL DEFAULT 0, `openGroupsInForumModeByDefault` INTEGER NOT NULL DEFAULT 1, `markupMode` INTEGER NOT NULL DEFAULT 1, `maxPostBodyLines` INTEGER NOT NULL DEFAULT 0, `defaultTimelineId` TEXT, `pullNotificationCheckInterval` INTEGER, `autoloadImages` INTEGER NOT NULL DEFAULT 1)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accountId",
+            "columnName": "accountId",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "lang",
+            "columnName": "lang",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'en'"
+          },
+          {
+            "fieldPath": "theme",
+            "columnName": "theme",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "fontFamily",
+            "columnName": "fontFamily",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "fontScale",
+            "columnName": "fontScale",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "dynamicColors",
+            "columnName": "dynamicColors",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "customSeedColor",
+            "columnName": "customSeedColor",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "defaultTimelineType",
+            "columnName": "defaultTimelineType",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "includeNsfw",
+            "columnName": "includeNsfw",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "blurNsfw",
+            "columnName": "blurNsfw",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "urlOpeningMode",
+            "columnName": "urlOpeningMode",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "defaultPostVisibility",
+            "columnName": "defaultPostVisibility",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "defaultReplyVisibility",
+            "columnName": "defaultReplyVisibility",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "excludeRepliesFromTimeline",
+            "columnName": "excludeRepliesFromTimeline",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "openGroupsInForumModeByDefault",
+            "columnName": "openGroupsInForumModeByDefault",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "1"
+          },
+          {
+            "fieldPath": "markupMode",
+            "columnName": "markupMode",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "1"
+          },
+          {
+            "fieldPath": "maxPostBodyLines",
+            "columnName": "maxPostBodyLines",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "defaultTimelineId",
+            "columnName": "defaultTimelineId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "pullNotificationCheckInterval",
+            "columnName": "pullNotificationCheckInterval",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "autoloadImages",
+            "columnName": "autoloadImages",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "1"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "DraftEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `mediaIds` TEXT, `inReplyToId` TEXT, `lang` TEXT, `sensitive` INTEGER, `spoiler` TEXT, `title` TEXT, `text` TEXT, `created` TEXT, `visibility` TEXT, `pollExpiresAt` TEXT, `pollMultiple` INTEGER, `pollOptions` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mediaIds",
+            "columnName": "mediaIds",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "inReplyToId",
+            "columnName": "inReplyToId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lang",
+            "columnName": "lang",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sensitive",
+            "columnName": "sensitive",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "spoiler",
+            "columnName": "spoiler",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "created",
+            "columnName": "created",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "visibility",
+            "columnName": "visibility",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "pollExpiresAt",
+            "columnName": "pollExpiresAt",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "pollMultiple",
+            "columnName": "pollMultiple",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "pollOptions",
+            "columnName": "pollOptions",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'eb08674f192d3b2b31c1e9c4a3c00df2')"
+    ]
+  }
+}
