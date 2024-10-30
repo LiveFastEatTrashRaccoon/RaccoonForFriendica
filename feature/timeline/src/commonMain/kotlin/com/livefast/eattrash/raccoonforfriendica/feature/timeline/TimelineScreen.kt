@@ -277,6 +277,7 @@ class TimelineScreen : Screen {
                         TimelineItem(
                             entry = entry,
                             blurNsfw = uiState.blurNsfw,
+                            autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
                             onClick = { e ->
                                 detailOpener.openEntryDetail(e)
