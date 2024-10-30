@@ -31,6 +31,7 @@ interface ManageBlocksMviModel :
         val loading: Boolean = false,
         val canFetchMore: Boolean = true,
         val refreshing: Boolean = false,
+        val autoloadImages: Boolean = true,
         val section: ManageBlocksSection = ManageBlocksSection.Muted,
         val items: List<UserModel> = emptyList(),
     )
