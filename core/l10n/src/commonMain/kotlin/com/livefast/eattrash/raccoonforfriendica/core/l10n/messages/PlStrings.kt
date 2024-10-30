@@ -405,4 +405,5 @@ internal val PlStrings =
         override val editProfileItemHideCollections =
             "Prywatność list obserwujących i obserwowanych"
         override val settingsAboutMatrix = "Dołącz do pokoju Matrix"
+        override val settingsAutoloadImages = "Automatyczne ładowanie obrazów"
     }

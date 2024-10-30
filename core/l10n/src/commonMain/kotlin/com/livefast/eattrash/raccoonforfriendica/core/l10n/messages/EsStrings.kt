@@ -407,4 +407,5 @@ internal val EsStrings =
         override val editProfileItemHideCollections =
             "Hacer privadas las listas de seguidores y seguidos"
         override val settingsAboutMatrix = "Unirse a la sala Matrix"
+        override val settingsAutoloadImages = "Cargar imágenes automáticamente"
     }

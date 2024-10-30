@@ -404,4 +404,5 @@ internal open class DefaultStrings : Strings {
     override val settingsAboutUserManual = "User manual"
     override val editProfileItemHideCollections = "Make following and follower lists private"
     override val settingsAboutMatrix = "Join Matrix room"
+    override val settingsAutoloadImages = "Load images automatically"
 }

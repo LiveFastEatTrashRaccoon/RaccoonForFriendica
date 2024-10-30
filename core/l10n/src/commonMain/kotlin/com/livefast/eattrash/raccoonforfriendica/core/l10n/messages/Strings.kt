@@ -360,6 +360,7 @@ interface Strings {
     val settingsAboutUserManual: String
     val editProfileItemHideCollections: String
     val settingsAboutMatrix: String
+    val settingsAutoloadImages: String
 }
 
 object Locales {
