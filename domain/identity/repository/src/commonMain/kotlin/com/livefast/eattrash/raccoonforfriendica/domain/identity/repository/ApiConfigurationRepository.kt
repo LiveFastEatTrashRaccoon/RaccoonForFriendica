@@ -9,8 +9,6 @@ interface ApiConfigurationRepository {
     val isLogged: StateFlow<Boolean>
     val defaultNode: String
 
-    suspend fun initialize()
-
     fun changeNode(value: String)
 
     fun setAuth(credentials: ApiCredentials? = null)

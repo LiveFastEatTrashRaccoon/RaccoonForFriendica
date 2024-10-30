@@ -12,6 +12,10 @@ internal class DefaultInboxManager(
 ) : InboxManager {
     override val unreadCount = MutableStateFlow(0)
 
+    override suspend fun clearUnreadCount() {
+        unreadCount.update { 0 }
+    }
+
     override suspend fun refreshUnreadCount() {
         val lastReadId = markerRepository.get(MarkerType.Notifications)?.lastReadId
         val notifications = notificationRepository.getAll()

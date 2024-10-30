@@ -25,7 +25,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoo
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getSetupAccountUseCase
@@ -52,7 +51,6 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
     val setupAccountUseCase = remember { getSetupAccountUseCase() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val drawerCoordinator = remember { getDrawerCoordinator() }
-    val apiConfigurationRepository = remember { getApiConfigurationRepository() }
     val drawerGesturesEnabled by drawerCoordinator.gesturesEnabled.collectAsState()
 
     LaunchedEffect(settingsRepository) {
@@ -70,7 +68,6 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
 
                     if (!isInitialized) {
                         isInitialized = true
-                        apiConfigurationRepository.initialize()
                         onLoadingFinished?.invoke()
                     }
                 }

@@ -66,40 +66,41 @@ internal class DefaultActiveAccountMonitor(
     }
 
     private suspend fun process(account: AccountModel?) {
+        supportedFeatureRepository.refresh()
+        val supportsBBCode = supportedFeatureRepository.features.value.supportsBBCode
+        val defaultMarkupMode =
+            if (supportsBBCode) {
+                MarkupMode.BBCode
+            } else {
+                MarkupMode.HTML
+            }
+        val defaultSettings = SettingsModel(markupMode = defaultMarkupMode)
+        val defaultNode = apiConfigurationRepository.defaultNode
         if (account == null) {
+            apiConfigurationRepository.changeNode(defaultNode)
             apiConfigurationRepository.setAuth(null)
-            supportedFeatureRepository.refresh()
+
+            contentPreloadManager.preload()
 
             identityRepository.refreshCurrentUser(null)
 
-            contentPreloadManager.preload()
+            settingsRepository.changeCurrent(defaultSettings)
+
+            inboxManager.clearUnreadCount()
         } else {
-            val node = account.handle.nodeName ?: apiConfigurationRepository.defaultNode
-            apiConfigurationRepository.changeNode(node)
-            supportedFeatureRepository.refresh()
-
+            val node = account.handle.nodeName ?: defaultNode
             val credentials = accountCredentialsCache.get(account.id)
+            apiConfigurationRepository.changeNode(node)
             apiConfigurationRepository.setAuth(credentials)
-
-            val supportsBBCode = supportedFeatureRepository.features.value.supportsBBCode
-            val defaultMarkupMode =
-                if (supportsBBCode) {
-                    MarkupMode.BBCode
-                } else {
-                    MarkupMode.HTML
-                }
-            val defaultSettings =
-                settingsRepository.get(account.id) ?: SettingsModel(
-                    markupMode = defaultMarkupMode,
-                )
 
             contentPreloadManager.preload(userRemoteId = account.remoteId)
 
             identityRepository.refreshCurrentUser(account.remoteId)
 
-            settingsRepository.changeCurrent(defaultSettings)
+            val accountSettings = settingsRepository.get(account.id) ?: defaultSettings
+            settingsRepository.changeCurrent(accountSettings)
 
-            markerRepository.get(MarkerType.Notifications, refresh = true)
+            markerRepository.get(type = MarkerType.Notifications, refresh = true)
             inboxManager.refreshUnreadCount()
         }
     }

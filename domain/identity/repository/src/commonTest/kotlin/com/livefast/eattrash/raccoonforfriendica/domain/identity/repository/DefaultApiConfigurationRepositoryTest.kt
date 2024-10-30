@@ -9,7 +9,6 @@ import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify
-import dev.mokkery.verify.VerifyMode
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -40,73 +39,6 @@ class DefaultApiConfigurationRepositoryTest {
             keyStore = keyStore,
             credentialsRepository = credentialsRepository,
         )
-
-    @Test
-    fun `given valid OAuth credentials stored when initialize then is logged`() =
-        runTest {
-            val credentials =
-                ApiCredentials
-                    .OAuth2(accessToken = "fake-access-token", refreshToken = "")
-                    .toServiceCredentials()
-            sut.initialize()
-
-            assertTrue(sut.isLogged.value)
-            verify {
-                serviceProvider.setAuth(credentials)
-                serviceProvider.changeNode("default-instance")
-            }
-        }
-
-    @Test
-    fun `given valid basic credentials stored when initialize then is logged`() =
-        runTest {
-            every { keyStore["lastMethod", any<String>()] } returns "HTTPBasic"
-            every { keyStore["lastCred1", any<String>()] } returns "fake1"
-            every { keyStore["lastCred2", any<String>()] } returns "fake2"
-            val credentials =
-                ApiCredentials
-                    .HttpBasic(user = "fake1", pass = "fake2")
-                    .toServiceCredentials()
-
-            sut.initialize()
-
-            assertTrue(sut.isLogged.value)
-            verify {
-                serviceProvider.setAuth(credentials)
-                serviceProvider.changeNode("default-instance")
-            }
-        }
-
-    @Test
-    fun `given expired credentials stored when initialize then is not logged`() =
-        runTest {
-            everySuspend {
-                credentialsRepository.validateApplicationCredentials(any(), any())
-            } returns false
-
-            sut.initialize()
-
-            assertFalse(sut.isLogged.value)
-            verify(mode = VerifyMode.not) {
-                serviceProvider.setAuth(any())
-            }
-        }
-
-    @Test
-    fun `given no credentials stored when initialize then is not logged`() =
-        runTest {
-            every { keyStore["lastCred1", any<String>()] } returns ""
-
-            sut.initialize()
-
-            assertFalse(sut.isLogged.value)
-            verifySuspend(mode = VerifyMode.not) {
-                credentialsRepository.validateApplicationCredentials(any(), any())
-            }
-            verify(mode = VerifyMode.not) {
-                serviceProvider.setAuth(any())
-            }
-        }
 
     @Test
     fun `when change node then interactions are as expected`() =
