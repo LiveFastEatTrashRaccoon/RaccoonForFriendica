@@ -191,6 +191,15 @@ class SettingsScreen : Screen {
                                 )
                             },
                         )
+                        SettingsSwitchRow(
+                            title = LocalStrings.current.settingsAutoloadImages,
+                            value = uiState.autoloadImages,
+                            onValueChanged = {
+                                model.reduce(
+                                    SettingsMviModel.Intent.ChangeAutoloadImages(it),
+                                )
+                            },
+                        )
 
                         if (uiState.isLogged) {
                             SettingsRow(
@@ -372,7 +381,7 @@ class SettingsScreen : Screen {
                     UiFontFamily.Exo2,
                     UiFontFamily.NotoSans,
                     UiFontFamily.Default,
-            )
+                )
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemFontFamily,
                 items =

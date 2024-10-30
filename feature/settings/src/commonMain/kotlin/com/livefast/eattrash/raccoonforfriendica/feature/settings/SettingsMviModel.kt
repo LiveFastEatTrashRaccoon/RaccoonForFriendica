@@ -86,6 +86,10 @@ interface SettingsMviModel :
         data class ChangeBackgroundNotificationCheckInterval(
             val duration: Duration?,
         ) : Intent
+
+        data class ChangeAutoloadImages(
+            val value: Boolean,
+        ) : Intent
     }
 
     data class State(
@@ -114,6 +118,7 @@ interface SettingsMviModel :
         val supportsBackgroundNotificationCheck: Boolean = false,
         val isBackgroundNotificationCheckRestricted: Boolean = false,
         val backgroundNotificationCheckInterval: Duration? = null,
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect

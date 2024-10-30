@@ -131,6 +131,7 @@ class SettingsViewModel(
                                 markupMode = settings.markupMode,
                                 maxPostBodyLines = settings.maxPostBodyLines,
                                 backgroundNotificationCheckInterval = settings.pullNotificationCheckInterval,
+                                autoloadImages = settings.autoloadImages,
                             )
                         }
                     }
@@ -256,6 +257,11 @@ class SettingsViewModel(
                 screenModelScope.launch {
                     changePullNotificationCheckInterval(intent.duration)
                 }
+
+            is SettingsMviModel.Intent.ChangeAutoloadImages ->
+                screenModelScope.launch {
+                    changeAutoloadImages(intent.value)
+                }
         }
     }
 
@@ -362,6 +368,12 @@ class SettingsViewModel(
     private suspend fun changePullNotificationCheckInterval(value: Duration?) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(pullNotificationCheckInterval = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeAutoloadImages(value: Boolean) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(autoloadImages = value)
         saveSettings(newSettings)
     }
 
