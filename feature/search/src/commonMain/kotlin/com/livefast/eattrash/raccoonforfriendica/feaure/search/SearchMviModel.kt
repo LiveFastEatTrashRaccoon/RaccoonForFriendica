@@ -87,6 +87,7 @@ interface SearchMviModel :
         val items: List<ExploreItemModel> = emptyList(),
         val blurNsfw: Boolean = true,
         val maxBodyLines: Int = Int.MAX_VALUE,
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect {
