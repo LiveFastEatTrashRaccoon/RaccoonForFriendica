@@ -50,7 +50,12 @@ class EntryDetailViewModel(
                 }.launchIn(this)
             settingsRepository.current
                 .onEach { settings ->
-                    updateState { it.copy(blurNsfw = settings?.blurNsfw ?: true) }
+                    updateState {
+                        it.copy(
+                            blurNsfw = settings?.blurNsfw ?: true,
+                            autoloadImages = settings?.autoloadImages ?: true,
+                        )
+                    }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(TimelineEntryUpdatedEvent::class)

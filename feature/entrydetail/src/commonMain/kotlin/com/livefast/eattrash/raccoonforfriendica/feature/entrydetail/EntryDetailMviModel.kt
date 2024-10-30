@@ -63,6 +63,7 @@ interface EntryDetailMviModel :
         val creator: UserModel? = null,
         val entries: List<TimelineEntryModel> = emptyList(),
         val blurNsfw: Boolean = true,
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect {
