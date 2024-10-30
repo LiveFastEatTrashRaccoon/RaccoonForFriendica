@@ -17,20 +17,6 @@ internal class DefaultApiConfigurationRepository(
     override val defaultNode: String
         get() = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
 
-    override suspend fun initialize() {
-        val node = defaultNode
-        changeNode(node)
-
-        val credentials = retrieveFromKeyStore()
-        val isValid =
-            withTimeoutOrNull(STARTUP_TIMEOUT) {
-                validateCredentials(credentials = credentials, node = node)
-            } ?: false
-        if (isValid) {
-            setAuth(credentials)
-        }
-    }
-
     override fun changeNode(value: String) {
         node.update { value }
         serviceProvider.changeNode(value)
@@ -59,11 +45,13 @@ internal class DefaultApiConfigurationRepository(
         credentials: ApiCredentials?,
         node: String,
     ): Boolean =
-        credentials != null &&
-            credentialsRepository.validateApplicationCredentials(
-                node = node,
-                credentials = credentials,
-            )
+        withTimeoutOrNull(VALIDATE_CREDENTIALS_TIMEOUT) {
+            credentials != null &&
+                credentialsRepository.validateApplicationCredentials(
+                    node = node,
+                    credentials = credentials,
+                )
+        } ?: false
 
     private fun retrieveFromKeyStore(): ApiCredentials? {
         val method = keyStore[KEY_METHOD, DEFAULT_METHOD]
@@ -122,6 +110,6 @@ internal class DefaultApiConfigurationRepository(
         private const val METHOD_OAUTH_2 = "OAuth2"
         private const val DEFAULT_NODE = "poliverso.org"
         private const val DEFAULT_METHOD = METHOD_BASIC
-        private const val STARTUP_TIMEOUT = 2000L
+        private const val VALIDATE_CREDENTIALS_TIMEOUT = 2000L
     }
 }
