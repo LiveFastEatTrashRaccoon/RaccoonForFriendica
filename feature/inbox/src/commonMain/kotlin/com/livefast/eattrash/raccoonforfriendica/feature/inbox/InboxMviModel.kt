@@ -47,6 +47,7 @@ interface InboxMviModel :
         val selectedNotificationTypes: List<NotificationType> = NotificationType.ALL,
         val markAllAsReadLoading: Boolean = false,
         val maxBodyLines: Int = Int.MAX_VALUE,
+        val autoloadImages: Boolean = true,
     )
 
     sealed interface Effect {
