@@ -393,6 +393,7 @@ class UserDetailScreen(
                         item {
                             UserHeader(
                                 user = uiState.user,
+                                autoloadImages = uiState.autoloadImages,
                                 onOpenUrl = { url ->
                                     uriHandler.openUri(url)
                                 },
@@ -494,8 +495,8 @@ class UserDetailScreen(
                                 modifier = Modifier.padding(vertical = Spacing.s),
                             )
                             UserFields(
-                                fields =
-                                fields,
+                                fields = fields,
+                                autoloadImages = uiState.autoloadImages,
                                 onOpenUrl = { url ->
                                     uriHandler.openUri(url)
                                 },
@@ -549,6 +550,7 @@ class UserDetailScreen(
                         TimelineItem(
                             entry = entry,
                             blurNsfw = uiState.blurNsfw,
+                            autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
                             onClick = { e ->
                                 detailOpener.openEntryDetail(e)
