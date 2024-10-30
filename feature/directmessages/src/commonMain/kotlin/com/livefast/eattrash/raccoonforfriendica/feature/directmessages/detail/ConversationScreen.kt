@@ -140,7 +140,7 @@ class ConversationScreen(
                         ) {
                             val avatar = uiState.otherUser?.avatar.orEmpty()
                             val avatarSize = IconSize.l
-                            if (avatar.isNotEmpty()) {
+                            if (avatar.isNotEmpty() && uiState.autoloadImages) {
                                 CustomImage(
                                     modifier =
                                         Modifier
@@ -159,6 +159,7 @@ class ConversationScreen(
                             TextWithCustomEmojis(
                                 text = otherUserName,
                                 emojis = uiState.otherUser?.emojis.orEmpty(),
+                                autoloadImages = uiState.autoloadImages,
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                                 maxLines = 1,
@@ -299,6 +300,7 @@ class ConversationScreen(
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onBackground,
                                         emojis = uiState.otherUser?.emojis.orEmpty(),
+                                        autoloadImages = uiState.autoloadImages,
                                     )
                                 }
                             }

@@ -188,6 +188,7 @@ class DirectMessageListScreen : Screen {
                     ) { idx, conversation ->
                         ConversationItem(
                             conversation = conversation,
+                            autoloadImages = uiState.autoloadImages,
                             onClick = {
                                 val parentUri = conversation.lastMessage.parentUri
                                 if (parentUri != null) {
@@ -237,6 +238,7 @@ class DirectMessageListScreen : Screen {
             SelectUserDialog(
                 query = uiState.userSearchQuery,
                 users = uiState.userSearchUsers,
+                autoloadImages = uiState.autoloadImages,
                 loading = uiState.userSearchLoading,
                 canFetchMore = uiState.userSearchCanFetchMore,
                 onSearchChanged = {
