@@ -44,6 +44,7 @@ fun TextWithCustomEmojis(
     softWrap: Boolean = true,
     overflow: TextOverflow = TextOverflow.Clip,
     maxLines: Int = Int.MAX_VALUE,
+    autoloadImages: Boolean = true,
     onTextLayout: (TextLayoutResult) -> Unit = {},
     onClick: ((Int) -> Unit) = {},
 ) {
@@ -56,11 +57,13 @@ fun TextWithCustomEmojis(
                     val emojiCode = occurrence.groups[1]?.value.orEmpty()
                     val foundEmoji = emojis.firstOrNull { it.code == emojiCode }
                     if (foundEmoji != null) {
-                        appendInlineContent(
-                            id = emojiCode,
-                            alternateText = occurrence.value,
-                        )
-                        foundEmojis += foundEmoji
+                        if (autoloadImages) {
+                            appendInlineContent(
+                                id = emojiCode,
+                                alternateText = occurrence.value,
+                            )
+                            foundEmojis += foundEmoji
+                        }
                     } else {
                         append(occurrence.value)
                     }
@@ -112,6 +115,7 @@ fun TextWithCustomEmojis(
                     CustomImage(
                         modifier = Modifier.fillMaxSize(),
                         url = imageData.url,
+                        autoload = autoloadImages,
                         contentDescription = imageData.description,
                         contentScale = ContentScale.FillWidth,
                     )
@@ -153,6 +157,7 @@ fun TextWithCustomEmojis(
     softWrap: Boolean = true,
     overflow: TextOverflow = TextOverflow.Clip,
     maxLines: Int = Int.MAX_VALUE,
+    autoloadImages: Boolean = true,
     onTextLayout: (TextLayoutResult) -> Unit = {},
     onClick: ((Int) -> Unit) = {},
 ) {
@@ -165,6 +170,7 @@ fun TextWithCustomEmojis(
         softWrap = softWrap,
         overflow = overflow,
         maxLines = maxLines,
+        autoloadImages = autoloadImages,
         onTextLayout = onTextLayout,
         onClick = onClick,
     )
