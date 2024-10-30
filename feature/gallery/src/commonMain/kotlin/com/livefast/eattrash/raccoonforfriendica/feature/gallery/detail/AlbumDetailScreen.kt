@@ -236,6 +236,7 @@ class AlbumDetailScreen(
                     ) { idx, attachment ->
                         AlbumImageItem(
                             attachment = attachment,
+                            autoload = uiState.autoloadImages,
                             onClick = {
                                 val url = attachment.thumbnail ?: attachment.url
                                 if (url.isNotEmpty()) {
