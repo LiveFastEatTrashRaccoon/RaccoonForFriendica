@@ -114,6 +114,7 @@ class DrawerContent : Screen {
         ModalDrawerSheet {
             DrawerHeader(
                 user = uiState.user,
+                autoloadImages = uiState.autoloadImages,
                 node = uiState.node,
                 canSwitchAccount = uiState.availableAccounts.size > 1,
                 onOpenChangeInstance = {
@@ -251,7 +252,7 @@ class DrawerContent : Screen {
                         leadingContent = {
                             val avatar = account.avatar.orEmpty()
                             val avatarSize = IconSize.xl
-                            if (avatar.isNotEmpty()) {
+                            if (avatar.isNotEmpty() && uiState.autoloadImages) {
                                 CustomImage(
                                     modifier =
                                         Modifier
