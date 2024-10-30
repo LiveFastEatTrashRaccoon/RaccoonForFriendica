@@ -26,4 +26,5 @@ data class SettingsModel(
     val markupMode: MarkupMode = MarkupMode.HTML,
     val maxPostBodyLines: Int = Int.MAX_VALUE,
     val pullNotificationCheckInterval: Duration? = null,
+    val autoloadImages: Boolean = true,
 )

@@ -60,6 +60,7 @@ private fun SettingsEntity.toModel() =
         maxPostBodyLines = maxPostBodyLines.toDomainMaxLines(),
         defaultTimelineId = defaultTimelineId,
         pullNotificationCheckInterval = pullNotificationCheckInterval?.seconds,
+        autoloadImages = autoloadImages,
     )
 
 private fun SettingsModel.toEntity() =
@@ -84,6 +85,7 @@ private fun SettingsModel.toEntity() =
         maxPostBodyLines = maxPostBodyLines.toEntityMaxLines(),
         defaultTimelineId = defaultTimelineId,
         pullNotificationCheckInterval = pullNotificationCheckInterval?.inWholeSeconds,
+        autoloadImages = autoloadImages,
     )
 
 private fun Int.toMarkupMode(): MarkupMode =
