@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.StateFlow
 interface InboxManager {
     val unreadCount: StateFlow<Int>
 
+    suspend fun clearUnreadCount()
+
     suspend fun refreshUnreadCount()
 
     suspend fun decrementUnreadCount()
