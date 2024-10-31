@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReply
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -23,8 +24,11 @@ class CirclesViewModel(
     init {
         screenModelScope.launch {
             supportedFeatureRepository.features
-                .onEach {
-                    refresh(initial = true)
+                .onEach { features ->
+                    refresh(
+                        initial = true,
+                        supportsCustomCircles = features.supportsCustomCircles,
+                    )
                 }.launchIn(this)
         }
     }
@@ -33,7 +37,9 @@ class CirclesViewModel(
         when (intent) {
             CirclesMviModel.Intent.Refresh ->
                 screenModelScope.launch {
-                    refresh()
+                    refresh(
+                        supportsCustomCircles = supportedFeatureRepository.features.value.supportsCustomCircles,
+                    )
                 }
 
             is CirclesMviModel.Intent.OpenEditor ->
@@ -63,25 +69,30 @@ class CirclesViewModel(
         }
     }
 
-    private suspend fun refresh(initial: Boolean = false) {
+    private suspend fun refresh(
+        supportsCustomCircles: Boolean,
+        initial: Boolean = false,
+    ) {
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
         coroutineScope {
-            val circles =
-                async {
-                    circlesRepository.getAll()
-                }.await().orEmpty()
-            val friendicaCircles =
-                async {
-                    circlesRepository.getFriendicaCircles()
-                }.await().orEmpty()
+            val (circles, friendicaCircles) =
+                listOf(
+                    async {
+                        circlesRepository.getAll()
+                    },
+                    async {
+                        circlesRepository.getFriendicaCircles()
+                    },
+                ).awaitAll()
+                    .map { it.orEmpty() }
+                    .zipWithNext()
+                    .first()
 
             val items =
                 circles.map { circle ->
                     // on Mastodon, all lists can be edited; on Friendica only the user-created ones
-                    val supportsCustomCircles =
-                        supportedFeatureRepository.features.value.supportsCustomCircles
                     val canBeEdited =
                         !supportsCustomCircles || friendicaCircles.any { c -> c.id == circle.id }
                     circle.copy(editable = canBeEdited)
