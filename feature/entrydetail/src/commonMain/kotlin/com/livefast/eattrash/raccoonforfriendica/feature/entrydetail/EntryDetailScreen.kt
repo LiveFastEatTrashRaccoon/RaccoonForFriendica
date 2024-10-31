@@ -231,7 +231,7 @@ class EntryDetailScreen(
                 ) {
                     itemsIndexed(
                         items = uiState.entries,
-                        key = { _, e -> e.safeKey },
+                        key = { _, e -> "entry-detail-${e.safeKey}" },
                     ) { idx, entry ->
                         TimelineItem(
                             entry = entry,

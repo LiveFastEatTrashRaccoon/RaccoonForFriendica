@@ -545,7 +545,7 @@ class UserDetailScreen(
 
                     itemsIndexed(
                         items = uiState.entries,
-                        key = { _, e -> e.safeKey },
+                        key = { _, e -> "user-detail-${e.safeKey }" },
                     ) { idx, entry ->
                         TimelineItem(
                             entry = entry,

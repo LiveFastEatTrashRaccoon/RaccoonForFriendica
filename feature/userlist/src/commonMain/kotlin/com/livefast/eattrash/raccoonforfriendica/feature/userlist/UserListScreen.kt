@@ -241,7 +241,7 @@ class UserListScreen(
 
                     itemsIndexed(
                         items = uiState.users,
-                        key = { _, e -> e.id },
+                        key = { _, e -> "user-list-${e.id}" },
                     ) { idx, user ->
                         UserItem(
                             user = user,

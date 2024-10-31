@@ -207,7 +207,7 @@ class GalleryScreen : Screen {
 
                     itemsIndexed(
                         items = uiState.items,
-                        key = { _, e -> e.name },
+                        key = { _, e -> "gallery-${e.name}" },
                     ) { idx, album ->
                         MediaAlbumItem(
                             album = album,

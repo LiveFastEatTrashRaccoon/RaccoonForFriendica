@@ -184,7 +184,7 @@ class DirectMessageListScreen : Screen {
 
                     itemsIndexed(
                         items = uiState.items,
-                        key = { _, e -> e.lastMessage.id },
+                        key = { _, e -> "direct-message-list-${e.lastMessage.id}" },
                     ) { idx, conversation ->
                         ConversationItem(
                             conversation = conversation,

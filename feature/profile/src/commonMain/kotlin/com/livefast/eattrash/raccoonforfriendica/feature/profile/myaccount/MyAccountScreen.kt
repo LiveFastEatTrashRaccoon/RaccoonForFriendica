@@ -266,7 +266,7 @@ object MyAccountScreen : Tab {
 
                 itemsIndexed(
                     items = uiState.entries,
-                    key = { _, e -> e.safeKey },
+                    key = { _, e -> "my-account-${e.safeKey}" },
                 ) { idx, entry ->
                     TimelineItem(
                         entry = entry,

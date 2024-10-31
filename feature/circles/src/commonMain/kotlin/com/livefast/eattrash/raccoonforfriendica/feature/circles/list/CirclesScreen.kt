@@ -186,7 +186,7 @@ class CirclesScreen : Screen {
 
                     items(
                         items = uiState.items,
-                        key = { e -> e.id },
+                        key = { e -> "circles-${e.id}" },
                     ) { circle ->
                         CircleItem(
                             circle = circle,

@@ -287,8 +287,8 @@ class SearchScreen : Screen {
                         items = uiState.items,
                         key = { _, e ->
                             when (e) {
-                                is ExploreItemModel.Entry -> e.entry.safeKey
-                                else -> e.id
+                                is ExploreItemModel.Entry -> "search-${e.entry.safeKey}"
+                                else -> "search-{e.id}"
                             }
                         },
                     ) { idx, item ->

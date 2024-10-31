@@ -203,7 +203,7 @@ class FavoritesScreen(
 
                     itemsIndexed(
                         items = uiState.entries,
-                        key = { _, e -> e.safeKey },
+                        key = { _, e -> "favorites-${e.safeKey}" },
                     ) { idx, entry ->
                         TimelineItem(
                             entry = entry,

@@ -232,7 +232,7 @@ class AlbumDetailScreen(
 
                     itemsIndexed(
                         items = uiState.items,
-                        key = { _, e -> e.id },
+                        key = { _, e -> "album-detail-${e.id}" },
                     ) { idx, attachment ->
                         AlbumImageItem(
                             attachment = attachment,

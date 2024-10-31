@@ -196,7 +196,7 @@ class ManageBlocksScreen : Screen {
 
                     itemsIndexed(
                         items = uiState.items,
-                        key = { _, e -> e.id },
+                        key = { _, e -> "manage-blocks-${e.id}" },
                     ) { idx, item ->
                         UserItem(
                             user = item,

@@ -196,7 +196,7 @@ class CircleDetailScreen(
 
                     itemsIndexed(
                         items = uiState.users,
-                        key = { _, e -> e.id },
+                        key = { _, e -> "circle-detail-${e.id}" },
                     ) { _, user ->
                         UserItem(
                             user = user,
