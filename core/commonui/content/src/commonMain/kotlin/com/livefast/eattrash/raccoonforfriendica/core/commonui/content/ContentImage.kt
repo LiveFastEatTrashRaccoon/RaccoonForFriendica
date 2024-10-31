@@ -90,8 +90,13 @@ fun ContentImage(
             modifier =
                 Modifier
                     .clip(RoundedCornerShape(CornerSize.xl))
-                    .aspectRatio(originalWidth / originalHeight.toFloat())
-                    .clickable {
+                    .then(
+                        if (originalWidth > 0 && originalHeight > 0) {
+                            Modifier.aspectRatio(originalWidth / originalHeight.toFloat())
+                        } else {
+                            Modifier.heightIn(150.dp)
+                        },
+                    ).clickable {
                         onClick?.invoke()
                     },
             url = url,
