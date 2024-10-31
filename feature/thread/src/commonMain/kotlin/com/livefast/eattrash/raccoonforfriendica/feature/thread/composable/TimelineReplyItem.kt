@@ -44,6 +44,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.embeddedImageUrls
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 
 @Composable
@@ -199,7 +200,10 @@ fun TimelineReplyItem(
                             start = Spacing.s,
                             end = Spacing.s,
                         ),
-                    attachments = entryToDisplay.attachments,
+                    attachments =
+                        entryToDisplay.attachments.filter {
+                            it.url !in entryToDisplay.embeddedImageUrls
+                        },
                     blurNsfw = blurNsfw,
                     autoloadImages = autoloadImages,
                     sensitive = entryToDisplay.sensitive,
