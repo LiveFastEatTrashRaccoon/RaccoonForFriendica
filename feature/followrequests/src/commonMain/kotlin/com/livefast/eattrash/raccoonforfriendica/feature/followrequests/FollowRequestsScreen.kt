@@ -136,7 +136,7 @@ class FollowRequestsScreen : Screen {
 
                     itemsIndexed(
                         items = uiState.items,
-                        key = { _, e -> e.id },
+                        key = { _, e -> "follow-request-${e.id}" },
                     ) { idx, user ->
                         FollowRequestItem(
                             user = user,

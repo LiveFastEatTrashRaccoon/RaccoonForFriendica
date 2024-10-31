@@ -149,8 +149,8 @@ class CalendarScreen : Screen {
                         items = uiState.items,
                         key = { _, item ->
                             when (item) {
-                                is CalendarItem.EventItem -> item.event.id
-                                is CalendarItem.Header -> "${item.year}-${item.month}"
+                                is CalendarItem.EventItem -> "calendar-${item.event.id}"
+                                is CalendarItem.Header -> "calendar-${item.year}-${item.month}"
                             }
                         },
                     ) { idx, item ->

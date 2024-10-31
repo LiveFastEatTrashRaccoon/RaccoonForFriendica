@@ -375,7 +375,7 @@ class ThreadScreen(
                     // replies
                     itemsIndexed(
                         items = uiState.replies,
-                        key = { _, e -> e.safeKey },
+                        key = { _, e -> "thread-${e.safeKey}" },
                     ) { idx, entry ->
                         TimelineReplyItem(
                             entry = entry,

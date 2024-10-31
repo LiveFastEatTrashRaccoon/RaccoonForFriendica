@@ -126,7 +126,7 @@ class FollowedHashtagsScreen : Screen {
                     }
                     itemsIndexed(
                         items = uiState.items,
-                        key = { _, e -> e.name },
+                        key = { _, e -> "followed-hashtag-${e.name}" },
                     ) { idx, tag ->
                         // use item with button
                         FollowHashtagItem(

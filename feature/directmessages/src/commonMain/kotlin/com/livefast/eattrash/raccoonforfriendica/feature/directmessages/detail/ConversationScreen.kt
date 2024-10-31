@@ -309,7 +309,7 @@ class ConversationScreen(
 
                     itemsIndexed(
                         items = uiState.items,
-                        key = { _, e -> e.id },
+                        key = { _, e -> "conversation-${e.id}" },
                     ) { idx, message ->
                         val moreThan5MinutesFromPrevious =
                             isTimeBetweenMessagesAboveThreshold(

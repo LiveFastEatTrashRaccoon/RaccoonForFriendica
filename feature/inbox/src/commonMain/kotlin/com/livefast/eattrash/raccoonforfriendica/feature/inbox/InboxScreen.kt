@@ -198,7 +198,7 @@ class InboxScreen : Screen {
 
                     itemsIndexed(
                         items = uiState.notifications,
-                        key = { _, e -> e.id },
+                        key = { _, e -> "inbox-${e.type}-${e.id}" },
                     ) { idx, notification ->
                         NotificationItem(
                             notification = notification,

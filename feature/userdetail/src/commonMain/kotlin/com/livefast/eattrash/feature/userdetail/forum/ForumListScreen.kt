@@ -313,7 +313,7 @@ class ForumListScreen(
 
                     itemsIndexed(
                         items = uiState.entries,
-                        key = { _, e -> e.safeKey },
+                        key = { _, e -> "forum-list-${e.safeKey}" },
                     ) { idx, entry ->
                         TimelineItem(
                             entry = entry,

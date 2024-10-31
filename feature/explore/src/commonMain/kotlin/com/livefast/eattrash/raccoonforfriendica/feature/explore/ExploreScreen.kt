@@ -285,8 +285,8 @@ class ExploreScreen : Screen {
                         items = uiState.items,
                         key = { _, e ->
                             when (e) {
-                                is ExploreItemModel.Entry -> e.entry.safeKey
-                                else -> e.id
+                                is ExploreItemModel.Entry -> "explore-${e.entry.safeKey}"
+                                else -> "explore-${e.id}"
                             }
                         },
                     ) { idx, item ->
