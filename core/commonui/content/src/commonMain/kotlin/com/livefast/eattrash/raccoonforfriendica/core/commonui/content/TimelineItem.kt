@@ -34,6 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.embeddedImageUrls
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 
 @Composable
@@ -239,7 +240,10 @@ fun TimelineItem(
                                 top = Spacing.s,
                                 bottom = Spacing.xxxs,
                             ),
-                        attachments = entryToDisplay.attachments,
+                        attachments =
+                            entryToDisplay.attachments.filter {
+                                it.url !in entryToDisplay.embeddedImageUrls
+                            },
                         blurNsfw = blurNsfw,
                         autoloadImages = autoloadImages,
                         sensitive = entryToDisplay.sensitive,
