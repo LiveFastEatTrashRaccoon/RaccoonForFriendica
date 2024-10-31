@@ -38,6 +38,7 @@ kotlin {
                 implementation(compose.runtime)
 
                 implementation(libs.koin.core)
+                implementation(libs.kotlinx.coroutines)
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.l10n)

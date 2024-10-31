@@ -66,19 +66,11 @@ internal class DefaultActiveAccountMonitor(
     }
 
     private suspend fun process(account: AccountModel?) {
-        supportedFeatureRepository.refresh()
-        val supportsBBCode = supportedFeatureRepository.features.value.supportsBBCode
-        val defaultMarkupMode =
-            if (supportsBBCode) {
-                MarkupMode.BBCode
-            } else {
-                MarkupMode.HTML
-            }
-        val defaultSettings = SettingsModel(markupMode = defaultMarkupMode)
         val defaultNode = apiConfigurationRepository.defaultNode
         if (account == null) {
             apiConfigurationRepository.changeNode(defaultNode)
             apiConfigurationRepository.setAuth(null)
+            supportedFeatureRepository.refresh()
 
             contentPreloadManager.preload()
 
@@ -92,6 +84,7 @@ internal class DefaultActiveAccountMonitor(
             val credentials = accountCredentialsCache.get(account.id)
             apiConfigurationRepository.changeNode(node)
             apiConfigurationRepository.setAuth(credentials)
+            supportedFeatureRepository.refresh()
 
             contentPreloadManager.preload(userRemoteId = account.remoteId)
 
@@ -104,4 +97,15 @@ internal class DefaultActiveAccountMonitor(
             inboxManager.refreshUnreadCount()
         }
     }
+
+    private val defaultSettings: SettingsModel
+        get() =
+            SettingsModel(
+                markupMode =
+                    if (supportedFeatureRepository.features.value.supportsBBCode) {
+                        MarkupMode.BBCode
+                    } else {
+                        MarkupMode.HTML
+                    },
+            )
 }
