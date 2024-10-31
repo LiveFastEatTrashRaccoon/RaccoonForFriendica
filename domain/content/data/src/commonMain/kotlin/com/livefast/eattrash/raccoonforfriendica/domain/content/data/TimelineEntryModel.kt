@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
+import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import kotlin.jvm.Transient
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -102,3 +103,15 @@ val TimelineEntryModel.isNsfw: Boolean get() = reblog?.sensitive ?: sensitive
 
 val Duration.isOldEntry: Boolean
     get() = this > 30.days
+
+private val IMAGE_REGEX = Regex("<img src=\"(?<url>.+?)\"(alt=\"(?<alt>.+?)\")? />")
+
+val TimelineEntryModel.embeddedImageUrls: List<String>
+    get() =
+        buildList {
+            IMAGE_REGEX.substituteAllOccurrences(content) { match ->
+                match.groups["url"]?.value.takeIf { !isNullOrBlank() }?.also { url ->
+                    this@buildList += url
+                }
+            }
+        }
