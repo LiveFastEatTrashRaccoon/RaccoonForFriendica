@@ -413,4 +413,7 @@ internal val PtStrings =
             "Tornar privadas as listas de seguidores e de seguidos"
         override val settingsAboutMatrix = "Entrar na sala Matrix"
         override val settingsAutoloadImages = "Carregar imagens automaticamente"
+        override val circleTypeGroup = "Grupos"
+        override val circleTypePredefined = "Canais"
+        override val circleTypeUserDefined = "As suas listas"
     }
