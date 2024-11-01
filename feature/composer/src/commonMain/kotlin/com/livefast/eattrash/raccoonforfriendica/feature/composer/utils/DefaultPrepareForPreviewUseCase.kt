@@ -15,7 +15,7 @@ internal class DefaultPrepareForPreviewUseCase(
         when (mode) {
             MarkupMode.BBCode -> text.convertBBCodeToHtml()
             MarkupMode.Markdown -> text.convertMarkdownToHtml()
-            else -> text
+            else -> text.replaceNewlines()
         }.withMentions().withHashtags()
 
     private fun String.convertBBCodeToHtml(): String =
@@ -35,8 +35,6 @@ internal class DefaultPrepareForPreviewUseCase(
             .replace("[/ol]", "</ol>")
             .replace("[li]", "<li>")
             .replace("[/li]", "</li>")
-            .replace(Regex("\n\n"), "<br /><br />")
-            .replace("\n", " ")
             .run {
                 ComposerRegexes.BBCODE_SHARE.substituteAllOccurrences(this) { match ->
                     val url = match.groups["url"]?.value.orEmpty()
@@ -48,7 +46,7 @@ internal class DefaultPrepareForPreviewUseCase(
                     val anchor = match.groups["anchor"]?.value.orEmpty()
                     append("<a href=\"$url\">$anchor</a>")
                 }
-            }
+            }.replaceNewlines()
 
     private fun String.convertMarkdownToHtml(): String =
         run {
@@ -91,7 +89,11 @@ internal class DefaultPrepareForPreviewUseCase(
                     val url = match.groups["url"]?.value.orEmpty()
                     append(url)
                 }
-            }
+            }.replaceNewlines()
+
+    private fun String.replaceNewlines(): String =
+        replace(Regex("\n\n"), "<br /><br />")
+            .replace("\n", " ")
 
     private fun String.withMentions(): String =
         ComposerRegexes.USER_MENTION.substituteAllOccurrences(this) { match ->
