@@ -5,31 +5,21 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CirclesViewModel(
     private val circlesRepository: CirclesRepository,
-    private val supportedFeatureRepository: SupportedFeatureRepository,
 ) : DefaultMviModel<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect>(
         initialState = CirclesMviModel.State(),
     ),
     CirclesMviModel {
     init {
         screenModelScope.launch {
-            supportedFeatureRepository.features
-                .onEach { features ->
-                    refresh(
-                        initial = true,
-                        supportsCustomCircles = features.supportsCustomCircles,
-                    )
-                }.launchIn(this)
+            if (uiState.value.initial) {
+                refresh(initial = true)
+            }
         }
     }
 
@@ -37,9 +27,7 @@ class CirclesViewModel(
         when (intent) {
             CirclesMviModel.Intent.Refresh ->
                 screenModelScope.launch {
-                    refresh(
-                        supportsCustomCircles = supportedFeatureRepository.features.value.supportsCustomCircles,
-                    )
+                    refresh()
                 }
 
             is CirclesMviModel.Intent.OpenEditor ->
@@ -69,50 +57,65 @@ class CirclesViewModel(
         }
     }
 
-    private suspend fun refresh(
-        supportsCustomCircles: Boolean,
-        initial: Boolean = false,
-    ) {
+    private suspend fun refresh(initial: Boolean = false) {
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        coroutineScope {
-            val (circles, friendicaCircles) =
-                listOf(
-                    async {
-                        circlesRepository.getAll()
-                    },
-                    async {
-                        circlesRepository.getFriendicaCircles()
-                    },
-                ).awaitAll()
-                    .map { it.orEmpty() }
-                    .zipWithNext()
-                    .first()
+        val groupedCircles = circlesRepository.getAll().orEmpty().groupBy { it.type }
+        val items = groupedCircles.toListItems()
 
-            val items =
-                circles.map { circle ->
-                    // on Mastodon, all lists can be edited; on Friendica only the user-created ones
-                    val canBeEdited =
-                        !supportsCustomCircles || friendicaCircles.any { c -> c.id == circle.id }
-                    circle.copy(editable = canBeEdited)
-                }
-
-            updateState {
-                it.copy(
-                    initial = false,
-                    refreshing = false,
-                    items = items,
-                )
-            }
+        updateState {
+            it.copy(
+                initial = false,
+                refreshing = false,
+                items = items,
+            )
         }
     }
 
+    private fun Map<CircleType, List<CircleModel>>.toListItems() =
+        buildList {
+            val types =
+                listOf(
+                    CircleType.UserDefined,
+                    CircleType.Predefined,
+                    CircleType.Group,
+                    CircleType.Other,
+                )
+            for (type in types) {
+                val items = generateSection(type)
+                if (items.isNotEmpty()) {
+                    addAll(items)
+                }
+            }
+        }
+
+    private fun Map<CircleType, List<CircleModel>>.generateSection(type: CircleType) =
+        buildList<CircleListItem> {
+            val items =
+                get(type)
+                    .orEmpty()
+                    .sortedBy { it.name }
+                    .map { CircleListItem.Circle(circle = it) }
+            if (items.isNotEmpty()) {
+                this += CircleListItem.Header(type = type)
+                this += get(type).orEmpty().map { CircleListItem.Circle(circle = it) }
+            }
+        }
+
     private suspend fun removeItemFromState(id: String) {
         updateState {
-            it.copy(
-                items = it.items.filter { item -> item.id != id },
-            )
+            val circles =
+                it.items
+                    .mapNotNull { listItem ->
+                        if (listItem is CircleListItem.Circle && listItem.circle.id != id) {
+                            listItem.circle
+                        } else {
+                            null
+                        }
+                    }
+            val groupedCircles = circles.groupBy { circle -> circle.type }
+            it.copy(items = groupedCircles.toListItems())
         }
     }
 
@@ -124,8 +127,8 @@ class CirclesViewModel(
             it.copy(
                 items =
                     it.items.map { item ->
-                        if (item.id == id) {
-                            item.let(block)
+                        if (item is CircleListItem.Circle && item.circle.id == id) {
+                            item.copy(circle = item.circle.let(block))
                         } else {
                             item
                         }
@@ -134,9 +137,20 @@ class CirclesViewModel(
         }
     }
 
-    private suspend fun insertItemInState(item: CircleModel) {
+    private suspend fun insertItemInState(circle: CircleModel) {
         updateState {
-            it.copy(items = it.items + item)
+            val circles =
+                listOf(circle) +
+                    it.items
+                        .mapNotNull { listItem ->
+                            if (listItem is CircleListItem.Circle) {
+                                listItem.circle
+                            } else {
+                                null
+                            }
+                        }
+            val groupedCircles = circles.groupBy { circle -> circle.type }
+            it.copy(items = groupedCircles.toListItems())
         }
     }
 
