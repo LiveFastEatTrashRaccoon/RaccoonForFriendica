@@ -22,13 +22,6 @@ internal class DefaultCirclesRepository(
             }.getOrNull()
         }
 
-    override suspend fun getFriendicaCircles(): List<CircleModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                provider.lists.getFriendicaCircles().map { it.toModel() }
-            }.getOrNull()
-        }
-
     override suspend fun get(id: String): CircleModel? =
         withContext(Dispatchers.IO) {
             runCatching {

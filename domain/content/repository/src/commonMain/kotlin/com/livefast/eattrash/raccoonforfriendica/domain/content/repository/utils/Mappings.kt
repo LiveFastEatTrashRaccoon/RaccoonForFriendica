@@ -42,6 +42,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMill
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
@@ -364,7 +365,15 @@ internal fun UserList.toModel() =
         id = id,
         name = title,
         replyPolicy = repliesPolicy?.toModel() ?: CircleReplyPolicy.List,
+        type = id.toCircleType(),
     )
+
+private fun String.toCircleType(): CircleType =
+    when {
+        startsWith("channel:") -> CircleType.Predefined
+        startsWith("group:") -> CircleType.Group
+        else -> CircleType.UserDefined
+    }
 
 internal fun FriendicaCircle.toModel() =
     CircleModel(
