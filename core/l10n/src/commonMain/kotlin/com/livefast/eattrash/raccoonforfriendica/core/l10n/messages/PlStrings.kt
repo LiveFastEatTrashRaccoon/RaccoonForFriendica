@@ -406,4 +406,7 @@ internal val PlStrings =
             "Prywatność list obserwujących i obserwowanych"
         override val settingsAboutMatrix = "Dołącz do pokoju Matrix"
         override val settingsAutoloadImages = "Automatyczne ładowanie obrazów"
+        override val circleTypeGroup = "Grupy"
+        override val circleTypePredefined = "Kanały"
+        override val circleTypeUserDefined = "Twoje listy"
     }

@@ -361,6 +361,9 @@ interface Strings {
     val editProfileItemHideCollections: String
     val settingsAboutMatrix: String
     val settingsAutoloadImages: String
+    val circleTypeGroup: String
+    val circleTypePredefined: String
+    val circleTypeUserDefined: String
 }
 
 object Locales {

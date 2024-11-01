@@ -408,4 +408,7 @@ internal val ItStrings =
             "Rendi privati gli elenchi di seguiti e seguaci"
         override val settingsAboutMatrix = "Entra nella room Matrix"
         override val settingsAutoloadImages = "Carica immagini automaticamente"
+        override val circleTypeGroup = "Gruppi"
+        override val circleTypePredefined = "Canali"
+        override val circleTypeUserDefined = "Le tue liste"
     }

@@ -407,4 +407,7 @@ internal val DeStrings =
         override val editProfileItemHideCollections = "Follower und Followerlisten privat machen"
         override val settingsAboutMatrix = "Matrix-Raum beitreten"
         override val settingsAutoloadImages = "Bilder automatisch laden"
+        override val circleTypeGroup = "Gruppen"
+        override val circleTypePredefined = "Kanäle"
+        override val circleTypeUserDefined = "Ihre Listen"
     }

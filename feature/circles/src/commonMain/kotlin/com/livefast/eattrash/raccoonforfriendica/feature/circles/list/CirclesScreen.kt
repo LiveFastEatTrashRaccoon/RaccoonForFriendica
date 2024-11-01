@@ -53,7 +53,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.canBeEdited
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleEditorDialog
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItem
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItemPlaceholder
 import kotlinx.coroutines.flow.launchIn
@@ -186,33 +188,48 @@ class CirclesScreen : Screen {
 
                     items(
                         items = uiState.items,
-                        key = { e -> "circles-${e.id}" },
-                    ) { circle ->
-                        CircleItem(
-                            circle = circle,
-                            onClick =
-                                {
-                                    detailOpener.openCircle(circle.id)
-                                }.takeIf { circle.editable },
-                            options =
-                                buildList {
-                                    if (circle.editable) {
-                                        this += OptionId.Edit.toOption()
-                                        this += OptionId.Delete.toOption()
-                                    }
-                                },
-                            onOptionSelected = { optionId ->
-                                when (optionId) {
-                                    OptionId.Edit -> {
-                                        model.reduce(CirclesMviModel.Intent.OpenEditor(circle))
-                                    }
+                        key = { e ->
+                            when (e) {
+                                is CircleListItem.Circle -> "circles-${e.circle.id}"
+                                is CircleListItem.Header -> "circles-${e.type}"
+                            }
+                        },
+                    ) { item ->
+                        when (item) {
+                            is CircleListItem.Header ->
+                                CircleHeader(
+                                    modifier = Modifier.padding(bottom = Spacing.xs),
+                                    type = item.type,
+                                )
 
-                                    OptionId.Delete -> confirmDeleteItemId = circle.id
-                                    else -> Unit
-                                }
-                            },
-                        )
-                        Spacer(modifier = Modifier.height(Spacing.interItem))
+                            is CircleListItem.Circle -> {
+                                CircleItem(
+                                    modifier = Modifier.padding(bottom = Spacing.interItem),
+                                    circle = item.circle,
+                                    onClick =
+                                        {
+                                            detailOpener.openCircle(item.circle.id)
+                                        }.takeIf { item.circle.canBeEdited },
+                                    options =
+                                        buildList {
+                                            if (item.circle.canBeEdited) {
+                                                this += OptionId.Edit.toOption()
+                                                this += OptionId.Delete.toOption()
+                                            }
+                                        },
+                                    onOptionSelected = { optionId ->
+                                        when (optionId) {
+                                            OptionId.Edit -> {
+                                                model.reduce(CirclesMviModel.Intent.OpenEditor(item.circle))
+                                            }
+
+                                            OptionId.Delete -> confirmDeleteItemId = item.circle.id
+                                            else -> Unit
+                                        }
+                                    },
+                                )
+                            }
+                        }
                     }
 
                     item {

@@ -103,7 +103,10 @@ internal class DefaultTimelinePaginationManager(
 
                         is TimelineType.Circle ->
                             timelineRepository.getCircle(
-                                id = specification.timelineType.id,
+                                id =
+                                    specification.timelineType.circle
+                                        ?.id
+                                        .orEmpty(),
                                 pageCursor = pageCursor,
                             )
                     }?.updatePaginationData()

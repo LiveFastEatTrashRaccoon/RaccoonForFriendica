@@ -405,4 +405,7 @@ internal open class DefaultStrings : Strings {
     override val editProfileItemHideCollections = "Make following and follower lists private"
     override val settingsAboutMatrix = "Join Matrix room"
     override val settingsAutoloadImages = "Load images automatically"
+    override val circleTypeGroup = "Groups"
+    override val circleTypePredefined = "Channels"
+    override val circleTypeUserDefined = "Your lists"
 }

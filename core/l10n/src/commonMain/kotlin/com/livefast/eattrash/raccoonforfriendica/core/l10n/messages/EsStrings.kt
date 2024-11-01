@@ -408,4 +408,7 @@ internal val EsStrings =
             "Hacer privadas las listas de seguidores y seguidos"
         override val settingsAboutMatrix = "Unirse a la sala Matrix"
         override val settingsAutoloadImages = "Cargar imágenes automáticamente"
+        override val circleTypeGroup = "Grupos"
+        override val circleTypePredefined = "Canales"
+        override val circleTypeUserDefined = "Tus listas"
     }

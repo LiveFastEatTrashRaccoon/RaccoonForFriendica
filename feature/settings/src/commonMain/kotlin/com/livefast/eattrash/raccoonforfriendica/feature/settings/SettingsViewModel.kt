@@ -58,7 +58,7 @@ class SettingsViewModel(
                             this += TimelineType.Local
                         }
                     val timelineTypes =
-                        defaultTimelineTypes + circles.map { TimelineType.Circle(it.id, it.name) }
+                        defaultTimelineTypes + circles.map { TimelineType.Circle(circle = it) }
                     updateState {
                         it.copy(
                             availableTimelineTypes = timelineTypes,
@@ -113,10 +113,7 @@ class SettingsViewModel(
 
                                             when (type) {
                                                 is TimelineType.Circle ->
-                                                    type.copy(
-                                                        id = defaultCircle?.id.orEmpty(),
-                                                        name = defaultCircle?.name.orEmpty(),
-                                                    )
+                                                    type.copy(circle = defaultCircle)
 
                                                 else -> type
                                             }
@@ -306,7 +303,7 @@ class SettingsViewModel(
         val newSettings =
             currentSettings.copy(
                 defaultTimelineType = type.toInt(),
-                defaultTimelineId = (type as? TimelineType.Circle)?.id,
+                defaultTimelineId = (type as? TimelineType.Circle)?.circle?.id,
             )
         saveSettings(newSettings)
     }
