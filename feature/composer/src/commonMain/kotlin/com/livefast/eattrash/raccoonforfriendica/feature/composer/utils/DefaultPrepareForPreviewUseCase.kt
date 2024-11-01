@@ -75,6 +75,31 @@ internal class DefaultPrepareForPreviewUseCase(
                 val url = match.groups["url"]?.value.orEmpty()
                 append("<a href=\"$url\">$anchor</a>")
             }
+        }.run {
+            Regex("^# (?<title>.*?)($|\n)").substituteAllOccurrences(this) { match ->
+                val content = match.groups["title"]?.value.orEmpty()
+                append("<h1>$content</h1>")
+            }
+        }.run {
+            Regex("^## (?<title>.*?)($|\n)").substituteAllOccurrences(this) { match ->
+                val content = match.groups["title"]?.value.orEmpty()
+                append("<h2>$content</h2>")
+            }
+        }.run {
+            Regex("^### (?<title>.*?)($|\n)").substituteAllOccurrences(this) { match ->
+                val content = match.groups["title"]?.value.orEmpty()
+                append("<h3>$content</h3>")
+            }
+        }.run {
+            Regex("^#### (?<title>.*?)($|\n)").substituteAllOccurrences(this) { match ->
+                val content = match.groups["title"]?.value.orEmpty()
+                append("<h4>$content</h4>")
+            }
+        }.run {
+            Regex("^##### (?<title>.*?)($|\n)").substituteAllOccurrences(this) { match ->
+                val content = match.groups["title"]?.value.orEmpty()
+                append("<h5>$content</h5>")
+            }
         }.replace("<ul>", "\n")
             .replace("</ul>", "\n")
             .replace("<ol>", "\n")
