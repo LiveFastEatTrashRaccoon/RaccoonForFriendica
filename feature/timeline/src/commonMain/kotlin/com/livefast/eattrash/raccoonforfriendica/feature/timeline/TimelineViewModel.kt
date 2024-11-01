@@ -62,12 +62,7 @@ class TimelineViewModel(
                     val defaultTimelineType =
                         settings?.defaultTimelineType?.toTimelineType().let { type ->
                             when (type) {
-                                is TimelineType.Circle ->
-                                    type.copy(
-                                        id = defaultCircle?.id.orEmpty(),
-                                        name = defaultCircle?.name.orEmpty(),
-                                    )
-
+                                is TimelineType.Circle -> type.copy(circle = defaultCircle)
                                 else -> type
                             }
                         }
@@ -185,11 +180,11 @@ class TimelineViewModel(
                 this += TimelineType.Local
             }
         val newTimelineTypes =
-            defaultTimelineTypes + circles.map { TimelineType.Circle(it.id, it.name) }
+            defaultTimelineTypes + circles.map { TimelineType.Circle(circle = it) }
         val currentTimelineType = uiState.value.timelineType
         val newTimelineType =
             if (currentTimelineType is TimelineType.Circle) {
-                val currentCircleId = currentTimelineType.id
+                val currentCircleId = currentTimelineType.circle?.id
                 val newCircle = circles.firstOrNull { it.id == currentCircleId }
                 if (newCircle == null) {
                     // circle has been deleted
@@ -200,7 +195,7 @@ class TimelineViewModel(
                         } ?: TimelineType.Local
                 } else {
                     // circle has been renamed
-                    TimelineType.Circle(id = currentTimelineType.id, name = newCircle.name)
+                    TimelineType.Circle(newCircle)
                 }
             } else {
                 currentTimelineType
