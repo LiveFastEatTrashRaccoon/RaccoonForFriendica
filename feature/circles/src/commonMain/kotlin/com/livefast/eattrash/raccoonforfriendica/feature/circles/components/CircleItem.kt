@@ -51,7 +51,7 @@ internal fun CircleItem(
                 .then(
                     if (onClick != null) {
                         Modifier.clickable {
-                            onClick?.invoke()
+                            onClick()
                         }
                     } else {
                         Modifier
@@ -70,7 +70,7 @@ internal fun CircleItem(
         ) {
             Text(
                 text = circle.name,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground,
             )
         }
