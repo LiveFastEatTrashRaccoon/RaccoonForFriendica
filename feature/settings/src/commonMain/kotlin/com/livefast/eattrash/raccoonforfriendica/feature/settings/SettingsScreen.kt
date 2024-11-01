@@ -649,7 +649,7 @@ class SettingsScreen : Screen {
 
         if (backgroundNotificationCheckIntervalDialogOpened) {
             CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemMaxPostBodyLines,
+                title = LocalStrings.current.settingsOptionBackgroundNotificationCheck,
                 items =
                     BACKGROUND_NOTIFICATION_CHECK_INTERVALS.map {
                         CustomModalBottomSheetItem(
