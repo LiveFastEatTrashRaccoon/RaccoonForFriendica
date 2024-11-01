@@ -4,7 +4,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Cottage
 import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.Workspaces
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
@@ -17,8 +16,7 @@ sealed interface TimelineType {
     data object Local : TimelineType
 
     data class Circle(
-        val id: String,
-        val name: String,
+        val circle: CircleModel? = null,
     ) : TimelineType
 }
 
@@ -28,7 +26,7 @@ fun TimelineType.toReadableName(): String =
         TimelineType.All -> LocalStrings.current.timelineAll
         TimelineType.Subscriptions -> LocalStrings.current.timelineSubscriptions
         TimelineType.Local -> LocalStrings.current.timelineLocal
-        is TimelineType.Circle -> name
+        is TimelineType.Circle -> circle?.name.orEmpty()
     }
 
 fun TimelineType.toInt(): Int =
@@ -43,7 +41,7 @@ fun Int.toTimelineType(): TimelineType =
     when (this) {
         1 -> TimelineType.All
         2 -> TimelineType.Subscriptions
-        3 -> TimelineType.Circle("", "")
+        3 -> TimelineType.Circle()
         else -> TimelineType.Local
     }
 
@@ -53,5 +51,5 @@ fun TimelineType.toIcon(): ImageVector =
         TimelineType.All -> Icons.Default.Public
         TimelineType.Local -> Icons.Default.Cottage
         TimelineType.Subscriptions -> Icons.Default.Book
-        is TimelineType.Circle -> Icons.Default.Workspaces
+        is TimelineType.Circle -> (circle?.type ?: CircleType.Other).toIcon()
     }
