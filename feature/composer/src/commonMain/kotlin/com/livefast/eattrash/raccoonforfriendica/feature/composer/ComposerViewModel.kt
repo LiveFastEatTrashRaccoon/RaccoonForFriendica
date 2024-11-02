@@ -15,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Ti
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
@@ -109,6 +110,9 @@ class ComposerViewModel(
                 }.launchIn(this)
             val currentSettings = settingsRepository.current.value
             val nodeInfo = nodeInfoRepository.getInfo()
+            val circles =
+                circlesRepository.getAll()?.filter { it.type == CircleType.UserDefined }.orEmpty()
+            updateState { it.copy(availableCircles = circles) }
             supportedFeatureRepository.features
                 .onEach { features ->
                     updateState {
@@ -122,7 +126,7 @@ class ComposerViewModel(
                                     this += Visibility.Unlisted
                                     this += Visibility.Private
                                     this += Visibility.Direct
-                                    if (features.supportsCustomCircles) {
+                                    if (features.supportsCustomCircles && circles.isNotEmpty()) {
                                         this += Visibility.Circle()
                                     }
                                 },
@@ -143,8 +147,6 @@ class ComposerViewModel(
                 )
             }
 
-            loadAvailableCircles()
-
             val customEmojis = emojiRepository.getAll().orEmpty()
             updateState {
                 it.copy(availableEmojis = customEmojis)
@@ -158,11 +160,6 @@ class ComposerViewModel(
             entry.value.cancel()
         }
         uploadJobs.clear()
-    }
-
-    private suspend fun loadAvailableCircles() {
-        val circles = circlesRepository.getAll().orEmpty()
-        updateState { it.copy(availableCircles = circles) }
     }
 
     override fun reduce(intent: ComposerMviModel.Intent) {
