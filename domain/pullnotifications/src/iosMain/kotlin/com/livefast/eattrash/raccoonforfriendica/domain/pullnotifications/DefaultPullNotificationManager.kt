@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications
 
 class DefaultPullNotificationManager : PullNotificationManager {
-    override val isBackgroundCheckSupported = false
+    override val isSupported = false
     override val isBackgroundRestricted = false
 
     override fun setPeriod(minutes: Long) {
