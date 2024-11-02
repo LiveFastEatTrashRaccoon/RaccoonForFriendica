@@ -9,7 +9,7 @@ androidx-browser = "1.8.0"
 androidx-crypto = "1.0.0"
 androidx-media3 = "1.4.1"
 androidx-splashscreen = "1.0.1"
-androidx-sqlite = "2.5.0-alpha10"
+androidx-sqlite = "2.5.0-alpha11"
 androidx-work = "2.9.1"
 coil = "3.0.0-rc02"
 compose-colorpicker = "1.1.2"
@@ -27,7 +27,7 @@ lyricist = "1.7.0"
 materialKolor = "2.0.0"
 mokkery = "2.4.0"
 multiplatform-settings = "1.2.0"
-room = "2.7.0-alpha10"
+room = "2.7.0-alpha11"
 sentry = "0.10.0"
 stately = "2.1.0"
 turbine = "1.2.0"
@@ -49,7 +49,6 @@ coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coil" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
