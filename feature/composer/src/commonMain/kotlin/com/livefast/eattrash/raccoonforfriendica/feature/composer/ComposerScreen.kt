@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -61,9 +62,12 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTextualInfoDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
@@ -81,6 +85,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostHeader
@@ -92,7 +97,6 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InR
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InsertLinkDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.MentionsBar
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.PollForm
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SelectCircleDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -888,11 +892,27 @@ class ComposerScreen(
         }
 
         if (selectCircleDialogOpen) {
-            SelectCircleDialog(
-                circles = uiState.availableCircles,
-                onClose = { circle ->
+            CustomModalBottomSheet(
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                title = LocalStrings.current.selectCircleDialogTitle,
+                items =
+                    uiState.availableCircles.map { value ->
+                        CustomModalBottomSheetItem(
+                            label = value.name,
+                            trailingContent = {
+                                Icon(
+                                    modifier = Modifier.size(IconSize.m),
+                                    imageVector = value.type.toIcon(),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
                     selectCircleDialogOpen = false
-                    if (circle != null) {
+                    if (index != null) {
+                        val circle = uiState.availableCircles[index]
                         model.reduce(
                             ComposerMviModel.Intent.SetVisibility(
                                 Visibility.Circle(
@@ -902,7 +922,7 @@ class ComposerScreen(
                             ),
                         )
                     }
-                },
+                }
             )
         }
 
