@@ -364,6 +364,20 @@ interface Strings {
     val circleTypeGroup: String
     val circleTypePredefined: String
     val circleTypeUserDefined: String
+    val settingsItemNotificationMode: String
+    val settingsNotificationModeDisabled: String
+    val settingsNotificationModePull: String
+    val settingsNotificationModePullExplanation: String
+    val settingsNotificationModePush: String
+    val settingsNotificationModePushExplanation: String
+    val settingsItemPushNotificationState: String
+    val settingsPushNotificationStateUnsupported: String
+    val settingsPushNotificationStateInitializing: String
+    val settingsPushNotificationStateNoDistributors: String
+    val settingsPushNotificationStateNoDistributorSelected: String
+    val settingsPushNotificationStateIdle: String
+    val settingsPushNotificationStateEnabled: String
+    val experimental: String
 }
 
 object Locales {
