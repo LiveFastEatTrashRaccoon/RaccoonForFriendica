@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
@@ -13,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Acco
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.NotificationCoordinator
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,9 +30,9 @@ internal class DefaultActiveAccountMonitor(
     private val accountCredentialsCache: AccountCredentialsCache,
     private val settingsRepository: SettingsRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
-    private val inboxManager: InboxManager,
     private val contentPreloadManager: ContentPreloadManager,
     private val markerRepository: MarkerRepository,
+    private val notificationCoordinator: NotificationCoordinator,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ActiveAccountMonitor {
     private val scope = CoroutineScope(SupervisorJob() + coroutineDispatcher)
@@ -78,7 +78,7 @@ internal class DefaultActiveAccountMonitor(
 
             settingsRepository.changeCurrent(defaultSettings)
 
-            inboxManager.clearUnreadCount()
+            notificationCoordinator.setupAnonymousUser()
         } else {
             val node = account.handle.nodeName ?: defaultNode
             val credentials = accountCredentialsCache.get(account.id)
@@ -86,7 +86,7 @@ internal class DefaultActiveAccountMonitor(
             apiConfigurationRepository.setAuth(credentials)
             supportedFeatureRepository.refresh()
 
-            contentPreloadManager.preload(userRemoteId = account.remoteId)
+            contentPreloadManager.preload(account.remoteId)
 
             identityRepository.refreshCurrentUser(account.remoteId)
 
@@ -94,7 +94,7 @@ internal class DefaultActiveAccountMonitor(
             settingsRepository.changeCurrent(accountSettings)
 
             markerRepository.get(type = MarkerType.Notifications, refresh = true)
-            inboxManager.refreshUnreadCount()
+            notificationCoordinator.setupLoggedUser()
         }
     }
 
