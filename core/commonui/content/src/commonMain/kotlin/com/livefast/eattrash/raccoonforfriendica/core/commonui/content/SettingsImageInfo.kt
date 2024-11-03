@@ -43,9 +43,15 @@ fun SettingsImageInfo(
                 .fillMaxWidth()
                 .clip(
                     shape = RoundedCornerShape(CornerSize.l),
-                ).clickable {
-                    onEdit?.invoke()
-                }.padding(
+                ).then(
+                    if (onEdit != null) {
+                        Modifier.clickable {
+                            onEdit.invoke()
+                        }
+                    } else {
+                        Modifier
+                    },
+                ).padding(
                     vertical = Spacing.xs,
                     horizontal = Spacing.m,
                 ),

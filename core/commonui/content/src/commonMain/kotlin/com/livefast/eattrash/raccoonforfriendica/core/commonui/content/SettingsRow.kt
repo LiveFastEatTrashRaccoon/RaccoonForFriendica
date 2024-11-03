@@ -46,9 +46,15 @@ fun SettingsRow(
             modifier
                 .clip(
                     shape = RoundedCornerShape(CornerSize.l),
-                ).clickable {
-                    onTap?.invoke()
-                }.padding(
+                ).then(
+                    if (onTap != null) {
+                        Modifier.clickable {
+                            onTap.invoke()
+                        }
+                    } else {
+                        Modifier
+                    },
+                ).padding(
                     vertical = 10.dp,
                     horizontal = Spacing.m,
                 ),
