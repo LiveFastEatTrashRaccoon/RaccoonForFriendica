@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
@@ -190,7 +191,7 @@ internal class DefaultTimelinePaginationManager(
     private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> =
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
-        }.distinctBy { it.id }
+        }.distinctBy { it.safeKey }
 
     private fun List<TimelineEntryModel>.filterReplies(included: Boolean): List<TimelineEntryModel> =
         filter {

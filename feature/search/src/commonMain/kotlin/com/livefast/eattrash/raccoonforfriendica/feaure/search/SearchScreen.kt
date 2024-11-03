@@ -288,7 +288,7 @@ class SearchScreen : Screen {
                         key = { _, e ->
                             when (e) {
                                 is ExploreItemModel.Entry -> "search-${e.entry.safeKey}"
-                                else -> "search-{e.id}"
+                                else -> "search-${e.id}"
                             }
                         },
                     ) { idx, item ->

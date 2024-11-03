@@ -123,6 +123,7 @@ internal class DefaultSearchPaginationManager(
             }?.deduplicate()
                 ?.updatePaginationData()
                 ?.fixupCreatorEmojis()
+                ?.fixupInReplyTo()
                 .orEmpty()
         mutex.withLock {
             history.addAll(results)
