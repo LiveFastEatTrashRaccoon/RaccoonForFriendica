@@ -11,6 +11,7 @@ androidx-media3 = "1.4.1"
 androidx-splashscreen = "1.0.1"
 androidx-sqlite = "2.5.0-alpha11"
 androidx-work = "2.9.1"
+bouncycastle = "1.78.1"
 coil = "3.0.0-rc02"
 compose-colorpicker = "1.1.2"
 compose-plugin = "1.7.0"
@@ -31,6 +32,7 @@ room = "2.7.0-alpha11"
 sentry = "0.10.0"
 stately = "2.1.0"
 turbine = "1.2.0"
+unifiedpush = "2.5.0"
 voyager = "1.0.0"
 
 [libraries]
@@ -40,6 +42,8 @@ androidx-browser = { module = "androidx.browser:browser", version.ref = "android
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidx-crypto" }
 androidx-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidx-splashscreen" }
 androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
+
+bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
@@ -94,6 +98,8 @@ voyager-transition = { module = "cafe.adriel.voyager:voyager-transitions", versi
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+
+unifiedpush = { module = "org.unifiedpush.android:connector", version.ref = "unifiedpush" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

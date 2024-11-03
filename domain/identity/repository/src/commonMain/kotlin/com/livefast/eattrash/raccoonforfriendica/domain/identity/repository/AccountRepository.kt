@@ -8,6 +8,8 @@ interface AccountRepository {
 
     fun getAllAsFlow(): Flow<List<AccountModel>>
 
+    suspend fun getBy(id: Long): AccountModel?
+
     suspend fun getBy(handle: String): AccountModel?
 
     suspend fun getActive(): AccountModel?
@@ -20,6 +22,8 @@ interface AccountRepository {
         account: AccountModel,
         active: Boolean,
     )
+
+    suspend fun update(account: AccountModel)
 
     suspend fun delete(account: AccountModel)
 }

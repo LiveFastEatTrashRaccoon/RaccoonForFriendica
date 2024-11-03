@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 class DefaultPullNotificationManager(
     private val context: Context,
 ) : PullNotificationManager {
-    override val isBackgroundCheckSupported = true
+    override val isSupported = true
     override val isBackgroundRestricted: Boolean
         get() =
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
@@ -30,6 +30,12 @@ class DefaultPullNotificationManager(
         get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val activityManager: ActivityManager
         get() = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    private val constraints: Constraints
+        get() =
+            Constraints
+                .Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
     override fun setPeriod(minutes: Long) {
         intervalMinutes = minutes
@@ -39,33 +45,19 @@ class DefaultPullNotificationManager(
         WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
 
         createNotificationChannel()
-
-        val constraints =
-            Constraints
-                .Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
-
         // check immediately with an expedited one-time request
+        oneshotCheck()
+
+        // schedule periodic subsequent checks
+        periodicCheck()
+    }
+
+    override fun oneshotCheck() {
         OneTimeWorkRequestBuilder<CheckNotificationWorker>()
             .addTag(TAG)
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .setConstraints(constraints)
             .build()
-            .also { req ->
-                WorkManager.getInstance(context).enqueue(req)
-            }
-
-        // schedule periodic subsequent checks
-        PeriodicWorkRequestBuilder<CheckNotificationWorker>(
-            repeatInterval = intervalMinutes,
-            repeatIntervalTimeUnit = TimeUnit.MINUTES,
-        ).addTag(TAG)
-            .setConstraints(constraints)
-            .setInitialDelay(
-                duration = 5,
-                timeUnit = TimeUnit.MINUTES,
-            ).build()
             .also { req ->
                 WorkManager.getInstance(context).enqueue(req)
             }
@@ -91,6 +83,21 @@ class DefaultPullNotificationManager(
                 description = descriptionText
             }
         notificationManager.createNotificationChannel(channel)
+    }
+
+    private fun periodicCheck() {
+        PeriodicWorkRequestBuilder<CheckNotificationWorker>(
+            repeatInterval = intervalMinutes,
+            repeatIntervalTimeUnit = TimeUnit.MINUTES,
+        ).addTag(TAG)
+            .setConstraints(constraints)
+            .setInitialDelay(
+                duration = 5,
+                timeUnit = TimeUnit.MINUTES,
+            ).build()
+            .also { req ->
+                WorkManager.getInstance(context).enqueue(req)
+            }
     }
 
     companion object {

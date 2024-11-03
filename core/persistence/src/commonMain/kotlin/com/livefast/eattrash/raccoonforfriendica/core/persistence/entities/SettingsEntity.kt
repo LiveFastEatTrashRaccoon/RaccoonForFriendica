@@ -25,6 +25,7 @@ data class SettingsEntity(
     @ColumnInfo(defaultValue = "1") val markupMode: Int = 1,
     @ColumnInfo(defaultValue = "0") val maxPostBodyLines: Int = 0,
     val defaultTimelineId: String? = null,
+    @ColumnInfo(defaultValue = "0") val notificationMode: Int = 0,
     val pullNotificationCheckInterval: Long? = null,
     @ColumnInfo(defaultValue = "1") val autoloadImages: Boolean = true,
 )

@@ -50,6 +50,7 @@ include(":domain:identity:data")
 include(":domain:identity:repository")
 include(":domain:identity:usecase")
 include(":domain:pullnotifications")
+include(":domain:pushnotifications")
 include(":domain:urlhandler")
 
 include(":feature:calendar")

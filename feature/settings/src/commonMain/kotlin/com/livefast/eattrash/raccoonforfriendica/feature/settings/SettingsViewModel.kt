@@ -19,11 +19,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibilit
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManagerState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -39,12 +42,37 @@ class SettingsViewModel(
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val circlesRepository: CirclesRepository,
     private val pullNotificationManager: PullNotificationManager,
+    private val pushNotificationManager: PushNotificationManager,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
     SettingsMviModel {
     init {
         screenModelScope.launch {
+            val supportsPushNotifications =
+                pushNotificationManager.state.value != PushNotificationManagerState.Unsupported
+            val supportsPullNotifications = pullNotificationManager.isSupported
+            val pushDistributors = pushNotificationManager.getAvailableDistributors()
+            val supportsDynamicColors = colorSchemeProvider.supportsDynamicColors
+            updateState {
+                it.copy(
+                    supportsNotifications = supportsPullNotifications || supportsPushNotifications,
+                    availableNotificationModes =
+                        buildList {
+                            if (supportsPushNotifications) {
+                                this += NotificationMode.Push
+                            }
+                            if (supportsPullNotifications) {
+                                this += NotificationMode.Pull
+                            }
+                            this += NotificationMode.Disabled
+                        },
+                    availablePushDistributors = pushDistributors,
+                    supportsDynamicColors = supportsDynamicColors,
+                    availableThemeColors = themeColorRepository.getColors(),
+                )
+            }
+
             identityRepository.currentUser
                 .onEach { currentUser ->
                     val circles = circlesRepository.getAll().orEmpty()
@@ -59,21 +87,23 @@ class SettingsViewModel(
                         }
                     val timelineTypes =
                         defaultTimelineTypes + circles.map { TimelineType.Circle(circle = it) }
+
                     updateState {
                         it.copy(
                             availableTimelineTypes = timelineTypes,
                             isLogged = isLogged,
-                            supportsBackgroundNotificationCheck = pullNotificationManager.isBackgroundCheckSupported,
-                            isBackgroundNotificationCheckRestricted = pullNotificationManager.isBackgroundRestricted,
+                            pullNotificationsRestricted = pullNotificationManager.isBackgroundRestricted,
                         )
                     }
                 }.launchIn(this)
+
             l10nManager.lyricist.state
                 .onEach { state ->
                     updateState {
                         it.copy(lang = state.languageTag)
                     }
                 }.launchIn(this)
+
             themeRepository.theme
                 .onEach { theme ->
                     updateState {
@@ -98,6 +128,7 @@ class SettingsViewModel(
                         it.copy(themeColor = seedColor)
                     }
                 }.launchIn(this)
+
             settingsRepository.current
                 .onEach { settings ->
                     if (settings != null) {
@@ -129,10 +160,12 @@ class SettingsViewModel(
                                 maxPostBodyLines = settings.maxPostBodyLines,
                                 backgroundNotificationCheckInterval = settings.pullNotificationCheckInterval,
                                 autoloadImages = settings.autoloadImages,
+                                notificationMode = settings.notificationMode,
                             )
                         }
                     }
                 }.launchIn(this)
+
             supportedFeatureRepository.features
                 .onEach { features ->
                     updateState {
@@ -159,13 +192,10 @@ class SettingsViewModel(
                     }
                 }.launchIn(this)
 
-            val supportsDynamicColors = colorSchemeProvider.supportsDynamicColors
-            updateState {
-                it.copy(
-                    supportsDynamicColors = supportsDynamicColors,
-                    availableThemeColors = themeColorRepository.getColors(),
-                )
-            }
+            pushNotificationManager.state
+                .onEach { state ->
+                    updateState { it.copy(pushNotificationState = state) }
+                }.launchIn(this)
         }
     }
 
@@ -259,6 +289,18 @@ class SettingsViewModel(
                 screenModelScope.launch {
                     changeAutoloadImages(intent.value)
                 }
+
+            is SettingsMviModel.Intent.ChangeNotificationMode -> {
+                screenModelScope.launch {
+                    changeNotificationMode(intent.mode)
+                }
+            }
+
+            is SettingsMviModel.Intent.SelectPushDistributor -> {
+                screenModelScope.launch {
+                    selectPushDistributor(intent.value)
+                }
+            }
         }
     }
 
@@ -377,5 +419,16 @@ class SettingsViewModel(
     private suspend fun saveSettings(newSettings: SettingsModel) {
         settingsRepository.update(newSettings)
         settingsRepository.changeCurrent(newSettings)
+    }
+
+    private suspend fun changeNotificationMode(mode: NotificationMode) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(notificationMode = mode)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun selectPushDistributor(distributor: String) {
+        pushNotificationManager.saveDistributor(distributor)
+        pushNotificationManager.enable()
     }
 }

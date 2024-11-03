@@ -63,8 +63,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManagerState
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.toReadableName
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
@@ -91,6 +94,8 @@ class SettingsScreen : Screen {
         var markupModeBottomSheetOpened by remember { mutableStateOf(false) }
         var maxPostBodyLinesBottomSheetOpened by remember { mutableStateOf(false) }
         var backgroundNotificationCheckIntervalDialogOpened by remember { mutableStateOf(false) }
+        var notificationModeBottomSheetOpened by remember { mutableStateOf(false) }
+        var pushNotificationDistributorBottomSheetOpened by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -219,27 +224,46 @@ class SettingsScreen : Screen {
                             },
                         )
 
-                        if (uiState.isLogged && uiState.supportsBackgroundNotificationCheck) {
+                        if (uiState.isLogged && uiState.supportsNotifications) {
                             SettingsRow(
-                                title = LocalStrings.current.settingsOptionBackgroundNotificationCheck,
-                                subtitle =
-                                    if (uiState.isBackgroundNotificationCheckRestricted) {
-                                        LocalStrings.current.settingsSubtitleBackgroundNotificationRestricted
-                                    } else {
-                                        LocalStrings.current.settingsSubtitleBackgroundNotificationNotRestricted
-                                    },
-                                value =
-                                    uiState.backgroundNotificationCheckInterval?.getPrettyDuration(
-                                        secondsLabel = LocalStrings.current.timeSecondShort,
-                                        minutesLabel = LocalStrings.current.timeMinuteShort,
-                                        hoursLabel = LocalStrings.current.timeHourShort,
-                                        daysLabel = LocalStrings.current.dateDayShort,
-                                        finePrecision = false,
-                                    ) ?: LocalStrings.current.durationNever,
+                                title = LocalStrings.current.settingsItemNotificationMode,
+                                value = uiState.notificationMode.toReadableName(),
                                 onTap = {
-                                    backgroundNotificationCheckIntervalDialogOpened = true
+                                    notificationModeBottomSheetOpened = true
                                 },
                             )
+                            if (uiState.notificationMode == NotificationMode.Pull) {
+                                SettingsRow(
+                                    title = LocalStrings.current.settingsOptionBackgroundNotificationCheck,
+                                    subtitle =
+                                        if (uiState.pullNotificationsRestricted) {
+                                            LocalStrings.current.settingsSubtitleBackgroundNotificationRestricted
+                                        } else {
+                                            LocalStrings.current.settingsSubtitleBackgroundNotificationNotRestricted
+                                        },
+                                    value =
+                                        uiState.backgroundNotificationCheckInterval?.getPrettyDuration(
+                                            secondsLabel = LocalStrings.current.timeSecondShort,
+                                            minutesLabel = LocalStrings.current.timeMinuteShort,
+                                            hoursLabel = LocalStrings.current.timeHourShort,
+                                            daysLabel = LocalStrings.current.dateDayShort,
+                                            finePrecision = false,
+                                        ) ?: LocalStrings.current.durationNever,
+                                    onTap = {
+                                        backgroundNotificationCheckIntervalDialogOpened = true
+                                    },
+                                )
+                            }
+                            if (uiState.notificationMode == NotificationMode.Push) {
+                                SettingsRow(
+                                    title = LocalStrings.current.settingsItemPushNotificationState,
+                                    value = uiState.pushNotificationState.toReadableName(),
+                                    onTap =
+                                        {
+                                            pushNotificationDistributorBottomSheetOpened = true
+                                        }.takeIf { uiState.pushNotificationState == PushNotificationManagerState.NoDistributorSelected },
+                                )
+                            }
                         }
 
                         SettingsHeader(
@@ -672,6 +696,58 @@ class SettingsScreen : Screen {
                                 value,
                             ),
                         )
+                    }
+                },
+            )
+        }
+
+        if (notificationModeBottomSheetOpened) {
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemNotificationMode,
+                items =
+                    uiState.availableNotificationModes.map {
+                        CustomModalBottomSheetItem(
+                            label = it.toReadableName(),
+                            trailingContent = {
+                                Text(
+                                    text =
+                                        when (it) {
+                                            NotificationMode.Disabled -> ""
+                                            NotificationMode.Pull -> LocalStrings.current.settingsNotificationModePullExplanation
+                                            NotificationMode.Push ->
+                                                buildString {
+                                                    append(LocalStrings.current.settingsNotificationModePushExplanation)
+                                                    append(" (")
+                                                    append(LocalStrings.current.experimental)
+                                                    append(")")
+                                                }
+                                        },
+                                )
+                            },
+                        )
+                    },
+                onSelected = { index ->
+                    notificationModeBottomSheetOpened = false
+                    if (index != null) {
+                        val mode = uiState.availableNotificationModes[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeNotificationMode(mode))
+                    }
+                },
+            )
+        }
+
+        if (pushNotificationDistributorBottomSheetOpened) {
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsPushNotificationStateNoDistributorSelected,
+                items =
+                    uiState.availablePushDistributors.map {
+                        CustomModalBottomSheetItem(label = it)
+                    },
+                onSelected = { index ->
+                    pushNotificationDistributorBottomSheetOpened = false
+                    if (index != null) {
+                        val distributor = uiState.availablePushDistributors[index]
+                        model.reduce(SettingsMviModel.Intent.SelectPushDistributor(distributor))
                     }
                 },
             )

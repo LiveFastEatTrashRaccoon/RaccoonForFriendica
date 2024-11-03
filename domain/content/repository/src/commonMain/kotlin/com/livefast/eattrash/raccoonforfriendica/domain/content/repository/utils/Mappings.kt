@@ -56,6 +56,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
@@ -301,6 +302,14 @@ internal fun NotificationTypeDto.toModel(): NotificationType =
         NotificationTypeDto.UPDATE -> NotificationType.Update
         else -> NotificationType.Unknown
     }
+
+internal fun NotificationPolicy.toDto(): String =
+    when (this) {
+        NotificationPolicy.All -> "all"
+        NotificationPolicy.Followed -> "followed"
+        NotificationPolicy.Follower -> "follower"
+        NotificationPolicy.None -> "none"
+}
 
 internal fun Notification.toModel() =
     NotificationModel(

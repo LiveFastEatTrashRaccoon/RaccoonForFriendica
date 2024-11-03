@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.SettingsEntity
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toUrlOpeningMode
@@ -59,6 +60,7 @@ private fun SettingsEntity.toModel() =
         markupMode = markupMode.toMarkupMode(),
         maxPostBodyLines = maxPostBodyLines.toDomainMaxLines(),
         defaultTimelineId = defaultTimelineId,
+        notificationMode = notificationMode.toNotificationMode(),
         pullNotificationCheckInterval = pullNotificationCheckInterval?.seconds,
         autoloadImages = autoloadImages,
     )
@@ -84,6 +86,7 @@ private fun SettingsModel.toEntity() =
         markupMode = markupMode.toInt(),
         maxPostBodyLines = maxPostBodyLines.toEntityMaxLines(),
         defaultTimelineId = defaultTimelineId,
+        notificationMode = notificationMode.toInt(),
         pullNotificationCheckInterval = pullNotificationCheckInterval?.inWholeSeconds,
         autoloadImages = autoloadImages,
     )
@@ -115,4 +118,18 @@ private fun Int.toEntityMaxLines(): Int =
     when (this) {
         Int.MAX_VALUE -> 0
         else -> this
+    }
+
+private fun Int.toNotificationMode(): NotificationMode =
+    when (this) {
+        1 -> NotificationMode.Pull
+        2 -> NotificationMode.Push
+        else -> NotificationMode.Disabled
+    }
+
+private fun NotificationMode.toInt() =
+    when (this) {
+        NotificationMode.Pull -> 1
+        NotificationMode.Push -> 2
+        else -> 0
     }

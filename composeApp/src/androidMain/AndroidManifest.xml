@@ -57,6 +57,21 @@
                 android:name="photopicker_activity:0:required"
                 android:value="" />
         </service>
+
+        <!-- UnifiedPush receiver -->
+        <receiver
+            android:name="com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.receiver.UnifiedPushBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="org.unifiedpush.android.connector.MESSAGE" />
+                <action android:name="org.unifiedpush.android.connector.UNREGISTERED" />
+                <action android:name="org.unifiedpush.android.connector.NEW_ENDPOINT" />
+                <action android:name="org.unifiedpush.android.connector.REGISTRATION_FAILED" />
+                <action android:name="org.unifiedpush.android.connector.REGISTRATION_REFUSED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

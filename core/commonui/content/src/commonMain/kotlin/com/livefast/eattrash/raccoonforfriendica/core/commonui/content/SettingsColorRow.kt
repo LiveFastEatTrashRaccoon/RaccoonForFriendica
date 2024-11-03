@@ -38,9 +38,15 @@ fun SettingsColorRow(
             modifier
                 .clip(
                     shape = RoundedCornerShape(CornerSize.l),
-                ).clickable {
-                    onTap?.invoke()
-                }.padding(vertical = Spacing.s, horizontal = Spacing.m),
+                ).then(
+                    if (onTap != null) {
+                        Modifier.clickable {
+                            onTap.invoke()
+                        }
+                    } else {
+                        Modifier
+                    },
+                ).padding(vertical = Spacing.s, horizontal = Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(

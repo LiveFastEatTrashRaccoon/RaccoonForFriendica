@@ -83,19 +83,32 @@ class DefaultAccountRepositoryTest {
         }
 
     @Test
-    fun `given existing account when getBy then result is as expected`() =
+    fun `given existing account when getBy ID then result is as expected`() =
+        runTest {
+            val id = 1L
+            val handle = "account1@example.org"
+            everySuspend { accountDao.getBy(id = any()) } returns
+                AccountEntity(
+                    id = id,
+                    handle = handle,
+                )
+            val account = AccountModel(id = id, handle = handle)
+
+            val res = sut.getBy(id)
+
+            assertEquals(account, res)
+            verifySuspend {
+                accountDao.getBy(id)
+            }
+        }
+
+    @Test
+    fun `given existing account when getBy handle then result is as expected`() =
         runTest {
             val handle = "account1@example.org"
-            everySuspend { accountDao.getBy(any()) } returns
-                AccountEntity(
-                    id = 1,
-                    handle = handle,
-                )
-            val account =
-                AccountModel(
-                    id = 1,
-                    handle = handle,
-                )
+            everySuspend { accountDao.getBy(handle = any()) } returns
+                AccountEntity(id = 1, handle = handle)
+            val account = AccountModel(id = 1, handle = handle)
 
             val res = sut.getBy(handle)
 
@@ -109,17 +122,9 @@ class DefaultAccountRepositoryTest {
     fun `given currently account when getActive then result is as expected`() =
         runTest {
             everySuspend { accountDao.getActive() } returns
-                AccountEntity(
-                    id = 1,
-                    handle = "account1@example.org",
-                    active = true,
-                )
+                AccountEntity(id = 1, handle = "account1@example.org", active = true)
             val account =
-                AccountModel(
-                    id = 1,
-                    handle = "account1@example.org",
-                    active = true,
-                )
+                AccountModel(id = 1, handle = "account1@example.org", active = true)
 
             val res = sut.getActive()
 
@@ -148,19 +153,11 @@ class DefaultAccountRepositoryTest {
             everySuspend { accountDao.getActiveAsFlow() } returns
                 flowOf(
                     listOf(
-                        AccountEntity(
-                            id = 1,
-                            handle = "account1@example.org",
-                            active = true,
-                        ),
+                        AccountEntity(id = 1, handle = "account1@example.org", active = true),
                     ),
                 )
             val account =
-                AccountModel(
-                    id = 1,
-                    handle = "account1@example.org",
-                    active = true,
-                )
+                AccountModel(id = 1, handle = "account1@example.org", active = true)
 
             sut.getActiveAsFlow().test {
                 val res = awaitItem()
@@ -176,18 +173,12 @@ class DefaultAccountRepositoryTest {
     fun `when create then interactions are as expected`() =
         runTest {
             val account =
-                AccountModel(
-                    id = 1,
-                    handle = "account1@example.org",
-                )
+                AccountModel(id = 1, handle = "account1@example.org")
             sut.create(account)
 
             verifySuspend {
                 accountDao.insert(
-                    AccountEntity(
-                        id = 1,
-                        handle = "account1@example.org",
-                    ),
+                    AccountEntity(id = 1, handle = "account1@example.org"),
                 )
             }
         }
@@ -196,18 +187,12 @@ class DefaultAccountRepositoryTest {
     fun `when delete then interactions are as expected`() =
         runTest {
             val account =
-                AccountModel(
-                    id = 1,
-                    handle = "account1@example.org",
-                )
+                AccountModel(id = 1, handle = "account1@example.org")
             sut.delete(account)
 
             verifySuspend {
                 accountDao.delete(
-                    AccountEntity(
-                        id = 1,
-                        handle = "account1@example.org",
-                    ),
+                    AccountEntity(id = 1, handle = "account1@example.org"),
                 )
             }
         }
@@ -216,17 +201,9 @@ class DefaultAccountRepositoryTest {
     fun `given currently account when setActive true then interactions is as expected`() =
         runTest {
             everySuspend { accountDao.getActive() } returns
-                AccountEntity(
-                    id = 1,
-                    handle = "account1@example.org",
-                    active = true,
-                )
+                AccountEntity(id = 1, handle = "account1@example.org", active = true)
             val account =
-                AccountModel(
-                    id = 2,
-                    handle = "account2@example.org",
-                    active = true,
-                )
+                AccountModel(id = 2, handle = "account2@example.org", active = true)
 
             sut.setActive(account, true)
 
@@ -234,17 +211,9 @@ class DefaultAccountRepositoryTest {
                 accountDao.getActive()
                 accountDao.replaceActive(
                     old =
-                        AccountEntity(
-                            id = 1,
-                            handle = "account1@example.org",
-                            active = false,
-                        ),
+                        AccountEntity(id = 1, handle = "account1@example.org", active = false),
                     new =
-                        AccountEntity(
-                            id = 2,
-                            handle = "account2@example.org",
-                            active = true,
-                        ),
+                        AccountEntity(id = 2, handle = "account2@example.org", active = true),
                 )
             }
         }
@@ -253,26 +222,16 @@ class DefaultAccountRepositoryTest {
     fun `given currently account when setActive false then interactions is as expected`() =
         runTest {
             everySuspend { accountDao.getActive() } returns
-                AccountEntity(
-                    id = 1,
-                    handle = "account1@example.org",
-                    active = true,
-                )
+                AccountEntity(id = 1, handle = "account1@example.org", active = true)
             val account =
-                AccountModel(
-                    id = 1,
-                    handle = "account1@example.org",
-                )
+                AccountModel(id = 1, handle = "account1@example.org")
 
             sut.setActive(account, false)
 
             verifySuspend {
                 accountDao.getActive()
                 accountDao.update(
-                    AccountEntity(
-                        id = 1,
-                        handle = "account1@example.org",
-                    ),
+                    AccountEntity(id = 1, handle = "account1@example.org"),
                 )
             }
         }
@@ -282,21 +241,14 @@ class DefaultAccountRepositoryTest {
         runTest {
             everySuspend { accountDao.getActive() } returns null
             val account =
-                AccountModel(
-                    id = 1,
-                    handle = "account1@example.org",
-                )
+                AccountModel(id = 1, handle = "account1@example.org")
 
             sut.setActive(account, true)
 
             verifySuspend {
                 accountDao.getActive()
                 accountDao.update(
-                    AccountEntity(
-                        id = 1,
-                        handle = "account1@example.org",
-                        active = true,
-                    ),
+                    AccountEntity(id = 1, handle = "account1@example.org", active = true),
                 )
             }
         }
@@ -306,20 +258,14 @@ class DefaultAccountRepositoryTest {
         runTest {
             everySuspend { accountDao.getActive() } returns null
             val account =
-                AccountModel(
-                    id = 1,
-                    handle = "account1@example.org",
-                )
+                AccountModel(id = 1, handle = "account1@example.org")
 
             sut.setActive(account, false)
 
             verifySuspend {
                 accountDao.getActive()
                 accountDao.update(
-                    AccountEntity(
-                        id = 1,
-                        handle = "account1@example.org",
-                    ),
+                    AccountEntity(id = 1, handle = "account1@example.org"),
                 )
             }
         }

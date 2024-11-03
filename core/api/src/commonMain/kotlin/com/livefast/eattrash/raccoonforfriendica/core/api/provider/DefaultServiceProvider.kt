@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationSe
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoAlbumService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PollService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.PushService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ReportService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.SearchService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.StatusService
@@ -31,6 +32,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.createNotifica
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoAlbumService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPollService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPushService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createReportService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createSearchService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createStatusService
@@ -80,6 +82,7 @@ internal class DefaultServiceProvider(
     override lateinit var photo: PhotoService
     override lateinit var photoAlbum: PhotoAlbumService
     override lateinit var polls: PollService
+    override lateinit var push: PushService
     override lateinit var reports: ReportService
     override lateinit var search: SearchService
     override lateinit var statuses: StatusService
@@ -178,6 +181,7 @@ internal class DefaultServiceProvider(
         photo = ktorfit.createPhotoService()
         photoAlbum = ktorfit.createPhotoAlbumService()
         polls = ktorfit.createPollService()
+        push = ktorfit.createPushService()
         reports = ktorfit.createReportService()
         search = ktorfit.createSearchService()
         statuses = ktorfit.createStatusService()

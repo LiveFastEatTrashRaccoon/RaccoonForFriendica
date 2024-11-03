@@ -64,9 +64,9 @@ val domainIdentityUseCaseModule =
                 settingsRepository = get(),
                 accountCredentialsCache = get(),
                 supportedFeatureRepository = get(),
-                inboxManager = get(),
                 contentPreloadManager = get(),
                 markerRepository = get(),
+                notificationCoordinator = get(),
             )
         }
         single<EntryActionRepository> {

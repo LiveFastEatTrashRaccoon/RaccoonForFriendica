@@ -20,6 +20,9 @@ abstract class AccountDao {
     @Query("SELECT * FROM AccountEntity")
     abstract fun getAllAsFlow(): Flow<List<AccountEntity>>
 
+    @Query("SELECT * FROM AccountEntity WHERE id = :id")
+    abstract suspend fun getBy(id: Long): AccountEntity?
+
     @Query("SELECT * FROM AccountEntity WHERE handle = :handle")
     abstract suspend fun getBy(handle: String): AccountEntity?
 

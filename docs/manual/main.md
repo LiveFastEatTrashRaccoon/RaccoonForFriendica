@@ -329,7 +329,7 @@ a link will either open the external browser or custom tabs depending on the "UR
 option selected in the [app settings](#application-settings).
 
 <p id="hashtag-usage-disclaimer">
-  * note that on different backends the number or days may vary from 1 (single point) to more
+  * note that on different backends the number or days may vary from 1 to 7 days depending on the server
 </p>
 
 <div align="center">
@@ -550,8 +550,17 @@ sections:
     i.e. no markup — BBCode — Friendica-specific — HTML or Markdown — Mastodon specific);*
   - **Max post body lines** configures the maximum number of lines for posts which will be shown in
     feeds;
-  - **Check for notifications in background** configures the time interval between background checks
-    for incoming notifications;
+  - **Notification mode** allows to configure the notification strategy among the following values:
+    - **Push** receive push notifications using
+      UnifiedPush;<a href="#notifications-unifiedpush">*</a>
+    - **Pull** periodically check in background for incoming
+      notifications;<a href="#notifications-background-check">**</a>
+    - **Disabled** no notification will be received;
+  - **Push notification state** displays the state of the UnifiedPush integration (e.g. "Enabled"
+    or "Initializing…", if more than a distributor is available on the device the "Select
+    distribution" value will allow to open a bottom sheet to pick one);
+  - **Check for notifications in background** (if "Pull" strategy selected) configures the time
+    interval between background checks for incoming notifications;
 - **Look & Feel**
   - **UI theme** configures the color theme (light, dark or dark optimized for AMOLED screens);
   - **Font family** configures the font used in the UI;
@@ -563,6 +572,18 @@ sections:
   - **Include NSFW contents** configures a client-side filter to exclude sensitive posts;
   - **Blur NSFW media** allows, if sensitive contents are included, to blur images and hide videos
     when they occur in timelines.
+
+<p id="notifications-unifiedpush">
+  * in order for UnifiedPush to work, a distributor must be installed on your device, e.g.
+<a href="https://unifiedpush.org/users/distributors/nextpush/">NextPush</a> and configured with the
+corresponding server-side Nextpush app where you have, in turn, registered and paired with the
+remote account you are currently using on your instance 
+</p>
+
+<p id="notifications-background-check">
+  ** in order to this to work, the application must not have any restriction for background activity,
+so please make sure the battery saving restrictions for Raccoon in your system settigs
+</p>
 
 <div align="center">
   <img width="310" alt="edit profile screen" src="images/settings.png" />
