@@ -11,7 +11,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManagerState
 import kotlin.time.Duration
 
 @Stable
@@ -90,6 +92,14 @@ interface SettingsMviModel :
         data class ChangeAutoloadImages(
             val value: Boolean,
         ) : Intent
+
+        data class ChangeNotificationMode(
+            val mode: NotificationMode,
+        ) : Intent
+
+        data class SelectPushDistributor(
+            val value: String,
+        ) : Intent
     }
 
     data class State(
@@ -115,9 +125,13 @@ interface SettingsMviModel :
         val markupMode: MarkupMode = MarkupMode.HTML,
         val availableMarkupModes: List<MarkupMode> = emptyList(),
         val maxPostBodyLines: Int = Int.MAX_VALUE,
-        val supportsBackgroundNotificationCheck: Boolean = false,
-        val isBackgroundNotificationCheckRestricted: Boolean = false,
+        val supportsNotifications: Boolean = false,
+        val notificationMode: NotificationMode = NotificationMode.Disabled,
+        val availableNotificationModes: List<NotificationMode> = emptyList(),
+        val pullNotificationsRestricted: Boolean = false,
+        val pushNotificationState: PushNotificationManagerState = PushNotificationManagerState.Unsupported,
         val backgroundNotificationCheckInterval: Duration? = null,
+        val availablePushDistributors: List<String> = emptyList(),
         val autoloadImages: Boolean = true,
     )
 
