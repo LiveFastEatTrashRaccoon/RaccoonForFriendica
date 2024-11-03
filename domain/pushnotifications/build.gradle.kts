@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.mokkery)
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -21,48 +22,50 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "feature.settings"
+            baseName = "domain.pushnotifications"
             isStatic = true
         }
     }
 
     sourceSets {
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.bouncycastle)
+                implementation(libs.unifiedpush)
+            }
+        }
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.material3)
-                implementation(compose.materialIconsExtended)
 
                 implementation(libs.koin.core)
-                implementation(libs.voyager.screenmodel)
-                implementation(libs.voyager.koin)
-                implementation(libs.lyricist)
+                implementation(libs.ktor.client.core)
 
+                implementation(projects.core.api)
                 implementation(projects.core.appearance)
-                implementation(projects.core.architecture)
-                implementation(projects.core.commonui.components)
-                implementation(projects.core.commonui.content)
                 implementation(projects.core.l10n)
-                implementation(projects.core.navigation)
-                implementation(projects.core.resources)
+                implementation(projects.core.persistence)
+                implementation(projects.core.preferences)
                 implementation(projects.core.utils)
 
                 implementation(projects.domain.content.data)
                 implementation(projects.domain.content.repository)
                 implementation(projects.domain.identity.data)
                 implementation(projects.domain.identity.repository)
-                implementation(projects.domain.identity.usecase)
                 implementation(projects.domain.pullnotifications)
-                implementation(projects.domain.pushnotifications)
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
     }
 }
 
 android {
-    namespace = "com.livefast.eattrash.raccoonforfriendica.feature.settings"
+    namespace = "com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications"
     compileSdk =
         libs.versions.android.targetSdk
             .get()
