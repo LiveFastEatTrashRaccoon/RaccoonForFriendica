@@ -31,7 +31,6 @@ val domainUrlHandlerModule =
         }
         single<HashtagProcessor> {
             DefaultHashtagProcessor(
-                apiConfigurationRepository = get(),
                 detailOpener = get(),
             )
         }
