@@ -16,6 +16,7 @@ interface LoginMviModel :
     }
 
     data class State(
+        val useDropDown: Boolean = true,
         val nodeName: String = "",
         val nodeNameError: ValidationError? = null,
         val loading: Boolean = false,
