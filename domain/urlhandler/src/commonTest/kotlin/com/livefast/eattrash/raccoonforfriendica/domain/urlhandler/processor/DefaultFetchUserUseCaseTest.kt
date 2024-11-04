@@ -25,9 +25,9 @@ class DefaultFetchUserUseCaseTest {
     @Test
     fun `given user found when invoke then result is as expected`() =
         runTest {
-            val user = UserModel(id = "0", username = USERNAME)
-            everySuspend { userRepository.getByHandle(any()) } returns user
             val handle = "$USERNAME@$HOST.com"
+            val user = UserModel(id = "0", username = USERNAME, handle = handle)
+            everySuspend { userRepository.getByHandle(any()) } returns user
 
             val res = sut.invoke(handle)
 
@@ -52,13 +52,28 @@ class DefaultFetchUserUseCaseTest {
         }
 
     @Test
+    fun `given user handle not matching when invoke then result is as expected`() =
+        runTest {
+            val handle = "$USERNAME@$HOST.com"
+            val user = UserModel(id = "0", username = USERNAME, handle = "")
+            everySuspend { userRepository.getByHandle(any()) } returns user
+
+            val res = sut.invoke(handle)
+
+            assertNull(res)
+            verifySuspend {
+                userRepository.getByHandle(handle)
+            }
+        }
+
+    @Test
     fun `given request timeout when invoke then result is as expected`() =
         runTest {
+            val handle = "$USERNAME@$HOST.com"
             everySuspend { userRepository.getByHandle(any()) } calls {
                 delay(10.seconds)
-                UserModel(id = "0", username = USERNAME)
+                UserModel(id = "0", username = USERNAME, handle = handle)
             }
-            val handle = "$USERNAME@$HOST.com"
 
             val res = sut.invoke(handle)
 
