@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.SharedFlow
 interface AuthManager {
     val credentialFlow: SharedFlow<ApiCredentials>
 
-    fun openLogin()
+    fun openLogin(type: LoginType)
 
     fun openLegacyLogin()
 

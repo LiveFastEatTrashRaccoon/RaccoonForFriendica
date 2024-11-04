@@ -77,7 +77,7 @@ internal val ItStrings =
         override val themeColorGray = "Procione pasticcione"
         override val themeColorWhite = "Orso originale"
         override val messageUserUnlogged = "È necessario effettuare il login per poter accedere a questa sezione 🪵"
-        override val loginTitle = "Login"
+        override val buttonLogin = "Login"
         override val fieldNodeName = "Nome istanza"
         override val fieldUsername = "Username"
         override val fieldPassword = "Password"
@@ -176,9 +176,7 @@ internal val ItStrings =
         override val manageBlocksSectionBlocked = "Bloccati"
         override val actionBlock = "Blocca"
         override val actionUnblock = "Sblocca"
-        override val messageLoginOAuth = "Login con OAuth2 (consigliato)"
-        override val or = "oppure"
-        override val messageLoginLegacy = "Login con username e password (legacy)"
+        override val loginMethodBasic = "legacy"
         override val actionPin = "Fissa sul profilo"
         override val actionUnpin = "Togli dal profilo"
         override val settingsSectionDebug = "Debug"
@@ -425,4 +423,16 @@ internal val ItStrings =
         override val settingsPushNotificationStateIdle = "Inattivo"
         override val settingsPushNotificationStateEnabled = "Attivo"
         override val experimental = "sperimentale"
+        override val loginTitle = "🦝 Benvenuto/a! 🦝"
+        override val loginSubtitle =
+            "Accedi a un'istanza per iniziare a seguire altre persone, creare nuovi post o risposte e gestire i preferiti o i segnalibri."
+        override val moreInfo = "Scopri di più"
+        override val loginMoreInfoBottomSheetContent =
+            "Il flusso di login inizierà nell'app selezionando l'istanza, dopodiché si continuerà il flusso OAuth2 in un browser web." +
+                "\n\nSe non hai ancora un account, scegli un'istanza e registrati prima nel browser."
+        override val loginFriendicaHeader = "Sono su Friendica"
+        override val loginMastodonHeader = "Sono su Mastodon"
+        override val helpMeChooseAnInstance = "Aiutami a scegliere un'istanza"
+        override val loginOtherHeader = "Altro (Pleroma, etc.)"
+        override val exempliGratia = "es."
     }

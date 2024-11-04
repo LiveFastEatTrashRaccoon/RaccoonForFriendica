@@ -76,7 +76,7 @@ internal val EsStrings =
         override val themeColorGray = "Mapache maloliente"
         override val themeColorWhite = "Panda peludo"
         override val messageUserUnlogged = "Necesitas iniciar una sesión para acceder a esta sección 🪵"
-        override val loginTitle = "Iniciar sesión"
+        override val buttonLogin = "Iniciar sesión"
         override val fieldNodeName = "Nombre de instancia"
         override val fieldUsername = "Nombre de usuario"
         override val fieldPassword = "Contraseña"
@@ -177,10 +177,7 @@ internal val EsStrings =
         override val manageBlocksSectionBlocked = "Bloqueado"
         override val actionBlock = "Bloquear"
         override val actionUnblock = "Desbloquear"
-        override val messageLoginOAuth = "Iniciar sesión con OAuth2 (recomendado)"
-        override val or = "o"
-        override val messageLoginLegacy =
-            "Iniciar sesión con nombre de usuario y contraseña (legado)"
+        override val loginMethodBasic = "legado"
         override val actionPin = "Fijar al perfil"
         override val actionUnpin = "Desenganchar del perfil"
         override val settingsSectionDebug = "Debug"
@@ -425,4 +422,17 @@ internal val EsStrings =
         override val settingsPushNotificationStateIdle = "Inactivo"
         override val settingsPushNotificationStateEnabled = "Activo"
         override val experimental = "experimental"
+        override val loginTitle = "🦝 ¡Bienvenido/a! 🦝"
+        override val loginSubtitle =
+            "Conéctate a una instancia para empezar a seguir a otras personas, crear nuevas publicaciones o respuestas y gestionar tus favoritos o marcadores."
+        override val moreInfo = "Descubre más"
+        override val loginMoreInfoBottomSheetContent =
+            "El flujo de inicio de sesión comenzará en la aplicación seleccionando la instancia, " +
+                "tras lo cual continuarás el flujo OAuth2 en un navegador web." +
+                "\n\nSi no tienes una cuenta, elige una instancia y regístrate primero en tu navegador."
+        override val loginFriendicaHeader = "Estoy en Friendica"
+        override val loginMastodonHeader = "Estoy en Mastodon"
+        override val helpMeChooseAnInstance = "Ayúdame a elegir una instancia"
+        override val loginOtherHeader = "Otros (Pleroma, etc.)"
+        override val exempliGratia = "ej."
     }

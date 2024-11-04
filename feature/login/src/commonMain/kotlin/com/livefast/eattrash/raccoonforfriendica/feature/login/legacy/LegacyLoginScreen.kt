@@ -110,7 +110,13 @@ class LegacyLoginScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            text = LocalStrings.current.loginTitle,
+                            text =
+                                buildString {
+                                    append(LocalStrings.current.buttonLogin)
+                                    append(" (")
+                                    append(LocalStrings.current.loginMethodBasic)
+                                    append(")")
+                                },
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },

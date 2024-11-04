@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiC
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class LoginViewModel(
+    private val type: LoginType,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val credentialsRepository: CredentialsRepository,
     private val authManager: AuthManager,
@@ -32,7 +34,13 @@ class LoginViewModel(
                     finalizeLogin(credentials)
                 }.launchIn(this)
             val currentNode = apiConfigurationRepository.node.value
-            updateState { it.copy(nodeName = currentNode) }
+            val shouldUseDropDown = type == LoginType.Friendica
+            updateState {
+                it.copy(
+                    useDropDown = shouldUseDropDown,
+                    nodeName = currentNode.takeIf { shouldUseDropDown }.orEmpty(),
+                )
+            }
         }
     }
 

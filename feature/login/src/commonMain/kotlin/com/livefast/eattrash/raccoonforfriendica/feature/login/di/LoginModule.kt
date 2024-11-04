@@ -15,8 +15,9 @@ val featureLoginModule =
                 loginUseCase = get(),
             )
         }
-        factory<LoginMviModel> {
+        factory<LoginMviModel> { params ->
             LoginViewModel(
+                type = params[0],
                 credentialsRepository = get(),
                 apiConfigurationRepository = get(),
                 authManager = get(),

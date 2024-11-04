@@ -11,7 +11,7 @@ class AnonymousViewModel(
     AnonymousMviModel {
     override fun reduce(intent: AnonymousMviModel.Intent) {
         when (intent) {
-            AnonymousMviModel.Intent.StartOauth2Flow -> authManager.openLogin()
+            is AnonymousMviModel.Intent.StartOauth2Flow -> authManager.openLogin(intent.type)
             AnonymousMviModel.Intent.StartLegacyFlow -> authManager.openLegacyLogin()
         }
     }

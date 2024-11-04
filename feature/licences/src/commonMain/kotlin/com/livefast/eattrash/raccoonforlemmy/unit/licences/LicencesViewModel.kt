@@ -52,6 +52,13 @@ class LicencesViewModel :
                             )
                         this +=
                             LicenceItem(
+                                type = LicenceItemType.Resource,
+                                title = "Friendica logo",
+                                subtitle = "Logo of the Friendica project",
+                                url = LicenceUrls.FRIENDICA,
+                            )
+                        this +=
+                            LicenceItem(
                                 type = LicenceItemType.Library,
                                 title = "Koin",
                                 subtitle = "A pragmatic lightweight dependency injection framework",
@@ -84,6 +91,13 @@ class LicencesViewModel :
                                 title = "Lyricist",
                                 subtitle = "The missing I18N and L10N multiplatform library for Jetpack Compose",
                                 url = LicenceUrls.LYRICIST,
+                            )
+                        this +=
+                            LicenceItem(
+                                type = LicenceItemType.Resource,
+                                title = "Mastodon logo",
+                                subtitle = "Logo of the Mastodon project",
+                                url = LicenceUrls.MASTODON,
                             )
                         this +=
                             LicenceItem(

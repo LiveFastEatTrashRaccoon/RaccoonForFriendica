@@ -3,10 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.login.oauth
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -50,14 +49,19 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.toLoginType
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.core.parameter.parametersOf
 
-class LoginScreen : Screen {
+class LoginScreen(
+    private val loginType: Int,
+) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model = getScreenModel<LoginMviModel>()
+        val model =
+            getScreenModel<LoginMviModel>(parameters = { parametersOf(loginType.toLoginType()) })
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -99,7 +103,7 @@ class LoginScreen : Screen {
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            text = LocalStrings.current.loginTitle,
+                            text = LocalStrings.current.buttonLogin,
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },
@@ -144,54 +148,94 @@ class LoginScreen : Screen {
                         .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Spacer(modifier = Modifier.height(Spacing.s))
-
-                // instance name
-                SpinnerField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text(
-                            text = LocalStrings.current.fieldNodeName,
-                        )
-                    },
-                    values =
-                        buildList {
-                            for (instance in DefaultFriendicaInstances) {
-                                this += buildString {
-                                    append(instance.value)
-                                    append("  ")
-                                    append(instance.lang)
-                                } to instance.value
-                            }
-                            this += LocalStrings.current.itemOther to ""
+                // instance name text field (with or without spinner)
+                val keyboardOptions =
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        autoCorrectEnabled = false,
+                        imeAction = ImeAction.Done,
+                    )
+                val keyboardActions =
+                    KeyboardActions(
+                        onNext = {
+                            model.reduce(LoginMviModel.Intent.Submit)
                         },
-                    value = uiState.nodeName,
-                    isError = uiState.nodeNameError != null,
-                    keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            autoCorrectEnabled = false,
-                            imeAction = ImeAction.Done,
-                        ),
-                    keyboardActions =
-                        KeyboardActions(
-                            onNext = {
-                                model.reduce(LoginMviModel.Intent.Submit)
-                            },
-                        ),
-                    onValueChange = { value ->
-                        model.reduce(LoginMviModel.Intent.SetNodeName(value))
-                    },
-                    supportingText = {
-                        val error = uiState.nodeNameError
-                        if (error != null) {
+                    )
+                val label = @Composable {
+                    Text(
+                        text = LocalStrings.current.fieldNodeName,
+                    )
+                }
+                val supportingText = @Composable {
+                    val error = uiState.nodeNameError
+                    if (error != null) {
+                        Text(
+                            text = error.toReadableMessage(),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                }
+                if (uiState.useDropDown) {
+                    SpinnerField(
+                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
+                        label = label,
+                        placeholder = {
                             Text(
-                                text = error.toReadableMessage(),
-                                color = MaterialTheme.colorScheme.error,
+                                text =
+                                    buildString {
+                                        append(LocalStrings.current.exempliGratia)
+                                        append(" ")
+                                        append("poliverso.org")
+                                    },
                             )
-                        }
-                    },
-                )
+                        },
+                        values =
+                            buildList {
+                                for (instance in DefaultFriendicaInstances) {
+                                    this += buildString {
+                                        append(instance.value)
+                                        append("  ")
+                                        append(instance.lang)
+                                    } to instance.value
+                                }
+                                this += LocalStrings.current.itemOther to ""
+                            },
+                        value = uiState.nodeName,
+                        isError = uiState.nodeNameError != null,
+                        keyboardOptions = keyboardOptions,
+                        keyboardActions =
+                        keyboardActions,
+                        onValueChange = { value ->
+                            model.reduce(LoginMviModel.Intent.SetNodeName(value))
+                        },
+                        supportingText = supportingText,
+                    )
+                } else {
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
+                        value = uiState.nodeName,
+                        label = label,
+                        placeholder = {
+                            Text(
+                                text =
+                                    buildString {
+                                        append(LocalStrings.current.exempliGratia)
+                                        append(" ")
+                                        append("mastodon.social")
+                                    },
+                            )
+                        },
+                        supportingText = supportingText,
+                        singleLine = true,
+                        isError = uiState.nodeNameError != null,
+                        keyboardOptions =
+                        keyboardOptions,
+                        keyboardActions = keyboardActions,
+                        onValueChange = { value ->
+                            model.reduce(LoginMviModel.Intent.SetNodeName(value))
+                        },
+                    )
+                }
 
                 Button(
                     modifier = Modifier.padding(top = Spacing.l),

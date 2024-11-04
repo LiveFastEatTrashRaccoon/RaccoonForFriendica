@@ -78,7 +78,7 @@ internal open class DefaultStrings : Strings {
     override val themeColorGray = "Ravenous Raccoon"
     override val themeColorWhite = "Boisterous bear"
     override val messageUserUnlogged = "You need to be logged in to access this section 🪵"
-    override val loginTitle = "Login"
+    override val buttonLogin = "Login"
     override val fieldNodeName = "Instance name"
     override val fieldUsername = "Username"
     override val fieldPassword = "Password"
@@ -178,9 +178,7 @@ internal open class DefaultStrings : Strings {
     override val manageBlocksSectionBlocked = "Blocked"
     override val actionBlock = "Block"
     override val actionUnblock = "Unblock"
-    override val messageLoginOAuth = "Login with OAuth2 (recommended)"
-    override val or = "or"
-    override val messageLoginLegacy = "Login with username and password (legacy)"
+    override val loginMethodBasic = "legacy"
     override val actionPin = "Pin to profile"
     override val actionUnpin = "Unpin from profile"
     override val settingsSectionDebug = "Debug"
@@ -422,4 +420,16 @@ internal open class DefaultStrings : Strings {
     override val settingsPushNotificationStateIdle = "Idle"
     override val settingsPushNotificationStateEnabled = "Active"
     override val experimental = "experimental"
+    override val loginTitle = "🦝 Welcome! 🦝"
+    override val loginSubtitle =
+        "Log in to an instance to start following other people, create new posts or replies and manage your favorites or bookmarks."
+    override val moreInfo = "Discover more"
+    override val loginMoreInfoBottomSheetContent =
+        "The login flow will start in app by selecting the instance, after which you will continue the OAuth2 flow in a web browser.\n\n" +
+            "If you do not have an account, please choose an instance and sign up in your browser first."
+    override val loginFriendicaHeader = "I'm on Friendica"
+    override val loginMastodonHeader = "I'm on Mastodon"
+    override val helpMeChooseAnInstance = "Help me choose an instance"
+    override val loginOtherHeader = "Other (Pleroma, etc.)"
+    override val exempliGratia = "e. g."
 }

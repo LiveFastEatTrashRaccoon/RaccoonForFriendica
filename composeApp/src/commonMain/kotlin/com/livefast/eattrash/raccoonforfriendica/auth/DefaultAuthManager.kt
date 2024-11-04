@@ -5,6 +5,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeySt
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.toInt
 import com.livefast.eattrash.raccoonforfriendica.feature.login.legacy.LegacyLoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginScreen
 import io.ktor.http.URLBuilder
@@ -20,8 +22,8 @@ internal class DefaultAuthManager(
 ) : AuthManager {
     override val credentialFlow = MutableSharedFlow<ApiCredentials>()
 
-    override fun openLogin() {
-        val screen = LoginScreen()
+    override fun openLogin(type: LoginType) {
+        val screen = LoginScreen(type.toInt())
         navigationCoordinator.push(screen)
     }
 

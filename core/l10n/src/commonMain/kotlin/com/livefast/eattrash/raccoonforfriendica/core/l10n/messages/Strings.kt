@@ -80,7 +80,7 @@ interface Strings {
     val themeColorGray: String
     val themeColorWhite: String
     val messageUserUnlogged: String
-    val loginTitle: String
+    val buttonLogin: String
     val fieldNodeName: String
     val fieldUsername: String
     val fieldPassword: String
@@ -102,9 +102,7 @@ interface Strings {
     val exploreSectionHashtags: String
     val exploreSectionLinks: String
     val exploreSectionSuggestions: String
-    val messageLoginOAuth: String
-    val or: String
-    val messageLoginLegacy: String
+    val loginMethodBasic: String
 
     fun hashtagPeopleUsing(count: Int): String
 
@@ -378,6 +376,15 @@ interface Strings {
     val settingsPushNotificationStateIdle: String
     val settingsPushNotificationStateEnabled: String
     val experimental: String
+    val loginTitle: String
+    val loginSubtitle: String
+    val moreInfo: String
+    val loginMoreInfoBottomSheetContent: String
+    val loginFriendicaHeader: String
+    val loginMastodonHeader: String
+    val loginOtherHeader: String
+    val helpMeChooseAnInstance: String
+    val exempliGratia: String
 }
 
 object Locales {
