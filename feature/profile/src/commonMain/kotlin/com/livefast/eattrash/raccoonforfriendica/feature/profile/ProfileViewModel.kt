@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountMod
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
@@ -66,7 +67,7 @@ class ProfileViewModel(
 
             is ProfileMviModel.Intent.SwitchAccount -> switchAccount(intent.account)
             is ProfileMviModel.Intent.DeleteAccount -> deleteAccount(intent.account)
-            ProfileMviModel.Intent.AddAccount -> authManager.openLogin()
+            ProfileMviModel.Intent.AddAccount -> authManager.openLogin(LoginType.Friendica)
         }
     }
 
