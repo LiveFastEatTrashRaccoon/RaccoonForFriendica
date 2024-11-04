@@ -47,6 +47,7 @@ kotlin {
                 implementation(projects.core.l10n)
                 implementation(projects.core.navigation)
                 implementation(projects.core.notifications)
+                implementation(projects.core.resources)
                 implementation(projects.core.utils)
 
                 implementation(projects.domain.content.data)
