@@ -402,15 +402,11 @@ between one another.
 
 ### Login
 
-There are two possible ways to login, depending on your preferences (or what your backend allows):
+The most common way to log-in to federated platforms like Friendica or Mastodon is OAuth2, i.e. a
+web-based flow thanks to which the app is granted a token to perform a set of specific operations on
+behalf of the user (e.g. creating posts, follow a user, get the subscription timeline).
 
-- **OAuth2** (recommended) web-based flow, a browser tab will be opened to log-in and a
-  client-specific token allowing the app to operate on the user's behalf will be generated;
-- **HTTP Basic** (legacy, available on Friendica) this in-app flows involves selecting the instance
-  and inserting your credentials, all API calls will be using HTTP Basic auth header.
-
-Needless to say — but we'll repeat it for the sake of clarity — the recommended way to login is
-OAuth2 because:
+This method is recomended because:
 
 - your username/password never go outside browser and remain unknown to all third-party subjects
   (including the Raccoon app);
@@ -418,9 +414,24 @@ OAuth2 because:
   token can be used for;
 - tokens can be revoked at any time, making it easier to mitigate potentially unwanted accesses.
 
+Friendica back-ends, in turn, allow users to authenticate calls using the Basic HTTP standard, which
+requires users credentials (username and password) to be known to the third-party app using it.
+
+The login flow involves two steps:
+
+- an introductory screen where you choose your platform and login mode (the double choice
+  OAuth2/HTTP Basic is only available on Friendica)
+- the instance selection (only for OAuth2) where you have to specify the server to connect to; for
+  Friendica you have the possibility to choose from a drop-down menu or you can manually enter the
+  domain, for all other platforms you will have to manually enter the server domain (
+  e.g. `mastodon.social`);
+- the instance and credentials input (only for HTTP Basic) where you have to select your Friendica
+  instance (from a drop-down list or entering it manually) and insert your credentials. 
+
 <div align="center">
   <img width="310" alt="login intro screen" src="images/login_1.png" />
   <img width="310" alt="select instance screen" src="images/login_2.png" />
+  <img width="310" alt="select instance screen" src="images/login_3.png" />
 </div>
 
 ### One's own user detail
