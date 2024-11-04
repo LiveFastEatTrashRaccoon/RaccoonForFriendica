@@ -77,7 +77,7 @@ internal val PtStrings =
         override val themeColorWhite = "Urso universitário"
         override val messageUserUnlogged =
             "É necessário ter sessão iniciada para aceder a esta secção 🪵"
-        override val loginTitle = "Iniciar sessão"
+        override val buttonLogin = "Iniciar sessão"
         override val fieldNodeName = "Nome da instância"
         override val fieldUsername = "Nome de utilizador"
         override val fieldPassword = "Palavra-passe"
@@ -176,10 +176,7 @@ internal val PtStrings =
         override val manageBlocksSectionBlocked = "Bloqueado"
         override val actionBlock = "Bloquear"
         override val actionUnblock = "Desbloquear"
-        override val messageLoginOAuth = "Iniciar sessão com OAuth2 (recomendado)"
-        override val or = "ou"
-        override val messageLoginLegacy =
-            "Iniciar sessão com nome de utilizador e palavra-passe (antigo)"
+        override val loginMethodBasic = "antigo"
         override val actionPin = "Fixar no perfil"
         override val actionUnpin = "Desmarcar do perfil"
         override val settingsSectionDebug = "Depurar"
@@ -430,4 +427,17 @@ internal val PtStrings =
         override val settingsPushNotificationStateIdle = "Inativo"
         override val settingsPushNotificationStateEnabled = "Ativo"
         override val experimental = "experimental"
+        override val loginTitle = "🦝 Bem-vindo! 🦝"
+        override val loginSubtitle =
+            "Inicie sessão numa instância para começar a seguir outras pessoas, criar novas mensagens ou respostas e gerir os seus favoritos ou marcadores."
+        override val moreInfo = "Descobrir mais"
+        override val loginMoreInfoBottomSheetContent =
+            "O fluxo de início de sessão será iniciado na aplicação selecionando a instância, " +
+                "após o que continuará o fluxo OAuth2 num navegador Web." +
+                "\n\nSe não tiver uma conta, escolha uma instância e registe-se primeiro no seu navegador."
+        override val loginFriendicaHeader = "Estou no Friendica"
+        override val loginMastodonHeader = "Estou no Mastodon"
+        override val helpMeChooseAnInstance = "Ajude-me a escolher uma instância"
+        override val loginOtherHeader = "Outro (Pleroma, etc.)"
+        override val exempliGratia = "e. g."
     }

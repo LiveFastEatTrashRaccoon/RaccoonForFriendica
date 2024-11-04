@@ -77,7 +77,7 @@ internal val FrStrings =
         override val themeColorGray = "Raton-laveur rapide"
         override val themeColorWhite = "Ours ouaté"
         override val messageUserUnlogged = "Vous devez être connecté pour accéder à cette section 🪵"
-        override val loginTitle = "Connexion"
+        override val buttonLogin = "Connexion"
         override val fieldNodeName = "Nom de l'instance"
         override val fieldUsername = "Nom d'utilisateur"
         override val fieldPassword = "Mot de passe"
@@ -177,10 +177,7 @@ internal val FrStrings =
         override val manageBlocksSectionBlocked = "Bloqué"
         override val actionBlock = "Bloquer"
         override val actionUnblock = "Débloquer"
-        override val messageLoginOAuth = "Se connecter avec OAuth2 (recommandé)"
-        override val or = "ou"
-        override val messageLoginLegacy =
-            "Se connecter avec un nom d'utilisateur et un mot de passe (ancien)"
+        override val loginMethodBasic = "ancien"
         override val actionPin = "Épingler au profil"
         override val actionUnpin = "Désépingler du profil"
         override val settingsSectionDebug = "Débogage"
@@ -430,4 +427,17 @@ internal val FrStrings =
         override val settingsPushNotificationStateIdle = "Au repos"
         override val settingsPushNotificationStateEnabled = "Actif"
         override val experimental = "expérimental"
+        override val loginTitle = "🦝 Bienvenus ! 🦝"
+        override val loginSubtitle =
+            "Connectez-vous à une instance pour commencer à suivre d'autres personnes, créer de nouveaux messages ou des réponses et gérer vos favoris ou vos signets."
+        override val moreInfo = "En savoir plus"
+        override val loginMoreInfoBottomSheetContent =
+            "Le flux de connexion commencera dans l'application en sélectionnant l'instance, " +
+                "après quoi vous continuerez le flux OAuth2 dans un navigateur web." +
+                "\n\nSi vous n'avez pas de compte, veuillez d'abord choisir une instance et vous inscrire dans votre navigateur."
+        override val loginFriendicaHeader = "Je suis sur Friendica"
+        override val loginMastodonHeader = "Je suis sur Mastodon"
+        override val helpMeChooseAnInstance = "Aidez-moi à choisir une instance"
+        override val loginOtherHeader = "Autre (Pleroma, etc.)"
+        override val exempliGratia = "e. g."
     }

@@ -78,7 +78,7 @@ internal val DeStrings =
         override val themeColorWhite = "Brabbelnder Bär"
         override val messageUserUnlogged =
             "Sie müssen eingeloggt sein, um auf diesen Bereich zugreifen zu können 🪵"
-        override val loginTitle = "Anmeldung"
+        override val buttonLogin = "Anmeldung"
         override val fieldNodeName = "Instanzname"
         override val fieldUsername = "Username"
         override val fieldPassword = "Passwort"
@@ -180,9 +180,7 @@ internal val DeStrings =
         override val manageBlocksSectionBlocked = "Gesperrter"
         override val actionBlock = "Sperren"
         override val actionUnblock = "Sperre aufheben"
-        override val messageLoginOAuth = "Anmeldung mit OAuth2 (empfohlen)"
-        override val or = "oder"
-        override val messageLoginLegacy = "Anmeldung mit Benutzername und Passwort (Legacy)"
+        override val loginMethodBasic = "Legacy"
         override val actionPin = "An das Profil anheften"
         override val actionUnpin = "Anheftung an das Profil aufheben"
         override val settingsSectionDebug = "Debuggen"
@@ -424,4 +422,17 @@ internal val DeStrings =
         override val settingsPushNotificationStateIdle = "Leerlauf"
         override val settingsPushNotificationStateEnabled = "Aktiv"
         override val experimental = "experimentell"
+        override val loginTitle = "🦝 Willkommen! 🦝"
+        override val loginSubtitle =
+            "Melden Sie sich bei einer Instanz an, um anderen Personen zu folgen, neue Beiträge oder Antworten zu erstellen und Ihre Favoriten oder Lesezeichen zu verwalten."
+        override val moreInfo = "Mehr entdecken"
+        override val loginMoreInfoBottomSheetContent =
+            "Der Anmeldevorgang beginnt in der App mit der Auswahl der Instanz. " +
+                "Danach setzen Sie den OAuth2-Vorgang in einem Webbrowser fort." +
+                "\n\nWenn Sie noch kein Konto haben, wählen Sie bitte eine Instanz und melden Sie sich zuerst in Ihrem Browser an."
+        override val loginFriendicaHeader = "Ich bin bei Friendica"
+        override val loginMastodonHeader = "Ich bin bei Mastodon"
+        override val helpMeChooseAnInstance = "Hilf mir bei der Auswahl einer Instanz"
+        override val loginOtherHeader = "Andere (Pleroma, etc.)"
+        override val exempliGratia = "z. B."
     }
