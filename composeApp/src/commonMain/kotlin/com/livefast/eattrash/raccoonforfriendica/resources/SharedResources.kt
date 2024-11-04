@@ -1,11 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.resources
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.painterResource
 import raccoonforfriendica.composeapp.generated.resources.Res
 import raccoonforfriendica.composeapp.generated.resources.atkinsonhyperlegible_bold
 import raccoonforfriendica.composeapp.generated.resources.atkinsonhyperlegible_italic
@@ -14,6 +16,8 @@ import raccoonforfriendica.composeapp.generated.resources.exo_bold
 import raccoonforfriendica.composeapp.generated.resources.exo_italic
 import raccoonforfriendica.composeapp.generated.resources.exo_light
 import raccoonforfriendica.composeapp.generated.resources.exo_regular
+import raccoonforfriendica.composeapp.generated.resources.friendica_logo
+import raccoonforfriendica.composeapp.generated.resources.mastodon_logo
 import raccoonforfriendica.composeapp.generated.resources.notosans_bold
 import raccoonforfriendica.composeapp.generated.resources.notosans_italic
 import raccoonforfriendica.composeapp.generated.resources.notosans_medium
@@ -47,4 +51,11 @@ internal class SharedResources : CoreResources {
                 Font(Res.font.notosans_medium, FontWeight.Medium, FontStyle.Normal),
                 Font(Res.font.notosans_italic, FontWeight.Normal, FontStyle.Italic),
             )
+
+    override val friendicaLogo: Painter
+        @Composable
+        get() = painterResource(Res.drawable.friendica_logo)
+    override val mastodonLogo: Painter
+        @Composable
+        get() = painterResource(Res.drawable.mastodon_logo)
 }
