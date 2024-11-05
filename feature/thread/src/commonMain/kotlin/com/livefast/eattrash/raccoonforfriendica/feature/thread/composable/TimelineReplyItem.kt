@@ -35,7 +35,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepo
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AttachmentsGrid
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentAttachments
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentFooter
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentHeader
@@ -191,8 +191,7 @@ fun TimelineReplyItem(
                     )
                 }
 
-                // attachment (single or grid)
-                AttachmentsGrid(
+                ContentAttachments(
                     modifier =
                         Modifier.fillMaxWidth().padding(
                             top = Spacing.s,
