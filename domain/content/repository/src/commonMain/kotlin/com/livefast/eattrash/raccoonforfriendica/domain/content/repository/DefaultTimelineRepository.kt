@@ -4,7 +4,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -109,7 +108,7 @@ internal class DefaultTimelineRepository(
                         maxId = pageCursor,
                         limit = DEFAULT_PAGE_SIZE,
                     )
-                val list = response.body()?.map { it.toModel() }.orEmpty()
+                val list = response.body()?.map { it.toModelWithReply() }.orEmpty()
                 val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
                 ListWithPageCursor(list = list, cursor = nextCursor)
             }.getOrNull()
