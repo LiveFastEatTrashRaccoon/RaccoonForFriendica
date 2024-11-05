@@ -94,7 +94,7 @@ fun ContentImage(
                         if (originalWidth > 0 && originalHeight > 0) {
                             Modifier.aspectRatio(originalWidth / originalHeight.toFloat())
                         } else {
-                            Modifier.heightIn(150.dp)
+                            Modifier.heightIn(min = minHeight, max = maxHeight)
                         },
                     ).clickable {
                         onClick?.invoke()
@@ -102,7 +102,7 @@ fun ContentImage(
             url = url,
             autoload = autoload,
             contentDescription = altText,
-            quality = FilterQuality.Low,
+            quality = FilterQuality.None,
             blurred = !revealing,
             contentScale = contentScale,
             onSuccess = {

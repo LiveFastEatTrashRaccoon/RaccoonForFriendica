@@ -23,7 +23,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -77,12 +76,12 @@ fun AttachmentsGrid(
         Row(
             modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(interItemSpacing),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             filteredAttachments.forEachIndexed { index, attachment ->
                 GridElement(
                     modifier = Modifier.weight(1f),
                     attachment = attachment,
-                    maxHeight = 200.dp,
                     sensitive = blurNsfw && sensitive,
                     autoload = autoloadImages,
                     onClick = {
@@ -92,12 +91,7 @@ fun AttachmentsGrid(
                             videoIndices,
                         )
                     },
-                    contentScale =
-                        if (attachment.aspectRatio >= 1) {
-                            ContentScale.FillHeight
-                        } else {
-                            ContentScale.FillWidth
-                        },
+                    contentScale = ContentScale.FillBounds,
                 )
             }
         }
@@ -147,12 +141,7 @@ fun AttachmentsGrid(
                                 attachment = attachment,
                                 sensitive = blurNsfw && sensitive,
                                 autoload = autoloadImages,
-                                contentScale =
-                                    if (chunkSize == chunk.size) {
-                                        ContentScale.FillWidth
-                                    } else {
-                                        ContentScale.Crop
-                                    },
+                                contentScale = ContentScale.Crop,
                                 onClick = {
                                     onOpenImage?.invoke(
                                         urls,
@@ -186,7 +175,7 @@ fun AttachmentsGrid(
                     },
                 )
 
-                // rest of attachments arranged vertically in chunks
+                // rest of attachments arranged horizontally in chunks
                 val chunks = filteredAttachments.drop(1).chunked(chunkSize)
                 chunks.forEachIndexed { chunkIndex, chunk ->
                     Row(
@@ -201,13 +190,7 @@ fun AttachmentsGrid(
                                 attachment = attachment,
                                 sensitive = blurNsfw && sensitive,
                                 autoload = autoloadImages,
-                                maxHeight = 180.dp,
-                                contentScale =
-                                    if (chunkSize == chunk.size) {
-                                        ContentScale.FillHeight
-                                    } else {
-                                        ContentScale.Crop
-                                    },
+                                contentScale = ContentScale.Crop,
                                 onClick = {
                                     onOpenImage?.invoke(
                                         urls,
@@ -233,6 +216,7 @@ private fun GridElement(
     autoload: Boolean = true,
     sensitive: Boolean = false,
     onClick: (() -> Unit)? = null,
+    minHeight: Dp = Dp.Unspecified,
     maxHeight: Dp = Dp.Unspecified,
 ) {
     val attachmentWidth = attachment.originalWidth ?: 0
@@ -249,6 +233,7 @@ private fun GridElement(
                 originalHeight = attachmentHeight,
                 sensitive = blurNsfw && sensitive,
                 autoload = autoload,
+                minHeight = minHeight,
                 maxHeight = maxHeight,
                 contentScale = contentScale,
                 onClick = onClick,
@@ -266,6 +251,7 @@ private fun GridElement(
                     url = attachment.previewUrl.orEmpty(),
                     autoload = autoload,
                     altText = attachment.description,
+                    minHeight = minHeight,
                     maxHeight = maxHeight,
                     contentScale = contentScale,
                     onClick = onClick,
@@ -287,6 +273,7 @@ private fun GridElement(
                     originalHeight = attachmentHeight,
                     sensitive = blurNsfw && sensitive,
                     autoload = autoload,
+                    minHeight = minHeight,
                     maxHeight = maxHeight,
                     contentScale = contentScale,
                     onClick = onClick,
