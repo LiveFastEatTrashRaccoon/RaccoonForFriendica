@@ -233,8 +233,8 @@ fun TimelineItem(
                         )
                     }
 
-                    // attachment (single or grid)
-                    AttachmentsGrid(
+                    // attachments
+                    ContentAttachments(
                         modifier =
                             Modifier.fillMaxWidth().padding(
                                 top = Spacing.s,
