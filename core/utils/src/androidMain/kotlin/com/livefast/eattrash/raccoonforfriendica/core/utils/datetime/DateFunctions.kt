@@ -83,7 +83,8 @@ actual fun Long.extractDatePart(): Pair<Int, Int> {
     val calendar = GregorianCalendar.getInstance()
     calendar.timeInMillis = this
     val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH)
+    // months are starting from 0
+    val month = calendar.get(Calendar.MONTH) + 1
     return year to month
 }
 
