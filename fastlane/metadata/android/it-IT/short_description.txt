@@ -1,0 +1,1 @@
+Client mobile per Friendica, social network decentralizzato e federato.
