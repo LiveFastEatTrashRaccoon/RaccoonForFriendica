@@ -47,16 +47,16 @@ https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
 ## Screenshots
 
 <div align="center">
-  <img alt="timeline screen with subscriptions" width="310" src="https://github.com/user-attachments/assets/0555f241-9339-43cc-8333-c58e3322f12a" />
-  <img alt="user detail screen" width="310" src="https://github.com/user-attachments/assets/9f1b934a-05a3-43ff-8a38-b82931a96174" />
-  <img alt="post detail screen" width="310" src="https://github.com/user-attachments/assets/27e92665-d84c-4e1c-98df-8f86c52304f4" />
-  <img alt="list of posts containing a followed hashtag" width="310" src="https://github.com/user-attachments/assets/827eba01-6af9-470f-8f19-30cb9b81b1b0" />
-  <img alt="post editor with preview dialog" width="310" src="https://github.com/user-attachments/assets/f071aa09-2141-4a92-b8d8-6c4440ddb277" />
-  <img alt="settings screen with color bottom sheet" width="310" src="https://github.com/user-attachments/assets/1f9db2b4-1c2d-4707-868b-c9ded7b154cf" />
-  <img alt="explore screen (hashtags tab)" width="310" src="https://github.com/user-attachments/assets/f947c777-1fde-4dba-a0f2-e32776f5fbfe" />
-  <img alt="notifications screen" width="310" src="https://github.com/user-attachments/assets/42f7d7ef-831b-4f80-9785-6ad0172a755b" />
-  <img alt="group opened in forum mode" width="310" src="https://github.com/user-attachments/assets/a62480ad-0d4e-4fae-9cd3-6d050fb7b1d1" />
-  <img alt="thread screen within a group with replies" width="310" src="https://github.com/user-attachments/assets/0a1abb83-4a90-448a-8dc2-2a0cb069bae0" />
+  <img alt="timeline screen with subscriptions" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/timeline.png" />
+  <img alt="user detail screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/user_detail.png" />
+  <img alt="post detail screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/post_detail.png" />
+  <img alt="list of posts containing a followed hashtag" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/hashtag_feed.png" />
+  <img alt="post editor" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/composer.png" />
+  <img alt="settings screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/settings.png" />
+  <img alt="explore screen on hashtags tab" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/explore_hashtags.png" />
+  <img alt="notifications screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/inbox.png" />
+  <img alt="group opened in forum mode" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/forum_list.png" />
+  <img alt="thread screen within a group with replies" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/thread_detail.png" />
 </div>
 
 ## Why was the project started and why is it called like that?
@@ -72,8 +72,9 @@ preferences, navigation, access to resources like fonts/drawables/localization, 
 Secondly, the Android ecosystem for Friendica was a little lacking, especially with few native
 apps (except [Dica](https://github.com/jasoncheng/dica),
 whereas [Friendiqa](https://git.friendi.ca/lubuwest/Friendiqa) is a very _cute_ example of Qt on
-Android, although not a traditional mobile app at all). I ❤️ Kotlin, I ❤️ Free and Open Source
-Software and I ❤️ native app development, so there was a niche that could be filled.
+Android, although not a traditional mobile app at all).
+I ❤️ Kotlin, I ❤️ Free and Open Source Software and I ❤️ native app development, so there was a
+niche that could be filled.
 
 In the third place, we were wondering whether the adoption of a platform like Friendica could be
 improved with a user-friendly and easy to use mobile app that abstracts away some of the
@@ -119,7 +120,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] edit one's own posts
 - [x] mute/unmute user and see list of muted users
 - [x] block/unblock user and see list of blocked users
-- [x] OAuth and HTTP basic authentication modes
+- [x] OAuth and HTTP Basic authentication modes
 - [x] pin/unpin status to profile
 - [x] manage one's own circles/following lists
 - [x] polls (read-only, voting is not supported yet by the back-end)
@@ -133,7 +134,9 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] scheduled posts and local drafts
 - [x] create reports for posts and users 
 - [x] custom emojis
-- [x] calendar (Friendica-specific + read-only, creating events is not supported yet by the back-end)
+- [x] event calendar (Friendica-specific, creating events is not supported yet by the back-end)
+- [x] pull notifications with background checks
+- [x] (experimental) push notifications using UnifiedPush
 
 ## Technologies used
 
@@ -149,6 +152,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing
 - [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for custom color selection
 - [Sentry](https://sentry.io) for crash reporting and user feedback collection
+- [UnifiedPush](https://unifiedpush.org) for push notifications
 
 ## Want to leave your feedback or report a bug?
 
