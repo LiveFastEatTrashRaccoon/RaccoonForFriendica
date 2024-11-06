@@ -79,7 +79,7 @@ Here is a list of the most important features of the app:
   Mastodon);
 - schedule a post for a future date or save it to local drafts;
 - report posts/users to administrators for content moderation;
-- mute/unmute, block/unblock users and see list of muted/blocked users;
+- mute/unmute, block/unblock users and manage the list of muted/blocked users;
 - manage one's own circles (user-defined lists), which on Friendica can also be used as a publishing
   target;
 - see polls in read-only mode (voting is not supported by the back-end yet);
