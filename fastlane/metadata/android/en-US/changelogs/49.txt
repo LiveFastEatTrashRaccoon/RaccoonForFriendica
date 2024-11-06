@@ -1,0 +1,6 @@
+- fix: remove channels and groups from publishing targets
+- fix: avoid crash on user or hashtag search
+- fix: URL resolution for user profiles and hashtags
+- feat: add UnifiedPush integration
+- enhancement: login UX review
+- chore: update sqlite, room, bouncycastle
