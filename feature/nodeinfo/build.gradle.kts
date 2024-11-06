@@ -1,10 +1,13 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.mokkery)
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -54,7 +57,35 @@ kotlin {
                 implementation(projects.domain.identity.repository)
             }
         }
+        val commonTest by getting {
+            dependencies {
+                dependencies {
+                    implementation(kotlin("test"))
+                    implementation(libs.kotlinx.coroutines.test)
+                    implementation(libs.turbine)
+                    implementation(projects.core.testutils)
+                }
+            }
+        }
+        val androidUnitTest by getting {
+            dependencies {
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.uiTest)
+                implementation(libs.compose.ui.test)
+                implementation(libs.robolectric)
+                implementation(projects.core.testutils)
+            }
+        }
     }
+
+    androidTarget {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
+    }
+}
+
+dependencies {
+    debugImplementation(libs.compose.ui.test.manifest)
 }
 
 android {
@@ -68,5 +99,7 @@ android {
             libs.versions.android.minSdk
                 .get()
                 .toInt()
+        testOptions.unitTests.isIncludeAndroidResources = true
+        testInstrumentationRunner = "org.robolectric.RobolectricTestRunner"
     }
 }
