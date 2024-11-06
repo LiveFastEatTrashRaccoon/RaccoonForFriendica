@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -124,6 +125,7 @@ class NodeInfoScreen : Screen {
                 LazyColumn(
                     modifier =
                         Modifier
+                            .testTag(NodeInfoTestTags.COLUMN)
                             .padding(padding)
                             .fillMaxWidth()
                             .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -413,4 +415,8 @@ private fun RuleItem(
         content = rule.text,
         onOpenUrl = onOpenUrl,
     )
+}
+
+internal object NodeInfoTestTags {
+    const val COLUMN = "column"
 }
