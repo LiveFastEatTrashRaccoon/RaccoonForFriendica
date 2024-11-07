@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -91,10 +92,18 @@ fun ContentImage(
                 Modifier
                     .clip(RoundedCornerShape(CornerSize.xl))
                     .then(
-                        if (originalWidth > 0 && originalHeight > 0) {
-                            Modifier.aspectRatio(originalWidth / originalHeight.toFloat())
-                        } else {
-                            Modifier.heightIn(min = minHeight, max = maxHeight)
+                        when {
+                            minHeight == Dp.Unspecified && maxHeight == Dp.Unspecified -> {
+                                Modifier.fillMaxHeight()
+                            }
+
+                            originalWidth > 0 && originalHeight > 0 -> {
+                                Modifier.aspectRatio(originalWidth / originalHeight.toFloat())
+                            }
+
+                            else -> {
+                                Modifier.heightIn(min = minHeight, max = maxHeight)
+                            }
                         },
                     ).clickable {
                         onClick?.invoke()
