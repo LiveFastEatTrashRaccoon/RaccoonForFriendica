@@ -4,14 +4,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import com.livefast.eattrash.raccoonforfriendica.core.preferences.DefaultTemporaryKeyStore
-import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeyStore
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.DefaultSettingsWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.SettingsWrapper
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
-actual val corePreferencesModule =
+internal actual val nativePreferencesModule =
     module {
         single { params ->
             SharedPreferencesProvider(
@@ -29,8 +29,8 @@ actual val corePreferencesModule =
                 commit = false,
             )
         }
-        single<TemporaryKeyStore> {
-            DefaultTemporaryKeyStore(settings = get(parameters = { parametersOf(PREFERENCES_NAME) }))
+        single<SettingsWrapper> {
+            DefaultSettingsWrapper(settings = get(parameters = { parametersOf(PREFERENCES_NAME) }))
         }
     }
 

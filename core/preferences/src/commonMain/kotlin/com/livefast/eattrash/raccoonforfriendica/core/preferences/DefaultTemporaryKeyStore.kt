@@ -1,11 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences
 
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
-import com.russhwolf.settings.set
-
 internal class DefaultTemporaryKeyStore(
-    private val settings: Settings,
+    private val settings: SettingsWrapper,
 ) : TemporaryKeyStore {
     override fun containsKey(key: String): Boolean = settings.keys.contains(key)
 
