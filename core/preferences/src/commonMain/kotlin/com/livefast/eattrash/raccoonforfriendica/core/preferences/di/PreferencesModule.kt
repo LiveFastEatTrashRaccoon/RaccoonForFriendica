@@ -1,5 +1,16 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences.di
 
-import org.koin.core.module.Module
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.DefaultTemporaryKeyStore
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeyStore
+import org.koin.dsl.module
 
-expect val corePreferencesModule: Module
+val corePreferencesModule =
+    module {
+        includes(nativePreferencesModule)
+
+        single<TemporaryKeyStore> {
+            DefaultTemporaryKeyStore(
+                settings = get(),
+            )
+        }
+    }
