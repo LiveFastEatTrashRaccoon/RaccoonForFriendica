@@ -415,9 +415,6 @@ class EntryDetailScreen(
 
                     // here to show the initial entry from cache at startup
                     if (uiState.initial) {
-                        item {
-                            Spacer(modifier = Modifier.height(Spacing.xxs))
-                        }
                         val placeholderCount = 5
                         items(placeholderCount) { idx ->
                             TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
