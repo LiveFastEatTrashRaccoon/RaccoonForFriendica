@@ -59,7 +59,6 @@ class NodeInfoViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun setup() {
         Dispatchers.run { setMain(UnconfinedTestDispatcher()) }
-
         sut = viewModelFactory()
     }
 
