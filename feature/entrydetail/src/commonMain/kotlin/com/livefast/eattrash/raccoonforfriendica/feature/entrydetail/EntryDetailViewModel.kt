@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedba
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
@@ -127,7 +128,11 @@ class EntryDetailViewModel(
             it.copy(
                 initial = initial,
                 refreshing = !initial,
-                entries = currentEntry?.let { e -> listOf(e) } ?: emptyList(),
+                entries =
+                    currentEntry
+                        ?.let { e -> listOf(e) }
+                        ?.distinctBy { e -> e.safeKey }
+                        ?: emptyList(),
             )
         }
 
@@ -155,7 +160,7 @@ class EntryDetailViewModel(
                             with(replyHelper) { it.withInReplyToIfMissing() }
                         },
                 )
-            }.filterNotNull()
+            }.filterNotNull().distinctBy { e -> e.safeKey }
 
         entries.preloadImages()
         updateState {
