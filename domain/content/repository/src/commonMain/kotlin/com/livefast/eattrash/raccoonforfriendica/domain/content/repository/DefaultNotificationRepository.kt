@@ -7,11 +7,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 internal class DefaultNotificationRepository(
     private val provider: ServiceProvider,
 ) : NotificationRepository {
+    private val mutex = Mutex()
     private val cachedValues: MutableList<NotificationModel> = mutableListOf()
 
     override suspend fun getAll(
@@ -21,7 +24,9 @@ internal class DefaultNotificationRepository(
     ): List<NotificationModel>? =
         withContext(Dispatchers.IO) {
             if (refresh) {
-                cachedValues.clear()
+                mutex.withLock {
+                    cachedValues.clear()
+                }
             }
             if (pageCursor == null && cachedValues.isNotEmpty()) {
                 return@withContext cachedValues
@@ -37,7 +42,9 @@ internal class DefaultNotificationRepository(
                     .map { it.toModel() }
                     .also {
                         if (pageCursor == null) {
-                            cachedValues.addAll(it)
+                            mutex.withLock {
+                                cachedValues.addAll(it)
+                            }
                         }
                     }
             }.getOrNull()
