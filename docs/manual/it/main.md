@@ -1,5 +1,5 @@
 <div align="right">
-Lingua: <a href="../en/main.md">🇬🇧</a>
+Lingua: <a href="../en/main.html">🇬🇧</a>
 </div>
 
 # User manual
@@ -51,7 +51,7 @@ di questo tipo, in particolare ti permette di:
 - visualizzare la timeline dei post creati da altri utenti;
 - seguire un hashtag e visualizzare tutti i post che lo contengono;
 - creare nuovi post di primo livello o risposte ai post di altri, o pianificarne la pubblicazione
-  per un secondo momento (e modifica o eliminare i tuoi post);
+  per un secondo momento (e modificare o eliminare i tuoi post);
 - mettere "mi piace" o "non mi piace" ai post;
 - salvare un post nei segnalibri;
 - ricondividere un post;
@@ -364,13 +364,16 @@ apertura URL" selezionata nelle [impostazioni](#impostazioni-applicazione).
 
 ## Ricerca
 
-This screen makes it possible to search in the Fediverse: it contains a search field to enter the
-query string and a tab selector to choose the desired result type (either Posts, Users or Hashtags).
+Questa schermata permette di effettuare ricerche nel Fediverso: contiene un campo di ricerca per
+inserire il testo da usare come criterio e un selettore a schede per selezionare il tipo di
+risultato desiderato (Post, Utenti o Hashtag).
 
-Please notice that it is not possible to search unless a non-empty query has been inserted.
+Tieni presente che non è possibile effettuare la ricerca a meno che non sia stata inserito un
+criterio non vuoto.
 
-Opening a hashtag will lead you to the [dedicated feed](#hashtag-feed), opening a post to
-its [detail](#post-detail) and opening a user to the corresponding [profile](#user-profile).
+L'apertura di un hashtag ti porterà al relativo [elenco](#elenco-post-contententi-un-hashtag),
+facendo tap su un post si aprirà il relativo [dettaglio](#dettaglio-post) e facendo tap su un utente
+il relativo [profilo](#profilo-utente).
 
 <div align="center">
   <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="../images/search.png" />
@@ -380,33 +383,35 @@ its [detail](#post-detail) and opening a user to the corresponding [profile](#us
 
 ## Notifiche
 
-This screen contains the list of notifications for the events you have subscribed to, so it is only
-available for logged users.
+Questa schermata contiene l'elenco delle notifiche per gli eventi a cui sei iscritto, ed è
+disponibile unicamente per gli utenti registrati.
 
-The main content presents the list of notifications, which can be of the following types:
+Il contenuto principale presenta l'elenco delle notifiche, che possono essere delle seguenti
+tipologie:
 
-- **Post** a user you enabled notifications for has published a new post;
-- **Edit** a post you have re-shared has been modified by its author;
-- **Mention** you have been mentioned in a post;
-- **Re-share** one of your posts has been re-shared;
-- **Favorite** one of your posts has been added to favorites;
-- **Follow** someone has started following you;
-- **Follow request** someone has sent you a follow request;
-- **Poll** a poll you have participated in has expired.
+- **Post** un utente per cui hai abilitato le notifiche ha pubblicato un nuovo post;
+- **Modifica** un post che hai ricondiviso è stato modificato dal suo autore;
+- **Menzione** sei stato menzionato in un post;
+- **Ricondivisione** uno dei tuoi post è stato ricondiviso;
+- **Preferito** uno dei tuoi post è stato aggiunto ai preferiti;
+- **Seguace** qualcuno ha iniziato a seguirti;
+- **Richiesta di essere seguito** qualcuno ti ha inviato una richiesta di essere seguito;
+- **Sondaggio** un sondaggio a cui hai partecipato è scaduto.
 
-From the top bar menu it is possible to select/unselect specific categories of notifications to
-filter the results displayed in the list.
+Dal menù della barra in alto è possibile selezionare/deselezionare specifiche categorie di notifiche
+e filtrare i risultati visualizzati nell'elenco.
 
-Moreover, it is possible to:
+Inoltre, è possibile
 
-- mark all notifications as read, by simply refresh the page (which will reset the unread counter);
-- dismiss all notifications by using the "Done all" button in the top bar.
+- contrassegnare tutte le notifiche come lette, semplicemente aggiornando la pagina (che azzererà il
+  contatore delle non lette);
+- eliminare tutte le notifiche utilizzando il pulsante "Checkmark" nella barra in alto.
 
-(Be careful, after being dismissed notifications are cleared from the server and you will not be
-able to browse the list any more!)
+(Fai attenzione, dopo essere state eliminate, le notifiche verranno cancellate dal server e non sarà
+più possible visualizzarne l'elenco!)
 
-Tapping on each item of the list, it is possible to open the [user profile](#user-profile)
-or [post detail](#post-detail).
+Facendo tap su ciascuna voce della lista è possibile aprire il
+relativo [profilo utente](#profilo-utente)o [dettaglio post](#dettaglio-post).
 
 <div align="center">
   <img width="310" alt="inbox screen" src="../images/inbox.png" />
@@ -416,40 +421,45 @@ or [post detail](#post-detail).
 
 ## Profilo
 
-If you are running the app in anonymous mode, the Profile screen contains the Login button to start
-the authentication flow. If, on the other hand, you are already logged in, it looks similar to a
-regular [user profile](#user-profile) but has some additional actions specific for your user.
+Se stai eseguendo l'app in modalità anonima, la schermata Profilo contiene il pulsante Accedi per
+iniziare il flusso di autenticazione. Se invece hai già effettuato l'accesso, appare simile a un
+normale [profilo utente](#profilo-utente), però con alcune azioni aggiuntive specifiche per il tuo
+account.
 
-If you have multiple accounts, in the top app bar you will find a "Manage account" button to switch
-between one another.
+Se disponi di più account, nella barra superiore comparirà il pulsante "Gestisci account" per
+effettuare il passaggio da uno all'altro.
 
 ### Login
 
-The most common way to log-in to federated platforms like Friendica or Mastodon is OAuth2, i.e. a
-web-based flow thanks to which the app is granted a token to perform a set of specific operations on
-behalf of the user (e.g. creating posts, follow a user, get the subscription timeline).
+Il metodo più comune per accedere alle piattaforme federate come Friendica o Mastodon è OAuth2,
+ovvero un flusso basato sul browser grazie al quale all'app viene concesso un token temporaneo con
+cui eseguire una serie di operazioni specifiche per conto dell'utente (ad esempio creare post,
+seguire un utente, ottenere l'elenco dei post da chi si segue, ecc.).
 
-This method is recomended because:
+Questo metodo è preferibile in quanto:
 
-- your username/password never go outside browser and remain unknown to all third-party subjects
-  (including the Raccoon app);
-- it has finer-grained access levels, meaning you can control the various _scopes_ each individual
-  token can be used for;
-- tokens can be revoked at any time, making it easier to mitigate potentially unwanted accesses.
+- il tuo nome utente/password non lasciano mai dal browser e rimane sconosciuto a tutti i soggetti
+  terzi (inclusa l'app Raccoon);
+- il livello di accesso è più capillare, il che significa che è possibile controllare i vari ambiti
+  (o _scope_) per cui ogni singolo token può essere utilizzato;
+- i token possono essere revocati in qualsiasi momento, facilitando la mitigazione degli accessi
+  potenzialmente indesiderati.
 
-Friendica back-ends, in turn, allow users to authenticate calls using the Basic HTTP standard, which
-requires users credentials (username and password) to be known to the third-party app using it.
+I server Friendica, d'altro canto, consentono agli utenti di autenticare le chiamate utilizzando
+lo standard HTTP Basic, che richiede l'immissione delle credenziali (nome utente e password)
+nell'app di terze parti che intende utilizzarle.
 
-The login flow involves two steps:
+Il flusso di accesso prevede due tra questi passaggi:
 
-- an introductory screen where you choose your platform and login mode (the double choice
-  OAuth2/HTTP Basic is only available on Friendica)
-- the instance selection (only for OAuth2) where you have to specify the server to connect to; for
-  Friendica you have the possibility to choose from a drop-down menu or you can manually enter the
-  domain, for all other platforms you will have to manually enter the server domain (
-  e.g. `mastodon.social`);
-- the instance and credentials input (only for HTTP Basic) where you have to select your Friendica
-  instance (from a drop-down list or entering it manually) and insert your credentials.
+- una schermata introduttiva dove si sceglie la piattaforma e la modalità di login (la doppia scelta
+  OAuth2/HTTP Basic è disponibile solo su Friendica)
+- la selezione dell'istanza (solo per OAuth2) dove specificare il server a cui connettersi; per
+  Friendica è possbile scegliere da un menù a tendina o inserire manualmente il nome di dominio se
+  non presente, per tutte le altre piattaforme dovrai inserire manualmente il dominio del server (ad
+  es. `mastodon.social`);
+- inserire il dominio dell'istanza e le credenziali (solo per HTTP Basic), dove dovrai selezionare
+  la tua istanza Friendica (da un elenco a tendina o inserendolo manualmente se non presente) e
+  immettere le tue credenziali.
 
 <div align="center">
   <img width="310" alt="login intro screen" src="../images/login_1.png" />
@@ -459,8 +469,10 @@ The login flow involves two steps:
 
 ### Il tuo profilo
 
-In the header, instead of the relationship/notification buttons you will find an "Edit profile"
-button to open your [profile preferences](#profile-settings).
+Come affermato in precedenza, questa schermata è molto simile a un
+normale [profilo utente](#profilo-utente). Nell'intestazione, al posto del pulsante per seguire o
+attivare/disattivare le notifiche è presente un pulsante "Modifica profilo"
+che permette di accedere alle [preferenze del profilo](#profile-settings).
 
 <div align="center">
   <img width="310" alt="profile screen" src="../images/profile.png" />

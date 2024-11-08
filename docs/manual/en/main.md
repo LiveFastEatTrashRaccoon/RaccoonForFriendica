@@ -1,5 +1,5 @@
 <div align="right">
-Language <a href="../it/main.md">🇮🇹</a>
+Language <a href="../it/main.html">🇮🇹</a>
 </div>
 
 # User manual
@@ -409,7 +409,7 @@ The most common way to log-in to federated platforms like Friendica or Mastodon 
 web-based flow thanks to which the app is granted a token to perform a set of specific operations on
 behalf of the user (e.g. creating posts, follow a user, get the subscription timeline).
 
-This method is recomended because:
+This method is recommended because:
 
 - your username/password never go outside browser and remain unknown to all third-party subjects
   (including the Raccoon app);
@@ -420,7 +420,7 @@ This method is recomended because:
 Friendica back-ends, in turn, allow users to authenticate calls using the Basic HTTP standard, which
 requires users credentials (username and password) to be known to the third-party app using it.
 
-The login flow involves two steps:
+The login flow involves two of these steps:
 
 - an introductory screen where you choose your platform and login mode (the double choice
   OAuth2/HTTP Basic is only available on Friendica)
@@ -439,6 +439,7 @@ The login flow involves two steps:
 
 ### One's own user detail
 
+As previously stated, this screen looks very similar to a regular [user profie](#user-profile).
 In the header, instead of the relationship/notification buttons you will find an "Edit profile"
 button to open your [profile preferences](#profile-settings).
 
