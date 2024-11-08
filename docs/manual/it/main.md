@@ -9,8 +9,8 @@ function changeLanguage() {
 }
 </script>
 <div align="right">
-  <label for="language">Seleziona lingua</label>
-  <select id="language" name="language" onchange="changeLanguage">
+  <label for="language"></label>
+  <select id="language" name="language" onchange="changeLanguage()">
     <option value="en">English 🇬🇧</option>
     <option value="it" selected="selected">Italiano 🇮🇹</option>
   </select>
