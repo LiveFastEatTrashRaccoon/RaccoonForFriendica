@@ -332,7 +332,7 @@ a link will either open the external browser or custom tabs depending on the "UR
 option selected in the [app settings](#application-settings).
 
 <p id="hashtag-usage-disclaimer">
-  * note that on different backends the number or days may vary from 1 to 7 days depending on the server
+* note that on different backends the number or days may vary from 1 to 7 days depending on the server
 </p>
 
 <div align="center">
@@ -442,7 +442,7 @@ log in from the mobile app.
 
 ### One's own user detail
 
-As previously stated, this screen looks very similar to a regular [user profie](#user-profile).
+As previously stated, this screen looks very similar to a regular [user profile](#user-profile).
 In the header, instead of the relationship/notification buttons you will find an "Edit profile"
 button to open your [profile preferences](#profile-settings).
 
@@ -536,7 +536,7 @@ The profile data which can be edited are:
 - include posts by this account in public timeline (`indexable`).
 
 <p id="user-profile-experimental-disclaimer">
-  * depending on the back-end type these fields may not work, e.g. there are some known compatibility
+* depending on the back-end type these fields may not work, e.g. there are some known compatibility
 issues on some versions of Friendica
 </p>
 
@@ -558,25 +558,26 @@ sections:
     i.e. only followers — or `direct` — i.e. ony mentions) used for posts by default;
   - **Default visibility for replies** configures the visibility used for replies by default;
   - **URL opening mode** configures how URLs will be opened (external browser or custom tabs);
-  - **Exclude replies from timeline** configures whether replies are included by default in the
+  - **Exclude replies from timeline** determines whether replies are included by default in the
     Timeline screen;
-  - **Open groups in forum mode by default** configures whether group accounts are going to be
+  - **Open groups in forum mode by default** determines whether group accounts are going to be
     opened in forum mode (as opposed to classic mode) by default;
   - **Load images automatically** if enabled, images are loaded automatically, if disabled images
     are loaded on-demand (data saving mode);
   - **Markup for compositing** determines the type of markup syntax used in new posts (plain text —
-    i.e. no markup — BBCode — Friendica-specific — HTML or Markdown — Mastodon specific);*
+    i.e. no markup — BBCode — Friendica-specific — HTML or Markdown — Mastodon
+    specific);<a href="#markdown-formatting">*</a>
   - **Max post body lines** configures the maximum number of lines for posts which will be shown in
     feeds;
   - **Notification mode** allows to configure the notification strategy among the following values:
     - **Push** receive push notifications using
-      UnifiedPush;<a href="#notifications-unifiedpush">*</a>
+      UnifiedPush;<a href="#notifications-unifiedpush">**</a>
     - **Pull** periodically check in background for incoming
-      notifications;<a href="#notifications-background-check">**</a>
-    - **Disabled** no notification will be received;
+      notifications;<a href="#notifications-background-check">***</a>
+    - **Disabled** notifications will be fetched at app startup or when refreshing the list;
   - **Push notification state** displays the state of the UnifiedPush integration (e.g. "Enabled"
     or "Initializing…", if more than a distributor is available on the device the "Select
-    distribution" value will allow to open a bottom sheet to pick one);
+    distributor" value will allow to open a bottom sheet to pick one);
   - **Check for notifications in background** (if "Pull" strategy selected) configures the time
     interval between background checks for incoming notifications;
 - **Look & Feel**
@@ -587,19 +588,25 @@ sections:
   - **Material You** generate a color palette based on the launcher image;
 - **NSFW**
   - **Manage filters** opens the ban and [filter management](#manage-filters) screen;
-  - **Include NSFW contents** configures a client-side filter to exclude sensitive posts;
+  - **Include NSFW contents** enables a client-side filter to exclude sensitive posts;
   - **Blur NSFW media** allows, if sensitive contents are included, to blur images and hide videos
     when they occur in timelines.
 
+<p id="markdown-formatting">
+* please choose wisely: <em>Markdown</em> is supported only by some versions of Mastodon (e.g.
+glitch-soc), if you do not know what you are doing stick to HTML or plain text, otherwise your posts
+may not be formatted correctly
+</p>
+
 <p id="notifications-unifiedpush">
-  * in order for UnifiedPush to work, a distributor must be installed on your device, e.g.
+** in order for UnifiedPush to work, a distributor must be installed on your device, e.g.
 <a href="https://unifiedpush.org/users/distributors/nextpush/">NextPush</a> and configured with the
-corresponding server-side Nextpush app where you have, in turn, registered and paired with the
+corresponding server-side NextPush app where you have, in turn, registered and paired the
 remote account you are currently using on your instance 
 </p>
 
 <p id="notifications-background-check">
-  ** in order to this to work, the application must not have any restriction for background activity,
+*** in order for this to work, the application must not have any restriction for background activity,
 so please make sure the battery saving restrictions for Raccoon in your system settigs
 </p>
 
