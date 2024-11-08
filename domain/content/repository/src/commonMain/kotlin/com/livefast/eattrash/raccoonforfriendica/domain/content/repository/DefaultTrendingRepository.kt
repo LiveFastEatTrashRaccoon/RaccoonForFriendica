@@ -8,11 +8,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 internal class DefaultTrendingRepository(
     private val provider: ServiceProvider,
 ) : TrendingRepository {
+    private val mutex = Mutex()
     private val cachedTags: MutableList<TagModel> = mutableListOf()
 
     override suspend fun getEntries(offset: Int): List<TimelineEntryModel>? =
@@ -34,7 +37,9 @@ internal class DefaultTrendingRepository(
     ): List<TagModel>? =
         withContext(Dispatchers.IO) {
             if (refresh) {
-                cachedTags.clear()
+                mutex.withLock {
+                    cachedTags.clear()
+                }
             }
             if (offset == 0 && cachedTags.isNotEmpty()) {
                 return@withContext cachedTags
@@ -50,7 +55,9 @@ internal class DefaultTrendingRepository(
                     .map { it.toModel() }
                     .also {
                         if (offset == 0) {
-                            cachedTags.addAll(it)
+                            mutex.withLock {
+                                cachedTags.addAll(it)
+                            }
                         }
                     }
             }.getOrNull()

@@ -19,12 +19,15 @@ import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 
 internal class DefaultTimelineEntryRepository(
     private val provider: ServiceProvider,
 ) : TimelineEntryRepository {
+    private val mutex = Mutex()
     private val cachedValues: MutableList<TimelineEntryModel> = mutableListOf()
 
     override fun getCachedByUser(): List<TimelineEntryModel> = cachedValues
@@ -41,7 +44,9 @@ internal class DefaultTimelineEntryRepository(
     ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             if (refresh) {
-                cachedValues.clear()
+                mutex.withLock {
+                    cachedValues.clear()
+                }
             }
             if (pageCursor == null && cachedValues.isNotEmpty() && enableCache) {
                 return@withContext cachedValues
@@ -59,7 +64,9 @@ internal class DefaultTimelineEntryRepository(
                     ).map { it.toModelWithReply() }
                     .also {
                         if (pageCursor == null && enableCache) {
-                            cachedValues.addAll(it)
+                            mutex.withLock {
+                                cachedValues.addAll(it)
+                            }
                         }
                     }
             }.getOrNull()

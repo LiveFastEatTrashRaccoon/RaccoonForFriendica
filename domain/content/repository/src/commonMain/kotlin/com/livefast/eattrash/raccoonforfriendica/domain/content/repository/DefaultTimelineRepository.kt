@@ -7,11 +7,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 internal class DefaultTimelineRepository(
     private val provider: ServiceProvider,
 ) : TimelineRepository {
+    private val mutex = Mutex()
     private val cachedValues: MutableList<TimelineEntryModel> = mutableListOf()
 
     override suspend fun getPublic(
@@ -20,7 +23,9 @@ internal class DefaultTimelineRepository(
     ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             if (refresh) {
-                cachedValues.clear()
+                mutex.withLock {
+                    cachedValues.clear()
+                }
             }
             if (pageCursor == null && cachedValues.isNotEmpty()) {
                 return@withContext cachedValues
@@ -35,7 +40,9 @@ internal class DefaultTimelineRepository(
                     .map { it.toModelWithReply() }
                     .also {
                         if (pageCursor == null) {
-                            cachedValues.addAll(it)
+                            mutex.withLock {
+                                cachedValues.addAll(it)
+                            }
                         }
                     }
             }.getOrNull()
@@ -47,7 +54,9 @@ internal class DefaultTimelineRepository(
     ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             if (refresh) {
-                cachedValues.clear()
+                mutex.withLock {
+                    cachedValues.clear()
+                }
             }
             if (pageCursor == null && cachedValues.isNotEmpty()) {
                 return@withContext cachedValues
@@ -62,7 +71,9 @@ internal class DefaultTimelineRepository(
                     .map { it.toModelWithReply() }
                     .also {
                         if (pageCursor == null) {
-                            cachedValues.addAll(it)
+                            mutex.withLock {
+                                cachedValues.addAll(it)
+                            }
                         }
                     }
             }.getOrNull()
@@ -74,7 +85,9 @@ internal class DefaultTimelineRepository(
     ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
             if (refresh) {
-                cachedValues.clear()
+                mutex.withLock {
+                    cachedValues.clear()
+                }
             }
             if (pageCursor == null && cachedValues.isNotEmpty()) {
                 return@withContext cachedValues
@@ -90,7 +103,9 @@ internal class DefaultTimelineRepository(
                     .map { it.toModelWithReply() }
                     .also {
                         if (pageCursor == null) {
-                            cachedValues.addAll(it)
+                            mutex.withLock {
+                                cachedValues.addAll(it)
+                            }
                         }
                     }
             }.getOrNull()
