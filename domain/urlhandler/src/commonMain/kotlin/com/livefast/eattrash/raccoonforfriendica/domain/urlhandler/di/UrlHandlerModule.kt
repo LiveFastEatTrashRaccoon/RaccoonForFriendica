@@ -27,6 +27,7 @@ val domainUrlHandlerModule =
         single<FetchUserUseCase> {
             DefaultFetchUserUseCase(
                 userRepository = get(),
+                apiConfigurationRepository = get(),
             )
         }
         single<HashtagProcessor> {
