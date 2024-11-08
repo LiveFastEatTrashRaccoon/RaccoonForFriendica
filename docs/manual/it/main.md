@@ -351,11 +351,11 @@ connesso. La schermata è suddivisa nelle seguenti sezioni:
 L'apertura di un hashtag ti porterà all'[elenco dedicato](#elenco-post-contententi-un-hashtag),
 facendo tap su un post è possibile accedere al relativo [dettaglio](#post-dettaglio) e facendo tap
 su un utente si aprirà il relativo [profilo](#profilo-utente). Invece, al tap su un
-collegamento aprirà il browser esterno o una custom tab a seconda dell'opzione "Modalità di
-apertura URL" selezionata nelle [impostazioni](#impostazioni-applicazione).
+collegamento aprirà il browser esterno o una custom tab a seconda dell'opzione "Modalità apertura
+URL" selezionata nelle [impostazioni](#impostazioni-applicazione).
 
 <p id="hashtag-usage-disclaimer">
-  * su server diversi il numero può variare da 1 a 7 giorni a seconda del tipo di istanza
+* su server diversi il numero può variare da 1 a 7 giorni a seconda del tipo di istanza
 </p>
 
 <div align="center">
@@ -506,10 +506,11 @@ questo utente.
 
 ## Richieste di essere seguito
 
-If in your [profile settings](#profile-settings) you have enabled manual approval for follow
-requests, this screen contains the list of pending follow request you have received.
+Se nelle tue [impostazioni del profilo](#impostazioni-account) hai abilitato l'approvazione manuale
+per le richieste di essere seguito, questa schermata contiene l'elenco delle richieste da te
+ricevute che risultano in attesa di approvazione.
 
-For each one of the items you can either accept or reject the request.
+Per ciascuna delle voci dell'elenco è possibile accettare o rifiutare la richiesta.
 
 <div align="center">
   <img width="310" alt="follow request screen" src="../images/follow_requests.png" />
@@ -519,14 +520,15 @@ For each one of the items you can either accept or reject the request.
 
 ## Informazioni istanza
 
-This screen contains some information about the current instance you are connected to:
+Questa schermata contiene una serie di informazioni relative all'istanza cui si connesso, in
+particolare:
 
-- banner image;
-- domain;
-- description;
-- contact account;
-- list of rules members of this server have to comply with;
-- backend type and software version.
+- immagine di copertina;
+- nome di dominio;
+- descrizione;
+- contatto utente principale;
+- lista di regole che devono essere rispettate dai membri dell'istanza;
+- tipologia di backend e versione del software in esecuzione sul server.
 
 <div align="center">
   <img width="310" alt="node info screen" src="../images/node_info.png" />
@@ -536,15 +538,15 @@ This screen contains some information about the current instance you are connect
 
 ## Informazioni sull'applicazione
 
-This dialog contains more information about the app:
+Questa finestra di dialogo contiene alcune informazioni aggiuntive a proposito dell'app:
 
-- version name and code;
-- a link to the changelog;
-- a button to open a feedback form;
-- a link to the GitHub main page of the app;
-- a shortcut to the Friendica discussion group for the app;
-- a link to the project's Matrix room;
-- the entry point for the list of licences for the libraries and resources used in the app.
+- nome e codice di versione;
+- link all'elenco delle modifiche;
+- un pulsante per aprire un form di inserimento commenti;
+- il link alla pagina principale dell'app su GitHub;
+- una scorciatoia di accesso al gruppo Friendica dedicato all'app;
+- un link alla room Matrix dedicata al progetto;
+- l'accesso alla lista delle licenze relative alle librerie e alle risorse usate nell'app.
 
 <div align="center">
   <img width="310" alt="app information dialog" src="../images/app_info.png" />
@@ -555,25 +557,26 @@ This dialog contains more information about the app:
 
 ## Impostazioni account
 
-This screen allows you to edit your profile data and configure (to some extent) the discoverability
-and visibility of your profile.
+Questa schermata ti consente di modificare i dati del tuo profilo e configurare (in una certa
+misura) la rilevabilità
+e visibilità del tuo profilo.
 
-The profile data which can be edited are:
+I dati del profilo che possono essere modificati sono:
 
-- display name;
-- bio;
-- avatar;<a href="#user-profile-experimental-disclaimer">*</a>
-- banner;<a href="#user-profile-experimental-disclaimer">*</a>
-- custom fields;<a href="#user-profile-experimental-disclaimer">*</a>
-- bot (mark account as bot);
-- manual approval of follow requests (`locked`);
-- make account visible in searches (`discoverable`);
-- make following and follower lists private (`hide_collections`);
-- include posts by this account in public timeline (`indexable`).
+- nome visualizzato;
+- biografia;
+- immagine profilo;<a href="#user-profile-experimental-disclaimer">*</a>
+- immagine copertina;<a href="#profilo-utente-disclaimer-sperimentale">*</a>
+- campi personalizzati;<a href="#user-profile-experimental-disclaimer">*</a>
+- bot (per contrassegnare l'account come bot);
+- abilita approvazione manuale delle richieste di essere seguito (`blocked`);
+- rendi l'account visibile nelle ricerche (`discoverable`);
+- rendi private le liste dei seguaci e seguiti (`hide_collections`);
+- includi i post creati da questo account nella timeline pubblica (`indexable`).
 
 <p id="user-profile-experimental-disclaimer">
-  * depending on the back-end type these fields may not work, e.g. there are some known compatibility
-issues on some versions of Friendica
+* a seconda del backend questi campi potrebbero non essere modificabili, per es. ci sono alcuni 
+problemi di compatibilità noti in alcune versioni di Friendica
 </p>
 
 <div align="center">
@@ -584,59 +587,74 @@ issues on some versions of Friendica
 
 ## Impostazioni applicazione
 
-This screen allows to customize the application appearance and behaviour, it has the following
-sections:
+Questa schermata consente di personalizzare l'aspetto e il comportamento dell'applicazione. È
+costituita dalle seguenti sezioni:
 
-- **General**
-  - **Language**  configures the language for the user interface;
-  - **Default timeline type** configures the timeline type used by default in the Timeline screen
-  - **Default visibility for posts** configures the visibility (`public`, `unlisted`, `private` -
-    i.e. only followers — or `direct` — i.e. ony mentions) used for posts by default;
-  - **Default visibility for replies** configures the visibility used for replies by default;
-  - **URL opening mode** configures how URLs will be opened (external browser or custom tabs);
-  - **Exclude replies from timeline** configures whether replies are included by default in the
-    Timeline screen;
-  - **Open groups in forum mode by default** configures whether group accounts are going to be
-    opened in forum mode (as opposed to classic mode) by default;
-  - **Load images automatically** if enabled, images are loaded automatically, if disabled images
-    are loaded on-demand (data saving mode);
-  - **Markup for compositing** determines the type of markup syntax used in new posts (plain text —
-    i.e. no markup — BBCode — Friendica-specific — HTML or Markdown — Mastodon specific);*
-  - **Max post body lines** configures the maximum number of lines for posts which will be shown in
-    feeds;
-  - **Notification mode** allows to configure the notification strategy among the following values:
-    - **Push** receive push notifications using
+- **Generali**
+  - **Lingua** configura la lingua dell'interfaccia utente;
+  - **Tipo di feed predefinito** configura il tipo di elenco predefinito della schermata Timeline;
+  - **Visibilità predefinita post** configura la visibilità predefinita (pubblica, non in lista,
+    solo seguaci o solo menzioni) usata per i nuovi post;
+  - **Visibilità predefinita risposte** configura la visibilità predefinita delle risposte;
+  - **Modalità apertura URL** configura la modalità di apertura degli URL (sul browser di sistema
+    oppure tramite "custom tab");
+  - **Escludi risposte dalla timeline** determina se le risposte vengono incluse o meno nella
+    Timeline principale;
+  - **Apri i gruppi in modalità forum di default** determina se gli account di gruppo vengono aperti
+    di default in modalità forum (invece che in modalità classica);
+  - **Carica immagini automaticamente** se abilitata le immagini vengono caricate automaticamente,
+    se disabilitata le immagini vengono caricate su richiesta (per risparmare utilizzo di dati
+    mobili);
+  - **Markup per la composizione** determina la sintassi di formattazione per i nuovi post (testo
+    semplice — ovvero senza formattazione — BBCode — specifico di Friendica — HTML o Markdown —
+    specifico di Mastodon;<a href="#markdown-formatting">*</a>
+  - **Numero massimo righe testo post** configura il numero massimo di righe che verrà visualizzato
+    negli elenchi per ciascun post;
+  - **Modalità notifiche** permtte di configurare la strategia da usare per le notifiche scegliendo
+    tra i seguenti valori:
+    - **Push** ricevi le notifiche push attraverso
       UnifiedPush;<a href="#notifications-unifiedpush">*</a>
-    - **Pull** periodically check in background for incoming
-      notifications;<a href="#notifications-background-check">**</a>
-    - **Disabled** no notification will be received;
-  - **Push notification state** displays the state of the UnifiedPush integration (e.g. "Enabled"
-    or "Initializing…", if more than a distributor is available on the device the "Select
-    distribution" value will allow to open a bottom sheet to pick one);
-  - **Check for notifications in background** (if "Pull" strategy selected) configures the time
-    interval between background checks for incoming notifications;
-- **Look & Feel**
-  - **UI theme** configures the color theme (light, dark or dark optimized for AMOLED screens);
-  - **Font family** configures the font used in the UI;
-  - **Font size** configures the scale factor applied to fonts in the UI
-  - **Theme color** allows to choose a color to generate a Material 3 palette from;
-  - **Material You** generate a color palette based on the launcher image;
+    - **Pull** controlla periodicamente in background la presenza di nuove
+      notifiche;<a href="#notifications-background-check">**</a>
+    - **Disabilitate** le notifiche saranno ricevute all'avvio dell'app o facendo refresh della
+      lista manualmente;
+  - **Stato notifiche push** visualizza lo stato dell'integrazione UnifiedPush attuale (es. "Attivo"
+    o "Inizializzazione…", se sul dispositivo sono disposnibili più distributori la voce sarà "
+    Seleziona distributore" e permetterà di aprire una bottom sheet per sceglierne uno);
+  - **Controlla notifiche in background** (se la strategia selezionata è "Pull") configura
+    l'intervallo di tempo tra le verifiche periodiche delle notifiche in arrivo;
+- **Aspetto**
+  - **Tema UI** configura il tema di colori(chiaro, scuro o scuro ottimizzato per display AMOLED);
+  - **Tipo di carattere** configura il tipo di carattere usato nell'interfaccia utente;
+  - **Dimensione testo** configura il fattore di scala che sarà applicato ai font nell'interfaccia
+    utente;
+  - **Colore tema** permette di selezionare un colore a partire dal quale verrà generata una palette
+    di colori Material 3;
+  - **Material You** genera una palette di colori a partire dall'immagine di sfondo;
 - **NSFW**
-  - **Manage filters** opens the ban and [filter management](#manage-filters) screen;
-  - **Include NSFW contents** configures a client-side filter to exclude sensitive posts;
-  - **Blur NSFW media** allows, if sensitive contents are included, to blur images and hide videos
-    when they occur in timelines.
+  - **Gestione filtri** apre la schermata di [gestione](#gestione-filtri) degli utenti bloccati e
+    silenziati;
+  - **Includi contenuti NSFW** abilita un filtro lato client sui contenuti contrassegnati come
+    sensibili;
+  - **Offusca media NSFW** permette, se i contenuti sensibili sono inclusi, di offuscare le immagini
+    e nascondere i video all'interno delle timeline.
+
+<p id="markdown-formatting">
+* scgliere con cautela: <em>Markdown</em> è supportato solo da alcune versioni di Mastodon (es.
+glitch-soc), se non sei sicuro/a di quel che stai facendo usa HTML o testo semplice, altrimenti i 
+tuoi post potrebbero non essere formattati correttamente
+</p>
 
 <p id="notifications-unifiedpush">
-  * in order for UnifiedPush to work, a distributor must be installed on your device, e.g.
-<a href="https://unifiedpush.org/users/distributors/nextpush/">NextPush</a> and configured with the
-corresponding server-side Nextpush app where you have, in turn, registered and paired with the
-remote account you are currently using on your instance 
+** affinché UnifiedPush funzioni, sul tuo dispositivo deve essere installato un distributore, ad es.
+<a href="https://unifiedpush.org/users/distributors/nextpush/">NextPush</a> che deve essere abbinato
+all'app NextPush ospitata in Cloud dove hai effettuato l'accesso e configurato l'account remoto che
+stati utilizzando sulla tua istanza
 </p>
 
 <p id="notifications-background-check">
-  ** in order to this to work, the application must not have any restriction for background activity,
-so please make sure the battery saving restrictions for Raccoon in your system settigs
+*** per funzionare, è necessario che all'app non sia applicata alcuna restrizione per l'attività in
+background, controlla le impostazioni di risparmio energetico di Raccoon nelle impostazioni di sistema
 </p>
 
 <div align="center">
@@ -647,11 +665,11 @@ so please make sure the battery saving restrictions for Raccoon in your system s
 
 ## Gestione filtri
 
-This screen allows to revoke current restrictions on other accounts. It is divided into two
-sections:
+Questa schermata consente di revocare le restrizioni (silenziare o bloccare) attualmente applicate
+ad altri account. È suddivisa in due sezioni:
 
-- **Muted** for muted accounts;
-- **Bans** for banned ones.
+- **Silenziati** dedicata agli utenti che sono stati silenziati;
+- **Bloccati** dedicata agli utenti bloccati.
 
 <div align="center">
   <img width="310" alt="manage bans screen" src="../images/manage_bans.png" />
