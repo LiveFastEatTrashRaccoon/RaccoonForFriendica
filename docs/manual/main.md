@@ -190,7 +190,7 @@ Moreover, from each single post it is possible to:
 
 ## Post detail
 
-In this screen you will will be able to see it in its context (with ancestors until the root post
+In this screen you will be able to see it in its context (with ancestors until the root post
 and all descendants).
 
 Moreover you can the list of users who re-shared it or added it to their favorites.

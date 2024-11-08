@@ -117,7 +117,7 @@ L'interfaccia utente dell'applicazione è divisa in tre parti:
 
 - menu laterale di navigazione (accessibile dall'icona hamburger nell'angolo in alto a sinistra o
   con uno swipe da sinistra a destra): se hai effettuato l'accesso mostra il tuo nome utente e
-  l'istanza cui sei connesso oppure, in modalità anonima, mstra semplicemente il nome dell'istanza –
+  l'istanza cui sei connesso oppure, in modalità anonima, mstra semplicemente il nome dell'istanza —
   più una serie di scorciatoie a diverse sezioni dell'app (es. le impostazioni o la informazioni
   sull'istanza attuale);
 - la barra di navigazione inferiore, con le scorciatoie per le sezioni più importanti dell'app
@@ -200,7 +200,7 @@ Inoltre per ogni post è possibile:
 
 ## Dettaglio post
 
-In questa schermata permette di visualizzare un post nel suo contesto (ovvero tutti i post
+Questa schermata permette di visualizzare un post nel suo contesto (ovvero tutti i post
 precedenti fino a quello radice da cui è si originata la conversazione e tutte le risposte che sono
 state ricevute).
 
@@ -606,8 +606,8 @@ costituita dalle seguenti sezioni:
 - **Generali**
   - **Lingua** configura la lingua dell'interfaccia utente;
   - **Tipo di feed predefinito** configura il tipo di elenco predefinito della schermata Timeline;
-  - **Visibilità predefinita post** configura la visibilità predefinita (pubblica, non in lista,
-    solo seguaci o solo menzioni) usata per i nuovi post;
+  - **Visibilità predefinita post** configura la visibilità predefinita (Pubblica, Non in lista,
+    Solo seguaci o Solo menzioni) usata per i nuovi post;
   - **Visibilità predefinita risposte** configura la visibilità predefinita delle risposte;
   - **Modalità apertura URL** configura la modalità di apertura degli URL (sul browser di sistema
     oppure tramite "custom tab");
@@ -626,9 +626,9 @@ costituita dalle seguenti sezioni:
   - **Modalità notifiche** permtte di configurare la strategia da usare per le notifiche scegliendo
     tra i seguenti valori:
     - **Push** ricevi le notifiche push attraverso
-      UnifiedPush;<a href="#notifications-unifiedpush">*</a>
+      UnifiedPush;<a href="#notifications-unifiedpush">**</a>
     - **Pull** controlla periodicamente in background la presenza di nuove
-      notifiche;<a href="#notifications-background-check">**</a>
+      notifiche;<a href="#notifications-background-check">***</a>
     - **Disabilitate** le notifiche saranno ricevute all'avvio dell'app o facendo refresh della
       lista manualmente;
   - **Stato notifiche push** visualizza lo stato dell'integrazione UnifiedPush attuale (es. "Attivo"
@@ -720,7 +720,7 @@ mentre il menu azioni contiene le seguenti voci:
 Sotto alla barra è presente un'intestazione che visualizza:
 
 - l'indicazione dell'utente corrente (che sarà l'autore del post);
-- la visibilità del post (pubblica, non in lista, solo seguaci, solo menzioni o una cerchia
+- la visibilità del post (Pubblica, Non in lista, Solo seguaci, Solo menzioni o una cerchia
   Friendica);
 - la data e l'orario di schedulazione (per i post schedulati);
 - il numero di caratteri attuale / numero di caratteri massimo consentito in base alle impostazioni
