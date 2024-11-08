@@ -111,7 +111,7 @@ If what you have read so far sounds interesting to you and you want to know more
 useful
 links:
 
-- check out the [User manual](manual/main);
+- check out the [User manual](manual/en/main.md);
 - have a look at the
   project's [README](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/README.md)
 - consult
