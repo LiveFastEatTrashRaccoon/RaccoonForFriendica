@@ -435,4 +435,5 @@ internal val ItStrings =
         override val helpMeChooseAnInstance = "Aiutami a scegliere un'istanza"
         override val loginOtherHeader = "Altro (Pleroma, etc.)"
         override val exempliGratia = "es."
+        override val newAccountTitle = "Aggiungi account"
     }

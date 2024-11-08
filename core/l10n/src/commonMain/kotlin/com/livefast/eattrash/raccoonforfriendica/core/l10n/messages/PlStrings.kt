@@ -433,4 +433,5 @@ internal val PlStrings =
         override val helpMeChooseAnInstance = "Pomóż mi wybrać instancję"
         override val loginOtherHeader = "Inne (Pleroma, itp.)"
         override val exempliGratia = "np."
+        override val newAccountTitle = "Dodaj konto"
     }
