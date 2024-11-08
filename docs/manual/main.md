@@ -1,5 +1,5 @@
 <div align="right">
-Language <a href="../it/main.html">🇮🇹</a>
+Language <a href="it/main.html">🇮🇹</a>
 </div>
 
 # User manual
@@ -121,22 +121,22 @@ feed.
 
 There are three default feed types:
 
-- Local (i.e. posts that have been created or re-shared on the instance you are connecting to);
-- All (i.e. posts coming from your instance plus all the federated instances);
-- Subscriptions (only for logged users: posts created or re-shared by accounts you are following or
+- **Local** (i.e. posts that have been created or re-shared on the instance you are connecting to);
+- **All** (i.e. posts coming from your instance plus all the federated instances);
+- **Subscriptions** (only for logged users: posts created or re-shared by accounts you are following
+  or
   which contain one or more hashtags you are following).
 
 Custom feeds, on the other hand, can be:
 
-- any of your user-defined lists;
+- any of your [user-defined lists](#circles);
 - a channel, i.e. predefined aggregations e.g. "For you", "Discover", "Followers", "Images", etc.
   (Friendica-specific);
 - any of the groups you are following (Friendica-specific);
 
 Every item in the timeline has the following structure:
 
-- re-share or reply indication (user who re-shared or original poster if the current one is a
-  reply);
+- re-share or reply indication (user who re-shared and original poster);
 - author (avatar, display name and username of author);
 - creation date;
 - title (only from sources which allow it like Friendica or Lemmy);
@@ -168,8 +168,8 @@ Moreover, from each single post it is possible to:
   - edit or delete it (only if you are the author).
 
 <div align="center">
-  <img width="310" alt="timeline screen" src="../images/timeline.png" />
-  <img width="310" alt="timeline with mute user dialog" src="../images/mute_bottom_sheet.png" />
+  <img width="310" alt="timeline screen" src="images/timeline.png" />
+  <img width="310" alt="timeline with mute user dialog" src="images/mute_bottom_sheet.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -185,7 +185,7 @@ Apart from that, this screen is very similar to a regular [timeline](#timeline),
 perform the same actions and open user profiles or other post details.
 
 <div align="center">
-  <img width="310" alt="post detail screen" src="../images/post_detail.png" />
+  <img width="310" alt="post detail screen" src="images/post_detail.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -199,7 +199,7 @@ From the top bar action menu, you can download the attachment to your device, sh
 as a URL and, for images, adjust the aspect ratio in case if were not displaying correctly.
 
 <div align="center">
-  <img width="310" alt="zoomable image detail screen" src="../images/image_detail.png" />
+  <img width="310" alt="zoomable image detail screen" src="images/image_detail.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -226,12 +226,12 @@ Each item of these lists allows you to access its [post detail](#post-detail).
 
 If you are logged, the headers shows the relationship your user has with this user:
 
-- mutual followers;
-- you follow them;
-- they follow you;
-- you sent a follow request which is pending;
-- you received a follow request from them which is pending;
-- no relation.
+- **Mutual** (if you follow each other);
+- **Following** (if you follow them);
+- **Follows you** (if they follow you);
+- **Request sent** (if you sent a follow request which is pending);
+- **Request pending** (if you received a follow request from them which is pending);
+- no relationship.
 
 If you follow the user, you will also see the notification status (enabled or disabled).
 
@@ -244,7 +244,7 @@ From the top app bar action menu, you can also:
 - switch to [forum mode](#forum-mode) (if it is a group).
 
 <div align="center">
-  <img width="310" alt="user detail (classic mode) screen" src="../images/user_detail.png" />
+  <img width="310" alt="user detail (classic mode) screen" src="images/user_detail.png" />
 </div>
 
 ### Forum mode
@@ -256,7 +256,7 @@ item you will enter the [thread detail](#thread-detail).
 From the top app bar action menu, you can also switch to [classic mode](#classic-mode).
 
 <div align="center">
-  <img width="310" alt="user detail (forum mode) screen" src="../images/forum_list.png" />
+  <img width="310" alt="user detail (forum mode) screen" src="images/forum_list.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -268,7 +268,7 @@ layout, i.e. indented according to their nesting level and with a coloured bar w
 to distinguish parent-child relationship between replies.
 
 <div align="center">
-  <img width="310" alt="thread detail screen" src="../images/thread_detail.png" />
+  <img width="310" alt="thread detail screen" src="images/thread_detail.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -281,7 +281,7 @@ given hashtag and it follows the same structure.
 From the top app bar, you will be able to follow or unfollow the hashtag.
 
 <div align="center">
-  <img width="310" alt="hashtag feed screen" src="../images/hashtag_feed.png" />
+  <img width="310" alt="hashtag feed screen" src="images/hashtag_feed.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -295,8 +295,8 @@ The only difference is that if you un-favorite or un-bookmark a post it will imm
 from the feed.
 
 <div align="center">
-  <img width="310" alt="favorites screen" src="../images/favorites.png" />
-  <img width="310" alt="bookmarks screen" src="../images/bookmarks.png" />
+  <img width="310" alt="favorites screen" src="images/favorites.png" />
+  <img width="310" alt="bookmarks screen" src="images/bookmarks.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -309,7 +309,7 @@ unfollow each one of them.
 Each item of this list allows to open the corresponding [feed](#hashtag-feed).
 
 <div align="center">
-  <img width="310" alt="followed hashtags screen" src="../images/followed_hashtags.png" />
+  <img width="310" alt="followed hashtags screen" src="images/followed_hashtags.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -336,8 +336,8 @@ option selected in the [app settings](#application-settings).
 </p>
 
 <div align="center">
-  <img width="310" alt="explore screen (hashtags section)" src="../images/explore_hashtags.png" />
-  <img width="310" alt="explore screen (links section)" src="../images/explore_links.png" />
+  <img width="310" alt="explore screen (hashtags section)" src="images/explore_hashtags.png" />
+  <img width="310" alt="explore screen (links section)" src="images/explore_links.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -353,7 +353,7 @@ Opening a hashtag will lead you to the [dedicated feed](#hashtag-feed), opening 
 its [detail](#post-detail) and opening a user to the corresponding [profile](#user-profile).
 
 <div align="center">
-  <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="../images/search.png" />
+  <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="images/search.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -389,7 +389,7 @@ Tapping on each item of the list, it is possible to open the [user profile](#use
 or [post detail](#post-detail).
 
 <div align="center">
-  <img width="310" alt="inbox screen" src="../images/inbox.png" />
+  <img width="310" alt="inbox screen" src="images/inbox.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -429,12 +429,15 @@ The login flow involves two of these steps:
   domain, for all other platforms you will have to manually enter the server domain (
   e.g. `mastodon.social`);
 - the instance and credentials input (only for HTTP Basic) where you have to select your Friendica
-  instance (from a drop-down list or entering it manually) and insert your credentials. 
+  instance (from a drop-down list or entering it manually) and insert your credentials.
+
+If you do not have an account, you will have to first create one from the instance website, then 
+log in from the mobile app.
 
 <div align="center">
-  <img width="310" alt="login intro screen" src="../images/login_1.png" />
-  <img width="310" alt="select instance screen" src="../images/login_2.png" />
-  <img width="310" alt="select instance screen" src="../images/login_3.png" />
+  <img width="310" alt="login intro screen" src="images/login_1.png" />
+  <img width="310" alt="select instance screen" src="images/login_2.png" />
+  <img width="310" alt="select instance screen" src="images/login_3.png" />
 </div>
 
 ### One's own user detail
@@ -444,7 +447,7 @@ In the header, instead of the relationship/notification buttons you will find an
 button to open your [profile preferences](#profile-settings).
 
 <div align="center">
-  <img width="310" alt="profile screen" src="../images/profile.png" />
+  <img width="310" alt="profile screen" src="images/profile.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -460,7 +463,7 @@ You can use the follow/send request/mutuals button to modify your relationship w
 account.
 
 <div align="center">
-  <img width="310" alt="user list screen (profile following)" src="../images/user_list.png" />
+  <img width="310" alt="user list screen (profile following)" src="images/user_list.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -473,7 +476,7 @@ requests, this screen contains the list of pending follow request you have recei
 For each one of the items you can either accept or reject the request.
 
 <div align="center">
-  <img width="310" alt="follow request screen" src="../images/follow_requests.png" />
+  <img width="310" alt="follow request screen" src="images/follow_requests.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -490,7 +493,7 @@ This screen contains some information about the current instance you are connect
 - backend type and software version.
 
 <div align="center">
-  <img width="310" alt="node info screen" src="../images/node_info.png" />
+  <img width="310" alt="node info screen" src="images/node_info.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -508,8 +511,8 @@ This dialog contains more information about the app:
 - the entry point for the list of licences for the libraries and resources used in the app.
 
 <div align="center">
-  <img width="310" alt="app information dialog" src="../images/app_info.png" />
-  <img width="310" alt="licenses screen" src="../images/licenses.png" />
+  <img width="310" alt="app information dialog" src="images/app_info.png" />
+  <img width="310" alt="licenses screen" src="images/licenses.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -538,7 +541,7 @@ issues on some versions of Friendica
 </p>
 
 <div align="center">
-  <img width="310" alt="edit profile screen" src="../images/edit_profile.png" />
+  <img width="310" alt="edit profile screen" src="images/edit_profile.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -601,7 +604,7 @@ so please make sure the battery saving restrictions for Raccoon in your system s
 </p>
 
 <div align="center">
-  <img width="310" alt="edit profile screen" src="../images/settings.png" />
+  <img width="310" alt="edit profile screen" src="images/settings.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -615,7 +618,7 @@ sections:
 - **Bans** for banned ones.
 
 <div align="center">
-  <img width="310" alt="manage bans screen" src="../images/manage_bans.png" />
+  <img width="310" alt="manage bans screen" src="images/manage_bans.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -667,7 +670,7 @@ formatting toolbar with the following buttons:
 - **Toggle spoiler** to add or remove a spoiler for the post.
 
 <div align="center">
-  <img width="310" alt="composer screen" src="../images/composer.png" />
+  <img width="310" alt="composer screen" src="images/composer.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -699,7 +702,7 @@ but it has no effect
 </p>
 
 <div align="center">
-  <img width="310" alt="create report screen" src="../images/report.png" />
+  <img width="310" alt="create report screen" src="images/report.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -711,7 +714,7 @@ can optionally specify an email address (e.g. if you wish to be contacted for cl
 is just a utility screen for those who prefer not to use the issue tracker.
 
 <div align="center">
-  <img width="310" alt="submit user feedback screen" src="../images/user_feedback.png" />
+  <img width="310" alt="submit user feedback screen" src="images/user_feedback.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -738,8 +741,8 @@ circle and all group contacts are added to "Group" but, albeit being there by de
 regulars circles that can be changed or deleted.
 
 <div align="center">
-  <img width="310" alt="circle list screen" src="../images/circles_list.png" />
-  <img width="310" alt="circle detail screen" src="../images/circle_detail.png" />
+  <img width="310" alt="circle list screen" src="images/circles_list.png" />
+  <img width="310" alt="circle detail screen" src="images/circle_detail.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -762,8 +765,8 @@ Messages are being downloaded as long as they arrive while you are in this scree
 have to manually refresh the conversation list.
 
 <div align="center">
-  <img width="310" alt="conversation list screen" src="../images/dm_list.png" />
-  <img width="310" alt="conversation  detail screen" src="../images/dm_detail.png" />
+  <img width="310" alt="conversation list screen" src="images/dm_list.png" />
+  <img width="310" alt="conversation  detail screen" src="images/dm_detail.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -780,8 +783,8 @@ For each picture, you will have the possibility to:
 - move it to another album.
 
 <div align="center">
-  <img width="310" alt="gallery list screen" src="../images/gallery_list.png" />
-  <img width="310" alt="gallery  detail screen" src="../images/gallery_detail.png" />
+  <img width="310" alt="gallery list screen" src="images/gallery_list.png" />
+  <img width="310" alt="gallery  detail screen" src="images/gallery_detail.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -805,7 +808,7 @@ date, so the preferred way to save a post and edit for later is:
   application storage.
 
 <div align="center">
-  <img width="310" alt="unpublished items screen" src="../images/drafts.png" />
+  <img width="310" alt="unpublished items screen" src="images/drafts.png" />
 </div>
 
 [Back to top](#table-of-contents)
@@ -823,8 +826,8 @@ For each item, you can export it to your device calendar and, by tapping on the 
 detail screen where more details (like a more extended description) are displayed.
 
 <div align="center">
-  <img width="310" alt="calendar event list screen" src="../images/calendar_list.png" />
-  <img width="310" alt="event detail screen" src="../images/calendar_detail.png" />
+  <img width="310" alt="calendar event list screen" src="images/calendar_list.png" />
+  <img width="310" alt="event detail screen" src="images/calendar_detail.png" />
 </div>
 
 [Back to top](#table-of-contents)
