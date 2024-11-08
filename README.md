@@ -6,6 +6,8 @@
   <img alt="badge for project license" src="https://img.shields.io/github/license/LiveFastEatTrashRaccoon/RaccoonForFriendica" />
   <img alt="badge for build status" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/build.yml/badge.svg" />
   <img alt="badge for unit test status" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/unit_tests.yml/badge.svg" />
+</div>
+<div align="center">
   <a href="https://livefasteattrashraccoon.github.io/RaccoonForFriendica" target="_blank"><img alt="badge for website" src="https://img.shields.io/badge/website-9812db" /></a>
   <a href="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/main.html" target="_blank"><img alt="badge for user manual" src="https://img.shields.io/badge/user%20manual-3c00c7" /></a>
   <a href="https://matrix.to/#/#raccoonforfriendicaapp:matrix.org" target="_blank"><img alt="Matrix logo" src="https://img.shields.io/badge/matrix-009900?logo=Matrix" /></a>
