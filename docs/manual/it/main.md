@@ -653,7 +653,7 @@ costituita dalle seguenti sezioni:
     e nascondere i video all'interno delle timeline.
 
 <p id="markdown-formatting">
-* scgliere con cautela: <em>Markdown</em> è supportato solo da alcune versioni di Mastodon (es.
+* scegliere con cautela: <em>Markdown</em> è supportato solo da alcune versioni di Mastodon (es.
 glitch-soc), se non sei sicuro/a di quel che stai facendo usa HTML o testo semplice, altrimenti i 
 tuoi post potrebbero non essere formattati correttamente
 </p>
@@ -759,7 +759,7 @@ In alto è presente un selettore per selezionare la categoria di violazione tra:
 - **Altro** qualsiasi altro tipo di problema.
 
 A seguire, è possibile scrivere il testo del report in un campo di immissione e, infine, è presente
-l'intrruttore "Inoltra segnalazione" al fine di selezionare se questo rapporto deve essere
+l'interruttore "Inoltra segnalazione" al fine di selezionare se questo rapporto deve essere
 consegnato solo agli amministratori dell'istanza locale o, se stai segnalando un contenuto
 proveniente da un'istanza federata, la sgnalazione dovrebbe essere inoltrata anche agli
 amministratori dell'istanza di origine.<a href="#report-forward-disclaimer">**</a>
