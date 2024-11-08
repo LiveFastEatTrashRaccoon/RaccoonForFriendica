@@ -440,4 +440,5 @@ internal val PtStrings =
         override val helpMeChooseAnInstance = "Ajude-me a escolher uma instância"
         override val loginOtherHeader = "Outro (Pleroma, etc.)"
         override val exempliGratia = "e. g."
+        override val newAccountTitle = "Adicionar conta"
     }

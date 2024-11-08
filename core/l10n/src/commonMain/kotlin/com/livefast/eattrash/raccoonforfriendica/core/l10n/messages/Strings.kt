@@ -385,6 +385,7 @@ interface Strings {
     val loginOtherHeader: String
     val helpMeChooseAnInstance: String
     val exempliGratia: String
+    val newAccountTitle: String
 }
 
 object Locales {

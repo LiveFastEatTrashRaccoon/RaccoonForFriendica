@@ -89,7 +89,7 @@ class LoginScreen(
                             snackbarHostState.showSnackbar(
                                 message = successMessage,
                             )
-                            navigationCoordinator.pop()
+                            navigationCoordinator.popUntilRoot()
                         }
                     }
                 }.launchIn(this)

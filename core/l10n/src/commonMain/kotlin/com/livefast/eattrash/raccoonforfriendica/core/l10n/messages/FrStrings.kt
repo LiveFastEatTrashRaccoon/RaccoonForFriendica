@@ -440,4 +440,5 @@ internal val FrStrings =
         override val helpMeChooseAnInstance = "Aidez-moi à choisir une instance"
         override val loginOtherHeader = "Autre (Pleroma, etc.)"
         override val exempliGratia = "e. g."
+        override val newAccountTitle = "Ajouter compte"
     }

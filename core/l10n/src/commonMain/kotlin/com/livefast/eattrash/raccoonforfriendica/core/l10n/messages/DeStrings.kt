@@ -435,4 +435,5 @@ internal val DeStrings =
         override val helpMeChooseAnInstance = "Hilf mir bei der Auswahl einer Instanz"
         override val loginOtherHeader = "Andere (Pleroma, etc.)"
         override val exempliGratia = "z. B."
+        override val newAccountTitle = "Konto hinzufügen"
     }

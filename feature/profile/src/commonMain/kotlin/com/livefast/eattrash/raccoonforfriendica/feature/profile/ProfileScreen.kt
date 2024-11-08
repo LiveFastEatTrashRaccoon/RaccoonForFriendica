@@ -48,7 +48,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.ScreenContent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.AnonymousScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountScreen
 import kotlinx.coroutines.launch
 
@@ -134,7 +134,7 @@ class ProfileScreen : Screen {
                         if (uiState.currentUserId != null) {
                             ScreenContent(MyAccountScreen)
                         } else {
-                            ScreenContent(AnonymousScreen)
+                            ScreenContent(LoginIntroScreen())
                         }
                     }
                 },

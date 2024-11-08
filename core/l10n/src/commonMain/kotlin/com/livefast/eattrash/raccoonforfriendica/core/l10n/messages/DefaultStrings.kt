@@ -432,4 +432,5 @@ internal open class DefaultStrings : Strings {
     override val helpMeChooseAnInstance = "Help me choose an instance"
     override val loginOtherHeader = "Other (Pleroma, etc.)"
     override val exempliGratia = "e. g."
+    override val newAccountTitle = "Add account"
 }

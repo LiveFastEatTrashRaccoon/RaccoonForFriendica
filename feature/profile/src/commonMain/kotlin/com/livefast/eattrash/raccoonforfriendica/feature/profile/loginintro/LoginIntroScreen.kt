@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous
+package com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -38,9 +38,8 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -48,18 +47,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 
-internal object AnonymousScreen : Tab {
-    override val options: TabOptions
-        @Composable get() =
-            TabOptions(
-                index = 0u,
-                title = "",
-            )
-
+internal class LoginIntroScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model = getScreenModel<AnonymousMviModel>()
+        val model = getScreenModel<LoginIntroMviModel>()
         val uriHandler = LocalUriHandler.current
         val fullColor = MaterialTheme.colorScheme.onBackground
         val resources = remember { getCoreResources() }
@@ -75,20 +67,20 @@ internal object AnonymousScreen : Tab {
         ) {
             Text(
                 modifier =
-                    Modifier.fillMaxWidth().padding(
-                        top = Spacing.m,
-                    ),
+                    Modifier.fillMaxWidth().padding(top = Spacing.m),
                 text = LocalStrings.current.loginTitle,
                 style = MaterialTheme.typography.titleLarge,
                 color = fullColor,
             )
             Text(
                 modifier =
-                    Modifier.fillMaxWidth().padding(
-                        top = Spacing.s,
-                        start = Spacing.xs,
-                        end = Spacing.xs,
-                    ),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = Spacing.s,
+                            start = Spacing.xs,
+                            end = Spacing.xs,
+                        ),
                 text = LocalStrings.current.loginSubtitle,
                 style = MaterialTheme.typography.bodyMedium,
                 color = fullColor,
@@ -105,15 +97,13 @@ internal object AnonymousScreen : Tab {
                 title = LocalStrings.current.loginFriendicaHeader,
                 painter = resources.friendicaLogo,
                 onInfoClicked = {
-                    uriHandler.openUri(AnonymousProfileLinks.ABOUT_FRIENDICA)
+                    uriHandler.openUri(LoginIntroLinks.ABOUT_FRIENDICA)
                 },
             )
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    model.reduce(
-                        AnonymousMviModel.Intent.StartOauth2Flow(LoginType.Friendica),
-                    )
+                    model.reduce(LoginIntroMviModel.Intent.StartOauth2Flow(LoginType.Friendica))
                 },
             ) {
                 Text(
@@ -126,7 +116,7 @@ internal object AnonymousScreen : Tab {
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    model.reduce(AnonymousMviModel.Intent.StartLegacyFlow)
+                    model.reduce(LoginIntroMviModel.Intent.StartLegacyFlow)
                 },
             ) {
                 Text(
@@ -142,38 +132,34 @@ internal object AnonymousScreen : Tab {
             PlatformLink(
                 title = LocalStrings.current.helpMeChooseAnInstance,
                 onClick = {
-                    uriHandler.openUri(AnonymousProfileLinks.FRIENDICA_INSTANCE_HELP)
+                    uriHandler.openUri(LoginIntroLinks.FRIENDICA_INSTANCE_HELP)
                 },
             )
 
-            HorizontalDivider(
-                modifier = Modifier.padding(top = Spacing.s),
-            )
+            HorizontalDivider(modifier = Modifier.padding(top = Spacing.s))
 
             PlatformHeader(
                 modifier = Modifier.padding(top = Spacing.xs),
                 title = LocalStrings.current.loginMastodonHeader,
                 painter = resources.mastodonLogo,
                 onInfoClicked = {
-                    uriHandler.openUri(AnonymousProfileLinks.ABOUT_MASTODON)
+                    uriHandler.openUri(LoginIntroLinks.ABOUT_MASTODON)
                 },
             )
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     model.reduce(
-                        AnonymousMviModel.Intent.StartOauth2Flow(LoginType.Mastodon),
+                        LoginIntroMviModel.Intent.StartOauth2Flow(LoginType.Mastodon),
                     )
                 },
             ) {
-                Text(
-                    text = LocalStrings.current.buttonLogin,
-                )
+                Text(text = LocalStrings.current.buttonLogin)
             }
             PlatformLink(
                 title = LocalStrings.current.helpMeChooseAnInstance,
                 onClick = {
-                    uriHandler.openUri(AnonymousProfileLinks.MASTODON_INSTANCE_HELP)
+                    uriHandler.openUri(LoginIntroLinks.MASTODON_INSTANCE_HELP)
                 },
             )
 
@@ -189,14 +175,10 @@ internal object AnonymousScreen : Tab {
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    model.reduce(
-                        AnonymousMviModel.Intent.StartOauth2Flow(LoginType.Other),
-                    )
+                    model.reduce(LoginIntroMviModel.Intent.StartOauth2Flow(LoginType.Other))
                 },
             ) {
-                Text(
-                    text = LocalStrings.current.buttonLogin,
-                )
+                Text(text = LocalStrings.current.buttonLogin)
             }
         }
 

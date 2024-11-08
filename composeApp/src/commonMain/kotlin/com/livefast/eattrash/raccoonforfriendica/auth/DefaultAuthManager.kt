@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Logi
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.toInt
 import com.livefast.eattrash.raccoonforfriendica.feature.login.legacy.LegacyLoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.newaccount.NewAccountScreen
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
@@ -29,6 +30,11 @@ internal class DefaultAuthManager(
 
     override fun openLegacyLogin() {
         val screen = LegacyLoginScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openNewAccount() {
+        val screen = NewAccountScreen()
         navigationCoordinator.push(screen)
     }
 
