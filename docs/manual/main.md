@@ -1,5 +1,19 @@
+<script>
+function changeLanguage() {
+    const value = document.getElementById("language").value;
+    switch (value) {
+      case "it":
+        window.location="it/main.html"
+        break;
+    }
+}
+</script>
 <div align="right">
-Language <a href="it/main.html">🇮🇹</a>
+  <label for="language">Choose language</label>
+  <select id="language" name="language" onchange="changeLanguage">
+    <option value="en" selected="selected">English 🇬🇧</option>
+    <option value="it">Italiano 🇮🇹</option>
+  </select>
 </div>
 
 # User manual
@@ -645,10 +659,9 @@ whereas the action menu contains the following items:
 - **Set schedule** changes the publishing type from regular to scheduled posts;
 - **Insert emoji** allows to insert a custom emoji;
 - **Open preview** opens a preview of the post (only if "Markup for compositing" option in Settings
-  is
-  _not_ plain text);
-- **Add title**/**Remove title** to add or remove a title for the post;
-- **Add image (media gallery)** adds an image from an album in the Friendica media gallery;
+  is _not_ plain text);
+- **Add title**/**Remove title** to add or remove a title for the post (Friendica only);
+- **Add image (media gallery)** adds an image from an album in the media gallery (Friendica only);
 - **Insert list** adds an itemized list;
 - **Add spoiler**/**Remove spoiler** (only if "Markup for compositing" option in Settings is plain
   text) to add or remove a spoiler for the post;
@@ -668,7 +681,7 @@ screen, only if "Markup for compositing" option in Settings is _not_ plain text,
 formatting toolbar with the following buttons:
 
 - **Add image** to add an image from the device gallery;
-- **Add link** to add a hyperlink
+- **Add link** to add a hyperlink;
 - **Bold** to insert some text in bold;
 - **Italic** to insert some text in italic;
 - **Underline** to insert some underlined text;
@@ -716,9 +729,11 @@ but it has no effect
 
 ## User feedback
 
-This form allows you to submit your feedback to the developers. Apart from writing your comment, you
-can optionally specify an email address (e.g. if you wish to be contacted for clarifications). This
-is just a utility screen for those who prefer not to use the issue tracker.
+This form allows you to submit your feedback to the developers (e.g. to report a bug or suggest some
+improvements). Apart from writing your comment, you can optionally specify an email address (e.g. if
+you wish to be contacted for clarifications).
+This is just a utility screen for those who prefer not to use the issue tracker on GitHub (e.g.
+because they do not have an account).
 
 <div align="center">
   <img width="310" alt="submit user feedback screen" src="images/user_feedback.png" />
@@ -740,12 +755,13 @@ This screens contains all the custom feeds that can be used in the timeline, whi
 
 Among these three categories, the only one which allow to be modified is the first one, for which:
 
-- you can use the "more" button to edit the name or delete it
-- you can enter a circle detail screen to see the contacts that belong to it.
+- you can use the "⋮" button to edit the name or delete it;
+- you can enter a circle detail screen to see the contacts that belong to it and add new ones/remove
+  existing ones.
 
 Please remember that in Friendica by default all non-group contacts are added to the "Friends"
-circle and all group contacts are added to "Group" but, albeit being there by default, these are
-regulars circles that can be changed or deleted.
+circle and all group contacts are added to "Group". Albeit being created by the system, "Friends"
+and "Groups" are regulars circles that can be changed or deleted.
 
 <div align="center">
   <img width="310" alt="circle list screen" src="images/circles_list.png" />
@@ -765,7 +781,7 @@ item in the list, you can see:
 - the total number of messages;
 - the time elapsed since the last message was received.
 
-Tapping on each item you can open the conversation detail, in the form of a traditional hat with
+Tapping on each item you can open the conversation detail, in the form of a traditional chat with
 message bubbles and a text field in the bottom part of the screen to send new ones.
 
 Messages are being downloaded as long as they arrive while you are in this screen, otherwise you
@@ -781,7 +797,7 @@ have to manually refresh the conversation list.
 ## Gallery (Friendica-only)
 
 This screen contains the list of albums in your multimedia gallery. For each album you can either
-edit its name or delete it or, tapping on the list item, access the pictures contained in it.
+edit its name, delete it or, tapping on the list item, access the pictures contained in it.
 
 For each picture, you will have the possibility to:
 
@@ -800,8 +816,8 @@ For each picture, you will have the possibility to:
 
 This screen contains all the items awaiting publication and it is divided into two sections:
 
-- scheduled i.e. the list scheduled posts;
-- drafts i.e. the list of drafts you created;
+- **Scheduled** i.e. the list scheduled posts;
+- **Drafts** i.e. the list of drafts you created;
 
 each item can be deleted or, by tapping on it, opened in edit mode.
 
@@ -812,7 +828,7 @@ date, so the preferred way to save a post and edit for later is:
   it is only visible to you;
 - create a draft, keeping in mind that draft are just **local records** saved in the application
   database and are not stored anywhere remotely, so will lose them if you change device or clear the
-  application storage.
+  application storage of Raccoon.
 
 <div align="center">
   <img width="310" alt="unpublished items screen" src="images/drafts.png" />
@@ -822,9 +838,10 @@ date, so the preferred way to save a post and edit for later is:
 
 ## Calendar (Friendica-only)
 
-This screen shows the event calendar, i.e. the list of events divided by month with, for each item:
+This screen shows the event calendar, i.e. the list of events shared with you divided by month with,
+for each item:
 
-- event title
+- event title;
 - start date;
 - (optional) end date;
 - (optional) location.

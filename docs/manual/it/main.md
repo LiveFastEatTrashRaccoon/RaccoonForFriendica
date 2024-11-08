@@ -1,5 +1,19 @@
+<script>
+function changeLanguage() {
+    const value = document.getElementById("language").value;
+    switch (value) {
+      case "en":
+        window.location="../main.html"
+        break;
+    }
+}
+</script>
 <div align="right">
-Lingua: <a href="../main.html">🇬🇧</a>
+  <label for="language">Seleziona lingua</label>
+  <select id="language" name="language" onchange="changeLanguage">
+    <option value="en">English 🇬🇧</option>
+    <option value="it" selected="selected">Italiano 🇮🇹</option>
+  </select>
 </div>
 
 # Manuale utente
@@ -282,10 +296,9 @@ alla [modalità classica](#modalità-classica).
 ## Dettaglio discussione
 
 Questa schermata è molto simile a un [dettaglio post](#dettaglio-post) ma i commenti vengono
-visualizzati
-con un layout in stile Lemmy, ovvero con un rientro a sinistra variabile in base al loro
-livello di annidamento e con una barra colorata che rende più facile individuare le relazioni di
-discendenza tra ogni post e le sue risposte.
+visualizzati con un layout in stile Lemmy, ovvero con un rientro a sinistra variabile in base al
+loro livello di annidamento e con una barra colorata che rende più facile individuare le relazioni
+di discendenza tra ogni post e le sue risposte.
 
 <div align="center">
   <img width="310" alt="thread detail screen" src="../images/thread_detail.png" />
@@ -605,7 +618,7 @@ costituita dalle seguenti sezioni:
   - **Carica immagini automaticamente** se abilitata le immagini vengono caricate automaticamente,
     se disabilitata le immagini vengono caricate su richiesta (per risparmare utilizzo di dati
     mobili);
-  - **Markup per la composizione** determina la sintassi di formattazione per i nuovi post (testo
+  - **Markup per la composizione** determina la sintassi di formattazione per i nuovi post (Testo
     semplice — ovvero senza formattazione — BBCode — specifico di Friendica — HTML o Markdown —
     specifico di Mastodon;<a href="#markdown-formatting">*</a>
   - **Numero massimo righe testo post** configura il numero massimo di righe che verrà visualizzato
@@ -679,49 +692,52 @@ ad altri account. È suddivisa in due sezioni:
 
 ## Creazione post
 
-This screen allows to create new posts or replies. The top bar contains the Submit button which can
-have different icons depending on the publishing type:
+Questa schermata consente di creare nuovi post o risposte. La barra superiore contiene un pulsante
+che può avere icone diverse a seconda del tipo di pubblicazione:
 
-- a Send icon for regular publication;
-- a Save icon for drafts;
-- a Schedule icon for scheduled posts;
+- icona Invia per la pubblicazione immediata;
+- icona Salva per il salvataggio in bozze;
+- icona Orologio per i post schedulati;
 
-whereas the action menu contains the following items:
+mentre il menu azioni contiene le seguenti voci:
 
-- **Save draft** changes the publishing type from regular to draft;
-- **Set schedule** changes the publishing type from regular to scheduled posts;
-- **Insert emoji** allows to insert a custom emoji;
-- **Open preview** opens a preview of the post (only if "Markup for compositing" option in Settings
-  is
-  _not_ plain text);
-- **Add title**/**Remove title** to add or remove a title for the post;
-- **Add image (media gallery)** adds an image from an album in the Friendica media gallery;
-- **Insert list** adds an itemized list;
-- **Add spoiler**/**Remove spoiler** (only if "Markup for compositing" option in Settings is plain
-  text) to add or remove a spoiler for the post;
-- **Add image** (only if "Markup for compositing" option in Settings is plain text) adds an image
-  from
-  the device gallery;
+- **Salva bozza** cambia il tipo di pubblicazione da immediata a bozza;
+- **Imposta schedulazione** cambia il tipo di pubblicazione da immediata a schedulata;
+- **Inserisci emoji** permette di inserire una emoji personalizzata;
+- **Visualizza anteprima** apre un'anteprima del post (solo se l'opzione "Markup per la
+  composizione"
+  nelle impostazioni _non_ è "Testo semplice");
+- **Aggiungi titolo**/**Rimuovi titolo** per aggiungere o rimuovere il titlo del post (solo su
+  Friendica);
+- **Aggiungi immagine (galleria)** aggiunge un'immagine a partire da un album della galleria
+  fotografica (solo su Friendica);
+- **Inserisci lista** aggiunge un elenco puntato;
+- **Aggiungi spoiler**/**Rimuovi spoiler** (solo se "Markup per la composizione" nelle impostazioni
+  è "Testo semplice") permette di aggiungere o rimuovere lo spoiler del post;
+- **Aggiungi immagine** (solo se "Markup per la composizione" nelle impostazioni è "Testo semplice")
+  permette di aggiungere un'immagine dal rullino foto del dispositivo;
 
-Below the top bar there is a header containing:
+Sotto alla barra è presente un'intestazione che visualizza:
 
-- an indication of the current user (who will be the author of the post);
-- the visibility (`public`, `unlisted`, `private`, `direct` or a Friendica circle);
-- the schedule date and time (for scheduled posts);
-- the current character count / character limit according to instance configuration.
+- l'indicazione dell'utente corrente (che sarà l'autore del post);
+- la visibilità del post (pubblica, non in lista, solo seguaci, solo menzioni o una cerchia
+  Friendica);
+- la data e l'orario di schedulazione (per i post schedulati);
+- il numero di caratteri attuale / numero di caratteri massimo consentito in base alle impostazioni
+  dell'istanza.
 
-Below the header you can find the main text field for the post body. In the bottom part of the
-screen, only if "Markup for compositing" option in Settings is _not_ plain text, you will find a
-formatting toolbar with the following buttons:
+Sotto l'intestazione si trova il campo di testo principale per il testo del post. Nella parte
+inferiore della schermata, solo se l'opzione "Markup per la composizione" nelle impostazioni _non_ è
+"Testo semplice", è presente una barra degli strumenti di formattazione con i seguenti pulsanti:
 
-- **Add image** to add an image from the device gallery;
-- **Add link** to add a hyperlink
-- **Bold** to insert some text in bold;
-- **Italic** to insert some text in italic;
-- **Underline** to insert some underlined text;
-- **Strikethrough** to insert some text with a strikethrough effect;
-- **Code** to insert monospaced font;
-- **Toggle spoiler** to add or remove a spoiler for the post.
+- **Aggiungi immagine** per aggiungere un'immagine dal rullino foto del dispositivo;
+- **Aggiungi link** per aggiungere un collegamento ipertestuale;
+- **Grassetto** per inserire del testo in grassetto;
+- **Corsivo** per inserire del testo in corsivo;
+- **Sottolineato** per inserire del testo sottolienato;
+- **Barrato** per inserire del testo sbarrato;
+- **Larghezza fissa** per inserire del testo con carattere a larghezza fissa;
+- **Aggiungi/rimuovi spoiler** per aggiungere o rimuovere lo spoiler del post.
 
 <div align="center">
   <img width="310" alt="composer screen" src="../images/composer.png" />
@@ -731,28 +747,30 @@ formatting toolbar with the following buttons:
 
 ## Creazione segnalazione
 
-This screen allows to create a report for either a user or a specific post.
+Questa schermata consente di creare una segnalazione per un utente o per uno specifico post.
 
-It contains a selector to choose the kind of violation among:
+In alto è presente un selettore per selezionare la categoria di violazione tra:
 
-- **Spam** the post is spam or user is spamming;
-- **Legal** issue the post or user infringes some existing legislation;
-- **Rule** (Mastodon-only) the post or user does not follow the instance rules (in this case you
-  will have to select which rule is violated);<a href="#report-rule-disclaimer">*</a>
-- **Other** any other kind of issue.
+- **Spam** il post è spam o l'utente sta inviando spam;
+- **Problema legale** il post o l'utente violano alcune normative esistenti;
+- **Violazione regole del server** (solo Mastodon) il post o l'utente non sta rispettando le regole
+  dell'istanza (in questo caso dovrai selezionare quale regola in particolare è stata
+  violata);<a href="#report-rule-disclaimer">*</a>
+- **Altro** qualsiasi altro tipo di problema.
 
-Below you can write the report body in a text field and, finally, the "Forward report" switch allows
-you to select whether this report should only be delivered to your instance admins or, if you are
-reporting a content coming from a federated instance, it should be handled by the admins of the
-source instance too.<a href="#report-forward-disclaimer">**</a>
+A seguire, è possibile scrivere il testo del report in un campo di immissione e, infine, è presente
+l'intrruttore "Inoltra segnalazione" al fine di selezionare se questo rapporto deve essere
+consegnato solo agli amministratori dell'istanza locale o, se stai segnalando un contenuto
+proveniente da un'istanza federata, la sgnalazione dovrebbe essere inoltrata anche agli
+amministratori dell'istanza di origine.<a href="#report-forward-disclaimer">**</a>
 
 <p id="report-rule-disclaimer">
-* on Friendica rule violation are not supported yet and if they are submitted they get rejected by
-the server, so this option is hidden
+* su Friendica le violazioni delle regole non sono supportate e, se questa opzione è inviata, la
+richiesta viene rifiutata; pertanto questa categoria di segnalazioni è nascosta
 </p>
 <p id="report-forward-disclaimer">
-** on Friendica this switch is supported (does not cause the request to be rejected by the server)
-but it has no effect
+** su Friendica questo interruttore è supportato (non determina il fatto che il server rifiuti la 
+richiesta) ma di fatto non ha alcun effetto
 </p>
 
 <div align="center">
@@ -763,9 +781,12 @@ but it has no effect
 
 ## Lascia un commento
 
-This form allows you to submit your feedback to the developers. Apart from writing your comment, you
-can optionally specify an email address (e.g. if you wish to be contacted for clarifications). This
-is just a utility screen for those who prefer not to use the issue tracker.
+Questo modulo consente di inviare un commento agli sviluppatori per segnalare un malfunzionamento o
+suggerire delle migliorie.
+Oltre al testo del commento, è possibile specificare un indirizzo email opzionale (ad esempio se
+desideri essere contattato per chiarimenti).
+Questo modulo è solo una schermata di utilità per coloro che preferiscono non utilizzare l'issue
+tracker su GitHub (ad es. perché non hanno un account).
 
 <div align="center">
   <img width="310" alt="submit user feedback screen" src="../images/user_feedback.png" />
@@ -775,24 +796,28 @@ is just a utility screen for those who prefer not to use the issue tracker.
 
 ## Cerchie
 
-This screens contains all the custom feeds that can be used in the timeline, which comprise:
+Questa schermata contiene tutti i feed personalizzati che possono essere utilizzati nella timeline,
+che comprendono:
 
-- user-defined lists (like Mastodon lists or
-  Friendica [circles](https://wiki.friendi.ca/docs/groups-and-privacy));
-- Friendica [channels](https://wiki.friendi.ca/docs/channel);
-- one item for each group among the accounts you follow.
+- elenchi definiti dall'utente (come liste Mastodon
+  o [cerchie](https://wiki.friendi.ca/docs/groups-and-privacy) Friendica);
+  [canali](https://wiki.friendi.ca/docs/channel) Friendica;
+- un elemento per ogni gruppo tra i contatti che segui.
 
-> The reason why all these heterogeneous elements are in the same list is because they are all
-> returned by the same API for compatibility with Mastodon clients.
+> Il motivo per cui tutti questi elementi eterogenei si trovano nella stessa lista è perché vengono
+> tutti restituiti dalla stessa API, per compatibilità con i client Mastodon.
 
-Among these three categories, the only one which allow to be modified is the first one, for which:
+Tra queste tre categorie, l'unica che consente di essere modificata è la prima, per la quale è
+possibile:
 
-- you can use the "more" button to edit the name or delete it
-- you can enter a circle detail screen to see the contacts that belong to it.
+- utilizzare il pulsante "⋮" per modificare il nome o eliminarlo;
+- entrare nella schermata di dettaglio cerchia, visualizzare i contatti che ne fanno parte e
+  aggiungerne di nuovi o rimuovere quelli esistenti.
 
-Please remember that in Friendica by default all non-group contacts are added to the "Friends"
-circle and all group contacts are added to "Group" but, albeit being there by default, these are
-regulars circles that can be changed or deleted.
+Ricorda che in Friendica per impostazione predefinita tutti i contatti che non sono di tipo gruppo
+vengono aggiunti alla cerchia "Amici" tutti i contatti di tipo gruppo vengono aggiunti alla
+cerchia "Gruppi". Pur essendo create in automatico dal sistema, "Amici" e "Gruppi" sono
+cerchi normali a tutti gli effetti che possono essere modificate o eliminate.
 
 <div align="center">
   <img width="310" alt="circle list screen" src="../images/circles_list.png" />
@@ -803,20 +828,21 @@ regulars circles that can be changed or deleted.
 
 ## Messaggi diretti (solo Friendica)
 
-This section contains the list of private conversations with your contacts. For each
-item in the list, you can see:
+Questa sezione contiene l'elenco delle conversazioni private con i tuoi contatti. Per ciascuna
+voce nell'elenco, vengono visualizzati:
 
-- the contact avatar, username and display name;
-- the title of the conversation (defaulting to the first message);
-- some lines of the last message;
-- the total number of messages;
-- the time elapsed since the last message was received.
+- immagine profilo del contatto, nome utente e nome visualizzato;
+- titolo della conversazione (per impostazione predefinita il primo messaggio);
+- le prime righe dell'ultimo messaggio;
+- numero totale di messaggi;
+- tempo trascorso dalla ricezione dell'ultimo messaggio.
 
-Tapping on each item you can open the conversation detail, in the form of a traditional hat with
-message bubbles and a text field in the bottom part of the screen to send new ones.
+Facendo tap su ciascuna voce è possibile aprire il dettaglio conversazione, che ha l'aspetto di una
+chat tradizionale con i messaggi di un fumetto e un campo di testo nella parte inferiore dello
+schermo per inviarne di nuovi.
 
-Messages are being downloaded as long as they arrive while you are in this screen, otherwise you
-have to manually refresh the conversation list.
+I messaggi vengono scaricati man mano che arrivano finché questa schermata è aperta, altrimenti sarà
+necessario fare refresh manualmente l'elenco delle conversazioni.
 
 <div align="center">
   <img width="310" alt="conversation list screen" src="../images/dm_list.png" />
@@ -827,14 +853,15 @@ have to manually refresh the conversation list.
 
 ## Galleria (solo Friendica)
 
-This screen contains the list of albums in your multimedia gallery. For each album you can either
-edit its name or delete it or, tapping on the list item, access the pictures contained in it.
+Questa schermata contiene l'elenco degli album presenti nella tua galleria multimediale. Per ogni
+album è possible modificare il nome, eliminarlo oppure, facendo tap sulla corrispondente voce
+dell'elenco, accedere alle immagini in esso contenute.
 
-For each picture, you will have the possibility to:
+Per ogni immagine avrai è possibile:
 
-- edit its description;
-- delete it from the Gallery;
-- move it to another album.
+- modificare la descrizione;
+- eliminarla dalla galleria;
+- spostarla in un altro album.
 
 <div align="center">
   <img width="310" alt="gallery list screen" src="../images/gallery_list.png" />
@@ -845,21 +872,23 @@ For each picture, you will have the possibility to:
 
 ## Elementi da pubblicare
 
-This screen contains all the items awaiting publication and it is divided into two sections:
+Questa schermata contiene tutte le voci in attesa di pubblicazione ed è suddivisa in due sezioni:
 
-- scheduled i.e. the list scheduled posts;
-- drafts i.e. the list of drafts you created;
+- **Schedulati** ovvero l'elenco dei post per cui è impostata una schedulazione;
+- **Bozze** ovvero l'elenco delle bozze da te create;
 
-each item can be deleted or, by tapping on it, opened in edit mode.
+ogni elemento può essere eliminato oppure, facendo tap sulla corrispondente voce dell'elenco, aperto
+in modalità modifica.
 
-Beware that on most instances scheduled posts can **not** be modified except for their schedule
-date, so the preferred way to save a post and edit for later is:
+Attenzione: nella maggior parte dei casi i post programmati **non** possono essere modificati
+tranne che per la data di pianificazione, quindi il modo consigliato di salvare un post e
+modificarlo per in un secondo momento è:
 
-- create a post with the "Only mentions" (`direct`) visibility without mentioning any user so that
-  it is only visible to you;
-- create a draft, keeping in mind that draft are just **local records** saved in the application
-  database and are not stored anywhere remotely, so will lose them if you change device or clear the
-  application storage.
+- creare un post con visibilità "Solo menzioni" (`direct`) senza menzionare alcun utente in modo
+  che sia visibile solo a te;
+- creare una bozza, tenendo presente che le bozze sono solo **record locali** salvati
+  nel database dell'applicazione e non vengono archiviati da nessuna parte in remoto, quindi li
+  perderai se cambi dispositivo o cancelli i dati di Raccoon.
 
 <div align="center">
   <img width="310" alt="unpublished items screen" src="../images/drafts.png" />
@@ -869,15 +898,17 @@ date, so the preferred way to save a post and edit for later is:
 
 ## Calendario (solo Friendica)
 
-This screen shows the event calendar, i.e. the list of events divided by month with, for each item:
+In questa schermata viene visualizzato il calendario degli eventi, ovvero l'elenco di tutti eventi
+condivisi con te suddivisi per mese con, per ciascuna voce:
 
-- event title
-- start date;
-- (optional) end date;
-- (optional) location.
+- titolo dell'evento;
+- data di inizio;
+- (opzionale) data di fine;
+- (opzionale) posizione.
 
-For each item, you can export it to your device calendar and, by tapping on the item, access a
-detail screen where more details (like a more extended description) are displayed.
+È possible esportare ogni elemento nel calendario del tuo dispositivo e, facendo tap
+su di esso, accedere alla schermata di dettaglio in cui verranno visualizzati maggiori dettagli
+(ad es. una descrizione più estesa).
 
 <div align="center">
   <img width="310" alt="calendar event list screen" src="../images/calendar_list.png" />
