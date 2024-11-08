@@ -27,6 +27,17 @@ val String?.nodeName: String?
                 }
             }.takeIf { it.isNotEmpty() }
 
+val String?.detailName: String?
+    get() =
+        orEmpty()
+            .let {
+                if (it.contains('@')) {
+                    it.substringBefore('@')
+                } else {
+                    ""
+                }
+            }.takeIf { it.isNotEmpty() }
+
 fun Int.isNearTheEnd(list: List<*>): Boolean = this >= list.lastIndex - 5 || list.size <= 5
 
 fun Regex.substituteAllOccurrences(

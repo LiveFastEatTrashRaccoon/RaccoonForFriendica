@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer.utils
 
+import com.livefast.eattrash.raccoonforfriendica.core.utils.detailName
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
@@ -125,7 +126,7 @@ internal class DefaultPrepareForPreviewUseCase(
             val handle = match.groups["handlePrefix"]?.value.orEmpty()
             val currentNode = apiConfigurationRepository.node.value
             val node = handle.nodeName ?: currentNode
-            val name = handle.substringBefore("@")
+            val name = handle.detailName.orEmpty()
             val url =
                 if (node == currentNode) {
                     "https://$node/profile/$name"
