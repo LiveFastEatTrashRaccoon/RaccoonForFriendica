@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,9 +42,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -248,14 +250,16 @@ class LoginScreen(
                         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
+                        if (uiState.loading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(IconSize.s),
+                                color = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        }
                         Text(LocalStrings.current.buttonConfirm)
                     }
                 }
             }
-        }
-
-        if (uiState.loading) {
-            ProgressHud()
         }
     }
 }

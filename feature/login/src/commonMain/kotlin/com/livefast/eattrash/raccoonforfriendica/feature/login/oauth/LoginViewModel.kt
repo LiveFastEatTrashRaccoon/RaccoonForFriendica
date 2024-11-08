@@ -56,6 +56,10 @@ class LoginViewModel(
     }
 
     private fun submit() {
+        if (uiState.value.loading) {
+            return
+        }
+
         screenModelScope.launch {
             val node = uiState.value.nodeName
 
