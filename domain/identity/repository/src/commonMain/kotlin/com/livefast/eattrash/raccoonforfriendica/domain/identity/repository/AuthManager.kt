@@ -12,4 +12,6 @@ interface AuthManager {
     suspend fun startOAuthFlow(node: String): String
 
     suspend fun performTokenExchange(url: String)
+
+    fun openNewAccount()
 }
