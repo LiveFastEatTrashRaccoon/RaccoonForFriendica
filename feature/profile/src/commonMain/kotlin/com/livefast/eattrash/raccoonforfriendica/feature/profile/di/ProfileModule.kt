@@ -2,10 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.di
 
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.AnonymousMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.anonymous.AnonymousViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountViewModel
 import org.koin.dsl.module
@@ -38,8 +38,8 @@ val featureProfileModule =
                 replyHelper = get(),
             )
         }
-        factory<AnonymousMviModel> {
-            AnonymousViewModel(
+        factory<LoginIntroMviModel> {
+            LoginIntroViewModel(
                 authManager = get(),
             )
         }
