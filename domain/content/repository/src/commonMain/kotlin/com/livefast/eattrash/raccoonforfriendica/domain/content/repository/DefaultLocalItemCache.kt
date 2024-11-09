@@ -5,20 +5,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
 internal class DefaultLocalItemCache<T> : LocalItemCache<T> {
     private val cache = LruCache<String, T>(MAX_SIZE)
 
-    override fun put(
+    override suspend fun put(
         key: String,
         value: T,
     ) {
         cache.put(key, value)
     }
 
-    override fun get(key: String): T? = cache.get(key)
+    override suspend fun get(key: String): T? = cache.get(key)
 
-    override fun remove(key: String) {
+    override suspend fun remove(key: String) {
         cache.remove(key)
     }
 
-    override fun clear() {
+    override suspend fun clear() {
         cache.clear()
     }
 

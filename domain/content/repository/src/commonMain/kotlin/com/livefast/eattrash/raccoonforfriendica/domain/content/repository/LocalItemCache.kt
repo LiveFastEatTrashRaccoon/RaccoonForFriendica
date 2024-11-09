@@ -1,14 +1,14 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 interface LocalItemCache<T> {
-    fun put(
+    suspend fun put(
         key: String,
         value: T,
     )
 
-    fun get(key: String): T?
+    suspend fun get(key: String): T?
 
-    fun remove(key: String)
+    suspend fun remove(key: String)
 
-    fun clear()
+    suspend fun clear()
 }
