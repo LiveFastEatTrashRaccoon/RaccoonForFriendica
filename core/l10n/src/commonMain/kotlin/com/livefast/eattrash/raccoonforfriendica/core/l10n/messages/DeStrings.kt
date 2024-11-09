@@ -404,7 +404,7 @@ internal val DeStrings =
         override val settingsAboutUserManual = "Benutzerhandbuch"
         override val editProfileItemHideCollections = "Follower und Followerlisten privat machen"
         override val settingsAboutMatrix = "Matrix-Raum beitreten"
-        override val settingsAutoloadImages = "Bilder automatisch laden"
+        override val settingsAutoloadImages = "Modus für das Laden von Bildern"
         override val circleTypeGroup = "Gruppen"
         override val circleTypePredefined = "Kanäle"
         override val circleTypeUserDefined = "Ihre Listen"
@@ -436,4 +436,7 @@ internal val DeStrings =
         override val loginOtherHeader = "Andere (Pleroma, etc.)"
         override val exempliGratia = "z. B."
         override val newAccountTitle = "Konto hinzufügen"
+        override val imageLoadingModeAlways = "Immer"
+        override val imageLoadingModeOnDemand = "Bei Bedarf"
+        override val imageLoadingModeOnWiFi = "Im WiFi"
     }

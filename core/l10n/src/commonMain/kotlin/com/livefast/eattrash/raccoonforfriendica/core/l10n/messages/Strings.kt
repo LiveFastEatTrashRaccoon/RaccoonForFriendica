@@ -386,6 +386,9 @@ interface Strings {
     val helpMeChooseAnInstance: String
     val exempliGratia: String
     val newAccountTitle: String
+    val imageLoadingModeAlways: String
+    val imageLoadingModeOnDemand: String
+    val imageLoadingModeOnWiFi: String
 }
 
 object Locales {
