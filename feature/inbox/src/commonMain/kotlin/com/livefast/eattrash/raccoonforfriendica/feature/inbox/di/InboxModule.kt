@@ -19,6 +19,7 @@ val featureInboxModule =
                 blurHashRepository = get(),
                 markerRepository = get(),
                 pullNotificationManager = get(),
+                imageAutoloadObserver = get(),
             )
         }
     }
