@@ -10,7 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Acco
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SwitchAccountUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -21,9 +21,9 @@ class DrawerViewModel(
     private val identityRepository: IdentityRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val credentialsRepository: CredentialsRepository,
-    private val settingsRepository: SettingsRepository,
     private val switchAccountUseCase: SwitchAccountUseCase,
     private val emojiHelper: EmojiHelper,
+    private val imageAutoloadObserver: ImageAutoloadObserver,
     accountRepository: AccountRepository,
 ) : DefaultMviModel<DrawerMviModel.Intent, DrawerMviModel.State, DrawerMviModel.Effect>(
         initialState = DrawerMviModel.State(),
@@ -31,11 +31,11 @@ class DrawerViewModel(
     DrawerMviModel {
     init {
         screenModelScope.launch {
-            settingsRepository.current
-                .onEach { settings ->
+            imageAutoloadObserver.enabled
+                .onEach { autoloadImages ->
                     updateState {
                         it.copy(
-                            autoloadImages = settings?.autoloadImages ?: true,
+                            autoloadImages = autoloadImages,
                         )
                     }
                 }.launchIn(this)
