@@ -16,11 +16,11 @@ val featureProfileModule =
             ProfileViewModel(
                 identityRepository = get(),
                 accountRepository = get(),
-                settingsRepository = get(),
                 logoutUseCase = get(),
                 switchAccountUseCase = get(),
                 deleteAccountUseCase = get(),
                 authManager = get(),
+                imageAutoloadObserver = get(),
             )
         }
         factory<MyAccountMviModel> {
@@ -36,6 +36,7 @@ val featureProfileModule =
                 blurHashRepository = get(),
                 emojiHelper = get(),
                 replyHelper = get(),
+                imageAutoloadObserver = get(),
             )
         }
         factory<LoginIntroMviModel> {
@@ -47,7 +48,7 @@ val featureProfileModule =
             EditProfileViewModel(
                 userRepository = get(),
                 emojiRepository = get(),
-                settingsRepository = get(),
+                imageAutoloadObserver = get(),
             )
         }
     }
