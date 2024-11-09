@@ -27,5 +27,5 @@ data class SettingsEntity(
     val defaultTimelineId: String? = null,
     @ColumnInfo(defaultValue = "0") val notificationMode: Int = 0,
     val pullNotificationCheckInterval: Long? = null,
-    @ColumnInfo(defaultValue = "1") val autoloadImages: Boolean = true,
+    @ColumnInfo(defaultValue = "1") val autoloadImages: Int = 1,
 )

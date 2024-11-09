@@ -27,5 +27,5 @@ data class SettingsModel(
     val maxPostBodyLines: Int = Int.MAX_VALUE,
     val notificationMode: NotificationMode = NotificationMode.Disabled,
     val pullNotificationCheckInterval: Duration? = null,
-    val autoloadImages: Boolean = true,
+    val autoloadImages: ImageLoadingMode = ImageLoadingMode.Always,
 )

@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiFontSc
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.SettingsEntity
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadingMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
@@ -62,7 +63,7 @@ private fun SettingsEntity.toModel() =
         defaultTimelineId = defaultTimelineId,
         notificationMode = notificationMode.toNotificationMode(),
         pullNotificationCheckInterval = pullNotificationCheckInterval?.seconds,
-        autoloadImages = autoloadImages,
+        autoloadImages = autoloadImages.toImageLoadingMode(),
     )
 
 private fun SettingsModel.toEntity() =
@@ -88,7 +89,7 @@ private fun SettingsModel.toEntity() =
         defaultTimelineId = defaultTimelineId,
         notificationMode = notificationMode.toInt(),
         pullNotificationCheckInterval = pullNotificationCheckInterval?.inWholeSeconds,
-        autoloadImages = autoloadImages,
+        autoloadImages = autoloadImages.toInt(),
     )
 
 private fun Int.toMarkupMode(): MarkupMode =
@@ -132,4 +133,18 @@ private fun NotificationMode.toInt() =
         NotificationMode.Pull -> 1
         NotificationMode.Push -> 2
         else -> 0
+    }
+
+private fun ImageLoadingMode.toInt(): Int =
+    when (this) {
+        ImageLoadingMode.Always -> 1
+        ImageLoadingMode.OnWifi -> 2
+        else -> 0
+    }
+
+private fun Int.toImageLoadingMode(): ImageLoadingMode =
+    when (this) {
+        2 -> ImageLoadingMode.OnWifi
+        1 -> ImageLoadingMode.Always
+        else -> ImageLoadingMode.OnDemand
     }
