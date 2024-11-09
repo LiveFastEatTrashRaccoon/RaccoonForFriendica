@@ -617,9 +617,14 @@ costituita dalle seguenti sezioni:
     Timeline principale;
   - **Apri i gruppi in modalità forum di default** determina se gli account di gruppo vengono aperti
     di default in modalità forum (invece che in modalità classica);
-  - **Carica immagini automaticamente** se abilitata le immagini vengono caricate automaticamente,
-    se disabilitata le immagini vengono caricate su richiesta (per risparmare utilizzo di dati
-    mobili);
+  - **Modalità caricamento immagini** permette di configurare la politica da usare per il
+    caricamento delle immagini, scegliendo uno tra questi valori:
+    - **Sempre** le immagini vengono caricate automaticamente indipendentemente dalla connessione di
+      rete;
+    - **Su richiesta** le immagini non vengono mai caricate a meno che non si utilizzi il pulsante "
+      Carica" per avviare manualmente il caricamento;
+    - **In WiFi** le immagini vengono caricate automaticamente se sei connesso in WiFi, su richiesta se
+      stai utilizzando una connessione dati (modalità risparmio dati mobili);
   - **Markup per la composizione** determina la sintassi di formattazione per i nuovi post (Testo
     semplice — ovvero senza formattazione — BBCode — specifico di Friendica — HTML o Markdown —
     specifico di Mastodon;<a href="#markdown-formatting">*</a>
@@ -673,8 +678,10 @@ background, controlla le impostazioni di risparmio energetico di Raccoon nelle i
 </p>
 
 <div align="center">
-  <img width="310" alt="edit profile screen" src="../images/settings.png" />
+  <img width="310" alt="settings screen, part 1" src="images/settings_1.png" />
+  <img width="310" alt="settings screen, part 2" src="images/settings_2.png" />
 </div>
+
 
 [Torna su](#indice)
 
