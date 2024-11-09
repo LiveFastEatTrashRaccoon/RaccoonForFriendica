@@ -18,8 +18,8 @@ function changeLanguage() {
 
 # Manuale utente
 
-Benvenuto nel manuale utente di Raccoon for Friendica! Questa pagina contiene una spiegazione delle
-principali funzionalità dell'app e intende essere una guida il più possibile esaustiva a tutto
+Benvenuti nel manuale utente di Raccoon for Friendica! Questa pagina contiene una spiegazione
+delle principali funzionalità dell'app e intende essere una guida il più possibile esaustiva a tutto
 ciò che puoi (o non puoi) fare dall'app.
 
 ## Indice
@@ -59,14 +59,14 @@ ciò che puoi (o non puoi) fare dall'app.
 
 ## Introduzione
 
-**Friendica** è una piattaforma social e ha tutte le funzionalità che ci si aspetta da un software
-di questo tipo, in particolare permette di:
+**Friendica** è una piattaforma social e, in quanto tale, ha tutte le funzionalità che ci si aspetta
+da un software di questo tipo, in particolare permette di:
 
 - visualizzare la timeline dei post creati da altri utenti;
 - seguire un hashtag e visualizzare tutti i post che lo contengono;
 - creare nuovi post di primo livello o risposte ai post di altri, o pianificarne la pubblicazione
-  per un secondo momento (e modificare o eliminare i tuoi post);
-- mettere "mi piace" o "non mi piace" ai post;
+  per un secondo momento (e modificare/eliminare i tuoi post);
+- reagire con "mi piace" (o "non mi piace") ai post;
 - salvare un post nei segnalibri;
 - ricondividere un post;
 - seguire/smettere di seguire altri utenti, visualizzare il loro profilo e iscriversi per ricevere
@@ -92,7 +92,7 @@ altre piattaforme federate simili:
   (in ingresso);
 - messaggi diretti: permette di inviare direttamente un messaggio ad uno degli utenti che segui ed
   avere una conversazione privata;
-- galleria fotografica: permette di caricare foto e organizzarle in album, inoltre puoi inserire gli
+- galleria foto: permette di caricare foto e organizzarle in album, inoltre puoi inserire gli
   allegati facilmente nei tuoi post selezionandoli dal catalogo;
 - calendario eventi: permette di creare eventi e renderli visibili ai tuoi seguaci oppure
   visualizzare gli venti che sono stati condivisi con te;
@@ -106,7 +106,7 @@ altre piattaforme federate simili:
 È possibile accedere a tutte queste funzionalità utilizzando l'interfaccia web ufficiale, tuttavia
 sono disponibili (per molte di queste) anche una serie di API pubbliche che possono essere richimate
 da app di terze parti.
-E questo è esattamente quello che fa Raccoon: utilizza le API per creare un client Friendica pensato
+Questo è esattamente quello che fa Raccoon: utilizza le API per creare un client Friendica pensato
 per facilitarne l'utilizzo da dispositivo mobile.
 
 [Torna su](#indice)
@@ -115,21 +115,21 @@ per facilitarne l'utilizzo da dispositivo mobile.
 
 L'interfaccia utente dell'applicazione è divisa in tre parti:
 
-- menu laterale di navigazione (accessibile dall'icona hamburger nell'angolo in alto a sinistra o
+- il menu laterale di navigazione (accessibile dall'icona hamburger nell'angolo in alto a sinistra o
   con uno swipe da sinistra a destra): se hai effettuato l'accesso mostra il tuo nome utente e
   l'istanza cui sei connesso oppure, in modalità anonima, mstra semplicemente il nome dell'istanza —
-  più una serie di scorciatoie a diverse sezioni dell'app (es. le impostazioni o la informazioni
-  sull'istanza attuale);
+  seguito da una serie di scorciatoie a diverse sezioni dell'app (es. le impostazioni o la
+  informazioni sull'istanza attuale);
 - la barra di navigazione inferiore, con le scorciatoie per le sezioni più importanti dell'app
   (Timeline, Esplora, Notifiche e Profilo), visibile solo nelle schermate di primo livello;
 - il contenuto principale, solitamente strutturato nel seguente modo:
   - barra superiore contenente:
     - icona di navigazione (hamburger o pulsante Indietro) nell'angolo a sinistra;
     - il titolo della schermata;
-    - una o più azioni (opzionali) nell'angolo a destra o il menu a scomparsa "⋮";
+    - (opzionale) una o più azioni nell'angolo a destra o il menu a scomparsa "⋮";
   - il contenuto della schermata;
-  - barra inferiore (opzionale, ad esempio la barra degli strumenti di formattazione e/o un
-    campo di inserimento testo).
+  - una barra inferiore (opzionale, ad esempio gli strumenti di formattazione e/o un campo di
+    inserimento testo).
 
 Tutti i componenti utilizzati provengono dal design system [Material 3](https://m3.material.io/).
 
@@ -149,7 +149,7 @@ Esistono tre tipi di elenchi predefiniti:
 
 Gli elenchi personalizzati, d'altra parte, possono essere:
 
-- una delle [liste da te definite](#cerchie);
+- una delle [liste definite da te](#cerchie);
 - un canale, ovvero le aggregazioni predefinite come "Per te", "Scopri", "Seguaci", "Immagini", ecc.
   (specifico di Friendica);
 - uno dei gruppi che segui (specifico di Friendica);
@@ -158,7 +158,7 @@ Ogni elemento nella timeline ha la seguente struttura:
 
 - indicazione di ricondivisione o risposta (l'utente che ha ricondiviso e l'autore del post
   originale);
-- autore (immagine profilo, nome visualizzato e nome utente);
+- autore del post (immagine profilo, nome visualizzato e nome utente);
 - data di creazione;
 - titolo (solo sui tipi di istanze che lo permettono, ad es. Friendica o Lemmy);
 - testo dello spoiler (opzionale);
@@ -166,19 +166,18 @@ Ogni elemento nella timeline ha la seguente struttura:
 - allegati (video o immagini, opzionali);
 - scheda di anteprima (contenuto aggiuntivo o URL esterno).
 
-Se un post contiene hashtag sarà possibile aprire per ognuno di essi
+Se un post contiene degli hashtag sarà possibile aprire per ognuno di essi
 l'[elenco dei post che lo contengono](#elenco-post-contententi-un-hashtag), se invece
-contiene menzioni sarè possible aprire la schermata [profilo](#profilo-utente) corrispondente.
+contiene delle menzioni sarè possible aprire la schermata [profilo](#profilo-utente) corrispondente.
 
-Ogni post può essere ricondiviso, aggiunto ai preferiti o aggiunto ai segnalibri; puoi creare una
-risposta e visualizzare il numero di risposte / ricondivisioni o se esso è presente nei tuoi
+Ogni post può essere ricondiviso, aggiunto ai preferiti ai segnalibri; puoi creare una
+risposta e visualizzare il numero di risposte/ricondivisioni e vedere se esso è presente nei tuoi
 segnalibri o meno.
 
-Inoltre per ogni post è possibile:
+Infine, a partire da ogni post è possibile:
 
 - accedere al [profilo](#profilo-utente) di tutti gli utenti coinvolti (autore, autore della
-  riconsidivzione
-  o autore originale);
+  riconsidivzione o autore originale);
 - entrare nella schermata di [dettaglio post](#dettaglio-post);
 - aprire il menu di azione a scomparsa per:
   - condividerlo tramite il meccanismo del sistema;
@@ -201,14 +200,15 @@ Inoltre per ogni post è possibile:
 ## Dettaglio post
 
 Questa schermata permette di visualizzare un post nel suo contesto (ovvero tutti i post
-precedenti fino a quello radice da cui è si originata la conversazione e tutte le risposte che sono
-state ricevute).
+precedenti fino a quello radice da cui è si originata la conversazione e tutte le risposte
+ricevute).
 
-Inoltre è possibile visualizzare l'elenco degli utenti che lo hanno ricondiviso o aggiunto ai
+Inoltre, è possibile visualizzare l'elenco degli utenti che lo hanno ricondiviso o aggiunto ai
 preferiti.
 
 Comunque, questa schermata è molto simile ad una normale [timeline](#timeline) e consente di
-eseguire le stesse azioni su post e aprire profili utente o il dettaglio di altri post.
+eseguire le stesse azioni su post (reazioni e menu opzioni a scomparsa), nonché aprire i profili
+utente o il dettaglio di altri post della conversazione.
 
 <div align="center">
   <img width="310" alt="post detail screen" src="../images/post_detail.png" />
@@ -218,7 +218,7 @@ eseguire le stesse azioni su post e aprire profili utente o il dettaglio di altr
 
 ## Dettaglio immagine
 
-Da un video o un'immagine allegata è possibile aprire il visualizzatore a schermo intero.
+A partire da un video o un'immagine allegata è possibile aprire il visualizzatore a schermo intero.
 Per le immagini, fai doppio tap per accedere alla modalità "pinch to zoom".
 
 Dal menu azioni della barra superiore, è possibile scaricare l'allegato sul tuo dispositivo,
@@ -241,9 +241,9 @@ la _modalità classica_ (per account individuali) e la _modalità forum_ (per ac
 
 Questa schermata si compone di due parti:
 
-- un'intestazione con nome visualizzato, nome utente, immagine profilo e immagine di copertina, il
-  numero di seguaci/seguiti (da da cui è possibile aprire la lista utenti), biografia e una serie
-  di campi personalizzati;
+- un'intestazione che mostra nome visualizzato, nome utente, immagine profilo e immagine di
+  copertina, il numero di seguaci/seguiti (da da cui è possibile aprire la lista utenti), biografia
+  e una serie di campi personalizzati;
 - l'elenco dei post creati dall'utente, suddiviso nelle seguenti sezioni:
   - **Post** elenco dei post di primo livello creati dall'utente;
   - **Post e risposte** tutti i post comprese le risposte creati dall'utente;
@@ -263,13 +263,14 @@ Se hai effettuato l'accesso, l'intestazione mostrerà la tua relazione con quest
   approvazione);
 - nessuna relazione.
 
-Se segui l'utente, vedrai anche lo stato della notifica (abilitata o disabilitata).
+Se segui l'utente, vedrai anche lo stato delle notifiche (abilitate o disabilitate) sulla sua
+attività.
 
-Dal menu a scomparsa nella barra superiore, è inoltre possibile:
+Dal menu a scomparsa nella barra superiore è inoltre possibile:
 
 - bloccare/sbloccare l'utente;
 - silenziare (specificando per quanto tempo) e de-silenziare l'utente;
-- segnalare l'utente;
+- segnalare l'utente agli amministratori;
 - aggiungere una nota personale;
 - passare alla [modalità forum](#modalità-forum) (se si tratta di un gruppo).
 
@@ -312,7 +313,7 @@ L'elenco post contenenti un hashtag è un tipo speciale di [timeline](#timeline)
 nell'aggregazione di tutti i post con all'interno determinato hashtag. Per il resto, questa
 schermata ha la stessa struttura di una timeline.
 
-Dalla barra superiore è possibile seguire o smettere di seguire l'hashtag in questione.
+Dalla barra superiore è possibile seguire (o smettere di seguire) l'hashtag in questione.
 
 <div align="center">
   <img width="310" alt="hashtag feed screen" src="../images/hashtag_feed.png" />
@@ -323,10 +324,10 @@ Dalla barra superiore è possibile seguire o smettere di seguire l'hashtag in qu
 ## Preferiti & segnalibri
 
 I preferiti e i segnalibri sono tipi speciali di [timeline](#timeline) e hanno in tutto e per tutto
-la struttura delle timeline.
+la stessa struttura delle timeline.
 
-L'unica differenza è che, se un post viene rimosso dai preferiti o dai segnalibri, esso scomparirà
-immediatamente dall'elenco.
+L'unica differenza è che, se un post viene rimosso dai preferiti o dai segnalibri rispettivamente,
+esso scomparirà immediatamente dall'elenco.
 
 <div align="center">
   <img width="310" alt="favorites screen" src="../images/favorites.png" />
@@ -340,8 +341,8 @@ immediatamente dall'elenco.
 Questa schermata contiene l'elenco di tutti gli hashtag seguiti in ordine alfabetico e permette di
 smettere di seguirli.
 
-Ciascun elemento di questa lista permette di aprire il
-relativo [elenco post](#elenco-post-contententi-un-hashtag).
+Ciascun elemento di questa lista permette di aprire
+l'[elenco post](#elenco-post-contententi-un-hashtag) associato.
 
 <div align="center">
   <img width="310" alt="followed hashtags screen" src="../images/followed_hashtags.png" />
@@ -363,12 +364,13 @@ connesso. La schermata è suddivisa nelle seguenti sezioni:
 
 L'apertura di un hashtag ti porterà all'[elenco dedicato](#elenco-post-contententi-un-hashtag),
 facendo tap su un post è possibile accedere al relativo [dettaglio](#post-dettaglio) e facendo tap
-su un utente si aprirà il relativo [profilo](#profilo-utente). Invece, al tap su un
+su un utente si aprirà il relativo [profilo](#profilo-utente). Infine, al tap su un
 collegamento aprirà il browser esterno o una custom tab a seconda dell'opzione "Modalità apertura
 URL" selezionata nelle [impostazioni](#impostazioni-applicazione).
 
 <p id="hashtag-usage-disclaimer">
-* su server diversi il numero può variare da 1 a 7 giorni a seconda del tipo di istanza
+* il numero di giorni per cui sono disponibili le statistiche di utilizzo può variare da 1 a 7 a 
+seconda della tipologia di istanza
 </p>
 
 <div align="center">
@@ -384,12 +386,13 @@ Questa schermata permette di effettuare ricerche nel Fediverso: contiene un camp
 inserire il testo da usare come criterio e un selettore a schede per selezionare il tipo di
 risultato desiderato (Post, Utenti o Hashtag).
 
-Tieni presente che non è possibile effettuare la ricerca a meno che non sia stata inserito un
+**Attenzione**: non è possibile effettuare la ricerca a meno che non sia stata inserito un
 criterio non vuoto.
 
-L'apertura di un hashtag ti porterà al relativo [elenco](#elenco-post-contententi-un-hashtag),
+Facendo tap su un hashtag sarà possibile accedere al
+relativo [elenco post](#elenco-post-contententi-un-hashtag),
 facendo tap su un post si aprirà il relativo [dettaglio](#dettaglio-post) e facendo tap su un utente
-il relativo [profilo](#profilo-utente).
+il [profilo](#profilo-utente) associato.
 
 <div align="center">
   <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="../images/search.png" />
@@ -402,8 +405,8 @@ il relativo [profilo](#profilo-utente).
 Questa schermata contiene l'elenco delle notifiche per gli eventi a cui sei iscritto, ed è
 disponibile unicamente per gli utenti registrati.
 
-Il contenuto principale presenta l'elenco delle notifiche, che possono essere delle seguenti
-tipologie:
+Il contenuto principale presenta l'elenco delle notifiche, ciascuna delle quali appartiene a una
+delle seguenti categorie:
 
 - **Post** un utente per cui hai abilitato le notifiche ha pubblicato un nuovo post;
 - **Modifica** un post che hai ricondiviso è stato modificato dal suo autore;
@@ -415,8 +418,7 @@ tipologie:
 - **Sondaggio** un sondaggio a cui hai partecipato è scaduto.
 
 Dal menù della barra superiore è possibile selezionare/deselezionare specifiche categorie di
-notifiche
-e filtrare i risultati visualizzati nell'elenco.
+notifiche e filtrare i risultati visualizzati nell'elenco.
 
 Inoltre, in questa schermata è possibile:
 
@@ -424,8 +426,8 @@ Inoltre, in questa schermata è possibile:
   contatore delle non lette);
 - eliminare tutte le notifiche utilizzando il pulsante "Checkmark" nella barra in alto.
 
-(Attenzione: dopo essere state eliminate, le notifiche verranno cancellate dal server e non sarà
-più possible visualizzarne l'elenco!)
+**Attenzione**: dopo essere state eliminate, le notifiche verranno cancellate dal server e non sarà
+più possible visualizzarne l'elenco!
 
 Facendo tap su ciascuna voce della lista è possibile aprire il
 relativo [profilo utente](#profilo-utente) o [dettaglio post](#dettaglio-post).
@@ -438,13 +440,13 @@ relativo [profilo utente](#profilo-utente) o [dettaglio post](#dettaglio-post).
 
 ## Profilo
 
-Se stai eseguendo l'app in modalità anonima, la schermata Profilo contiene il pulsante Accedi per
+Se l'app è in esecuzione in modalità anonima, la schermata Profilo contiene il pulsante Accedi per
 avviare il flusso di autenticazione. Se invece hai già effettuato l'accesso, verrà utilizzata una
-schermata simile a un normale [profilo utente](#profilo-utente), con alcune azioni aggiuntive
-specifiche per il tuo account.
+schermata simile a un normale [profilo utente](#profilo-utente), con alcune opzioni
+specifiche per azioni sul tuo account.
 
 Se disponi di più account, nella barra superiore apparirà un pulsante "Gestisci account" per
-effettuare il passaggio da uno all'altro.
+effettuare il passaggio da uno all'altro tramite una bottom sheet.
 
 ### Login
 
@@ -455,10 +457,10 @@ seguire un utente, ottenere l'elenco dei post da chi si segue, ecc.).
 
 Questo metodo è preferibile in quanto:
 
-- il tuo nome utente/password non lasciano mai dal browser e rimangono sconosciuto a tutti i
+- il tuo nome utente/password non lasciano mai il browser e rimangono sconosciuti a tutti i
   soggetti terzi (inclusa l'app Raccoon);
 - il livello di accesso è più granulare, il che significa che è possibile controllare i vari ambiti
-  (o _scope_) per cui ogni singolo token può essere utilizzato;
+  (chiamati _scope_) per cui ogni singolo token può essere utilizzato;
 - i token possono essere revocati in qualsiasi momento, facilitando la mitigazione degli accessi
   potenzialmente indesiderati.
 
@@ -469,8 +471,8 @@ nell'app di terze parti che intende utilizzarle.
 Il flusso di accesso prevede due tra questi passaggi:
 
 - una schermata introduttiva dove si sceglie la piattaforma e la modalità di login (la doppia scelta
-  OAuth2/HTTP Basic è disponibile solo su Friendica)
-- la selezione dell'istanza (solo per OAuth2) dove specificare il server a cui connettersi; per
+  OAuth2/HTTP Basic è disponibile solo su Friendica);
+- la selezione dell'istanza (solo per OAuth2) dove specificare il server a cui connettersi — per
   Friendica è possbile scegliere da un menù a tendina o inserire manualmente il nome di dominio se
   non presente, per tutte le altre piattaforme dovrai inserire manualmente il dominio del server (ad
   es. `mastodon.social`);
@@ -505,10 +507,10 @@ che permette di accedere alle [preferenze del profilo](#profile-settings).
 Questa schermata contiene un elenco generico di utenti; può essere aperto sia
 dal [dettaglio post](#dettaglio-post) (per visualizzare chi ha aggiunto un post ai preferiti o lo ha
 ricondiviso) o dal [profilo utente](#profilo-utente) (per visualizzare chi sta seguendo o è seguito
-da un determinato utente). Vengono inoltre mostrati l'immagine profilo, il nome visualizzato e il
-nome utente, oltre al corrispondente stato di relazione con il tuo account.
+da un determinato utente). Per ogni utente vengono mostrati l'immagine profilo, il nome visualizzato
+e il nome utente, oltre al corrispondente stato di relazione con il tuo account.
 
-Puoi utilizzare il pulsante Segui/Invia richiesta/Reciproci per modificare la tua relazione con
+Puoi utilizzare i pulsanti Segui/Invia richiesta/Reciproci per modificare la tua relazione con
 questo utente.
 
 <div align="center">
@@ -523,7 +525,8 @@ Se nelle tue [impostazioni del profilo](#impostazioni-account) hai abilitato l'a
 per le richieste di essere seguito, questa schermata contiene l'elenco delle richieste da te
 ricevute che risultano in attesa di approvazione.
 
-Per ciascuna delle voci dell'elenco è possibile accettare o rifiutare la richiesta.
+Per ciascuna delle voci dell'elenco è possibile accettare o rifiutare la richiesta nonché
+visualizzare il [profilo](#profilo-utente) dell'utente.
 
 <div align="center">
   <img width="310" alt="follow request screen" src="../images/follow_requests.png" />
@@ -571,8 +574,7 @@ Questa finestra di dialogo contiene alcune informazioni aggiuntive a proposito d
 ## Impostazioni account
 
 Questa schermata ti consente di modificare i dati del tuo profilo e configurare (in una certa
-misura) la rilevabilità
-e visibilità del tuo profilo.
+misura) la rilevabilità e visibilità del tuo profilo.
 
 I dati del profilo che possono essere modificati sono:
 
@@ -585,10 +587,10 @@ I dati del profilo che possono essere modificati sono:
 - abilita approvazione manuale delle richieste di essere seguito (`blocked`);
 - rendi l'account visibile nelle ricerche (`discoverable`);
 - rendi private le liste dei seguaci e seguiti (`hide_collections`);
-- includi i post creati da questo account nella timeline pubblica (`indexable`).
+- includi i post creati da te nella timeline pubblica (`indexable`).
 
 <p id="user-profile-experimental-disclaimer">
-* a seconda del backend questi campi potrebbero non essere modificabili, per es. ci sono alcuni 
+* a seconda del backend questi campi potrebbero non essere modificabili, ad es. ci sono dei 
 problemi di compatibilità noti in alcune versioni di Friendica
 </p>
 
@@ -622,7 +624,7 @@ costituita dalle seguenti sezioni:
     semplice — ovvero senza formattazione — BBCode — specifico di Friendica — HTML o Markdown —
     specifico di Mastodon;<a href="#markdown-formatting">*</a>
   - **Numero massimo righe testo post** configura il numero massimo di righe che verrà visualizzato
-    negli elenchi per ciascun post;
+    nelle timeline per ciascun post;
   - **Modalità notifiche** permtte di configurare la strategia da usare per le notifiche scegliendo
     tra i seguenti valori:
     - **Push** ricevi le notifiche push attraverso
@@ -655,7 +657,7 @@ costituita dalle seguenti sezioni:
 <p id="markdown-formatting">
 * scegliere con cautela: <em>Markdown</em> è supportato solo da alcune versioni di Mastodon (es.
 glitch-soc), se non sei sicuro/a di quel che stai facendo usa HTML o testo semplice, altrimenti i 
-tuoi post potrebbero non essere formattati correttamente
+tuoi post potrebbero non essere formattati correttamente!
 </p>
 
 <p id="notifications-unifiedpush">
@@ -723,12 +725,13 @@ Sotto alla barra è presente un'intestazione che visualizza:
 - la visibilità del post (Pubblica, Non in lista, Solo seguaci, Solo menzioni o una cerchia
   Friendica);
 - la data e l'orario di schedulazione (per i post schedulati);
-- il numero di caratteri attuale / numero di caratteri massimo consentito in base alle impostazioni
+- il numero di caratteri attuale/numero di caratteri massimo consentito in base alle impostazioni
   dell'istanza.
 
-Sotto l'intestazione si trova il campo di testo principale per il testo del post. Nella parte
-inferiore della schermata, solo se l'opzione "Markup per la composizione" nelle impostazioni _non_ è
-"Testo semplice", è presente una barra degli strumenti di formattazione con i seguenti pulsanti:
+Al di sotto dell'intestazione è presente il campo di testo principale per il testo del post. Nella
+parte inferiore della schermata, solo se l'opzione "Markup per la composizione" nelle impostazioni
+_non_ è"Testo semplice", viene mostrata una barra degli strumenti di formattazione con i seguenti
+pulsanti:
 
 - **Aggiungi immagine** per aggiungere un'immagine dal rullino foto del dispositivo;
 - **Aggiungi link** per aggiungere un collegamento ipertestuale;
@@ -758,19 +761,20 @@ In alto è presente un selettore per selezionare la categoria di violazione tra:
   violata);<a href="#report-rule-disclaimer">*</a>
 - **Altro** qualsiasi altro tipo di problema.
 
-A seguire, è possibile scrivere il testo del report in un campo di immissione e, infine, è presente
-l'interruttore "Inoltra segnalazione" al fine di selezionare se questo rapporto deve essere
-consegnato solo agli amministratori dell'istanza locale o, se stai segnalando un contenuto
-proveniente da un'istanza federata, la sgnalazione dovrebbe essere inoltrata anche agli
-amministratori dell'istanza di origine.<a href="#report-forward-disclaimer">**</a>
+Sotto al selettore categoria, è presente un campo di testo per inserire il contenuto della
+segnalazione e, infine, viene mostrato uno switch "Inoltra segnalazione" al fine di selezionare se
+questo rapporto deve essere consegnato solo agli amministratori dell'istanza locale o, se stai
+segnalando un contenuto proveniente da un'istanza federata, la sgnalazione deve essere inoltrata
+anche agli amministratori dell'istanza di origine.<a href="#report-forward-disclaimer">**</a>
 
 <p id="report-rule-disclaimer">
 * su Friendica le violazioni delle regole non sono supportate e, se questa opzione è inviata, la
-richiesta viene rifiutata; pertanto questa categoria di segnalazioni è nascosta
+richiesta viene rifiutata (con un errore 422 - unprocessable entity); pertanto questa categoria di
+segnalazioni è stata nascosta
 </p>
 <p id="report-forward-disclaimer">
-** su Friendica questo interruttore è supportato (non determina il fatto che il server rifiuti la 
-richiesta) ma di fatto non ha alcun effetto
+** su Friendica questo interruttore è supportato (non determina un errore 422) ma di fatto non
+sembra avere alcun effetto
 </p>
 
 <div align="center">
@@ -783,8 +787,10 @@ richiesta) ma di fatto non ha alcun effetto
 
 Questo modulo consente di inviare un commento agli sviluppatori per segnalare un malfunzionamento o
 suggerire delle migliorie.
+
 Oltre al testo del commento, è possibile specificare un indirizzo email opzionale (ad esempio se
 desideri essere contattato per chiarimenti).
+
 Questo modulo è solo una schermata di utilità per coloro che preferiscono non utilizzare l'issue
 tracker su GitHub (ad es. perché non hanno un account).
 
@@ -797,27 +803,30 @@ tracker su GitHub (ad es. perché non hanno un account).
 ## Cerchie
 
 Questa schermata contiene tutti i feed personalizzati che possono essere utilizzati nella timeline,
-che comprendono:
+ovvero:
 
-- elenchi definiti dall'utente (come liste Mastodon
+- gli elenchi definiti dall'utente (come liste Mastodon
   o [cerchie](https://wiki.friendi.ca/docs/groups-and-privacy) Friendica);
-  [canali](https://wiki.friendi.ca/docs/channel) Friendica;
+- i [canali](https://wiki.friendi.ca/docs/channel) Friendica;
 - un elemento per ogni gruppo tra i contatti che segui.
 
 > Il motivo per cui tutti questi elementi eterogenei si trovano nella stessa lista è perché vengono
 > tutti restituiti dalla stessa API, per compatibilità con i client Mastodon.
 
+Al fine di rendere la consultazione più facile, Raccoon suddivide in sezioni la lista, con
+un'intestazione di sezione che specifica il tipo dei contenuti sottostanti.
+
 Tra queste tre categorie, l'unica che consente di essere modificata è la prima, per la quale è
 possibile:
 
-- utilizzare il pulsante "⋮" per modificare il nome o eliminarlo;
+- utilizzare il pulsante "⋮" per modificare il nome o eliminarle;
 - entrare nella schermata di dettaglio cerchia, visualizzare i contatti che ne fanno parte e
-  aggiungerne di nuovi o rimuovere quelli esistenti.
+  aggiungerne di nuovi (con il pulsante "+") o rimuovere quelli esistenti.
 
-Ricorda che in Friendica per impostazione predefinita tutti i contatti che non sono di tipo gruppo
-vengono aggiunti alla cerchia "Amici" tutti i contatti di tipo gruppo vengono aggiunti alla
-cerchia "Gruppi". Pur essendo create in automatico dal sistema, "Amici" e "Gruppi" sono
-cerchi normali a tutti gli effetti che possono essere modificate o eliminate.
+Ricorda che in Friendica, come impostazione predefinita, tutti i contatti che non sono di tipo
+gruppo vengono aggiunti alla cerchia "Amici" mentre tutti i contatti di tipo gruppo vengono aggiunti
+alla cerchia "Gruppi". Pur essendo create in automatico dal sistema, "Amici" e "Gruppi" sono
+cerchie normalissime che possono essere modificate o eliminate.
 
 <div align="center">
   <img width="310" alt="circle list screen" src="../images/circles_list.png" />
@@ -838,11 +847,11 @@ voce nell'elenco, vengono visualizzati:
 - tempo trascorso dalla ricezione dell'ultimo messaggio.
 
 Facendo tap su ciascuna voce è possibile aprire il dettaglio conversazione, che ha l'aspetto di una
-chat tradizionale con i messaggi di un fumetto e un campo di testo nella parte inferiore dello
-schermo per inviarne di nuovi.
+chat tradizionale a "fumetti" con un campo di testo nella parte inferiore dello schermo per inviare
+nuovi messaggi.
 
-I messaggi vengono scaricati man mano che arrivano finché questa schermata è aperta, altrimenti sarà
-necessario fare refresh manualmente l'elenco delle conversazioni.
+Da notare che i messaggi vengono scaricati man mano che arrivano finché questa schermata è aperta,
+altrimenti sarà necessario fare refresh manualmente sull'elenco delle conversazioni.
 
 <div align="center">
   <img width="310" alt="conversation list screen" src="../images/dm_list.png" />
@@ -857,7 +866,7 @@ Questa schermata contiene l'elenco degli album presenti nella tua galleria multi
 album è possible modificare il nome, eliminarlo oppure, facendo tap sulla corrispondente voce
 dell'elenco, accedere alle immagini in esso contenute.
 
-Per ogni immagine avrai è possibile:
+Per ogni immagine all'interno di un album è possibile:
 
 - modificare la descrizione;
 - eliminarla dalla galleria;
@@ -880,7 +889,7 @@ Questa schermata contiene tutte le voci in attesa di pubblicazione ed è suddivi
 ogni elemento può essere eliminato oppure, facendo tap sulla corrispondente voce dell'elenco, aperto
 in modalità modifica.
 
-Attenzione: nella maggior parte dei casi i post programmati **non** possono essere modificati
+**Attenzione**: nella maggior parte dei casi i post programmati <u>non</u> possono essere modificati
 tranne che per la data di pianificazione, quindi il modo consigliato di salvare un post e
 modificarlo per in un secondo momento è:
 
@@ -906,9 +915,9 @@ condivisi con te suddivisi per mese con, per ciascuna voce:
 - (opzionale) data di fine;
 - (opzionale) posizione.
 
-È possible esportare ogni elemento nel calendario del tuo dispositivo e, facendo tap
-su di esso, accedere alla schermata di dettaglio in cui verranno visualizzati maggiori dettagli
-(ad es. una descrizione più estesa).
+È possible esportare ogni evebti nel calendario del tuo dispositivo mobile e, facendo tap
+sugli elementi della lista, accedere alla schermata di dettaglio in cui verranno visualizzati
+maggiori dettagli(ad es. una descrizione più estesa).
 
 <div align="center">
   <img width="310" alt="calendar event list screen" src="../images/calendar_list.png" />

@@ -361,7 +361,7 @@ option selected in the [app settings](#application-settings).
 This screen makes it possible to search in the Fediverse: it contains a search field to enter the
 query string and a tab selector to choose the desired result type (either Posts, Users or Hashtags).
 
-Please notice that it is not possible to search unless a non-empty query has been inserted.
+**Be careful**: it is not possible to search unless a non-empty query has been inserted.
 
 Opening a hashtag will lead you to the [dedicated feed](#hashtag-feed), opening a post to
 its [detail](#post-detail) and opening a user to the corresponding [profile](#user-profile).
@@ -396,8 +396,8 @@ Moreover, it is possible to:
 - mark all notifications as read, by simply refresh the page (which will reset the unread counter);
 - dismiss all notifications by using the "Done all" button in the top bar.
 
-(Be careful, after being dismissed notifications are cleared from the server and you will not be
-able to browse the list any more!)
+**Be careful**: after being dismissed notifications are cleared from the server and you will not be
+able to browse the list any more!
 
 Tapping on each item of the list, it is possible to open the [user profile](#user-profile)
 or [post detail](#post-detail).
@@ -415,7 +415,7 @@ the authentication flow. If, on the other hand, you are already logged in, it lo
 regular [user profile](#user-profile) but has some additional actions specific for your user.
 
 If you have multiple accounts, in the top app bar you will find a "Manage account" button to switch
-between one another.
+between one another with a bottom sheet.
 
 ### Login
 
@@ -487,7 +487,8 @@ account.
 If in your [profile settings](#profile-settings) you have enabled manual approval for follow
 requests, this screen contains the list of pending follow request you have received.
 
-For each one of the items you can either accept or reject the request.
+For each one of the items you can either accept or reject the request, as well as open the
+corresponding [user profile](#user-profile).
 
 <div align="center">
   <img width="310" alt="follow request screen" src="images/follow_requests.png" />
@@ -609,7 +610,7 @@ sections:
 <p id="markdown-formatting">
 * please choose wisely: <em>Markdown</em> is supported only by some versions of Mastodon (e.g.
 glitch-soc), if you do not know what you are doing stick to HTML or plain text, otherwise your posts
-may not be formatted correctly
+may not be formatted correctly!
 </p>
 
 <p id="notifications-unifiedpush">
@@ -714,11 +715,11 @@ source instance too.<a href="#report-forward-disclaimer">**</a>
 
 <p id="report-rule-disclaimer">
 * on Friendica rule violation are not supported yet and if they are submitted they get rejected by
-the server, so this option is hidden
+the server (with a 422 - Unprocessable entity), so this option has been hidden
 </p>
 <p id="report-forward-disclaimer">
-** on Friendica this switch is supported (does not cause the request to be rejected by the server)
-but it has no effect
+** on Friendica this switch is supported (does not cause a 422 error) but it does not seem to have
+any effect
 </p>
 
 <div align="center">
@@ -730,8 +731,11 @@ but it has no effect
 ## User feedback
 
 This form allows you to submit your feedback to the developers (e.g. to report a bug or suggest some
-improvements). Apart from writing your comment, you can optionally specify an email address (e.g. if
+improvements).
+
+Apart from writing your comment, you can optionally specify an email address (e.g. if
 you wish to be contacted for clarifications).
+
 This is just a utility screen for those who prefer not to use the issue tracker on GitHub (e.g.
 because they do not have an account).
 
@@ -753,11 +757,14 @@ This screens contains all the custom feeds that can be used in the timeline, whi
 > The reason why all these heterogeneous elements are in the same list is because they are all
 > returned by the same API for compatibility with Mastodon clients.
 
+To make it easier to browse and understand this list, Raccoon divides the list in sections, each
+with its header specifying the type of the following items.
+
 Among these three categories, the only one which allow to be modified is the first one, for which:
 
 - you can use the "⋮" button to edit the name or delete it;
-- you can enter a circle detail screen to see the contacts that belong to it and add new ones/remove
-  existing ones.
+- you can enter a circle detail screen to see the contacts that belong to it and add new ones (with
+  the "+" button) or remove existing ones.
 
 Please remember that in Friendica by default all non-group contacts are added to the "Friends"
 circle and all group contacts are added to "Group". Albeit being created by the system, "Friends"
@@ -799,7 +806,7 @@ have to manually refresh the conversation list.
 This screen contains the list of albums in your multimedia gallery. For each album you can either
 edit its name, delete it or, tapping on the list item, access the pictures contained in it.
 
-For each picture, you will have the possibility to:
+For each picture in an album, you will have the possibility to:
 
 - edit its description;
 - delete it from the Gallery;
@@ -821,8 +828,8 @@ This screen contains all the items awaiting publication and it is divided into t
 
 each item can be deleted or, by tapping on it, opened in edit mode.
 
-Beware that on most instances scheduled posts can **not** be modified except for their schedule
-date, so the preferred way to save a post and edit for later is:
+**Beware** that on most instances scheduled posts can <u>not</u> be modified except for their
+schedule date, so the preferred way to save a post and edit for later is:
 
 - create a post with the "Only mentions" (`direct`) visibility without mentioning any user so that
   it is only visible to you;
@@ -846,8 +853,8 @@ for each item:
 - (optional) end date;
 - (optional) location.
 
-For each item, you can export it to your device calendar and, by tapping on the item, access a
-detail screen where more details (like a more extended description) are displayed.
+For each event, you can export it to your device calendar and, by tapping on each list item, access
+a detail screen where more details (like a more extended description) are displayed.
 
 <div align="center">
   <img width="310" alt="calendar event list screen" src="images/calendar_list.png" />
