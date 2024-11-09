@@ -22,6 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
 import kotlinx.coroutines.FlowPreview
@@ -47,6 +48,7 @@ class TimelineViewModel(
     private val notificationCenter: NotificationCenter,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
+    private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
         initialState = TimelineMviModel.State(),
     ),
@@ -70,8 +72,15 @@ class TimelineViewModel(
                         it.copy(
                             timelineType = defaultTimelineType,
                             blurNsfw = settings?.blurNsfw ?: true,
-                            autoloadImages = settings?.autoloadImages ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                        )
+                    }
+                }.launchIn(this)
+            imageAutoloadObserver.enabled
+                .onEach { autoloadImages ->
+                    updateState {
+                        it.copy(
+                            autoloadImages = autoloadImages,
                         )
                     }
                 }.launchIn(this)
