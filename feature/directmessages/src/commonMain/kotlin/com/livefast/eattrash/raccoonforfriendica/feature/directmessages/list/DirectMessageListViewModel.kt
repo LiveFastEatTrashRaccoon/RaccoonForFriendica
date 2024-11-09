@@ -8,7 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Direc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,19 +22,19 @@ import kotlinx.coroutines.launch
 class DirectMessageListViewModel(
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
-    private val settingsRepository: SettingsRepository,
     private val userPaginationManager: UserPaginationManager,
+    private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<DirectMessageListMviModel.Intent, DirectMessageListMviModel.State, DirectMessageListMviModel.Effect>(
         initialState = DirectMessageListMviModel.State(),
     ),
     DirectMessageListMviModel {
     init {
         screenModelScope.launch {
-            settingsRepository.current
-                .onEach { settings ->
+            imageAutoloadObserver.enabled
+                .onEach { autoloadImages ->
                     updateState {
                         it.copy(
-                            autoloadImages = settings?.autoloadImages ?: true,
+                            autoloadImages = autoloadImages,
                         )
                     }
                 }.launchIn(this)

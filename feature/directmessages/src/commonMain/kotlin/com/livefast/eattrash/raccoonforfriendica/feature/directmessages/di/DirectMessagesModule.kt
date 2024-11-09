@@ -12,8 +12,8 @@ val featureDirectMessagesModule =
             DirectMessageListViewModel(
                 paginationManager = get(),
                 identityRepository = get(),
-                settingsRepository = get(),
                 userPaginationManager = get(),
+                imageAutoloadObserver = get(),
             )
         }
         factory<ConversationMviModel> { params ->
@@ -24,8 +24,8 @@ val featureDirectMessagesModule =
                 userRepository = get(),
                 identityRepository = get(),
                 messageRepository = get(),
-                settingsRepository = get(),
                 userCache = get(),
+                imageAutoloadObserver = get(),
             )
         }
     }

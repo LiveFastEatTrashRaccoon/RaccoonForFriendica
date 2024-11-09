@@ -14,7 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Direc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -31,8 +31,8 @@ class ConversationViewModel(
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
     private val messageRepository: DirectMessageRepository,
-    private val settingsRepository: SettingsRepository,
     private val userCache: LocalItemCache<UserModel>,
+    private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<ConversationMviModel.Intent, ConversationMviModel.State, ConversationMviModel.Effect>(
         initialState = ConversationMviModel.State(),
     ),
@@ -42,11 +42,11 @@ class ConversationViewModel(
 
     init {
         screenModelScope.launch {
-            settingsRepository.current
-                .onEach { settings ->
+            imageAutoloadObserver.enabled
+                .onEach { autoloadImages ->
                     updateState {
                         it.copy(
-                            autoloadImages = settings?.autoloadImages ?: true,
+                            autoloadImages = autoloadImages,
                         )
                     }
                 }.launchIn(this)
