@@ -6,6 +6,7 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,6 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCrashReportManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getNetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getActiveAccountMonitor
@@ -49,6 +51,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
     val settingsRepository = remember { getSettingsRepository() }
     val activeAccountMonitor = remember { getActiveAccountMonitor() }
     val setupAccountUseCase = remember { getSetupAccountUseCase() }
+    val networkStateObserver = remember { getNetworkStateObserver() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val drawerCoordinator = remember { getDrawerCoordinator() }
     val drawerGesturesEnabled by drawerCoordinator.gesturesEnabled.collectAsState()
@@ -111,6 +114,12 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                     }
                 }
             }.launchIn(this)
+    }
+    DisposableEffect(networkStateObserver) {
+        networkStateObserver.start()
+        onDispose {
+            networkStateObserver.stop()
+        }
     }
 
     val currentSettings by settingsRepository.current.collectAsState()
