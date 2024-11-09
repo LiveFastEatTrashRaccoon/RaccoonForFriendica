@@ -21,6 +21,7 @@ val featureHashtagModule =
                 notificationCenter = get(),
                 imagePreloadManager = get(),
                 blurHashRepository = get(),
+                imageAutoloadObserver = get(),
             )
         }
         factory<FollowedHashtagsMviModel> {
