@@ -20,6 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Reply
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -39,6 +40,7 @@ class EntryDetailViewModel(
     private val blurHashRepository: BlurHashRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
+    private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
         initialState = EntryDetailMviModel.State(),
     ),
@@ -54,7 +56,14 @@ class EntryDetailViewModel(
                     updateState {
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
-                            autoloadImages = settings?.autoloadImages ?: true,
+                        )
+                    }
+                }.launchIn(this)
+            imageAutoloadObserver.enabled
+                .onEach { autoloadImages ->
+                    updateState {
+                        it.copy(
+                            autoloadImages = autoloadImages,
                         )
                     }
                 }.launchIn(this)
