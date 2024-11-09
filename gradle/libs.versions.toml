@@ -16,6 +16,7 @@ coil = "3.0.1"
 compose-colorpicker = "1.1.2"
 compose-plugin = "1.7.0"
 compose-ui-test = "1.7.5"
+connectivity = "1.1.3"
 koin = "4.0.0"
 kotlin = "2.0.21"
 kotlinx-coroutines = "1.9.0"
@@ -54,6 +55,9 @@ coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coil" }
 
 compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "compose-ui-test" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-ui-test" }
+
+connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
+connectivity-device = { module = "dev.jordond.connectivity:connectivity-device", version.ref = "connectivity" }
 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 
