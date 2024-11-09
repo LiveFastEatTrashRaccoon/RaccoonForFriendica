@@ -15,7 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -27,22 +27,22 @@ internal class UserListViewModel(
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
-    private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
     private val notificationCenter: NotificationCenter,
     private val userCache: LocalItemCache<UserModel>,
+    private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>(
         initialState = UserListMviModel.State(),
     ),
     UserListMviModel {
     init {
         screenModelScope.launch {
-            settingsRepository.current
-                .onEach { settings ->
+            imageAutoloadObserver.enabled
+                .onEach { autoloadImages ->
                     updateState {
                         it.copy(
-                            autoloadImages = settings?.autoloadImages ?: true,
+                            autoloadImages = autoloadImages,
                         )
                     }
                 }.launchIn(this)
