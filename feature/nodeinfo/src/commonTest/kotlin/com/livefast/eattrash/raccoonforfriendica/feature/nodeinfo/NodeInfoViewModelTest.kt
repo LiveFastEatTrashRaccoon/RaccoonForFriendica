@@ -5,8 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.every
@@ -44,9 +43,9 @@ class NodeInfoViewModelTest {
         mock<NodeInfoRepository> {
             everySuspend { getInfo() } returns nodeInfo
         }
-    private val settingsRepository =
-        mock<SettingsRepository> {
-            every { current } returns MutableStateFlow(SettingsModel())
+    private val imageAutoloadObserver =
+        mock<ImageAutoloadObserver> {
+            every { enabled } returns MutableStateFlow(true)
         }
     private val emojiHelper =
         mock<EmojiHelper> {
@@ -81,8 +80,7 @@ class NodeInfoViewModelTest {
 
     @Test
     fun `given autoload images disabled when initialized then state is as expected`() {
-        every { settingsRepository.current } returns
-            MutableStateFlow(SettingsModel(autoloadImages = false))
+        every { imageAutoloadObserver.enabled } returns MutableStateFlow(false)
         sut = viewModelFactory()
 
         val state = sut.uiState.value
@@ -97,7 +95,7 @@ class NodeInfoViewModelTest {
     private fun viewModelFactory() =
         NodeInfoViewModel(
             nodeInfoRepository = nodeInfoRepository,
-            settingsRepository = settingsRepository,
             emojiHelper = emojiHelper,
+            imageAutoloadObserver = imageAutoloadObserver,
         )
 }
