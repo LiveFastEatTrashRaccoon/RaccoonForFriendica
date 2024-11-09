@@ -10,7 +10,7 @@ val featureFollowRequestsModule =
             FollowRequestsViewModel(
                 paginationManager = get(),
                 userRepository = get(),
-                settingsRepository = get(),
+                imageAutoloadObserver = get(),
             )
         }
     }
