@@ -22,12 +22,12 @@ internal class DefaultBlurHashDecoder : BlurHashDecoder {
     private val cacheCosinesX = LruCache<Int, DoubleArray>(MAX_CACHE_SIZE)
     private val cacheCosinesY = LruCache<Int, DoubleArray>(MAX_CACHE_SIZE)
 
-    override fun clearCache() {
+    override suspend fun clearCache() {
         cacheCosinesX.clear()
         cacheCosinesY.clear()
     }
 
-    override fun decode(
+    override suspend fun decode(
         blurHash: String?,
         width: Int,
         height: Int,
@@ -108,7 +108,7 @@ internal class DefaultBlurHashDecoder : BlurHashDecoder {
 
     private fun signedPow2(value: Float) = value.pow(2f).withSign(value)
 
-    private fun composeBitmap(
+    private suspend fun composeBitmap(
         width: Int,
         height: Int,
         numCompX: Int,
@@ -146,7 +146,7 @@ internal class DefaultBlurHashDecoder : BlurHashDecoder {
         return imageArray.toComposeImageBitmap(width, height)
     }
 
-    private fun getArrayForCosinesY(
+    private suspend fun getArrayForCosinesY(
         calculate: Boolean,
         height: Int,
         numCompY: Int,
@@ -162,7 +162,7 @@ internal class DefaultBlurHashDecoder : BlurHashDecoder {
         }
     }
 
-    private fun getArrayForCosinesX(
+    private suspend fun getArrayForCosinesX(
         calculate: Boolean,
         width: Int,
         numCompX: Int,
