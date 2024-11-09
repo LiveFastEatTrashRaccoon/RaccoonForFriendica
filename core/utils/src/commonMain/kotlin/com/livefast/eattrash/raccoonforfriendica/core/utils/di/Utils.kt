@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportMan
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
+import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
 import org.koin.core.module.Module
 
@@ -22,6 +23,8 @@ expect fun getBlurHashRepository(): BlurHashRepository
 expect fun getCrashReportManager(): CrashReportManager
 
 expect fun getCalendarHelper(): CalendarHelper
+
+expect fun getNetworkStateObserver(): NetworkStateObserver
 
 expect val coreUtilsFileSystemModule: Module
 

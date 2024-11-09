@@ -8,6 +8,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.DefaultIma
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.DefaultImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.network.DefaultNetworkStateObserver
+import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import org.koin.dsl.module
 
 val coreUtilsModule =
@@ -32,5 +34,8 @@ val coreUtilsModule =
             DefaultBlurHashRepository(
                 decoder = get(),
             )
+        }
+        single<NetworkStateObserver> {
+            DefaultNetworkStateObserver()
         }
     }
