@@ -9,8 +9,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Defa
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultCredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultIdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -51,6 +53,12 @@ val domainIdentityRepositoryModule =
         single<AccountCredentialsCache> {
             DefaultAccountCredentialsCache(
                 keyStore = get(),
+            )
+        }
+        single<ImageAutoloadObserver> {
+            DefaultImageAutoloadObserver(
+                networkStateObserver = get(),
+                settingsRepository = get(),
             )
         }
     }
