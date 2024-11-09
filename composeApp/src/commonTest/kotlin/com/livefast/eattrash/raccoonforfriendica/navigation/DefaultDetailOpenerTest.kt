@@ -43,9 +43,13 @@ import dev.mokkery.every
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify
+import dev.mokkery.verifySuspend
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlin.test.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultDetailOpenerTest {
     private val navigationCoordinator =
         mock<NavigationCoordinator>(mode = MockMode.autoUnit)
@@ -68,6 +72,7 @@ class DefaultDetailOpenerTest {
             userCache = userCache,
             entryCache = entryCache,
             eventCache = eventCache,
+            dispatcher = UnconfinedTestDispatcher(),
         )
 
     @Test
@@ -240,7 +245,7 @@ class DefaultDetailOpenerTest {
             inReplyToUser = user,
         )
 
-        verify {
+        verifySuspend {
             entryCache.put(entry.id, entry)
             userCache.put(user.id, user)
             navigationCoordinator.push(any<ComposerScreen>())
@@ -255,7 +260,7 @@ class DefaultDetailOpenerTest {
             type = UnpublishedType.Scheduled,
         )
 
-        verify {
+        verifySuspend {
             entryCache.put(entry.id, entry)
             navigationCoordinator.push(any<ComposerScreen>())
         }
@@ -275,7 +280,7 @@ class DefaultDetailOpenerTest {
         val entry = TimelineEntryModel(id = "0", content = "")
         sut.openThread(entry = entry)
 
-        verify {
+        verifySuspend {
             entryCache.put(entry.id, entry)
             navigationCoordinator.push(any<ThreadScreen>())
         }
@@ -444,7 +449,7 @@ class DefaultDetailOpenerTest {
             )
         sut.openEvent(event)
 
-        verify {
+        verifySuspend {
             eventCache.put("0", event)
             navigationCoordinator.push(any<EventDetailScreen>())
         }
