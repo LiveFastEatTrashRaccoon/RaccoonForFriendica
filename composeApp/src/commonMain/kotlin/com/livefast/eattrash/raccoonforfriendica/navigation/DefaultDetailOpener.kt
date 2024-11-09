@@ -40,6 +40,12 @@ import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.Unpublished
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
 import com.livefast.eattrash.raccoonforlemmy.unit.licences.LicencesScreen
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class DefaultDetailOpener(
     private val navigationCoordinator: NavigationCoordinator,
@@ -48,9 +54,11 @@ class DefaultDetailOpener(
     private val userCache: LocalItemCache<UserModel>,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
     private val eventCache: LocalItemCache<EventModel>,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : DetailOpener {
     private val currentUserId: String? get() = identityRepository.currentUser.value?.id
     private val isLogged: Boolean get() = currentUserId != null
+    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
     override fun openUserDetail(user: UserModel) {
         if (user.id == currentUserId) {
@@ -58,14 +66,16 @@ class DefaultDetailOpener(
         }
         val openGroupsInForumModeByDefault =
             settingsRepository.current.value?.openGroupsInForumModeByDefault ?: false
-        userCache.put(user.id, user)
-        val screen =
-            if (user.group && openGroupsInForumModeByDefault) {
-                ForumListScreen(user.id)
-            } else {
-                UserDetailScreen(user.id)
-            }
-        navigationCoordinator.push(screen)
+        scope.launch {
+            userCache.put(user.id, user)
+            val screen =
+                if (user.group && openGroupsInForumModeByDefault) {
+                    ForumListScreen(user.id)
+                } else {
+                    UserDetailScreen(user.id)
+                }
+            navigationCoordinator.push(screen)
+        }
     }
 
     override fun switchUserDetailToClassicMode(user: UserModel) {
@@ -82,12 +92,14 @@ class DefaultDetailOpener(
         entry: TimelineEntryModel,
         replaceTop: Boolean,
     ) {
-        entryCache.put(entry.id, entry)
-        val screen = EntryDetailScreen(entry.id)
-        if (replaceTop) {
-            navigationCoordinator.replace(screen)
-        } else {
-            navigationCoordinator.push(screen)
+        scope.launch {
+            entryCache.put(entry.id, entry)
+            val screen = EntryDetailScreen(entry.id)
+            if (replaceTop) {
+                navigationCoordinator.replace(screen)
+            } else {
+                navigationCoordinator.push(screen)
+            }
         }
     }
 
@@ -102,23 +114,27 @@ class DefaultDetailOpener(
     }
 
     override fun openFollowers(user: UserModel) {
-        userCache.put(user.id, user)
-        val screen =
-            UserListScreen(
-                type = UserListType.Follower.toInt(),
-                userId = user.id,
-            )
-        navigationCoordinator.push(screen)
+        scope.launch {
+            userCache.put(user.id, user)
+            val screen =
+                UserListScreen(
+                    type = UserListType.Follower.toInt(),
+                    userId = user.id,
+                )
+            navigationCoordinator.push(screen)
+        }
     }
 
     override fun openFollowing(user: UserModel) {
-        userCache.put(user.id, user)
-        val screen =
-            UserListScreen(
-                type = UserListType.Following.toInt(),
-                userId = user.id,
-            )
-        navigationCoordinator.push(screen)
+        scope.launch {
+            userCache.put(user.id, user)
+            val screen =
+                UserListScreen(
+                    type = UserListType.Following.toInt(),
+                    userId = user.id,
+                )
+            navigationCoordinator.push(screen)
+        }
     }
 
     override fun openFavorites() {
@@ -181,37 +197,41 @@ class DefaultDetailOpener(
         if (!isLogged) {
             return
         }
-        if (inReplyTo != null) {
-            entryCache.put(inReplyTo.id, inReplyTo)
+        scope.launch {
+            if (inReplyTo != null) {
+                entryCache.put(inReplyTo.id, inReplyTo)
+            }
+            if (inReplyToUser != null) {
+                userCache.put(inReplyToUser.id, inReplyToUser)
+            }
+            val isGroup = inReplyToUser?.group == true && inGroup
+            val screen =
+                ComposerScreen(
+                    inReplyToId = inReplyTo?.id,
+                    inReplyToUsername = inReplyToUser?.username.takeIf { !isGroup },
+                    inReplyToHandle = inReplyToUser?.handle.takeIf { !isGroup },
+                    groupUsername = inReplyToUser?.username.takeIf { isGroup },
+                    groupHandle = inReplyToUser?.handle.takeIf { isGroup },
+                    editedPostId = editedPostId,
+                    urlToShare = urlToShare,
+                )
+            navigationCoordinator.push(screen)
         }
-        if (inReplyToUser != null) {
-            userCache.put(inReplyToUser.id, inReplyToUser)
-        }
-        val isGroup = inReplyToUser?.group == true && inGroup
-        val screen =
-            ComposerScreen(
-                inReplyToId = inReplyTo?.id,
-                inReplyToUsername = inReplyToUser?.username.takeIf { !isGroup },
-                inReplyToHandle = inReplyToUser?.handle.takeIf { !isGroup },
-                groupUsername = inReplyToUser?.username.takeIf { isGroup },
-                groupHandle = inReplyToUser?.handle.takeIf { isGroup },
-                editedPostId = editedPostId,
-                urlToShare = urlToShare,
-            )
-        navigationCoordinator.push(screen)
     }
 
     override fun openEditUnpublished(
         entry: TimelineEntryModel,
         type: UnpublishedType,
     ) {
-        entryCache.put(entry.id, entry)
-        val screen =
-            ComposerScreen(
-                scheduledPostId = entry.id.takeIf { type == UnpublishedType.Scheduled },
-                draftId = entry.id.takeIf { type == UnpublishedType.Drafts },
-            )
-        navigationCoordinator.push(screen)
+        scope.launch {
+            entryCache.put(entry.id, entry)
+            val screen =
+                ComposerScreen(
+                    scheduledPostId = entry.id.takeIf { type == UnpublishedType.Scheduled },
+                    draftId = entry.id.takeIf { type == UnpublishedType.Drafts },
+                )
+            navigationCoordinator.push(screen)
+        }
     }
 
     override fun openSearch() {
@@ -220,9 +240,11 @@ class DefaultDetailOpener(
     }
 
     override fun openThread(entry: TimelineEntryModel) {
-        entryCache.put(entry.id, entry)
-        val screen = ThreadScreen(entry.id)
-        navigationCoordinator.push(screen)
+        scope.launch {
+            entryCache.put(entry.id, entry)
+            val screen = ThreadScreen(entry.id)
+            navigationCoordinator.push(screen)
+        }
     }
 
     override fun openImageDetail(url: String) {
@@ -285,13 +307,15 @@ class DefaultDetailOpener(
         otherUser: UserModel,
         parentUri: String,
     ) {
-        userCache.put(otherUser.id, otherUser)
-        val screen =
-            ConversationScreen(
-                otherUserId = otherUser.id,
-                parentUri = parentUri,
-            )
-        navigationCoordinator.push(screen)
+        scope.launch {
+            userCache.put(otherUser.id, otherUser)
+            val screen =
+                ConversationScreen(
+                    otherUserId = otherUser.id,
+                    parentUri = parentUri,
+                )
+            navigationCoordinator.push(screen)
+        }
     }
 
     override fun openGallery() {
@@ -320,16 +344,18 @@ class DefaultDetailOpener(
         user: UserModel,
         entry: TimelineEntryModel?,
     ) {
-        userCache.put(user.id, user)
-        if (entry != null) {
-            entryCache.put(entry.id, entry)
+        scope.launch {
+            userCache.put(user.id, user)
+            if (entry != null) {
+                entryCache.put(entry.id, entry)
+            }
+            val screen =
+                CreateReportScreen(
+                    userId = user.id,
+                    entryId = entry?.id,
+                )
+            navigationCoordinator.push(screen)
         }
-        val screen =
-            CreateReportScreen(
-                userId = user.id,
-                entryId = entry?.id,
-            )
-        navigationCoordinator.push(screen)
     }
 
     override fun openUserFeedback() {
@@ -343,9 +369,11 @@ class DefaultDetailOpener(
     }
 
     override fun openEvent(event: EventModel) {
-        eventCache.put(event.id, event)
-        val screen = EventDetailScreen(event.id)
-        navigationCoordinator.push(screen)
+        scope.launch {
+            eventCache.put(event.id, event)
+            val screen = EventDetailScreen(event.id)
+            navigationCoordinator.push(screen)
+        }
     }
 
     override fun openLicences() {

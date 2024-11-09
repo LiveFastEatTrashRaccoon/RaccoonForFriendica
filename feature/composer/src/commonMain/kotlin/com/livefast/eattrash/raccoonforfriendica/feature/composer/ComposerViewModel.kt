@@ -261,8 +261,9 @@ class ComposerViewModel(
 
             is ComposerMviModel.Intent.CompleteMention -> completeMention(handle = intent.handle)
 
-            is ComposerMviModel.Intent.AddInitialMentions -> {
-                val mentions =
+            is ComposerMviModel.Intent.AddInitialMentions ->
+                screenModelScope.launch {
+                    val mentions =
                     buildList {
                         val initialValue = intent.initialHandle.orEmpty()
                         if (initialValue.isNotEmpty()) {

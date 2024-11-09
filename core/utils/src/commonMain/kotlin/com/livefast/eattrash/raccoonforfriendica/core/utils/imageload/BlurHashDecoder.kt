@@ -10,16 +10,15 @@ interface BlurHashDecoder {
      * The cache is not big, but will increase when many image sizes are used,
      * if the app needs memory it is recommended to clear it.
      */
-    fun clearCache()
+    suspend fun clearCache()
 
     /**
      * Decode a blur hash into a new bitmap.
      *
      * @param useCache use in memory cache for the calculated math, reused by images with same size.
-     *                 if the cache does not exist yet it will be created and populated with new calculations.
-     *                 By default it is true.
+     * if the cache does not exist yet it will be created and populated with new calculations.
      */
-    fun decode(
+    suspend fun decode(
         blurHash: String?,
         width: Int,
         height: Int,
