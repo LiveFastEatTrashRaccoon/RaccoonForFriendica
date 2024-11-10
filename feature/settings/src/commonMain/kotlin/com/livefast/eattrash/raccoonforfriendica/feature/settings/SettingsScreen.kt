@@ -63,6 +63,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadingMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
@@ -96,6 +97,7 @@ class SettingsScreen : Screen {
         var backgroundNotificationCheckIntervalDialogOpened by remember { mutableStateOf(false) }
         var notificationModeBottomSheetOpened by remember { mutableStateOf(false) }
         var pushNotificationDistributorBottomSheetOpened by remember { mutableStateOf(false) }
+        var imageLoadingModeBottomSheetOpened by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -196,13 +198,11 @@ class SettingsScreen : Screen {
                                 )
                             },
                         )
-                        SettingsSwitchRow(
+                        SettingsRow(
                             title = LocalStrings.current.settingsAutoloadImages,
-                            value = uiState.autoloadImages,
-                            onValueChanged = {
-                                model.reduce(
-                                    SettingsMviModel.Intent.ChangeAutoloadImages(it),
-                                )
+                            value = uiState.imageLoadingMode.toReadableName(),
+                            onTap = {
+                                imageLoadingModeBottomSheetOpened = true
                             },
                         )
 
@@ -748,6 +748,32 @@ class SettingsScreen : Screen {
                     if (index != null) {
                         val distributor = uiState.availablePushDistributors[index]
                         model.reduce(SettingsMviModel.Intent.SelectPushDistributor(distributor))
+                    }
+                },
+            )
+        }
+
+        if (imageLoadingModeBottomSheetOpened) {
+            val values =
+                listOf(
+                    ImageLoadingMode.Always,
+                    ImageLoadingMode.OnDemand,
+                    ImageLoadingMode.OnWifi,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsAutoloadImages,
+                items =
+                    values.map {
+                        CustomModalBottomSheetItem(
+                            label = it.toReadableName(),
+                        )
+                    },
+                onSelected = { index ->
+                    imageLoadingModeBottomSheetOpened = false
+                    if (index != null) {
+                        model.reduce(
+                            SettingsMviModel.Intent.ChangeAutoloadImages(mode = values[index]),
+                        )
                     }
                 },
             )

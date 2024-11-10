@@ -21,6 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Marke
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import kotlinx.coroutines.flow.launchIn
@@ -39,6 +40,7 @@ class InboxViewModel(
     private val blurHashRepository: BlurHashRepository,
     private val markerRepository: MarkerRepository,
     private val pullNotificationManager: PullNotificationManager,
+    private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>(
         initialState = InboxMviModel.State(),
     ),
@@ -57,8 +59,15 @@ class InboxViewModel(
                     updateState {
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
-                            autoloadImages = settings?.autoloadImages ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                        )
+                    }
+                }.launchIn(this)
+            imageAutoloadObserver.enabled
+                .onEach { autoloadImages ->
+                    updateState {
+                        it.copy(
+                            autoloadImages = autoloadImages,
                         )
                     }
                 }.launchIn(this)

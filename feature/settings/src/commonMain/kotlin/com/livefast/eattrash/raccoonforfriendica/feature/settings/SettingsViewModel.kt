@@ -18,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineT
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadingMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
@@ -159,7 +160,7 @@ class SettingsViewModel(
                                 markupMode = settings.markupMode,
                                 maxPostBodyLines = settings.maxPostBodyLines,
                                 backgroundNotificationCheckInterval = settings.pullNotificationCheckInterval,
-                                autoloadImages = settings.autoloadImages,
+                                imageLoadingMode = settings.autoloadImages,
                                 notificationMode = settings.notificationMode,
                             )
                         }
@@ -287,7 +288,7 @@ class SettingsViewModel(
 
             is SettingsMviModel.Intent.ChangeAutoloadImages ->
                 screenModelScope.launch {
-                    changeAutoloadImages(intent.value)
+                    changeAutoloadImages(intent.mode)
                 }
 
             is SettingsMviModel.Intent.ChangeNotificationMode -> {
@@ -410,7 +411,7 @@ class SettingsViewModel(
         saveSettings(newSettings)
     }
 
-    private suspend fun changeAutoloadImages(value: Boolean) {
+    private suspend fun changeAutoloadImages(value: ImageLoadingMode) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(autoloadImages = value)
         saveSettings(newSettings)

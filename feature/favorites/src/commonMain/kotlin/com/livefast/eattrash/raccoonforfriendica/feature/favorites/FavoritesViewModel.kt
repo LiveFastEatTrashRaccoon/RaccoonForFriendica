@@ -18,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Favor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -35,6 +36,7 @@ class FavoritesViewModel(
     private val notificationCenter: NotificationCenter,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
+    private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<FavoritesMviModel.Intent, FavoritesMviModel.State, FavoritesMviModel.Effect>(
         initialState = FavoritesMviModel.State(),
     ),
@@ -46,8 +48,15 @@ class FavoritesViewModel(
                     updateState {
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
-                            autoloadImages = settings?.autoloadImages ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                        )
+                    }
+                }.launchIn(this)
+            imageAutoloadObserver.enabled
+                .onEach { autoloadImages ->
+                    updateState {
+                        it.copy(
+                            autoloadImages = autoloadImages,
                         )
                     }
                 }.launchIn(this)

@@ -17,6 +17,7 @@ val featureSearchModule =
                 notificationCenter = get(),
                 imagePreloadManager = get(),
                 blurHashRepository = get(),
+                imageAutoloadObserver = get(),
             )
         }
     }

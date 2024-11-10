@@ -7,7 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -23,20 +23,20 @@ class CircleDetailViewModel(
     private val id: String,
     private val paginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
-    private val settingsRepository: SettingsRepository,
     private val searchPaginationManager: UserPaginationManager,
     private val imagePreloadManager: ImagePreloadManager,
+    private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<CircleDetailMviModel.Intent, CircleDetailMviModel.State, CircleDetailMviModel.Effect>(
         initialState = CircleDetailMviModel.State(),
     ),
     CircleDetailMviModel {
     init {
         screenModelScope.launch {
-            settingsRepository.current
-                .onEach { settings ->
+            imageAutoloadObserver.enabled
+                .onEach { autoloadImages ->
                     updateState {
                         it.copy(
-                            autoloadImages = settings?.autoloadImages ?: true,
+                            autoloadImages = autoloadImages,
                         )
                     }
                 }.launchIn(this)

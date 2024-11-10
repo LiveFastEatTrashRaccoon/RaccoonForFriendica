@@ -408,7 +408,7 @@ internal val FrStrings =
         override val editProfileItemHideCollections =
             "Rendre les listes de suiveurs et de suivis privées"
         override val settingsAboutMatrix = "Rejoindre la salle Matrix"
-        override val settingsAutoloadImages = "Charger les images automatiquement"
+        override val settingsAutoloadImages = "Mode de chargement des images"
         override val circleTypeGroup = "Groupes"
         override val circleTypePredefined = "Canaux"
         override val circleTypeUserDefined = "Tes listes"
@@ -441,4 +441,7 @@ internal val FrStrings =
         override val loginOtherHeader = "Autre (Pleroma, etc.)"
         override val exempliGratia = "e. g."
         override val newAccountTitle = "Ajouter compte"
+        override val imageLoadingModeAlways = "Toujours"
+        override val imageLoadingModeOnDemand = "Sur demande"
+        override val imageLoadingModeOnWiFi = "En WiFi"
     }

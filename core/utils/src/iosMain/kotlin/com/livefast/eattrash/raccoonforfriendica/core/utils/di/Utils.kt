@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.DefaultGalle
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
+import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.DefaultShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
@@ -35,6 +36,8 @@ actual fun getBlurHashRepository(): BlurHashRepository = CoreUtilsDiHelper.blurH
 actual fun getCrashReportManager(): CrashReportManager = CoreUtilsDiHelper.crashReportManager
 
 actual fun getCalendarHelper(): CalendarHelper = CoreUtilsDiHelper.calendarHelper
+
+actual fun getNetworkStateObserver(): NetworkStateObserver = CoreUtilsDiHelper.networkStateObserver
 
 actual val coreUtilsFileSystemModule =
     module {
@@ -100,4 +103,5 @@ internal object CoreUtilsDiHelper : KoinComponent {
     val blurHashRepository: BlurHashRepository by inject()
     val crashReportManager by inject<CrashReportManager>()
     val calendarHelper by inject<CalendarHelper>()
+    val networkStateObserver by inject<NetworkStateObserver>()
 }

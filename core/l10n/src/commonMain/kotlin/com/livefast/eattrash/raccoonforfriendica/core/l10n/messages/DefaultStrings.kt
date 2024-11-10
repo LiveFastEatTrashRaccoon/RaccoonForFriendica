@@ -402,7 +402,7 @@ internal open class DefaultStrings : Strings {
     override val settingsAboutUserManual = "User manual"
     override val editProfileItemHideCollections = "Make following and follower lists private"
     override val settingsAboutMatrix = "Join Matrix room"
-    override val settingsAutoloadImages = "Load images automatically"
+    override val settingsAutoloadImages = "Image loading mode"
     override val circleTypeGroup = "Groups"
     override val circleTypePredefined = "Channels"
     override val circleTypeUserDefined = "Your lists"
@@ -433,4 +433,7 @@ internal open class DefaultStrings : Strings {
     override val loginOtherHeader = "Other (Pleroma, etc.)"
     override val exempliGratia = "e. g."
     override val newAccountTitle = "Add account"
+    override val imageLoadingModeAlways = "Always"
+    override val imageLoadingModeOnDemand = "On demand"
+    override val imageLoadingModeOnWiFi = "In WiFi"
 }

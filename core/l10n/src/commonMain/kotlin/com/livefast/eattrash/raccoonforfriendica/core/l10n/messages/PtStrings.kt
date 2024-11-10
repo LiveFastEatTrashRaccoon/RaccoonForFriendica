@@ -409,7 +409,7 @@ internal val PtStrings =
         override val editProfileItemHideCollections =
             "Tornar privadas as listas de seguidores e de seguidos"
         override val settingsAboutMatrix = "Entrar na sala Matrix"
-        override val settingsAutoloadImages = "Carregar imagens automaticamente"
+        override val settingsAutoloadImages = "Modo de carregamento de imagens"
         override val circleTypeGroup = "Grupos"
         override val circleTypePredefined = "Canais"
         override val circleTypeUserDefined = "As suas listas"
@@ -441,4 +441,7 @@ internal val PtStrings =
         override val loginOtherHeader = "Outro (Pleroma, etc.)"
         override val exempliGratia = "e. g."
         override val newAccountTitle = "Adicionar conta"
+        override val imageLoadingModeAlways = "Sempre"
+        override val imageLoadingModeOnDemand = "A pedido"
+        override val imageLoadingModeOnWiFi = "Em WiFi"
     }

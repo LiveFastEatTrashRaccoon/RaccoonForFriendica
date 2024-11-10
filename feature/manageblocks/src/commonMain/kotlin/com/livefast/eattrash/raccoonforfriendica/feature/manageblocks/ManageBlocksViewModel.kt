@@ -7,7 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -16,19 +16,19 @@ import kotlinx.coroutines.launch
 class ManageBlocksViewModel(
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
-    private val settingsRepository: SettingsRepository,
     private val imagePreloadManager: ImagePreloadManager,
+    private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<ManageBlocksMviModel.Intent, ManageBlocksMviModel.State, ManageBlocksMviModel.Effect>(
         initialState = ManageBlocksMviModel.State(),
     ),
     ManageBlocksMviModel {
     init {
         screenModelScope.launch {
-            settingsRepository.current
-                .onEach { settings ->
+            imageAutoloadObserver.enabled
+                .onEach { autoloadImages ->
                     updateState {
                         it.copy(
-                            autoloadImages = settings?.autoloadImages ?: true,
+                            autoloadImages = autoloadImages,
                         )
                     }
                 }.launchIn(this)

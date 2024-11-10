@@ -13,9 +13,9 @@ val featureDrawerModule =
                 supportedFeatureRepository = get(),
                 credentialsRepository = get(),
                 accountRepository = get(),
-                settingsRepository = get(),
                 switchAccountUseCase = get(),
                 emojiHelper = get(),
+                imageAutoloadObserver = get(),
             )
         }
     }

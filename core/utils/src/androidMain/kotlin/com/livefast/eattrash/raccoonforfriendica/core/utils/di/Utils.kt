@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.DefaultGalle
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
+import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.DefaultShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
@@ -54,6 +55,11 @@ actual fun getCrashReportManager(): CrashReportManager {
 
 actual fun getCalendarHelper(): CalendarHelper {
     val res by KoinJavaComponent.inject<CalendarHelper>(CalendarHelper::class.java)
+    return res
+}
+
+actual fun getNetworkStateObserver(): NetworkStateObserver {
+    val res by KoinJavaComponent.inject<NetworkStateObserver>(NetworkStateObserver::class.java)
     return res
 }
 

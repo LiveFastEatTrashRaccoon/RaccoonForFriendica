@@ -38,6 +38,8 @@ kotlin {
                 implementation(libs.ktor.cio)
                 implementation(libs.coil)
                 implementation(libs.coil.network.ktor)
+                implementation(libs.connectivity.core)
+                implementation(libs.connectivity.device)
                 implementation(libs.sentry)
 
                 implementation(projects.core.l10n)

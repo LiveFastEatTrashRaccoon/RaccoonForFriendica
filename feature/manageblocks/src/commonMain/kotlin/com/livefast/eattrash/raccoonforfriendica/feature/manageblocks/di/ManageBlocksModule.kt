@@ -10,8 +10,8 @@ val featureManageBlocksModule =
             ManageBlocksViewModel(
                 paginationManager = get(),
                 userRepository = get(),
-                settingsRepository = get(),
                 imagePreloadManager = get(),
+                imageAutoloadObserver = get(),
             )
         }
     }

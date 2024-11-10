@@ -402,7 +402,7 @@ internal val PlStrings =
         override val editProfileItemHideCollections =
             "Prywatność list obserwujących i obserwowanych"
         override val settingsAboutMatrix = "Dołącz do pokoju Matrix"
-        override val settingsAutoloadImages = "Automatyczne ładowanie obrazów"
+        override val settingsAutoloadImages = "Tryb ładowania obrazu"
         override val circleTypeGroup = "Grupy"
         override val circleTypePredefined = "Kanały"
         override val circleTypeUserDefined = "Twoje listy"
@@ -434,4 +434,7 @@ internal val PlStrings =
         override val loginOtherHeader = "Inne (Pleroma, itp.)"
         override val exempliGratia = "np."
         override val newAccountTitle = "Dodaj konto"
+        override val imageLoadingModeAlways = "Zawsze"
+        override val imageLoadingModeOnDemand = "Na żądanie"
+        override val imageLoadingModeOnWiFi = "W sieci WiFi"
     }

@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadingMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
@@ -90,7 +91,7 @@ interface SettingsMviModel :
         ) : Intent
 
         data class ChangeAutoloadImages(
-            val value: Boolean,
+            val mode: ImageLoadingMode,
         ) : Intent
 
         data class ChangeNotificationMode(
@@ -132,7 +133,7 @@ interface SettingsMviModel :
         val pushNotificationState: PushNotificationManagerState = PushNotificationManagerState.Unsupported,
         val backgroundNotificationCheckInterval: Duration? = null,
         val availablePushDistributors: List<String> = emptyList(),
-        val autoloadImages: Boolean = true,
+        val imageLoadingMode: ImageLoadingMode = ImageLoadingMode.Always,
     )
 
     sealed interface Effect

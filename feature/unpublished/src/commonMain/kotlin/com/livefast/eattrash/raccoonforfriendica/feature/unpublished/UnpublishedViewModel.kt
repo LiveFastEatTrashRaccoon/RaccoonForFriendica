@@ -19,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Unpub
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -33,6 +34,7 @@ class UnpublishedViewModel(
     private val notificationCenter: NotificationCenter,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
+    private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<UnpublishedMviModel.Intent, UnpublishedMviModel.State, UnpublishedMviModel.Effect>(
         initialState = UnpublishedMviModel.State(),
     ),
@@ -67,8 +69,15 @@ class UnpublishedViewModel(
                     updateState {
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
-                            autoloadImages = settings?.autoloadImages ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                        )
+                    }
+                }.launchIn(this)
+            imageAutoloadObserver.enabled
+                .onEach { autoloadImages ->
+                    updateState {
+                        it.copy(
+                            autoloadImages = autoloadImages,
                         )
                     }
                 }.launchIn(this)
