@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -86,9 +85,9 @@ fun ContentPreview(
                 )
             } else if (type == PreviewType.Video && url.isNotBlank()) {
                 VideoPlayer(
-                    modifier =
-                        Modifier.fillMaxWidth().aspectRatio(16 / 9f),
+                    modifier = Modifier.fillMaxWidth(),
                     url = url,
+                    contentScale = ContentScale.Fit,
                 )
             }
 
