@@ -171,8 +171,6 @@ private fun AttachmentElement(
                 modifier = modifier.fillMaxWidth(),
                 url = attachment.url,
                 autoload = autoload,
-                originalWidth = attachmentWidth,
-                originalHeight = attachmentHeight,
                 sensitive = blurNsfw && sensitive,
                 onClick = onClick,
             )
