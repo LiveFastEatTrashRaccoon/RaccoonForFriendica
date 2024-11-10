@@ -34,6 +34,7 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.materialIconsExtended)
 
+                implementation(libs.compose.multiplatform.media.player)
                 implementation(libs.koin.core)
             }
         }

@@ -46,6 +46,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.coil)
+            implementation(libs.compose.multiplatform.media.player)
             implementation(libs.koin.core)
             implementation(libs.ktor.client.core)
             implementation(libs.lyricist)

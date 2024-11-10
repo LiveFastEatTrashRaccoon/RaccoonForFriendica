@@ -38,17 +38,12 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(libs.coil.compose)
                 implementation(libs.compose.colorpicker)
+                implementation(libs.compose.multiplatform.media.player)
 
-                implementation(projects.core.utils)
                 implementation(projects.core.appearance)
                 implementation(projects.core.l10n)
-            }
-        }
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.exoplayer)
-                implementation(libs.exoplayer.dash)
-                implementation(libs.exoplayer.ui)
+                implementation(projects.core.resources)
+                implementation(projects.core.utils)
             }
         }
     }
