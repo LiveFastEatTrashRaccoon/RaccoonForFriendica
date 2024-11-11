@@ -201,8 +201,9 @@ internal val PtStrings =
         override val fontScaleLarger = "Maior"
         override val fontScaleLargest = "Maior"
         override val settingsItemUrlOpeningMode = "Modo de abertura do URL"
-        override val urlOpeningModeExternal = "Externo"
-        override val urlOpeningModeCustomTabs = "Separadores personalizados"
+        override val urlOpeningModeExternal = "Navegador externo"
+        override val urlOpeningModeCustomTabs = "Guias personalizadas"
+        override val urlOpeningModeInternal = "Vista interna da Web"
         override val dialogErrorTitle = "Oops…"
         override val messagePollVoteErrorBody =
             "Infelizmente, sou apenas um programador móvel e não posso adicionar métodos back-end em falta!"

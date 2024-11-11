@@ -203,8 +203,9 @@ internal val FrStrings =
         override val fontScaleLarger = "Plus grand"
         override val fontScaleLargest = "Le plus grand"
         override val settingsItemUrlOpeningMode = "Mode d'ouverture de l'URL"
-        override val urlOpeningModeExternal = "Externe"
+        override val urlOpeningModeExternal = "Navigateur externe"
         override val urlOpeningModeCustomTabs = "Onglets personnalisés"
+        override val urlOpeningModeInternal = "Vue interne du web"
         override val dialogErrorTitle = "Oups..."
         override val messagePollVoteErrorBody =
             "Malheureusement, je ne suis qu'un développeur mobile et je ne peux pas ajouter les méthodes back-end manquantes !\nJetez un œil à ce problème et mettez un 👍 pour que les développeurs sachent que cela peut valoir la peine de l'implémenter."

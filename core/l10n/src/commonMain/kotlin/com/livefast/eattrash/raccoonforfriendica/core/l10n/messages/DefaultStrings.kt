@@ -203,8 +203,9 @@ internal open class DefaultStrings : Strings {
     override val fontScaleLarger = "Larger"
     override val fontScaleLargest = "Largest"
     override val settingsItemUrlOpeningMode = "URL opening mode"
-    override val urlOpeningModeExternal = "External"
+    override val urlOpeningModeExternal = "External browser"
     override val urlOpeningModeCustomTabs = "Custom tabs"
+    override val urlOpeningModeInternal = "Internal web view"
     override val dialogErrorTitle = "Oops…"
     override val messagePollVoteErrorBody =
         "Unfortunately, I'm just a mobile dev and I can't add missing back-end methods!\nCheck out this issue and put a 👍 so that the devs know it may be worth implementing it."

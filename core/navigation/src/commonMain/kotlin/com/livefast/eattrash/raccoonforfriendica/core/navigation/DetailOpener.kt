@@ -108,4 +108,6 @@ interface DetailOpener {
     fun openEvent(event: EventModel)
 
     fun openLicences()
+
+    fun openInternalWebView(url: String)
 }

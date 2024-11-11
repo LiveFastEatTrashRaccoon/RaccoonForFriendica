@@ -206,8 +206,9 @@ internal val DeStrings =
         override val fontScaleLarger = "Größer"
         override val fontScaleLargest = "Größte"
         override val settingsItemUrlOpeningMode = "URL-Öffnungsmodus"
-        override val urlOpeningModeExternal = "Extern"
+        override val urlOpeningModeExternal = "Externer Browser"
         override val urlOpeningModeCustomTabs = "Benutzerdefinierte Registerkarten"
+        override val urlOpeningModeInternal = "Interne Webansicht"
         override val dialogErrorTitle = "Ups…"
         override val messagePollVoteErrorBody =
             "Leider bin ich nur ein mobiler Entwickler und kann keine fehlenden Backend-Methoden hinzufügen!\nSchauen Sie sich dieses Problem an und setzen Sie ein 👍, damit die Entwickler wissen, dass es sich lohnen könnte, es zu implementieren."

@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.navigation
 
 import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -461,6 +462,15 @@ class DefaultDetailOpenerTest {
 
         verify {
             navigationCoordinator.push(any<LicencesScreen>())
+        }
+    }
+
+    @Test
+    fun `when openInternalWebView then interactions are as expected`() {
+        sut.openInternalWebView("https://www.google.com")
+
+        verify {
+            navigationCoordinator.push(any<WebViewScreen>())
         }
     }
 }

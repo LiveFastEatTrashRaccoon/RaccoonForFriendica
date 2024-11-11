@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.imagedetail
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,7 +57,7 @@ class ImageDetailScreen(
     override val key: ScreenKey
         get() = super.key + urls.joinToString("-")
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val model =
@@ -193,96 +192,90 @@ class ImageDetailScreen(
                     )
                 }
             },
-            content =
-                { padding ->
-                    HorizontalPager(
-                        state = pagerState,
-                        beyondViewportPageCount = 1,
-                    ) {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .padding(
-                                        top = padding.calculateTopPadding(),
-                                    ).fillMaxSize()
-                                    .background(Color.Black),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            if (!url.isNullOrEmpty()) {
-                                if (isVideo) {
-                                    VideoPlayer(url = url)
-                                } else {
-                                    ZoomableImage(
-                                        url = url,
-                                        contentScale = uiState.contentScale,
-                                    )
-                                }
-                            }
+        ) { padding ->
+            HorizontalPager(
+                modifier = Modifier.padding(top = padding.calculateTopPadding()),
+                state = pagerState,
+                beyondViewportPageCount = 1,
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize().background(Color.Black),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (!url.isNullOrEmpty()) {
+                        if (isVideo) {
+                            VideoPlayer(url = url)
+                        } else {
+                            ZoomableImage(
+                                url = url,
+                                contentScale = uiState.contentScale,
+                            )
                         }
                     }
-                },
-        )
+                }
+            }
 
-        if (uiState.loading) {
-            ProgressHud()
-        }
+            if (uiState.loading) {
+                ProgressHud()
+            }
 
-        if (scaleModeBottomSheetOpened) {
-            CustomModalBottomSheet(
-                title = LocalStrings.current.contentScaleTitle,
-                items =
-                    listOf(
-                        CustomModalBottomSheetItem(
-                            label = LocalStrings.current.contentScaleFit,
-                        ),
-                        CustomModalBottomSheetItem(
-                            label = LocalStrings.current.contentScaleFillWidth,
-                        ),
-                        CustomModalBottomSheetItem(
-                            label = LocalStrings.current.contentScaleFillHeight,
-                        ),
-                    ),
-                onSelected = { index ->
-                    scaleModeBottomSheetOpened = false
-                    if (index != null) {
-                        model.reduce(
-                            ImageDetailMviModel.Intent.ChangeContentScale(
-                                when (index) {
-                                    1 -> ContentScale.FillWidth
-                                    2 -> ContentScale.FillHeight
-                                    else -> ContentScale.Fit
-                                },
+            if (scaleModeBottomSheetOpened) {
+                CustomModalBottomSheet(
+                    title = LocalStrings.current.contentScaleTitle,
+                    items =
+                        listOf(
+                            CustomModalBottomSheetItem(
+                                label = LocalStrings.current.contentScaleFit,
                             ),
-                        )
-                    }
-                },
-            )
-        }
+                            CustomModalBottomSheetItem(
+                                label = LocalStrings.current.contentScaleFillWidth,
+                            ),
+                            CustomModalBottomSheetItem(
+                                label = LocalStrings.current.contentScaleFillHeight,
+                            ),
+                        ),
+                    onSelected = { index ->
+                        scaleModeBottomSheetOpened = false
+                        if (index != null) {
+                            model.reduce(
+                                ImageDetailMviModel.Intent.ChangeContentScale(
+                                    when (index) {
+                                        1 -> ContentScale.FillWidth
+                                        2 -> ContentScale.FillHeight
+                                        else -> ContentScale.Fit
+                                    },
+                                ),
+                            )
+                        }
+                    },
+                )
+            }
 
-        if (shareModeBottomSheetOpened) {
-            CustomModalBottomSheet(
-                title = LocalStrings.current.actionShare,
-                items =
-                    listOf(
-                        CustomModalBottomSheetItem(
-                            label = LocalStrings.current.shareAsUrl,
+            if (shareModeBottomSheetOpened) {
+                CustomModalBottomSheet(
+                    title = LocalStrings.current.actionShare,
+                    items =
+                        listOf(
+                            CustomModalBottomSheetItem(
+                                label = LocalStrings.current.shareAsUrl,
+                            ),
+                            CustomModalBottomSheetItem(
+                                label = LocalStrings.current.shareAsFile,
+                            ),
                         ),
-                        CustomModalBottomSheetItem(
-                            label = LocalStrings.current.shareAsFile,
-                        ),
-                    ),
-                onSelected = { index ->
-                    shareModeBottomSheetOpened = false
-                    if (index != null) {
-                        model.reduce(
-                            when (index) {
-                                1 -> ImageDetailMviModel.Intent.ShareAsFile
-                                else -> ImageDetailMviModel.Intent.ShareAsUrl
-                            },
-                        )
-                    }
-                },
-            )
+                    onSelected = { index ->
+                        shareModeBottomSheetOpened = false
+                        if (index != null) {
+                            model.reduce(
+                                when (index) {
+                                    1 -> ImageDetailMviModel.Intent.ShareAsFile
+                                    else -> ImageDetailMviModel.Intent.ShareAsUrl
+                                },
+                            )
+                        }
+                    },
+                )
+            }
         }
     }
 }

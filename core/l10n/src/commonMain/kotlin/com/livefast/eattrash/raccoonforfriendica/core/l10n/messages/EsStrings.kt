@@ -202,8 +202,9 @@ internal val EsStrings =
         override val fontScaleLarger = "Más grande"
         override val fontScaleLargest = "Grandísimo"
         override val settingsItemUrlOpeningMode = "Modo de apertura de URL"
-        override val urlOpeningModeExternal = "Externo"
+        override val urlOpeningModeExternal = "Navegador externo"
         override val urlOpeningModeCustomTabs = "Pestañas personalizadas"
+        override val urlOpeningModeInternal = "Vista web interna"
         override val dialogErrorTitle = "Ups…"
         override val messagePollVoteErrorBody =
             "Por desgracia, sólo soy un desarrollador móvil y no puedo añadir los métodos back-end que faltan."

@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.urlhandler
 
 import androidx.compose.ui.platform.UriHandler
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -31,6 +32,7 @@ internal class DefaultCustomUriHandler(
     private val guppeProcessor: GuppeProcessor,
     private val peertubeProcessor: PeertubeProcessor,
     private val pixelfedProcessor: PixelfedProcessor,
+    private val detailOpener: DetailOpener,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : CustomUriHandler {
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
@@ -63,6 +65,9 @@ internal class DefaultCustomUriHandler(
         mode: UrlOpeningMode,
     ) {
         when {
+            mode == UrlOpeningMode.Internal ->
+                detailOpener.openInternalWebView(url)
+
             customTabsHelper.isSupported && mode == UrlOpeningMode.CustomTabs ->
                 customTabsHelper.handle(url)
 

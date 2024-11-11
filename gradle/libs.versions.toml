@@ -11,6 +11,7 @@ androidx-splashscreen = "1.0.1"
 androidx-sqlite = "2.5.0-alpha11"
 androidx-work = "2.9.1"
 bouncycastle = "1.79"
+calf = "0.6.1"
 coil = "3.0.2"
 compose-colorpicker = "1.1.2"
 compose-plugin = "1.7.0"
@@ -48,11 +49,14 @@ androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref
 
 bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 
+calf = { module = "com.mohamedrejeb.calf:calf-webview", version.ref = "calf" }
+
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coil" }
 
+compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", version.ref = "compose-colorpicker" }
 compose-multiplatform-media-player = { module = "network.chaintech:compose-multiplatform-media-player", version.ref = "compose-multiplatform-media-player" }
 
 compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "compose-ui-test" }
@@ -60,8 +64,6 @@ compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", ve
 
 connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
 connectivity-device = { module = "dev.jordond.connectivity:connectivity-device", version.ref = "connectivity" }
-
-multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -86,18 +88,25 @@ ktorfit-converters-response = { module = "de.jensklingenberg.ktorfit:ktorfit-con
 ksoup-html = { module = "com.mohamedrejeb.ksoup:ksoup-html", version.ref = "ksoup" }
 ksoup-entities = { module = "com.mohamedrejeb.ksoup:ksoup-entities", version.ref = "ksoup" }
 
-materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
-compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", version.ref = "compose-colorpicker" }
-
 lyricist = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
 
+materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
+
 sentry = { module = "io.sentry:sentry-kotlin-multiplatform", version.ref = "sentry" }
+
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately" }
+
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 room-sqlite = { module = "androidx.sqlite:sqlite-bundled", version.ref = "androidx-sqlite" }
 room-ksp = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+
+unifiedpush = { module = "org.unifiedpush.android:connector", version.ref = "unifiedpush" }
 
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
@@ -105,19 +114,21 @@ voyager-tab = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.re
 voyager-transition = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 
-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
-
-unifiedpush = { module = "org.unifiedpush.android:connector", version.ref = "unifiedpush" }
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
+
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
+
 room = { id = "androidx.room", version.ref = "room" }

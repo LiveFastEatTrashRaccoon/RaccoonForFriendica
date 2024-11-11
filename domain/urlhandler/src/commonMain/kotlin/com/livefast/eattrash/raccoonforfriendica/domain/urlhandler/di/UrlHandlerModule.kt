@@ -90,6 +90,7 @@ val domainUrlHandlerModule =
                 guppeProcessor = get(),
                 peertubeProcessor = get(),
                 pixelfedProcessor = get(),
+                detailOpener = get(),
             )
         }
     }

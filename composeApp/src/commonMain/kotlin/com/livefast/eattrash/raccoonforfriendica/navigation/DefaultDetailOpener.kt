@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.navigation
 
 import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
@@ -378,6 +379,11 @@ class DefaultDetailOpener(
 
     override fun openLicences() {
         val screen = LicencesScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openInternalWebView(url: String) {
+        val screen = WebViewScreen(url)
         navigationCoordinator.push(screen)
     }
 }

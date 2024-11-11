@@ -202,6 +202,7 @@ internal val ItStrings =
         override val fontScaleLargest = "Grandissimo"
         override val settingsItemUrlOpeningMode = "Modalità apertura URL"
         override val urlOpeningModeExternal = "Browser esterno"
+        override val urlOpeningModeInternal = "Web view interna"
         override val urlOpeningModeCustomTabs = "Schede personalizzate"
         override val dialogErrorTitle = "Ops…"
         override val messagePollVoteErrorBody =
