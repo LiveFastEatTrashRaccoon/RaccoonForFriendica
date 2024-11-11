@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.Navigator
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +20,7 @@ internal class DefaultNavigationCoordinator(
     override val canPop = MutableStateFlow(false)
     override val exitMessageVisible = MutableStateFlow(false)
 
-    private var rootNavigator: Navigator? = null
+    private var rootNavigator: NavigatorAdapter? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
     private var canGoBackCallback: (() -> Boolean)? = null
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
@@ -37,7 +36,7 @@ internal class DefaultNavigationCoordinator(
         }
     }
 
-    override fun setRootNavigator(navigator: Navigator) {
+    override fun setRootNavigator(navigator: NavigatorAdapter) {
         rootNavigator = navigator
         canPop.update { navigator.canPop }
     }

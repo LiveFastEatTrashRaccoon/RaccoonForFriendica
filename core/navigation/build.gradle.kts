@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.mokkery)
 }
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -41,6 +42,15 @@ kotlin {
             implementation(libs.voyager.koin)
 
             implementation(projects.domain.content.data)
+        }
+        val commonTest by getting {
+            dependencies {
+                dependencies {
+                    implementation(kotlin("test"))
+                    implementation(libs.kotlinx.coroutines.test)
+                    implementation(libs.turbine)
+                }
+            }
         }
     }
 }
