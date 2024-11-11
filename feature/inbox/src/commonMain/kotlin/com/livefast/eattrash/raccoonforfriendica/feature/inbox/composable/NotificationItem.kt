@@ -167,7 +167,7 @@ private fun NotificationType.toReadableName(): String =
         NotificationType.Favorite -> LocalStrings.current.notificationTypeFavorite
         NotificationType.Follow -> LocalStrings.current.notificationTypeFollow
         NotificationType.FollowRequest -> LocalStrings.current.notificationTypeFollowRequest
-        NotificationType.Mention -> LocalStrings.current.notificationTypeReply
+        NotificationType.Mention -> LocalStrings.current.notificationTypeMention
         NotificationType.Poll -> LocalStrings.current.notificationTypePoll
         NotificationType.Reblog -> LocalStrings.current.notificationTypeReblog
         NotificationType.Update -> LocalStrings.current.notificationTypeUpdate

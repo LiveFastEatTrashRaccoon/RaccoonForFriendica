@@ -7,7 +7,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePrelo
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.hasPriorIdThen
@@ -92,7 +91,7 @@ class InboxViewModel(
                         it.copy(selectedNotificationTypes = intent.types, initial = true)
                     }
                     emitEffect(InboxMviModel.Effect.BackToTop)
-                    refresh(initial = true)
+                    refresh(initial = true, forceRefresh = true)
                 }
 
             is InboxMviModel.Intent.Follow -> follow(intent.userId)
@@ -103,7 +102,10 @@ class InboxViewModel(
         }
     }
 
-    private suspend fun refresh(initial: Boolean = false) {
+    private suspend fun refresh(
+        initial: Boolean = false,
+        forceRefresh: Boolean = false,
+    ) {
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
@@ -116,7 +118,7 @@ class InboxViewModel(
             NotificationsPaginationSpecification.Default(
                 types = uiState.value.selectedNotificationTypes,
                 includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
-                refresh = !initial,
+                refresh = forceRefresh || !initial,
             ),
         )
         loadNextPage()
@@ -179,36 +181,6 @@ class InboxViewModel(
                         if (notification.user?.id == userId) {
                             notification.copy(
                                 user = notification.user?.let(block),
-                            )
-                        } else {
-                            notification
-                        }
-                    },
-            )
-        }
-    }
-
-    private suspend fun updateEntryInState(
-        userId: String,
-        block: (TimelineEntryModel) -> TimelineEntryModel,
-    ) {
-        updateState {
-            it.copy(
-                notifications =
-                    it.notifications.map { notification ->
-                        if (notification.entry?.reblog?.id == userId) {
-                            notification.copy(
-                                entry =
-                                    notification.entry?.copy(
-                                        reblog =
-                                            notification.entry?.reblog?.let(
-                                                block,
-                                            ),
-                                    ),
-                            )
-                        } else if (notification.entry?.id == userId) {
-                            notification.copy(
-                                entry = notification.entry?.let(block),
                             )
                         } else {
                             notification

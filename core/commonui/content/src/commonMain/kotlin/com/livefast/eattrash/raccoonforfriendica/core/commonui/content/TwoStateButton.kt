@@ -37,7 +37,12 @@ fun TwoStateButton(
             if (pending) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(IconSize.s),
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color =
+                        if (isProminent) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onBackground
+                        },
                 )
             }
             Text(

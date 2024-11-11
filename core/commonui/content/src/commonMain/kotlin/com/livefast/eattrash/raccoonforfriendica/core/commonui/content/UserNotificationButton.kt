@@ -11,9 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
@@ -45,13 +43,11 @@ fun UserNotificationButton(
         } else {
             CircularProgressIndicator(
                 Modifier
-                    .size(IconSize.l)
+                    .padding(5.dp)
+                    .size(37.dp)
                     .border(
-                        width = Dp.Hairline,
-                        color =
-                            MaterialTheme.colorScheme.onBackground.copy(
-                                ancillaryTextAlpha,
-                            ),
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
                         shape = CircleShape,
                     ).padding(6.dp),
                 color = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),

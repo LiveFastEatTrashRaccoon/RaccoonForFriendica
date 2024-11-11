@@ -114,7 +114,7 @@ fun FollowRequestItem(
                 if (pending) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(IconSize.s),
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = rejectColor,
                     )
                 }
                 Text(
@@ -132,7 +132,7 @@ fun FollowRequestItem(
                 if (pending) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(IconSize.s),
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = acceptColor,
                     )
                 }
                 Text(
