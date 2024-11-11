@@ -31,8 +31,9 @@ by the same people.
 
 ## Want to try it?
 
-Here are some options to install the application on your device. The best way to install testing APKs
-is Obtainium, please insert this repository's URL as a source.
+Here are some options to install the application on your device. The easiest way to install testing
+APKs is [Obtainium](https://github.com/ImranR98/Obtainium), please insert this repository's GitHub
+URL as a source.
 
 ```
 https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
@@ -48,7 +49,7 @@ https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
 
 > [!TIP]
 > Make sure to check the "Include pre-releases" option (in order to receive all alpha and beta
-> builds):
+> builds)
 
 ## Screenshots
 
@@ -146,19 +147,21 @@ The app is under ongoing development, here is a list of the features that are be
 
 ## Technologies used
 
-- [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform) for UI
-- [Room](https://developer.android.com/kotlin/multiplatform/room) for local persistence
-- [Koin](https://insert-koin.io/) for dependency injection
-- [Voyager](https://voyager.adriel.cafe/) for navigation
-- [Ktor](https://ktor.io/) and [Ktorfit](https://foso.github.io/Ktorfit) for networking
-- [Lyricist](https://github.com/adrielcafe/lyricist) for l10n
-- [Multiplatform settings](https://github.com/russhwolf/multiplatform-settings) for encrypted
-  preferences
-- [MaterialKolor](https://github.com/jordond/MaterialKolor) for custom theme generation
-- [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing
-- [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for custom color selection
-- [Sentry](https://sentry.io) for crash reporting and user feedback collection
-- [UnifiedPush](https://unifiedpush.org) for push notifications
+- [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform) for UI;
+- [Room](https://developer.android.com/kotlin/multiplatform/room) for local persistence;
+- [Koin](https://insert-koin.io/) for dependency injection;
+- [Voyager](https://voyager.adriel.cafe/) for navigation;
+- [Ktor](https://ktor.io/) and [Ktorfit](https://foso.github.io/Ktorfit) for networking;
+- [Lyricist](https://github.com/adrielcafe/lyricist) for localization;
+- [Multiplatform settings](https://github.com/russhwolf/multiplatform-settings) for encrypted shared
+  preferences;
+- [MaterialKolor](https://github.com/jordond/MaterialKolor) for custom theme generation;
+- [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing;
+- [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for custom color selection;
+- [Sentry](https://sentry.io) for crash reporting and user feedback collection;
+- [UnifiedPush](https://unifiedpush.org) for push notifications;
+- [ComposeMultiplatformMediaPlayer](https://github.com/Chaintech-Network/ComposeMultiplatformMediaPlayer)
+  for video playback.
 
 ## Want to leave your feedback or report a bug?
 
@@ -181,6 +184,7 @@ The app is under ongoing development, here is a list of the features that are be
 > _at your own risk_.
 
 You shouldn't expect a full-fledged and fully functional app; you should be prepared to occasional
-failures, yet-to-implement features and areas where (a lot of) polish is needed. Contributions are
-welcome and new feature requests (outside the agreed roadmap) will be evaluated depending on the
-available time.
+failures, yet-to-implement features and areas where (a lot of) polish is needed.
+
+Contributions are welcome and new feature requests (outside the pre-agreed roadmap) will be
+evaluated depending on the available time.
