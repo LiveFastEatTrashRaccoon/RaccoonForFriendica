@@ -59,7 +59,7 @@ internal class DefaultLoginUseCase(
                     if (supportsBBCode) {
                         MarkupMode.BBCode
                     } else {
-                        MarkupMode.HTML
+                        MarkupMode.PlainText
                     }
                 settingsRepository.create(
                     defaultSettings.copy(

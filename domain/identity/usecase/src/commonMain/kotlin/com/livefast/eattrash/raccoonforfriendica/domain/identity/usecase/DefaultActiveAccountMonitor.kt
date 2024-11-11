@@ -105,7 +105,7 @@ internal class DefaultActiveAccountMonitor(
                     if (supportedFeatureRepository.features.value.supportsBBCode) {
                         MarkupMode.BBCode
                     } else {
-                        MarkupMode.HTML
+                        MarkupMode.PlainText
                     },
             )
 }
