@@ -33,7 +33,7 @@
     <li>
         and, of course, much more (see the official documentation)…
     </li>
-<ul>
+</ul>
 <p>
     The web interface is great to access all of these features but on a mobile device there are
     different constraints for usability and readability, so it comes in handy to have an app to
