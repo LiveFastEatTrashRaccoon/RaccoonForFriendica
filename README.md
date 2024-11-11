@@ -40,11 +40,9 @@ https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica
 ```
 
 <div align="center">
-  <div style="display: flex; flex-flow: row wrap; justify-content: center; align-items: center;">
-    <a href="https://github.com/ImranR98/Obtainium/releases">
-    <img alt="Get it on Obtainium banner" width="200" src="https://github.com/user-attachments/assets/1501ad39-c581-4760-96ce-6d5181ab6207" />
-    </a>
-  </div>
+    <a href="https://github.com/ImranR98/Obtainium/releases"><img alt="Get it on Obtainium banner" height="60" src="https://github.com/user-attachments/assets/58fd5f7e-8136-4e92-a462-c7977e119602" /></a>
+    &nbsp;
+    <a href="https://apt.izzysoft.de/fdroid/index/apk/com.livefast.eattrash.raccoonforfriendica"><img alt="Get it on IzzyOnDroid banner" height="60" src="https://github.com/user-attachments/assets/09fd93a6-03fe-4f05-b686-4874b24a656a" /></a>
 </div>
 
 > [!TIP]
