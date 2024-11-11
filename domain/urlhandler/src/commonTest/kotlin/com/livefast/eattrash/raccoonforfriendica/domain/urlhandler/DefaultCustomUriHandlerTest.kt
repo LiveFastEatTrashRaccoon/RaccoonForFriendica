@@ -86,6 +86,7 @@ class DefaultCustomUriHandlerTest {
             guppeProcessor = guppeProcessor,
             peertubeProcessor = peertubeProcessor,
             pixelfedProcessor = pixelfedProcessor,
+            detailOpener = detailOpener,
             dispatcher = UnconfinedTestDispatcher(),
         )
 
@@ -126,6 +127,20 @@ class DefaultCustomUriHandlerTest {
 
         verify {
             customTabsHelper.handle(url)
+        }
+    }
+
+    @Test
+    fun `given URL and internal mode when openUri then interactions are as expected`() {
+        every {
+            settingsRepository.current
+        } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.Internal))
+        val url = "https://www.example.com"
+
+        sut.openUri(url)
+
+        verify {
+            detailOpener.openInternalWebView(url)
         }
     }
 
