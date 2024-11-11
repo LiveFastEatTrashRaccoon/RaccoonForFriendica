@@ -92,7 +92,7 @@ internal val DeStrings =
         override val notificationTypeFavorite = "hat Ihren Beitrag zu den Favoriten hinzugefügt"
         override val notificationTypeFollow = "hat begonnen, Ihnen zu folgen"
         override val notificationTypeFollowRequest = "hat Ihnen eine Folgeanfrage geschickt"
-        override val notificationTypeReply = "hat Ihnen geantwortet"
+        override val notificationTypeMention = "hat Sie erwähnt"
         override val notificationTypePoll =
             "eine Umfrage, an der Sie teilgenommen haben, wurde geschlossen"
         override val notificationTypeReblog = "hat Ihren Beitrag erneut geteilt"

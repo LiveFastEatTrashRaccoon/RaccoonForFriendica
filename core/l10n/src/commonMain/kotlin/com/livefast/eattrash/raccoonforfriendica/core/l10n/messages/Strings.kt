@@ -95,7 +95,7 @@ interface Strings {
     val notificationTypeFavorite: String
     val notificationTypeFollow: String
     val notificationTypeFollowRequest: String
-    val notificationTypeReply: String
+    val notificationTypeMention: String
     val notificationTypePoll: String
     val notificationTypeReblog: String
     val notificationTypeUpdate: String
