@@ -255,6 +255,7 @@ fun TimelineItem(
                         PollCard(
                             modifier = Modifier.fillMaxWidth(),
                             poll = poll,
+                            emojis = entryToDisplay.emojis,
                             enabled = pollEnabled,
                             onVote = { choices ->
                                 onPollVote?.invoke(entryToDisplay, choices)

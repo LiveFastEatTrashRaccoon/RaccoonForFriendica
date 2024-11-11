@@ -43,6 +43,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
 import kotlin.math.roundToInt
@@ -59,6 +60,7 @@ fun PollCard(
     poll: PollModel,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    emojis: List<EmojiModel> = emptyList(),
     onVote: ((List<Int>) -> Unit)? = null,
 ) {
     val canVote = enabled && !poll.expired && poll.ownVotes.isEmpty()
@@ -78,6 +80,7 @@ fun PollCard(
             PollCardOption(
                 modifier = Modifier.fillMaxWidth(),
                 title = option.title,
+                emojis = emojis,
                 percentage = percentage,
                 enabled = canVote,
                 reactToClickEnabled = !showingResults,
@@ -152,6 +155,7 @@ private fun PollCardOption(
     isScoreHigher: Boolean = false,
     isOwnVote: Boolean = false,
     isShowingResults: Boolean = false,
+    emojis: List<EmojiModel> = emptyList(),
     onVote: (() -> Unit)? = null,
 ) {
     val shape = RoundedCornerShape(CornerSize.xl)
@@ -222,11 +226,12 @@ private fun PollCardOption(
         }
 
         // option title
-        Text(
+        TextWithCustomEmojis(
             modifier = Modifier.weight(1f).padding(start = Spacing.xxs),
             text = title,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground,
+            emojis = emojis,
         )
 
         // trailing part
