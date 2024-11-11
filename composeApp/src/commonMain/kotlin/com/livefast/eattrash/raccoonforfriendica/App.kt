@@ -22,6 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.getL10nManager
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.VoyagerNavigator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCrashReportManager
@@ -160,7 +161,8 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                             },
                         ) { navigator ->
                             LaunchedEffect(navigationCoordinator) {
-                                navigationCoordinator.setRootNavigator(navigator)
+                                val adapter = VoyagerNavigator(navigator)
+                                navigationCoordinator.setRootNavigator(adapter)
                             }
 
                             CurrentScreen()
