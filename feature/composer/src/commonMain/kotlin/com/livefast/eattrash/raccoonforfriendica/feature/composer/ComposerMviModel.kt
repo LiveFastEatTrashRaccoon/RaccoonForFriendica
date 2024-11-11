@@ -145,6 +145,7 @@ interface ComposerMviModel :
 
         data class Submit(
             val enableAltTextCheck: Boolean = true,
+            val enableParentVisibilityCheck: Boolean = true,
         ) : Intent
 
         data object GalleryInitialLoad : Intent
@@ -230,6 +231,7 @@ interface ComposerMviModel :
         val mentionSuggestions: List<UserModel> = emptyList(),
         val supportsRichEditing: Boolean = false,
         val autoloadImages: Boolean = true,
+        val inReplyTo: TimelineEntryModel? = null,
     )
 
     sealed interface Effect {
@@ -245,6 +247,8 @@ interface ComposerMviModel :
             data object InvalidPoll : ValidationError
 
             data object AltTextMissing : ValidationError
+
+            data object VisibilityGreaterThanParent : ValidationError
         }
 
         data object Success : Effect

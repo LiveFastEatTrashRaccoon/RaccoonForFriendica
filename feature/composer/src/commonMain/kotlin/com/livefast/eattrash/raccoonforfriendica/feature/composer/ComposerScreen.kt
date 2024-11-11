@@ -160,6 +160,9 @@ class ComposerScreen(
                 is PublicationType.Scheduled -> type.date
                 else -> null
             }
+        var confirmPublishWithVisibilityGreaterThanParentDialogOpened by remember {
+            mutableStateOf(false)
+        }
 
         LaunchedEffect(model) {
             when {
@@ -214,6 +217,9 @@ class ComposerScreen(
 
                         ComposerMviModel.Effect.ValidationError.AltTextMissing ->
                             publishWithoutAltTextCheckDialogOpen = true
+
+                        ComposerMviModel.Effect.ValidationError.VisibilityGreaterThanParent ->
+                            confirmPublishWithVisibilityGreaterThanParentDialogOpened = true
 
                         ComposerMviModel.Effect.Success -> navigationCoordinator.pop()
 
@@ -637,7 +643,7 @@ class ComposerScreen(
                             ).consumeWindowInsets(padding)
                             .verticalScroll(rememberScrollState()),
                 ) {
-                    if (!inReplyToUsername.isNullOrBlank() && !inReplyToId.isNullOrBlank()) {
+                    if (inReplyToUsername != null && uiState.inReplyTo != null) {
                         InReplyToInfo(
                             modifier =
                                 Modifier.padding(
@@ -669,6 +675,8 @@ class ComposerScreen(
                         autoloadImages = uiState.autoloadImages,
                         visibility = uiState.visibility,
                         availableVisibilities = uiState.availableVisibilities,
+                        // visibility change is not possible when editing a post
+                        changeVisibilityEnabled = editedPostId == null,
                         onChangeVisibility = { visibility ->
                             if (visibility is Visibility.Circle) {
                                 selectCircleDialogOpen = true
@@ -922,7 +930,7 @@ class ComposerScreen(
                             ),
                         )
                     }
-                }
+                },
             )
         }
 
@@ -1029,6 +1037,22 @@ class ComposerScreen(
                     publishWithoutAltTextCheckDialogOpen = false
                     if (confirm) {
                         model.reduce(ComposerMviModel.Intent.Submit(enableAltTextCheck = false))
+                    }
+                },
+            )
+        }
+
+        if (confirmPublishWithVisibilityGreaterThanParentDialogOpened) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.dialogErrorTitle,
+                body = LocalStrings.current.messageReplyVisibilityGreaterThanParentError,
+                confirmButtonLabel = LocalStrings.current.buttonPublishAnyway,
+                onClose = { confirm ->
+                    confirmPublishWithVisibilityGreaterThanParentDialogOpened = false
+                    if (confirm) {
+                        model.reduce(
+                            ComposerMviModel.Intent.Submit(enableParentVisibilityCheck = false),
+                        )
                     }
                 },
             )
