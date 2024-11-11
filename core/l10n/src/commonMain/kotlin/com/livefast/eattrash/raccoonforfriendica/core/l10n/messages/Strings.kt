@@ -193,6 +193,7 @@ interface Strings {
     val settingsItemUrlOpeningMode: String
     val urlOpeningModeExternal: String
     val urlOpeningModeCustomTabs: String
+    val urlOpeningModeInternal: String
     val dialogErrorTitle: String
     val messagePollVoteErrorBody: String
     val buttonPollErrorOpenIssue: String

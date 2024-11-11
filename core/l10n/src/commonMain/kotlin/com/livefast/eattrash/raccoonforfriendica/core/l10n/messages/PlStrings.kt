@@ -197,8 +197,9 @@ internal val PlStrings =
         override val fontScaleLarger = "Większa"
         override val fontScaleLargest = "Największa"
         override val settingsItemUrlOpeningMode = "Tryb otwierania adresu URL"
-        override val urlOpeningModeExternal = "Zewnętrzny"
+        override val urlOpeningModeExternal = "Zewnętrzna przeglądarka"
         override val urlOpeningModeCustomTabs = "Zakładki niestandardowe"
+        override val urlOpeningModeInternal = "Wewnętrzny widok sieciowy"
         override val dialogErrorTitle = "Ups…"
         override val messagePollVoteErrorBody =
             "Niestety, jestem tylko deweloperem mobilnym i nie mogę dodać brakujących metod back-endowych!\nSprawdź tę kwestię i umieść 👍, aby deweloperzy wiedzieli, że warto ją wdrożyć."
