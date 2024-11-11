@@ -25,6 +25,17 @@ sealed interface Visibility {
     ) : Visibility
 }
 
+operator fun Visibility.compareTo(other: Visibility): Int = toSortKey().compareTo(other.toSortKey())
+
+private fun Visibility.toSortKey() =
+    when (this) {
+        is Visibility.Circle -> 300
+        Visibility.Direct -> 200
+        Visibility.Private -> 300
+        Visibility.Public -> 500
+        Visibility.Unlisted -> 400
+    }
+
 @Composable
 fun Visibility.toIcon(): ImageVector =
     when (this) {

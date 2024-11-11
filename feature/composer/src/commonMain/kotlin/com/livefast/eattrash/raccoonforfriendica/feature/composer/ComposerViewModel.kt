@@ -21,6 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.compareTo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationSpecification
@@ -133,16 +134,25 @@ class ComposerViewModel(
                         )
                     }
                 }.launchIn(this)
+            val parent = inReplyToId?.let { e -> entryCache.get(e) }
+            val initialVisibility =
+                if (inReplyToId != null) {
+                    currentSettings
+                        ?.defaultReplyVisibility
+                        ?.toVisibility()
+                        // make sure to have a visibility less than or equal to the parent
+                        ?.takeIf { it <= (parent?.visibility ?: Visibility.Unlisted) }
+                        ?: parent?.visibility
+                } else {
+                    currentSettings?.defaultPostVisibility?.toVisibility()
+                } ?: Visibility.Unlisted
+
             updateState {
                 it.copy(
                     characterLimit = nodeInfo?.characterLimit,
                     attachmentLimit = nodeInfo?.attachmentLimit,
-                    visibility =
-                        if (inReplyToId != null) {
-                            currentSettings?.defaultReplyVisibility
-                        } else {
-                            currentSettings?.defaultPostVisibility
-                        }?.toVisibility() ?: Visibility.Public,
+                    visibility = initialVisibility,
+                    inReplyTo = parent,
                     supportsRichEditing = currentSettings?.markupMode?.supportsRichEditing == true,
                 )
             }
@@ -264,30 +274,30 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.AddInitialMentions ->
                 screenModelScope.launch {
                     val mentions =
-                    buildList {
-                        val initialValue = intent.initialHandle.orEmpty()
-                        if (initialValue.isNotEmpty()) {
-                            this += initialValue
+                        buildList {
+                            val initialValue = intent.initialHandle.orEmpty()
+                            if (initialValue.isNotEmpty()) {
+                                this += initialValue
+                            }
+                            val currentUserHandle =
+                                identityRepository.currentUser.value
+                                    ?.handle
+                                    .orEmpty()
+                            val mentions =
+                                inReplyToId
+                                    ?.let { entryCache.get(it) }
+                                    ?.mentions
+                                    .orEmpty()
+                                    .mapNotNull { it.handle }
+                                    .filterNot { it == initialValue }
+                                    .filterNot { it == currentUserHandle }
+                            addAll(mentions)
                         }
-                        val currentUserHandle =
-                            identityRepository.currentUser.value
-                                ?.handle
-                                .orEmpty()
-                        val mentions =
-                            inReplyToId
-                                ?.let { entryCache.get(it) }
-                                ?.mentions
-                                .orEmpty()
-                                .mapNotNull { it.handle }
-                                .filterNot { it == initialValue }
-                                .filterNot { it == currentUserHandle }
-                        addAll(mentions)
-                    }
 
-                for (mention in mentions) {
-                    addMention(handle = mention)
+                    for (mention in mentions) {
+                        addMention(handle = mention)
+                    }
                 }
-            }
 
             is ComposerMviModel.Intent.AddGroupReference ->
                 addMention(
@@ -472,7 +482,10 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.InsertList -> insertList()
 
             is ComposerMviModel.Intent.Submit ->
-                submit(enableAltTextCheck = intent.enableAltTextCheck)
+                submit(
+                    enableAltTextCheck = intent.enableAltTextCheck,
+                    enableParentVisibilityCheck = intent.enableParentVisibilityCheck,
+                )
         }
     }
 
@@ -1325,7 +1338,10 @@ class ComposerViewModel(
         emitEffect(ComposerMviModel.Effect.OpenPreview(entry))
     }
 
-    private suspend fun validate(enableAltTextCheck: Boolean): Boolean {
+    private suspend fun validate(
+        enableAltTextCheck: Boolean,
+        enableParentVisibilityCheck: Boolean,
+    ): Boolean {
         val currentState = uiState.value
         val visibility = currentState.visibility
         val text = currentState.bodyValue.text
@@ -1369,6 +1385,12 @@ class ComposerViewModel(
             return false
         }
 
+        // Replies should not have higher visibility than parent
+        if (enableParentVisibilityCheck && currentState.inReplyTo != null && visibility > currentState.inReplyTo.visibility) {
+            emitEffect(ComposerMviModel.Effect.ValidationError.VisibilityGreaterThanParent)
+            return false
+        }
+
         // schedule date must be in the future
         if (scheduleDate != null) {
             val timeSpan = getDurationFromNowToDate(scheduleDate) ?: Duration.ZERO
@@ -1381,7 +1403,10 @@ class ComposerViewModel(
         return true
     }
 
-    private fun submit(enableAltTextCheck: Boolean) {
+    private fun submit(
+        enableAltTextCheck: Boolean,
+        enableParentVisibilityCheck: Boolean,
+    ) {
         val currentState = uiState.value
         if (currentState.loading) {
             return
@@ -1407,7 +1432,12 @@ class ComposerViewModel(
         val publicationType = currentState.publicationType
 
         screenModelScope.launch {
-            if (!validate(enableAltTextCheck = enableAltTextCheck)) {
+            if (
+                !validate(
+                    enableAltTextCheck = enableAltTextCheck,
+                    enableParentVisibilityCheck = enableParentVisibilityCheck,
+                )
+            ) {
                 return@launch
             }
 

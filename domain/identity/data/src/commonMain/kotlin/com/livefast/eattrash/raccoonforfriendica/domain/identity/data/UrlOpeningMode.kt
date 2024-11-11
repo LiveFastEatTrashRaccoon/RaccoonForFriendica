@@ -28,7 +28,6 @@ fun UrlOpeningMode.toInt(): Int =
 @Composable
 fun UrlOpeningMode.toReadableName(): String =
     when (this) {
-        // TODO: l10n
         UrlOpeningMode.Internal -> LocalStrings.current.urlOpeningModeInternal
         UrlOpeningMode.CustomTabs -> LocalStrings.current.urlOpeningModeCustomTabs
         UrlOpeningMode.External -> LocalStrings.current.urlOpeningModeExternal

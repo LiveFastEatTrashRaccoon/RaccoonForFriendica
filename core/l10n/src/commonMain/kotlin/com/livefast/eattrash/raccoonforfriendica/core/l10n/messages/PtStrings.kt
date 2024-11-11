@@ -439,10 +439,11 @@ internal val PtStrings =
         override val loginFriendicaHeader = "Estou no Friendica"
         override val loginMastodonHeader = "Estou no Mastodon"
         override val helpMeChooseAnInstance = "Ajude-me a escolher uma instância"
-        override val loginOtherHeader = "Outro (Pleroma, etc.)"
         override val exempliGratia = "e. g."
         override val newAccountTitle = "Adicionar conta"
         override val imageLoadingModeAlways = "Sempre"
         override val imageLoadingModeOnDemand = "A pedido"
         override val imageLoadingModeOnWiFi = "Em WiFi"
+        override val messageReplyVisibilityGreaterThanParentError =
+            "Está a publicar uma resposta com uma visibilidade mais ampla do que a publicação original"
     }

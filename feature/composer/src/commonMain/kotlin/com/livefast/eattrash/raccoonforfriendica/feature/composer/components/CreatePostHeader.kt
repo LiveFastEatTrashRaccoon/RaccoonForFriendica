@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -53,6 +55,7 @@ internal fun CreatePostHeader(
             Visibility.Unlisted,
             Visibility.Private,
         ),
+    changeVisibilityEnabled: Boolean = true,
     onChangeVisibility: ((Visibility) -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
@@ -109,9 +112,15 @@ internal fun CreatePostHeader(
                     Modifier
                         .onGloballyPositioned {
                             optionsOffset = it.positionInParent()
-                        }.clickable {
-                            visibilityDropDownOpen = true
-                        },
+                        }.then(
+                            if (changeVisibilityEnabled) {
+                                Modifier.clickable {
+                                    visibilityDropDownOpen = true
+                                }
+                            } else {
+                                Modifier
+                            },
+                        ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
@@ -123,10 +132,14 @@ internal fun CreatePostHeader(
                 Text(
                     text = visibility.toReadableName(),
                 )
-                Icon(
-                    imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = null,
-                )
+                if (changeVisibilityEnabled) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = null,
+                    )
+                } else {
+                    Spacer(modifier = Modifier.width(Spacing.xxs))
+                }
             }
             CustomDropDown(
                 expanded = visibilityDropDownOpen,

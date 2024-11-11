@@ -431,10 +431,11 @@ internal open class DefaultStrings : Strings {
     override val loginFriendicaHeader = "I'm on Friendica"
     override val loginMastodonHeader = "I'm on Mastodon"
     override val helpMeChooseAnInstance = "Help me choose an instance"
-    override val loginOtherHeader = "Other (Pleroma, etc.)"
     override val exempliGratia = "e. g."
     override val newAccountTitle = "Add account"
     override val imageLoadingModeAlways = "Always"
     override val imageLoadingModeOnDemand = "On demand"
     override val imageLoadingModeOnWiFi = "In WiFi"
+    override val messageReplyVisibilityGreaterThanParentError =
+        "You are publishing a reply with a broader visibility than the original post"
 }
