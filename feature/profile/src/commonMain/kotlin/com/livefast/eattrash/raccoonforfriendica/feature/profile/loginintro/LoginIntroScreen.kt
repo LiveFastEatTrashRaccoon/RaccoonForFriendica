@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -162,24 +161,6 @@ internal class LoginIntroScreen : Screen {
                     uriHandler.openUri(LoginIntroLinks.MASTODON_INSTANCE_HELP)
                 },
             )
-
-            HorizontalDivider(
-                modifier = Modifier.padding(top = Spacing.s),
-            )
-
-            PlatformHeader(
-                modifier = Modifier.padding(top = Spacing.xs),
-                title = LocalStrings.current.loginOtherHeader,
-                icon = Icons.Default.Public,
-            )
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    model.reduce(LoginIntroMviModel.Intent.StartOauth2Flow(LoginType.Other))
-                },
-            ) {
-                Text(text = LocalStrings.current.buttonLogin)
-            }
         }
 
         if (moreInfoBottomSheetOpened) {
