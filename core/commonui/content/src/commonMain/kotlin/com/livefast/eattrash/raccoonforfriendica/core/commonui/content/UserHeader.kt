@@ -204,6 +204,7 @@ fun UserHeader(
                         text = user?.displayName ?: user?.username ?: "",
                         emojis = user?.emojis.orEmpty(),
                         style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
                         autoloadImages = autoloadImages,
                         color = fullColor,
                     )

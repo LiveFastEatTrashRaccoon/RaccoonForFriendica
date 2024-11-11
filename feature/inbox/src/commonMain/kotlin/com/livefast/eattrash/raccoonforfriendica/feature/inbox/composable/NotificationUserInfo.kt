@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -103,12 +102,14 @@ fun NotificationUserInfo(
         ) {
             Row {
                 Column(
+                    modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
                     TextWithCustomEmojis(
                         text = user.displayName ?: user.username ?: "",
                         emojis = user.emojis,
                         style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
                         color = fullColor,
                         autoloadImages = autoloadImages,
                     )
@@ -118,8 +119,6 @@ fun NotificationUserInfo(
                         color = ancillaryColor,
                     )
                 }
-
-                Spacer(modifier = Modifier.weight(1f))
 
                 if (relationshipStatus != null) {
                     UserRelationshipButton(
