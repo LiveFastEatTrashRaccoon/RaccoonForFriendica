@@ -92,7 +92,7 @@ class InboxViewModel(
                         it.copy(selectedNotificationTypes = intent.types, initial = true)
                     }
                     emitEffect(InboxMviModel.Effect.BackToTop)
-                    refresh(initial = true)
+                    refresh(initial = true, forceRefresh = true)
                 }
 
             is InboxMviModel.Intent.Follow -> follow(intent.userId)
@@ -103,7 +103,10 @@ class InboxViewModel(
         }
     }
 
-    private suspend fun refresh(initial: Boolean = false) {
+    private suspend fun refresh(
+        initial: Boolean = false,
+        forceRefresh: Boolean = false,
+    ) {
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
@@ -116,7 +119,7 @@ class InboxViewModel(
             NotificationsPaginationSpecification.Default(
                 types = uiState.value.selectedNotificationTypes,
                 includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
-                refresh = !initial,
+                refresh = forceRefresh || !initial,
             ),
         )
         loadNextPage()
