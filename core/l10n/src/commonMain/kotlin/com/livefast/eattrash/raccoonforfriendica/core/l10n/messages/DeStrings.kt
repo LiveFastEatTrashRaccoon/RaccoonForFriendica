@@ -434,10 +434,11 @@ internal val DeStrings =
         override val loginFriendicaHeader = "Ich bin bei Friendica"
         override val loginMastodonHeader = "Ich bin bei Mastodon"
         override val helpMeChooseAnInstance = "Hilf mir bei der Auswahl einer Instanz"
-        override val loginOtherHeader = "Andere (Pleroma, etc.)"
         override val exempliGratia = "z. B."
         override val newAccountTitle = "Konto hinzufügen"
         override val imageLoadingModeAlways = "Immer"
         override val imageLoadingModeOnDemand = "Bei Bedarf"
         override val imageLoadingModeOnWiFi = "Im WiFi"
+        override val messageReplyVisibilityGreaterThanParentError =
+            "Sie veröffentlichen eine Antwort mit einer breiteren Sichtbarkeit als der ursprüngliche Beitrag"
     }

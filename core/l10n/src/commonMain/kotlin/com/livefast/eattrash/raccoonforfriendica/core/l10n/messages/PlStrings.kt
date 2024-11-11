@@ -432,10 +432,11 @@ internal val PlStrings =
         override val loginFriendicaHeader = "Jestem na Friendica"
         override val loginMastodonHeader = "Jestem na Mastodon"
         override val helpMeChooseAnInstance = "Pomóż mi wybrać instancję"
-        override val loginOtherHeader = "Inne (Pleroma, itp.)"
         override val exempliGratia = "np."
         override val newAccountTitle = "Dodaj konto"
         override val imageLoadingModeAlways = "Zawsze"
         override val imageLoadingModeOnDemand = "Na żądanie"
         override val imageLoadingModeOnWiFi = "W sieci WiFi"
+        override val messageReplyVisibilityGreaterThanParentError =
+            "Publikujesz odpowiedź o szerszym zasięgu niż oryginalny post"
     }

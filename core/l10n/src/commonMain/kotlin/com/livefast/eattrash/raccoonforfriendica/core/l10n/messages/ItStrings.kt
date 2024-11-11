@@ -434,10 +434,11 @@ internal val ItStrings =
         override val loginFriendicaHeader = "Sono su Friendica"
         override val loginMastodonHeader = "Sono su Mastodon"
         override val helpMeChooseAnInstance = "Aiutami a scegliere un'istanza"
-        override val loginOtherHeader = "Altro (Pleroma, etc.)"
         override val exempliGratia = "es."
         override val newAccountTitle = "Aggiungi account"
         override val imageLoadingModeAlways = "Sempre"
         override val imageLoadingModeOnDemand = "Su richiesta"
         override val imageLoadingModeOnWiFi = "In WiFi"
+        override val messageReplyVisibilityGreaterThanParentError =
+            "Stai pubblicando una risposta con visibilità maggiore a quella del post originale"
     }

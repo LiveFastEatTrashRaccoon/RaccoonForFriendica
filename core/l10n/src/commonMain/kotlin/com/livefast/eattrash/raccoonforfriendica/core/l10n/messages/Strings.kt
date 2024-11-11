@@ -383,13 +383,13 @@ interface Strings {
     val loginMoreInfoBottomSheetContent: String
     val loginFriendicaHeader: String
     val loginMastodonHeader: String
-    val loginOtherHeader: String
     val helpMeChooseAnInstance: String
     val exempliGratia: String
     val newAccountTitle: String
     val imageLoadingModeAlways: String
     val imageLoadingModeOnDemand: String
     val imageLoadingModeOnWiFi: String
+    val messageReplyVisibilityGreaterThanParentError: String
 }
 
 object Locales {
