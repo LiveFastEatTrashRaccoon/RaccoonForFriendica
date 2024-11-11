@@ -35,12 +35,15 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.materialIconsExtended)
 
+                implementation(libs.calf)
                 implementation(libs.koin.core)
+                implementation(libs.voyager.navigator)
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.commonui.components)
                 implementation(projects.core.htmlparse)
                 implementation(projects.core.l10n)
+                implementation(projects.core.navigation)
                 implementation(projects.core.utils)
 
                 implementation(projects.domain.content.data)
