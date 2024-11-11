@@ -39,7 +39,12 @@ fun UserRelationshipButton(
             if (pending) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(IconSize.s),
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color =
+                        if (status.isProminent()) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onBackground
+                        },
                 )
             }
             Text(
