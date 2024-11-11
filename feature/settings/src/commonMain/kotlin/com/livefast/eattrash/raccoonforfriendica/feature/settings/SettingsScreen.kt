@@ -572,6 +572,7 @@ class SettingsScreen : Screen {
                 listOf(
                     UrlOpeningMode.External,
                     UrlOpeningMode.CustomTabs,
+                    UrlOpeningMode.Internal,
                 )
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemUrlOpeningMode,
