@@ -26,15 +26,29 @@ internal class DefaultEmojiHelper(
         return copy(emojis = emojis)
     }
 
-    override suspend fun TimelineEntryModel.withEmojisIfMissing(): TimelineEntryModel =
-        copy(
+    override suspend fun TimelineEntryModel.withEmojisIfMissing(): TimelineEntryModel {
+        val node = creator?.handle.nodeName
+        val pollOptionTexts = poll?.options?.map { it.title }.orEmpty()
+        val pollOptionsEmojis =
+            if (pollOptionTexts.none { it.contains(EMOJI_REGEX) }) {
+                emptyList()
+            } else {
+                repository
+                    .getAll(node)
+                    ?.filterContainedIn(*pollOptionTexts.toTypedArray())
+                    .orEmpty()
+            }
+
+        return copy(
             creator = creator?.withEmojisIfMissing(),
             inReplyTo =
                 inReplyTo?.copy(
                     creator = inReplyTo?.creator?.withEmojisIfMissing(),
                 ),
             reblog = reblog?.copy(reblog = null)?.withEmojisIfMissing(),
+            emojis = emojis + pollOptionsEmojis,
         )
+    }
 
     companion object {
         private val EMOJI_REGEX = Regex(":\\w+:")
