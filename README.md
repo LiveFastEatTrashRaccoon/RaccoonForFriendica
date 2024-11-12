@@ -56,16 +56,48 @@ use [Obtainium](https://github.com/ImranR98/Obtainium) and add a new app by inse
 ## Screenshots
 
 <div align="center">
-  <img alt="timeline screen with subscriptions" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/timeline.png" />
-  <img alt="user detail screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/user_detail.png" />
-  <img alt="post detail screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/post_detail.png" />
-  <img alt="list of posts containing a followed hashtag" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/hashtag_feed.png" />
-  <img alt="post editor" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/composer.png" />
-  <img alt="settings screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/settings.png" />
-  <img alt="explore screen on hashtags tab" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/explore_hashtags.png" />
-  <img alt="notifications screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/inbox.png" />
-  <img alt="group opened in forum mode" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/forum_list.png" />
-  <img alt="thread screen within a group with replies" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/thread_detail.png" />
+  <table>
+    <tr>
+      <td>
+        <img alt="timeline screen with subscriptions" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/timeline.png" />
+      </td>
+      <td>
+        <img alt="user detail screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/user_detail.png" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img alt="post detail screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/post_detail.png" />
+      </td>
+      <td>
+        <img alt="list of posts containing a followed hashtag" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/hashtag_feed.png" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img alt="post editor" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/composer.png" />
+      </td>
+      <td>
+        <img alt="settings screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/settings_1.png" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img alt="explore screen on hashtags tab" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/explore_hashtags.png" />
+      </td>
+      <td>
+        <img alt="notifications screen" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/inbox.png" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img alt="group opened in forum mode" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/forum_list.png" />
+      </td>
+      <td>
+        <img alt="thread screen within a group with replies" width="310" src="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/images/thread_detail.png" />
+      </td>
+    </tr>
+  </table>
 </div>
 
 ## Why was the project started and why is it called like that?
