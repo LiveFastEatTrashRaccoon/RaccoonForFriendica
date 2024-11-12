@@ -28,4 +28,5 @@ data class SettingsEntity(
     @ColumnInfo(defaultValue = "0") val notificationMode: Int = 0,
     val pullNotificationCheckInterval: Long? = null,
     @ColumnInfo(defaultValue = "1") val autoloadImages: Int = 1,
+    @ColumnInfo(defaultValue = "1") val hideNavigationBarWhileScrolling: Boolean = true,
 )
