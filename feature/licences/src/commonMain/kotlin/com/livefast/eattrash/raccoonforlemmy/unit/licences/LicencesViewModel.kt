@@ -39,6 +39,22 @@ class LicencesViewModel :
                         this +=
                             LicenceItem(
                                 type = LicenceItemType.Library,
+                                title = "Bouncy Castle",
+                                subtitle =
+                                    "The Bouncy Castle Crypto package is a Java implementation of cryptographic algorithms",
+                                url = LicenceUrls.BOUNCY_CASTLE,
+                            )
+                        this +=
+                            LicenceItem(
+                                type = LicenceItemType.Library,
+                                title = "Calf webview",
+                                subtitle =
+                                    "Calf is a library that allows you to easily create adaptive UIs and access platform specific APIs from your Compose Multiplatform apps",
+                                url = LicenceUrls.CALF,
+                            )
+                        this +=
+                            LicenceItem(
+                                type = LicenceItemType.Library,
                                 title = "Coil",
                                 subtitle = "An image loading library for Android",
                                 url = LicenceUrls.COIL,
@@ -49,6 +65,22 @@ class LicencesViewModel :
                                 title = "Compose ColorPicker",
                                 subtitle = "Kotlin Multiplatform color picker library",
                                 url = LicenceUrls.COMPOSE_COLORPICKER,
+                            )
+                        this +=
+                            LicenceItem(
+                                type = LicenceItemType.Library,
+                                title = "Compose Multiplatform Media Player",
+                                subtitle =
+                                    "Compose Multiplatform Media Player is a powerful media player library designed for Compose Multiplatform projects",
+                                url = LicenceUrls.COMPOSE_MULTIPLATFORM_MEDIA_PLAYER,
+                            )
+                        this +=
+                            LicenceItem(
+                                type = LicenceItemType.Library,
+                                title = "Connectivity",
+                                subtitle =
+                                    "Connectivity provides network monitoring capabilities for multiplatform projects",
+                                url = LicenceUrls.CONNECTIVITY,
                             )
                         this +=
                             LicenceItem(
@@ -123,16 +155,24 @@ class LicencesViewModel :
                         this +=
                             LicenceItem(
                                 type = LicenceItemType.Library,
-                                title = "Voyager",
-                                subtitle = "A multiplatform navigation library built for, and seamlessly integrated with, Jetpack Compose",
-                                url = LicenceUrls.VOYAGER,
+                                title = "Sentry",
+                                subtitle = "Sentry SDK for Kotlin Multiplatform",
+                                url = LicenceUrls.SENTRY,
                             )
                         this +=
                             LicenceItem(
                                 type = LicenceItemType.Library,
-                                title = "Sentry",
-                                subtitle = "Sentry SDK for Kotlin Multiplatform",
-                                url = LicenceUrls.SENTRY,
+                                title = "UnifiedPush",
+                                subtitle =
+                                    "This is a library that can be used by an end user application to receive notifications from any unified push provider",
+                                url = LicenceUrls.UNIFIED_PUSH,
+                            )
+                        this +=
+                            LicenceItem(
+                                type = LicenceItemType.Library,
+                                title = "Voyager",
+                                subtitle = "A multiplatform navigation library built for, and seamlessly integrated with, Jetpack Compose",
+                                url = LicenceUrls.VOYAGER,
                             )
                     },
             )
