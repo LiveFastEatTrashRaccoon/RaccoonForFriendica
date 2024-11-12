@@ -65,15 +65,19 @@ class MyAccountViewModel(
                     }
                     refresh(initial = true)
                 }.launchIn(this)
+
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
+
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -82,6 +86,7 @@ class MyAccountViewModel(
                         )
                     }
                 }.launchIn(this)
+
             notificationCenter
                 .subscribe(TimelineEntryUpdatedEvent::class)
                 .onEach { event ->

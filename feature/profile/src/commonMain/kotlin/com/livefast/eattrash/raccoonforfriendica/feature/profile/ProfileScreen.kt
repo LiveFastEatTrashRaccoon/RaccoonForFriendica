@@ -129,7 +129,13 @@ class ProfileScreen : Screen {
                         modifier =
                             Modifier
                                 .padding(padding)
-                                .nestedScroll(scrollBehavior.nestedScrollConnection),
+                                .then(
+                                    if (uiState.hideNavigationBarWhileScrolling) {
+                                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                                    } else {
+                                        Modifier
+                                    },
+                                ),
                     ) {
                         if (uiState.currentUserId != null) {
                             ScreenContent(MyAccountScreen)

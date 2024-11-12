@@ -28,6 +28,7 @@ interface ProfileMviModel :
         val availableAccounts: List<AccountModel> = emptyList(),
         val loading: Boolean = false,
         val autoloadImages: Boolean = true,
+        val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
     sealed interface Effect
