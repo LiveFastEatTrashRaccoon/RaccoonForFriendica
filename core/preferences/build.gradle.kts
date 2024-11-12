@@ -36,12 +36,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.koin.core)
-                implementation(libs.kotlinx.coroutines)
-                implementation(libs.kotlinx.serialization.json)
-                implementation(libs.ktor.client.core)
                 implementation(libs.multiplatform.settings)
-
-                implementation(projects.core.utils)
             }
         }
         val commonTest by getting {
