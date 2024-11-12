@@ -149,25 +149,29 @@ The app is under ongoing development, here is a list of the features that are be
 
 ## Technologies used
 
+- [Calf](https://github.com/MohamedRejeb/Calf) for a web view implementation;
+- [Coil](https://github.com/coil-kt/coil) for image loading;
 - [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform) for UI;
-- [Room](https://developer.android.com/kotlin/multiplatform/room) for local persistence;
+- [Compose ColorPicker](https://github.com/skydoves/colorpicker-compose) for custom color selection;
+- [Compose Multiplatform Media Player](https://github.com/Chaintech-Network/ComposeMultiplatformMediaPlayer)
+  for video playback;
+- [Connectivity](https://github.com/jordond/connectivity) to detect network state changes;
 - [Koin](https://insert-koin.io/) for dependency injection;
-- [Voyager](https://voyager.adriel.cafe/) for navigation;
+- [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing;
 - [Ktor](https://ktor.io/) and [Ktorfit](https://foso.github.io/Ktorfit) for networking;
 - [Lyricist](https://github.com/adrielcafe/lyricist) for localization;
-- [Multiplatform settings](https://github.com/russhwolf/multiplatform-settings) for encrypted shared
+- [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings) for encrypted shared
   preferences;
 - [MaterialKolor](https://github.com/jordond/MaterialKolor) for custom theme generation;
-- [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing;
-- [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for custom color selection;
+- [Room](https://developer.android.com/kotlin/multiplatform/room) for local persistence;
 - [Sentry](https://sentry.io) for crash reporting and user feedback collection;
 - [UnifiedPush](https://unifiedpush.org) for push notifications;
-- [ComposeMultiplatformMediaPlayer](https://github.com/Chaintech-Network/ComposeMultiplatformMediaPlayer)
-  for video playback.
+- [Voyager](https://voyager.adriel.cafe/) for navigation;
 
 ## Want to leave your feedback or report a bug?
 
-- use the "Report an issue" in-app form you can find in the "App information" dialog;
+- use the "Report an issue" in-app form you can find in the "App information" dialog (it works only
+  if you have enabled crash reporting);
 - follow the [Friendica group](https://poliverso.org/profile/raccoonforfriendicaapp) to receive
   updates about the new releases and participate in public discussions;
 - join our [Matrix room](https://matrix.to/#/#raccoonforfriendicaapp:matrix.org) to reach out to the
