@@ -132,7 +132,13 @@ class SettingsScreen : Screen {
                     modifier =
                         Modifier
                             .padding(padding)
-                            .nestedScroll(scrollBehavior.nestedScrollConnection),
+                            .then(
+                                if (uiState.hideNavigationBarWhileScrolling) {
+                                    Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                                } else {
+                                    Modifier
+                                },
+                            ),
                 ) {
                     Column(
                         modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -204,6 +210,15 @@ class SettingsScreen : Screen {
                             value = uiState.imageLoadingMode.toReadableName(),
                             onTap = {
                                 imageLoadingModeBottomSheetOpened = true
+                            },
+                        )
+                        SettingsSwitchRow(
+                            title = LocalStrings.current.settingsItemHideNavigationBarWhileScrolling,
+                            value = uiState.hideNavigationBarWhileScrolling,
+                            onValueChanged = {
+                                model.reduce(
+                                    SettingsMviModel.Intent.ChangeHideNavigationBarWhileScrolling(it),
+                                )
                             },
                         )
 

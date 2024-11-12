@@ -105,6 +105,10 @@ interface SettingsMviModel :
         data class ChangeCrashReportEnabled(
             val value: Boolean,
         ) : Intent
+
+        data class ChangeHideNavigationBarWhileScrolling(
+            val value: Boolean,
+        ) : Intent
     }
 
     data class State(
@@ -140,6 +144,7 @@ interface SettingsMviModel :
         val imageLoadingMode: ImageLoadingMode = ImageLoadingMode.Always,
         val crashReportEnabled: Boolean = false,
         val crashReportRestartRequired: Boolean = false,
+        val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
     sealed interface Effect
