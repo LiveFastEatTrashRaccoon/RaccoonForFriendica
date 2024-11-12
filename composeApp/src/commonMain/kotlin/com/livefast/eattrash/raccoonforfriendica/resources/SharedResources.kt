@@ -64,10 +64,13 @@ internal class SharedResources : CoreResources {
         @Composable
         get() = painterResource(Res.drawable.mastodon_logo)
 
-    override fun getPlayerConfig(contentScale: ContentScale): PlayerConfig =
+    override fun getPlayerConfig(
+        contentScale: ContentScale,
+        muted: Boolean,
+    ): PlayerConfig =
         PlayerConfig(
             isFullScreenEnabled = false,
-            isMute = true,
+            isMute = muted,
             videoFitMode =
                 if (contentScale == ContentScale.Fit) {
                     ScreenResize.FIT

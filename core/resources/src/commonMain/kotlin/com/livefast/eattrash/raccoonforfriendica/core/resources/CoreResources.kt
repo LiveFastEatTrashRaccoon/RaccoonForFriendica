@@ -13,5 +13,8 @@ interface CoreResources {
     val friendicaLogo: Painter @Composable get
     val mastodonLogo: Painter @Composable get
 
-    fun getPlayerConfig(contentScale: ContentScale): PlayerConfig
+    fun getPlayerConfig(
+        contentScale: ContentScale,
+        muted: Boolean,
+    ): PlayerConfig
 }
