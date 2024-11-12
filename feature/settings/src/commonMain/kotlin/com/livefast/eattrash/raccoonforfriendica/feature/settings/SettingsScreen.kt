@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Explicit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
@@ -335,6 +336,23 @@ class SettingsScreen : Screen {
                             value = uiState.blurNsfw,
                             onValueChanged = {
                                 model.reduce(SettingsMviModel.Intent.ChangeBlurNsfw(it))
+                            },
+                        )
+                        SettingsHeader(
+                            icon = Icons.Default.BugReport,
+                            title = LocalStrings.current.settingsSectionDebug,
+                        )
+                        SettingsSwitchRow(
+                            title = LocalStrings.current.settingsItemCrashReportEnabled,
+                            subtitle =
+                                if (uiState.crashReportRestartRequired) {
+                                    LocalStrings.current.messageRestartToApplyChanges
+                                } else {
+                                    null
+                                },
+                            value = uiState.crashReportEnabled,
+                            onValueChanged = {
+                                model.reduce(SettingsMviModel.Intent.ChangeCrashReportEnabled(it))
                             },
                         )
 

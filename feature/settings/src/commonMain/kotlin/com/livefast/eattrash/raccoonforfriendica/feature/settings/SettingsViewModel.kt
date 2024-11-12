@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.Them
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSchemeProvider
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
@@ -44,6 +45,7 @@ class SettingsViewModel(
     private val circlesRepository: CirclesRepository,
     private val pullNotificationManager: PullNotificationManager,
     private val pushNotificationManager: PushNotificationManager,
+    private val crashReportManager: CrashReportManager,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
@@ -128,6 +130,15 @@ class SettingsViewModel(
                     updateState {
                         it.copy(themeColor = seedColor)
                     }
+                }.launchIn(this)
+
+            crashReportManager.enabled
+                .onEach { value ->
+                    updateState { it.copy(crashReportEnabled = value) }
+                }.launchIn(this)
+            crashReportManager.restartRequired
+                .onEach { value ->
+                    updateState { it.copy(crashReportRestartRequired = value) }
                 }.launchIn(this)
 
             settingsRepository.current
@@ -302,6 +313,9 @@ class SettingsViewModel(
                     selectPushDistributor(intent.value)
                 }
             }
+
+            is SettingsMviModel.Intent.ChangeCrashReportEnabled ->
+                changeCrashReportEnabled(intent.value)
         }
     }
 
@@ -431,5 +445,13 @@ class SettingsViewModel(
     private suspend fun selectPushDistributor(distributor: String) {
         pushNotificationManager.saveDistributor(distributor)
         pushNotificationManager.enable()
+    }
+
+    private fun changeCrashReportEnabled(value: Boolean) {
+        if (value) {
+            crashReportManager.enable()
+        } else {
+            crashReportManager.disable()
+        }
     }
 }

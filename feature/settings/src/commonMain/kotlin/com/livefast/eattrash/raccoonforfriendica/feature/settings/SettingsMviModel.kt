@@ -101,6 +101,10 @@ interface SettingsMviModel :
         data class SelectPushDistributor(
             val value: String,
         ) : Intent
+
+        data class ChangeCrashReportEnabled(
+            val value: Boolean,
+        ) : Intent
     }
 
     data class State(
@@ -134,6 +138,8 @@ interface SettingsMviModel :
         val backgroundNotificationCheckInterval: Duration? = null,
         val availablePushDistributors: List<String> = emptyList(),
         val imageLoadingMode: ImageLoadingMode = ImageLoadingMode.Always,
+        val crashReportEnabled: Boolean = false,
+        val crashReportRestartRequired: Boolean = false,
     )
 
     sealed interface Effect
