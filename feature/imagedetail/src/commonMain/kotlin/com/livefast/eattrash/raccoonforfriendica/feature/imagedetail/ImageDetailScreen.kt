@@ -204,7 +204,10 @@ class ImageDetailScreen(
                 ) {
                     if (!url.isNullOrEmpty()) {
                         if (isVideo) {
-                            VideoPlayer(url = url)
+                            VideoPlayer(
+                                url = url,
+                                muted = false,
+                            )
                         } else {
                             ZoomableImage(
                                 url = url,
