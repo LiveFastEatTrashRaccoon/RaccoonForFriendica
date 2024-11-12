@@ -449,4 +449,6 @@ internal val FrStrings =
         override val settingsItemCrashReportEnabled = "Activer les rapports de crash anonymes"
         override val messageRestartToApplyChanges =
             "Veuillez redémarrer l'application pour appliquer les changements"
+        override val settingsItemHideNavigationBarWhileScrolling =
+            "Masquer la barre de navigation lors du défilement"
     }

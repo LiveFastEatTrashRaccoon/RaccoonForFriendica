@@ -444,4 +444,6 @@ internal val DeStrings =
         override val settingsItemCrashReportEnabled = "Anonyme Absturzberichte aktivieren"
         override val messageRestartToApplyChanges =
             "Bitte starten Sie die Anwendung neu, um die Änderungen zu übernehmen"
+        override val settingsItemHideNavigationBarWhileScrolling =
+            "Navigationsleiste beim Scrollen ausblenden"
     }

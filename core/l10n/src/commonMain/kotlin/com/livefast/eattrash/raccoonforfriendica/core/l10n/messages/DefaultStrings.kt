@@ -440,4 +440,5 @@ internal open class DefaultStrings : Strings {
         "You are publishing a reply with a broader visibility than the original post"
     override val settingsItemCrashReportEnabled = "Enable anonymous crash reports"
     override val messageRestartToApplyChanges = "Please restart the app to apply changes"
+    override val settingsItemHideNavigationBarWhileScrolling = "Hide navigation bar while scrolling"
 }

@@ -444,4 +444,6 @@ internal val EsStrings =
         override val settingsItemCrashReportEnabled = "Activar los informes anónimos de fallos"
         override val messageRestartToApplyChanges =
             "Reinicie la aplicación para aplicar los cambios"
+        override val settingsItemHideNavigationBarWhileScrolling =
+            "Ocultar barra de navegación al desplazarse"
     }

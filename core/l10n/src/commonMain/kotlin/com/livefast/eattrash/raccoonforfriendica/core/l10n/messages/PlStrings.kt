@@ -442,4 +442,6 @@ internal val PlStrings =
         override val settingsItemCrashReportEnabled = "Włącz anonimowe raporty o awariach"
         override val messageRestartToApplyChanges =
             "Uruchom ponownie aplikację, aby zastosować zmiany"
+        override val settingsItemHideNavigationBarWhileScrolling =
+            "Ukryj pasek nawigacji podczas przewijania"
     }
