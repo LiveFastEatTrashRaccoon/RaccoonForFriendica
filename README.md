@@ -35,9 +35,9 @@ by the same people.
 Here are some options to install the application on your device:
 
 <div align="center">
-    <a href="https://github.com/ImranR98/Obtainium/releases"><img alt="Get it on Obtainium banner" height="58" src="https://github.com/user-attachments/assets/58fd5f7e-8136-4e92-a462-c7977e119602" /></a>
+    <a href="https://github.com/ImranR98/Obtainium/releases"><img alt="Get it on Obtainium banner" width="189" height="58" src="https://github.com/user-attachments/assets/58fd5f7e-8136-4e92-a462-c7977e119602" /></a>
     &nbsp;
-    <a href="https://apt.izzysoft.de/fdroid/index/apk/com.livefast.eattrash.raccoonforfriendica"><img alt="Get it on IzzyOnDroid banner" height="58" src="https://github.com/user-attachments/assets/9e248f35-594c-49e5-92a5-0cca62724fd8" /></a>
+    <a href="https://apt.izzysoft.de/fdroid/index/apk/com.livefast.eattrash.raccoonforfriendica"><img alt="Get it on IzzyOnDroid banner" width="189" height="58" src="https://github.com/user-attachments/assets/9e248f35-594c-49e5-92a5-0cca62724fd8" /></a>
 </div>
 
 If you use [IzzyOnDroid](https://apt.izzysoft.de/fdroid/) as a source in your FDroid app, you can easily

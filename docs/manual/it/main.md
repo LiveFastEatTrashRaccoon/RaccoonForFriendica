@@ -494,7 +494,7 @@ effettuare il login nell'app mobile.
 Come affermato in precedenza, questa schermata è molto simile a un
 normale [profilo utente](#profilo-utente). Nell'intestazione, al posto del pulsante per seguire o
 attivare le notifiche sarà presente un pulsante "Modifica profilo"
-che permette di accedere alle [preferenze del profilo](#profile-settings).
+che permette di accedere alle [preferenze del profilo](#impostazioni-account).
 
 <div align="center">
   <img width="310" alt="profile screen" src="../images/profile.png" />
@@ -678,10 +678,9 @@ background, controlla le impostazioni di risparmio energetico di Raccoon nelle i
 </p>
 
 <div align="center">
-  <img width="310" alt="settings screen, part 1" src="images/settings_1.png" />
-  <img width="310" alt="settings screen, part 2" src="images/settings_2.png" />
+  <img width="310" alt="settings screen, part 1" src="../images/settings_1.png" />
+  <img width="310" alt="settings screen, part 2" src="../images/settings_2.png" />
 </div>
-
 
 [Torna su](#indice)
 
