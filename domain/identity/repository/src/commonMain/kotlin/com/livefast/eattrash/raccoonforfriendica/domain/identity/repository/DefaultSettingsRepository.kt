@@ -64,6 +64,7 @@ private fun SettingsEntity.toModel() =
         notificationMode = notificationMode.toNotificationMode(),
         pullNotificationCheckInterval = pullNotificationCheckInterval?.seconds,
         autoloadImages = autoloadImages.toImageLoadingMode(),
+        hideNavigationBarWhileScrolling = hideNavigationBarWhileScrolling,
     )
 
 private fun SettingsModel.toEntity() =
@@ -90,6 +91,7 @@ private fun SettingsModel.toEntity() =
         notificationMode = notificationMode.toInt(),
         pullNotificationCheckInterval = pullNotificationCheckInterval?.inWholeSeconds,
         autoloadImages = autoloadImages.toInt(),
+        hideNavigationBarWhileScrolling = hideNavigationBarWhileScrolling,
     )
 
 private fun Int.toMarkupMode(): MarkupMode =
