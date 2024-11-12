@@ -232,13 +232,18 @@ class TimelineScreen : Screen {
                         .padding(padding)
                         .fillMaxWidth()
                         .then(
-                            if (connection != null) {
+                            if (connection != null && uiState.hideNavigationBarWhileScrolling) {
                                 Modifier.nestedScroll(connection)
                             } else {
                                 Modifier
                             },
-                        ).nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .nestedScroll(fabNestedScrollConnection),
+                        ).then(
+                            if (uiState.hideNavigationBarWhileScrolling) {
+                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                            } else {
+                                Modifier
+                            },
+                        ).nestedScroll(fabNestedScrollConnection),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(TimelineMviModel.Intent.Refresh)
