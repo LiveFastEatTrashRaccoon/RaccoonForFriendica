@@ -446,4 +446,7 @@ internal val FrStrings =
         override val imageLoadingModeOnWiFi = "En WiFi"
         override val messageReplyVisibilityGreaterThanParentError =
             "Vous publiez une réponse dont la visibilité est plus large que celle du message original"
+        override val settingsItemCrashReportEnabled = "Activer les rapports de crash anonymes"
+        override val messageRestartToApplyChanges =
+            "Veuillez redémarrer l'application pour appliquer les changements"
     }

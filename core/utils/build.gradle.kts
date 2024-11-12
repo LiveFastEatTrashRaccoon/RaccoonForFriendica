@@ -44,6 +44,7 @@ kotlin {
                 implementation(libs.sentry)
 
                 implementation(projects.core.l10n)
+                implementation(projects.core.preferences)
             }
         }
         val androidMain by getting {

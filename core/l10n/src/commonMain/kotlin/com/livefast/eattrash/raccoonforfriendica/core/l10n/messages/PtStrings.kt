@@ -446,4 +446,6 @@ internal val PtStrings =
         override val imageLoadingModeOnWiFi = "Em WiFi"
         override val messageReplyVisibilityGreaterThanParentError =
             "Está a publicar uma resposta com uma visibilidade mais ampla do que a publicação original"
+        override val settingsItemCrashReportEnabled = "Permitir relatórios anónimos de acidentes"
+        override val messageRestartToApplyChanges = "Reinicie a aplicação para aplicar as alterações"
     }

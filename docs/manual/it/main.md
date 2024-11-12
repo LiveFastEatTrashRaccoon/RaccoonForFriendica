@@ -658,6 +658,10 @@ costituita dalle seguenti sezioni:
     sensibili;
   - **Offusca media NSFW** permette, se i contenuti sensibili sono inclusi, di offuscare le immagini
     e nascondere i video all'interno delle timeline.
+- **Debug**
+  - **Abilita segnalazioni anonime arresti anomali** determina se abilitare o meno le segnalazioni
+    anonime inviate in caso di arresto anomalo per tutti gli account (affinché la modifica sia
+    effettiva sarà necessario riavviare l'applicazione).
 
 <p id="markdown-formatting">
 * scegliere con cautela: <em>Markdown</em> è supportato solo da alcune versioni di Mastodon (es.

@@ -20,6 +20,7 @@ val featureSettingsModule =
                 circlesRepository = get(),
                 pullNotificationManager = get(),
                 pushNotificationManager = get(),
+                crashReportManager = get(),
             )
         }
         factory<UserFeedbackMviModel> {

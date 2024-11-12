@@ -84,7 +84,9 @@ actual val coreHapticFeedbackModule =
 actual val coreCrashReportModule =
     module {
         single<CrashReportManager> {
-            DefaultCrashReportManager()
+            DefaultCrashReportManager(
+                keyStore = get(),
+            )
         }
     }
 

@@ -609,7 +609,10 @@ sections:
   - **Manage filters** opens the ban and [filter management](#manage-filters) screen;
   - **Include NSFW contents** enables a client-side filter to exclude sensitive posts;
   - **Blur NSFW media** allows, if sensitive contents are included, to blur images and hide videos
-    when they occur in timelines.
+    when they occur in timelines;
+- **Debug**
+  - **Enable anonymous crash reports** determines whether anonymous crash reports are enabled for
+    all accounts (changing this option requires the app to be restarted afterwards).
 
 <p id="markdown-formatting">
 * please choose wisely: <em>Markdown</em> is supported only by some versions of Mastodon (e.g.
