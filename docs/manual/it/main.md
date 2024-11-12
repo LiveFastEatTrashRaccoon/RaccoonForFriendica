@@ -804,6 +804,9 @@ desideri essere contattato per chiarimenti).
 Questo modulo è solo una schermata di utilità per coloro che preferiscono non utilizzare l'issue
 tracker su GitHub (ad es. perché non hanno un account).
 
+Attenzione: questa funzionalità può essere utilizzata solo se l'opzione "Abilita segnalazioni
+anonime arresti anomali" è abilitata nella schermata [impostazioni](#impostazioni-applicazione).
+
 <div align="center">
   <img width="310" alt="submit user feedback screen" src="../images/user_feedback.png" />
 </div>

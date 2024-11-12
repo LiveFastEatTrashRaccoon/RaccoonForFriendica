@@ -747,6 +747,9 @@ you wish to be contacted for clarifications).
 This is just a utility screen for those who prefer not to use the issue tracker on GitHub (e.g.
 because they do not have an account).
 
+Warning: this only works if you have activated the "Enable anonymous crash reports" option in
+the [settings](#application-settings) screen.
+
 <div align="center">
   <img width="310" alt="submit user feedback screen" src="images/user_feedback.png" />
 </div>
