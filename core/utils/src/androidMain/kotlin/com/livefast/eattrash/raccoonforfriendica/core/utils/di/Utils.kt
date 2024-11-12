@@ -122,6 +122,7 @@ actual val coreCrashReportModule =
         single<CrashReportManager> {
             DefaultCrashReportManager(
                 context = get(),
+                keyStore = get(),
             )
         }
     }
