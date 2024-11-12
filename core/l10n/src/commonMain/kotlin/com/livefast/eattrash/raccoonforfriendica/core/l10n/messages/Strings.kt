@@ -390,6 +390,8 @@ interface Strings {
     val imageLoadingModeOnDemand: String
     val imageLoadingModeOnWiFi: String
     val messageReplyVisibilityGreaterThanParentError: String
+    val settingsItemCrashReportEnabled: String
+    val messageRestartToApplyChanges: String
 }
 
 object Locales {

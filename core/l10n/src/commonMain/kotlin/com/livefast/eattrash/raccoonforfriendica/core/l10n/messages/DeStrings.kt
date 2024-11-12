@@ -441,4 +441,7 @@ internal val DeStrings =
         override val imageLoadingModeOnWiFi = "Im WiFi"
         override val messageReplyVisibilityGreaterThanParentError =
             "Sie veröffentlichen eine Antwort mit einer breiteren Sichtbarkeit als der ursprüngliche Beitrag"
+        override val settingsItemCrashReportEnabled = "Anonyme Absturzberichte aktivieren"
+        override val messageRestartToApplyChanges =
+            "Bitte starten Sie die Anwendung neu, um die Änderungen zu übernehmen"
     }
