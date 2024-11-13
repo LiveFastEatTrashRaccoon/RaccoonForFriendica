@@ -1,5 +1,5 @@
 <p>
-    <i>Raccoon for Friendica</i> is a free and open source mobile-first Friendica client.
+    <i>Raccoon for Friendica</i> is a free and open source mobile-first client for Friendica and Mastodon.
 </p>
 <p>
     Friendica is a really outstanding social plaftorm, featuring powerful characteristics which make
