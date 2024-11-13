@@ -32,6 +32,7 @@ interface UserListMviModel :
         val autoloadImages: Boolean = true,
         val user: UserModel? = null,
         val users: List<UserModel> = emptyList(),
+        val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
     sealed interface Effect {
