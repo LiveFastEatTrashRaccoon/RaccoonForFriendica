@@ -28,6 +28,7 @@ val featureHashtagModule =
             FollowedHashtagsViewModel(
                 paginationManager = get(),
                 tagRepository = get(),
+                settingsRepository = get(),
                 hapticFeedback = get(),
                 notificationCenter = get(),
             )
