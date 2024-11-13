@@ -108,6 +108,7 @@ interface EditProfileMviModel :
         val canAddFields: Boolean = false,
         val availableEmojis: List<EmojiModel> = emptyList(),
         val autoloadImages: Boolean = true,
+        val hideNavigationBarWhileScrolling: Boolean = true,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -141,6 +142,8 @@ interface EditProfileMviModel :
             if (fields != other.fields) return false
             if (canAddFields != other.canAddFields) return false
             if (availableEmojis != other.availableEmojis) return false
+            if (autoloadImages != other.autoloadImages) return false
+            if (hideNavigationBarWhileScrolling != other.hideNavigationBarWhileScrolling) return false
 
             return true
         }

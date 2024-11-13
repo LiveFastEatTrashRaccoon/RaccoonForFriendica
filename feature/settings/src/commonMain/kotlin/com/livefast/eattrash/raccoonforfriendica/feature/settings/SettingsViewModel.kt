@@ -173,6 +173,7 @@ class SettingsViewModel(
                                 backgroundNotificationCheckInterval = settings.pullNotificationCheckInterval,
                                 imageLoadingMode = settings.autoloadImages,
                                 notificationMode = settings.notificationMode,
+                                hideNavigationBarWhileScrolling = settings.hideNavigationBarWhileScrolling,
                             )
                         }
                     }
@@ -302,20 +303,23 @@ class SettingsViewModel(
                     changeAutoloadImages(intent.mode)
                 }
 
-            is SettingsMviModel.Intent.ChangeNotificationMode -> {
+            is SettingsMviModel.Intent.ChangeNotificationMode ->
                 screenModelScope.launch {
                     changeNotificationMode(intent.mode)
                 }
-            }
 
-            is SettingsMviModel.Intent.SelectPushDistributor -> {
+            is SettingsMviModel.Intent.SelectPushDistributor ->
                 screenModelScope.launch {
                     selectPushDistributor(intent.value)
-                }
             }
 
             is SettingsMviModel.Intent.ChangeCrashReportEnabled ->
                 changeCrashReportEnabled(intent.value)
+
+            is SettingsMviModel.Intent.ChangeHideNavigationBarWhileScrolling ->
+                screenModelScope.launch {
+                    changeHideNavigationBarWhileScrolling(intent.value)
+                }
         }
     }
 
@@ -453,5 +457,11 @@ class SettingsViewModel(
         } else {
             crashReportManager.disable()
         }
+    }
+
+    private suspend fun changeHideNavigationBarWhileScrolling(value: Boolean) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(hideNavigationBarWhileScrolling = value)
+        saveSettings(newSettings)
     }
 }

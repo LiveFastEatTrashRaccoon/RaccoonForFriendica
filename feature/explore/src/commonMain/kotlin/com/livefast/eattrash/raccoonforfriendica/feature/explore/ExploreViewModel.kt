@@ -53,9 +53,12 @@ class ExploreViewModel(
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
+
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -64,6 +67,7 @@ class ExploreViewModel(
                         )
                     }
                 }.launchIn(this)
+
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState {
@@ -85,6 +89,7 @@ class ExploreViewModel(
                         refresh(initial = true)
                     }
                 }.launchIn(this)
+
             notificationCenter
                 .subscribe(UserUpdatedEvent::class)
                 .onEach { event ->

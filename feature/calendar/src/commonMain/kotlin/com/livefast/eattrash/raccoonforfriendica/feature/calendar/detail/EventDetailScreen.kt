@@ -117,7 +117,13 @@ class EventDetailScreen(
                     Modifier
                         .padding(padding)
                         .fillMaxWidth()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection),
+                        .then(
+                            if (uiState.hideNavigationBarWhileScrolling) {
+                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                            } else {
+                                Modifier
+                            },
+                        ),
             ) {
                 LazyColumn(
                     state = lazyListState,

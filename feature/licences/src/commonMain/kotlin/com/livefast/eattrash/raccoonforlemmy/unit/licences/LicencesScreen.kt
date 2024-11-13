@@ -83,8 +83,13 @@ class LicencesScreen : Screen {
                     Modifier
                         .padding(
                             top = padding.calculateTopPadding(),
-                        ).nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .fillMaxSize(),
+                        ).then(
+                            if (uiState.hideNavigationBarWhileScrolling) {
+                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                            } else {
+                                Modifier
+                            },
+                        ).fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
                 items(uiState.items) { item ->

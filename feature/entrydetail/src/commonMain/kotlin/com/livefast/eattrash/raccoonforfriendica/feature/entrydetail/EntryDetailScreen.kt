@@ -219,8 +219,13 @@ class EntryDetailScreen(
                     Modifier
                         .padding(padding)
                         .fillMaxWidth()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .nestedScroll(fabNestedScrollConnection),
+                        .then(
+                            if (uiState.hideNavigationBarWhileScrolling) {
+                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                            } else {
+                                Modifier
+                            },
+                        ).nestedScroll(fabNestedScrollConnection),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(EntryDetailMviModel.Intent.Refresh)

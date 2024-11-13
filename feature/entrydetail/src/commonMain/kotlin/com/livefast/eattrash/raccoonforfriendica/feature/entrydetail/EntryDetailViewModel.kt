@@ -56,6 +56,8 @@ class EntryDetailViewModel(
                     updateState {
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)

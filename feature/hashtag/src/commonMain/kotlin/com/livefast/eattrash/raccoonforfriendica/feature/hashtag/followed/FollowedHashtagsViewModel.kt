@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedba
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowedHashtagsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 class FollowedHashtagsViewModel(
     private val paginationManager: FollowedHashtagsPaginationManager,
     private val tagRepository: TagRepository,
+    private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<FollowedHashtagsMviModel.Intent, FollowedHashtagsMviModel.State, FollowedHashtagsMviModel.Effect>(
@@ -27,6 +29,16 @@ class FollowedHashtagsViewModel(
                 .subscribe(TagUpdatedEvent::class)
                 .onEach { event ->
                     updateItemInState(event.tag.name) { event.tag }
+                }.launchIn(this)
+
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
+                    }
                 }.launchIn(this)
 
             if (uiState.value.initial) {

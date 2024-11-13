@@ -30,6 +30,7 @@ interface CalendarMviModel :
         val loading: Boolean = false,
         val canFetchMore: Boolean = true,
         val items: List<CalendarItem> = emptyList(),
+        val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
     sealed interface Effect {

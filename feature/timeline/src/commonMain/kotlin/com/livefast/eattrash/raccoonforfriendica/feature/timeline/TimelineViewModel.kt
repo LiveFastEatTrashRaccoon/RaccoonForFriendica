@@ -73,9 +73,12 @@ class TimelineViewModel(
                             timelineType = defaultTimelineType,
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
+
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -84,11 +87,13 @@ class TimelineViewModel(
                         )
                     }
                 }.launchIn(this)
+
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
                     refreshCirclesInTimelineTypes(currentUser != null)
                 }.launchIn(this)
+
             notificationCenter
                 .subscribe(TimelineEntryUpdatedEvent::class)
                 .onEach { event ->

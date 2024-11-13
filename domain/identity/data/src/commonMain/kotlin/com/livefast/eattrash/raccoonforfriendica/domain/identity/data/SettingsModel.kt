@@ -28,4 +28,5 @@ data class SettingsModel(
     val notificationMode: NotificationMode = NotificationMode.Disabled,
     val pullNotificationCheckInterval: Duration? = null,
     val autoloadImages: ImageLoadingMode = ImageLoadingMode.Always,
+    val hideNavigationBarWhileScrolling: Boolean = true,
 )

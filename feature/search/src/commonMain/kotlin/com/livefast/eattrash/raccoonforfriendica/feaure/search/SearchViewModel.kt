@@ -59,9 +59,12 @@ class SearchViewModel(
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
+
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -70,10 +73,12 @@ class SearchViewModel(
                         )
                     }
                 }.launchIn(this)
+
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
                 }.launchIn(this)
+
             uiState
                 .map { it.query }
                 .distinctUntilChanged()
@@ -82,11 +87,13 @@ class SearchViewModel(
                 .onEach {
                     refresh()
                 }.launchIn(this)
+
             notificationCenter
                 .subscribe(UserUpdatedEvent::class)
                 .onEach { event ->
                     updateUserInState(event.user.id) { event.user }
                 }.launchIn(this)
+
             notificationCenter
                 .subscribe(TimelineEntryUpdatedEvent::class)
                 .onEach { event ->

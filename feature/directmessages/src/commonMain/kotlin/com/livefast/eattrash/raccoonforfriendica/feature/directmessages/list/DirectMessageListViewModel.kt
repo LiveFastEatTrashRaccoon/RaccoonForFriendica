@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 class DirectMessageListViewModel(
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
+    private val settingsRepository: SettingsRepository,
     private val userPaginationManager: UserPaginationManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<DirectMessageListMviModel.Intent, DirectMessageListMviModel.State, DirectMessageListMviModel.Effect>(
@@ -38,6 +40,17 @@ class DirectMessageListViewModel(
                         )
                     }
                 }.launchIn(this)
+
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
+                    }
+                }.launchIn(this)
+
             uiState
                 .map { it.userSearchQuery }
                 .distinctUntilChanged()
@@ -46,6 +59,7 @@ class DirectMessageListViewModel(
                 .onEach { query ->
                     refreshUsers(query)
                 }.launchIn(this)
+
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }

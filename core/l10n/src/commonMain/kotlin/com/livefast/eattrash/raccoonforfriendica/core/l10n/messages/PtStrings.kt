@@ -448,4 +448,6 @@ internal val PtStrings =
             "Está a publicar uma resposta com uma visibilidade mais ampla do que a publicação original"
         override val settingsItemCrashReportEnabled = "Permitir relatórios anónimos de acidentes"
         override val messageRestartToApplyChanges = "Reinicie a aplicação para aplicar as alterações"
+        override val settingsItemHideNavigationBarWhileScrolling =
+            "Ocultar a barra de navegação ao rolar"
     }

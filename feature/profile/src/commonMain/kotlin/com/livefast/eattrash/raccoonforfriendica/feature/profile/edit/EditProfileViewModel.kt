@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.launchIn
@@ -24,6 +25,7 @@ sealed interface EditProfilerFieldType {
 class EditProfileViewModel(
     private val userRepository: UserRepository,
     private val emojiRepository: EmojiRepository,
+    private val settingsRepository: SettingsRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect>(
         initialState = EditProfileMviModel.State(),
@@ -39,6 +41,17 @@ class EditProfileViewModel(
                         )
                     }
                 }.launchIn(this)
+
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
+                    }
+                }.launchIn(this)
+
             userRepository.getCurrent(refresh = true)?.also { currentUser ->
                 updateState {
                     it.copy(

@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Local
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ internal class UserListViewModel(
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
+    private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
     private val notificationCenter: NotificationCenter,
@@ -46,6 +48,7 @@ internal class UserListViewModel(
                         )
                     }
                 }.launchIn(this)
+
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState {
@@ -56,6 +59,17 @@ internal class UserListViewModel(
                         refresh(initial = true)
                     }
                 }.launchIn(this)
+
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
+                    }
+                }.launchIn(this)
+
             notificationCenter
                 .subscribe(UserUpdatedEvent::class)
                 .onEach { event ->

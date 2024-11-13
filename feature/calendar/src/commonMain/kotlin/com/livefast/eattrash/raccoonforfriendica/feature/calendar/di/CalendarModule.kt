@@ -11,6 +11,7 @@ val featureCalendarModule =
         factory<CalendarMviModel> {
             CalendarViewModel(
                 identityRepository = get(),
+                settingsRepository = get(),
                 paginationManager = get(),
             )
         }
@@ -18,6 +19,7 @@ val featureCalendarModule =
             EventDetailViewModel(
                 eventId = it[0],
                 eventCache = get(),
+                settingsRepository = get(),
             )
         }
     }

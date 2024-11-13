@@ -30,6 +30,7 @@ interface FollowRequestsMviModel :
         val canFetchMore: Boolean = true,
         val items: List<UserModel> = emptyList(),
         val autoloadImages: Boolean = true,
+        val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
     sealed interface Effect {

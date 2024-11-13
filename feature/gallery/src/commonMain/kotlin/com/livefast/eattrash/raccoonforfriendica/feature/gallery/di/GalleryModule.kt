@@ -11,6 +11,7 @@ val featureGalleryModule =
         factory<GalleryMviModel> {
             GalleryViewModel(
                 albumRepository = get(),
+                settingsRepository = get(),
                 notificationCenter = get(),
             )
         }
@@ -20,6 +21,7 @@ val featureGalleryModule =
                 paginationManager = get(),
                 albumRepository = get(),
                 photoRepository = get(),
+                settingsRepository = get(),
                 notificationCenter = get(),
                 imageAutoloadObserver = get(),
             )

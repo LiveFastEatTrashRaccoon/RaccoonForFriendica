@@ -586,6 +586,8 @@ sections:
     - **On demand** images are never loaded unless you manually use the "Load" button;
     - **In WiFi** images are loaded automatically on WiFi networks and on demand on metered
       networks (data saving mode);
+  - **Hide navigation bar while scrolling** determines whether the bottom navigation (and top bar)
+    are going to disappear or not while the inner screen content is scrolled;
   - **Markup for compositing** determines the type of markup syntax used in new posts (plain text —
     i.e. no markup — BBCode — Friendica-specific — HTML or Markdown — Mastodon
     specific);<a href="#markdown-formatting">*</a>

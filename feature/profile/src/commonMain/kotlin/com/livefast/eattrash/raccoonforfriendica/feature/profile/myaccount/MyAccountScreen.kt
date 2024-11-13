@@ -154,12 +154,18 @@ object MyAccountScreen : Tab {
                 Modifier
                     .fillMaxWidth()
                     .then(
-                        if (connection != null) {
+                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
                             Modifier.nestedScroll(connection)
                         } else {
                             Modifier
                         },
-                    ).nestedScroll(scrollBehavior.nestedScrollConnection),
+                    ).then(
+                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
                 model.reduce(MyAccountMviModel.Intent.Refresh)

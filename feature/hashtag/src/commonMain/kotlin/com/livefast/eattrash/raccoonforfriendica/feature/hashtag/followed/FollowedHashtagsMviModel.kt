@@ -26,6 +26,7 @@ interface FollowedHashtagsMviModel :
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
         val items: List<TagModel> = emptyList(),
+        val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
     sealed interface Effect

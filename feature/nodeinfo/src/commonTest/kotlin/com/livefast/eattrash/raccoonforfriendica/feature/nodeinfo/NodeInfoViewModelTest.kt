@@ -5,7 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.every
@@ -51,6 +53,10 @@ class NodeInfoViewModelTest {
         mock<EmojiHelper> {
             everySuspend { any<UserModel>().withEmojisIfMissing() } returnsArgAt (0)
         }
+    private val settingsRepository =
+        mock<SettingsRepository> {
+            every { current } returns MutableStateFlow(SettingsModel())
+        }
 
     private lateinit var sut: NodeInfoMviModel
 
@@ -79,7 +85,7 @@ class NodeInfoViewModelTest {
     }
 
     @Test
-    fun `given autoload images disabled when initialized then state is as expected`() {
+    fun `given autoloadImages disabled when initialized then state is as expected`() {
         every { imageAutoloadObserver.enabled } returns MutableStateFlow(false)
         sut = viewModelFactory()
 
@@ -92,10 +98,26 @@ class NodeInfoViewModelTest {
         }
     }
 
+    @Test
+    fun `given hideNavigationBarWhileScrolling disabled when initialized then state is as expected`() {
+        every { settingsRepository.current } returns
+            MutableStateFlow(SettingsModel(hideNavigationBarWhileScrolling = false))
+        sut = viewModelFactory()
+
+        val state = sut.uiState.value
+        assertEquals(nodeInfo, state.info)
+        assertFalse(state.hideNavigationBarWhileScrolling)
+
+        verifySuspend {
+            nodeInfoRepository.getInfo()
+        }
+    }
+
     private fun viewModelFactory() =
         NodeInfoViewModel(
             nodeInfoRepository = nodeInfoRepository,
             emojiHelper = emojiHelper,
             imageAutoloadObserver = imageAutoloadObserver,
+            settingsRepository = settingsRepository,
         )
 }

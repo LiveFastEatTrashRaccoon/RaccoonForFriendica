@@ -11,6 +11,7 @@ interface EventDetailMviModel :
 
     data class State(
         val event: EventModel? = null,
+        val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
     sealed interface Effect

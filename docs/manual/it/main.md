@@ -631,6 +631,8 @@ costituita dalle seguenti sezioni:
   - **Markup per la composizione** determina la sintassi di formattazione per i nuovi post (Testo
     semplice — ovvero senza formattazione — BBCode — specifico di Friendica — HTML o Markdown —
     specifico di Mastodon;<a href="#markdown-formatting">*</a>
+  - **Nascondi barra di navigazione durante lo scroll** determina se la barra di navigazione
+    inferiore (e la barra superiore) vengono nascoste durante lo scorrimento del contenuto interno;
   - **Numero massimo righe testo post** configura il numero massimo di righe che verrà visualizzato
     nelle timeline per ciascun post;
   - **Modalità notifiche** permtte di configurare la strategia da usare per le notifiche scegliendo

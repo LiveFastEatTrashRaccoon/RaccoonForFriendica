@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Acco
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SwitchAccountUseCase
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val identityRepository: IdentityRepository,
     private val accountRepository: AccountRepository,
+    private val settingsRepository: SettingsRepository,
     private val logoutUseCase: LogoutUseCase,
     private val switchAccountUseCase: SwitchAccountUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
@@ -36,6 +38,7 @@ class ProfileViewModel(
                         )
                     }
                 }.launchIn(this)
+
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState {
@@ -52,6 +55,16 @@ class ProfileViewModel(
                     val nonAnonymousAccounts = accounts.filter { it.remoteId != null }
                     updateState {
                         it.copy(availableAccounts = nonAnonymousAccounts)
+                    }
+                }.launchIn(this)
+
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
                     }
                 }.launchIn(this)
         }

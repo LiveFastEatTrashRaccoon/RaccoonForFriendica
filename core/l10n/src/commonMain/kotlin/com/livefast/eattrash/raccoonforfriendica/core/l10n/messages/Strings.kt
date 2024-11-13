@@ -392,6 +392,7 @@ interface Strings {
     val messageReplyVisibilityGreaterThanParentError: String
     val settingsItemCrashReportEnabled: String
     val messageRestartToApplyChanges: String
+    val settingsItemHideNavigationBarWhileScrolling: String
 }
 
 object Locales {

@@ -2,17 +2,31 @@ package com.livefast.eattrash.raccoonforlemmy.unit.licences
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforlemmy.unit.licences.models.LicenceItem
 import com.livefast.eattrash.raccoonforlemmy.unit.licences.models.LicenceItemType
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class LicencesViewModel :
-    DefaultMviModel<LicencesMviModel.Intent, LicencesMviModel.State, LicencesMviModel.Effect>(
+class LicencesViewModel(
+    private val settingsRepository: SettingsRepository,
+) : DefaultMviModel<LicencesMviModel.Intent, LicencesMviModel.State, LicencesMviModel.Effect>(
         initialState = LicencesMviModel.State(),
     ),
     LicencesMviModel {
     init {
         screenModelScope.launch {
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
+                    }
+                }.launchIn(this)
+
             populate()
         }
     }

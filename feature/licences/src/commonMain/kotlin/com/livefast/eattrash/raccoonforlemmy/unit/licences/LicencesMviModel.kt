@@ -11,6 +11,7 @@ interface LicencesMviModel :
 
     data class State(
         val items: List<LicenceItem> = emptyList(),
+        val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
     sealed interface Effect
