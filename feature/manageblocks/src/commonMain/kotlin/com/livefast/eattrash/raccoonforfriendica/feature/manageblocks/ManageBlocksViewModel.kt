@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 class ManageBlocksViewModel(
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
+    private val settingsRepository: SettingsRepository,
     private val imagePreloadManager: ImagePreloadManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<ManageBlocksMviModel.Intent, ManageBlocksMviModel.State, ManageBlocksMviModel.Effect>(
@@ -32,6 +34,17 @@ class ManageBlocksViewModel(
                         )
                     }
                 }.launchIn(this)
+
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
+                    }
+                }.launchIn(this)
+
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
