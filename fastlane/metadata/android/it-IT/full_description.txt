@@ -1,5 +1,6 @@
 <p>
-    <i>Raccoon for Friendica</i> .
+    <i>Raccoon for Friendica</i> è un client per Friendica e Mastodon libero ed open source pensato
+    principalmente per dispositivi mobile.
 </p>
 <p>
     Friendica è una piattaforma social davvero straordinaria e può vantare una serie di

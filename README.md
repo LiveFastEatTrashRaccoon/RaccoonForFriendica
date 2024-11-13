@@ -22,13 +22,13 @@
 # RaccoonForFriendica
 
 This is a client for the [Friendica](https://friendi.ca) federated social platform powered by
-Kotlin Multiplatform (KMP) and Compose Multiplatform (CMP). The reference platform is currently
-Android.
+Kotlin Multiplatform (KMP) and Compose Multiplatform (CMP). The app is also compatible with Mastodon
+and Mastodon-like backends.
 
 The project is _heavily_ inspired by the **RaccoonForLemmy** app for Lemmy, which demonstrated
-something like this can be achieved with this tech stack. This is why it retains part of its name,
-making clear that the two projects are related and share a lot of common heritage and are maintained
-by the same people.
+something like this can be achieved with this tech stack. This is why it retains its name, making
+clear that the two projects are related and share a lot of common heritage and are maintained by
+the same people.
 
 ## Want to try it?
 
