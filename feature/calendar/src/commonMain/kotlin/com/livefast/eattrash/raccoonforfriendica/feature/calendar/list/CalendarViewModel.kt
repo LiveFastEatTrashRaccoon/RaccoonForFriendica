@@ -7,12 +7,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMill
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EventPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EventsPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CalendarViewModel(
     private val identityRepository: IdentityRepository,
+    private val settingsRepository: SettingsRepository,
     private val paginationManager: EventPaginationManager,
 ) : DefaultMviModel<CalendarMviModel.Intent, CalendarMviModel.State, CalendarMviModel.Effect>(
         initialState = CalendarMviModel.State(),
@@ -23,6 +25,16 @@ class CalendarViewModel(
             identityRepository.currentUser
                 .onEach {
                     refresh(initial = true)
+                }.launchIn(this)
+
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
+                    }
                 }.launchIn(this)
         }
     }
