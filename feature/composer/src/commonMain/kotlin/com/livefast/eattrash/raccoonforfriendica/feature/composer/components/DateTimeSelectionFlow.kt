@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
@@ -114,7 +115,7 @@ internal fun DateTimeSelectionFlow(
                 modifier =
                     Modifier
                         .padding(top = Spacing.s)
-                        .align(Alignment.CenterHorizontally),
+                        .fillMaxWidth(),
                 state = timePickerState,
             )
         }
