@@ -29,6 +29,7 @@ interface GalleryMviModel :
         val operationInProgress: Boolean = false,
         val refreshing: Boolean = false,
         val items: List<MediaAlbumModel> = emptyList(),
+        val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
     sealed interface Effect {

@@ -6,12 +6,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class GalleryViewModel(
     private val albumRepository: PhotoAlbumRepository,
+    private val settingsRepository: SettingsRepository,
     private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<GalleryMviModel.Intent, GalleryMviModel.State, GalleryMviModel.Effect>(
         initialState = GalleryMviModel.State(),
@@ -19,6 +21,16 @@ class GalleryViewModel(
     GalleryMviModel {
     init {
         screenModelScope.launch {
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
+                    }
+                }.launchIn(this)
+
             notificationCenter
                 .subscribe(AlbumsUpdatedEvent::class)
                 .onEach {

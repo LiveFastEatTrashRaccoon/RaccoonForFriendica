@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Album
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -20,6 +21,7 @@ class AlbumDetailViewModel(
     private val paginationManager: AlbumPhotoPaginationManager,
     private val photoRepository: PhotoRepository,
     private val albumRepository: PhotoAlbumRepository,
+    private val settingsRepository: SettingsRepository,
     private val notificationCenter: NotificationCenter,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<AlbumDetailMviModel.Intent, AlbumDetailMviModel.State, AlbumDetailMviModel.Effect>(
@@ -36,6 +38,17 @@ class AlbumDetailViewModel(
                         )
                     }
                 }.launchIn(this)
+
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
+                    }
+                }.launchIn(this)
+
             if (uiState.value.initial) {
                 val albums =
                     albumRepository
