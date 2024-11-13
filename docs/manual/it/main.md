@@ -106,8 +106,11 @@ altre piattaforme federate simili:
 È possibile accedere a tutte queste funzionalità utilizzando l'interfaccia web ufficiale, tuttavia
 sono disponibili (per molte di queste) anche una serie di API pubbliche che possono essere richimate
 da app di terze parti.
-Questo è esattamente quello che fa Raccoon: utilizza le API per creare un client Friendica pensato
-per facilitarne l'utilizzo da dispositivo mobile.
+
+Questo è esattamente quello che fa Raccoon: utilizza le API per creare un client pensato per
+i dispositivi mobile. Dal momento che utilizza le API Mastodon-like esposte dal backend, l'app è
+compatible anche con le istanze Mastodon (e le funzionalità specifiche di Friendica non verranno
+visualizzate).
 
 [Torna su](#indice)
 

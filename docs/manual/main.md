@@ -100,8 +100,11 @@ similar federated platforms:
 - and, of course, [much more](https://friendi.ca/about/features).
 
 All these features can be accessed using the official web application, but a lot of them are also
-open to third-party apps using their public APIs, Raccoon intends to do just that: be a client for
-Friendica which makes it easier to use it from a mobile device.
+open to third-party apps using their public APIs.
+
+Raccoon intends to do just that: use the APIs to create a client specifically designed for mobile
+devices. Since it uses the Mastodon-like APIs exposed by the backend, the app is also compatible
+with Mastodon instances (Friendica-specific features will just not be displayed).
 
 [Back to top](#table-of-contents)
 
