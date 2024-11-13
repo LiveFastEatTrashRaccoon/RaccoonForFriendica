@@ -6,5 +6,9 @@ import org.koin.dsl.module
 
 val featureLicenceModule =
     module {
-        factory<LicencesMviModel> { LicencesViewModel() }
+        factory<LicencesMviModel> {
+            LicencesViewModel(
+                settingsRepository = get(),
+            )
+        }
     }
