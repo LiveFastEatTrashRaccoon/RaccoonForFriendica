@@ -30,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -82,7 +81,6 @@ class ImageDetailScreen(
             )
         var shareModeBottomSheetOpened by remember { mutableStateOf(false) }
         var scaleModeBottomSheetOpened by remember { mutableStateOf(false) }
-        val url = urls.getOrNull(uiState.currentIndex)
         val isVideo = videoIndices.contains(uiState.currentIndex)
 
         LaunchedEffect(pagerState) {
@@ -193,26 +191,32 @@ class ImageDetailScreen(
                 }
             },
         ) { padding ->
-            HorizontalPager(
-                modifier = Modifier.padding(top = padding.calculateTopPadding()),
-                state = pagerState,
-                beyondViewportPageCount = 1,
+            Box(
+                modifier =
+                    Modifier
+                        .padding(top = padding.calculateTopPadding())
+                        .fillMaxSize()
+                        .background(Color.Black),
             ) {
-                Box(
-                    modifier = Modifier.fillMaxSize().background(Color.Black),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (!url.isNullOrEmpty()) {
-                        if (isVideo) {
-                            VideoPlayer(
-                                url = url,
-                                muted = false,
-                            )
-                        } else {
-                            ZoomableImage(
-                                url = url,
-                                contentScale = uiState.contentScale,
-                            )
+                HorizontalPager(
+                    modifier = Modifier.fillMaxSize(),
+                    state = pagerState,
+                    beyondViewportPageCount = 1,
+                ) { index ->
+                    val url = urls.getOrNull(index)
+                    Box {
+                        if (!url.isNullOrEmpty()) {
+                            if (isVideo) {
+                                VideoPlayer(
+                                    url = url,
+                                    muted = false,
+                                )
+                            } else {
+                                ZoomableImage(
+                                    url = url,
+                                    contentScale = uiState.contentScale,
+                                )
+                            }
                         }
                     }
                 }
