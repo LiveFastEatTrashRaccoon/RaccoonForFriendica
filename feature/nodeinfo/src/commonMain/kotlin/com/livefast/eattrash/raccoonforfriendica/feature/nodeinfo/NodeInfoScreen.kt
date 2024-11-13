@@ -128,7 +128,13 @@ class NodeInfoScreen : Screen {
                             .testTag(NodeInfoTestTags.COLUMN)
                             .padding(padding)
                             .fillMaxWidth()
-                            .nestedScroll(scrollBehavior.nestedScrollConnection),
+                            .then(
+                                if (uiState.hideNavigationBarWhileScrolling) {
+                                    Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                                } else {
+                                    Modifier
+                                },
+                            ),
                     state = lazyListState,
                     verticalArrangement = Arrangement.spacedBy(Spacing.s),
                 ) {
