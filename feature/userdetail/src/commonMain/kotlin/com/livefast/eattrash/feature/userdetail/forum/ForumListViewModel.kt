@@ -49,15 +49,19 @@ class ForumListViewModel(
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
                 }.launchIn(this)
+
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
+
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -66,6 +70,7 @@ class ForumListViewModel(
                         )
                     }
                 }.launchIn(this)
+
             notificationCenter
                 .subscribe(TimelineEntryUpdatedEvent::class)
                 .onEach { event ->
