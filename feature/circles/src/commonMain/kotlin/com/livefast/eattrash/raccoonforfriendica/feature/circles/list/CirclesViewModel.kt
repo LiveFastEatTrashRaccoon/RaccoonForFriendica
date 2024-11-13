@@ -7,16 +7,30 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CirclesViewModel(
     private val circlesRepository: CirclesRepository,
+    private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect>(
         initialState = CirclesMviModel.State(),
     ),
     CirclesMviModel {
     init {
         screenModelScope.launch {
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
+                    }
+                }.launchIn(this)
+
             if (uiState.value.initial) {
                 refresh(initial = true)
             }

@@ -11,6 +11,7 @@ val featureCirclesModule =
         factory<CirclesMviModel> {
             CirclesViewModel(
                 circlesRepository = get(),
+                settingsRepository = get(),
             )
         }
         factory<CircleDetailMviModel> { params ->
@@ -18,6 +19,7 @@ val featureCirclesModule =
                 id = params[0],
                 paginationManager = get(),
                 circlesRepository = get(),
+                settingsRepository = get(),
                 searchPaginationManager = get(),
                 imagePreloadManager = get(),
                 imageAutoloadObserver = get(),

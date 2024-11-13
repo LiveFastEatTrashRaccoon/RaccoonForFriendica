@@ -42,6 +42,7 @@ interface CircleDetailMviModel :
         val userSearchLoading: Boolean = false,
         val userSearchCanFetchMore: Boolean = true,
         val autoloadImages: Boolean = true,
+        val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
     sealed interface Effect {

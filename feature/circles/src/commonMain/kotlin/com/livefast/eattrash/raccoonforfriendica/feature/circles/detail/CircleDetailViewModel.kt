@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -23,6 +24,7 @@ class CircleDetailViewModel(
     private val id: String,
     private val paginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
+    private val settingsRepository: SettingsRepository,
     private val searchPaginationManager: UserPaginationManager,
     private val imagePreloadManager: ImagePreloadManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
@@ -40,6 +42,17 @@ class CircleDetailViewModel(
                         )
                     }
                 }.launchIn(this)
+
+            settingsRepository.current
+                .onEach { settings ->
+                    updateState {
+                        it.copy(
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
+                        )
+                    }
+                }.launchIn(this)
+
             uiState
                 .map { it.searchUsersQuery }
                 .distinctUntilChanged()

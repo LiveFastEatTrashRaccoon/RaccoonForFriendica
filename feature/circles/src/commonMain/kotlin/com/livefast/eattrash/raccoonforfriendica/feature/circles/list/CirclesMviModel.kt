@@ -54,6 +54,7 @@ interface CirclesMviModel :
         val loading: Boolean = false,
         val items: List<CircleListItem> = emptyList(),
         val editorData: CircleEditorData? = null,
+        val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
     sealed interface Effect {
