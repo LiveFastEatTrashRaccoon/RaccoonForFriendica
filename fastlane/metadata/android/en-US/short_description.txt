@@ -1,1 +1,1 @@
-Mobile client for Friendica, a federated and decentralized social network.
+Mobile client for Friendica, Mastodon and compatible federated social networks.
