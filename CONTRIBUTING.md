@@ -32,3 +32,36 @@ empty `build.properties` file in the `core/utils` directory with the following c
 ```properties
 sentry_dsn=dummy_dsn
 ```
+
+## Release checklists
+
+Symbols used in version numbers:
+
+| Number | Meaning             |
+|--------|---------------------|
+| α      | major version       |
+| β      | minor version       |
+| γ      | patch version       |
+| δ      | pre-release version |
+| ε      | build number        |
+
+#### Beta releases
+
+- [ ] checkout the `master` branch
+- [ ] increment `versionCode` (ε) and `versionName` (α.β.γ-betaδ) in `composeApp/build.gradle.kts`
+- [ ] add everything to stage and create a commit with the message "version α.β.γ-betaδ"
+- [ ] tag the commit with the label "α.β.γ-betaδ"
+- [ ] push both the commit and tag to `origin`
+- [ ] (optional) create an announcement in the Friendica group
+
+#### Stable releases
+
+- [ ] checkout the `master` branch
+- [ ] increment `versionCode` (ε) and `versionName` (α.β.γ) in `composeApp/build.gradle.kts`
+- [ ] create a file called `ε.txt` under `fastlane/metadata/android/en-US/changelogs/` with the
+  change list
+- [ ] _copy_ the changelog file to `res/changelog.txt`
+- [ ] add everything to stage and create a commit with the message "version α.β.γ"
+- [ ] tag the commit with the label "α.β.γ"
+- [ ] push both the commit and tag to `origin`
+- [ ] (optional) create an announcement in the Friendica group
