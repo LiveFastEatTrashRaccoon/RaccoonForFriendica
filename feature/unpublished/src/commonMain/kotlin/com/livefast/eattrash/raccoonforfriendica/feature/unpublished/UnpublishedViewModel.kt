@@ -56,6 +56,7 @@ class UnpublishedViewModel(
                 .onEach {
                     refresh()
                 }.launchIn(this)
+
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUser = currentUser) }
@@ -64,15 +65,19 @@ class UnpublishedViewModel(
                         refresh(initial = true)
                     }
                 }.launchIn(this)
+
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
+
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
