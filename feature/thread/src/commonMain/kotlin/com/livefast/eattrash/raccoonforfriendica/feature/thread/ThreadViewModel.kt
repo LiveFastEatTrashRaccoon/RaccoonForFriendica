@@ -47,14 +47,18 @@ class ThreadViewModel(
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
                 }.launchIn(this)
+
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
+                            hideNavigationBarWhileScrolling =
+                                settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
+
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -63,6 +67,7 @@ class ThreadViewModel(
                         )
                     }
                 }.launchIn(this)
+
             notificationCenter
                 .subscribe(TimelineEntryUpdatedEvent::class)
                 .onEach { event ->
