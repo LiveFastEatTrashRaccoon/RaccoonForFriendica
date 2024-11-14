@@ -21,6 +21,7 @@ val featureSettingsModule =
                 pullNotificationManager = get(),
                 pushNotificationManager = get(),
                 crashReportManager = get(),
+                appIconManager = get(),
             )
         }
         factory<UserFeedbackMviModel> {

@@ -11,6 +11,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.Them
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSchemeProvider
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
@@ -46,6 +48,7 @@ class SettingsViewModel(
     private val pullNotificationManager: PullNotificationManager,
     private val pushNotificationManager: PushNotificationManager,
     private val crashReportManager: CrashReportManager,
+    private val appIconManager: AppIconManager,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
@@ -73,6 +76,7 @@ class SettingsViewModel(
                     availablePushDistributors = pushDistributors,
                     supportsDynamicColors = supportsDynamicColors,
                     availableThemeColors = themeColorRepository.getColors(),
+                    appIconChangeSupported = appIconManager.supportsMultipleIcons,
                 )
             }
 
@@ -311,7 +315,7 @@ class SettingsViewModel(
             is SettingsMviModel.Intent.SelectPushDistributor ->
                 screenModelScope.launch {
                     selectPushDistributor(intent.value)
-            }
+                }
 
             is SettingsMviModel.Intent.ChangeCrashReportEnabled ->
                 changeCrashReportEnabled(intent.value)
@@ -319,6 +323,11 @@ class SettingsViewModel(
             is SettingsMviModel.Intent.ChangeHideNavigationBarWhileScrolling ->
                 screenModelScope.launch {
                     changeHideNavigationBarWhileScrolling(intent.value)
+                }
+
+            is SettingsMviModel.Intent.ChangeAppIcon ->
+                screenModelScope.launch {
+                    changeAppIcon(intent.variant)
                 }
         }
     }
@@ -463,5 +472,10 @@ class SettingsViewModel(
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(hideNavigationBarWhileScrolling = value)
         saveSettings(newSettings)
+    }
+
+    private suspend fun changeAppIcon(variant: AppIconVariant) {
+        appIconManager.changeIcon(variant)
+        updateState { it.copy(appIconRestartRequired = true) }
     }
 }
