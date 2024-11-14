@@ -446,4 +446,7 @@ internal val DeStrings =
             "Bitte starten Sie die Anwendung neu, um die Änderungen zu übernehmen"
         override val settingsItemHideNavigationBarWhileScrolling =
             "Navigationsleiste beim Scrollen ausblenden"
+        override val settingsItemAppIcon = "Anwendungssymbol"
+        override val appIconDefault = "Standard"
+        override val appIconClassical = "Klassisch"
     }

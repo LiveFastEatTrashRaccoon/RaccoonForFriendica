@@ -446,4 +446,7 @@ internal val ItStrings =
             "Riavviare l'applicazione per applicare le modifiche"
         override val settingsItemHideNavigationBarWhileScrolling =
             "Nascondi barra di navigazione durante lo scroll"
+        override val settingsItemAppIcon = "Icona applicazione"
+        override val appIconDefault = "Predefinita"
+        override val appIconClassical = "Classica"
     }

@@ -450,4 +450,7 @@ internal val PtStrings =
         override val messageRestartToApplyChanges = "Reinicie a aplicação para aplicar as alterações"
         override val settingsItemHideNavigationBarWhileScrolling =
             "Ocultar a barra de navegação ao rolar"
+        override val settingsItemAppIcon = "Ícone da aplicação"
+        override val appIconDefault = "Predefinição"
+        override val appIconClassical = "Clássico"
     }

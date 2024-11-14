@@ -446,4 +446,7 @@ internal val EsStrings =
             "Reinicie la aplicación para aplicar los cambios"
         override val settingsItemHideNavigationBarWhileScrolling =
             "Ocultar barra de navegación al desplazarse"
+        override val settingsItemAppIcon = "Icono de la aplicación"
+        override val appIconDefault = "Estandar"
+        override val appIconClassical = "Clásico"
     }

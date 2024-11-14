@@ -441,4 +441,7 @@ internal open class DefaultStrings : Strings {
     override val settingsItemCrashReportEnabled = "Enable anonymous crash reports"
     override val messageRestartToApplyChanges = "Please restart the app to apply changes"
     override val settingsItemHideNavigationBarWhileScrolling = "Hide navigation bar while scrolling"
+    override val settingsItemAppIcon = "Application icon"
+    override val appIconDefault = "Default"
+    override val appIconClassical = "Classical"
 }
