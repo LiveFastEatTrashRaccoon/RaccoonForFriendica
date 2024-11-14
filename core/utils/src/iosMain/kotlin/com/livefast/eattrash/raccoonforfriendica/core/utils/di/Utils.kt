@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
+import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.DefaultAppIconManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.CalendarHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.DefaultCalendarHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
@@ -94,6 +96,13 @@ actual val coreUtilsCalendarModule =
     module {
         single<CalendarHelper> {
             DefaultCalendarHelper()
+        }
+    }
+
+actual val coreAppIconModule =
+    module {
+        single<AppIconManager> {
+            DefaultAppIconManager()
         }
     }
 
