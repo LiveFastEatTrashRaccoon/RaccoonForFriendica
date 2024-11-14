@@ -37,7 +37,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
-import com.livefast.eattrash.raccoonforlemmy.unit.licences.LicencesScreen
+import com.livefast.eattrash.raccoonforfriendica.unit.licences.LicencesScreen
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
