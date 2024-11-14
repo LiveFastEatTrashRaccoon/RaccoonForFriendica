@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
@@ -59,9 +58,9 @@ fun ContentAttachments(
             initialPage = 0,
             pageCount = { filteredAttachments.size },
         )
-    val maxHeightAspectRatio =
+    val referenceAspectRatio =
         filteredAttachments
-            .maxBy { it.originalHeight ?: 0 }
+            .minBy { it.originalHeight ?: 0 }
             .aspectRatio
             .takeIf { it > 0 } ?: (16 / 9f)
     val hasMultipleElements = filteredAttachments.size > 1
@@ -73,7 +72,7 @@ fun ContentAttachments(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .aspectRatio(maxHeightAspectRatio),
+                    .aspectRatio(referenceAspectRatio),
             state = pagerState,
             beyondViewportPageCount = 1,
         ) { index ->
