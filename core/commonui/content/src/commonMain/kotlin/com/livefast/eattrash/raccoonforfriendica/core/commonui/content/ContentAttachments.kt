@@ -142,8 +142,6 @@ private fun AttachmentElement(
     autoload: Boolean = true,
     sensitive: Boolean = false,
     onClick: (() -> Unit)? = null,
-    minHeight: Dp = Dp.Unspecified,
-    maxHeight: Dp = Dp.Unspecified,
 ) {
     val attachmentWidth = attachment.originalWidth ?: 0
     val attachmentHeight = attachment.originalHeight ?: 0
@@ -159,8 +157,6 @@ private fun AttachmentElement(
                 originalHeight = attachmentHeight,
                 sensitive = blurNsfw && sensitive,
                 autoload = autoload,
-                minHeight = minHeight,
-                maxHeight = maxHeight,
                 contentScale = contentScale,
                 onClick = onClick,
             )
