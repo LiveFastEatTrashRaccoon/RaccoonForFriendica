@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforlemmy.unit.licences
+package com.livefast.eattrash.raccoonforfriendica.unit.licences
 
 internal object LicenceUrls {
     const val ANDROIDX = "https://github.com/androidx/androidx/blob/androidx-main/LICENSE.txt"

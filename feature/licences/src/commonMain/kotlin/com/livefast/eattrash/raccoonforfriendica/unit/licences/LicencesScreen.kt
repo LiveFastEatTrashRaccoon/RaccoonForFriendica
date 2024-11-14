@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforlemmy.unit.licences
+package com.livefast.eattrash.raccoonforfriendica.unit.licences
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +33,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforlemmy.unit.licences.components.LicenceItem
+import com.livefast.eattrash.raccoonforfriendica.unit.licences.components.LicenceItem
 
 class LicencesScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)

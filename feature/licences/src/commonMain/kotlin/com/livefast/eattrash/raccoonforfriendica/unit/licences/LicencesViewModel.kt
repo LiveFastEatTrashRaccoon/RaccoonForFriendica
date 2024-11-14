@@ -1,10 +1,10 @@
-package com.livefast.eattrash.raccoonforlemmy.unit.licences
+package com.livefast.eattrash.raccoonforfriendica.unit.licences
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforlemmy.unit.licences.models.LicenceItem
-import com.livefast.eattrash.raccoonforlemmy.unit.licences.models.LicenceItemType
+import com.livefast.eattrash.raccoonforfriendica.unit.licences.models.LicenceItem
+import com.livefast.eattrash.raccoonforfriendica.unit.licences.models.LicenceItemType
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch

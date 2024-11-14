@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforlemmy.unit.licences.models
+package com.livefast.eattrash.raccoonforfriendica.unit.licences.models
 
 data class LicenceItem(
     val type: LicenceItemType? = null,

@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforlemmy.unit.licences.models
+package com.livefast.eattrash.raccoonforfriendica.unit.licences.models
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Api

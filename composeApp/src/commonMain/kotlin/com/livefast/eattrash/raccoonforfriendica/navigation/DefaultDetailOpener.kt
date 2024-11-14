@@ -40,7 +40,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
-import com.livefast.eattrash.raccoonforlemmy.unit.licences.LicencesScreen
+import com.livefast.eattrash.raccoonforfriendica.unit.licences.LicencesScreen
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

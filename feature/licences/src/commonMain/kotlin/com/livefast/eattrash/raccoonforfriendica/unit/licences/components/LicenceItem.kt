@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforlemmy.unit.licences.components
+package com.livefast.eattrash.raccoonforfriendica.unit.licences.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforlemmy.unit.licences.models.LicenceItem
-import com.livefast.eattrash.raccoonforlemmy.unit.licences.models.toIcon
+import com.livefast.eattrash.raccoonforfriendica.unit.licences.models.LicenceItem
+import com.livefast.eattrash.raccoonforfriendica.unit.licences.models.toIcon
 
 @Composable
 internal fun LicenceItem(
