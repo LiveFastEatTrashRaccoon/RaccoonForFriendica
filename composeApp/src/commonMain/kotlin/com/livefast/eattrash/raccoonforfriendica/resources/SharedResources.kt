@@ -20,6 +20,8 @@ import raccoonforfriendica.composeapp.generated.resources.exo_italic
 import raccoonforfriendica.composeapp.generated.resources.exo_light
 import raccoonforfriendica.composeapp.generated.resources.exo_regular
 import raccoonforfriendica.composeapp.generated.resources.friendica_logo
+import raccoonforfriendica.composeapp.generated.resources.ic_alt
+import raccoonforfriendica.composeapp.generated.resources.ic_default
 import raccoonforfriendica.composeapp.generated.resources.mastodon_logo
 import raccoonforfriendica.composeapp.generated.resources.notosans_bold
 import raccoonforfriendica.composeapp.generated.resources.notosans_italic
@@ -63,6 +65,14 @@ internal class SharedResources : CoreResources {
     override val mastodonLogo: Painter
         @Composable
         get() = painterResource(Res.drawable.mastodon_logo)
+
+    override val appIconDefault: Painter
+        @Composable
+        get() = painterResource(Res.drawable.ic_default)
+
+    override val appIconAlt: Painter
+        @Composable
+        get() = painterResource(Res.drawable.ic_alt)
 
     override fun getPlayerConfig(
         contentScale: ContentScale,

@@ -12,6 +12,8 @@ interface CoreResources {
     val notoSans: FontFamily @Composable get
     val friendicaLogo: Painter @Composable get
     val mastodonLogo: Painter @Composable get
+    val appIconDefault: Painter @Composable get
+    val appIconAlt: Painter @Composable get
 
     fun getPlayerConfig(
         contentScale: ContentScale,
