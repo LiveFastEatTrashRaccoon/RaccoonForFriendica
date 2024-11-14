@@ -451,4 +451,7 @@ internal val FrStrings =
             "Veuillez redémarrer l'application pour appliquer les changements"
         override val settingsItemHideNavigationBarWhileScrolling =
             "Masquer la barre de navigation lors du défilement"
+        override val settingsItemAppIcon = "Icône de l'application"
+        override val appIconDefault = "Défaut"
+        override val appIconClassical = "Classique"
     }

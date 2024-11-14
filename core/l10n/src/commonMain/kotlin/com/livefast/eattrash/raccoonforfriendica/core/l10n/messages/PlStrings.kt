@@ -444,4 +444,7 @@ internal val PlStrings =
             "Uruchom ponownie aplikację, aby zastosować zmiany"
         override val settingsItemHideNavigationBarWhileScrolling =
             "Ukryj pasek nawigacji podczas przewijania"
+        override val settingsItemAppIcon = "Ikona aplikacji"
+        override val appIconDefault = "Domyślny"
+        override val appIconClassical = "Klasyczny"
     }

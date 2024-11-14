@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.settings
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -61,6 +62,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
+import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
@@ -83,6 +87,7 @@ class SettingsScreen : Screen {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val detailOpener = remember { getDetailOpener() }
+        val coreResources = remember { getCoreResources() }
         var languageBottomSheetOpened by remember { mutableStateOf(false) }
         var themeBottomSheetOpened by remember { mutableStateOf(false) }
         var fontFamilyBottomSheetOpened by remember { mutableStateOf(false) }
@@ -99,6 +104,7 @@ class SettingsScreen : Screen {
         var notificationModeBottomSheetOpened by remember { mutableStateOf(false) }
         var pushNotificationDistributorBottomSheetOpened by remember { mutableStateOf(false) }
         var imageLoadingModeBottomSheetOpened by remember { mutableStateOf(false) }
+        var appIconBottomSheetOpened by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -143,6 +149,7 @@ class SettingsScreen : Screen {
                     Column(
                         modifier = Modifier.verticalScroll(rememberScrollState()),
                     ) {
+                        // General section
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderGeneral,
                             icon = Icons.Default.Settings,
@@ -282,6 +289,7 @@ class SettingsScreen : Screen {
                             }
                         }
 
+                        // Look & feel section
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderLookAndFeel,
                             icon = Icons.Default.Style,
@@ -325,7 +333,22 @@ class SettingsScreen : Screen {
                                 },
                             )
                         }
+                        if (uiState.appIconChangeSupported) {
+                            SettingsRow(
+                                title = LocalStrings.current.settingsItemAppIcon,
+                                subtitle =
+                                    if (uiState.appIconRestartRequired) {
+                                        LocalStrings.current.messageRestartToApplyChanges
+                                    } else {
+                                        null
+                                    },
+                                onTap = {
+                                    appIconBottomSheetOpened = true
+                                },
+                            )
+                        }
 
+                        // NSFW section
                         SettingsHeader(
                             icon = Icons.Default.Explicit,
                             title = LocalStrings.current.settingsHeaderNsfw,
@@ -353,6 +376,8 @@ class SettingsScreen : Screen {
                                 model.reduce(SettingsMviModel.Intent.ChangeBlurNsfw(it))
                             },
                         )
+
+                        // Debug section
                         SettingsHeader(
                             icon = Icons.Default.BugReport,
                             title = LocalStrings.current.settingsSectionDebug,
@@ -808,6 +833,42 @@ class SettingsScreen : Screen {
                         model.reduce(
                             SettingsMviModel.Intent.ChangeAutoloadImages(mode = values[index]),
                         )
+                    }
+                },
+            )
+        }
+
+        if (appIconBottomSheetOpened) {
+            val values =
+                listOf(
+                    AppIconVariant.Default,
+                    AppIconVariant.Alt,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemAppIcon,
+                items =
+                    values.map { value ->
+                        CustomModalBottomSheetItem(
+                            leadingContent = {
+                                val painter =
+                                    when (value) {
+                                        AppIconVariant.Alt -> coreResources.appIconAlt
+                                        else -> coreResources.appIconDefault
+                                    }
+                                Image(
+                                    modifier = Modifier.size(IconSize.m),
+                                    painter = painter,
+                                    contentDescription = null,
+                                )
+                            },
+                            label = value.toReadableName(),
+                        )
+                    },
+                onSelected = { index ->
+                    appIconBottomSheetOpened = false
+                    if (index != null) {
+                        val value = values[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeAppIcon(value))
                     }
                 },
             )

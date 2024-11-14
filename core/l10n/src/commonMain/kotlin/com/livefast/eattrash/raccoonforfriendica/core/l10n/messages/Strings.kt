@@ -393,6 +393,9 @@ interface Strings {
     val settingsItemCrashReportEnabled: String
     val messageRestartToApplyChanges: String
     val settingsItemHideNavigationBarWhileScrolling: String
+    val settingsItemAppIcon: String
+    val appIconDefault: String
+    val appIconClassical: String
 }
 
 object Locales {

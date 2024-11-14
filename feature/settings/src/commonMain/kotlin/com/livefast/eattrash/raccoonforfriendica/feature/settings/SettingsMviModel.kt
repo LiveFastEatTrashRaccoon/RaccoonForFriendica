@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFami
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadingMode
@@ -109,6 +110,10 @@ interface SettingsMviModel :
         data class ChangeHideNavigationBarWhileScrolling(
             val value: Boolean,
         ) : Intent
+
+        data class ChangeAppIcon(
+            val variant: AppIconVariant,
+        ) : Intent
     }
 
     data class State(
@@ -145,6 +150,8 @@ interface SettingsMviModel :
         val crashReportEnabled: Boolean = false,
         val crashReportRestartRequired: Boolean = false,
         val hideNavigationBarWhileScrolling: Boolean = true,
+        val appIconChangeSupported: Boolean = true,
+        val appIconRestartRequired: Boolean = false,
     )
 
     sealed interface Effect

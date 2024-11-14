@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.coreNavigati
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.coreNotificationsModule
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.di.corePersistenceModule
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.di.corePreferencesModule
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreAppIconModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreCrashReportModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreHapticFeedbackModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsCalendarModule
@@ -59,6 +60,7 @@ fun initKoin(): Koin {
             modules(
                 sharedModule,
                 coreApiModule,
+                coreAppIconModule,
                 coreAppearanceModule,
                 coreCommonUiComponentsModule,
                 coreCrashReportModule,

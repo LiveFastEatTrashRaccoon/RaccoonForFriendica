@@ -41,3 +41,5 @@ expect val coreHapticFeedbackModule: Module
 expect val coreCrashReportModule: Module
 
 expect val coreUtilsCalendarModule: Module
+
+expect val coreAppIconModule: Module
