@@ -1,8 +1,8 @@
 <p>
-    <i>Raccoon for Friendica</i> is a free and open source mobile-first client for Friendica and Mastodon.
+    <b>Raccoon</b> is a free and open source mobile-first client for Friendica and Mastodon.
 </p>
 <p>
-    Friendica is a really outstanding social plaftorm, featuring powerful characteristics which make
+    Friendica is an outstanding social plaftorm, featuring powerful characteristics which make
     it unique in the federated world:
 </p>
 <ul>
@@ -16,22 +16,22 @@
         <b>direct messages</b>;
     </li>
     <li>
-        a <b>media gallery</b> where you can manage photos and albums;
+        <b>media gallery</b> where you can manage photos and albums;
     </li>
     <li>
-        the possibility to organize your contacts in <b>circles</b>;
+        possibility to organize your contacts in <b>circles</b>;
     </li>
     <li>
-        the ability to quote (cross-post) other people's posts;
+        ability to quote (cross-post) other people's posts;
     </li>
     <li>
         RSS feed import;
     </li>
     <li>
-        an integrated <b>event calendar</b>;
+        integrated <b>event calendar</b>;
     </li>
     <li>
-        and, of course, much more (see the official documentation)…
+        of course, much more (see the official documentation)…
     </li>
 </ul>
 <p>
@@ -40,7 +40,7 @@
     use the most important functions of the platform.
 </p>
 <p>
-    <b>Main app features:</b>
+    <b>Main features:</b>
 </p>
 <ul>
     <li>
@@ -52,15 +52,13 @@
     </li>
     <li>
         user detail with ability to see posts, post and replies, pinned posts and media, subscribe for
-        notifications from a user, follow/send a request or unfollow them, see all following/followers
-        of a given user;
+        notifications from a user, follow/send a request or unfollow them, see following/followers;
      </li>
     <li>
-        support for ActivityPub groups (i.e. distribution lists), with the ability to open threads in
-        forum-like (or Lemmy-like) mode;
+        support for ActivityPub groups, with the ability to open threads in forum mode;
     </li>
     <li>
-        see trending posts, hashtags, links and (if you are logged) following recommendations;
+        see trending posts, hashtags, links and following recommendations;
     </li>
     <li>
         follow/unfollow an hashtag and view all the posts containing a given hashtag;
@@ -75,13 +73,13 @@
         customize the application appearance with color themes, font face and size, etc;
     </li>
     <li>
-        login using OAuth2 (or, on Friendica, legacy login with username and password);
+        login via OAuth2;
     </li>
     <li>
         view and edit one's own profile data;
     </li>
     <li>
-        view incoming notifications and filter the list of notifications;
+        view incoming notifications and filter the list;
     </li>
     <li>
         manage one's own follow requests and accept/reject each one of them;
@@ -90,12 +88,10 @@
         view the list of one's own favorites, bookmarks and followed hashtags;
     </li>
     <li>
-        create a post/reply with image attachments (and alt text for each attachment), spoiler and
-        (only on Friendica) title formatting content in HTML, BBCode (on Friendica) or Markdown
-        (on Mastodon);
+        create a post/reply with formatted text, image attachments (and alt text), spoiler and title;
     </li>
     <li>
-        schedule a post for a future date (and change the schedule date) or save it to local drafts;
+        schedule a post (and change its schedule date) or save it to drafts;
     </li>
     <li>
         report posts/users to administrators for content moderation;
@@ -104,23 +100,22 @@
         mute/unmute, block/unblock users and manage the list of muted/blocked users;
     </li>
     <li>
-        manage one's own circles (user-defined lists), which on Friendica can also be used as a
-        publishing target;
+        manage one's own circles (user-defined lists);
     </li>
     <li>
-        see polls in read-only mode;
+        see polls (read only);
     </li>
     <li>
-        multi-account with easy ability to switch between accounts (and, in anonymous mode, to switch
+        multi-account with easy ability to switch between accounts (and, in anonymous mode, switch
         instance);
     </li>
     <li>
-        send direct messages (only on Friendica) to other users and see conversations;
+        send direct messages to other users and see conversations;
     </li>
     <li>
-        manage one's own photo gallery (only on Friendica);
+        manage one's own photo gallery;
     </li>
     <li>
-        view one's own calendar (only on Friendica) in read-only mode.
+        view one's own event calendar (read only).
     </li>
 </ul>

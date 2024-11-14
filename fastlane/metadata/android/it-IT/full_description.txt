@@ -1,14 +1,14 @@
 <p>
-    <i>Raccoon for Friendica</i> è un client per Friendica e Mastodon libero ed open source pensato
+    <b>Raccoon</b> è un client per Friendica e Mastodon libero ed open source pensato
     principalmente per dispositivi mobile.
 </p>
 <p>
-    Friendica è una piattaforma social davvero straordinaria e può vantare una serie di
-    caratteristiche che la rendono unica nel panorama della federazione:
+    Friendica è una piattaforma social straordinaria e vanta una serie di caratteristiche
+    che la rendono unica nel panorama della federazione:
 </p>
 <ul>
     <li>
-        supporto a testo formattato, post lunghi, titli e spoiler;
+        supporto a post di grandi dimenzioni, formattati, con titolo e spoiler;
     </li>
     <li>
         supporto nativo ai <b>gruppi</b> ActivityPub;
@@ -17,22 +17,22 @@
         <b>messaggi diretti</b>;
     </li>
     <li>
-        una <b>galleria multimediale</b> dove è possibile gestire foto album;
+        <b>galleria multimediale</b> dove è possibile gestire foto album;
     </li>
     <li>
-        la possibilità di organizzare i contati in <b>cerchie</b>;
+        possibilità di organizzare i contatti in <b>cerchie</b>;
     </li>
     <li>
-        la possibilità di citare (cross-post) post di altri utenti;
+        possibilità di citare (cross-post) post altrui;
     </li>
     <li>
         importazione di feed RSS;
     </li>
     <li>
-        un <b>calendario eventi</b> integrato;
+        <b>calendario eventi</b> integrato;
     </li>
     <li>
-        e ovviamente molto altro (fare riferimento alla documentazione ufficiale)…
+        ovviamente molto altro (fare riferimento alla documentazione ufficiale)
     </li>
 </ul>
 <p>
@@ -41,94 +41,86 @@
     le più importanti tra le funzioni offerte dalla piattaforma.
 </p>
 <p>
-    <b>Funzionalità principali dell'app:</b>
+    <b>Funzionalità principali:</b>
 </p>
 <ul>
     <li>
-        visualizzazione della timeline con la possibilità di cambiare tipo di feed (pubblica, locale
+        visualizzazione timeline con la possibilità di cambiare tipo di feed (pubblica, locale,
         iscrizioni e liste personalizzate);
     </li>
     <li>
-        dettaglio post, ovvero la possibilità di aprire una conversazione nel suo contesto,
-        visualizzare le risposte, le ricondivisioni e gli utenti che hanno aggiunto il post ai preferiti;
+        dettaglio post, visualizzare le risposte, le ricondivisioni e gli utenti che l'hanno
+        aggiunto ai preferiti;
     </li>
     <li>
-        dettaglio utente con la possibilità di visualizzare post, post e risposte, post fissati e
-        multimediali, registrarsi per ricevere le notifiche da un utente, seguirlo o inviare una
-        richiesta di seguirlo, visualizzare i seguaci e seguiti;
+        dettaglio utente con visualizzazione post, post e risposte, post fissati e
+        multimediali, e possibilità di registrarsi per le notifiche, seguirlo, visualizzare elenchi di
+        seguaci e seguiti;
      </li>
     <li>
-        supporto ai gruppo ActivityPub (ovvero le liste di distribuzione), con la possibilità di
-        aprire i thread in modalità forum (o modalità Lemmy);
+        supporto ai gruppi ActivityPub, con possibilità di aprire i thread in modalità forum;
     </li>
     <li>
-        visualizzare i post di tendenza, gli hashtag e i link in tendenza e (se è stato effettuato
-        l'accesso) i suggerimenti su chi seguire;
+        visualizzare i post di tendenza, gli hashtag e i link in tendenza e i suggerimenti su
+        chi seguire;
     </li>
     <li>
         seguire/smettere di seguire un hashtag e visualizzare tutti i post che lo contengono;
     </li>
     <li>
         interagire con i post (ricondividere, aggiungere ai preferiti o segnalibri) e – nel caso dei
-         propri post – modificarli, cancellarli o fissarli sul profilo;
+        propri post – modificarli, cancellarli o fissarli sul profilo;
     </li>
     <li>
-        ricerca globale di hashtag, post e utenti in base a termini di ricerca specifici;
+        ricerca globale di hashtag, post e utenti in base a termini di ricerca;
     </li>
     <li>
-        personalizzare l'aspetto dell'applicazione cambiando i colori del tema, il font o la
-        dimensione del testo, ecc.
+        personalizzare l'aspetto dell'app cambiando i colori, font o dimensione del testo, ecc.
     </li>
     <li>
-        effuare l'accesso tramite il protocollo OAuth2 (o, solo su Friendica, accedere con le
-        proprie credenziali);
+        effettuare l'accesso tramite il protocollo OAuth2;
     </li>
     <li>
         visualizzare e modificare i dati del proprio profilo;
     </li>
     <li>
-        visualizzare e filtrare l'elenco delle notifiche in arrivo;
+        visualizzare e filtrare l'elenco notifiche;
     </li>
     <li>
-       gestire le proprie richieste di essere seguito e accettarle/rifiutarle;
+       gestire le richieste di essere seguito;
     </li>
     <li>
-        visualizzare la lista dei propri preferiti, segnalibri o hashtag seguiti;
+        visualizzare la lista dei preferiti, segnalibri o hashtag seguiti;
     </li>
     <li>
-        creare post e risposte con allegati (e testo alternativo per ogni allegato), spoiler e
-        (solo su Friendica) titolo con formattazione in HTML, BBCode (su Friendica) o Markdown
-        (su Mastodon);
+        creare post e risposte formattati, con allegati (e testo alternativo), spoiler e titolo
     </li>
     <li>
-        schedulare post per una data futura (e cambiare la data di schedulazione) o salvarlo nelle
-        bozze locali;
+        schedulare post (e cambiare la data di schedulazione) o salvarlo nelle bozze;
     </li>
     <li>
         segnalare post e utenti agli amministratori per la moderazione dei contenuti;
     </li>
     <li>
-        silenziare/bloccare utenti (e annullare queste operazioni) e gestire la lista dei propri
-        utenti silenziati o bloccati;
+        silenziare/bloccare utenti e gestire la lista dei propri utenti silenziati o bloccati;
     </li>
     <li>
-        gestire le proprie cerchie (liste definite dagli utenti), che su Friendica possono essere
-        utilizzate anche come opzione di visibilità dei post;
+        gestire le proprie cerchie (liste personalizzate);
     </li>
     <li>
-        visualizzare i sondaggi in modalità di sola lettura;
+        visualizzare i sondaggi (sola lettura);
     </li>
     <li>
-        supporto multi-account con la possibilità di cambiare account (e, in modalità anonima, di
+        supporto multi-account con possibilità di cambiare account (e, in modalità anonima, di
         cambiare istanza);
     </li>
     <li>
-        inviare messaggi diretti (solo su Friendica) ad altri utenti e visualizzare le conversazioni;
+        inviare messaggi diretti ad altri utenti e visualizzare le conversazioni;
     </li>
     <li>
-        gestire la propria galleria multimediale (solo su Friendica);
+        gestire la galleria foto;
     </li>
     <li>
-        visualizzare il proprio calendario (only on Friendica) in modalità sola lettura.
+        visualizzare il calendario eventi (sola lettura).
     </li>
 </ul>
