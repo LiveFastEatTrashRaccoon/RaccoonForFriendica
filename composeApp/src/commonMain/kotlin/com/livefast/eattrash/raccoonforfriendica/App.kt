@@ -22,7 +22,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.getL10nManager
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.ScreenContent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.VoyagerNavigator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -141,7 +140,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                         gesturesEnabled = drawerGesturesEnabled,
                         drawerContent = {
                             ModalDrawerSheet {
-                                ScreenContent(DrawerContent())
+                                Navigator(DrawerContent())
                             }
                         },
                     ) {
