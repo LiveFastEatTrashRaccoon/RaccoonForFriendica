@@ -10,7 +10,7 @@
         rich text editing, long posts, support for titles and spoilers;
     </li>
     <li>
-        native support for ActivityPub <b>groups<b>;
+        native support for ActivityPub <b>groups</b>;
     </li>
     <li>
         <b>direct messages</b>;
