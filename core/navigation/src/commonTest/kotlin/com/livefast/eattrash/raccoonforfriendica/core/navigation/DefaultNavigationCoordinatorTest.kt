@@ -13,12 +13,17 @@ import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.mock
 import dev.mokkery.verify
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -30,6 +35,16 @@ class DefaultNavigationCoordinatorTest {
         DefaultNavigationCoordinator(
             dispatcher = UnconfinedTestDispatcher(),
         )
+
+    @BeforeTest
+    fun setup() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
+    }
+
+    @AfterTest
+    fun teardown() {
+        Dispatchers.resetMain()
+    }
 
     @Test
     fun `when setCanGoBackCallback then result is as expected`() =
@@ -124,7 +139,7 @@ class DefaultNavigationCoordinatorTest {
             launch {
                 sut.push(screen)
             }
-            delay(DELAY)
+            advanceTimeBy(DELAY)
 
             val canPop = sut.canPop.value
             assertTrue(canPop)
@@ -154,7 +169,7 @@ class DefaultNavigationCoordinatorTest {
             launch {
                 sut.replace(screen)
             }
-            delay(DELAY)
+            advanceTimeBy(DELAY)
 
             val canPop = sut.canPop.value
             assertTrue(canPop)
@@ -197,6 +212,20 @@ class DefaultNavigationCoordinatorTest {
 
             verify {
                 navigator.popUntilRoot()
+            }
+        }
+
+    @Test
+    fun `when submitDeeplink then event flow emits`() =
+        runTest {
+            val url = "https://www.google.com"
+            launch {
+                advanceTimeBy(DELAY)
+                sut.submitDeeplink(url)
+            }
+            sut.deepLinkUrl.test {
+                val item = awaitItem()
+                assertEquals(url, item)
             }
         }
 
