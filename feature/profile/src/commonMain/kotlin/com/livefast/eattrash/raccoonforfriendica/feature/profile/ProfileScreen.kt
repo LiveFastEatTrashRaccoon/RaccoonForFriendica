@@ -45,7 +45,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Placeh
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.ScreenContent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
@@ -137,11 +136,13 @@ class ProfileScreen : Screen {
                                     },
                                 ),
                     ) {
-                        if (uiState.currentUserId != null) {
-                            ScreenContent(MyAccountScreen)
-                        } else {
-                            ScreenContent(LoginIntroScreen())
-                        }
+                        val screen =
+                            if (uiState.currentUserId != null) {
+                                MyAccountScreen
+                            } else {
+                                LoginIntroScreen()
+                            }
+                        screen.Content()
                     }
                 },
             )
