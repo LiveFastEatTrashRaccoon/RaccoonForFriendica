@@ -17,6 +17,7 @@ internal class DefaultSearchRepository(
         query: String,
         type: SearchResultType,
         pageCursor: String?,
+        resolve: Boolean,
     ): List<ExploreItemModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
@@ -27,6 +28,7 @@ internal class DefaultSearchRepository(
                             maxId = pageCursor,
                             limit = DEFAULT_PAGE_SIZE,
                             type = type.toDto(),
+                            resolve = resolve,
                         )
                 when (type) {
                     SearchResultType.Entries -> response.statuses.map { ExploreItemModel.Entry(it.toModelWithReply()) }
