@@ -8,6 +8,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
+import com.livefast.eattrash.raccoonforfriendica.auth.DefaultAuthManager
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -84,6 +85,10 @@ class MainActivity : ComponentActivity() {
                 },
             )
         }
+
+        intent.data?.also {
+            handleIncomingUrl(it)
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -94,11 +99,25 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleIncomingUrl(uri: Uri) {
-        if (uri.scheme == "raccoonforfriendica" && uri.host == "auth") {
-            val authManager = getAuthManager()
-            lifecycleScope.launch {
-                runCatching {
-                    authManager.performTokenExchange(uri.toString())
+        when {
+            // OAuth2 redirect URL
+            uri.scheme == DefaultAuthManager.REDIRECT_SCHEME &&
+                uri.host == DefaultAuthManager.REDIRECT_HOST -> {
+                val authManager = getAuthManager()
+                lifecycleScope.launch {
+                    runCatching {
+                        authManager.performTokenExchange(uri.toString())
+                    }
+                }
+            }
+
+            else -> {
+                // try opening deep link URL
+                uri.toString().takeUnless { it.isEmpty() }?.also { deeplinkUrl ->
+                    lifecycleScope.launch {
+                        val navigationCoordinator = getNavigationCoordinator()
+                        navigationCoordinator.submitDeeplink(deeplinkUrl)
+                    }
                 }
             }
         }
