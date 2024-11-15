@@ -2,25 +2,25 @@ package com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import kotlinx.coroutines.withTimeoutOrNull
 
-internal class DefaultFetchUserUseCase(
+internal class DefaultFetchEntryUseCase(
     private val searchRepository: SearchRepository,
-) : FetchUserUseCase {
-    override suspend fun invoke(url: String): UserModel? =
+) : FetchEntryUseCase {
+    override suspend fun invoke(url: String): TimelineEntryModel? =
         // wait at most SEARCH_TIMEOUT_MILLIS failing if the request takes longer
         withTimeoutOrNull(SEARCH_TIMEOUT_MILLIS) {
             searchRepository
                 .search(
                     query = url,
                     resolve = true,
-                    type = SearchResultType.Users,
+                    type = SearchResultType.Entries,
                 ).orEmpty()
                 .mapNotNull { res ->
                     when (res) {
-                        is ExploreItemModel.User -> res.user
+                        is ExploreItemModel.Entry -> res.entry
                         else -> null
                     }
                 }.firstOrNull {

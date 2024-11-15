@@ -13,5 +13,6 @@ interface SearchService {
         @Query("min_id") minId: String? = null,
         @Query("following") following: Boolean = false,
         @Query("limit") limit: Int = 20,
+        @Query("resolve") resolve: Boolean = false,
     ): Search
 }

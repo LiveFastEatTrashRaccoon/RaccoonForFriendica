@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
@@ -19,6 +20,7 @@ internal class DefaultNavigationCoordinator(
     override val onDoubleTabSelection = MutableSharedFlow<BottomNavigationSection>()
     override val canPop = MutableStateFlow(false)
     override val exitMessageVisible = MutableStateFlow(false)
+    override val deepLinkUrl = MutableSharedFlow<String>()
 
     private var rootNavigator: NavigatorAdapter? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
@@ -77,5 +79,10 @@ internal class DefaultNavigationCoordinator(
 
     override fun popUntilRoot() {
         rootNavigator?.popUntilRoot()
+    }
+
+    override suspend fun submitDeeplink(url: String) {
+        delay(750)
+        deepLinkUrl.emit(url)
     }
 }

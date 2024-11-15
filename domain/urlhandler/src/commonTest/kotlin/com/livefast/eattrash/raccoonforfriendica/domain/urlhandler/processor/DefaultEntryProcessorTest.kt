@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor
 
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
@@ -15,69 +15,69 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class DefaultPixelfedProcessorTest {
+class DefaultEntryProcessorTest {
     private val detailOpener = mock<DetailOpener>(mode = MockMode.autoUnit)
-    private val fetchUser = mock<FetchUserUseCase>()
+    private val fetchEntry = mock<FetchEntryUseCase>()
     private val sut =
-        DefaultPixelfedProcessor(
+        DefaultEntryProcessor(
             detailOpener = detailOpener,
-            fetchUser = fetchUser,
+            fetchEntry = fetchEntry,
         )
 
     @Test
     fun `given valid user when process URL then interactions are as expected`() =
         runTest {
-            val user = UserModel(id = "0", username = USERNAME)
-            everySuspend { fetchUser.invoke(any()) } returns user
-            val url = "https://$HOST/$USERNAME"
+            val entry = TimelineEntryModel(id = "0", content = "")
+            everySuspend { fetchEntry.invoke(any()) } returns entry
+            val url = "https://$HOST/display/$ENTRY_ID"
 
             val res = sut.process(url)
 
             assertTrue(res)
             verifySuspend {
-                fetchUser.invoke("$USERNAME@$HOST")
+                fetchEntry.invoke(url)
             }
             verify {
-                detailOpener.openUserDetail(user)
+                detailOpener.openEntryDetail(entry)
             }
         }
 
     @Test
     fun `given user not found when process URL then interactions are as expected`() =
         runTest {
-            everySuspend { fetchUser.invoke(any()) } returns null
-            val url = "https://$HOST/$USERNAME"
+            everySuspend { fetchEntry.invoke(any()) } returns null
+            val url = "https://$HOST/display/$ENTRY_ID"
 
             val res = sut.process(url)
 
             assertFalse(res)
             verifySuspend {
-                fetchUser.invoke("$USERNAME@$HOST")
+                fetchEntry.invoke(url)
             }
             verify(mode = VerifyMode.not) {
-                detailOpener.openUserDetail(any())
+                detailOpener.openEntryDetail(any())
             }
         }
 
     @Test
     fun `given invalid URL when process URL then interactions are as expected`() =
         runTest {
-            everySuspend { fetchUser.invoke(any()) } returns null
-            val url = "https://$HOST/u/$USERNAME"
+            everySuspend { fetchEntry.invoke(any()) } returns null
+            val url = "https://$HOST/p/$ENTRY_ID"
 
             val res = sut.process(url)
 
             assertFalse(res)
-            verifySuspend(mode = VerifyMode.not) {
-                fetchUser.invoke(any())
+            verifySuspend {
+                fetchEntry.invoke(any())
             }
             verify(mode = VerifyMode.not) {
-                detailOpener.openUserDetail(any())
+                detailOpener.openEntryDetail(any())
             }
         }
 
     companion object {
         private const val HOST = "example.com"
-        private const val USERNAME = "username"
+        private const val ENTRY_ID = "objectId"
     }
 }

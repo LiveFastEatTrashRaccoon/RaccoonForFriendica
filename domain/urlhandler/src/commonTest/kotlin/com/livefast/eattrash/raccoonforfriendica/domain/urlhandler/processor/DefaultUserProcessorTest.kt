@@ -15,11 +15,11 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class DefaultMastodonUserProcessorTest {
+class DefaultUserProcessorTest {
     private val detailOpener = mock<DetailOpener>(mode = MockMode.autoUnit)
     private val fetchUser = mock<FetchUserUseCase>()
     private val sut =
-        DefaultMastodonUserProcessor(
+        DefaultUserProcessor(
             detailOpener = detailOpener,
             fetchUser = fetchUser,
         )
@@ -29,13 +29,13 @@ class DefaultMastodonUserProcessorTest {
         runTest {
             val user = UserModel(id = "0", username = USERNAME)
             everySuspend { fetchUser.invoke(any()) } returns user
-            val url = "https://$HOST/@$USERNAME"
+            val url = "https://$HOST/users/$USERNAME"
 
             val res = sut.process(url)
 
             assertTrue(res)
             verifySuspend {
-                fetchUser.invoke("$USERNAME@$HOST")
+                fetchUser.invoke(url)
             }
             verify {
                 detailOpener.openUserDetail(user)
@@ -46,13 +46,13 @@ class DefaultMastodonUserProcessorTest {
     fun `given user not found when process URL then interactions are as expected`() =
         runTest {
             everySuspend { fetchUser.invoke(any()) } returns null
-            val url = "https://$HOST/@$USERNAME"
+            val url = "https://$HOST/users/$USERNAME"
 
             val res = sut.process(url)
 
             assertFalse(res)
             verifySuspend {
-                fetchUser.invoke("$USERNAME@$HOST")
+                fetchUser.invoke(url)
             }
             verify(mode = VerifyMode.not) {
                 detailOpener.openUserDetail(any())
@@ -68,7 +68,7 @@ class DefaultMastodonUserProcessorTest {
             val res = sut.process(url)
 
             assertFalse(res)
-            verifySuspend(mode = VerifyMode.not) {
+            verifySuspend {
                 fetchUser.invoke(any())
             }
             verify(mode = VerifyMode.not) {

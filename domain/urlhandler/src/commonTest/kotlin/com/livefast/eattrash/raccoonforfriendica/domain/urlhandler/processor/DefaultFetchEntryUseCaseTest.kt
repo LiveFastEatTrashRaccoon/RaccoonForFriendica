@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import dev.mokkery.answering.calls
 import dev.mokkery.answering.returns
@@ -17,17 +17,17 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.time.Duration.Companion.seconds
 
-class DefaultFetchUserUseCaseTest {
+class DefaultFetchEntryUseCaseTest {
     private val searchRepository = mock<SearchRepository>()
     private val sut =
-        DefaultFetchUserUseCase(
+        DefaultFetchEntryUseCase(
             searchRepository = searchRepository,
         )
 
     @Test
-    fun `given user found when invoke then result is as expected`() =
+    fun `given entry found when invoke then result is as expected`() =
         runTest {
-            val user = UserModel(id = "0", username = USERNAME, url = URL)
+            val entry = TimelineEntryModel(id = "0", content = "", url = URL)
             everySuspend {
                 searchRepository.search(
                     query = any(),
@@ -36,7 +36,7 @@ class DefaultFetchUserUseCaseTest {
                     resolve = any(),
                 )
             } returns
-                listOf(ExploreItemModel.User(user))
+                listOf(ExploreItemModel.Entry(entry))
 
             val res = sut.invoke(URL)
 
@@ -44,7 +44,7 @@ class DefaultFetchUserUseCaseTest {
             verifySuspend {
                 searchRepository.search(
                     query = URL,
-                    type = SearchResultType.Users,
+                    type = SearchResultType.Entries,
                     pageCursor = null,
                     resolve = true,
                 )
@@ -52,7 +52,7 @@ class DefaultFetchUserUseCaseTest {
         }
 
     @Test
-    fun `given user not found when invoke then result is as expected`() =
+    fun `given entry not found when invoke then result is as expected`() =
         runTest {
             everySuspend {
                 searchRepository.search(
@@ -69,13 +69,12 @@ class DefaultFetchUserUseCaseTest {
             verifySuspend {
                 searchRepository.search(
                     query = URL,
-                    type = SearchResultType.Users,
+                    type = SearchResultType.Entries,
                     pageCursor = null,
                     resolve = true,
                 )
             }
         }
-
 
     @Test
     fun `given request timeout when invoke then result is as expected`() =
@@ -90,8 +89,8 @@ class DefaultFetchUserUseCaseTest {
             } calls {
                 delay(10.seconds)
                 listOf(
-                    ExploreItemModel.User(
-                        UserModel(id = "0", username = USERNAME),
+                    ExploreItemModel.Entry(
+                        TimelineEntryModel(id = "0", content = "", url = URL),
                     ),
                 )
             }
@@ -102,7 +101,7 @@ class DefaultFetchUserUseCaseTest {
             verifySuspend {
                 searchRepository.search(
                     query = URL,
-                    type = SearchResultType.Users,
+                    type = SearchResultType.Entries,
                     pageCursor = null,
                     resolve = true,
                 )
@@ -110,7 +109,6 @@ class DefaultFetchUserUseCaseTest {
         }
 
     companion object {
-        private const val URL = "https://example.com/profile/username"
-        private const val USERNAME = "username"
+        private const val URL = "https://example.com/display/objectId"
     }
 }

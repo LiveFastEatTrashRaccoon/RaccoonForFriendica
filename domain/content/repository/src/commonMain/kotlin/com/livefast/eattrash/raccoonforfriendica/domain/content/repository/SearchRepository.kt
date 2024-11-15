@@ -8,5 +8,6 @@ interface SearchRepository {
         query: String = "",
         type: SearchResultType = SearchResultType.Hashtags,
         pageCursor: String? = null,
+        resolve: Boolean = false,
     ): List<ExploreItemModel>?
 }

@@ -15,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
@@ -32,12 +33,16 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.g
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.ProvideCustomUriHandler
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.getCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
 import com.livefast.eattrash.raccoonforfriendica.main.MainScreen
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 @Composable
 fun App(onLoadingFinished: (() -> Unit)? = null) {
     // initialize crash reporting as soon as possible
@@ -116,6 +121,20 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                 }
             }.launchIn(this)
     }
+
+    val fallbackUriHandler = LocalUriHandler.current
+    LaunchedEffect(navigationCoordinator) {
+        val customUriHandler = getCustomUriHandler(fallbackUriHandler)
+        navigationCoordinator.deepLinkUrl
+            .debounce(750)
+            .onEach { url ->
+                customUriHandler.openUri(
+                    uri = url,
+                    allowOpenExternal = false,
+                )
+            }.launchIn(this)
+    }
+
     DisposableEffect(networkStateObserver) {
         networkStateObserver.start()
         onDispose {
