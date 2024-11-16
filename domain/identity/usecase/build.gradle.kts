@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.mokkery)
 }
 
@@ -39,6 +40,7 @@ kotlin {
 
                 implementation(libs.koin.core)
                 implementation(libs.kotlinx.coroutines)
+                implementation(libs.kotlinx.serialization.json)
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.l10n)
