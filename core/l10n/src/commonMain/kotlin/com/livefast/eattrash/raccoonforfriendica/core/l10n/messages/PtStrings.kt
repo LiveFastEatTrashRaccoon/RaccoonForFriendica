@@ -455,4 +455,5 @@ internal val PtStrings =
         override val appIconClassical = "Clássico"
         override val settingsItemExport = "Exportar as definições"
         override val settingsItemImport = "Importar as definições"
+        override val actionExport = "Exportar"
     }
