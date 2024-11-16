@@ -275,14 +275,14 @@ class ComposerViewModel(
                 screenModelScope.launch {
                     val mentions =
                         buildList {
-                            val initialValue = intent.initialHandle.orEmpty()
-                            if (initialValue.isNotEmpty()) {
-                                this += initialValue
-                            }
                             val currentUserHandle =
                                 identityRepository.currentUser.value
                                     ?.handle
                                     .orEmpty()
+                            val initialValue = intent.initialHandle.orEmpty()
+                            if (initialValue.isNotEmpty() && initialValue != currentUserHandle) {
+                                this += initialValue
+                            }
                             val mentions =
                                 inReplyToId
                                     ?.let { entryCache.get(it) }
