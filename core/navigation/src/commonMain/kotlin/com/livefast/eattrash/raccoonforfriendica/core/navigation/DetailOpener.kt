@@ -23,9 +23,14 @@ interface DetailOpener {
 
     fun openHashtag(tag: String)
 
-    fun openFollowers(user: UserModel)
+    fun openFollowers(
+        user: UserModel,
+        enableExport: Boolean = false,
+    )
 
-    fun openFollowing(user: UserModel)
+    fun openFollowing(
+        user: UserModel,
+        enableExport: Boolean = false)
 
     fun openFavorites()
 

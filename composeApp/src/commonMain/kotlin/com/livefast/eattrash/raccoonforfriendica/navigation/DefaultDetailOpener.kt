@@ -114,25 +114,31 @@ class DefaultDetailOpener(
         navigationCoordinator.push(screen)
     }
 
-    override fun openFollowers(user: UserModel) {
+    override fun openFollowers(
+        user: UserModel,
+        enableExport: Boolean) {
         scope.launch {
             userCache.put(user.id, user)
             val screen =
                 UserListScreen(
                     type = UserListType.Follower.toInt(),
                     userId = user.id,
+                    enableExport = enableExport,
                 )
             navigationCoordinator.push(screen)
         }
     }
 
-    override fun openFollowing(user: UserModel) {
+    override fun openFollowing(
+        user: UserModel,
+        enableExport: Boolean) {
         scope.launch {
             userCache.put(user.id, user)
             val screen =
                 UserListScreen(
                     type = UserListType.Following.toInt(),
                     userId = user.id,
+                    enableExport = enableExport,
                 )
             navigationCoordinator.push(screen)
         }
