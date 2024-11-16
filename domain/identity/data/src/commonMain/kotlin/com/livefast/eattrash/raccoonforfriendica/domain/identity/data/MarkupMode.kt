@@ -31,3 +31,19 @@ fun MarkupMode.toReadableName() =
         MarkupMode.Markdown -> LocalStrings.current.markupModeMarkdown
         MarkupMode.PlainText -> LocalStrings.current.markupModePlainText
     }
+
+fun Int.toMarkupMode(): MarkupMode =
+    when (this) {
+        1 -> MarkupMode.HTML
+        2 -> MarkupMode.BBCode
+        3 -> MarkupMode.Markdown
+        else -> MarkupMode.PlainText
+    }
+
+fun MarkupMode.toInt() =
+    when (this) {
+        MarkupMode.HTML -> 1
+        MarkupMode.BBCode -> 2
+        MarkupMode.Markdown -> 3
+        MarkupMode.PlainText -> 0
+    }

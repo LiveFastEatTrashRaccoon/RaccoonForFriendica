@@ -6,11 +6,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiFontSc
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.SettingsEntity
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadingMode
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toDomainMaxLines
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toImageLoadingMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toInt
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toMarkupMode
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toNotificationMode
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toSerialMaxLines
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toUrlOpeningMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -86,67 +88,10 @@ private fun SettingsModel.toEntity() =
         excludeRepliesFromTimeline = excludeRepliesFromTimeline,
         openGroupsInForumModeByDefault = openGroupsInForumModeByDefault,
         markupMode = markupMode.toInt(),
-        maxPostBodyLines = maxPostBodyLines.toEntityMaxLines(),
+        maxPostBodyLines = maxPostBodyLines.toSerialMaxLines(),
         defaultTimelineId = defaultTimelineId,
         notificationMode = notificationMode.toInt(),
         pullNotificationCheckInterval = pullNotificationCheckInterval?.inWholeSeconds,
         autoloadImages = autoloadImages.toInt(),
         hideNavigationBarWhileScrolling = hideNavigationBarWhileScrolling,
     )
-
-private fun Int.toMarkupMode(): MarkupMode =
-    when (this) {
-        1 -> MarkupMode.HTML
-        2 -> MarkupMode.BBCode
-        3 -> MarkupMode.Markdown
-        else -> MarkupMode.PlainText
-    }
-
-private fun MarkupMode.toInt() =
-    when (this) {
-        MarkupMode.HTML -> 1
-        MarkupMode.BBCode -> 2
-        MarkupMode.Markdown -> 3
-        MarkupMode.PlainText -> 0
-    }
-
-private fun Int.toDomainMaxLines(): Int =
-    when (this) {
-        // interpret null values as unlimited
-        0 -> Int.MAX_VALUE
-        else -> this
-    }
-
-private fun Int.toEntityMaxLines(): Int =
-    when (this) {
-        Int.MAX_VALUE -> 0
-        else -> this
-    }
-
-private fun Int.toNotificationMode(): NotificationMode =
-    when (this) {
-        1 -> NotificationMode.Pull
-        2 -> NotificationMode.Push
-        else -> NotificationMode.Disabled
-    }
-
-private fun NotificationMode.toInt() =
-    when (this) {
-        NotificationMode.Pull -> 1
-        NotificationMode.Push -> 2
-        else -> 0
-    }
-
-private fun ImageLoadingMode.toInt(): Int =
-    when (this) {
-        ImageLoadingMode.Always -> 1
-        ImageLoadingMode.OnWifi -> 2
-        else -> 0
-    }
-
-private fun Int.toImageLoadingMode(): ImageLoadingMode =
-    when (this) {
-        2 -> ImageLoadingMode.OnWifi
-        1 -> ImageLoadingMode.Always
-        else -> ImageLoadingMode.OnDemand
-    }
