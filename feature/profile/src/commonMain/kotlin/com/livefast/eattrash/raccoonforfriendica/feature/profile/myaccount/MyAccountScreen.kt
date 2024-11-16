@@ -185,12 +185,18 @@ object MyAccountScreen : Tab {
                             },
                             onOpenFollowers = {
                                 uiState.user?.also { user ->
-                                    detailOpener.openFollowers(user)
+                                    detailOpener.openFollowers(
+                                        user = user,
+                                        enableExport = true,
+                                    )
                                 }
                             },
                             onOpenFollowing = {
                                 uiState.user?.also { user ->
-                                    detailOpener.openFollowing(user)
+                                    detailOpener.openFollowing(
+                                        user = user,
+                                        enableExport = true,
+                                    )
                                 }
                             },
                             onEditClicked = {

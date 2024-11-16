@@ -20,6 +20,7 @@ val featureUserListModule =
                 notificationCenter = get(),
                 userCache = get(),
                 imageAutoloadObserver = get(),
+                exportUserList = get(),
             )
         }
     }

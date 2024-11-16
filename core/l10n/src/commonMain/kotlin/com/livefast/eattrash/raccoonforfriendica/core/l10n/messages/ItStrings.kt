@@ -451,4 +451,5 @@ internal val ItStrings =
         override val appIconClassical = "Classica"
         override val settingsItemExport = "Esporta impostazioni"
         override val settingsItemImport = "Importa impostazioni"
+        override val actionExport = "Esporta"
     }

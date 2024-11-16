@@ -21,6 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsShareMod
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsUrlModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.domainContentPaginationModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.domainContentRepositoryModule
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.di.domainContentUseCaseModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.domainIdentityRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.domainIdentityUseCaseModule
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di.domainPullNotificationModule
@@ -80,6 +81,7 @@ fun initKoin(): Koin {
                 coreUtilsUrlModule,
                 domainContentPaginationModule,
                 domainContentRepositoryModule,
+                domainContentUseCaseModule,
                 domainIdentityRepositoryModule,
                 domainIdentityUseCaseModule,
                 domainPullNotificationModule,

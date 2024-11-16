@@ -449,4 +449,5 @@ internal val PlStrings =
         override val appIconClassical = "Klasyczny"
         override val settingsItemExport = "Eksportowanie ustawień"
         override val settingsItemImport = "Importowanie ustawień"
+        override val actionExport = "Eksportuj"
     }

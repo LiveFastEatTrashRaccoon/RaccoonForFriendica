@@ -451,4 +451,5 @@ internal val DeStrings =
         override val appIconClassical = "Klassisch"
         override val settingsItemExport = "Einstellungen exportieren"
         override val settingsItemImport = "Einstellungen importieren"
+        override val actionExport = "Exportieren"
     }

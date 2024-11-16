@@ -21,6 +21,8 @@ interface UserListMviModel :
         data class Unfollow(
             val userId: String,
         ) : Intent
+
+        data object Export : Intent
     }
 
     data class State(
@@ -33,9 +35,14 @@ interface UserListMviModel :
         val user: UserModel? = null,
         val users: List<UserModel> = emptyList(),
         val hideNavigationBarWhileScrolling: Boolean = true,
+        val operationInProgress: Boolean = false,
     )
 
     sealed interface Effect {
         data object BackToTop : Effect
+
+        data class SaveList(
+            val content: String,
+        ) : Effect
     }
 }

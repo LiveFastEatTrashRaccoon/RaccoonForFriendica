@@ -14,6 +14,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ExportUserListUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ExportUserSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -34,6 +36,7 @@ internal class UserListViewModel(
     private val notificationCenter: NotificationCenter,
     private val userCache: LocalItemCache<UserModel>,
     private val imageAutoloadObserver: ImageAutoloadObserver,
+    private val exportUserList: ExportUserListUseCase,
 ) : DefaultMviModel<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>(
         initialState = UserListMviModel.State(),
     ),
@@ -106,6 +109,7 @@ internal class UserListViewModel(
                 }
             is UserListMviModel.Intent.Follow -> follow(intent.userId)
             is UserListMviModel.Intent.Unfollow -> unfollow(intent.userId)
+            UserListMviModel.Intent.Export -> handleExport()
         }
     }
 
@@ -227,6 +231,22 @@ internal class UserListViewModel(
                         notificationCenter.send(UserUpdatedEvent(user = user))
                     }
             }
+        }
+    }
+
+    private fun handleExport() {
+        val specification =
+            when (type) {
+                UserListType.Follower -> ExportUserSpecification.Follower(userId.orEmpty())
+                UserListType.Following -> ExportUserSpecification.Following(userId.orEmpty())
+                UserListType.UsersFavorite -> null
+                UserListType.UsersReblog -> null
+            } ?: return
+        screenModelScope.launch {
+            updateState { it.copy(operationInProgress = true) }
+            val content = exportUserList(specification)
+            updateState { it.copy(operationInProgress = false) }
+            emitEffect(UserListMviModel.Effect.SaveList(content))
         }
     }
 }
