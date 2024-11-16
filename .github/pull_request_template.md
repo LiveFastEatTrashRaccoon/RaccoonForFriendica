@@ -1,6 +1,6 @@
 ## Technical details
 <!-- Describe the motivation and scope of your changes -->
-This PR…
+This PR …
 
 ## Additional notes
 <!-- Anything to declare for code review? -->
