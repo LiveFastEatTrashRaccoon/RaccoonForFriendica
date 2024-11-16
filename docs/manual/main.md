@@ -610,6 +610,7 @@ sections:
   - **Font size** configures the scale factor applied to fonts in the UI
   - **Theme color** allows to choose a color to generate a Material 3 palette from;
   - **Material You** generate a color palette based on the launcher image;
+  - **Application icon** change the application icon (default or "classic" one);
 - **NSFW**
   - **Manage filters** opens the ban and [filter management](#manage-filters) screen;
   - **Include NSFW contents** enables a client-side filter to exclude sensitive posts;
@@ -617,7 +618,11 @@ sections:
     when they occur in timelines;
 - **Debug**
   - **Enable anonymous crash reports** determines whether anonymous crash reports are enabled for
-    all accounts (changing this option requires the app to be restarted afterwards).
+    all accounts (changing this option requires the app to be restarted afterwards);
+- **Other**
+  - **Export settings** export the current settings to a JSON file (which can be imported if you
+    change account or clear the app data);
+  - **Import settings** import application settings from a JSON file;
 
 <p id="markdown-formatting">
 * please choose wisely: <em>Markdown</em> is supported only by some versions of Mastodon (e.g.
