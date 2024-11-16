@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Explicit
+import androidx.compose.material.icons.filled.Handyman
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,16 +23,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -52,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomColorPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsColorRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
@@ -66,6 +73,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResour
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
+import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.getFileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadingMode
@@ -74,6 +82,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpening
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManagerState
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.toReadableName
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
@@ -88,6 +99,11 @@ class SettingsScreen : Screen {
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val detailOpener = remember { getDetailOpener() }
         val coreResources = remember { getCoreResources() }
+        val scope = rememberCoroutineScope()
+        val fileSystemManager = remember { getFileSystemManager() }
+        val snackbarHostState = remember { SnackbarHostState() }
+        val successMessage = LocalStrings.current.messageSuccess
+        val errorMessage = LocalStrings.current.messageGenericError
         var languageBottomSheetOpened by remember { mutableStateOf(false) }
         var themeBottomSheetOpened by remember { mutableStateOf(false) }
         var fontFamilyBottomSheetOpened by remember { mutableStateOf(false) }
@@ -105,6 +121,19 @@ class SettingsScreen : Screen {
         var pushNotificationDistributorBottomSheetOpened by remember { mutableStateOf(false) }
         var imageLoadingModeBottomSheetOpened by remember { mutableStateOf(false) }
         var appIconBottomSheetOpened by remember { mutableStateOf(false) }
+        var fileInputOpened by remember { mutableStateOf(false) }
+        var settingsContent by remember { mutableStateOf<String?>(null) }
+
+        LaunchedEffect(model) {
+            model.effects
+                .onEach { evt ->
+                    when (evt) {
+                        is SettingsMviModel.Effect.SaveSettings -> {
+                            settingsContent = evt.content
+                        }
+                    }
+                }.launchIn(this)
+        }
 
         Scaffold(
             topBar = {
@@ -132,6 +161,15 @@ class SettingsScreen : Screen {
                         }
                     },
                 )
+            },
+            snackbarHost = {
+                SnackbarHost(snackbarHostState) { data ->
+                    Snackbar(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        snackbarData = data,
+                    )
+                }
             },
             content = { padding ->
                 Box(
@@ -397,11 +435,35 @@ class SettingsScreen : Screen {
                             },
                         )
 
+                        // Other section
+                        if (uiState.supportSettingsImportExport) {
+                            SettingsHeader(
+                                icon = Icons.Default.Handyman,
+                                title = LocalStrings.current.itemOther,
+                            )
+                            SettingsRow(
+                                title = LocalStrings.current.settingsItemExport,
+                                onTap = {
+                                    model.reduce(SettingsMviModel.Intent.ExportSettings)
+                                },
+                            )
+                            SettingsRow(
+                                title = LocalStrings.current.settingsItemImport,
+                                onTap = {
+                                    fileInputOpened = true
+                                },
+                            )
+                        }
+
                         Spacer(modifier = Modifier.height(Spacing.xxxl))
                     }
                 }
             },
         )
+
+        if (uiState.loading) {
+            ProgressHud()
+        }
 
         if (languageBottomSheetOpened) {
             CustomModalBottomSheet(
@@ -874,6 +936,34 @@ class SettingsScreen : Screen {
                 },
             )
         }
+
+        if (fileInputOpened) {
+            fileSystemManager.readFromFile(mimeTypes = arrayOf(SETTINGS_MIME_TYPE)) { content ->
+                if (content != null) {
+                    model.reduce(SettingsMviModel.Intent.ImportSettings(content))
+                }
+                fileInputOpened = false
+            }
+        }
+
+        settingsContent?.also { content ->
+            fileSystemManager.writeToFile(
+                mimeType = SETTINGS_MIME_TYPE,
+                name = SETTINGS_FILE_NAME,
+                data = content,
+            ) { success ->
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        if (success) {
+                            successMessage
+                        } else {
+                            errorMessage
+                        },
+                    )
+                }
+                settingsContent = null
+            }
+        }
     }
 }
 
@@ -901,3 +991,6 @@ private fun Int.toMaxBodyLinesReadableName(): String =
         Int.MAX_VALUE -> LocalStrings.current.settingsOptionUnlimited
         else -> this.toString()
     }
+
+private const val SETTINGS_MIME_TYPE = "application/json"
+private const val SETTINGS_FILE_NAME = "raccoon4friendica_settings.json"

@@ -14,6 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
@@ -28,6 +29,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsMo
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ExportSettingsUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ImportSettingsUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManagerState
@@ -49,6 +52,9 @@ class SettingsViewModel(
     private val pushNotificationManager: PushNotificationManager,
     private val crashReportManager: CrashReportManager,
     private val appIconManager: AppIconManager,
+    private val fileSystemManager: FileSystemManager,
+    private val importSettings: ImportSettingsUseCase,
+    private val exportSettings: ExportSettingsUseCase,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
@@ -183,6 +189,7 @@ class SettingsViewModel(
                                 imageLoadingMode = settings.autoloadImages,
                                 notificationMode = settings.notificationMode,
                                 hideNavigationBarWhileScrolling = settings.hideNavigationBarWhileScrolling,
+                                supportSettingsImportExport = fileSystemManager.isSupported,
                             )
                         }
                     }
@@ -334,6 +341,9 @@ class SettingsViewModel(
                 screenModelScope.launch {
                     changeAppIcon(intent.variant)
                 }
+
+            is SettingsMviModel.Intent.ExportSettings -> handleExportSettings()
+            is SettingsMviModel.Intent.ImportSettings -> handleImportSettings(intent.content)
         }
     }
 
@@ -482,5 +492,22 @@ class SettingsViewModel(
     private suspend fun changeAppIcon(variant: AppIconVariant) {
         appIconManager.changeIcon(variant)
         updateState { it.copy(appIconRestartRequired = true) }
+    }
+
+    private fun handleImportSettings(content: String) {
+        screenModelScope.launch {
+            updateState { it.copy(loading = true) }
+            importSettings(content)
+            updateState { it.copy(loading = false) }
+        }
+    }
+
+    private fun handleExportSettings() {
+        screenModelScope.launch {
+            updateState { it.copy(loading = true) }
+            val content = exportSettings()
+            updateState { it.copy(loading = false) }
+            emitEffect(SettingsMviModel.Effect.SaveSettings(content))
+        }
     }
 }
