@@ -37,7 +37,7 @@ fun SettingsColorRow(
         modifier =
             modifier
                 .clip(
-                    shape = RoundedCornerShape(CornerSize.l),
+                    shape = RoundedCornerShape(CornerSize.xl),
                 ).then(
                     if (onTap != null) {
                         Modifier.clickable {

@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.appicon
 
 import androidx.compose.runtime.Composable
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import kotlinx.coroutines.flow.StateFlow
 
 sealed interface AppIconVariant {
     data object Default : AppIconVariant
@@ -11,6 +12,7 @@ sealed interface AppIconVariant {
 
 interface AppIconManager {
     val supportsMultipleIcons: Boolean
+    val current: StateFlow<AppIconVariant>
 
     fun changeIcon(variant: AppIconVariant)
 }

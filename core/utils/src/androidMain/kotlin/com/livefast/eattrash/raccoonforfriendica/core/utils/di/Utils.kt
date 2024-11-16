@@ -141,6 +141,9 @@ actual val coreUtilsCalendarModule =
 actual val coreAppIconModule =
     module {
         single<AppIconManager> {
-            DefaultAppIconManager(context = get())
+            DefaultAppIconManager(
+                context = get(),
+                keyStore = get(),
+            )
         }
     }

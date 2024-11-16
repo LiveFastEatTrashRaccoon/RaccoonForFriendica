@@ -151,6 +151,7 @@ interface SettingsMviModel :
         val crashReportRestartRequired: Boolean = false,
         val hideNavigationBarWhileScrolling: Boolean = true,
         val appIconChangeSupported: Boolean = true,
+        val appIconVariant: AppIconVariant = AppIconVariant.Default,
         val appIconRestartRequired: Boolean = false,
     )
 
