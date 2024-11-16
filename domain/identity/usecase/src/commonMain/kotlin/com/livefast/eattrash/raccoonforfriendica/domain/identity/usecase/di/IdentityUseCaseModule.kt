@@ -6,12 +6,16 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.Default
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultContentPreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultDeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultEntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultExportSettingsUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultImportSettingsUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultLoginUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultLogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DefaultSwitchAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.EntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ExportSettingsUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ImportSettingsUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
@@ -80,6 +84,16 @@ val domainIdentityUseCaseModule =
                 timelineEntryRepository = get(),
                 trendingRepository = get(),
                 notificationRepository = get(),
+            )
+        }
+        single<ImportSettingsUseCase> {
+            DefaultImportSettingsUseCase(
+                settingsRepository = get(),
+            )
+        }
+        single<ExportSettingsUseCase> {
+            DefaultExportSettingsUseCase(
+                settingsRepository = get(),
             )
         }
     }
