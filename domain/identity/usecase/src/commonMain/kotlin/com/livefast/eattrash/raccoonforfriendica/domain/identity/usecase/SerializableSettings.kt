@@ -1,11 +1,9 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
+package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiTheme
-import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
-import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.SettingsEntity
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toDomainMaxLines
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toImageLoadingMode
@@ -14,38 +12,43 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toMarkupMo
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toNotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toSerialMaxLines
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toUrlOpeningMode
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.seconds
 
-internal class DefaultSettingsRepository(
-    private val settingsDao: SettingsDao,
-) : SettingsRepository {
-    override val current = MutableStateFlow<SettingsModel?>(null)
-
-    override fun changeCurrent(settings: SettingsModel) {
-        current.update { settings }
+internal val jsonSerializationStrategy =
+    Json {
+        encodeDefaults = true
+        prettyPrint = true
     }
 
-    override suspend fun get(accountId: Long) = settingsDao.getBy(accountId)?.toModel()
+@Serializable
+internal data class SerializableSettings(
+    val lang: String = "en",
+    val theme: Int = 0,
+    val fontFamily: Int = 0,
+    val fontScale: Int = 0,
+    val dynamicColors: Boolean = false,
+    val customSeedColor: Int? = null,
+    val defaultTimelineType: Int = 0,
+    val defaultTimelineId: String? = null,
+    val includeNsfw: Boolean = false,
+    val blurNsfw: Boolean = true,
+    val urlOpeningMode: Int = 0,
+    val defaultPostVisibility: Int = 0,
+    val defaultReplyVisibility: Int = 1,
+    val excludeRepliesFromTimeline: Boolean = false,
+    val openGroupsInForumModeByDefault: Boolean = true,
+    val markupMode: Int = 0,
+    val maxPostBodyLines: Int = Int.MAX_VALUE,
+    val notificationMode: Int = 0,
+    val pullNotificationCheckInterval: Long? = null,
+    val autoloadImages: Int = 1,
+    val hideNavigationBarWhileScrolling: Boolean = true,
+)
 
-    override suspend fun create(settings: SettingsModel) {
-        settingsDao.insert(settings.toEntity())
-    }
-
-    override suspend fun update(settings: SettingsModel) {
-        settingsDao.update(settings.toEntity())
-    }
-
-    override suspend fun delete(settings: SettingsModel) {
-        settingsDao.delete(settings.toEntity())
-    }
-}
-
-private fun SettingsEntity.toModel() =
+internal fun SerializableSettings.toModel() =
     SettingsModel(
-        id = id,
-        accountId = accountId,
         lang = lang,
         theme = theme.toUiTheme(),
         fontFamily = fontFamily.toUiFontFamily(),
@@ -69,10 +72,8 @@ private fun SettingsEntity.toModel() =
         hideNavigationBarWhileScrolling = hideNavigationBarWhileScrolling,
     )
 
-private fun SettingsModel.toEntity() =
-    SettingsEntity(
-        id = id,
-        accountId = accountId,
+internal fun SettingsModel.toData() =
+    SerializableSettings(
         lang = lang,
         theme = theme.toInt(),
         fontFamily = fontFamily.toInt(),

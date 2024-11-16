@@ -18,3 +18,17 @@ fun NotificationMode.toReadableName(): String =
         NotificationMode.Pull -> LocalStrings.current.settingsNotificationModePull
         NotificationMode.Push -> LocalStrings.current.settingsNotificationModePush
     }
+
+fun Int.toNotificationMode(): NotificationMode =
+    when (this) {
+        1 -> NotificationMode.Pull
+        2 -> NotificationMode.Push
+        else -> NotificationMode.Disabled
+    }
+
+fun NotificationMode.toInt() =
+    when (this) {
+        NotificationMode.Pull -> 1
+        NotificationMode.Push -> 2
+        else -> 0
+    }

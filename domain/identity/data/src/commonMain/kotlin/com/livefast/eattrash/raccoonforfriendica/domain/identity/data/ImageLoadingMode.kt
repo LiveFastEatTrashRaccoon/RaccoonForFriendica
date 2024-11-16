@@ -18,3 +18,17 @@ fun ImageLoadingMode.toReadableName(): String =
         ImageLoadingMode.Always -> LocalStrings.current.imageLoadingModeAlways
         ImageLoadingMode.OnDemand -> LocalStrings.current.imageLoadingModeOnDemand
     }
+
+fun ImageLoadingMode.toInt(): Int =
+    when (this) {
+        ImageLoadingMode.Always -> 1
+        ImageLoadingMode.OnWifi -> 2
+        else -> 0
+    }
+
+fun Int.toImageLoadingMode(): ImageLoadingMode =
+    when (this) {
+        2 -> ImageLoadingMode.OnWifi
+        1 -> ImageLoadingMode.Always
+        else -> ImageLoadingMode.OnDemand
+    }

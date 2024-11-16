@@ -449,4 +449,6 @@ internal val EsStrings =
         override val settingsItemAppIcon = "Icono de la aplicación"
         override val appIconDefault = "Estandar"
         override val appIconClassical = "Clásico"
+        override val settingsItemExport = "Exportar configuración"
+        override val settingsItemImport = "Importar configuración"
     }

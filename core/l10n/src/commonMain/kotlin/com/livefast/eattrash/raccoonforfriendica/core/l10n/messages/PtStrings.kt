@@ -453,4 +453,6 @@ internal val PtStrings =
         override val settingsItemAppIcon = "Ícone da aplicação"
         override val appIconDefault = "Predefinição"
         override val appIconClassical = "Clássico"
+        override val settingsItemExport = "Exportar as definições"
+        override val settingsItemImport = "Importar as definições"
     }

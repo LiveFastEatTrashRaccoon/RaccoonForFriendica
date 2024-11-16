@@ -449,4 +449,6 @@ internal val DeStrings =
         override val settingsItemAppIcon = "Anwendungssymbol"
         override val appIconDefault = "Standard"
         override val appIconClassical = "Klassisch"
+        override val settingsItemExport = "Einstellungen exportieren"
+        override val settingsItemImport = "Einstellungen importieren"
     }

@@ -656,6 +656,8 @@ costituita dalle seguenti sezioni:
   - **Colore tema** permette di selezionare un colore a partire dal quale verrà generata una palette
     di colori Material 3;
   - **Material You** genera una palette di colori a partire dall'immagine di sfondo;
+  - **Icona applicatione** permette di selezionare un'icona per l'applicazione (predefinita o "
+    classica");
 - **NSFW**
   - **Gestione filtri** apre la schermata di [gestione](#gestione-filtri) degli utenti bloccati e
     silenziati;
@@ -666,7 +668,11 @@ costituita dalle seguenti sezioni:
 - **Debug**
   - **Abilita segnalazioni anonime arresti anomali** determina se abilitare o meno le segnalazioni
     anonime inviate in caso di arresto anomalo per tutti gli account (affinché la modifica sia
-    effettiva sarà necessario riavviare l'applicazione).
+    effettiva sarà necessario riavviare l'applicazione);
+- **Altro**
+  - **Esporta impostazioni** salva le impostazioni attuali in un file JSON (per poterle importare
+    nuovamente se cambi account o cancelli i dati dell'applicazione);
+  - **Importa impostazioni** carica le impostazioni dell'app da un file JSON;
 
 <p id="markdown-formatting">
 * scegliere con cautela: <em>Markdown</em> è supportato solo da alcune versioni di Mastodon (es.

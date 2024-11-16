@@ -30,3 +30,16 @@ data class SettingsModel(
     val autoloadImages: ImageLoadingMode = ImageLoadingMode.Always,
     val hideNavigationBarWhileScrolling: Boolean = true,
 )
+
+fun Int.toDomainMaxLines(): Int =
+    when (this) {
+        // interpret null values as unlimited
+        0 -> Int.MAX_VALUE
+        else -> this
+    }
+
+fun Int.toSerialMaxLines(): Int =
+    when (this) {
+        Int.MAX_VALUE -> 0
+        else -> this
+    }

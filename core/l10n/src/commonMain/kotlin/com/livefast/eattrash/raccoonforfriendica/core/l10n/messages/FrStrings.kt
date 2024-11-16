@@ -454,4 +454,6 @@ internal val FrStrings =
         override val settingsItemAppIcon = "Icône de l'application"
         override val appIconDefault = "Défaut"
         override val appIconClassical = "Classique"
+        override val settingsItemExport = "Exporter les paramètres"
+        override val settingsItemImport = "Importer les paramètres"
     }

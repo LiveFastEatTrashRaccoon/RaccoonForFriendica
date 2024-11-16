@@ -114,6 +114,12 @@ interface SettingsMviModel :
         data class ChangeAppIcon(
             val variant: AppIconVariant,
         ) : Intent
+
+        data object ExportSettings : Intent
+
+        data class ImportSettings(
+            val content: String,
+        ) : Intent
     }
 
     data class State(
@@ -153,7 +159,13 @@ interface SettingsMviModel :
         val appIconChangeSupported: Boolean = true,
         val appIconVariant: AppIconVariant = AppIconVariant.Default,
         val appIconRestartRequired: Boolean = false,
+        val loading: Boolean = false,
+        val supportSettingsImportExport: Boolean = true,
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data class SaveSettings(
+            val content: String,
+        ) : Effect
+    }
 }
