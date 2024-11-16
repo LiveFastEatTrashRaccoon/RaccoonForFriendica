@@ -6,10 +6,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.Def
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultFetchEntryUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultFetchUserUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultHashtagProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultUserProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.EntryProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.FetchEntryUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.FetchUserUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.HashtagProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.UserProcessor
 import org.koin.dsl.module
 
 val domainUrlHandlerModule =
@@ -27,6 +29,12 @@ val domainUrlHandlerModule =
         single<HashtagProcessor> {
             DefaultHashtagProcessor(
                 detailOpener = get(),
+            )
+        }
+        single<UserProcessor> {
+            DefaultUserProcessor(
+                detailOpener = get(),
+                fetchUser = get(),
             )
         }
         single<EntryProcessor> {
