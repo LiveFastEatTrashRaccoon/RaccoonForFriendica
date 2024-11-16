@@ -342,6 +342,7 @@ class SettingsScreen : Screen {
                                     } else {
                                         null
                                     },
+                                value = uiState.appIconVariant.toReadableName(),
                                 onTap = {
                                     appIconBottomSheetOpened = true
                                 },

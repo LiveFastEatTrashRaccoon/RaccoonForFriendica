@@ -145,6 +145,11 @@ class SettingsViewModel(
                     updateState { it.copy(crashReportRestartRequired = value) }
                 }.launchIn(this)
 
+            appIconManager.current
+                .onEach { variant ->
+                    updateState { it.copy(appIconVariant = variant) }
+                }.launchIn(this)
+
             settingsRepository.current
                 .onEach { settings ->
                     if (settings != null) {
