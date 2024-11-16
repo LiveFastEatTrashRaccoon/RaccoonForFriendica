@@ -42,7 +42,7 @@ fun SettingsImageInfo(
             modifier
                 .fillMaxWidth()
                 .clip(
-                    shape = RoundedCornerShape(CornerSize.l),
+                    shape = RoundedCornerShape(CornerSize.xl),
                 ).then(
                     if (onEdit != null) {
                         Modifier.clickable {

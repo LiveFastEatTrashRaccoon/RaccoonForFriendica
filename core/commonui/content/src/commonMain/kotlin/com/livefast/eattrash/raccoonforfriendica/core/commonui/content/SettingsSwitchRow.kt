@@ -28,7 +28,7 @@ fun SettingsSwitchRow(
         modifier =
             Modifier
                 .clip(
-                    shape = RoundedCornerShape(CornerSize.l),
+                    shape = RoundedCornerShape(CornerSize.xl),
                 ).clickable {
                     onValueChanged(!value)
                 }.padding(horizontal = Spacing.m),
