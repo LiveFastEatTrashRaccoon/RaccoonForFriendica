@@ -444,4 +444,6 @@ internal open class DefaultStrings : Strings {
     override val settingsItemAppIcon = "Application icon"
     override val appIconDefault = "Default"
     override val appIconClassical = "Classical"
+    override val settingsItemExport = "Export settings"
+    override val settingsItemImport = "Import settings"
 }

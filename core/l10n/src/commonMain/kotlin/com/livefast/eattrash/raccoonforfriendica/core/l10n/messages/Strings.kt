@@ -396,6 +396,8 @@ interface Strings {
     val settingsItemAppIcon: String
     val appIconDefault: String
     val appIconClassical: String
+    val settingsItemExport: String
+    val settingsItemImport: String
 }
 
 object Locales {
