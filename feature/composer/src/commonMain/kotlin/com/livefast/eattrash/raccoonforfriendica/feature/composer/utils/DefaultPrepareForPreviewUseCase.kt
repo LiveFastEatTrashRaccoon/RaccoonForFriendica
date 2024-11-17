@@ -77,29 +77,29 @@ internal class DefaultPrepareForPreviewUseCase(
                 append("<a href=\"$url\">$anchor</a>")
             }
         }.run {
-            Regex("^# (?<title>.*?)($|\n)").substituteAllOccurrences(this) { match ->
+            Regex("(?<=^|\n)# (?<title>.*?)(?=$|\n)").substituteAllOccurrences(this) { match ->
                 val content = match.groups["title"]?.value.orEmpty()
-                append("<h1>$content</h1><br />")
+                append("<h1>$content</h1>\n")
             }
         }.run {
-            Regex("^## (?<title>.*?)($|\n)").substituteAllOccurrences(this) { match ->
+            Regex("(?<=^|\n)## (?<title>.*?)(?=\$|\n)").substituteAllOccurrences(this) { match ->
                 val content = match.groups["title"]?.value.orEmpty()
-                append("<h2>$content</h2><br />")
+                append("<h2>$content</h2>\n")
             }
         }.run {
-            Regex("^### (?<title>.*?)($|\n)").substituteAllOccurrences(this) { match ->
+            Regex("(?<=^|\n)### (?<title>.*?)(?=$|\n)").substituteAllOccurrences(this) { match ->
                 val content = match.groups["title"]?.value.orEmpty()
-                append("<h3>$content</h3><br />")
+                append("<h3>$content</h3>\n")
             }
         }.run {
-            Regex("^#### (?<title>.*?)($|\n)").substituteAllOccurrences(this) { match ->
+            Regex("(?<=^|\n)#### (?<title>.*?)(?=\$|\n)").substituteAllOccurrences(this) { match ->
                 val content = match.groups["title"]?.value.orEmpty()
-                append("<h4>$content</h4><br />")
+                append("<h4>$content</h4>\n")
             }
         }.run {
-            Regex("^##### (?<title>.*?)($|\n)").substituteAllOccurrences(this) { match ->
+            Regex("(?<=^|\n)##### (?<title>.*?)(?=\$|\n)").substituteAllOccurrences(this) { match ->
                 val content = match.groups["title"]?.value.orEmpty()
-                append("<h5>$content</h5><br />")
+                append("<h5>$content</h5>\n")
             }
         }.replace("<ul>", "\n")
             .replace("</ul>", "\n\n")
