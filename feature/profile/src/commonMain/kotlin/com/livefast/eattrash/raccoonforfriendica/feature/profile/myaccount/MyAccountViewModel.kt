@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedba
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
@@ -208,7 +209,7 @@ class MyAccountViewModel(
         }
 
         updateState { it.copy(loading = true) }
-        val entries = paginationManager.loadNextPage()
+        val entries = paginationManager.loadNextPage().distinctBy { it.safeKey }
         entries.preloadImages()
         updateState {
             it.copy(
