@@ -44,6 +44,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.PrepareForPreviewUseCase
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.StripMarkupUseCase
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -78,6 +79,7 @@ class ComposerViewModel(
     private val emojiRepository: EmojiRepository,
     private val userRepository: UserRepository,
     private val prepareForPreview: PrepareForPreviewUseCase,
+    private val stripMarkup: StripMarkupUseCase,
     private val notificationCenter: NotificationCenter,
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
         initialState = ComposerMviModel.State(),
@@ -87,9 +89,7 @@ class ComposerViewModel(
     private var editedPostId: String? = null
     private var draftId: String? = null
     private var mentionSuggestionJob: Job? = null
-    private val markupMode: MarkupMode by lazy {
-        settingsRepository.current.value?.markupMode ?: MarkupMode.PlainText
-    }
+
     private val shouldUserPhotoRepository: Boolean by lazy {
         supportedFeatureRepository.features.value.supportsPhotoGallery
     }
@@ -131,6 +131,17 @@ class ComposerViewModel(
                                         this += Visibility.Circle()
                                     }
                                 },
+                            availableMarkupModes =
+                                buildList {
+                                    this += MarkupMode.PlainText
+                                    if (features.supportsBBCode) {
+                                        this += MarkupMode.BBCode
+                                    }
+                                    this += MarkupMode.HTML
+                                    if (features.supportsMarkdown) {
+                                        this += MarkupMode.Markdown
+                                    }
+                                },
                         )
                     }
                 }.launchIn(this)
@@ -153,7 +164,7 @@ class ComposerViewModel(
                     attachmentLimit = nodeInfo?.attachmentLimit,
                     visibility = initialVisibility,
                     inReplyTo = parent,
-                    supportsRichEditing = currentSettings?.markupMode?.supportsRichEditing == true,
+                    markupMode = currentSettings?.markupMode ?: MarkupMode.PlainText,
                 )
             }
 
@@ -486,6 +497,8 @@ class ComposerViewModel(
                     enableAltTextCheck = intent.enableAltTextCheck,
                     enableParentVisibilityCheck = intent.enableParentVisibilityCheck,
                 )
+
+            is ComposerMviModel.Intent.ChangeMarkupMode -> changeMarkupMode(intent.mode)
         }
     }
 
@@ -558,6 +571,7 @@ class ComposerViewModel(
         anchor: String,
         url: String,
     ) {
+        val markupMode = uiState.value.markupMode
         screenModelScope.launch {
             val before =
                 when (markupMode) {
@@ -674,6 +688,7 @@ class ComposerViewModel(
     }
 
     private fun addBoldFormat(fieldType: ComposerFieldType) {
+        val markupMode = uiState.value.markupMode
         screenModelScope.launch {
             val value =
                 when (fieldType) {
@@ -737,6 +752,7 @@ class ComposerViewModel(
     }
 
     private fun addItalicFormat(fieldType: ComposerFieldType) {
+        val markupMode = uiState.value.markupMode
         screenModelScope.launch {
             val value =
                 when (fieldType) {
@@ -800,6 +816,7 @@ class ComposerViewModel(
     }
 
     private fun addUnderlineFormat(fieldType: ComposerFieldType) {
+        val markupMode = uiState.value.markupMode
         screenModelScope.launch {
             val value =
                 when (fieldType) {
@@ -863,6 +880,7 @@ class ComposerViewModel(
     }
 
     private fun addStrikethroughFormat(fieldType: ComposerFieldType) {
+        val markupMode = uiState.value.markupMode
         screenModelScope.launch {
             val value =
                 when (fieldType) {
@@ -926,6 +944,7 @@ class ComposerViewModel(
     }
 
     private fun addCodeFormat(fieldType: ComposerFieldType) {
+        val markupMode = uiState.value.markupMode
         screenModelScope.launch {
             val value =
                 when (fieldType) {
@@ -1041,6 +1060,7 @@ class ComposerViewModel(
     }
 
     private fun insertList() {
+        val markupMode = uiState.value.markupMode
         screenModelScope.launch {
             val before =
                 when (markupMode) {
@@ -1318,17 +1338,17 @@ class ComposerViewModel(
                     currentState.spoilerValue.text
                         .takeIf { currentState.hasSpoiler }
                         ?.let {
-                            prepareForPreview(text = it, mode = markupMode)
+                            prepareForPreview(text = it, mode = currentState.markupMode)
                         },
                 title =
                     currentState.titleValue.text
                         .takeIf { currentState.hasTitle }
                         ?.let {
-                            prepareForPreview(text = it, mode = markupMode)
+                            prepareForPreview(text = it, mode = currentState.markupMode)
                         },
                 content =
                     currentState.bodyValue.text.let {
-                        prepareForPreview(text = it, mode = markupMode)
+                        prepareForPreview(text = it, mode = currentState.markupMode)
                     },
                 poll = currentState.poll,
                 attachments = currentState.attachments,
@@ -1401,6 +1421,30 @@ class ComposerViewModel(
         }
 
         return true
+    }
+
+    private fun changeMarkupMode(mode: MarkupMode) {
+        val currentState = uiState.value
+        val oldMode = currentState.markupMode
+        if (mode == oldMode) {
+            return
+        }
+        screenModelScope.launch {
+            val newTitle =
+                currentState.titleValue.text.let { stripMarkup(text = it, mode = oldMode) }
+            val newSpoiler =
+                currentState.spoilerValue.text.let { stripMarkup(text = it, mode = oldMode) }
+            val newBody =
+                currentState.bodyValue.text.let { stripMarkup(text = it, mode = oldMode) }
+            updateState {
+                it.copy(
+                    titleValue = TextFieldValue(newTitle),
+                    spoilerValue = TextFieldValue(newSpoiler),
+                    bodyValue = TextFieldValue(newBody),
+                    markupMode = mode,
+                )
+            }
+        }
     }
 
     private fun submit(

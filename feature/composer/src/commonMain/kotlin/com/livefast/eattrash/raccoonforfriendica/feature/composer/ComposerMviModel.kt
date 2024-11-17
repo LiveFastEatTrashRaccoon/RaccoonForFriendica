@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 
 sealed interface ComposerFieldType {
     data object Spoiler : ComposerFieldType
@@ -191,6 +192,10 @@ interface ComposerMviModel :
         data object CreatePreview : Intent
 
         data object InsertList : Intent
+
+        data class ChangeMarkupMode(
+            val mode: MarkupMode,
+        ) : Intent
     }
 
     data class State(
@@ -229,9 +234,10 @@ interface ComposerMviModel :
         val shouldShowMentionSuggestions: Boolean = false,
         val mentionSuggestionsLoading: Boolean = false,
         val mentionSuggestions: List<UserModel> = emptyList(),
-        val supportsRichEditing: Boolean = false,
         val autoloadImages: Boolean = true,
         val inReplyTo: TimelineEntryModel? = null,
+        val markupMode: MarkupMode = MarkupMode.PlainText,
+        val availableMarkupModes: List<MarkupMode> = emptyList(),
     )
 
     sealed interface Effect {
@@ -262,3 +268,6 @@ interface ComposerMviModel :
         ) : ValidationError
     }
 }
+
+internal val ComposerMviModel.State.supportsRichEditing: Boolean
+    get() = markupMode.supportsRichEditing
