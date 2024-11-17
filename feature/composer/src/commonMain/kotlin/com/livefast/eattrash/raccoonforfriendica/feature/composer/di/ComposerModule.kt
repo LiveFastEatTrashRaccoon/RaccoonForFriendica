@@ -3,7 +3,9 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer.di
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.DefaultPrepareForPreviewUseCase
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.DefaultStripMarkupUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.PrepareForPreviewUseCase
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.StripMarkupUseCase
 import org.koin.dsl.module
 
 val featureComposerModule =
@@ -11,6 +13,11 @@ val featureComposerModule =
         single<PrepareForPreviewUseCase> {
             DefaultPrepareForPreviewUseCase(
                 apiConfigurationRepository = get(),
+            )
+        }
+        single<StripMarkupUseCase> {
+            DefaultStripMarkupUseCase(
+                prepareForPreview = get(),
             )
         }
         factory<ComposerMviModel> { params ->
@@ -33,6 +40,7 @@ val featureComposerModule =
                 emojiRepository = get(),
                 userRepository = get(),
                 prepareForPreview = get(),
+                stripMarkup = get(),
                 notificationCenter = get(),
             )
         }
