@@ -1,3 +1,4 @@
+<h2>What's Changed</h2>
 - feat: add support for alternate (classic) and monochrome app icon
 - fix: rendering images of different heights in carousels
 - fix: rendering GIFs (or images with unbound constraints)
