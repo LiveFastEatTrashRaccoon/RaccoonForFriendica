@@ -1,4 +1,5 @@
-<h2>What's Changed</h2>
+## What's Changed
+
 - feat: add support for MastodonRedirect
 - feat: export/import app settings to/from JSON
 - feat: export contact list from profile
