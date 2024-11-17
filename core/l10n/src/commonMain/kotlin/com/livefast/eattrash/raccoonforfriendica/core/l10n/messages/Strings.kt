@@ -399,6 +399,8 @@ interface Strings {
     val settingsItemExport: String
     val settingsItemImport: String
     val actionExport: String
+    val actionChangeMarkupMode: String
+    val confirmChangeMarkupMode: String
 }
 
 object Locales {

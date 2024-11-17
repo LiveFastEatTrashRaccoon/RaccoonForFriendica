@@ -457,4 +457,7 @@ internal val FrStrings =
         override val settingsItemExport = "Exporter les paramètres"
         override val settingsItemImport = "Importer les paramètres"
         override val actionExport = "Exporter"
+        override val actionChangeMarkupMode = "Modifier type de balisage"
+        override val confirmChangeMarkupMode =
+            "Si vous modifiez le type de balisage, toutes les mises en forme seront perdues. Poursuivre quand même ?"
     }

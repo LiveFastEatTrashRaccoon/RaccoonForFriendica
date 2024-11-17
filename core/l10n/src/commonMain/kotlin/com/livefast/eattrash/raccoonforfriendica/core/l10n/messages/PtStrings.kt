@@ -456,4 +456,7 @@ internal val PtStrings =
         override val settingsItemExport = "Exportar as definições"
         override val settingsItemImport = "Importar as definições"
         override val actionExport = "Exportar"
+        override val actionChangeMarkupMode = "Alterar tipo de marcação"
+        override val confirmChangeMarkupMode =
+            "Se alterar o tipo de marcação, toda a formatação se perderá. Continuar na mesma?"
     }

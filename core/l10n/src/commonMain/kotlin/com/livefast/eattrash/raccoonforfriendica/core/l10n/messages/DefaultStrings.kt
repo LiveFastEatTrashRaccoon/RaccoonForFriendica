@@ -447,4 +447,7 @@ internal open class DefaultStrings : Strings {
     override val settingsItemExport = "Export settings"
     override val settingsItemImport = "Import settings"
     override val actionExport = "Export"
+    override val actionChangeMarkupMode = "Change markup type"
+    override val confirmChangeMarkupMode =
+        "If you change the markup type, all the formatting will be lost. Proceed anyway?"
 }

@@ -452,4 +452,7 @@ internal val ItStrings =
         override val settingsItemExport = "Esporta impostazioni"
         override val settingsItemImport = "Importa impostazioni"
         override val actionExport = "Esporta"
+        override val actionChangeMarkupMode = "Cambia il tipo di markup"
+        override val confirmChangeMarkupMode =
+            "Se si cambia il tipo di markup, tutta la formattazione andrà persa. Procedere comunque?"
     }
