@@ -452,4 +452,7 @@ internal val EsStrings =
         override val settingsItemExport = "Exportar configuración"
         override val settingsItemImport = "Importar configuración"
         override val actionExport = "Exportar"
+        override val actionChangeMarkupMode = "Cambiar tipo de marcado"
+        override val confirmChangeMarkupMode =
+            "Si cambia el tipo de marcado, se perderá todo el formato. ¿Proceder de todos modos?"
     }

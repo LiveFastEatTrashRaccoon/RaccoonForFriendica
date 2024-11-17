@@ -452,4 +452,7 @@ internal val DeStrings =
         override val settingsItemExport = "Einstellungen exportieren"
         override val settingsItemImport = "Einstellungen importieren"
         override val actionExport = "Exportieren"
+        override val actionChangeMarkupMode = "Auszeichnungsart ändern"
+        override val confirmChangeMarkupMode =
+            "Wenn Sie den Markup-Typ ändern, gehen alle Formatierungen verloren. Trotzdem weitermachen?"
     }

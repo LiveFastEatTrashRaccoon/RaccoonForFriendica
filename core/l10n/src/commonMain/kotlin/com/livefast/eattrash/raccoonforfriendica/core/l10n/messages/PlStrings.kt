@@ -450,4 +450,7 @@ internal val PlStrings =
         override val settingsItemExport = "Eksportowanie ustawień"
         override val settingsItemImport = "Importowanie ustawień"
         override val actionExport = "Eksportuj"
+        override val actionChangeMarkupMode = "Zmiana typu znaczników"
+        override val confirmChangeMarkupMode =
+            "Jeśli zmienisz typ znaczników, całe formatowanie zostanie utracone. Kontynuować mimo to?"
     }

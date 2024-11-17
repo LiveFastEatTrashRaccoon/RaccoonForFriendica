@@ -86,6 +86,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostHeader
@@ -163,6 +164,8 @@ class ComposerScreen(
         var confirmPublishWithVisibilityGreaterThanParentDialogOpened by remember {
             mutableStateOf(false)
         }
+        var confirmChangeMarkupModeDialogOpen by remember { mutableStateOf(false) }
+        var changeMarkupModeBottomSheetOpened by remember { mutableStateOf(false) }
 
         LaunchedEffect(model) {
             when {
@@ -387,6 +390,10 @@ class ComposerScreen(
                                             label = LocalStrings.current.actionInsertList,
                                         )
                                 }
+                                this +=
+                                    CustomOptions.ChangeMarkupMode.toOption(
+                                        label = LocalStrings.current.actionChangeMarkupMode,
+                                    )
                             }
                         Box {
                             var optionsOffset by remember { mutableStateOf(Offset.Zero) }
@@ -469,33 +476,30 @@ class ComposerScreen(
                                                     }
                                                 }
 
-                                                CustomOptions.TogglePoll -> {
+                                                CustomOptions.TogglePoll ->
                                                     if (uiState.poll == null) {
                                                         model.reduce(ComposerMviModel.Intent.AddPoll)
                                                     } else {
                                                         model.reduce(ComposerMviModel.Intent.RemovePoll)
                                                     }
-                                                }
 
-                                                CustomOptions.ToggleTitle -> {
+                                                CustomOptions.ToggleTitle ->
                                                     model.reduce(ComposerMviModel.Intent.ToggleHasTitle)
-                                                }
 
-                                                CustomOptions.ToggleSpoiler -> {
+                                                CustomOptions.ToggleSpoiler ->
                                                     model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
-                                                }
 
-                                                CustomOptions.InsertCustomEmoji -> {
+                                                CustomOptions.InsertCustomEmoji ->
                                                     insertEmojiModalOpen = true
-                                                }
 
-                                                CustomOptions.OpenPreview -> {
+                                                CustomOptions.OpenPreview ->
                                                     model.reduce(ComposerMviModel.Intent.CreatePreview)
-                                                }
 
-                                                CustomOptions.InsertList -> {
+                                                CustomOptions.InsertList ->
                                                     model.reduce(ComposerMviModel.Intent.InsertList)
-                                                }
+
+                                                CustomOptions.ChangeMarkupMode ->
+                                                    confirmChangeMarkupModeDialogOpen = true
 
                                                 else -> Unit
                                             }
@@ -1067,6 +1071,35 @@ class ComposerScreen(
                 },
             )
         }
+
+        if (confirmChangeMarkupModeDialogOpen) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionChangeMarkupMode,
+                body = LocalStrings.current.confirmChangeMarkupMode,
+                confirmButtonLabel = LocalStrings.current.buttonConfirm,
+                onClose = { confirm ->
+                    confirmChangeMarkupModeDialogOpen = false
+                    if (confirm) {
+                        changeMarkupModeBottomSheetOpened = true
+                    }
+                },
+            )
+        }
+
+        if (changeMarkupModeBottomSheetOpened) {
+            val modes = uiState.availableMarkupModes
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemMarkupMode,
+                items = modes.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+                onSelected = { index ->
+                    changeMarkupModeBottomSheetOpened = false
+                    if (index != null) {
+                        val mode = modes[index]
+                        model.reduce(ComposerMviModel.Intent.ChangeMarkupMode(mode))
+                    }
+                },
+            )
+        }
     }
 }
 
@@ -1094,4 +1127,6 @@ private sealed interface CustomOptions : OptionId.Custom {
     data object PublishDefault : CustomOptions
 
     data object InsertList : CustomOptions
+
+    data object ChangeMarkupMode : CustomOptions
 }
