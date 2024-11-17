@@ -1284,7 +1284,7 @@ class ComposerViewModel(
             }
 
         val reference =
-            if (!uiState.value.supportsRichEditing) {
+            if (uiState.value.supportsRichEditing) {
                 // retrieve field values from source to strip down all formatting
                 timelineEntryRepository.getSource(entry.id) ?: entry
             } else {
