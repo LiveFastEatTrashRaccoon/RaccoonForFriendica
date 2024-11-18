@@ -31,6 +31,7 @@ interface UserService {
         @Query("q") query: String = "",
         @Query("offset") offset: Int = 0,
         @Query("resolve") resolve: Boolean = false,
+        @Query("following") following: Boolean = false,
     ): List<Account>
 
     @GET("v1/accounts/{id}/statuses")
