@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -131,6 +132,9 @@ val domainContentRepositoryModule =
             DefaultLocalItemCache()
         }
         single<LocalItemCache<EventModel>> {
+            DefaultLocalItemCache()
+        }
+        single<LocalItemCache<CircleModel>> {
             DefaultLocalItemCache()
         }
         single<ScheduledEntryRepository> {

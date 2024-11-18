@@ -23,6 +23,7 @@ internal val sharedModule =
                 settingsRepository = get(),
                 entryCache = get(),
                 eventCache = get(),
+                circleCache = get(),
             )
         }
         single<AuthManager> {
