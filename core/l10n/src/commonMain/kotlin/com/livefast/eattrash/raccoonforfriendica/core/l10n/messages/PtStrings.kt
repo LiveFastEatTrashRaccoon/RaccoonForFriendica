@@ -459,4 +459,5 @@ internal val PtStrings =
         override val actionChangeMarkupMode = "Alterar tipo de marcação"
         override val confirmChangeMarkupMode =
             "Se alterar o tipo de marcação, toda a formatação se perderá. Continuar na mesma?"
+        override val actionEditMembers = "Editar membros"
     }

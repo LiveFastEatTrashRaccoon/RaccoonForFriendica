@@ -455,4 +455,5 @@ internal val DeStrings =
         override val actionChangeMarkupMode = "Auszeichnungsart ändern"
         override val confirmChangeMarkupMode =
             "Wenn Sie den Markup-Typ ändern, gehen alle Formatierungen verloren. Trotzdem weitermachen?"
+        override val actionEditMembers = "Mitglieder bearbeiten"
     }

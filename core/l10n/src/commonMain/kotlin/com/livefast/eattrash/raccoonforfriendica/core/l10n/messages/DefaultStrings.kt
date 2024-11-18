@@ -450,4 +450,5 @@ internal open class DefaultStrings : Strings {
     override val actionChangeMarkupMode = "Change markup type"
     override val confirmChangeMarkupMode =
         "If you change the markup type, all the formatting will be lost. Proceed anyway?"
+    override val actionEditMembers = "Edit members"
 }

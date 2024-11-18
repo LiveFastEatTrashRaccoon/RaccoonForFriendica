@@ -401,6 +401,7 @@ interface Strings {
     val actionExport: String
     val actionChangeMarkupMode: String
     val confirmChangeMarkupMode: String
+    val actionEditMembers: String
 }
 
 object Locales {
