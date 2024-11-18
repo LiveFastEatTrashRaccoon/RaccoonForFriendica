@@ -46,6 +46,7 @@ kotlin {
                 implementation(projects.core.commonui.content)
                 implementation(projects.core.l10n)
                 implementation(projects.core.navigation)
+                implementation(projects.core.notifications)
                 implementation(projects.core.utils)
 
                 implementation(projects.domain.content.data)
@@ -53,6 +54,7 @@ kotlin {
                 implementation(projects.domain.content.repository)
                 implementation(projects.domain.identity.data)
                 implementation(projects.domain.identity.repository)
+                implementation(projects.domain.identity.usecase)
             }
         }
     }
