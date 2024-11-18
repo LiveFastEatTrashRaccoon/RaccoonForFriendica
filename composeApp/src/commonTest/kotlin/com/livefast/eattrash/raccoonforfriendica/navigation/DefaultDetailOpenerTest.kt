@@ -4,6 +4,7 @@ import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
@@ -14,8 +15,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.detail.CircleDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers.CircleMembersScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline.CircleTimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.ConversationScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListScreen
@@ -65,6 +67,7 @@ class DefaultDetailOpenerTest {
     private val userCache = mock<LocalItemCache<UserModel>>(mode = MockMode.autoUnit)
     private val entryCache = mock<LocalItemCache<TimelineEntryModel>>(mode = MockMode.autoUnit)
     private val eventCache = mock<LocalItemCache<EventModel>>(mode = MockMode.autoUnit)
+    private val circleCache = mock<LocalItemCache<CircleModel>>(mode = MockMode.autoUnit)
     private val sut =
         DefaultDetailOpener(
             navigationCoordinator = navigationCoordinator,
@@ -73,6 +76,7 @@ class DefaultDetailOpenerTest {
             userCache = userCache,
             entryCache = entryCache,
             eventCache = eventCache,
+            circleCache = circleCache,
             dispatcher = UnconfinedTestDispatcher(),
         )
 
@@ -316,11 +320,22 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
-    fun `when openCircle then interactions are as expected`() {
-        sut.openCircle(groupId = "1")
+    fun `when openCircleEditMembers then interactions are as expected`() {
+        sut.openCircleEditMembers(groupId = "1")
 
         verify {
-            navigationCoordinator.push(any<CircleDetailScreen>())
+            navigationCoordinator.push(any<CircleMembersScreen>())
+        }
+    }
+
+    @Test
+    fun `when openCircleTimeline then interactions are as expected`() {
+        val circle = CircleModel(id = "id")
+        sut.openCircleTimeline(circle)
+
+        verifySuspend {
+            circleCache.put(circle.id, circle)
+            navigationCoordinator.push(any<CircleTimelineScreen>())
         }
     }
 

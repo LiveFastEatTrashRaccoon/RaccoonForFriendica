@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.circles.detail
+package com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -62,7 +62,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
-class CircleDetailScreen(
+class CircleMembersScreen(
     val id: String,
 ) : Screen {
     override val key: ScreenKey
@@ -71,7 +71,7 @@ class CircleDetailScreen(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model = getScreenModel<CircleDetailMviModel>(parameters = { parametersOf(id) })
+        val model = getScreenModel<CircleMembersMviModel>(parameters = { parametersOf(id) })
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -99,7 +99,7 @@ class CircleDetailScreen(
             model.effects
                 .onEach { event ->
                     when (event) {
-                        CircleDetailMviModel.Effect.Failure ->
+                        CircleMembersMviModel.Effect.Failure ->
                             snackbarHostState.showSnackbar(genericError)
                     }
                 }.launchIn(this)
@@ -147,7 +147,7 @@ class CircleDetailScreen(
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            model.reduce(CircleDetailMviModel.Intent.ToggleAddUsersDialog(true))
+                            model.reduce(CircleMembersMviModel.Intent.ToggleAddUsersDialog(true))
                         },
                     ) {
                         Icon(
@@ -183,7 +183,7 @@ class CircleDetailScreen(
                         ).nestedScroll(fabNestedScrollConnection),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
-                    model.reduce(CircleDetailMviModel.Intent.Refresh)
+                    model.reduce(CircleMembersMviModel.Intent.Refresh)
                 },
             ) {
                 LazyColumn(
@@ -258,7 +258,7 @@ class CircleDetailScreen(
                     val userId = confirmRemoveUserId
                     confirmRemoveUserId = null
                     if (confirm && userId != null) {
-                        model.reduce(CircleDetailMviModel.Intent.Remove(userId))
+                        model.reduce(CircleMembersMviModel.Intent.Remove(userId))
                     }
                 },
             )
@@ -272,15 +272,15 @@ class CircleDetailScreen(
                 loading = uiState.userSearchLoading,
                 canFetchMore = uiState.userSearchCanFetchMore,
                 onLoadMoreUsers = {
-                    model.reduce(CircleDetailMviModel.Intent.UserSearchLoadNextPage)
+                    model.reduce(CircleMembersMviModel.Intent.UserSearchLoadNextPage)
                 },
                 onSearchChanged = {
-                    model.reduce(CircleDetailMviModel.Intent.SetSearchUserQuery(it))
+                    model.reduce(CircleMembersMviModel.Intent.SetSearchUserQuery(it))
                 },
                 onClose = { values ->
-                    model.reduce(CircleDetailMviModel.Intent.ToggleAddUsersDialog(false))
+                    model.reduce(CircleMembersMviModel.Intent.ToggleAddUsersDialog(false))
                     if (values != null) {
-                        model.reduce(CircleDetailMviModel.Intent.Add(values))
+                        model.reduce(CircleMembersMviModel.Intent.Add(values))
                     }
                 },
             )

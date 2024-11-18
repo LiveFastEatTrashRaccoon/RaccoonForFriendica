@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.timeline
+package com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
@@ -8,69 +8,52 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
-@OptIn(FlowPreview::class)
-class TimelineViewModel(
+class CircleTimelineViewModel(
+    id: String,
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
-    private val activeAccountMonitor: ActiveAccountMonitor,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository,
-    private val circlesRepository: CirclesRepository,
+    private val circleCache: LocalItemCache<CircleModel>,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
-        initialState = TimelineMviModel.State(),
+) : DefaultMviModel<CircleTimelineMviModel.Intent, CircleTimelineMviModel.State, CircleTimelineMviModel.Effect>(
+        initialState = CircleTimelineMviModel.State(),
     ),
-    TimelineMviModel {
-    private var circlesRefreshed = false
-
+    CircleTimelineMviModel {
     init {
         screenModelScope.launch {
+            val circle = circleCache.get(id)
+            updateState { it.copy(circle = circle) }
+
             settingsRepository.current
                 .onEach { settings ->
-                    val defaultCircle =
-                        settings?.defaultTimelineId?.let { circlesRepository.get(it) }
-                    val defaultTimelineType =
-                        settings?.defaultTimelineType?.toTimelineType().let { type ->
-                            when (type) {
-                                is TimelineType.Circle -> type.copy(circle = defaultCircle)
-                                else -> type
-                            }
-                        }
                     updateState {
                         it.copy(
-                            timelineType = defaultTimelineType,
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
@@ -91,7 +74,6 @@ class TimelineViewModel(
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
-                    refreshCirclesInTimelineTypes(currentUser != null)
                 }.launchIn(this)
 
             notificationCenter
@@ -100,129 +82,53 @@ class TimelineViewModel(
                     updateEntryInState(event.entry.id) { event.entry }
                 }.launchIn(this)
 
-            combine(
-                settingsRepository.current,
-                apiConfigurationRepository.node,
-                identityRepository.currentUser,
-            ) { settings, _, user ->
-                settings to user
-            }.debounce(750)
-                .distinctUntilChanged()
-                .onEach { (settings, user) ->
-                    circlesRefreshed = false
-                    val hasSettings = settings != null
-                    // wait until either there is a logged user if there are valid credentials stored
-                    val hasUser =
-                        user != null || !apiConfigurationRepository.hasCachedAuthCredentials()
-                    if (hasSettings && hasUser) {
-                        refresh(
-                            initial = true,
-                            forceRefresh = true,
-                        )
-                    }
-                }.launchIn(this)
+            if (uiState.value.initial) {
+                refresh(
+                    initial = true,
+                    forceRefresh = true,
+                )
+            }
         }
     }
 
-    override fun reduce(intent: TimelineMviModel.Intent) {
+    override fun reduce(intent: CircleTimelineMviModel.Intent) {
         when (intent) {
-            TimelineMviModel.Intent.Refresh ->
+            CircleTimelineMviModel.Intent.Refresh ->
                 screenModelScope.launch {
                     refresh()
                 }
 
-            TimelineMviModel.Intent.LoadNextPage ->
+            CircleTimelineMviModel.Intent.LoadNextPage ->
                 screenModelScope.launch {
                     loadNextPage()
                 }
 
-            is TimelineMviModel.Intent.ChangeType ->
-                screenModelScope.launch {
-                    changeTimelineType(intent.type)
-                }
-
-            is TimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
-            is TimelineMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
-            is TimelineMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
-            is TimelineMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
-            is TimelineMviModel.Intent.MuteUser ->
+            is CircleTimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is CircleTimelineMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is CircleTimelineMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is CircleTimelineMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is CircleTimelineMviModel.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
-            is TimelineMviModel.Intent.BlockUser ->
+
+            is CircleTimelineMviModel.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
-            is TimelineMviModel.Intent.TogglePin -> togglePin(intent.entry)
-            is TimelineMviModel.Intent.SubmitPollVote ->
+
+            is CircleTimelineMviModel.Intent.TogglePin -> togglePin(intent.entry)
+            is CircleTimelineMviModel.Intent.SubmitPollVote ->
                 submitPoll(
                     intent.entry,
                     intent.choices,
                 )
 
-            is TimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
-        }
-    }
-
-    private suspend fun changeTimelineType(type: TimelineType) {
-        if (uiState.value.loading) {
-            return
-        }
-
-        updateState {
-            it.copy(
-                initial = true,
-                timelineType = type,
-            )
-        }
-        emitEffect(TimelineMviModel.Effect.BackToTop)
-        refresh(
-            initial = true,
-            forceRefresh = true,
-        )
-    }
-
-    private suspend fun refreshCirclesInTimelineTypes(isLogged: Boolean) {
-        val circles = circlesRepository.getAll().orEmpty()
-        val settings = settingsRepository.current.value ?: SettingsModel()
-        val defaultTimelineTypes =
-            buildList {
-                this += TimelineType.All
-                if (isLogged) {
-                    this += TimelineType.Subscriptions
-                }
-                this += TimelineType.Local
-            }
-        val newTimelineTypes =
-            defaultTimelineTypes + circles.map { TimelineType.Circle(circle = it) }
-        val currentTimelineType = uiState.value.timelineType
-        val newTimelineType =
-            if (currentTimelineType is TimelineType.Circle) {
-                val currentCircleId = currentTimelineType.circle?.id
-                val newCircle = circles.firstOrNull { it.id == currentCircleId }
-                if (newCircle == null) {
-                    // circle has been deleted
-                    settings.defaultTimelineType
-                        .toTimelineType()
-                        .takeIf { type ->
-                            type !is TimelineType.Circle || settings.defaultTimelineId != currentCircleId
-                        } ?: TimelineType.Local
-                } else {
-                    // circle has been renamed
-                    TimelineType.Circle(newCircle)
-                }
-            } else {
-                currentTimelineType
-            }
-        updateState {
-            it.copy(
-                availableTimelineTypes = newTimelineTypes,
-                timelineType = newTimelineType,
-            )
+            is CircleTimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
     }
 
@@ -230,28 +136,14 @@ class TimelineViewModel(
         initial: Boolean = false,
         forceRefresh: Boolean = false,
     ) {
-        // do not do anything if type is unknown
-        val timelineType = uiState.value.timelineType ?: return
-
-        // workaround to handle refresh after initial network call failed
-        if (activeAccountMonitor.isNotLoggedButItShould()) {
-            activeAccountMonitor.forceRefresh()
-            return
-        }
-        if (circlesRefreshed) {
-            // needed as a last-resort to update circles if edited elsewhere
-            circlesRefreshed = true
-            val isLogged = identityRepository.currentUser.value != null
-            refreshCirclesInTimelineTypes(isLogged)
-        }
-
+        val circle = uiState.value.circle ?: return
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
         val settings = settingsRepository.current.value ?: SettingsModel()
         paginationManager.reset(
             TimelinePaginationSpecification.Feed(
-                timelineType = timelineType,
+                timelineType = TimelineType.Circle(circle),
                 includeNsfw = settings.includeNsfw,
                 excludeReplies = settings.excludeRepliesFromTimeline,
                 refresh = forceRefresh || !initial,
@@ -279,7 +171,7 @@ class TimelineViewModel(
             )
         }
         if (wasRefreshing) {
-            emitEffect(TimelineMviModel.Effect.BackToTop)
+            emitEffect(CircleTimelineMviModel.Effect.BackToTop)
         }
     }
 
@@ -513,7 +405,7 @@ class TimelineViewModel(
                 }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(TimelineMviModel.Effect.PollVoteFailure)
+                emitEffect(CircleTimelineMviModel.Effect.PollVoteFailure)
             }
         }
     }
@@ -530,7 +422,7 @@ class TimelineViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(TimelineMviModel.Effect.TriggerCopy(text))
+                emitEffect(CircleTimelineMviModel.Effect.TriggerCopy(text))
             }
         }
     }

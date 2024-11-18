@@ -455,4 +455,5 @@ internal val ItStrings =
         override val actionChangeMarkupMode = "Cambia il tipo di markup"
         override val confirmChangeMarkupMode =
             "Se si cambia il tipo di markup, tutta la formattazione andrà persa. Procedere comunque?"
+        override val actionEditMembers = "Modifica membri"
     }

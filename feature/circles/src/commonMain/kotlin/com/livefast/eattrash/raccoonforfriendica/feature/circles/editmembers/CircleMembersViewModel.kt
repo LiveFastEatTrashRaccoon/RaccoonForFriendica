@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.circles.detail
+package com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
 @OptIn(FlowPreview::class)
-class CircleDetailViewModel(
+class CircleMembersViewModel(
     private val id: String,
     private val paginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
@@ -28,10 +28,10 @@ class CircleDetailViewModel(
     private val searchPaginationManager: UserPaginationManager,
     private val imagePreloadManager: ImagePreloadManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<CircleDetailMviModel.Intent, CircleDetailMviModel.State, CircleDetailMviModel.Effect>(
-        initialState = CircleDetailMviModel.State(),
+) : DefaultMviModel<CircleMembersMviModel.Intent, CircleMembersMviModel.State, CircleMembersMviModel.Effect>(
+        initialState = CircleMembersMviModel.State(),
     ),
-    CircleDetailMviModel {
+    CircleMembersMviModel {
     init {
         screenModelScope.launch {
             imageAutoloadObserver.enabled
@@ -69,14 +69,14 @@ class CircleDetailViewModel(
         }
     }
 
-    override fun reduce(intent: CircleDetailMviModel.Intent) {
+    override fun reduce(intent: CircleMembersMviModel.Intent) {
         when (intent) {
-            CircleDetailMviModel.Intent.Refresh ->
+            CircleMembersMviModel.Intent.Refresh ->
                 screenModelScope.launch {
                     refresh()
                 }
 
-            is CircleDetailMviModel.Intent.ToggleAddUsersDialog ->
+            is CircleMembersMviModel.Intent.ToggleAddUsersDialog ->
                 screenModelScope.launch {
                     if (intent.opened) {
                         refreshSearchUsers("")
@@ -92,18 +92,18 @@ class CircleDetailViewModel(
                     }
                 }
 
-            is CircleDetailMviModel.Intent.SetSearchUserQuery ->
+            is CircleMembersMviModel.Intent.SetSearchUserQuery ->
                 screenModelScope.launch {
                     updateState { it.copy(searchUsersQuery = intent.text) }
                 }
 
-            CircleDetailMviModel.Intent.UserSearchLoadNextPage ->
+            CircleMembersMviModel.Intent.UserSearchLoadNextPage ->
                 screenModelScope.launch {
                     loadNextPageSearchUsers()
                 }
 
-            is CircleDetailMviModel.Intent.Add -> add(intent.users)
-            is CircleDetailMviModel.Intent.Remove -> remove(intent.userId)
+            is CircleMembersMviModel.Intent.Add -> add(intent.users)
+            is CircleMembersMviModel.Intent.Remove -> remove(intent.userId)
         }
     }
 
@@ -193,7 +193,7 @@ class CircleDetailViewModel(
             if (success) {
                 insertItemsInState(users)
             } else {
-                emitEffect(CircleDetailMviModel.Effect.Failure)
+                emitEffect(CircleMembersMviModel.Effect.Failure)
             }
         }
     }
@@ -204,7 +204,7 @@ class CircleDetailViewModel(
             if (success) {
                 removeItemFromState(userId)
             } else {
-                emitEffect(CircleDetailMviModel.Effect.Failure)
+                emitEffect(CircleMembersMviModel.Effect.Failure)
             }
         }
     }

@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 class CirclesViewModel(
     private val circlesRepository: CirclesRepository,
     private val settingsRepository: SettingsRepository,
+    private val userRepository: UserRepository,
 ) : DefaultMviModel<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect>(
         initialState = CirclesMviModel.State(),
     ),
@@ -68,6 +70,7 @@ class CirclesViewModel(
 
             CirclesMviModel.Intent.SubmitEditorData -> submitEditorData()
             is CirclesMviModel.Intent.Delete -> delete(intent.circleId)
+            is CirclesMviModel.Intent.OpenDetail -> handleOpenDetail(intent.circle)
         }
     }
 
@@ -222,6 +225,27 @@ class CirclesViewModel(
                 } else {
                     emitEffect(CirclesMviModel.Effect.Failure)
                 }
+            }
+        }
+    }
+
+    private fun handleOpenDetail(circle: CircleModel) {
+        screenModelScope.launch {
+            if (circle.type == CircleType.Group) {
+                updateState { it.copy(operationInProgress = true) }
+                val user =
+                    userRepository
+                        .search(
+                            query = circle.name,
+                            following = true,
+                            offset = 0,
+                        )?.firstOrNull()
+                updateState { it.copy(operationInProgress = false) }
+                if (user != null) {
+                    emitEffect(CirclesMviModel.Effect.OpenUser(user))
+                }
+            } else {
+                emitEffect(CirclesMviModel.Effect.OpenCircle(circle))
             }
         }
     }

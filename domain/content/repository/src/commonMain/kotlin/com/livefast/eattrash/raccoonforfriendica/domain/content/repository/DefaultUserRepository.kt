@@ -38,6 +38,7 @@ internal class DefaultUserRepository(
     override suspend fun search(
         query: String,
         offset: Int,
+        following: Boolean,
     ): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
@@ -47,6 +48,7 @@ internal class DefaultUserRepository(
                             query = query,
                             offset = offset,
                             resolve = true,
+                            following = following,
                         ).map { it.toModel() }
                 }
             }.getOrNull()

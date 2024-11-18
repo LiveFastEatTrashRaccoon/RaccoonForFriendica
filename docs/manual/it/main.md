@@ -837,16 +837,22 @@ Al fine di rendere la consultazione più facile, Raccoon suddivide in sezioni la
 un'intestazione di sezione che specifica il tipo dei contenuti sottostanti.
 
 Tra queste tre categorie, l'unica che consente di essere modificata è la prima, per la quale è
-possibile:
+possibile utilizzare il pulsante "⋮" per:
 
-- utilizzare il pulsante "⋮" per modificare il nome o eliminarle;
-- entrare nella schermata di dettaglio cerchia, visualizzare i contatti che ne fanno parte e
-  aggiungerne di nuovi (con il pulsante "+") o rimuovere quelli esistenti.
+- modificare il nome;
+- eliminare la cerchia;
+- visualizzare i contatti che ne fanno parte e aggiungerne di nuovi (con il pulsante "+") o
+  rimuovere quelli esistenti.
 
-Ricorda che in Friendica, come impostazione predefinita, tutti i contatti che non sono di tipo
-gruppo vengono aggiunti alla cerchia "Amici" mentre tutti i contatti di tipo gruppo vengono aggiunti
-alla cerchia "Gruppi". Pur essendo create in automatico dal sistema, "Amici" e "Gruppi" sono
-cerchie normalissime che possono essere modificate o eliminate.
+Va tenuto presente che in Friendica, come impostazione predefinita, tutti i contatti che non sono di
+tipo gruppo vengono aggiunti alla cerchia "Amici" mentre tutti i contatti di tipo gruppo vengono
+aggiunti alla cerchia "Gruppi". Pur essendo create in automatico dal sistema, "Amici" e "Gruppi"
+sono cerchie normalissime che possono essere modificate o eliminate.
+
+Facendo tap su ogni voce della lista cerchie, verrà aperta la lista dei post corrispondenti, ovvero:
+
+- la [modalità forum](#modalità-forum) per i gruppi;
+- una timeline dedicata per tutte le altre cerchie.
 
 <div align="center">
   <img width="310" alt="circle list screen" src="../images/circles_list.png" />

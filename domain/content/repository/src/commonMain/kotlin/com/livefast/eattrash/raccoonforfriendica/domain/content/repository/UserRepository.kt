@@ -10,6 +10,7 @@ interface UserRepository {
     suspend fun search(
         query: String,
         offset: Int,
+        following: Boolean = false,
     ): List<UserModel>?
 
     suspend fun getByHandle(handle: String): UserModel?

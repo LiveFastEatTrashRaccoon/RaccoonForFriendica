@@ -776,15 +776,21 @@ This screens contains all the custom feeds that can be used in the timeline, whi
 To make it easier to browse and understand this list, Raccoon divides the list in sections, each
 with its header specifying the type of the following items.
 
-Among these three categories, the only one which allow to be modified is the first one, for which:
+Among these three categories, the only one which allow to be modified is the first one, for which
+you can use the "⋮" button to:
 
-- you can use the "⋮" button to edit the name or delete it;
-- you can enter a circle detail screen to see the contacts that belong to it and add new ones (with
-  the "+" button) or remove existing ones.
+- edit the circle name;
+- delete the circle;
+- see the circle members and add new ones (with the "+" button) or remove existing ones.
 
 Please remember that in Friendica by default all non-group contacts are added to the "Friends"
 circle and all group contacts are added to "Group". Albeit being created by the system, "Friends"
 and "Groups" are regulars circles that can be changed or deleted.
+
+By tapping on each item in the circle list, you will open the corresponding post list, i.e.:
+
+- the [forum mode](#forum-mode) for groups;
+- a dedicated timeline, for all other circles.
 
 <div align="center">
   <img width="310" alt="circle list screen" src="images/circles_list.png" />

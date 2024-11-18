@@ -455,4 +455,5 @@ internal val EsStrings =
         override val actionChangeMarkupMode = "Cambiar tipo de marcado"
         override val confirmChangeMarkupMode =
             "Si cambia el tipo de marcado, se perderá todo el formato. ¿Proceder de todos modos?"
+        override val actionEditMembers = "Editar miembros"
     }

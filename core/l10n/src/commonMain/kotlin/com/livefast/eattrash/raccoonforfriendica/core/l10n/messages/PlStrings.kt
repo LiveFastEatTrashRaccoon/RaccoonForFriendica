@@ -453,4 +453,5 @@ internal val PlStrings =
         override val actionChangeMarkupMode = "Zmiana typu znaczników"
         override val confirmChangeMarkupMode =
             "Jeśli zmienisz typ znaczników, całe formatowanie zostanie utracone. Kontynuować mimo to?"
+        override val actionEditMembers = "Edytuj członków"
     }

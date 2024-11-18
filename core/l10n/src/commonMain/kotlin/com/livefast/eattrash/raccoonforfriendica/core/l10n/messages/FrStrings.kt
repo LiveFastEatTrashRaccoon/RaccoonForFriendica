@@ -460,4 +460,5 @@ internal val FrStrings =
         override val actionChangeMarkupMode = "Modifier type de balisage"
         override val confirmChangeMarkupMode =
             "Si vous modifiez le type de balisage, toutes les mises en forme seront perdues. Poursuivre quand même ?"
+        override val actionEditMembers = "Modifier les membres"
     }

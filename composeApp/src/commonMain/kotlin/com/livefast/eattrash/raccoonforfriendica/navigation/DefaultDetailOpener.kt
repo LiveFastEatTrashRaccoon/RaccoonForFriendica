@@ -5,6 +5,7 @@ import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -17,8 +18,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.detail.CircleDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers.CircleMembersScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline.CircleTimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.ConversationScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListScreen
@@ -55,6 +57,7 @@ class DefaultDetailOpener(
     private val userCache: LocalItemCache<UserModel>,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
     private val eventCache: LocalItemCache<EventModel>,
+    private val circleCache: LocalItemCache<CircleModel>,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : DetailOpener {
     private val currentUserId: String? get() = identityRepository.currentUser.value?.id
@@ -116,7 +119,8 @@ class DefaultDetailOpener(
 
     override fun openFollowers(
         user: UserModel,
-        enableExport: Boolean) {
+        enableExport: Boolean,
+    ) {
         scope.launch {
             userCache.put(user.id, user)
             val screen =
@@ -131,7 +135,8 @@ class DefaultDetailOpener(
 
     override fun openFollowing(
         user: UserModel,
-        enableExport: Boolean) {
+        enableExport: Boolean,
+    ) {
         scope.launch {
             userCache.put(user.id, user)
             val screen =
@@ -285,9 +290,17 @@ class DefaultDetailOpener(
         navigationCoordinator.push(screen)
     }
 
-    override fun openCircle(groupId: String) {
-        val screen = CircleDetailScreen(groupId)
+    override fun openCircleEditMembers(groupId: String) {
+        val screen = CircleMembersScreen(groupId)
         navigationCoordinator.push(screen)
+    }
+
+    override fun openCircleTimeline(circle: CircleModel) {
+        scope.launch {
+            circleCache.put(circle.id, circle)
+            val screen = CircleTimelineScreen(circle.id)
+            navigationCoordinator.push(screen)
+        }
     }
 
     override fun openFollowRequests() {
