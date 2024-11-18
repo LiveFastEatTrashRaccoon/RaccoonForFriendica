@@ -46,6 +46,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
@@ -96,6 +97,11 @@ class CirclesScreen : Screen {
                     when (event) {
                         CirclesMviModel.Effect.Failure ->
                             snackbarHostState.showSnackbar(genericError)
+                        is CirclesMviModel.Effect.OpenUser ->
+                            detailOpener.openUserDetail(event.user)
+
+                        is CirclesMviModel.Effect.OpenCircle ->
+                            detailOpener.openCircleTimeline(event.circle)
                     }
                 }.launchIn(this)
         }
@@ -211,21 +217,27 @@ class CirclesScreen : Screen {
                                 CircleItem(
                                     modifier = Modifier.padding(bottom = Spacing.interItem),
                                     circle = item.circle,
-                                    onClick =
-                                        {
-                                            detailOpener.openCircle(item.circle.id)
-                                        }.takeIf { item.circle.canBeEdited },
+                                    onClick = {
+                                        model.reduce(CirclesMviModel.Intent.OpenDetail(item.circle))
+                                    },
                                     options =
                                         buildList {
                                             if (item.circle.canBeEdited) {
                                                 this += OptionId.Edit.toOption()
                                                 this += OptionId.Delete.toOption()
+                                                this +=
+                                                    CustomOptions.EditMembers.toOption(
+                                                        label = LocalStrings.current.actionEditMembers,
+                                                    )
                                             }
                                         },
                                     onOptionSelected = { optionId ->
                                         when (optionId) {
                                             OptionId.Edit -> {
                                                 model.reduce(CirclesMviModel.Intent.OpenEditor(item.circle))
+                                            }
+                                            CustomOptions.EditMembers -> {
+                                                detailOpener.openCircleEditMembers(item.circle.id)
                                             }
 
                                             OptionId.Delete -> confirmDeleteItemId = item.circle.id
@@ -265,6 +277,10 @@ class CirclesScreen : Screen {
             }
         }
 
+        if (uiState.operationInProgress) {
+            ProgressHud()
+        }
+
         if (confirmDeleteItemId != null) {
             CustomConfirmDialog(
                 title = LocalStrings.current.actionDelete,
@@ -295,4 +311,8 @@ class CirclesScreen : Screen {
             )
         }
     }
+}
+
+sealed interface CustomOptions : OptionId.Custom {
+    data object EditMembers : CustomOptions
 }

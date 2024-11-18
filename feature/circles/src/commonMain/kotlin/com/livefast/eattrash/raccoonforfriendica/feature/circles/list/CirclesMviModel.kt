@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.Validatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 data class CircleEditorData(
     val id: String? = null,
@@ -46,6 +47,10 @@ interface CirclesMviModel :
         data class Delete(
             val circleId: String,
         ) : Intent
+
+        data class OpenDetail(
+            val circle: CircleModel,
+        ) : Intent
     }
 
     data class State(
@@ -55,9 +60,18 @@ interface CirclesMviModel :
         val items: List<CircleListItem> = emptyList(),
         val editorData: CircleEditorData? = null,
         val hideNavigationBarWhileScrolling: Boolean = true,
+        val operationInProgress: Boolean = false,
     )
 
     sealed interface Effect {
         data object Failure : Effect
+
+        data class OpenUser(
+            val user: UserModel,
+        ) : Effect
+
+        data class OpenCircle(
+            val circle: CircleModel,
+        ) : Effect
     }
 }
