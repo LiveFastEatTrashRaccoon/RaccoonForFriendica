@@ -28,7 +28,11 @@ internal fun MentionsBar(
     val fullColor = MaterialTheme.colorScheme.onSurfaceVariant
     val ancillaryColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(ancillaryTextAlpha)
     Row(
-        modifier = modifier.height(40.dp).horizontalScroll(rememberScrollState()),
+        modifier =
+            modifier
+                .height(38.dp)
+                .padding(horizontal = Spacing.xxs)
+                .horizontalScroll(rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val users = suggestions.filter { !it.handle.isNullOrBlank() }
