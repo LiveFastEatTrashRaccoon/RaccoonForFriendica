@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.runtime.Stable
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
@@ -30,7 +31,8 @@ interface DetailOpener {
 
     fun openFollowing(
         user: UserModel,
-        enableExport: Boolean = false)
+        enableExport: Boolean = false,
+    )
 
     fun openFavorites()
 
@@ -77,7 +79,9 @@ interface DetailOpener {
 
     fun openCircles()
 
-    fun openCircle(groupId: String)
+    fun openCircleEditMembers(groupId: String)
+
+    fun openCircleTimeline(circle: CircleModel)
 
     fun openFollowRequests()
 
