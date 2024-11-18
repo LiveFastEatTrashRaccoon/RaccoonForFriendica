@@ -715,14 +715,8 @@ ad altri account. È suddivisa in due sezioni:
 
 ## Creazione post
 
-Questa schermata consente di creare nuovi post o risposte. La barra superiore contiene un pulsante
-che può avere icone diverse a seconda del tipo di pubblicazione:
-
-- icona Invia per la pubblicazione immediata;
-- icona Salva per il salvataggio in bozze;
-- icona Orologio per i post schedulati;
-
-mentre il menu azioni contiene le seguenti voci:
+Questa schermata consente di creare nuovi post o risposte. Il menu azion nella barra superiore
+contiene le seguenti voci:
 
 - **Salva bozza** cambia il tipo di pubblicazione da immediata a bozza;
 - **Imposta schedulazione** cambia il tipo di pubblicazione da immediata a schedulata;
@@ -730,15 +724,14 @@ mentre il menu azioni contiene le seguenti voci:
 - **Visualizza anteprima** apre un'anteprima del post (solo se l'opzione "Markup per la
   composizione"
   nelle impostazioni _non_ è "Testo semplice");
-- **Aggiungi titolo**/**Rimuovi titolo** per aggiungere o rimuovere il titlo del post (solo su
+- **Aggiungi spoiler**/**Rimuovi spoiler** per aggiungere o rimuovere lo spoiler del post;
+- **Aggiungi titolo**/**Rimuovi titolo** per aggiungere o rimuovere il titolo del post (solo su
   Friendica);
 - **Aggiungi immagine (galleria)** aggiunge un'immagine a partire da un album della galleria
   fotografica (solo su Friendica);
 - **Inserisci lista** aggiunge un elenco puntato;
-- **Aggiungi spoiler**/**Rimuovi spoiler** (solo se "Markup per la composizione" nelle impostazioni
-  è "Testo semplice") permette di aggiungere o rimuovere lo spoiler del post;
-- **Aggiungi immagine** (solo se "Markup per la composizione" nelle impostazioni è "Testo semplice")
-  permette di aggiungere un'immagine dal rullino foto del dispositivo;
+- **Cambia tipo markup** permette di cambiare la sintassi di markup utilizzata per il testo
+  formattato nel post corrente.
 
 Sotto alla barra è presente un'intestazione che visualizza:
 
@@ -761,7 +754,10 @@ pulsanti:
 - **Sottolineato** per inserire del testo sottolienato;
 - **Barrato** per inserire del testo sbarrato;
 - **Larghezza fissa** per inserire del testo con carattere a larghezza fissa;
-- **Aggiungi/rimuovi spoiler** per aggiungere o rimuovere lo spoiler del post.
+- **Procedi** pulsate per procedere all'invio del post che può presentare:
+  - un'icona Invia per la pubblicazione immediata;
+  - un'icona Salva per il salvataggio in bozze;
+  - un'icona Orologio per i post schedulati.
 
 <div align="center">
   <img width="310" alt="composer screen" src="../images/composer.png" />
