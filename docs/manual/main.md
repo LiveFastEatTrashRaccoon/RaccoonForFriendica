@@ -665,28 +665,19 @@ sections:
 
 ## Post composer
 
-This screen allows to create new posts or replies. The top bar contains the Submit button which can
-have different icons depending on the publishing type:
-
-- a Send icon for regular publication;
-- a Save icon for drafts;
-- a Schedule icon for scheduled posts;
-
-whereas the action menu contains the following items:
+This screen allows to create new posts or replies. The action menu in the top app bar contains the
+following items:
 
 - **Save draft** changes the publishing type from regular to draft;
 - **Set schedule** changes the publishing type from regular to scheduled posts;
 - **Insert emoji** allows to insert a custom emoji;
 - **Open preview** opens a preview of the post (only if "Markup for compositing" option in Settings
   is _not_ plain text);
+- **Add spoiler**/**Remove spoiler** to add or remove a spoiler for the post;
 - **Add title**/**Remove title** to add or remove a title for the post (Friendica only);
 - **Add image (media gallery)** adds an image from an album in the media gallery (Friendica only);
 - **Insert list** adds an itemized list;
-- **Add spoiler**/**Remove spoiler** (only if "Markup for compositing" option in Settings is plain
-  text) to add or remove a spoiler for the post;
-- **Add image** (only if "Markup for compositing" option in Settings is plain text) adds an image
-  from
-  the device gallery;
+- **Change markup type** to change the markup syntax for rich text editing for the current post.
 
 Below the top bar there is a header containing:
 
@@ -706,7 +697,11 @@ formatting toolbar with the following buttons:
 - **Underline** to insert some underlined text;
 - **Strikethrough** to insert some text with a strikethrough effect;
 - **Code** to insert monospaced font;
-- **Toggle spoiler** to add or remove a spoiler for the post.
+- **Submit** the submit button displaying:
+  - a Send icon for regular publication;
+  - a Save icon for drafts;
+  - a Schedule icon for scheduled posts.
+
 
 <div align="center">
   <img width="310" alt="composer screen" src="images/composer.png" />
