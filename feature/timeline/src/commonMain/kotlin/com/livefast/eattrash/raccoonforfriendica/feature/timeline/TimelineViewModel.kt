@@ -138,21 +138,7 @@ class TimelineViewModel(
 
             is TimelineMviModel.Intent.ChangeType ->
                 screenModelScope.launch {
-                    if (uiState.value.loading) {
-                        return@launch
-                    }
-
-                    updateState {
-                        it.copy(
-                            initial = true,
-                            timelineType = intent.type,
-                        )
-                    }
-                    emitEffect(TimelineMviModel.Effect.BackToTop)
-                    refresh(
-                        initial = true,
-                        forceRefresh = true,
-                    )
+                    changeTimelineType(intent.type)
                 }
 
             is TimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
@@ -180,6 +166,24 @@ class TimelineViewModel(
 
             is TimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
         }
+    }
+
+    private suspend fun changeTimelineType(type: TimelineType) {
+        if (uiState.value.loading) {
+            return
+        }
+
+        updateState {
+            it.copy(
+                initial = true,
+                timelineType = type,
+            )
+        }
+        emitEffect(TimelineMviModel.Effect.BackToTop)
+        refresh(
+            initial = true,
+            forceRefresh = true,
+        )
     }
 
     private suspend fun refreshCirclesInTimelineTypes(isLogged: Boolean) {
