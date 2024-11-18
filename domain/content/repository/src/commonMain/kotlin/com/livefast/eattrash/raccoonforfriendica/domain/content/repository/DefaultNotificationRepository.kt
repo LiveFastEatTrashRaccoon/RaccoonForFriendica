@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toRawValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.sync.Mutex
@@ -34,7 +34,7 @@ internal class DefaultNotificationRepository(
             runCatching {
                 val response =
                     provider.notifications.get(
-                        types = types.mapNotNull { it.toDto() },
+                        types = types.mapNotNull { it.toRawValue() },
                         maxId = pageCursor,
                         limit = DEFAULT_PAGE_SIZE,
                     )

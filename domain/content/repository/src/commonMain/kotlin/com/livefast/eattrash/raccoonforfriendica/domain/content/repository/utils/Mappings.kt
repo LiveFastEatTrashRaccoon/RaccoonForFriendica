@@ -277,16 +277,16 @@ internal fun Tag.toModel() =
         url = url,
     )
 
-internal fun NotificationType.toDto(): NotificationTypeDto? =
+internal fun NotificationType.toRawValue(): String? =
     when (this) {
-        NotificationType.Entry -> NotificationTypeDto.STATUS
-        NotificationType.Favorite -> NotificationTypeDto.FAVOURITE
-        NotificationType.Follow -> NotificationTypeDto.FOLLOW
-        NotificationType.FollowRequest -> NotificationTypeDto.FOLLOW_REQUEST
-        NotificationType.Mention -> NotificationTypeDto.MENTION
-        NotificationType.Poll -> NotificationTypeDto.POLL
-        NotificationType.Reblog -> NotificationTypeDto.REBLOG
-        NotificationType.Update -> NotificationTypeDto.UPDATE
+        NotificationType.Entry -> "status"
+        NotificationType.Favorite -> "favourite"
+        NotificationType.Follow -> "follow"
+        NotificationType.FollowRequest -> "follow_request"
+        NotificationType.Mention -> "mention"
+        NotificationType.Poll -> "poll"
+        NotificationType.Reblog -> "reblog"
+        NotificationType.Update -> "update"
         else -> null
     }
 

@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toRawValue
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +31,7 @@ internal class DefaultPushNotificationRepository(
                             append("subscription[keys][auth]", auth)
                             for (type in NotificationType.ALL) {
                                 append(
-                                    "data[alerts][${type.toDto()}]",
+                                    "data[alerts][${type.toRawValue()}]",
                                     (type in types).toString(),
                                 )
                             }
@@ -52,7 +53,7 @@ internal class DefaultPushNotificationRepository(
                         parameters {
                             for (type in NotificationType.ALL) {
                                 append(
-                                    "data[alerts][${type.toDto()}]",
+                                    "data[alerts][${type.toRawValue()}]",
                                     (type in types).toString(),
                                 )
                             }
