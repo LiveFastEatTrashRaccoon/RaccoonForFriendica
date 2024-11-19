@@ -56,6 +56,7 @@ interface DetailOpener {
         editedPostId: String? = null,
         urlToShare: String? = null,
         inGroup: Boolean = false,
+        initialText: String? = null,
     )
 
     fun openEditUnpublished(

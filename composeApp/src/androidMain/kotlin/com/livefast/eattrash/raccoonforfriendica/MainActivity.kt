@@ -10,6 +10,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.livefast.eattrash.raccoonforfriendica.auth.DefaultAuthManager
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getAuthManager
@@ -86,15 +87,26 @@ class MainActivity : ComponentActivity() {
             )
         }
 
-        intent.data?.also {
-            handleIncomingUrl(it)
-        }
+        handleIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent.data?.also {
-            handleIncomingUrl(it)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        when {
+            intent.action == Intent.ACTION_SEND ->
+                intent.getStringExtra(Intent.EXTRA_TEXT)?.let { content ->
+                    val detailOpener = getDetailOpener()
+                    detailOpener.openComposer(initialText = content.trim('"'))
+                }
+
+            else ->
+                intent.data?.also {
+                    handleIncomingUrl(it)
+                }
         }
     }
 

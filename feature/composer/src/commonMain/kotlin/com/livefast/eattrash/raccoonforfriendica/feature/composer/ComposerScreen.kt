@@ -53,6 +53,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -109,6 +110,7 @@ class ComposerScreen(
     private val scheduledPostId: String? = null,
     private val draftId: String? = null,
     private val urlToShare: String? = null,
+    private val initialText: String? = null,
 ) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -179,6 +181,14 @@ class ComposerScreen(
 
                 !urlToShare.isNullOrEmpty() ->
                     model.reduce(ComposerMviModel.Intent.AddShareUrl(urlToShare))
+
+                !initialText.isNullOrEmpty() ->
+                    model.reduce(
+                        ComposerMviModel.Intent.SetFieldValue(
+                            value = TextFieldValue(text = initialText),
+                            fieldType = ComposerFieldType.Body,
+                        ),
+                    )
 
                 inReplyToId != null ->
                     model.reduce(
