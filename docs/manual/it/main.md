@@ -658,6 +658,8 @@ costituita dalle seguenti sezioni:
   - **Material You** genera una palette di colori a partire dall'immagine di sfondo;
   - **Icona applicatione** permette di selezionare un'icona per l'applicazione (predefinita o "
     classica");
+  - **Tema barra di stato e di navigazione** permette di cambiare il tema della barra di stato
+    superiore e della barra di navigazione di sistema inferiore;
 - **NSFW**
   - **Gestione filtri** apre la schermata di [gestione](#gestione-filtri) degli utenti bloccati e
     silenziati;

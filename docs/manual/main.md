@@ -611,6 +611,8 @@ sections:
   - **Theme color** allows to choose a color to generate a Material 3 palette from;
   - **Material You** generate a color palette based on the launcher image;
   - **Application icon** change the application icon (default or "classic" one);
+  - **Status and navigation bar theme** change the theme of the status bar (top) and of the system
+    navigation bar (bottom);
 - **NSFW**
   - **Manage filters** opens the ban and [filter management](#manage-filters) screen;
   - **Include NSFW contents** enables a client-side filter to exclude sensitive posts;
