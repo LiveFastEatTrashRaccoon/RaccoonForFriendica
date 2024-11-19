@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.ThemeColor
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
@@ -115,6 +116,10 @@ interface SettingsMviModel :
             val variant: AppIconVariant,
         ) : Intent
 
+        data class ChangeBarTheme(
+            val theme: UiBarTheme,
+        ) : Intent
+
         data object ExportSettings : Intent
 
         data class ImportSettings(
@@ -161,6 +166,7 @@ interface SettingsMviModel :
         val appIconRestartRequired: Boolean = false,
         val loading: Boolean = false,
         val supportSettingsImportExport: Boolean = true,
+        val barTheme: UiBarTheme = UiBarTheme.Transparent,
     )
 
     sealed interface Effect {

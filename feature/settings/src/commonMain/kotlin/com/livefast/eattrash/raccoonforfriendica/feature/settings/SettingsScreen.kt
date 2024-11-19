@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -43,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
@@ -121,6 +123,7 @@ class SettingsScreen : Screen {
         var pushNotificationDistributorBottomSheetOpened by remember { mutableStateOf(false) }
         var imageLoadingModeBottomSheetOpened by remember { mutableStateOf(false) }
         var appIconBottomSheetOpened by remember { mutableStateOf(false) }
+        var barThemeBottomSheetOpened by remember { mutableStateOf(false) }
         var fileInputOpened by remember { mutableStateOf(false) }
         var settingsContent by remember { mutableStateOf<String?>(null) }
 
@@ -136,6 +139,7 @@ class SettingsScreen : Screen {
         }
 
         Scaffold(
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             topBar = {
                 TopAppBar(
                     windowInsets = topAppBarState.toWindowInsets(),
@@ -386,6 +390,13 @@ class SettingsScreen : Screen {
                                 },
                             )
                         }
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemBarTheme,
+                            value = uiState.barTheme.toReadableName(),
+                            onTap = {
+                                barThemeBottomSheetOpened = true
+                            },
+                        )
 
                         // NSFW section
                         SettingsHeader(
@@ -814,9 +825,7 @@ class SettingsScreen : Screen {
                     if (index != null) {
                         val value = BACKGROUND_NOTIFICATION_CHECK_INTERVALS[index]
                         model.reduce(
-                            SettingsMviModel.Intent.ChangeBackgroundNotificationCheckInterval(
-                                value,
-                            ),
+                            SettingsMviModel.Intent.ChangeBackgroundNotificationCheckInterval(value),
                         )
                     }
                 },
@@ -894,7 +903,7 @@ class SettingsScreen : Screen {
                     imageLoadingModeBottomSheetOpened = false
                     if (index != null) {
                         model.reduce(
-                            SettingsMviModel.Intent.ChangeAutoloadImages(mode = values[index]),
+                            SettingsMviModel.Intent.ChangeAutoloadImages(values[index]),
                         )
                     }
                 },
@@ -944,6 +953,28 @@ class SettingsScreen : Screen {
                 }
                 fileInputOpened = false
             }
+        }
+
+        if (barThemeBottomSheetOpened) {
+            val values =
+                listOf(
+                    UiBarTheme.Transparent,
+                    UiBarTheme.Opaque,
+                    UiBarTheme.Solid,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemBarTheme,
+                items =
+                    values.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+                onSelected = { index ->
+                    barThemeBottomSheetOpened = false
+                    if (index != null) {
+                        model.reduce(
+                            SettingsMviModel.Intent.ChangeBarTheme(values[index]),
+                        )
+                    }
+                },
+            )
         }
 
         settingsContent?.also { content ->

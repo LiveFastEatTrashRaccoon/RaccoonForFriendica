@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.settings
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
@@ -83,6 +84,7 @@ class SettingsViewModel(
                     supportsDynamicColors = supportsDynamicColors,
                     availableThemeColors = themeColorRepository.getColors(),
                     appIconChangeSupported = appIconManager.supportsMultipleIcons,
+                    supportSettingsImportExport = fileSystemManager.isSupported,
                 )
             }
 
@@ -189,7 +191,7 @@ class SettingsViewModel(
                                 imageLoadingMode = settings.autoloadImages,
                                 notificationMode = settings.notificationMode,
                                 hideNavigationBarWhileScrolling = settings.hideNavigationBarWhileScrolling,
-                                supportSettingsImportExport = fileSystemManager.isSupported,
+                                barTheme = settings.barTheme,
                             )
                         }
                     }
@@ -342,6 +344,11 @@ class SettingsViewModel(
                     changeAppIcon(intent.variant)
                 }
 
+            is SettingsMviModel.Intent.ChangeBarTheme ->
+                screenModelScope.launch {
+                    changeBarTheme(intent.theme)
+                }
+
             is SettingsMviModel.Intent.ExportSettings -> handleExportSettings()
             is SettingsMviModel.Intent.ImportSettings -> handleImportSettings(intent.content)
         }
@@ -492,6 +499,12 @@ class SettingsViewModel(
     private suspend fun changeAppIcon(variant: AppIconVariant) {
         appIconManager.changeIcon(variant)
         updateState { it.copy(appIconRestartRequired = true) }
+    }
+
+    private suspend fun changeBarTheme(value: UiBarTheme) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(barTheme = value)
+        saveSettings(newSettings)
     }
 
     private fun handleImportSettings(content: String) {
