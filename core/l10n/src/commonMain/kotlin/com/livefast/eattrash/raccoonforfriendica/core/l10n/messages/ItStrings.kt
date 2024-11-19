@@ -456,4 +456,6 @@ internal val ItStrings =
         override val confirmChangeMarkupMode =
             "Se si cambia il tipo di markup, tutta la formattazione andrà persa. Procedere comunque?"
         override val actionEditMembers = "Modifica membri"
+        override val settingsItemBarTheme = "Tema barra di stato e di navigazione"
+        override val barThemeSolid = "Pieno"
     }

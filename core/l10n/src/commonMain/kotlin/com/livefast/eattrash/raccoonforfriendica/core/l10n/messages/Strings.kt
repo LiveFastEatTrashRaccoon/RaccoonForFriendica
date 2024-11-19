@@ -402,6 +402,8 @@ interface Strings {
     val actionChangeMarkupMode: String
     val confirmChangeMarkupMode: String
     val actionEditMembers: String
+    val settingsItemBarTheme: String
+    val barThemeSolid: String
 }
 
 object Locales {

@@ -460,4 +460,6 @@ internal val PtStrings =
         override val confirmChangeMarkupMode =
             "Se alterar o tipo de marcação, toda a formatação se perderá. Continuar na mesma?"
         override val actionEditMembers = "Editar membros"
+        override val settingsItemBarTheme = "Tema da barra de estado e de navegação"
+        override val barThemeSolid = "Sólido"
     }

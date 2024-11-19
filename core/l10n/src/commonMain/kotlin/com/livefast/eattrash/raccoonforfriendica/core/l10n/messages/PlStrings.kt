@@ -454,4 +454,6 @@ internal val PlStrings =
         override val confirmChangeMarkupMode =
             "Jeśli zmienisz typ znaczników, całe formatowanie zostanie utracone. Kontynuować mimo to?"
         override val actionEditMembers = "Edytuj członków"
+        override val settingsItemBarTheme = "Motyw paska stanu i nawigacji"
+        override val barThemeSolid = "Solidny"
     }
