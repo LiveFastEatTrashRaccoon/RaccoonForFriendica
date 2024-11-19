@@ -29,4 +29,5 @@ data class SettingsEntity(
     val pullNotificationCheckInterval: Long? = null,
     @ColumnInfo(defaultValue = "1") val autoloadImages: Int = 1,
     @ColumnInfo(defaultValue = "1") val hideNavigationBarWhileScrolling: Boolean = true,
+    @ColumnInfo(defaultValue = "0") val barTheme: Int = 0,
 )
