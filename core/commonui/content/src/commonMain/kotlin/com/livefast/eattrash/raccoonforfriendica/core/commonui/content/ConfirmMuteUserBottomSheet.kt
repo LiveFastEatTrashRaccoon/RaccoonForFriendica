@@ -3,8 +3,10 @@ package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -69,13 +71,13 @@ fun ConfirmMuteUserBottomSheet(
     }
 
     ModalBottomSheet(
+        contentWindowInsets = { WindowInsets.navigationBars },
         sheetState = sheetState,
         onDismissRequest = {
             onClose?.invoke(null)
         },
     ) {
         Column(
-            modifier = Modifier.padding(bottom = Spacing.xl),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             Text(
