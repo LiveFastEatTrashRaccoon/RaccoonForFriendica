@@ -298,9 +298,8 @@ private fun PollCardFooter(
                 },
             style = MaterialTheme.typography.bodyMedium,
             color = ancillaryColor,
+            modifier = Modifier.weight(1f),
         )
-
-        Spacer(modifier = Modifier.weight(1f))
 
         if (!expired) {
             TwoStateButton(
