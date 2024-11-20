@@ -70,8 +70,10 @@ class DefaultActiveAccountMonitorTest {
             val account: AccountModel? = null
             val accountChannel = Channel<AccountModel?>()
             every { accountRepository.getActiveAsFlow() } returns accountChannel.receiveAsFlow()
+            everySuspend { accountRepository.getBy(handle = any()) } returns AccountModel(id = 1)
             everySuspend { accountRepository.getActive() } returns account
             val settings = SettingsModel()
+            everySuspend { settingsRepository.get(any()) } returns settings
 
             sut.start()
             accountChannel.send(account)
@@ -84,6 +86,8 @@ class DefaultActiveAccountMonitorTest {
                 identityRepository.refreshCurrentUser(null)
                 supportedFeatureRepository.refresh()
                 contentPreloadManager.preload()
+                accountRepository.getBy(handle = "")
+                settingsRepository.get(accountId = 1)
                 settingsRepository.changeCurrent(settings)
                 notificationCoordinator.setupAnonymousUser()
             }
