@@ -41,6 +41,19 @@ internal fun InReplyToInfo(
     val creatorAvatar = user?.avatar.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val onOpenUserModifier =
+        if (onOpenUser != null) {
+            Modifier.clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                if (user != null) {
+                    onOpenUser.invoke(user)
+                }
+            }
+        } else {
+            Modifier
+        }
 
     Row(
         modifier = modifier,
@@ -62,14 +75,8 @@ internal fun InReplyToInfo(
             CustomImage(
                 modifier =
                     Modifier
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                        ) {
-                            if (user != null) {
-                                onOpenUser?.invoke(user)
-                            }
-                        }.size(iconSize)
+                        .size(iconSize)
+                        .then(onOpenUserModifier)
                         .padding(Spacing.xxxs)
                         .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
@@ -78,15 +85,7 @@ internal fun InReplyToInfo(
             )
         } else {
             PlaceholderImage(
-                modifier =
-                    Modifier.clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                    ) {
-                        if (user != null) {
-                            onOpenUser?.invoke(user)
-                        }
-                    },
+                modifier = onOpenUserModifier,
                 size = iconSize,
                 title = creatorName,
             )
@@ -100,6 +99,9 @@ internal fun InReplyToInfo(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             autoloadImages = autoloadImages,
+            onClick = {
+                user?.also { onOpenUser?.invoke(it) }
+            },
         )
     }
 }

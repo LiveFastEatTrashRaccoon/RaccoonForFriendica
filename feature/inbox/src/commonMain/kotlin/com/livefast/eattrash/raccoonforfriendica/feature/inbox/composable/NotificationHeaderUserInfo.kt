@@ -1,13 +1,14 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,12 +27,23 @@ internal fun NotificationHeaderUserInfo(
     modifier: Modifier = Modifier,
     user: UserModel,
     autoloadImages: Boolean = true,
-    onOpenUser: ((UserModel) -> Unit)? = null,
+    onOpenUser: (() -> Unit)? = null,
 ) {
     val iconSize = IconSize.s
     val creatorName = user.let { it.displayName ?: it.handle }.orEmpty()
     val creatorAvatar = user.avatar.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
+    val onOpenUserModifier =
+        if (onOpenUser != null) {
+            Modifier.clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                onOpenUser.invoke()
+            }
+        } else {
+            Modifier
+        }
 
     Row(
         modifier = modifier,
@@ -42,10 +54,8 @@ internal fun NotificationHeaderUserInfo(
             CustomImage(
                 modifier =
                     Modifier
-                        .clickable {
-                            onOpenUser?.invoke(user)
-                        }.padding(Spacing.xxxs)
                         .size(iconSize)
+                        .then(onOpenUserModifier)
                         .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
                 quality = FilterQuality.Low,
@@ -53,10 +63,7 @@ internal fun NotificationHeaderUserInfo(
             )
         } else {
             PlaceholderImage(
-                modifier =
-                    Modifier.clickable {
-                        onOpenUser?.invoke(user)
-                    },
+                modifier = onOpenUserModifier,
                 size = iconSize,
                 title = creatorName,
             )
@@ -70,6 +77,9 @@ internal fun NotificationHeaderUserInfo(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             autoloadImages = autoloadImages,
+            onClick = {
+                onOpenUser?.invoke()
+            },
         )
     }
 }
