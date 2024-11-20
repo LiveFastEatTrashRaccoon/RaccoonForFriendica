@@ -8,6 +8,15 @@ import cafe.adriel.lyricist.Lyricist
 import cafe.adriel.lyricist.ProvideStrings
 
 interface Strings {
+    val languageEn: String
+    val languageDe: String
+    val languageEs: String
+    val languageFr: String
+    val languageIt: String
+    val languagePl: String
+    val languagePt: String
+    val languageUa: String
+
     val messageConfirmExit: String
     val messageSuccess: String
     val messageAreYouSure: String
@@ -52,13 +61,6 @@ interface Strings {
     val accountSectionPinned: String
     val accountSectionMedia: String
     val postTitle: String
-    val languageEn: String
-    val languageDe: String
-    val languageEs: String
-    val languageFr: String
-    val languageIt: String
-    val languagePl: String
-    val languagePt: String
     val settingsTitle: String
     val settingsHeaderGeneral: String
     val settingsItemLanguage: String
@@ -414,6 +416,7 @@ object Locales {
     const val IT = "it"
     const val PL = "pl"
     const val PT = "pt"
+    const val UA = "ua"
 
     val AVAILABLE_LANGUAGES =
         listOf(
@@ -424,6 +427,7 @@ object Locales {
             IT,
             PL,
             PT,
+            UA,
         )
 }
 
@@ -436,6 +440,7 @@ internal val localizableStrings: Map<LanguageTag, Strings> =
         Locales.IT to ItStrings,
         Locales.PL to PlStrings,
         Locales.PT to PtStrings,
+        Locales.UA to UaStrings,
     )
 
 val LocalStrings: ProvidableCompositionLocal<Strings> =
