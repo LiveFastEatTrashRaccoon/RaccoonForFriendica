@@ -71,6 +71,7 @@ val domainIdentityUseCaseModule =
                 contentPreloadManager = get(),
                 markerRepository = get(),
                 notificationCoordinator = get(),
+                announcementsManager = get(),
             )
         }
         single<EntryActionRepository> {
