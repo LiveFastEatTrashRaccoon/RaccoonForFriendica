@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -38,7 +39,7 @@ fun NotificationUserInfo(
     user: UserModel,
     modifier: Modifier = Modifier,
     autoloadImages: Boolean = true,
-    onClick: (() -> Unit)? = null,
+    onOpenUser: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
     onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
 ) {
@@ -48,15 +49,20 @@ fun NotificationUserInfo(
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val relationshipStatus = user.relationshipStatus
-
-    Column(
-        modifier =
-            modifier.clickable(
+    val onOpenUserModifier =
+        if (onOpenUser != null) {
+            Modifier.clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
             ) {
-                onClick?.invoke()
-            },
+                onOpenUser.invoke()
+            }
+        } else {
+            Modifier
+        }
+
+    Column(
+        modifier = modifier.then(onOpenUserModifier),
     ) {
         Box {
             CustomImage(
@@ -112,9 +118,22 @@ fun NotificationUserInfo(
                         maxLines = 1,
                         color = fullColor,
                         autoloadImages = autoloadImages,
+                        onClick = {
+                            onOpenUser?.invoke()
+                        },
                     )
                     Text(
-                        text = user.handle ?: user.username ?: "",
+                        text =
+                            buildAnnotatedString {
+                                pushLink(
+                                    LinkAnnotation.Clickable(
+                                        tag = "user-handle",
+                                        linkInteractionListener = { onOpenUser?.invoke() },
+                                    ),
+                                )
+                                append(user.handle ?: user.username ?: "")
+                                pop()
+                            },
                         style = MaterialTheme.typography.titleMedium,
                         color = ancillaryColor,
                     )
@@ -153,7 +172,7 @@ fun NotificationUserInfo(
                     modifier = Modifier.padding(top = Spacing.s),
                     content = bio,
                     onOpenUrl = onOpenUrl,
-                    onClick = onClick,
+                    onClick = onOpenUser,
                 )
             }
         }
