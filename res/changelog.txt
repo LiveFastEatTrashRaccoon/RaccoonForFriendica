@@ -1,13 +1,10 @@
 ## What's Changed
 
-- feat: add support for MastodonRedirect
-- feat: export/import app settings to/from JSON
-- feat: export contact list from profile
-- feat: allow changing markup mode in post creation
-- fix: retain scrolling state after navigation
-- fix: newlines after titles in Markdown preview
-- fix: avoid self mention when replying
-- fix: retrieve source to edit post
-- enhancement: populate current app icon value in settings
-- chore: update manual and project documentation
-- chore: typo in Fastlane metadata
+- feat: add possibility to change system status and navigation bar theme in #548
+- feat: possibility received shared content from other apps and create post in #543
+- fix: notification type serialization for filtering and push subscription in #531
+- fix: poll footer layout in #546
+- fix: make user names/handles clickable in #549
+- enhancement: change "send" button position in post creation in #536
+- enhancement: change open circle/list in circle management screen in #537
+- chore: update dependencies in #532, #533, #534

@@ -1,0 +1,8 @@
+- feat: add possibility to change system status and navigation bar theme
+- feat: possibility received shared content from other apps and create post
+- fix: notification type serialization for filtering and push subscription
+- fix: poll footer layout
+- fix: make user names/handles clickable
+- enhancement: change "send" button position in post creation
+- enhancement: change open circle/list in circle management screen
+- chore: update dependencies
