@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.Dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -44,6 +46,19 @@ fun ContentHeader(
     val creatorAvatar = user?.avatar.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val onOpenUserModifier =
+        if (onOpenUser != null) {
+            Modifier.clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                if (user != null) {
+                    onOpenUser.invoke(user)
+                }
+            }
+        } else {
+            Modifier
+        }
 
     Row(
         modifier = modifier,
@@ -54,14 +69,8 @@ fun ContentHeader(
             CustomImage(
                 modifier =
                     Modifier
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                        ) {
-                            if (user != null) {
-                                onOpenUser?.invoke(user)
-                            }
-                        }.size(iconSize)
+                        .size(iconSize)
+                        .then(onOpenUserModifier)
                         .padding(Spacing.xxxs)
                         .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
@@ -71,15 +80,7 @@ fun ContentHeader(
             )
         } else {
             PlaceholderImage(
-                modifier =
-                    Modifier.clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                    ) {
-                        if (user != null) {
-                            onOpenUser?.invoke(user)
-                        }
-                    },
+                modifier = onOpenUserModifier,
                 size = iconSize,
                 title = creatorName,
             )
@@ -94,16 +95,28 @@ fun ContentHeader(
                 style = MaterialTheme.typography.bodyMedium,
                 color = fullColor,
                 autoloadImages = autoloadImages,
+                onClick = {
+                    user?.also { onOpenUser?.invoke(it) }
+                },
             )
 
             Text(
                 text =
-                    buildString {
+                    buildAnnotatedString {
                         if (!user?.handle.isNullOrBlank()) {
+                            pushLink(
+                                LinkAnnotation.Clickable(
+                                    tag = "user-handle",
+                                    linkInteractionListener = {
+                                        user?.also { onOpenUser?.invoke(it) }
+                                    },
+                                ),
+                            )
                             append(user?.handle?.ellipsize(30))
+                            pop()
                         }
                         if (!scheduleDate.isNullOrBlank()) {
-                            if (isNotEmpty()) {
+                            if (length > 0) {
                                 append(" • ")
                             }
                             append(
@@ -113,7 +126,7 @@ fun ContentHeader(
                                 ),
                             )
                         } else if (!date.isNullOrBlank()) {
-                            if (isNotEmpty()) {
+                            if (length > 0) {
                                 append(" • ")
                             }
                             append(date.prettifyDate())
