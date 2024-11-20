@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.AnnouncementService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.EventService
@@ -22,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 
 interface ServiceProvider {
+    val announcements: AnnouncementService
     val apps: AppService
     val directMessage: DirectMessageService
     val events: EventService
