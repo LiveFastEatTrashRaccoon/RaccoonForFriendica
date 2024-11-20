@@ -8,6 +8,7 @@ internal open class DefaultStrings : Strings {
     override val languageIt = "Italiano"
     override val languagePl = "Polski"
     override val languagePt = "Português"
+    override val languageUa = "Український"
 
     override val messageConfirmExit = "Tap 🔙 again to exit"
     override val messageAreYouSure = "Are you sure you want to continue?"
@@ -135,7 +136,7 @@ internal open class DefaultStrings : Strings {
     override val actionMuteNotifications = "Mute notifications"
     override val createPostTitle = "Create post"
     override val messagePostEmptyText =
-        "Please provider either an attachment or a poll or some text"
+        "Please provide either an attachment or a poll or some text"
     override val visibilityPublic = "Public"
     override val visibilityUnlisted = "Unlisted"
     override val visibilityPrivate = "Only followers"
