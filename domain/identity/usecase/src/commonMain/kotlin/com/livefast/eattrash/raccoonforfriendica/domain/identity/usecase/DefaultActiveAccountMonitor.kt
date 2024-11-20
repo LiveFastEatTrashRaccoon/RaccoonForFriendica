@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
@@ -33,6 +34,7 @@ internal class DefaultActiveAccountMonitor(
     private val contentPreloadManager: ContentPreloadManager,
     private val markerRepository: MarkerRepository,
     private val notificationCoordinator: NotificationCoordinator,
+    private val announcementsManager: AnnouncementsManager,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ActiveAccountMonitor {
     private val scope = CoroutineScope(SupervisorJob() + coroutineDispatcher)
@@ -83,6 +85,7 @@ internal class DefaultActiveAccountMonitor(
             settingsRepository.changeCurrent(accountSettings)
 
             notificationCoordinator.setupAnonymousUser()
+            announcementsManager.clearUnreadCount()
         } else {
             val node = account.handle.nodeName ?: defaultNode
             val credentials = accountCredentialsCache.get(account.id)
@@ -99,6 +102,7 @@ internal class DefaultActiveAccountMonitor(
 
             markerRepository.get(type = MarkerType.Notifications, refresh = true)
             notificationCoordinator.setupLoggedUser()
+            announcementsManager.refreshUnreadCount()
         }
     }
 

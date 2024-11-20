@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeFeatures
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
@@ -29,25 +30,26 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
 class DefaultActiveAccountMonitorTest {
-    private val accountRepository = mock<AccountRepository>(mode = MockMode.autoUnit)
+    private val accountRepository = mock<AccountRepository>(MockMode.autoUnit)
     private val apiConfigurationRepository =
-        mock<ApiConfigurationRepository>(mode = MockMode.autoUnit) {
+        mock<ApiConfigurationRepository>(MockMode.autoUnit) {
             every { defaultNode } returns "default-instance"
             every { node } returns MutableStateFlow("test-instance")
         }
-    private val identityRepository = mock<IdentityRepository>(mode = MockMode.autoUnit)
-    private val accountCredentialsCache = mock<AccountCredentialsCache>(mode = MockMode.autoUnit)
-    private val settingsRepository = mock<SettingsRepository>(mode = MockMode.autoUnit)
+    private val identityRepository = mock<IdentityRepository>(MockMode.autoUnit)
+    private val accountCredentialsCache = mock<AccountCredentialsCache>(MockMode.autoUnit)
+    private val settingsRepository = mock<SettingsRepository>(MockMode.autoUnit)
     private val supportedFeatureRepository =
-        mock<SupportedFeatureRepository>(mode = MockMode.autoUnit) {
+        mock<SupportedFeatureRepository>(MockMode.autoUnit) {
             every { features } returns MutableStateFlow(NodeFeatures())
         }
-    private val notificationCoordinator = mock<NotificationCoordinator>(mode = MockMode.autoUnit)
-    private val contentPreloadManager = mock<ContentPreloadManager>(mode = MockMode.autoUnit)
+    private val notificationCoordinator = mock<NotificationCoordinator>(MockMode.autoUnit)
+    private val contentPreloadManager = mock<ContentPreloadManager>(MockMode.autoUnit)
     private val markerRepository =
-        mock<MarkerRepository>(mode = MockMode.autoUnit) {
+        mock<MarkerRepository>(MockMode.autoUnit) {
             everySuspend { get(any(), any()) } returns null
         }
+    private val announcementsManager = mock<AnnouncementsManager>(MockMode.autoUnit)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val sut =
@@ -61,6 +63,7 @@ class DefaultActiveAccountMonitorTest {
             contentPreloadManager = contentPreloadManager,
             markerRepository = markerRepository,
             notificationCoordinator = notificationCoordinator,
+            announcementsManager = announcementsManager,
             coroutineDispatcher = UnconfinedTestDispatcher(),
         )
 
@@ -90,6 +93,7 @@ class DefaultActiveAccountMonitorTest {
                 settingsRepository.get(accountId = 1)
                 settingsRepository.changeCurrent(settings)
                 notificationCoordinator.setupAnonymousUser()
+                announcementsManager.clearUnreadCount()
             }
         }
 
@@ -121,6 +125,7 @@ class DefaultActiveAccountMonitorTest {
                 contentPreloadManager.preload(userId)
                 settingsRepository.changeCurrent(settings)
                 notificationCoordinator.setupLoggedUser()
+                announcementsManager.refreshUnreadCount()
             }
         }
 }
