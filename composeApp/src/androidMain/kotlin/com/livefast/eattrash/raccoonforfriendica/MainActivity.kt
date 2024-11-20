@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.livefast.eattrash.raccoonforfriendica.auth.DefaultAuthManager
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen().setKeepOnScreenCondition {
             !loadingFinished
         }
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         val navigationCoordinator = getNavigationCoordinator()

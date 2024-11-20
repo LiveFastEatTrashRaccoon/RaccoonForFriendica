@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toInt
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUIBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiTheme
@@ -67,6 +68,7 @@ private fun SettingsEntity.toModel() =
         pullNotificationCheckInterval = pullNotificationCheckInterval?.seconds,
         autoloadImages = autoloadImages.toImageLoadingMode(),
         hideNavigationBarWhileScrolling = hideNavigationBarWhileScrolling,
+        barTheme = barTheme.toUIBarTheme(),
     )
 
 private fun SettingsModel.toEntity() =
@@ -94,4 +96,5 @@ private fun SettingsModel.toEntity() =
         pullNotificationCheckInterval = pullNotificationCheckInterval?.inWholeSeconds,
         autoloadImages = autoloadImages.toInt(),
         hideNavigationBarWhileScrolling = hideNavigationBarWhileScrolling,
+        barTheme = barTheme.toInt(),
     )

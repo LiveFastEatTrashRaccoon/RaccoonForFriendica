@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.data
 
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
@@ -29,6 +30,7 @@ data class SettingsModel(
     val pullNotificationCheckInterval: Duration? = null,
     val autoloadImages: ImageLoadingMode = ImageLoadingMode.Always,
     val hideNavigationBarWhileScrolling: Boolean = true,
+    val barTheme: UiBarTheme = UiBarTheme.Transparent,
 )
 
 fun Int.toDomainMaxLines(): Int =

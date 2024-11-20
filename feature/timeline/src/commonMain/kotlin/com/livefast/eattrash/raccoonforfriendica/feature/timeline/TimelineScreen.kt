@@ -152,6 +152,7 @@ class TimelineScreen : Screen {
         }
 
         Scaffold(
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             topBar = {
                 TopAppBar(
                     windowInsets = topAppBarState.toWindowInsets(),

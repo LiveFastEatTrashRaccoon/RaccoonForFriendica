@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -54,14 +56,13 @@ fun CustomModalBottomSheet(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
     ModalBottomSheet(
+        contentWindowInsets = { WindowInsets.navigationBars },
         sheetState = sheetState,
         onDismissRequest = {
             onSelected?.invoke(null)
         },
         content = {
-            Column(
-                modifier = Modifier.padding(bottom = Spacing.xl),
-            ) {
+            Column {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
@@ -72,61 +73,61 @@ fun CustomModalBottomSheet(
                 Spacer(modifier = Modifier.height(Spacing.s))
                 LazyColumn {
                     itemsIndexed(items = items) { idx, item ->
-                            Row(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
+                        Row(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
                                     .clip(
                                         shape = RoundedCornerShape(CornerSize.xl),
                                     ).combinedClickable(
                                         onClick = {
                                             sheetScope
                                                 .launch {
-                                                        sheetState.hide()
-                                                    }.invokeOnCompletion {
-                                                        onSelected?.invoke(idx)
-                                                    }
+                                                    sheetState.hide()
+                                                }.invokeOnCompletion {
+                                                    onSelected?.invoke(idx)
+                                                }
+                                        },
+                                        onLongClick =
+                                            if (onLongPress != null) {
+                                                {
+                                                    sheetScope
+                                                        .launch {
+                                                            sheetState.hide()
+                                                        }.invokeOnCompletion {
+                                                            onLongPress(idx)
+                                                        }
+                                                }
+                                            } else {
+                                                null
                                             },
-                                            onLongClick =
-                                                if (onLongPress != null) {
-                                                    {
-                                                        sheetScope
-                                                            .launch {
-                                                                sheetState.hide()
-                                                            }.invokeOnCompletion {
-                                                                onLongPress(idx)
-                                                            }
-                                                    }
-                                                } else {
-                                                    null
-                                                },
-                                        ).padding(10.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                                    ).padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                        ) {
+                            item.leadingContent?.invoke()
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                             ) {
-                                item.leadingContent?.invoke()
-                                Column(
-                                    modifier = Modifier.weight(1f),
-                                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-                                ) {
+                                Text(
+                                    text = item.label,
+                                    style =
+                                        item.customLabelStyle
+                                            ?: MaterialTheme.typography.bodyLarge,
+                                    color = fullColor,
+                                )
+                                if (!item.subtitle.isNullOrEmpty()) {
                                     Text(
-                                        text = item.label,
-                                        style =
-                                            item.customLabelStyle
-                                                ?: MaterialTheme.typography.bodyLarge,
-                                        color = fullColor,
+                                        text = item.subtitle,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = ancillaryColor,
                                     )
-                                    if (!item.subtitle.isNullOrEmpty()) {
-                                        Text(
-                                            text = item.subtitle,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = ancillaryColor,
-                                        )
-                                    }
                                 }
-                                item.trailingContent?.invoke()
                             }
+                            item.trailingContent?.invoke()
                         }
+                    }
                 }
             }
         },

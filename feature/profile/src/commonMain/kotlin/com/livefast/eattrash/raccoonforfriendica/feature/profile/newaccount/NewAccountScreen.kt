@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile.newaccount
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -33,6 +34,7 @@ class NewAccountScreen : Screen {
         val navigationCoordinator = remember { getNavigationCoordinator() }
 
         Scaffold(
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             topBar = {
                 TopAppBar(
                     windowInsets = topAppBarState.toWindowInsets(),

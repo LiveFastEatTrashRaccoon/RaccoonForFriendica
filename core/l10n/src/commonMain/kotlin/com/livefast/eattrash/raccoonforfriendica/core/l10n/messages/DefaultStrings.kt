@@ -451,4 +451,6 @@ internal open class DefaultStrings : Strings {
     override val confirmChangeMarkupMode =
         "If you change the markup type, all the formatting will be lost. Proceed anyway?"
     override val actionEditMembers = "Edit members"
+    override val settingsItemBarTheme = "Status and navigation bar theme"
+    override val barThemeSolid = "Solid"
 }

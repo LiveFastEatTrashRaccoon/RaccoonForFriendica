@@ -34,7 +34,6 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigationItem
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.HomeTab
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.toTab
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -50,16 +49,8 @@ object MainScreen : Screen {
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val currentSection by navigationCoordinator.currentSection.collectAsState()
         val snackbarHostState = remember { SnackbarHostState() }
-        val maxTopInsetPx = with(LocalDensity.current) { Dimensions.maxTopBarInset.toPx() }
         var bottomBarHeightPx by remember { mutableStateOf(0f) }
-        val bottomNavigationInsetPx =
-            with(LocalDensity.current) {
-                WindowInsets.navigationBars.getBottom(this)
-            }
-        val bottomNavigationInset =
-            with(LocalDensity.current) {
-                bottomNavigationInsetPx.toDp()
-            }
+        val bottomNavigationInsetPx = WindowInsets.navigationBars.getBottom(LocalDensity.current)
         val scrollConnection =
             remember {
                 object : NestedScrollConnection {
@@ -70,7 +61,10 @@ object MainScreen : Screen {
                         val delta = available.y
                         val newOffset =
                             (uiState.bottomBarOffsetHeightPx + delta).coerceIn(
-                                -(bottomBarHeightPx + bottomNavigationInsetPx + maxTopInsetPx),
+                                // 2 times:
+                                // - once for the actual offset due to the translation amount
+                                // - once for the bottom inset artificially applied to NavigationBar
+                                -(bottomBarHeightPx + bottomNavigationInsetPx) * 2,
                                 0f,
                             )
                         model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(newOffset))
@@ -113,6 +107,7 @@ object MainScreen : Screen {
             }
 
             Scaffold(
+                contentWindowInsets = WindowInsets(0, 0, 0, 0),
                 snackbarHost = {
                     SnackbarHost(
                         hostState = snackbarHostState,
@@ -147,10 +142,10 @@ object MainScreen : Screen {
                                 },
                         windowInsets =
                             WindowInsets(
-                                left = 0.dp,
-                                top = 0.dp,
-                                right = 0.dp,
-                                bottom = bottomNavigationInset,
+                                left = 0,
+                                top = 0,
+                                right = 0,
+                                bottom = bottomNavigationInsetPx,
                             ),
                         tonalElevation = 0.dp,
                     ) {

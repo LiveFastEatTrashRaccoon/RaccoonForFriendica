@@ -456,4 +456,6 @@ internal val DeStrings =
         override val confirmChangeMarkupMode =
             "Wenn Sie den Markup-Typ ändern, gehen alle Formatierungen verloren. Trotzdem weitermachen?"
         override val actionEditMembers = "Mitglieder bearbeiten"
+        override val settingsItemBarTheme = "Thema der Status- und Navigationsleiste"
+        override val barThemeSolid = "Solide"
     }

@@ -461,4 +461,6 @@ internal val FrStrings =
         override val confirmChangeMarkupMode =
             "Si vous modifiez le type de balisage, toutes les mises en forme seront perdues. Poursuivre quand même ?"
         override val actionEditMembers = "Modifier les membres"
+        override val settingsItemBarTheme = "Thème de la barre d'état et de navigation"
+        override val barThemeSolid = "Solide"
     }

@@ -15,7 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepo
 @Composable
 fun AppTheme(
     useDynamicColors: Boolean,
-    barTheme: UiBarTheme = UiBarTheme.Transparent,
+    barTheme: UiBarTheme,
     content: @Composable () -> Unit,
 ) {
     val repository =

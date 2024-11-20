@@ -52,19 +52,10 @@ class DefaultBarColorProvider : BarColorProvider {
                     }
                 }
 
+                val forceLight = baseColor == Color.White
                 WindowCompat.getInsetsController(this, decorView).apply {
-                    isAppearanceLightStatusBars =
-                        when (theme) {
-                            UiTheme.Light -> true
-                            UiTheme.Dark, UiTheme.Black -> false
-                            UiTheme.Default -> !isSystemInDarkTheme
-                        }
-                    isAppearanceLightNavigationBars =
-                        when (theme) {
-                            UiTheme.Light -> true
-                            UiTheme.Dark, UiTheme.Black -> false
-                            UiTheme.Default -> !isSystemInDarkTheme
-                        }
+                    isAppearanceLightStatusBars = forceLight
+                    isAppearanceLightNavigationBars = forceLight
                 }
             }
         }

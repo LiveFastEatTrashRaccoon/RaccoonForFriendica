@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.getL10nManager
@@ -147,6 +148,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
 
     AppTheme(
         useDynamicColors = currentSettings?.dynamicColors ?: false,
+        barTheme = currentSettings?.barTheme ?: UiBarTheme.Transparent,
     ) {
         ProvideCustomUriHandler {
             ProvideCustomFontScale {
