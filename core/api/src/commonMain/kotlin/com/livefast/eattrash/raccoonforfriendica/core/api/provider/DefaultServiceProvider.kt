@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.AnnouncementService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.EventService
@@ -20,6 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TagsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.createAnnouncementService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createAppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createDirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createEventService
@@ -70,6 +72,7 @@ internal class DefaultServiceProvider(
 
     private var currentNode: String = ""
 
+    override lateinit var announcements: AnnouncementService
     override lateinit var apps: AppService
     override lateinit var directMessage: DirectMessageService
     override lateinit var events: EventService
@@ -169,6 +172,7 @@ internal class DefaultServiceProvider(
                 .httpClient(client)
                 .converterFactories(ResponseConverterFactory())
                 .build()
+        announcements = ktorfit.createAnnouncementService()
         apps = ktorfit.createAppService()
         directMessage = ktorfit.createDirectMessageService()
         events = ktorfit.createEventService()

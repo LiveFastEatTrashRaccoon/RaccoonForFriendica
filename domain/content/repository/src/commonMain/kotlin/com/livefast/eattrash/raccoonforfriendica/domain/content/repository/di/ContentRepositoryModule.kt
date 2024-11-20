@@ -4,7 +4,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultAnnouncementRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultAnnouncementsManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultCirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultDirectMessageRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultDraftRepository
@@ -192,6 +196,16 @@ val domainContentRepositoryModule =
         single<PushNotificationRepository> {
             DefaultPushNotificationRepository(
                 provider = get(named("default")),
+            )
+        }
+        single<AnnouncementRepository> {
+            DefaultAnnouncementRepository(
+                provider = get(named("default")),
+            )
+        }
+        single<AnnouncementsManager> {
+            DefaultAnnouncementsManager(
+                announcementRepository = get(),
             )
         }
     }

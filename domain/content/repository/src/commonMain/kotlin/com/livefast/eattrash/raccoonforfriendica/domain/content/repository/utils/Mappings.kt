@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Announcement
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CustomEmoji
@@ -31,6 +32,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ScheduledStatus
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusMention
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusReaction
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
@@ -39,6 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserListReplyPolic
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.extractDatePart
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.parseDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AnnouncementModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
@@ -62,6 +65,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReactionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
@@ -309,7 +313,7 @@ internal fun NotificationPolicy.toDto(): String =
         NotificationPolicy.Followed -> "followed"
         NotificationPolicy.Follower -> "follower"
         NotificationPolicy.None -> "none"
-}
+    }
 
 internal fun Notification.toModel() =
     NotificationModel(
@@ -570,4 +574,24 @@ internal fun Event.toModel() =
         type = type.toEventType(),
         ongoing = noFinish != 0,
         place = place,
+    )
+
+internal fun StatusReaction.toModel() =
+    ReactionModel(
+        count = count,
+        isMe = me ?: false,
+        name = name,
+        staticUrl = staticUrl,
+        url = url,
+    )
+
+internal fun Announcement.toModel() =
+    AnnouncementModel(
+        id = id,
+        content = content,
+        emojis = emojis.map { it.toModel() },
+        published = publishedAt,
+        reactions = reactions.map { it.toModel() },
+        read = read,
+        updated = updatedAt,
     )
