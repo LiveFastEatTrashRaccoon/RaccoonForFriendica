@@ -79,7 +79,9 @@ internal fun NotificationItem(
                     modifier = Modifier.padding(start = Spacing.xs),
                     user = user,
                     autoloadImages = autoloadImages,
-                    onOpenUser = onOpenUser,
+                    onOpenUser = {
+                        onOpenUser?.invoke(user)
+                    },
                 )
             }
             Text(
@@ -148,7 +150,7 @@ internal fun NotificationItem(
                     user = user,
                     autoloadImages = autoloadImages,
                     onOpenUrl = onOpenUrl,
-                    onClick = {
+                    onOpenUser = {
                         onOpenUser?.invoke(user)
                     },
                     onRelationshipClicked = { nextAction ->
