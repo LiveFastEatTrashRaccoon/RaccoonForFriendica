@@ -466,11 +466,6 @@ class SettingsViewModel(
         saveSettings(newSettings)
     }
 
-    private suspend fun saveSettings(newSettings: SettingsModel) {
-        settingsRepository.update(newSettings)
-        settingsRepository.changeCurrent(newSettings)
-    }
-
     private suspend fun changeNotificationMode(mode: NotificationMode) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(notificationMode = mode)
@@ -522,5 +517,10 @@ class SettingsViewModel(
             updateState { it.copy(loading = false) }
             emitEffect(SettingsMviModel.Effect.SaveSettings(content))
         }
+    }
+
+    private suspend fun saveSettings(newSettings: SettingsModel) {
+        settingsRepository.update(newSettings)
+        settingsRepository.changeCurrent(newSettings)
     }
 }

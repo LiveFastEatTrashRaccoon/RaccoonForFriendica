@@ -76,7 +76,11 @@ internal class DefaultActiveAccountMonitor(
 
             identityRepository.refreshCurrentUser(null)
 
-            settingsRepository.changeCurrent(defaultSettings)
+            val accountSettings =
+                accountRepository.getBy(handle = "")?.let {
+                    settingsRepository.get(it.id)
+                } ?: defaultSettings
+            settingsRepository.changeCurrent(accountSettings)
 
             notificationCoordinator.setupAnonymousUser()
         } else {
