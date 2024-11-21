@@ -56,6 +56,7 @@ ciò che puoi (o non puoi) fare dall'app.
 - [Galleria](#galleria-solo-friendica)
 - [Elementi da pubblicare](#elementi-non-pubblicati)
 - [Calendario](#calendario-solo-friendica)
+- [Annunci](#annunci-solo-mastodon)
 
 ## Introduzione
 
@@ -950,6 +951,31 @@ maggiori dettagli(ad es. una descrizione più estesa).
 <div align="center">
   <img width="310" alt="calendar event list screen" src="../images/calendar_list.png" />
   <img width="310" alt="event detail screen" src="../images/calendar_detail.png" />
+</div>
+
+[Torna su](#indice)
+
+## Annunci (solo Mastodon)
+
+Questa schermata permette di visualizzare la lista degli annunci pubblicati dagli amministratori
+dell'istanza.
+
+Per ogni elemnto di questa lista, viene visualizzato:
+
+- un indicatore "non letto" (se il messaggio è nuovo);
+- il contenuto testuale dell'annuncio;
+- la lista delle reazioni degli utenti;
+- la data di pubblicazione.
+
+Ogni volta che viene fatto un refresh della pagina, gli elementi non letti verranno contrassegnati
+come letti.
+
+Puoi fare tap su una delle reazioni esistenti per incrementare il contatore di 1, oppure puoi
+utilizzare il pulsante "+" per aggiungere una nuova reazione. Se fai una seconda volta tap sulla
+tua reazione, questa verrà rimossa e di conseguenza il contatore verrà decrementato di 1.
+
+<div align="center">
+  <img width="310" alt="calendar event list screen" src="../images/announcements.png" />
 </div>
 
 [Torna su](#indice)

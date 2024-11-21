@@ -28,6 +28,9 @@ internal fun AnnouncementCard(
     modifier: Modifier = Modifier,
     autoloadImages: Boolean = true,
     onOpenUrl: ((String) -> Unit)? = null,
+    onAddNewReaction: (() -> Unit)? = null,
+    onAddReaction: ((String) -> Unit)? = null,
+    onRemoveReaction: ((String) -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
@@ -37,11 +40,11 @@ internal fun AnnouncementCard(
                 vertical = Spacing.xxs,
                 horizontal = Spacing.s,
             ),
-        verticalArrangement = Arrangement.spacedBy(Spacing.s),
+        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
+        // unread indicator
         Row {
             Spacer(Modifier.weight(1f))
-            // unread indicator
             if (!announcement.read) {
                 Box(
                     modifier =
@@ -56,6 +59,7 @@ internal fun AnnouncementCard(
             }
         }
 
+        // announcement text
         val body = announcement.content
         if (body.isNotBlank()) {
             ContentBody(
@@ -67,9 +71,18 @@ internal fun AnnouncementCard(
             )
         }
 
+        // reactions
+        AnnouncementReactions(
+            modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
+            reactions = announcement.reactions,
+            onAddNew = onAddNewReaction,
+            onAdd = onAddReaction,
+            onRemove = onRemoveReaction,
+        )
+
+        // publish date
         Row {
             Spacer(Modifier.weight(1f))
-            // publish date
             val date = announcement.published
             Text(
                 text =

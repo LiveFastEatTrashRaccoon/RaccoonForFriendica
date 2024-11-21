@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AnnouncementModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -16,6 +17,7 @@ class AnnouncementsViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val announcementRepository: AnnouncementRepository,
+    private val emojiRepository: EmojiRepository,
     private val announcementsManager: AnnouncementsManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<AnnouncementsMviModel.Intent, AnnouncementsMviModel.State, AnnouncementsMviModel.Effect>(
@@ -50,6 +52,11 @@ class AnnouncementsViewModel(
                     }
                 }.launchIn(this)
 
+            val customEmojis = emojiRepository.getAll().orEmpty()
+            updateState {
+                it.copy(availableEmojis = customEmojis)
+            }
+
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
@@ -62,6 +69,18 @@ class AnnouncementsViewModel(
                 screenModelScope.launch {
                     refresh()
                 }
+
+            is AnnouncementsMviModel.Intent.AddReaction ->
+                addReaction(
+                    id = intent.id,
+                    name = intent.name,
+                )
+
+            is AnnouncementsMviModel.Intent.RemoveReaction ->
+                removeReaction(
+                    id = intent.id,
+                    name = intent.name,
+                )
         }
     }
 
@@ -111,6 +130,76 @@ class AnnouncementsViewModel(
             if (success) {
                 updateItemInState(item.id) { it.copy(read = true) }
                 announcementsManager.decrementUnreadCount()
+            }
+        }
+    }
+
+    private suspend fun setReactionLoading(
+        id: String,
+        name: String,
+        loading: Boolean,
+    ) {
+        val newItems =
+            uiState.value.items.map {
+                if (it.id == id) {
+                    val reactions =
+                        it.reactions.map { r ->
+                            if (r.name == name) {
+                                r.copy(loading = loading)
+                            } else {
+                                r
+                            }
+                        }
+                    it.copy(
+                        reactions = reactions,
+                    )
+                } else {
+                    it
+                }
+            }
+        updateState { it.copy(items = newItems) }
+    }
+
+    private suspend fun refreshItem(id: String) {
+        val newItem =
+            announcementRepository.getAll(refresh = true)?.firstOrNull { it.id == id } ?: return
+        val newItems =
+            uiState.value.items.map {
+                if (it.id == id) {
+                    newItem
+                } else {
+                    it
+                }
+            }
+        updateState { it.copy(items = newItems) }
+    }
+
+    private fun addReaction(
+        id: String,
+        name: String,
+    ) {
+        screenModelScope.launch {
+            setReactionLoading(id = id, name = name, loading = true)
+            val success = announcementRepository.addReaction(id = id, reaction = name)
+            if (success) {
+                refreshItem(id)
+            } else {
+                setReactionLoading(id = id, name = name, loading = false)
+            }
+        }
+    }
+
+    private fun removeReaction(
+        id: String,
+        name: String,
+    ) {
+        screenModelScope.launch {
+            setReactionLoading(id = id, name = name, loading = true)
+            val success = announcementRepository.removeReaction(id = id, reaction = name)
+            if (success) {
+                refreshItem(id)
+            } else {
+                setReactionLoading(id = id, name = name, loading = false)
             }
         }
     }

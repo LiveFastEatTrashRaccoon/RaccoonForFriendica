@@ -11,6 +11,7 @@ val featureAnnouncementsModule =
                 identityRepository = get(),
                 settingsRepository = get(),
                 announcementRepository = get(),
+                emojiRepository = get(),
                 announcementsManager = get(),
                 imageAutoloadObserver = get(),
             )
