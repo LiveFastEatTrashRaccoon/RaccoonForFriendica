@@ -56,6 +56,7 @@ can't) do from the app.
 - [Gallery](#gallery-friendica-only)
 - [Unpublished items](#unpublished-items)
 - [Calendar](#calendar-friendica-only)
+- [Announcements](#announcements-mastodon-only)
 
 ## Introduction
 
@@ -883,6 +884,29 @@ a detail screen where more details (like a more extended description) are displa
 <div align="center">
   <img width="310" alt="calendar event list screen" src="images/calendar_list.png" />
   <img width="310" alt="event detail screen" src="images/calendar_detail.png" />
+</div>
+
+[Back to top](#table-of-contents)
+
+## Announcements (Mastodon-only)
+
+This screen contains the list of announcements published by instance admins.
+
+For each item in the list you can see:
+
+- an unread indicator (if the message is new);
+- the announcement textual content;
+- the list of user reactions;
+- the publication date.
+
+Every time you refresh this list, all unread items are marked as read.
+
+You can tap on an existing reaction to increment the counter by 1 or you can use the "+" button to
+insert a new reaction. If you tap again on your reaction, you are going to removed it and the
+counter will therefore be decremented by 1.
+
+<div align="center">
+  <img width="310" alt="calendar event list screen" src="images/announcements.png" />
 </div>
 
 [Back to top](#table-of-contents)
