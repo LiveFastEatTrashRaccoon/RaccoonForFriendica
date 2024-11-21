@@ -407,6 +407,39 @@ interface Strings {
     val settingsItemBarTheme: String
     val barThemeSolid: String
     val announcementsTitle: String
+    val actionGoBack: String
+    val actionOpenOptions: String
+    val actionAddReaction: String
+    val actionShowContentDescription: String
+    val actionReblog: String
+    val actionToggleReveal: String
+    val actionOpenFullScreen: String
+    val actionSubmit: String
+    val actionChangeVisibility: String
+    val actionSave: String
+    val actionReply: String
+    val actionSelect: String
+    val actionOpenSideMenu: String
+    val actionOpenDetail: String
+    val actionOpenLink: String
+    val actionClear: String
+    val actionSearch: String
+    val actionFilter: String
+    val actionAddToBookmarks: String
+    val actionAddToFavorites: String
+    val actionDownload: String
+    val actionInsertLink: String
+    val verifiedField: String
+    val updateDate: String
+    val creationDate: String
+    val likesCount: String
+    val dislikesCount: String
+    val highestScore: String
+    val formatBold: String
+    val formatItalic: String
+    val formatStrikethrough: String
+    val formatUnderlined: String
+    val formatMonospace: String
 }
 
 object Locales {
