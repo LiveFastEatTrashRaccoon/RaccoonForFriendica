@@ -18,6 +18,7 @@ import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.automirrored.filled.ContactSupport
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Drafts
 import androidx.compose.material.icons.filled.Favorite
@@ -172,7 +173,15 @@ class DrawerContent : Screen {
                             handleAction { detailOpener.openCircles() }
                         },
                     )
-
+                    if (uiState.hasAnnouncements) {
+                        DrawerShortcut(
+                            title = LocalStrings.current.announcementsTitle,
+                            icon = Icons.Default.Campaign,
+                            onSelected = {
+                                handleAction { detailOpener.openAnnouncements() }
+                            },
+                        )
+                    }
                     if (uiState.hasDirectMessages) {
                         DrawerShortcut(
                             title = LocalStrings.current.directMessagesTitle,

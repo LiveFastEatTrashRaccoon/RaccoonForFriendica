@@ -62,6 +62,7 @@ class DrawerViewModel(
                             hasDirectMessages = features.supportsDirectMessages,
                             hasGallery = features.supportsPhotoGallery,
                             hasCalendar = features.supportsCalendar,
+                            hasAnnouncements = features.supportsAnnouncements,
                         )
                     }
                 }.launchIn(this)
