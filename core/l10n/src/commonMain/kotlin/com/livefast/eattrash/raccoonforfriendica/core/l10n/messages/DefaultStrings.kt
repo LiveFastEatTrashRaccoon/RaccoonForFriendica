@@ -454,4 +454,5 @@ internal open class DefaultStrings : Strings {
     override val actionEditMembers = "Edit members"
     override val settingsItemBarTheme = "Status and navigation bar theme"
     override val barThemeSolid = "Solid"
+    override val announcementsTitle = "Announcements"
 }

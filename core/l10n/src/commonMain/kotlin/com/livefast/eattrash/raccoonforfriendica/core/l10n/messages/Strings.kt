@@ -406,6 +406,7 @@ interface Strings {
     val actionEditMembers: String
     val settingsItemBarTheme: String
     val barThemeSolid: String
+    val announcementsTitle: String
 }
 
 object Locales {

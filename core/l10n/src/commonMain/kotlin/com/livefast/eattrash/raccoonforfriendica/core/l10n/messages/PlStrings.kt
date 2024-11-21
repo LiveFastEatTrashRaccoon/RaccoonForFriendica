@@ -456,4 +456,5 @@ internal val PlStrings =
         override val actionEditMembers = "Edytuj członków"
         override val settingsItemBarTheme = "Motyw paska stanu i nawigacji"
         override val barThemeSolid = "Solidny"
+        override val announcementsTitle = "Ogłoszenia"
     }

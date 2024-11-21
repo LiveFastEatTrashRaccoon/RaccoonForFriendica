@@ -458,4 +458,5 @@ internal val DeStrings =
         override val actionEditMembers = "Mitglieder bearbeiten"
         override val settingsItemBarTheme = "Thema der Status- und Navigationsleiste"
         override val barThemeSolid = "Solide"
+        override val announcementsTitle = "Ankündigungen"
     }

@@ -465,4 +465,5 @@ internal val UaStrings =
         override val actionEditMembers = "Редагувати учасників"
         override val settingsItemBarTheme = "Тема для статусу та навігаційної панелі"
         override val barThemeSolid = "Суцільна"
+        override val announcementsTitle = "Оголошення"
     }

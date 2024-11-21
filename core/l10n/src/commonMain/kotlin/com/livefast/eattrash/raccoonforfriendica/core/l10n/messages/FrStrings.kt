@@ -463,4 +463,5 @@ internal val FrStrings =
         override val actionEditMembers = "Modifier les membres"
         override val settingsItemBarTheme = "Thème de la barre d'état et de navigation"
         override val barThemeSolid = "Solide"
+        override val announcementsTitle = "Annonces"
     }
