@@ -21,6 +21,7 @@ val featureTimelineModule =
                 imagePreloadManager = get(),
                 blurHashRepository = get(),
                 imageAutoloadObserver = get(),
+                announcementsManager = get(),
             )
         }
     }

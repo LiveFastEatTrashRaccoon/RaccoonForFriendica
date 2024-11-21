@@ -16,8 +16,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -49,6 +52,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
@@ -181,6 +185,41 @@ class TimelineScreen : Screen {
                                 imageVector = Icons.Default.Menu,
                                 contentDescription = null,
                             )
+                        }
+                    },
+                    actions = {
+                        if (uiState.unreadAnnouncements > 0) {
+                            IconButton(
+                                onClick = {
+                                    scope.launch {
+                                        detailOpener.openAnnouncements()
+                                    }
+                                },
+                            ) {
+                                BadgedBox(
+                                    badge = {
+                                        val unreadCount = uiState.unreadAnnouncements
+                                        if (unreadCount > 0) {
+                                            Badge(
+                                                modifier = Modifier.align(Alignment.TopEnd),
+                                            ) {
+                                                Text(
+                                                    text = if (unreadCount <= 10) "$unreadCount" else "10+",
+                                                    style =
+                                                        MaterialTheme.typography.labelSmall.copy(
+                                                            fontSize = 8.sp,
+                                                        ),
+                                                )
+                                            }
+                                        }
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Campaign,
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
                         }
                     },
                 )
