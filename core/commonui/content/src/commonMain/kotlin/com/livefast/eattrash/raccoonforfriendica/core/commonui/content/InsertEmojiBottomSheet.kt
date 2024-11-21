@@ -17,13 +17,22 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -40,8 +49,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 @Composable
 fun InsertEmojiBottomSheet(
     emojis: List<EmojiModel>,
+    withInsertCustom: Boolean = false,
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     onInsert: ((EmojiModel) -> Unit)? = null,
+    onInsertCustom: ((String) -> Unit)? = null,
     onClose: (() -> Unit)? = null,
 ) {
     val groupedEmojis = emojis.groupBy { it.category.orEmpty() }
@@ -65,9 +76,40 @@ fun InsertEmojiBottomSheet(
 
             Spacer(modifier = Modifier.height(Spacing.s))
 
+            if (withInsertCustom) {
+                var customValue by remember { mutableStateOf("") }
+                OutlinedTextField(
+                    modifier =
+                        Modifier.fillMaxWidth().padding(
+                            horizontal = Spacing.s,
+                            vertical = Spacing.s,
+                        ),
+                    value = customValue,
+                    onValueChange = {
+                        customValue = it
+                    },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                onInsertCustom?.invoke(customValue)
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.Send,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    },
+                )
+            }
+
             LazyVerticalStaggeredGrid(
-                modifier = Modifier.heightIn(max = 400.dp),
-                columns = StaggeredGridCells.Fixed(count = 6),
+                modifier =
+                    Modifier
+                        .heightIn(max = 400.dp)
+                        .padding(bottom = Spacing.s),
+                    columns = StaggeredGridCells.Fixed(count = 6),
             ) {
                 for (category in categories) {
                     if (category.isNotBlank()) {
