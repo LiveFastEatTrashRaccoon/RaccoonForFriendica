@@ -8,6 +8,6 @@ data class StatusReaction(
     @SerialName("count") val count: Int = 0,
     @SerialName("me") val me: Boolean? = null,
     @SerialName("name") val name: String,
-    @SerialName("static_url") val staticUrl: String,
-    @SerialName("url") val url: String,
+    @SerialName("static_url") val staticUrl: String? = null,
+    @SerialName("url") val url: String? = null,
 )
