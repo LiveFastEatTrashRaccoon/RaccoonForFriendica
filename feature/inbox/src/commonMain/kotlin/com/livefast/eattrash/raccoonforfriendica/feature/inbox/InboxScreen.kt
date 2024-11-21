@@ -128,7 +128,7 @@ class InboxScreen : Screen {
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Menu,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.actionOpenSideMenu,
                             )
                         }
                     },
@@ -141,7 +141,7 @@ class InboxScreen : Screen {
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.FilterList,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionFilter,
                                 )
                             }
                             IconButton(
@@ -157,7 +157,7 @@ class InboxScreen : Screen {
                                 } else {
                                     Icon(
                                         imageVector = Icons.Default.DoneAll,
-                                        contentDescription = null,
+                                        contentDescription = LocalStrings.current.actionDismissAllNotifications,
                                     )
                                 }
                             }

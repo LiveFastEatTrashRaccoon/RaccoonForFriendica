@@ -29,6 +29,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FeedbackButton
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
 @Composable
 fun ContentFooter(
@@ -55,6 +56,7 @@ fun ContentFooter(
         FooterItem(
             modifier = Modifier.width(baseItemWidth),
             icon = Icons.AutoMirrored.Default.Reply,
+            contentDescription = LocalStrings.current.actionReply,
             value = replyCount,
             onClick = onReply,
         )
@@ -62,6 +64,7 @@ fun ContentFooter(
             modifier = Modifier.width(baseItemWidth),
             icon = Icons.Outlined.RocketLaunch,
             toggledIcon = Icons.Filled.RocketLaunch,
+            contentDescription = LocalStrings.current.actionReblog,
             value = reblogCount,
             toggled = reblogged,
             loading = reblogLoading,
@@ -71,6 +74,7 @@ fun ContentFooter(
             modifier = Modifier.width(baseItemWidth),
             icon = Icons.Default.FavoriteBorder,
             toggledIcon = Icons.Default.Favorite,
+            contentDescription = LocalStrings.current.actionAddToFavorites,
             value = favoriteCount,
             toggled = favorite,
             loading = favoriteLoading,
@@ -80,6 +84,7 @@ fun ContentFooter(
             modifier = Modifier.width(baseItemWidth),
             icon = Icons.Default.BookmarkBorder,
             toggledIcon = Icons.Default.Bookmark,
+            contentDescription = LocalStrings.current.actionAddToBookmarks,
             toggled = bookmarked,
             loading = bookmarkLoading,
             onClick = onBookmark,
@@ -90,6 +95,7 @@ fun ContentFooter(
 @Composable
 private fun FooterItem(
     icon: ImageVector,
+    contentDescription: String? = null,
     modifier: Modifier = Modifier,
     value: Int = 0,
     toggledIcon: ImageVector? = null,
@@ -129,6 +135,7 @@ private fun FooterItem(
             } else {
                 FeedbackButton(
                     imageVector = toggledIcon.takeIf { toggled } ?: icon,
+                    contentDescription = contentDescription,
                     tintColor = toggledColor.takeIf { toggled } ?: fullColor,
                     enabled = onClick != null,
                     onClick = {

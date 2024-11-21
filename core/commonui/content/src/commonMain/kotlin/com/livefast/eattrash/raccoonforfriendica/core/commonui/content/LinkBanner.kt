@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
 @Composable
 fun LinkBanner(
@@ -52,7 +53,7 @@ fun LinkBanner(
             )
             Icon(
                 imageVector = Icons.Default.Link,
-                contentDescription = null,
+                contentDescription = LocalStrings.current.actionOpenLink,
             )
         }
     }

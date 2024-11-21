@@ -34,7 +34,7 @@ internal fun CreateInGroupInfo(
         Icon(
             modifier = Modifier.size(IconSize.s),
             imageVector = Icons.Default.PostAdd,
-            contentDescription = null,
+            contentDescription = LocalStrings.current.actionAddNew,
             tint = ancillaryColor,
         )
         Text(

@@ -220,7 +220,7 @@ private fun PollCardOption(
                             .padding(Spacing.xxs)
                             .fillMaxSize(),
                     imageVector = Icons.Default.Check,
-                    contentDescription = null,
+                    contentDescription = LocalStrings.current.highestScore,
                 )
             }
         }

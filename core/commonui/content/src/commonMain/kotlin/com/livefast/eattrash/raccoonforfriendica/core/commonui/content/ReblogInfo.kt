@@ -63,7 +63,7 @@ internal fun ReblogInfo(
         Icon(
             modifier = Modifier.size(iconSize),
             imageVector = Icons.Default.Repeat,
-            contentDescription = null,
+            contentDescription = LocalStrings.current.actionReblog,
             tint = ancillaryColor,
         )
         Text(

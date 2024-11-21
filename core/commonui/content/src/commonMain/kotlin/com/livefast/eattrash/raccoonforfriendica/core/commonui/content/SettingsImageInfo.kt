@@ -23,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.toComposeImageBitmap
 
 @Composable
@@ -81,7 +82,7 @@ fun SettingsImageInfo(
                 ) {
                     Icon(
                         imageVector = Icons.Default.FileOpen,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.pickFromGalleryDialogTitle,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
                 }

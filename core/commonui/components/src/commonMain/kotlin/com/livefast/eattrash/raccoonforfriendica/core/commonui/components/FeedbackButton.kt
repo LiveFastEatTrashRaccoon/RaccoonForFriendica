@@ -25,6 +25,7 @@ fun FeedbackButton(
     enabled: Boolean = true,
     tintColor: Color = MaterialTheme.colorScheme.onBackground,
     onClick: () -> Unit,
+    contentDescription: String? = null,
 ) {
     var zoomed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
@@ -54,7 +55,7 @@ fun FeedbackButton(
                     },
                 ),
         imageVector = imageVector,
-        contentDescription = null,
+        contentDescription = contentDescription,
         colorFilter =
             ColorFilter.tint(
                 color = tintColor,

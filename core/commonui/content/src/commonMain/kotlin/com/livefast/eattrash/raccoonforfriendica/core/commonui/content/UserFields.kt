@@ -23,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 
 @Composable
@@ -83,7 +84,7 @@ fun UserFields(
                     Icon(
                         modifier = Modifier.size(IconSize.s),
                         imageVector = Icons.Outlined.Verified,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.verifiedField,
                         tint = Color.Green,
                     )
                 } else {

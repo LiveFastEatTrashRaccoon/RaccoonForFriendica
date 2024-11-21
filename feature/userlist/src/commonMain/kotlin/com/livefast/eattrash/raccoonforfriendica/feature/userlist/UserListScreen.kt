@@ -230,7 +230,7 @@ class UserListScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -260,7 +260,7 @@ class UserListScreen(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.MoreVert,
-                                        contentDescription = null,
+                                        contentDescription = LocalStrings.current.actionOpenOptions,
                                     )
                                 }
 

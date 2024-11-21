@@ -64,7 +64,7 @@ internal fun PollForm(
             ) {
                 Icon(
                     imageVector = Icons.Default.AddCircle,
-                    contentDescription = null,
+                    contentDescription = LocalStrings.current.actionAddNew,
                 )
             }
         }
@@ -112,7 +112,7 @@ internal fun PollForm(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.buttonClose,
                     )
                 }
             },

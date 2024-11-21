@@ -142,7 +142,7 @@ class ImageDetailScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -155,7 +155,7 @@ class ImageDetailScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Download,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.actionDownload,
                             )
                         }
                         IconButton(
@@ -165,7 +165,7 @@ class ImageDetailScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Share,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.actionShare,
                             )
                         }
                         if (!isVideo) {
@@ -176,7 +176,7 @@ class ImageDetailScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.AspectRatio,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.contentScaleTitle,
                                 )
                             }
                         }

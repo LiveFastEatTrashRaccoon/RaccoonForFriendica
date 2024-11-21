@@ -95,7 +95,7 @@ class ProfileScreen : Screen {
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Menu,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionOpenSideMenu,
                                 )
                             }
                         },
@@ -107,7 +107,7 @@ class ProfileScreen : Screen {
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.ManageAccounts,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionSwitchAccount,
                                 )
                             }
                             if (uiState.currentUserId != null) {
@@ -118,7 +118,7 @@ class ProfileScreen : Screen {
                                 ) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Default.Logout,
-                                        contentDescription = null,
+                                        contentDescription = LocalStrings.current.actionLogout,
                                     )
                                 }
                             }
@@ -193,7 +193,7 @@ class ProfileScreen : Screen {
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.AddCircle,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionAddNew,
                                 )
                             }
                         },

@@ -131,7 +131,7 @@ class LegacyLoginScreen : Screen {
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -310,7 +310,7 @@ class LegacyLoginScreen : Screen {
                                 } else {
                                     Icons.Default.Visibility
                                 },
-                            contentDescription = null,
+                            contentDescription = LocalStrings.current.actionToggleReveal,
                             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),
                         )
                     },

@@ -26,7 +26,7 @@ internal fun CircleHeader(
     ) {
         Icon(
             imageVector = type.toIcon(),
-            contentDescription = null,
+            contentDescription = type.toReadableName(),
             tint = MaterialTheme.colorScheme.onBackground,
         )
         Text(

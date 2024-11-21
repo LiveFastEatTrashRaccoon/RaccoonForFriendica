@@ -26,6 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
 @Composable
 fun SettingsRow(
@@ -116,7 +117,7 @@ fun SettingsRow(
             Icon(
                 imageVector = Icons.Default.ChevronRight,
                 tint = fullColor,
-                contentDescription = null,
+                contentDescription = LocalStrings.current.actionOpenDetail,
             )
         }
     }

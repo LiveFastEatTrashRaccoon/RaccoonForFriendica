@@ -96,7 +96,7 @@ fun InsertEmojiBottomSheet(
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.Send,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.actionSubmit,
                                 tint = MaterialTheme.colorScheme.primary,
                             )
                         }
@@ -109,7 +109,7 @@ fun InsertEmojiBottomSheet(
                     Modifier
                         .heightIn(max = 400.dp)
                         .padding(bottom = Spacing.s),
-                    columns = StaggeredGridCells.Fixed(count = 6),
+                columns = StaggeredGridCells.Fixed(count = 6),
             ) {
                 for (category in categories) {
                     if (category.isNotBlank()) {

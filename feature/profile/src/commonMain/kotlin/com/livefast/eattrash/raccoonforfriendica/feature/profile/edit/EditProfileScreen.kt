@@ -177,7 +177,7 @@ class EditProfileScreen : Screen {
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -207,7 +207,7 @@ class EditProfileScreen : Screen {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.MoreVert,
-                                        contentDescription = null,
+                                        contentDescription = LocalStrings.current.actionOpenOptions,
                                     )
                                 }
 
@@ -399,7 +399,7 @@ class EditProfileScreen : Screen {
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.AddCircle,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionAddNew,
                                 )
                             }
                         },

@@ -175,7 +175,7 @@ class ForumListScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -202,7 +202,7 @@ class ForumListScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.MoreVert,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionOpenOptions,
                                 )
                             }
 
@@ -268,7 +268,7 @@ class ForumListScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Create,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }
                     }

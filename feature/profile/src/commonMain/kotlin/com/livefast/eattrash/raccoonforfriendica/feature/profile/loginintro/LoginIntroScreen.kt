@@ -239,7 +239,7 @@ private fun PlatformHeader(
                             onInfoClicked()
                         },
                 imageVector = Icons.Default.Info,
-                contentDescription = null,
+                contentDescription = LocalStrings.current.moreInfo,
             )
         }
     }

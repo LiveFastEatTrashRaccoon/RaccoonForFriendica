@@ -84,6 +84,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
@@ -280,7 +281,7 @@ class ComposerScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -410,7 +411,7 @@ class ComposerScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.MoreVert,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionOpenOptions,
                                 )
                             }
 
@@ -900,7 +901,7 @@ class ComposerScreen(
                                 Icon(
                                     modifier = Modifier.size(IconSize.m),
                                     imageVector = value.type.toIcon(),
-                                    contentDescription = null,
+                                    contentDescription = value.type.toReadableName(),
                                     tint = MaterialTheme.colorScheme.onBackground,
                                 )
                             },

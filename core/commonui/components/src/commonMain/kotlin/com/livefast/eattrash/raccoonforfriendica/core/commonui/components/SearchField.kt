@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
 @Composable
 fun SearchField(
@@ -99,7 +100,7 @@ fun SearchField(
                     Icon(
                         modifier = iconModifier,
                         imageVector = Icons.Default.Search,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.actionSearch,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
                     Box(
@@ -127,7 +128,7 @@ fun SearchField(
                                     textFieldValue = TextFieldValue()
                                 },
                             imageVector = Icons.Default.Clear,
-                            contentDescription = null,
+                            contentDescription = LocalStrings.current.actionClear,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
                     }

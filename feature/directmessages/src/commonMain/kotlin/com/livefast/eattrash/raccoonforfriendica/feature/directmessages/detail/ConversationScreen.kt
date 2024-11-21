@@ -178,7 +178,7 @@ class ConversationScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -230,7 +230,7 @@ class ConversationScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.Send,
-                            contentDescription = null,
+                            contentDescription = LocalStrings.current.actionSubmit,
                         )
                     }
                 }
