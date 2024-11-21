@@ -104,10 +104,6 @@ internal class DefaultUserRepository(
                             limit = DEFAULT_PAGE_SIZE,
                         ).map { it.user.toModel() }
                 }
-            }.apply {
-                exceptionOrNull()?.also {
-                    it.printStackTrace()
-                }
             }.getOrNull()
         }
 
