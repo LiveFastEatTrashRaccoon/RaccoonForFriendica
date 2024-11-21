@@ -29,8 +29,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
@@ -41,6 +43,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.InsertEmojiBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.components.AnnouncementCard
@@ -62,6 +65,7 @@ class AnnouncementsScreen : Screen {
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
         val lazyListState = rememberLazyListState()
+        var chooseReactionAnnouncementIdBottomSheetOpened by remember { mutableStateOf<String?>(null) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -183,6 +187,25 @@ class AnnouncementsScreen : Screen {
                             onOpenUrl = { url ->
                                 uriHandler.openUri(url)
                             },
+                            onAddNewReaction = {
+                                chooseReactionAnnouncementIdBottomSheetOpened = announcement.id
+                            },
+                            onAddReaction = { name ->
+                                model.reduce(
+                                    AnnouncementsMviModel.Intent.AddReaction(
+                                        id = announcement.id,
+                                        name = name,
+                                    ),
+                                )
+                            },
+                            onRemoveReaction = { name ->
+                                model.reduce(
+                                    AnnouncementsMviModel.Intent.RemoveReaction(
+                                        id = announcement.id,
+                                        name = name,
+                                    ),
+                                )
+                            },
                         )
                         if (idx < uiState.items.lastIndex) {
                             HorizontalDivider(
@@ -196,6 +219,34 @@ class AnnouncementsScreen : Screen {
                     }
                 }
             }
+        }
+
+        chooseReactionAnnouncementIdBottomSheetOpened?.also { id ->
+            InsertEmojiBottomSheet(
+                emojis = uiState.availableEmojis,
+                withInsertCustom = true,
+                onClose = {
+                    chooseReactionAnnouncementIdBottomSheetOpened = null
+                },
+                onInsert = { emoji ->
+                    chooseReactionAnnouncementIdBottomSheetOpened = null
+                    model.reduce(
+                        AnnouncementsMviModel.Intent.AddReaction(
+                            id = id,
+                            name = emoji.code,
+                        ),
+                    )
+                },
+                onInsertCustom = { name ->
+                    chooseReactionAnnouncementIdBottomSheetOpened = null
+                    model.reduce(
+                        AnnouncementsMviModel.Intent.AddReaction(
+                            id = id,
+                            name = name,
+                        ),
+                    )
+                },
+            )
         }
     }
 }
