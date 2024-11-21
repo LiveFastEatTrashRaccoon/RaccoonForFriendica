@@ -14,16 +14,17 @@ internal class DefaultSupportedFeatureRepository(
         val info = nodeInfoRepository.getInfo()
         features.update {
             it.copy(
-                supportsPhotoGallery = info?.isFriendica == true,
-                supportsDirectMessages = info?.isFriendica == true,
-                supportsEntryTitles = info?.isFriendica == true,
-                supportsCustomCircles = info?.isFriendica == true,
-                supportReportCategoryRuleViolation = info?.isFriendica == false,
-                supportsPolls = info?.isFriendica == false,
-                supportsBBCode = info?.isFriendica == true,
-                supportsMarkdown = info?.isFriendica == false,
-                supportsEntryShare = info?.isFriendica == true,
-                supportsCalendar = info?.isFriendica == true,
+                supportsPhotoGallery = info.isFriendica,
+                supportsDirectMessages = info.isFriendica,
+                supportsEntryTitles = info.isFriendica,
+                supportsCustomCircles = info.isFriendica,
+                supportReportCategoryRuleViolation = info.isMastodon,
+                supportsPolls = info.isMastodon,
+                supportsBBCode = info.isFriendica,
+                supportsMarkdown = info.isMastodon,
+                supportsEntryShare = info.isFriendica,
+                supportsCalendar = info.isFriendica,
+                supportsAnnouncements = info.isMastodon,
             )
         }
     }
@@ -32,8 +33,8 @@ internal class DefaultSupportedFeatureRepository(
 private val FRIENDICA_REGEX =
     Regex("\\(compatible; Friendica (?<version>[a-zA-Z0-9.-_]*)\\)")
 
-private val NodeInfoModel.isFriendica: Boolean
-    get() =
-        version
-            .orEmpty()
-            .contains(FRIENDICA_REGEX)
+private val NodeInfoModel?.isFriendica: Boolean
+    get() = this?.version?.contains(FRIENDICA_REGEX) ?: false
+
+private val NodeInfoModel?.isMastodon: Boolean
+    get() = !isFriendica
