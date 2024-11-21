@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.announcements.AnnouncementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers.CircleMembersScreen
@@ -405,6 +406,11 @@ class DefaultDetailOpener(
 
     override fun openInternalWebView(url: String) {
         val screen = WebViewScreen(url)
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openAnnouncements() {
+        val screen = AnnouncementsScreen()
         navigationCoordinator.push(screen)
     }
 }

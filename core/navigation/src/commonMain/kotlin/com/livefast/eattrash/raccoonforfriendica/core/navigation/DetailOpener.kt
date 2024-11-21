@@ -120,4 +120,6 @@ interface DetailOpener {
     fun openLicences()
 
     fun openInternalWebView(url: String)
+
+    fun openAnnouncements()
 }

@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Local
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.announcements.AnnouncementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers.CircleMembersScreen
@@ -486,6 +487,15 @@ class DefaultDetailOpenerTest {
 
         verify {
             navigationCoordinator.push(any<WebViewScreen>())
+        }
+    }
+
+    @Test
+    fun `when openAnnouncements then interactions are as expected`() {
+        sut.openAnnouncements()
+
+        verify {
+            navigationCoordinator.push(any<AnnouncementsScreen>())
         }
     }
 }
