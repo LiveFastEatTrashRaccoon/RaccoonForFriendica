@@ -32,10 +32,6 @@ class DefaultCalendarHelper(
             }
         runCatching {
             context.startActivity(intent)
-        }.also {
-            it.exceptionOrNull()?.also { e ->
-                e.printStackTrace()
-            }
         }
     }
 }

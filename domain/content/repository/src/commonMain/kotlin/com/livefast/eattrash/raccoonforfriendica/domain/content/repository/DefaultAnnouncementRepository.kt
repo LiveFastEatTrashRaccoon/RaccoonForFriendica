@@ -23,7 +23,8 @@ internal class DefaultAnnouncementRepository(
                 }
             }
             if (cachedValues.isNotEmpty()) {
-                return@withContext cachedValues
+                // map to a new immutable list or Compose freaks out
+                return@withContext cachedValues.map { it }
             }
             runCatching {
                 val response = provider.announcements.getAll()

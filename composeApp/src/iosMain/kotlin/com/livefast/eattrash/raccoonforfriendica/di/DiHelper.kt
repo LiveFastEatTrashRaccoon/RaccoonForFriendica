@@ -27,6 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.doma
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di.domainPullNotificationModule
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.di.domainPushNotificationsModule
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.domainUrlHandlerModule
+import com.livefast.eattrash.raccoonforfriendica.feature.announcements.di.featureAnnouncementsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.di.featureCalendarModule
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.featureCirclesModule
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.featureComposerModule
@@ -87,6 +88,7 @@ fun initKoin(): Koin {
                 domainPullNotificationModule,
                 domainPushNotificationsModule,
                 domainUrlHandlerModule,
+                featureAnnouncementsModule,
                 featureCalendarModule,
                 featureCirclesModule,
                 featureComposerModule,

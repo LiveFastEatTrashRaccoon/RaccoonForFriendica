@@ -4,6 +4,6 @@ data class ReactionModel(
     val count: Int = 0,
     val isMe: Boolean = false,
     val name: String,
-    val url: String,
-    val staticUrl: String,
+    val url: String? = null,
+    val staticUrl: String? = null,
 )

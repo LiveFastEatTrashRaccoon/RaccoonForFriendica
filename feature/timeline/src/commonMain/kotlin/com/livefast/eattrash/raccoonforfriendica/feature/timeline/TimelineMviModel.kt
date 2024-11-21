@@ -75,6 +75,7 @@ interface TimelineMviModel :
         val maxBodyLines: Int = Int.MAX_VALUE,
         val autoloadImages: Boolean = true,
         val hideNavigationBarWhileScrolling: Boolean = true,
+        val unreadAnnouncements: Int = 0,
     )
 
     sealed interface Effect {
