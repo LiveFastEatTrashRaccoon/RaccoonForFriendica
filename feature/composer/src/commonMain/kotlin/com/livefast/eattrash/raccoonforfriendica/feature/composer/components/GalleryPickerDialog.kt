@@ -189,7 +189,7 @@ fun GalleryPickerDialog(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.ArrowDropDown,
-                                        contentDescription = null,
+                                        contentDescription = LocalStrings.current.actionOpenOptions,
                                     )
                                 }
 

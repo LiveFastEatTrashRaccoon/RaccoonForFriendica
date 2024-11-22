@@ -40,6 +40,9 @@ class NodeInfoScreenTest {
             every { nodeInfoSectionRules } returns "Rules"
             every { itemOther } returns "Other"
             every { settingsAboutAppVersion } returns "Version"
+            every { settingsAboutAppVersion } returns "Version"
+            every { actionGoBack } returns "Go back"
+            every { actionOpenDetail } returns "Open detail"
         }
     private val uriHandler = mock<UriHandler>()
 

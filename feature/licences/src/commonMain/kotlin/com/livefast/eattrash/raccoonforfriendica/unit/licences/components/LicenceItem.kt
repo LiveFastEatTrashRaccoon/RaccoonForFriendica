@@ -15,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.unit.licences.models.LicenceItem
+import com.livefast.eattrash.raccoonforfriendica.unit.licences.models.LicenceItemType
 import com.livefast.eattrash.raccoonforfriendica.unit.licences.models.toIcon
 
 @Composable
@@ -38,8 +39,12 @@ internal fun LicenceItem(
             Icon(
                 modifier = Modifier.size(IconSize.m),
                 imageVector = type.toIcon(),
-                contentDescription = null,
-                tint = fullColor,
+                contentDescription =
+                    when (type) {
+                        LicenceItemType.Library -> "Library"
+                        LicenceItemType.Resource -> "Resource"
+                    },
+                    tint = fullColor,
             )
         }
         Column(

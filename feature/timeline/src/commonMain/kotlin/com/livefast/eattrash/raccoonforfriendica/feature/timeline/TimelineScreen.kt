@@ -183,7 +183,7 @@ class TimelineScreen : Screen {
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Menu,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.actionOpenSideMenu,
                             )
                         }
                     },
@@ -216,7 +216,7 @@ class TimelineScreen : Screen {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Campaign,
-                                        contentDescription = null,
+                                        contentDescription = LocalStrings.current.announcementsTitle,
                                     )
                                 }
                             }
@@ -248,7 +248,7 @@ class TimelineScreen : Screen {
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Create,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }
                     }

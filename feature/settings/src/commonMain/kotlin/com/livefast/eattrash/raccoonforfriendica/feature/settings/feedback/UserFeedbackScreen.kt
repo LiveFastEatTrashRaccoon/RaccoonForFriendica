@@ -106,7 +106,7 @@ class UserFeedbackScreen : Screen {
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -119,7 +119,7 @@ class UserFeedbackScreen : Screen {
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.Send,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.actionSubmit,
                             )
                         }
                     },
@@ -186,7 +186,7 @@ class UserFeedbackScreen : Screen {
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Clear,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionClear,
                                 )
                             }
                         }

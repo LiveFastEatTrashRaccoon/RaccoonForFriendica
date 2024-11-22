@@ -208,7 +208,7 @@ class UserDetailScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -265,7 +265,7 @@ class UserDetailScreen(
                                     Icon(
                                         modifier = Modifier.size(IconSize.s),
                                         imageVector = Icons.Default.MoreVert,
-                                        contentDescription = null,
+                                        contentDescription = LocalStrings.current.actionOpenOptions,
                                     )
                                 }
 
@@ -359,7 +359,7 @@ class UserDetailScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.Reply,
-                            contentDescription = null,
+                            contentDescription = LocalStrings.current.actionReply,
                         )
                     }
                 }

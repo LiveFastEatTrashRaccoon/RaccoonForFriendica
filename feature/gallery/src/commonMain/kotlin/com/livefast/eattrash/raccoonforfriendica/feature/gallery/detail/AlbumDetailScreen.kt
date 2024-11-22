@@ -151,7 +151,7 @@ class AlbumDetailScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -188,7 +188,7 @@ class AlbumDetailScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = null,
+                            contentDescription = LocalStrings.current.actionAddNew,
                         )
                     }
                 }

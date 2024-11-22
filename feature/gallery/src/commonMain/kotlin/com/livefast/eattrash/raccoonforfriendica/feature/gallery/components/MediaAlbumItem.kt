@@ -117,7 +117,7 @@ internal fun MediaAlbumItem(
                     Icon(
                         modifier = Modifier.size(IconSize.s),
                         imageVector = Icons.Default.MoreVert,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.actionOpenOptions,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
                 }

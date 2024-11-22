@@ -38,6 +38,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.prettifyHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,7 +105,7 @@ fun EntryDetailDialog(
                             Icon(
                                 modifier = Modifier.size(IconSize.s),
                                 imageVector = entry.visibility.toIcon(),
-                                contentDescription = null,
+                                contentDescription = entry.visibility.toReadableName(),
                                 tint = fullColor,
                             )
                         }
@@ -193,7 +194,7 @@ fun EntryDetailDialog(
                                 Icon(
                                     modifier = Modifier.size(IconSize.m).padding(0.25.dp),
                                     imageVector = Icons.Default.Update,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.updateDate,
                                     tint = fullColor,
                                 )
                                 Text(
@@ -218,7 +219,7 @@ fun EntryDetailDialog(
                                 Icon(
                                     modifier = Modifier.size(IconSize.m).padding(2.dp),
                                     imageVector = Icons.Default.Schedule,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.creationDate,
                                     tint = fullColor,
                                 )
                                 Text(
@@ -242,7 +243,7 @@ fun EntryDetailDialog(
                             Icon(
                                 modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
                                 imageVector = Icons.Default.ArrowCircleUp,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.likesCount,
                                 tint = fullColor,
                             )
                             Text(
@@ -254,7 +255,7 @@ fun EntryDetailDialog(
                             Icon(
                                 modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
                                 imageVector = Icons.Default.ArrowCircleDown,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.dislikesCount,
                                 tint = fullColor,
                             )
                             Text(

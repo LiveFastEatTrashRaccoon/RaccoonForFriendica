@@ -71,7 +71,7 @@ internal fun NotificationItem(
             Icon(
                 modifier = Modifier.size(IconSize.s).padding(1.dp),
                 imageVector = notification.type.toIcon(),
-                contentDescription = null,
+                contentDescription = notification.type.toReadableName(),
                 tint = ancillaryColor,
             )
             if (user != null) {

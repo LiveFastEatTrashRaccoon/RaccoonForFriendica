@@ -32,6 +32,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
 @Composable
 fun SpinnerField(
@@ -79,7 +80,7 @@ fun SpinnerField(
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = null,
+                            contentDescription = LocalStrings.current.actionSelect,
                         )
                     }
                 },

@@ -111,7 +111,7 @@ internal fun DrawerHeader(
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = null,
+                            contentDescription = LocalStrings.current.actionSwitchAccount,
                         )
                     }
                 }
@@ -153,7 +153,7 @@ internal fun DrawerHeader(
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = null,
+                            contentDescription = LocalStrings.current.changeNodeDialogTitle,
                         )
                     }
                 }

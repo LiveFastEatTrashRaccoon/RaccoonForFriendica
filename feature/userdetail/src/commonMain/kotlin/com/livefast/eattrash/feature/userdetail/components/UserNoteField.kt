@@ -62,7 +62,7 @@ fun UserNoteField(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Save,
-                            contentDescription = null,
+                            contentDescription = LocalStrings.current.actionSave,
                         )
                     }
                 }

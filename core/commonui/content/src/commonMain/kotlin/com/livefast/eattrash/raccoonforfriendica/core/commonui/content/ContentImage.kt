@@ -42,6 +42,7 @@ import androidx.compose.ui.window.Popup
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import kotlin.math.roundToInt
 
 @Composable
@@ -50,7 +51,7 @@ fun ContentImage(
     modifier: Modifier = Modifier,
     sensitive: Boolean = false,
     autoload: Boolean = true,
-    altText: String? = null,
+    contentDescription: String? = null,
     blurHash: String? = null,
     originalWidth: Int = 0,
     originalHeight: Int = 0,
@@ -96,7 +97,7 @@ fun ContentImage(
                     },
             url = url,
             autoload = autoload,
-            contentDescription = altText,
+            contentDescription = contentDescription,
             quality = FilterQuality.None,
             blurred = !revealing,
             contentScale = contentScale,
@@ -126,7 +127,7 @@ fun ContentImage(
                         shape = CircleShape,
                     ).padding(2.5.dp)
                     .clip(CircleShape)
-            if (!altText.isNullOrEmpty()) {
+            if (!contentDescription.isNullOrEmpty()) {
                 Box {
                     if (showingAltText) {
                         Popup(
@@ -158,7 +159,7 @@ fun ContentImage(
                                             ),
                                 ) {
                                     Text(
-                                        text = altText,
+                                        text = contentDescription,
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurface,
                                     )
@@ -178,7 +179,7 @@ fun ContentImage(
                         Icon(
                             modifier = iconModifier,
                             imageVector = Icons.Default.Abc,
-                            contentDescription = null,
+                            contentDescription = LocalStrings.current.actionShowContentDescription,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
                     }
@@ -198,7 +199,7 @@ fun ContentImage(
                             } else {
                                 Icons.Default.Visibility
                             },
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.actionToggleReveal,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
                 }

@@ -48,6 +48,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import kotlin.math.roundToInt
 
@@ -120,7 +121,7 @@ fun AlbumImageItem(
                     Icon(
                         modifier = Modifier.padding(2.5.dp),
                         imageVector = Icons.Default.MoreVert,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.actionOpenOptions,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
                 }
@@ -225,7 +226,7 @@ fun AlbumImageItem(
                         Icon(
                             modifier = iconModifier,
                             imageVector = Icons.Default.Abc,
-                            contentDescription = null,
+                            contentDescription = LocalStrings.current.actionShowContentDescription,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
                     }

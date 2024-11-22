@@ -38,6 +38,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
@@ -127,7 +128,7 @@ internal fun CreatePostHeader(
                 Icon(
                     modifier = Modifier.size(IconSize.s),
                     imageVector = visibility.toIcon(),
-                    contentDescription = null,
+                    contentDescription = visibility.toReadableName(),
                 )
                 Text(
                     text = visibility.toReadableName(),
@@ -135,7 +136,7 @@ internal fun CreatePostHeader(
                 if (changeVisibilityEnabled) {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.actionChangeVisibility,
                     )
                 } else {
                     Spacer(modifier = Modifier.width(Spacing.xxs))
@@ -163,7 +164,10 @@ internal fun CreatePostHeader(
                             )
                         },
                         leadingIcon = {
-                            Icon(imageVector = value.toIcon(), contentDescription = null)
+                            Icon(
+                                imageVector = value.toIcon(),
+                                contentDescription = null,
+                            )
                         },
                         onClick = {
                             onChangeVisibility?.invoke(value)

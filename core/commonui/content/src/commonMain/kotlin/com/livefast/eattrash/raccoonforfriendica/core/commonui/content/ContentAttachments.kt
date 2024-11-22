@@ -150,7 +150,7 @@ private fun AttachmentElement(
             ContentImage(
                 modifier = modifier,
                 url = attachment.url,
-                altText = attachment.description,
+                contentDescription = attachment.description,
                 blurHash = attachment.blurHash,
                 originalWidth = attachmentWidth,
                 originalHeight = attachmentHeight,

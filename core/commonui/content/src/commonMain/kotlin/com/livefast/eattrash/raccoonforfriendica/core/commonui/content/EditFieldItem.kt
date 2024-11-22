@@ -62,7 +62,7 @@ fun EditFieldItem(
                 IconButton(onClick = { onDelete?.invoke() }) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.buttonClose,
                     )
                 }
             },

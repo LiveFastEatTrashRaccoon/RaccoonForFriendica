@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReactionModel
 
 @Composable
@@ -50,7 +51,7 @@ internal fun AnnouncementReactions(
             Icon(
                 modifier = Modifier.size(IconSize.l),
                 imageVector = Icons.Outlined.AddCircle,
-                contentDescription = null,
+                contentDescription = LocalStrings.current.actionAddReaction,
                 tint = MaterialTheme.colorScheme.primary,
             )
         }

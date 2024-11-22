@@ -119,7 +119,7 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                             )
                             Icon(
                                 imageVector = Icons.Default.BugReport,
-                                contentDescription = "",
+                                contentDescription = null,
                             )
                         }
                     }

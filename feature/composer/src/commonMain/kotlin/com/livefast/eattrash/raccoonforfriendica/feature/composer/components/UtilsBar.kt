@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.PublicationType
 
 @Composable
@@ -57,7 +58,7 @@ internal fun UtilsBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.PhotoCamera,
-                    contentDescription = null,
+                    contentDescription = LocalStrings.current.pickFromGalleryDialogTitle,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
@@ -71,7 +72,7 @@ internal fun UtilsBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Link,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.actionInsertLink,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -84,7 +85,7 @@ internal fun UtilsBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.FormatBold,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.formatBold,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -97,7 +98,7 @@ internal fun UtilsBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.FormatItalic,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.formatItalic,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -110,7 +111,7 @@ internal fun UtilsBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.FormatUnderlined,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.formatUnderlined,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -123,7 +124,7 @@ internal fun UtilsBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.FormatStrikethrough,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.formatStrikethrough,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -136,7 +137,7 @@ internal fun UtilsBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Code,
-                        contentDescription = null,
+                        contentDescription = LocalStrings.current.formatMonospace,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -156,7 +157,7 @@ internal fun UtilsBar(
                         is PublicationType.Scheduled -> Icons.AutoMirrored.Default.ScheduleSend
                         else -> Icons.AutoMirrored.Default.Send
                     },
-                contentDescription = null,
+                contentDescription = LocalStrings.current.actionSubmit,
                 tint = MaterialTheme.colorScheme.primary,
             )
         }

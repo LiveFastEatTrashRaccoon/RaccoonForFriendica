@@ -155,7 +155,7 @@ class ThreadScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -188,7 +188,7 @@ class ThreadScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.Reply,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.actionReply,
                             )
                         }
                     }

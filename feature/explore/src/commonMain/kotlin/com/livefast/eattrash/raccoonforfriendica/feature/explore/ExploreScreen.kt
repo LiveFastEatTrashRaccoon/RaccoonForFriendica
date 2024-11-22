@@ -166,7 +166,7 @@ class ExploreScreen : Screen {
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Menu,
-                                contentDescription = null,
+                                contentDescription = LocalStrings.current.actionOpenSideMenu,
                             )
                         }
                     },
@@ -180,7 +180,7 @@ class ExploreScreen : Screen {
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Search,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionSearch,
                                 )
                             }
                         }

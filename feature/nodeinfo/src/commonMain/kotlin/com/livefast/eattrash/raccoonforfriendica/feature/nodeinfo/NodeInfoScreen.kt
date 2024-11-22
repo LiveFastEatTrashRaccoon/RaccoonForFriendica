@@ -116,7 +116,7 @@ class NodeInfoScreen : Screen {
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
+                                    contentDescription = LocalStrings.current.actionGoBack,
                                 )
                             }
                         }
@@ -406,7 +406,7 @@ private fun ContactUserItem(
             Icon(
                 modifier = Modifier.size(IconSize.s),
                 imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
-                contentDescription = null,
+                contentDescription = LocalStrings.current.actionOpenDetail,
             )
         }
     }
