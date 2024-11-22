@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -15,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getAuthManager
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -99,16 +101,8 @@ class MainActivity : ComponentActivity() {
 
     private fun handleIntent(intent: Intent) {
         when {
-            intent.action == Intent.ACTION_SEND ->
-                intent.getStringExtra(Intent.EXTRA_TEXT)?.let { content ->
-                    val detailOpener = getDetailOpener()
-                    detailOpener.openComposer(initialText = content.trim('"'))
-                }
-
-            else ->
-                intent.data?.also {
-                    handleIncomingUrl(it)
-                }
+            intent.action == Intent.ACTION_SEND -> handleIncomingAttachment(intent)
+            else -> intent.data?.also { handleIncomingUrl(it) }
         }
     }
 
@@ -131,6 +125,38 @@ class MainActivity : ComponentActivity() {
                     lifecycleScope.launch {
                         val navigationCoordinator = getNavigationCoordinator()
                         navigationCoordinator.submitDeeplink(deeplinkUrl)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleIncomingAttachment(intent: Intent) {
+        lifecycleScope.launch {
+            // if the root navigator has not been set yet, rootNavigator?.push does nothing
+            delay(750)
+            when {
+                "text/plain" == intent.type -> {
+                    intent.getStringExtra(Intent.EXTRA_TEXT)?.also { content ->
+                        val detailOpener = getDetailOpener()
+                        detailOpener.openComposer(initialText = content.trim('"'))
+                    }
+                }
+
+                intent.type?.startsWith("image/") == true -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+                    } else {
+                        intent.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+                    }?.also { uri ->
+                        val bytes =
+                            contentResolver.openInputStream(uri)?.use {
+                                it.readBytes()
+                            }
+                        if (bytes != null) {
+                            val detailOpener = getDetailOpener()
+                            detailOpener.openComposer(initialAttachment = bytes)
+                        }
                     }
                 }
             }
