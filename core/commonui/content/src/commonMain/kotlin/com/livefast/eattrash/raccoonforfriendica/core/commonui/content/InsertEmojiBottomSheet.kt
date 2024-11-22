@@ -65,7 +65,9 @@ fun InsertEmojiBottomSheet(
             onClose?.invoke()
         },
     ) {
-        Column {
+        Column(
+            modifier = Modifier.padding(bottom = Spacing.xs),
+        ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
