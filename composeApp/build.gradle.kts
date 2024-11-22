@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.mokkery)
+    alias(libs.plugins.kotlinx.kover)
 }
 
 kotlin {
@@ -193,5 +194,50 @@ android {
     }
     dependencies {
         debugImplementation(compose.uiTooling)
+    }
+}
+
+dependencies {
+    kover(projects.core.appearance)
+    kover(projects.core.navigation)
+    kover(projects.core.notifications)
+    kover(projects.core.preferences)
+    kover(projects.core.utils)
+    kover(projects.domain.identity.repository)
+    kover(projects.domain.identity.usecase)
+    kover(projects.domain.pushnotifications)
+    kover(projects.domain.urlhandler)
+    kover(projects.feature.nodeinfo)
+}
+
+kover {
+    reports {
+        filters {
+            excludes {
+                androidGeneratedClasses()
+                packages(
+                    "*.resources",
+                    "*.di",
+                    "*.auth",
+                    "*.bottomnavigation",
+                    "*.core.utils.appicon",
+                    "*.core.utils.compose",
+                    "*.core.utils.datetime",
+                    "*.core.utils.calendar",
+                    "*.core.utils.debug",
+                    "*.core.utils.fs",
+                    "*.core.utils.gallery",
+                    "*.core.utils.imageload",
+                    "*.core.utils.network",
+                    "*.core.utils.share",
+                    "*.core.utils.url",
+                    "*.core.utils.uuid",
+                    "*.core.utils.validation",
+                    "*.core.utils.vibrate",
+                    "*.pushnotifications.receiver",
+                    "*.pushnotifications.utils",
+                )
+            }
+        }
     }
 }
