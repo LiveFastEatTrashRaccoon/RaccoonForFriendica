@@ -57,6 +57,7 @@ interface DetailOpener {
         urlToShare: String? = null,
         inGroup: Boolean = false,
         initialText: String? = null,
+        initialAttachment: ByteArray? = null,
     )
 
     fun openEditUnpublished(

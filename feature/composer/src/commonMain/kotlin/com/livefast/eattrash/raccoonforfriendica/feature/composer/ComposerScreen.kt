@@ -113,6 +113,7 @@ class ComposerScreen(
     private val draftId: String? = null,
     private val urlToShare: String? = null,
     private val initialText: String? = null,
+    private val initialAttachment: ByteArray? = null,
 ) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -191,6 +192,9 @@ class ComposerScreen(
                             fieldType = ComposerFieldType.Body,
                         ),
                     )
+
+                initialAttachment != null ->
+                    model.reduce(ComposerMviModel.Intent.AddAttachment(initialAttachment))
 
                 inReplyToId != null ->
                     model.reduce(
