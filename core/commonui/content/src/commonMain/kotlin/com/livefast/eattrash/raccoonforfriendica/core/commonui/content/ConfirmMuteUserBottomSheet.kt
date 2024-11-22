@@ -78,6 +78,7 @@ fun ConfirmMuteUserBottomSheet(
         },
     ) {
         Column(
+            modifier = Modifier.padding(bottom = Spacing.xs),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             Text(

@@ -62,7 +62,9 @@ fun CustomModalBottomSheet(
             onSelected?.invoke(null)
         },
         content = {
-            Column {
+            Column(
+                modifier = Modifier.padding(bottom = Spacing.xs),
+            ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,

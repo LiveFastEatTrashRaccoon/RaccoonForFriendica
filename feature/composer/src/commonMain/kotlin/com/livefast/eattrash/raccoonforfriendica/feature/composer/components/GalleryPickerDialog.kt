@@ -101,7 +101,9 @@ fun GalleryPickerDialog(
             onClose?.invoke(null)
         },
         content = {
-            Column {
+            Column(
+                modifier = Modifier.padding(bottom = Spacing.xs),
+            ) {
                 Box {
                     Text(
                         modifier = Modifier.fillMaxWidth().align(Alignment.Center),
