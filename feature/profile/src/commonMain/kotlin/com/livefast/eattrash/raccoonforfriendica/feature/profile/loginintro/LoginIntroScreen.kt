@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,10 +19,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -33,17 +37,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
@@ -107,33 +123,34 @@ internal class LoginIntroScreen : Screen {
                     model.reduce(LoginIntroMviModel.Intent.StartOauth2Flow(LoginType.Friendica))
                 },
             ) {
-                Text(
-                    text =
-                        buildString {
-                            append(LocalStrings.current.buttonLogin)
-                        },
-                )
+                Text(text = LocalStrings.current.buttonLogin)
             }
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    model.reduce(LoginIntroMviModel.Intent.StartLegacyFlow)
-                },
-            ) {
-                Text(
-                    text =
-                        buildString {
-                            append(LocalStrings.current.buttonLogin)
-                            append(" (")
-                            append(LocalStrings.current.loginMethodBasic)
-                            append(")")
-                        },
-                )
-            }
+
             PlatformLink(
                 title = LocalStrings.current.helpMeChooseAnInstance,
                 onClick = {
                     uriHandler.openUri(LoginIntroLinks.FRIENDICA_INSTANCE_HELP)
+                },
+                options =
+                    buildList {
+                        this +=
+                            CustomOptions.LegacyLogin.toOption(
+                                label =
+                                    buildString {
+                                        append(LocalStrings.current.buttonLogin)
+                                        append(" (")
+                                        append(LocalStrings.current.loginMethodBasic)
+                                        append(")")
+                                    },
+                            )
+                    },
+                onOptionSelected = { optionId ->
+                    when (optionId) {
+                        CustomOptions.LegacyLogin ->
+                            model.reduce(LoginIntroMviModel.Intent.StartLegacyFlow)
+
+                        else -> Unit
+                    }
                 },
             )
 
@@ -253,28 +270,88 @@ private fun PlatformLink(
     modifier: Modifier = Modifier,
     underline: Boolean = true,
     onClick: (() -> Unit)? = null,
+    options: List<Option> = emptyList(),
+    onOptionSelected: ((OptionId) -> Unit)? = null,
 ) {
     Row(
         modifier =
             modifier
                 .padding(start = Spacing.xs)
                 .clip(RoundedCornerShape(CornerSize.l))
-                .then(
-                    if (onClick != null) {
-                        Modifier.clickable {
-                            onClick.invoke()
-                        }
-                    } else {
-                        Modifier
-                    },
-                ).padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
+                .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = title,
+            modifier = Modifier.weight(1f),
+            text =
+                buildAnnotatedString {
+                    pushLink(
+                        LinkAnnotation.Clickable("action") {
+                            onClick?.invoke()
+                        },
+                    )
+                    append(title)
+                    pop()
+                },
             style = MaterialTheme.typography.bodyMedium,
             textDecoration = if (underline) TextDecoration.Underline else TextDecoration.None,
             color = MaterialTheme.colorScheme.primary,
         )
+
+        if (options.isNotEmpty()) {
+            Box {
+                var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+                var optionsMenuOpen by remember { mutableStateOf(false) }
+                IconButton(
+                    modifier =
+                        Modifier
+                            .padding(end = Spacing.xxs)
+                            .size(IconSize.m)
+                            .onGloballyPositioned {
+                                optionsOffset = it.positionInParent()
+                            },
+                    onClick = {
+                        optionsMenuOpen = true
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = LocalStrings.current.itemOther,
+                        tint = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
+                    )
+                }
+                if (optionsMenuOpen) {
+                    CustomDropDown(
+                        expanded = optionsMenuOpen,
+                        onDismiss = {
+                            optionsMenuOpen = false
+                        },
+                        offset =
+                            with(LocalDensity.current) {
+                                DpOffset(
+                                    x = optionsOffset.x.toDp(),
+                                    y = optionsOffset.y.toDp(),
+                                )
+                            },
+                    ) {
+                        options.forEach { option ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = option.label)
+                                },
+                                onClick = {
+                                    optionsMenuOpen = false
+                                    onOptionSelected?.invoke(option.id)
+                                },
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
+}
+
+private sealed interface CustomOptions : OptionId.Custom {
+    data object LegacyLogin : CustomOptions
 }
