@@ -9,6 +9,7 @@ fun String?.toLanguageName(): String? =
     when (this) {
         Locales.EN -> LocalStrings.current.languageEn
         Locales.DE -> LocalStrings.current.languageDe
+        Locales.FI -> LocalStrings.current.languageFi
         Locales.FR -> LocalStrings.current.languageFr
         Locales.ES -> LocalStrings.current.languageEs
         Locales.IT -> LocalStrings.current.languageIt
@@ -23,6 +24,7 @@ fun String?.toLanguageFlag(): String? =
         Locales.EN -> "🇬🇧"
         Locales.DE -> "🇩🇪"
         Locales.ES -> "🇪🇸"
+        Locales.FI -> "🇫🇮"
         Locales.FR -> "🇫🇷"
         Locales.IT -> "🇮🇹"
         Locales.PL -> "🇵🇱"
