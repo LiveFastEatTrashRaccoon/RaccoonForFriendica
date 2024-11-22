@@ -207,6 +207,7 @@ class DefaultDetailOpener(
         urlToShare: String?,
         inGroup: Boolean,
         initialText: String?,
+        initialAttachment: ByteArray?,
     ) {
         if (!isLogged) {
             return
@@ -229,6 +230,7 @@ class DefaultDetailOpener(
                     editedPostId = editedPostId,
                     urlToShare = urlToShare,
                     initialText = initialText,
+                    initialAttachment = initialAttachment,
                 )
             navigationCoordinator.push(screen)
         }
