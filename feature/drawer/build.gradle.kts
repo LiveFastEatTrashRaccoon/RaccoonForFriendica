@@ -71,6 +71,3 @@ android {
                 .toInt()
     }
 }
-dependencies {
-    implementation(project(":core:commonui:components"))
-}

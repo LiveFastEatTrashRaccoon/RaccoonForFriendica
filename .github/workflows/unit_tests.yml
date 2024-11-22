@@ -37,9 +37,20 @@ jobs:
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > composeApp/keystore.jks
 
-      - name: Run unit test
+      - name: Run unit tests
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: ./gradlew testDebugUnitTest
+
+      - name: Generate code coverage
+        run: ./gradlew :composeApp:koverXmlReportDebug
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./composeApp/build/reports/kover/reportDebug.xml
+          flags: unittests
+          name: raccoon4friendica
+          token: ${{ secrets.CODECOV_TOKEN }}

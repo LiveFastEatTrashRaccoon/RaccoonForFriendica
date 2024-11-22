@@ -74,6 +74,3 @@ android {
                 .toInt()
     }
 }
-dependencies {
-    implementation(project(":domain:content:data"))
-}

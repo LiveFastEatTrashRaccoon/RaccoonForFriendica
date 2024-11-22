@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.ktorfit).apply(false)
     alias(libs.plugins.mokkery).apply(false)
     alias(libs.plugins.room).apply(false)
+    alias(libs.plugins.kotlinx.kover).apply(false)
 }
 
 tasks.register("clean", Delete::class) {

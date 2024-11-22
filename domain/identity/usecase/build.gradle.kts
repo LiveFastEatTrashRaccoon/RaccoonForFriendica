@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -7,9 +8,10 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.mokkery)
+    alias(libs.plugins.kotlinx.kover)
 }
 
-@OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     applyDefaultHierarchyTemplate()
     androidTarget {

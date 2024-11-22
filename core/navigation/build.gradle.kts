@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.mokkery)
+    alias(libs.plugins.kotlinx.kover)
 }
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
