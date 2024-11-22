@@ -11,6 +11,7 @@ interface Strings {
     val languageEn: String
     val languageDe: String
     val languageEs: String
+    val languageFi: String
     val languageFr: String
     val languageIt: String
     val languagePl: String
@@ -446,6 +447,7 @@ object Locales {
     const val EN = "en"
     const val DE = "de"
     const val ES = "es"
+    const val FI = "fi"
     const val FR = "fr"
     const val IT = "it"
     const val PL = "pl"
@@ -457,6 +459,7 @@ object Locales {
             EN,
             DE,
             ES,
+            FI,
             FR,
             IT,
             PL,
@@ -470,6 +473,7 @@ internal val localizableStrings: Map<LanguageTag, Strings> =
         Locales.EN to EnStrings,
         Locales.DE to DeStrings,
         Locales.ES to EsStrings,
+        Locales.FI to FiStrings,
         Locales.FR to FrStrings,
         Locales.IT to ItStrings,
         Locales.PL to PlStrings,

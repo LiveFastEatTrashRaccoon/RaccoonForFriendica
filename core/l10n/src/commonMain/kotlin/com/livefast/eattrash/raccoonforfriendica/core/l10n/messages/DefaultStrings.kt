@@ -4,6 +4,7 @@ internal open class DefaultStrings : Strings {
     override val languageEn = "English"
     override val languageDe = "Deutsch"
     override val languageEs = "Español"
+    override val languageFi = "Suomi"
     override val languageFr = "Français"
     override val languageIt = "Italiano"
     override val languagePl = "Polski"
