@@ -261,15 +261,6 @@ class SettingsScreen : Screen {
                                 imageLoadingModeBottomSheetOpened = true
                             },
                         )
-                        SettingsSwitchRow(
-                            title = LocalStrings.current.settingsItemHideNavigationBarWhileScrolling,
-                            value = uiState.hideNavigationBarWhileScrolling,
-                            onValueChanged = {
-                                model.reduce(
-                                    SettingsMviModel.Intent.ChangeHideNavigationBarWhileScrolling(it),
-                                )
-                            },
-                        )
 
                         if (uiState.isLogged) {
                             SettingsRow(
@@ -375,6 +366,15 @@ class SettingsScreen : Screen {
                                 },
                             )
                         }
+                        SettingsSwitchRow(
+                            title = LocalStrings.current.settingsItemHideNavigationBarWhileScrolling,
+                            value = uiState.hideNavigationBarWhileScrolling,
+                            onValueChanged = {
+                                model.reduce(
+                                    SettingsMviModel.Intent.ChangeHideNavigationBarWhileScrolling(it),
+                                )
+                            },
+                        )
                         if (uiState.appIconChangeSupported) {
                             SettingsRow(
                                 title = LocalStrings.current.settingsItemAppIcon,
