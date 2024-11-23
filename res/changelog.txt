@@ -1,10 +1,13 @@
 ## What's Changed
 
-- feat: add possibility to change system status and navigation bar theme in #548
-- feat: possibility received shared content from other apps and create post in #543
-- fix: notification type serialization for filtering and push subscription in #531
-- fix: poll footer layout in #546
-- fix: make user names/handles clickable in #549
-- enhancement: change "send" button position in post creation in #536
-- enhancement: change open circle/list in circle management screen in #537
-- chore: update dependencies in #532, #533, #534
+- feat: add support for announcements (Mastodon) in #553, #555, #556
+- feat: add support for images in system share in #559
+- fix: window insets in composer and modals in #560, #563
+- fix: settings load for anonymous users in #552
+- enhancement: make legacy login less visible in #563
+- chore: add new l10ns (ua, fi) in #551, #562
+- chore: add description for non-textual UI elements in #557
+- chore: add more unit tests and coverage report in #561, #564
+- chore: update dependencies in #554
+
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.2.1...0.3.0

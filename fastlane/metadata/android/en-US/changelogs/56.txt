@@ -1,0 +1,8 @@
+- feat: add support for announcements (Mastodon)
+- feat: add support for images in system share
+- fix: window insets in composer and modals
+- fix: settings load for anonymous users
+- enhancement: make legacy login less visible
+- chore: add new l10ns (ua, fi)
+- chore: add description for non-textual UI elements
+- chore: add more unit tests and coverage report
