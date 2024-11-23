@@ -37,7 +37,10 @@ internal class DefaultDirectMessagesPaginationManager(
 
                 is DirectMessagesPaginationSpecification.Replies ->
                     directMessageRepository
-                        .getReplies(specification.parentUri)
+                        .getReplies(
+                            parentUri = specification.parentUri,
+                            page = page,
+                        )
                         ?.deduplicate()
                         ?.updatePaginationData()
                         ?.fixupCreatorEmojis()
