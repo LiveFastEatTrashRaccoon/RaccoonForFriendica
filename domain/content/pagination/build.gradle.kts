@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.mokkery)
+    alias(libs.plugins.kotlinx.kover)
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -36,6 +38,14 @@ kotlin {
                 implementation(projects.domain.identity.repository)
                 implementation(projects.domain.content.data)
                 implementation(projects.domain.content.repository)
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                dependencies {
+                    implementation(kotlin("test"))
+                    implementation(libs.kotlinx.coroutines.test)
+                }
             }
         }
     }
