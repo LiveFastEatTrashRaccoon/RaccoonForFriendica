@@ -29,6 +29,7 @@ class DefaultDirectMessagesPaginationManagerTest {
             emojiHelper = emojiHelper,
         )
 
+    // region All
     @Test
     fun `given no messages when loadNextPage with All specification then result is as expected`() =
         runTest {
@@ -108,7 +109,9 @@ class DefaultDirectMessagesPaginationManagerTest {
                 )
             }
         }
+    // endregion
 
+    // region Replies
     @Test
     fun `given no messages when loadNextPage with Replies specification then result is as expected`() =
         runTest {
@@ -188,6 +191,7 @@ class DefaultDirectMessagesPaginationManagerTest {
                 )
             }
         }
+    // endregion
 
     companion object {
         private const val PARENT_URI = "fake-message-uri"
