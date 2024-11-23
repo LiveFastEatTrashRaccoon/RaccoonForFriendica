@@ -441,6 +441,8 @@ interface Strings {
     val formatStrikethrough: String
     val formatUnderlined: String
     val formatMonospace: String
+    val actionRemoveFromFavorites: String
+    val actionRemoveFromBookmarks: String
 }
 
 object Locales {

@@ -489,4 +489,6 @@ internal open class DefaultStrings : Strings {
     override val formatStrikethrough = "Strikethrough"
     override val formatUnderlined = "Underlined"
     override val formatMonospace = "Monospace"
+    override val actionRemoveFromFavorites = "Remove from favorites"
+    override val actionRemoveFromBookmarks = "Remove from bookmarks"
 }

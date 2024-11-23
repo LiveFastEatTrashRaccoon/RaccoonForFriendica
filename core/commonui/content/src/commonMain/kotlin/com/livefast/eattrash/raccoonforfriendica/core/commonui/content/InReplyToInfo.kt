@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -43,7 +44,8 @@ internal fun InReplyToInfo(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val onOpenUserModifier =
         if (onOpenUser != null) {
-            Modifier.clickable(
+            Modifier.clearAndSetSemantics { }
+            .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
             ) {
@@ -52,7 +54,7 @@ internal fun InReplyToInfo(
                 }
             }
         } else {
-            Modifier
+            Modifier.clearAndSetSemantics { }
         }
 
     Row(
@@ -63,7 +65,7 @@ internal fun InReplyToInfo(
         Icon(
             modifier = Modifier.size(iconSize),
             imageVector = Icons.AutoMirrored.Default.Reply,
-            contentDescription = LocalStrings.current.actionReply,
+            contentDescription = null,
             tint = ancillaryColor,
         )
         Text(

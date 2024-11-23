@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.Dp
@@ -48,7 +49,8 @@ fun ContentHeader(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val onOpenUserModifier =
         if (onOpenUser != null) {
-            Modifier.clickable(
+            Modifier.clearAndSetSemantics { }
+            .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
             ) {
@@ -57,7 +59,7 @@ fun ContentHeader(
                 }
             }
         } else {
-            Modifier
+            Modifier.clearAndSetSemantics { }
         }
 
     Row(

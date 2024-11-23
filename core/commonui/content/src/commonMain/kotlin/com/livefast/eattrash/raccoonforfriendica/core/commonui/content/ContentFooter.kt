@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -54,37 +55,41 @@ fun ContentFooter(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         FooterItem(
-            modifier = Modifier.width(baseItemWidth),
+            modifier = Modifier.clearAndSetSemantics { }
+            .width(baseItemWidth),
             icon = Icons.AutoMirrored.Default.Reply,
-            contentDescription = LocalStrings.current.actionReply,
+            contentDescription = null,
             value = replyCount,
             onClick = onReply,
         )
         FooterItem(
-            modifier = Modifier.width(baseItemWidth),
+            modifier = Modifier.clearAndSetSemantics { }
+            .width(baseItemWidth),
             icon = Icons.Outlined.RocketLaunch,
             toggledIcon = Icons.Filled.RocketLaunch,
-            contentDescription = LocalStrings.current.actionReblog,
+            contentDescription = null,
             value = reblogCount,
             toggled = reblogged,
             loading = reblogLoading,
             onClick = onReblog,
         )
         FooterItem(
-            modifier = Modifier.width(baseItemWidth),
+            modifier = Modifier.clearAndSetSemantics { }
+            .width(baseItemWidth),
             icon = Icons.Default.FavoriteBorder,
             toggledIcon = Icons.Default.Favorite,
-            contentDescription = LocalStrings.current.actionAddToFavorites,
+            contentDescription = null,
             value = favoriteCount,
             toggled = favorite,
             loading = favoriteLoading,
             onClick = onFavorite,
         )
         FooterItem(
-            modifier = Modifier.width(baseItemWidth),
+            modifier = Modifier.clearAndSetSemantics { }
+            .width(baseItemWidth),
             icon = Icons.Default.BookmarkBorder,
             toggledIcon = Icons.Default.Bookmark,
-            contentDescription = LocalStrings.current.actionAddToBookmarks,
+            contentDescription = null,
             toggled = bookmarked,
             loading = bookmarkLoading,
             onClick = onBookmark,
