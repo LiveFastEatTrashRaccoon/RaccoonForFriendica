@@ -95,6 +95,7 @@ Here is a list of the most important features of the app:
 A special thanks goes to all those who contributed so far:
 
 - [informapirata](https://poliverso.org/profile/informapirata)
+- [N7-X](https://github.com/N7-X)
 - [pvagner](https://github.com/pvagner)
 - all those who reported feedback and ideas through Friendica, Mastodon, GitHub, emails,
   private messages, homing pigeons and every possibly imaginable medium.
