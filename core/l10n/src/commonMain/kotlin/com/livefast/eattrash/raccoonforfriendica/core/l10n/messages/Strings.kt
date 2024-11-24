@@ -448,6 +448,7 @@ interface Strings {
     val messageAuthIssueHint1: String
     val messageAuthIssueHint2: String
     val messageAuthIssueHint3: String
+    val previewImage: String
 }
 
 object Locales {

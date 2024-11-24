@@ -496,4 +496,5 @@ internal open class DefaultStrings : Strings {
     override val messageAuthIssueHint1 = "force refresh"
     override val messageAuthIssueHint2 = "log in again"
     override val messageAuthIssueHint3 = "clear the application data"
+    override val previewImage = "Preview image"
 }
