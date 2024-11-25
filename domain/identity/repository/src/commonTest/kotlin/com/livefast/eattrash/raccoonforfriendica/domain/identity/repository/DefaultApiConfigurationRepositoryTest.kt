@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeyStore
 import dev.mokkery.MockMode
+import dev.mokkery.answering.calls
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend
@@ -10,10 +11,12 @@ import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify
 import dev.mokkery.verifySuspend
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.seconds
 
 class DefaultApiConfigurationRepositoryTest {
     private val keyStore =
@@ -29,7 +32,7 @@ class DefaultApiConfigurationRepositoryTest {
     private val credentialsRepository =
         mock<CredentialsRepository> {
             everySuspend {
-                validateApplicationCredentials(any(), any())
+                validateApplicationCredentials(node = any(), credentials = any())
             } returns true
         }
 
@@ -99,7 +102,10 @@ class DefaultApiConfigurationRepositoryTest {
     fun `given invalid OAuth credentials stored when hasCachedAuthCredentials then result is as expected`() =
         runTest {
             everySuspend {
-                credentialsRepository.validateApplicationCredentials(any(), any())
+                credentialsRepository.validateApplicationCredentials(
+                    node = any(),
+                    credentials = any(),
+                )
             } returns false
 
             val res = sut.hasCachedAuthCredentials()
@@ -120,7 +126,10 @@ class DefaultApiConfigurationRepositoryTest {
             every { keyStore["lastCred1", any<String>()] } returns "fake1"
             every { keyStore["lastCred2", any<String>()] } returns "fake2"
             everySuspend {
-                credentialsRepository.validateApplicationCredentials(any(), any())
+                credentialsRepository.validateApplicationCredentials(
+                    node = any(),
+                    credentials = any(),
+                )
             } returns false
 
             val res = sut.hasCachedAuthCredentials()
@@ -130,6 +139,44 @@ class DefaultApiConfigurationRepositoryTest {
                 credentialsRepository.validateApplicationCredentials(
                     "default-instance",
                     ApiCredentials.HttpBasic(user = "fake1", pass = "fake2"),
+                )
+            }
+        }
+
+    @Test
+    fun `given timeout when hasCachedAuthCredentials then result is as expected`() =
+        runTest {
+            everySuspend {
+                credentialsRepository.validateApplicationCredentials(
+                    node = any(),
+                    credentials = any(),
+                )
+            } calls {
+                delay(10.seconds)
+                true
+            }
+
+            val res = sut.hasCachedAuthCredentials()
+
+            assertFalse(res)
+            verifySuspend {
+                credentialsRepository.validateApplicationCredentials(
+                    "default-instance",
+                    ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
+                )
+            }
+        }
+
+    @Test
+    fun `given valid credentials when hasCachedAuthCredentials then result is as expected`() =
+        runTest {
+            val res = sut.hasCachedAuthCredentials()
+
+            assertTrue(res)
+            verifySuspend {
+                credentialsRepository.validateApplicationCredentials(
+                    "default-instance",
+                    ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
                 )
             }
         }
