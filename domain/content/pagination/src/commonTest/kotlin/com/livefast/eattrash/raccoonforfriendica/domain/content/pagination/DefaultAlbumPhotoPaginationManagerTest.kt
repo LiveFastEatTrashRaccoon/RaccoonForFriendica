@@ -40,10 +40,7 @@ class DefaultAlbumPhotoPaginationManagerTest {
     @Test
     fun `given photos when loadNextPage then result is as expected`() =
         runTest {
-            val elements =
-                listOf(
-                    AttachmentModel(id = "1", url = ""),
-                )
+            val elements = listOf(AttachmentModel(id = "1", url = ""))
             everySuspend { albumRepository.getPhotos(any(), any(), any()) } returns elements
 
             sut.reset(AlbumPhotoPaginationSpecification.Default(album = ALBUM_NAME))
@@ -63,10 +60,7 @@ class DefaultAlbumPhotoPaginationManagerTest {
     @Test
     fun `given can not fetch more when loadNextPage twice then result is as expected`() =
         runTest {
-            val elements =
-                listOf(
-                    AttachmentModel(id = "1", url = ""),
-                )
+            val elements = listOf(AttachmentModel(id = "1", url = ""))
             everySuspend {
                 albumRepository.getPhotos(
                     any(),

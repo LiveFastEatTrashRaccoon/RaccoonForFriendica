@@ -36,10 +36,7 @@ class DefaultEventPaginationManagerTest {
     @Test
     fun `given photos when loadNextPage then result is as expected`() =
         runTest {
-            val elements =
-                listOf(
-                    EventModel(id = "1", uri = "", title = "", startTime = "0"),
-                )
+            val elements = listOf(EventModel(id = "1", uri = "", title = "", startTime = "0"))
             everySuspend { eventRepository.getAll(any()) } returns elements
 
             sut.reset(EventsPaginationSpecification.All)
@@ -55,10 +52,7 @@ class DefaultEventPaginationManagerTest {
     @Test
     fun `given can not fetch more when loadNextPage twice then result is as expected`() =
         runTest {
-            val elements =
-                listOf(
-                    EventModel(id = "1", uri = "", title = "", startTime = "0"),
-                )
+            val elements = listOf(EventModel(id = "1", uri = "", title = "", startTime = "0"))
             everySuspend {
                 eventRepository.getAll(any())
             } sequentiallyReturns
