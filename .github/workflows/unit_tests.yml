@@ -48,8 +48,9 @@ jobs:
         run: ./gradlew :composeApp:koverXmlReportDebug
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
+          fail_ci_if_error: true
           files: ./composeApp/build/reports/kover/reportDebug.xml
           flags: unittests
           name: raccoon4friendica
