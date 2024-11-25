@@ -25,7 +25,7 @@ internal class DefaultLoginUseCase(
     ) {
         apiConfigurationRepository.changeNode(node)
         apiConfigurationRepository.setAuth(credentials)
-        val user = credentialsRepository.validate(node, credentials)
+        val user = credentialsRepository.validate(node = node, credentials = credentials)
         checkNotNull(user) { "Invalid credentials" }
 
         val handle =
@@ -47,7 +47,7 @@ internal class DefaultLoginUseCase(
         }
 
         accountRepository.getBy(handle)?.also { account ->
-            accountCredentialsCache.save(account.id, credentials)
+            accountCredentialsCache.save(accountId = account.id, credentials = credentials)
 
             val anonymousAccountId = accountRepository.getBy(handle = "")?.id ?: 0
             val oldSettings = settingsRepository.get(account.id)
