@@ -15,7 +15,6 @@ interface MainMviModel :
 
     data class UiState(
         val bottomBarOffsetHeightPx: Float = 0f,
-        val isLogged: Boolean = false,
         val bottomNavigationSections: List<BottomNavigationSection> = emptyList(),
     )
 
