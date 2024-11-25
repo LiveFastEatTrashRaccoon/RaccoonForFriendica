@@ -112,7 +112,11 @@ internal class DefaultUserPaginationManager(
                             offset =
                                 history
                                     .indexOfLast { it.id == pageCursor }
-                                    .takeIf { it >= 0 } ?: 0,
+                                    .takeIf { it >= 0 }
+                                    ?.let {
+                                        // offset is count, not index
+                                        it + 1
+                                    } ?: 0,
                         )?.deduplicate()
                         ?.let {
                             if (specification.withRelationship) {
