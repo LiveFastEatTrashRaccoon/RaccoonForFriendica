@@ -17,6 +17,12 @@ val DefaultFriendicaInstances =
         this +=
             FriendicaInstance(
                 lang = "🇬🇧",
+                mau = 14,
+                value = "friendica.myportal.social",
+            )
+        this +=
+            FriendicaInstance(
+                lang = "🇬🇧",
                 mau = 18,
                 value = "friendica.world",
             )
