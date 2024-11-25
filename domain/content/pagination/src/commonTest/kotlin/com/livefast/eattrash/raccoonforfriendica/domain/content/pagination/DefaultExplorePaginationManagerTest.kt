@@ -100,6 +100,60 @@ class DefaultExplorePaginationManagerTest {
         }
 
     @Test
+    fun `given sensitive results when loadNextPage with Posts specification and not includeNsfw then result is as expected`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    TimelineEntryModel(
+                        id = "3",
+                        content = "",
+                        creator = UserModel(id = "2"),
+                        sensitive = true,
+                    ),
+                )
+            everySuspend {
+                trendingRepository.getEntries(offset = any())
+            } returns list
+
+            sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = false))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.subList(0, 1).map { ExploreItemModel.Entry(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                trendingRepository.getEntries(offset = 0)
+            }
+        }
+
+    @Test
+    fun `given sensitive results when loadNextPage with Posts specification then result is as expected`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    TimelineEntryModel(
+                        id = "3",
+                        content = "",
+                        creator = UserModel(id = "2"),
+                        sensitive = true,
+                    ),
+                )
+            everySuspend {
+                trendingRepository.getEntries(offset = any())
+            } returns list
+
+            sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = true))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                trendingRepository.getEntries(offset = 0)
+            }
+        }
+
+    @Test
     fun `given no more results when loadNextPage twice with Posts specification then result is as expected`() =
         runTest {
             val list =

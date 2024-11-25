@@ -91,6 +91,60 @@ class DefaultFavoritesPaginationManagerTest {
         }
 
     @Test
+    fun `given sensitive results when loadNextPage with Bookmarks specification and not includeNsfw then result is as expected`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    TimelineEntryModel(
+                        id = "3",
+                        content = "",
+                        creator = UserModel(id = "2"),
+                        sensitive = true,
+                    ),
+                )
+            everySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = any())
+            } returns list
+
+            sut.reset(FavoritesPaginationSpecification.Bookmarks(includeNsfw = false))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.subList(0, 1), res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = null)
+            }
+        }
+
+    @Test
+    fun `given sensitive results when loadNextPage with Bookmarks specification then result is as expected`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    TimelineEntryModel(
+                        id = "3",
+                        content = "",
+                        creator = UserModel(id = "2"),
+                        sensitive = true,
+                    ),
+                )
+            everySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = any())
+            } returns list
+
+            sut.reset(FavoritesPaginationSpecification.Bookmarks(includeNsfw = true))
+            val res = sut.loadNextPage()
+
+            assertEquals(list, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = null)
+            }
+        }
+
+    @Test
     fun `given no more results when loadNextPage twice with Bookmarks specification then result is as expected`() =
         runTest {
             val list =
