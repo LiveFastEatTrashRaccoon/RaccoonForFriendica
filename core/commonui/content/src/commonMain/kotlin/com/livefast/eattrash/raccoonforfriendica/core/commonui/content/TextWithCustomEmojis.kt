@@ -76,7 +76,7 @@ fun TextWithCustomEmojis(
                     foundImages[id] = ImageData(url = url, description = alt)
                     appendInlineContent(
                         id = id,
-                        alternateText = occurrence.value,
+                        alternateText = alt ?: occurrence.value,
                     )
                 }
             }
@@ -94,7 +94,7 @@ fun TextWithCustomEmojis(
                     CustomImage(
                         modifier = Modifier.fillMaxSize(),
                         url = emoji.url,
-                        contentDescription = emoji.code,
+                        contentDescription = null,
                         contentScale = ContentScale.FillWidth,
                     )
                 }
