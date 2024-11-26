@@ -24,10 +24,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
+import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
+import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
 
 private val EMOJI_REGEX = Regex(":(\\w+):")
 private val EMOJI_SIZE = 1.15.em
-private val IMAGE_REGEX = Regex("<img src=\"(?<url>.+?)\"(alt=\"(?<alt>.+?)\")? />")
+private val IMAGE_REGEX = Regex("<img.*?/>")
 
 private data class ImageData(
     val url: String,
@@ -70,14 +72,16 @@ fun TextWithCustomEmojis(
                 }
             }.run {
                 IMAGE_REGEX.substituteAllOccurrences(this) { occurrence ->
-                    val url = occurrence.groups["url"]?.value.orEmpty()
-                    val alt = occurrence.groups["alt"]?.value.takeIf { !it.isNullOrBlank() }
-                    val id = getUuid()
-                    foundImages[id] = ImageData(url = url, description = alt)
-                    appendInlineContent(
-                        id = id,
-                        alternateText = alt ?: occurrence.value,
-                    )
+                    val rawString = occurrence.value
+                    val imageData = extractImageData(rawString)
+                    if (imageData != null) {
+                        val id = getUuid()
+                        foundImages[id] = imageData
+                        appendInlineContent(
+                            id = id,
+                            alternateText = imageData.description ?: rawString,
+                        )
+                    }
                 }
             }
     val inlineContentEmojis =
@@ -174,4 +178,28 @@ fun TextWithCustomEmojis(
         onTextLayout = onTextLayout,
         onClick = onClick,
     )
+}
+
+private fun extractImageData(html: String): ImageData? {
+    var url: String? = null
+    var description: String? = null
+    KsoupHtmlParser(
+        KsoupHtmlHandler
+            .Builder()
+            .onOpenTag { name, attributes, _ ->
+                when (name) {
+                    "img" -> {
+                        url = attributes["src"]
+                        description = attributes["alt"]
+                    }
+
+                    else -> Unit
+                }
+            }.build(),
+    ).apply {
+        write(html)
+        end()
+    }
+
+    return url?.let { ImageData(url = it, description = description) }
 }

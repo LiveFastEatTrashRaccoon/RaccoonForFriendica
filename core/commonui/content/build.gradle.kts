@@ -37,6 +37,7 @@ kotlin {
 
                 implementation(libs.calf)
                 implementation(libs.koin.core)
+                implementation(libs.ksoup.html)
                 implementation(libs.voyager.navigator)
 
                 implementation(projects.core.appearance)
