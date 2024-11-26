@@ -491,4 +491,9 @@ internal open class DefaultStrings : Strings {
     override val formatMonospace = "Monospace"
     override val actionRemoveFromFavorites = "Remove from favorites"
     override val actionRemoveFromBookmarks = "Remove from bookmarks"
+    override val messageAuthIssue = "An error occurred, maybe your token has expired."
+    override val messageAuthIssueHintsTitle = "You can try one of the following actions:"
+    override val messageAuthIssueHint1 = "force refresh"
+    override val messageAuthIssueHint2 = "log in again"
+    override val messageAuthIssueHint3 = "clear the application data"
 }

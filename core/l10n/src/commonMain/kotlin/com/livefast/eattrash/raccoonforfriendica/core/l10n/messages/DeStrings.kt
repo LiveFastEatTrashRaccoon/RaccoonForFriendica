@@ -492,4 +492,13 @@ internal val DeStrings =
         override val formatStrikethrough = "Durchgestrichen"
         override val formatUnderlined = "Unterstrichen"
         override val formatMonospace = "Einfarbig"
+        override val actionRemoveFromFavorites = "Aus den Favoriten entfernen"
+        override val actionRemoveFromBookmarks = "Aus den Lesezeichen entfernen"
+        override val messageAuthIssue =
+            "Es ist ein Fehler aufgetreten, vielleicht ist Ihr Token abgelaufen."
+        override val messageAuthIssueHintsTitle =
+            "Sie können eine der folgenden Aktionen versuchen:"
+        override val messageAuthIssueHint1 = "Aktualisieren erzwingen"
+        override val messageAuthIssueHint2 = "erneut anmelden"
+        override val messageAuthIssueHint3 = "Löschen Sie die Anwendungsdaten"
     }

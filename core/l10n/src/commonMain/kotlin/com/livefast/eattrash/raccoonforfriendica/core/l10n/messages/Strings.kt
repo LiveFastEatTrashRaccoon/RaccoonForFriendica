@@ -443,6 +443,11 @@ interface Strings {
     val formatMonospace: String
     val actionRemoveFromFavorites: String
     val actionRemoveFromBookmarks: String
+    val messageAuthIssue: String
+    val messageAuthIssueHintsTitle: String
+    val messageAuthIssueHint1: String
+    val messageAuthIssueHint2: String
+    val messageAuthIssueHint3: String
 }
 
 object Locales {

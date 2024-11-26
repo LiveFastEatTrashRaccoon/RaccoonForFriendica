@@ -497,4 +497,12 @@ internal val FrStrings =
         override val formatStrikethrough = "Barré"
         override val formatUnderlined = "Souligné"
         override val formatMonospace = "Monospace"
+        override val actionRemoveFromFavorites = "Supprimer des favoris"
+        override val actionRemoveFromBookmarks = "Supprimer des signets"
+        override val messageAuthIssue = "Une erreur s'est produite, votre jeton a peut-être expiré."
+        override val messageAuthIssueHintsTitle =
+            "Vous pouvez essayer l'une des actions suivantes :"
+        override val messageAuthIssueHint1 = "forcer l'actualisation"
+        override val messageAuthIssueHint2 = "se reconnecter"
+        override val messageAuthIssueHint3 = "effacer les données de l'application"
     }

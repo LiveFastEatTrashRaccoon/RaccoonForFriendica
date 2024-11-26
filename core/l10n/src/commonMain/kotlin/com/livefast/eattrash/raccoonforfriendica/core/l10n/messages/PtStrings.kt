@@ -496,4 +496,11 @@ internal val PtStrings =
         override val formatStrikethrough = "Riscado"
         override val formatUnderlined = "Sublinhado"
         override val formatMonospace = "Monoespaço"
+        override val actionRemoveFromFavorites = "Remover dos favoritos"
+        override val actionRemoveFromBookmarks = "Remover dos favoritos"
+        override val messageAuthIssue = "Ocorreu um erro, talvez o seu token tenha expirado."
+        override val messageAuthIssueHintsTitle = "Pode tentar uma das seguintes acções:"
+        override val messageAuthIssueHint1 = "forçar a atualização"
+        override val messageAuthIssueHint2 = "iniciar sessão novamente"
+        override val messageAuthIssueHint3 = "limpar os dados da aplicação"
     }
