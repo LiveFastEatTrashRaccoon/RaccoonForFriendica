@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -34,11 +36,17 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -204,9 +212,86 @@ object MyAccountScreen : Tab {
                             },
                         )
                     }
+                } else if (uiState.initial) {
+                    item {
+                        UserHeaderPlaceholder(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = Spacing.xs),
+                        )
+                    }
                 } else {
                     item {
-                        UserHeaderPlaceholder(modifier = Modifier.fillMaxWidth())
+                        Text(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.s),
+                            textAlign = TextAlign.Center,
+                            text = LocalStrings.current.messageAuthIssue,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+
+                        val annotatedString =
+                            buildAnnotatedString {
+                                val linkStyle =
+                                    SpanStyle(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        textDecoration = TextDecoration.Underline,
+                                    )
+                                withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground)) {
+                                    append(LocalStrings.current.messageAuthIssueHintsTitle)
+                                    append("\n• ")
+                                    pushLink(
+                                        LinkAnnotation.Clickable(
+                                            tag = "action-refresh",
+                                            linkInteractionListener = {
+                                                model.reduce(MyAccountMviModel.Intent.Refresh)
+                                            },
+                                        ),
+                                    )
+                                    withStyle(linkStyle) {
+                                        append(LocalStrings.current.messageAuthIssueHint1)
+                                    }
+                                    pop()
+                                    append("\n• ")
+                                    pushLink(
+                                        LinkAnnotation.Clickable(
+                                            tag = "action-login",
+                                            linkInteractionListener = {
+                                                model.reduce(MyAccountMviModel.Intent.Logout)
+                                            },
+                                        ),
+                                    )
+                                    withStyle(linkStyle) {
+                                        append(LocalStrings.current.messageAuthIssueHint2)
+                                    }
+                                    pop()
+                                    append("\n• ")
+                                    append(LocalStrings.current.messageAuthIssueHint3)
+                                }
+                            }
+                        Box(
+                            modifier =
+                                Modifier
+                                    .padding(
+                                        vertical = Spacing.m,
+                                        horizontal = Spacing.s,
+                                    ).border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        shape = RoundedCornerShape(CornerSize.l),
+                                    ).padding(
+                                        vertical = Spacing.s,
+                                        horizontal = Spacing.m,
+                                    ),
+                        ) {
+                            Text(
+                                modifier =
+                                    Modifier.fillMaxWidth(),
+                                text = annotatedString,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        }
                     }
                 }
 
@@ -237,31 +322,33 @@ object MyAccountScreen : Tab {
                     }
                 }
 
-                stickyHeader {
-                    val titles =
-                        listOf(
-                            UserSection.Posts,
-                            UserSection.All,
-                            UserSection.Pinned,
-                            UserSection.Media,
-                        )
-                    SectionSelector(
-                        modifier =
-                            Modifier
-                                .background(MaterialTheme.colorScheme.background)
-                                .padding(
-                                    top = stickyHeaderTopOffset,
-                                    bottom = Spacing.s,
-                                ),
-                        titles = titles.map { it.toReadableName() },
-                        scrollable = true,
-                        currentSection = titles.indexOf(uiState.section),
-                        onSectionSelected = {
-                            model.reduce(
-                                MyAccountMviModel.Intent.ChangeSection(titles[it]),
+                if (uiState.initial || uiState.entries.isNotEmpty()) {
+                    stickyHeader {
+                        val titles =
+                            listOf(
+                                UserSection.Posts,
+                                UserSection.All,
+                                UserSection.Pinned,
+                                UserSection.Media,
                             )
-                        },
-                    )
+                        SectionSelector(
+                            modifier =
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .padding(
+                                        top = stickyHeaderTopOffset,
+                                        bottom = Spacing.s,
+                                    ),
+                            titles = titles.map { it.toReadableName() },
+                            scrollable = true,
+                            currentSection = titles.indexOf(uiState.section),
+                            onSectionSelected = {
+                                model.reduce(
+                                    MyAccountMviModel.Intent.ChangeSection(titles[it]),
+                                )
+                            },
+                        )
+                    }
                 }
 
                 if (uiState.initial) {
@@ -405,7 +492,7 @@ object MyAccountScreen : Tab {
                         model.reduce(MyAccountMviModel.Intent.LoadNextPage)
                     }
                 }
-                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
+                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty() && uiState.user != null) {
                     item {
                         Text(
                             modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
