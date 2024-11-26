@@ -1,13 +1,21 @@
 ## What's Changed
 
-- feat: add support for announcements (Mastodon) in #553, #555, #556
-- feat: add support for images in system share in #559
-- fix: window insets in composer and modals in #560, #563
-- fix: settings load for anonymous users in #552
-- enhancement: make legacy login less visible in #563
-- chore: add new l10ns (ua, fi) in #551, #562
-- chore: add description for non-textual UI elements in #557
-- chore: add more unit tests and coverage report in #561, #564
-- chore: update dependencies in #554
+- feat: add profile recovery screen in #581
+- fix: review inline content alternate text in #570, #576
+- fix: strip down HTML before editing posts in #585
+- enhancement: improve timeline a11y by @pvagner in #567
+- enhancement: add friendica.myportal.social to default instances in #578
+- chore: add tests photo album pagination in #565
+- chore: add test for explore pagination manager in #566
+- chore: add tests for favourites and hashtags pagination in #571
+- chore: add tests for pagination follow requests and inbox in #573
+- chore: add tests for search result and user pagination in #574
+- chore: add tests for unpublished and timeline pagination in #575
+- chore: add tests for notification center and main view model in #577
+- chore: add tests for announcement repository in #582
+- chore: add tests for circle repository in #583
+- chore: add tests for direct message repository in #584
+- chore: bump codecov/codecov-action from 4 to 5 by @dependabot in #572
+- chore: bump coil from 3.0.3 to 3.0.4 by @dependabot in #579
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.2.1...0.3.0
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.3.0...0.3.1

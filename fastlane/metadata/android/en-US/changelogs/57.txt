@@ -1,0 +1,7 @@
+- feat: add profile recovery screen
+- fix: review inline content alternate text
+- fix: strip down HTML before editing posts
+- enhancement: improve timeline a11y
+- enhancement: update list of default instances
+- chore: add more unit tests
+- chore: update dependencies
