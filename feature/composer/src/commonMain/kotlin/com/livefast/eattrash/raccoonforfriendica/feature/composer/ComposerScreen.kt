@@ -668,7 +668,7 @@ class ComposerScreen(
                         visibility = uiState.visibility,
                         availableVisibilities = uiState.availableVisibilities,
                         // visibility change is not possible when editing a post
-                        changeVisibilityEnabled = editedPostId == null,
+                        changeVisibilityEnabled = !isBeingEdited,
                         onChangeVisibility = { visibility ->
                             if (visibility is Visibility.Circle) {
                                 selectCircleDialogOpen = true
