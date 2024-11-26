@@ -1,10 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
@@ -598,7 +600,12 @@ class ComposerViewModel(
                         },
                     offsetAfter = before.length,
                 )
-            updateState { it.copy(bodyValue = newValue, hasUnsavedChanges = true) }
+            updateState {
+                it.copy(
+                    bodyValue = newValue,
+                    hasUnsavedChanges = true
+                )
+            }
         }
     }
 
@@ -623,7 +630,12 @@ class ComposerViewModel(
                     additionalPart = additionalPart,
                     offsetAfter = additionalPart.length,
                 )
-            updateState { it.copy(bodyValue = newValue, hasUnsavedChanges = true) }
+            updateState {
+                it.copy(
+                    bodyValue = newValue,
+                    hasUnsavedChanges = true
+                )
+            }
         }
     }
 
@@ -683,7 +695,12 @@ class ComposerViewModel(
                     additionalPart = additionalPart,
                     offsetAfter = additionalPart.length,
                 )
-            updateState { it.copy(bodyValue = newValue, hasUnsavedChanges = true) }
+            updateState {
+                it.copy(
+                    bodyValue = newValue,
+                    hasUnsavedChanges = true
+                )
+            }
         }
     }
 
@@ -1086,7 +1103,12 @@ class ComposerViewModel(
                         },
                     offsetAfter = before.length,
                 )
-            updateState { it.copy(bodyValue = newValue, hasUnsavedChanges = true) }
+            updateState {
+                it.copy(
+                    bodyValue = newValue,
+                    hasUnsavedChanges = true
+                )
+            }
         }
     }
 
@@ -1304,12 +1326,10 @@ class ComposerViewModel(
             }
 
         val reference =
-            if (uiState.value.supportsRichEditing) {
-                // retrieve field values from source to strip down all formatting
-                timelineEntryRepository.getSource(entry.id) ?: entry
-            } else {
-                entry
-            }
+            // retrieve field values from source to strip down all formatting
+            timelineEntryRepository.getSource(entry.id) ?: entry.copy(
+                content = entry.content.parseHtml(Color.Black).text
+            )
 
         updateState {
             it.copy(
