@@ -490,4 +490,11 @@ internal val PlStrings =
         override val formatStrikethrough = "Przekreślenie"
         override val formatUnderlined = "Podkreślony"
         override val formatMonospace = "Monospace"
+        override val actionRemoveFromFavorites = "Usuń z ulubionych"
+        override val actionRemoveFromBookmarks = "Usuń z zakładek"
+        override val messageAuthIssue = "Wystąpił błąd, być może Twój token wygasł."
+        override val messageAuthIssueHintsTitle = "Możesz wypróbować jedno z następujących działań:"
+        override val messageAuthIssueHint1 = "wymuś odświeżenie"
+        override val messageAuthIssueHint2 = "zaloguj się ponownie"
+        override val messageAuthIssueHint3 = "wyczyść dane aplikacji"
     }

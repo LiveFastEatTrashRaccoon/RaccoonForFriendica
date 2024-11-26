@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRe
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
@@ -20,13 +21,13 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -38,6 +39,7 @@ class MyAccountViewModel(
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
     private val imagePreloadManager: ImagePreloadManager,
@@ -45,6 +47,7 @@ class MyAccountViewModel(
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
     private val imageAutoloadObserver: ImageAutoloadObserver,
+    private val logout: LogoutUseCase,
 ) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
         initialState = MyAccountMviModel.State(),
     ),
@@ -53,18 +56,20 @@ class MyAccountViewModel(
         screenModelScope.launch {
             identityRepository
                 .currentUser
-                .drop(1)
-                .distinctUntilChanged()
                 .debounce(750)
                 .onEach { user ->
                     val currentUser =
                         user?.let {
                             with(emojiHelper) { it.withEmojisIfMissing() }
                         }
-                    updateState {
-                        it.copy(user = currentUser)
+                    if (uiState.value.initial) {
+                        loadData(currentUser)
+                    } else {
+                        updateState {
+                            it.copy(user = currentUser)
+                        }
+                        refresh(initial = true)
                     }
-                    refresh(initial = true)
                 }.launchIn(this)
 
             settingsRepository.current
@@ -98,17 +103,13 @@ class MyAccountViewModel(
                 .onEach { event ->
                     removeEntryFromState(event.id)
                 }.launchIn(this)
+        }
+    }
 
-            val currentUser =
-                identityRepository.currentUser.value?.let {
-                    with(emojiHelper) { it.withEmojisIfMissing() }
-                }
-            updateState {
-                it.copy(user = currentUser)
-            }
-
-            if (uiState.value.initial) {
-
+    private suspend fun loadData(currentUser: UserModel?) {
+        when {
+            currentUser != null && apiConfigurationRepository.hasCachedAuthCredentials() -> {
+                updateState { it.copy(user = currentUser) }
                 val initialValues =
                     timelineEntryRepository
                         .getCachedByUser()
@@ -127,7 +128,7 @@ class MyAccountViewModel(
                     }
                     paginationManager.reset(
                         TimelinePaginationSpecification.User(
-                            userId = currentUser?.id.orEmpty(),
+                            userId = currentUser.id,
                             excludeReplies = true,
                             includeNsfw =
                                 settingsRepository.current.value?.includeNsfw
@@ -137,6 +138,15 @@ class MyAccountViewModel(
                     )
                 } else {
                     refresh(initial = true)
+                }
+            }
+
+            else -> {
+                // user == null && !initial -> recover screen
+                updateState {
+                    it.copy(
+                        initial = false,
+                    )
                 }
             }
         }
@@ -176,6 +186,10 @@ class MyAccountViewModel(
             is MyAccountMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is MyAccountMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is MyAccountMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            MyAccountMviModel.Intent.Logout ->
+                screenModelScope.launch {
+                    logout()
+                }
         }
     }
 

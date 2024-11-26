@@ -492,4 +492,11 @@ internal val EsStrings =
         override val formatStrikethrough = "Tachado"
         override val formatUnderlined = "Subrayado"
         override val formatMonospace = "Monospace"
+        override val actionRemoveFromFavorites = "Eliminar de favoritos"
+        override val actionRemoveFromBookmarks = "Eliminar de favoritos"
+        override val messageAuthIssue = "Se ha producido un error, puede que tu token haya caducado."
+        override val messageAuthIssueHintsTitle = "Puedes intentar una de las siguientes acciones:"
+        override val messageAuthIssueHint1 = "forzar actualización"
+        override val messageAuthIssueHint2 = "iniciar sesión de nuevo"
+        override val messageAuthIssueHint3 = "borrar los datos de la aplicación"
     }

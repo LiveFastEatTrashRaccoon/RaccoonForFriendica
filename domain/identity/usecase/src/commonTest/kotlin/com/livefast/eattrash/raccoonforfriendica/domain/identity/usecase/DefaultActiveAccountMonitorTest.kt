@@ -19,7 +19,6 @@ import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
-import dev.mokkery.verify
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -81,10 +80,8 @@ class DefaultActiveAccountMonitorTest {
             sut.start()
             accountChannel.send(account)
 
-            verify {
-                apiConfigurationRepository.setAuth(null)
-            }
             verifySuspend {
+                apiConfigurationRepository.setAuth(null)
                 supportedFeatureRepository.refresh()
                 identityRepository.refreshCurrentUser(null)
                 supportedFeatureRepository.refresh()
@@ -98,7 +95,7 @@ class DefaultActiveAccountMonitorTest {
         }
 
     @Test
-    fun `given active account when started then interactions are as expected`() =
+    fun `given active account and valid credentials when started then interactions are as expected`() =
         runTest {
             val accountId = 1L
             val userId = "fake-user-id"
@@ -107,7 +104,6 @@ class DefaultActiveAccountMonitorTest {
             val accountChannel = Channel<AccountModel?>()
             every { accountRepository.getActiveAsFlow() } returns accountChannel.receiveAsFlow()
             everySuspend { accountRepository.getActive() } returns account
-            every { apiConfigurationRepository.node } returns MutableStateFlow("test-instance")
             val credentials = ApiCredentials.OAuth2("fake-access-token", "")
             every { accountCredentialsCache.get(any()) } returns credentials
             val settings = SettingsModel()
@@ -116,10 +112,8 @@ class DefaultActiveAccountMonitorTest {
             sut.start()
             accountChannel.send(account)
 
-            verify {
-                apiConfigurationRepository.setAuth(credentials)
-            }
             verifySuspend {
+                apiConfigurationRepository.setAuth(credentials)
                 supportedFeatureRepository.refresh()
                 identityRepository.refreshCurrentUser(userId)
                 contentPreloadManager.preload(userId)

@@ -479,4 +479,11 @@ internal val FiStrings =
         override val formatStrikethrough = "Yliviivattu"
         override val formatUnderlined = "Alleviivattu"
         override val formatMonospace = "Monospace"
+        override val actionRemoveFromFavorites = "Poista suosikeista"
+        override val actionRemoveFromBookmarks = "Poista kirjanmerkeistä"
+        override val messageAuthIssue = "Tapahtui virhe, ehkä tunnuksesi on vanhentunut."
+        override val messageAuthIssueHintsTitle = "Voit kokeilla jotakin seuraavista toimista:"
+        override val messageAuthIssueHint1 = "pakota päivitys"
+        override val messageAuthIssueHint2 = "kirjaudu uudelleen sisään"
+        override val messageAuthIssueHint3 = "tyhjennä sovelluksen tiedot"
     }

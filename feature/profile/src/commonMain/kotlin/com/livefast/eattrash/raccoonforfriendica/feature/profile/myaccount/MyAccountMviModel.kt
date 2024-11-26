@@ -43,6 +43,8 @@ interface MyAccountMviModel :
         data class CopyToClipboard(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data object Logout : Intent
     }
 
     data class State(

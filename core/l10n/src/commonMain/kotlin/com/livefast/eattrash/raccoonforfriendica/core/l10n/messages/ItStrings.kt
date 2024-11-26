@@ -492,4 +492,11 @@ internal val ItStrings =
         override val formatStrikethrough = "Barrato"
         override val formatUnderlined = "Sottolineato"
         override val formatMonospace = "Larghezza fissa"
+        override val actionRemoveFromFavorites = "Rimuovi dai preferiti"
+        override val actionRemoveFromBookmarks = "Rimuovi dai segnalibri"
+        override val messageAuthIssue = "Si è verificato un errore, forse il token attuale è scaduto."
+        override val messageAuthIssueHintsTitle = "Si consiglia di intraprendere una delle seguenti azioni:"
+        override val messageAuthIssueHint1 = "forzare l'aggiornamento"
+        override val messageAuthIssueHint2 = "effettuare nuovamente l'accesso"
+        override val messageAuthIssueHint3 = "cancellare i dati dell'applicazione"
     }

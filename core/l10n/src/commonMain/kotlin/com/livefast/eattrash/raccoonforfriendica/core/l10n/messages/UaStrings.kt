@@ -499,4 +499,13 @@ internal val UaStrings =
         override val formatStrikethrough = "Закреслений"
         override val formatUnderlined = "Підкреслений"
         override val formatMonospace = "Монопростір"
+        override val actionRemoveFromFavorites = "Видалити з обраного"
+        override val actionRemoveFromBookmarks = "Видалити з закладок"
+        override val messageAuthIssue =
+            "Виникла помилка, можливо, термін дії вашого токена закінчився."
+        override val messageAuthIssueHintsTitle =
+            "Ви можете спробувати виконати одну з наступних дій:"
+        override val messageAuthIssueHint1 = "примусове оновлення"
+        override val messageAuthIssueHint2 = "увійти ще раз"
+        override val messageAuthIssueHint3 = "очистити дані додатку"
     }
