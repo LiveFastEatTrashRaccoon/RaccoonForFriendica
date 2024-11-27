@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeFeature
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountCredentialsCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
@@ -68,6 +69,7 @@ class DefaultLoginUseCaseTest {
                 accountCredentialsCache.get(any())
                 settingsRepository.get(any())
                 settingsRepository.create(any())
+                supportedFeatureRepository.features
             }
         }
 
@@ -108,6 +110,56 @@ class DefaultLoginUseCaseTest {
                 settingsRepository.get(accountData.id)
                 settingsRepository.create(SettingsModel(accountId = accountData.id))
                 accountRepository.setActive(accountData, true)
+                supportedFeatureRepository.features
+            }
+        }
+
+    @Test
+    fun `given valid credentials on Friendica and not existing account when execute then interactions are as expected`() =
+        runTest {
+            val node = "example.com"
+            val username = "fake-username"
+            val userId = "0"
+            everySuspend { supportedFeatureRepository.features } returns
+                MutableStateFlow(NodeFeatures(supportsBBCode = true))
+            everySuspend {
+                credentialsRepository.validate(node = any(), credentials = any())
+            } returns UserModel(id = userId, username = username)
+            val accountData =
+                AccountModel(
+                    id = 1,
+                    handle = "$username@$node",
+                    remoteId = userId,
+                )
+            val credentials = ApiCredentials.OAuth2("fake-access-token", "")
+            everySuspend { accountRepository.getBy(handle = any()) } sequentiallyReturns
+                listOf(
+                    null,
+                    accountData,
+                    AccountModel(),
+                )
+            everySuspend { settingsRepository.get(any()) } returns null
+
+            sut.invoke(node = node, credentials = credentials)
+
+            verifySuspend {
+                apiConfigurationRepository.changeNode(node)
+                apiConfigurationRepository.setAuth(credentials)
+                credentialsRepository.validate(node, credentials)
+                accountRepository.getBy("$username@$node")
+                accountRepository.create(accountData.copy(id = 0))
+                accountRepository.getBy("$username@$node")
+                accountCredentialsCache.save(accountId = accountData.id, credentials)
+                settingsRepository.get(accountData.id)
+                settingsRepository.create(
+                    SettingsModel(
+                        accountId = accountData.id,
+                        markupMode = MarkupMode.BBCode,
+                        excludeRepliesFromTimeline = true,
+                    ),
+                )
+                accountRepository.setActive(accountData, true)
+                supportedFeatureRepository.features
             }
         }
 
@@ -142,6 +194,7 @@ class DefaultLoginUseCaseTest {
                 settingsRepository.get(accountData.id)
                 settingsRepository.create(SettingsModel(accountId = accountData.id))
                 accountRepository.setActive(accountData, true)
+                supportedFeatureRepository.features
             }
             verifySuspend(mode = VerifyMode.not) {
                 accountRepository.create(accountData)

@@ -55,17 +55,19 @@ internal class DefaultLoginUseCase(
             if (oldSettings == null) {
                 supportedFeatureRepository.refresh()
                 val supportsBBCode = supportedFeatureRepository.features.value.supportsBBCode
-                val defaultMarkupMode =
-                    if (supportsBBCode) {
-                        MarkupMode.BBCode
-                    } else {
-                        MarkupMode.PlainText
-                    }
                 settingsRepository.create(
                     defaultSettings.copy(
                         id = 0,
                         accountId = account.id,
-                        markupMode = defaultMarkupMode,
+                        // on Friendica, enable BBCode by default
+                        markupMode =
+                            if (supportsBBCode) {
+                                MarkupMode.BBCode
+                            } else {
+                                MarkupMode.PlainText
+                            },
+                        // on Friendica, enable excludeRepliesFromTimeline
+                        excludeRepliesFromTimeline = supportsBBCode,
                     ),
                 )
             }
