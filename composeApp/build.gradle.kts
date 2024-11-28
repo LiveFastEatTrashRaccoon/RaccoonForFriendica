@@ -204,6 +204,7 @@ dependencies {
     kover(projects.core.preferences)
     kover(projects.core.utils)
     kover(projects.domain.content.pagination)
+    kover(projects.domain.content.repository)
     kover(projects.domain.content.usecase)
     kover(projects.domain.identity.repository)
     kover(projects.domain.identity.usecase)
