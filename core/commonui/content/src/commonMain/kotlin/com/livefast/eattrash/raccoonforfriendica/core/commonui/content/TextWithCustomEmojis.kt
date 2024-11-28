@@ -79,7 +79,8 @@ fun TextWithCustomEmojis(
                         foundImages[id] = imageData
                         appendInlineContent(
                             id = id,
-                            alternateText = imageData.description ?: rawString,
+                            alternateText =
+                                imageData.description.takeIf { !it.isNullOrEmpty() } ?: rawString,
                         )
                     }
                 }
