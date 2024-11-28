@@ -5,15 +5,15 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Event(
-    @SerialName("id") val id: Long,
-    @SerialName("uid") val uid: Long,
-    @SerialName("cid") val cid: Long,
-    @SerialName("uri") val uri: String,
-    @SerialName("name") val name: String,
+    @SerialName("cid") val cid: Long? = null,
     @SerialName("desc") val description: String,
-    @SerialName("start_time") val startTime: String,
     @SerialName("end_time") val endTime: String? = null,
-    @SerialName("type") val type: String,
+    @SerialName("id") val id: Long,
+    @SerialName("name") val name: String,
     @SerialName("nofinish") val noFinish: Int = 0,
     @SerialName("place") val place: String? = null,
+    @SerialName("start_time") val startTime: String,
+    @SerialName("type") val type: String? = null,
+    @SerialName("uid") val uid: Long? = 0,
+    @SerialName("uri") val uri: String,
 )
