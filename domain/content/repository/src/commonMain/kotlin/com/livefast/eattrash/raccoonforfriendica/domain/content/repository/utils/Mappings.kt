@@ -543,7 +543,7 @@ internal fun Markers.toModel(): List<MarkerModel> =
         }
     }
 
-private fun String.toEventType(): EventType =
+private fun String?.toEventType(): EventType =
     when (this) {
         "birthday" -> EventType.Birthday
         else -> EventType.Event
