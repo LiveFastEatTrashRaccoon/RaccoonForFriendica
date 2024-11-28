@@ -21,7 +21,7 @@ internal class DefaultSupportedFeatureRepository(
                 supportReportCategoryRuleViolation = info.isMastodon,
                 supportsPolls = info.isMastodon,
                 supportsBBCode = info.isFriendica,
-                supportsMarkdown = info.isMastodon,
+                supportsMarkdown = true,
                 supportsEntryShare = info.isFriendica,
                 supportsCalendar = info.isFriendica,
                 supportsAnnouncements = info.isMastodon,
