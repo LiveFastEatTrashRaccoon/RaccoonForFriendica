@@ -50,10 +50,12 @@ fun String.prettifyHtml(requiresHtmlDecode: Boolean = true): String {
                 builder.append(text)
             }.build()
 
-    val ksoupHtmlParser = KsoupHtmlParser(handler)
     val html = if (requiresHtmlDecode) KsoupEntities.decodeHtml(this) else this
-    ksoupHtmlParser.write(html)
-    ksoupHtmlParser.end()
+
+    KsoupHtmlParser(handler).apply {
+        write(html)
+        end()
+    }
 
     return builder.toAnnotatedString().text
 }

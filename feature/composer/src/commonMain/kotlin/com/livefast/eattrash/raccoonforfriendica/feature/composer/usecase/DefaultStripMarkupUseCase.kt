@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.composer.utils
+package com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase
 
 import androidx.compose.ui.graphics.Color
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml

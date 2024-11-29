@@ -118,10 +118,12 @@ fun String.parseHtml(
                 builder.append(text)
             }.build()
 
-    val ksoupHtmlParser = KsoupHtmlParser(handler)
     val html = sanitize(requiresHtmlDecode)
-    ksoupHtmlParser.write(html)
-    ksoupHtmlParser.end()
+
+    KsoupHtmlParser(handler).apply {
+        write(html)
+        end()
+    }
 
     return builder.toAnnotatedString()
 }
@@ -140,4 +142,10 @@ private fun String.sanitize(requiresHtmlDecode: Boolean): String =
         } else {
             this
         }
-    }.replace("<p><br></p>", "<br/>")
+    }.replace(
+        regex = Regex("<p><br\\s*?/?></p>"),
+        replacement = "<br/>",
+    ).replace(
+        regex = Regex("<p><br\\s*?/?>"),
+        replacement = "<p>",
+    )
