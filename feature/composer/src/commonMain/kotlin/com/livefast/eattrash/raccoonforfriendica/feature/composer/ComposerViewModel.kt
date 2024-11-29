@@ -42,9 +42,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.converters.BBCodeConverter
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase.PrepareForPreviewUseCase
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase.StripMarkupUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.PrepareForPreviewUseCase
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.StripMarkupUseCase
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -81,6 +82,7 @@ class ComposerViewModel(
     private val prepareForPreview: PrepareForPreviewUseCase,
     private val stripMarkup: StripMarkupUseCase,
     private val notificationCenter: NotificationCenter,
+    private val bbCodeConverter: BBCodeConverter,
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
         initialState = ComposerMviModel.State(),
     ),
@@ -601,7 +603,7 @@ class ComposerViewModel(
             updateState {
                 it.copy(
                     bodyValue = newValue,
-                    hasUnsavedChanges = true
+                    hasUnsavedChanges = true,
                 )
             }
         }
@@ -631,7 +633,7 @@ class ComposerViewModel(
             updateState {
                 it.copy(
                     bodyValue = newValue,
-                    hasUnsavedChanges = true
+                    hasUnsavedChanges = true,
                 )
             }
         }
@@ -696,7 +698,7 @@ class ComposerViewModel(
             updateState {
                 it.copy(
                     bodyValue = newValue,
-                    hasUnsavedChanges = true
+                    hasUnsavedChanges = true,
                 )
             }
         }
@@ -1104,7 +1106,7 @@ class ComposerViewModel(
             updateState {
                 it.copy(
                     bodyValue = newValue,
-                    hasUnsavedChanges = true
+                    hasUnsavedChanges = true,
                 )
             }
         }
@@ -1323,13 +1325,18 @@ class ComposerViewModel(
                 }
             }
 
-        // retrieve field values from source to strip down all formatting (if HTML)
         val markupMode = settingsRepository.current.value?.markupMode ?: MarkupMode.PlainText
         val reference =
-            if (markupMode == MarkupMode.HTML) {
-                timelineEntryRepository.getSource(entry.id) ?: entry
-            } else {
-                entry
+            when (markupMode) {
+                // attempt to reconstruct the original BBCode syntax
+                MarkupMode.BBCode -> {
+                    val bbCode = bbCodeConverter.fromHtml(entry.content)
+                    entry.copy(content = bbCode)
+                }
+                // make the server strip off all the HTML
+                MarkupMode.HTML -> timelineEntryRepository.getSource(entry.id) ?: entry
+                // Markdown or PlainText are good to go
+                else -> entry
             }
 
         updateState {
