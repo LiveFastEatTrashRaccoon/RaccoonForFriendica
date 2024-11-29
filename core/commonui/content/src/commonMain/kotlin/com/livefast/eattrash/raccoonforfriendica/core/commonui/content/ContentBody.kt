@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
@@ -24,6 +25,7 @@ fun ContentBody(
         val annotatedContent =
             content.parseHtml(
                 linkColor = MaterialTheme.colorScheme.primary,
+                quoteColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
             )
         TextWithCustomEmojis(
             style = MaterialTheme.typography.bodyMedium.copy(color = color),

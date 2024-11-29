@@ -45,6 +45,7 @@ fun SpoilerCard(
     val annotatedContent =
         content.parseHtml(
             linkColor = MaterialTheme.colorScheme.primary,
+            quoteColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
         )
 
     Row(
