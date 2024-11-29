@@ -1323,8 +1323,14 @@ class ComposerViewModel(
                 }
             }
 
-        // retrieve field values from source to strip down all formatting
-        val reference = timelineEntryRepository.getSource(entry.id) ?: entry
+        // retrieve field values from source to strip down all formatting (if HTML)
+        val markupMode = settingsRepository.current.value?.markupMode ?: MarkupMode.PlainText
+        val reference =
+            if (markupMode == MarkupMode.HTML) {
+                timelineEntryRepository.getSource(entry.id) ?: entry
+            } else {
+                entry
+            }
 
         updateState {
             it.copy(
