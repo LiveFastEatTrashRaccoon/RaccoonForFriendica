@@ -12,7 +12,7 @@ internal class DefaultStripMarkupUseCase(
         mode: MarkupMode,
     ): String {
         val rendered = prepareForPreview(text = text, mode = mode)
-        val html = rendered.parseHtml(Color.Unspecified)
+        val html = rendered.parseHtml(Color.Unspecified, Color.Unspecified)
         return html.toString()
     }
 }

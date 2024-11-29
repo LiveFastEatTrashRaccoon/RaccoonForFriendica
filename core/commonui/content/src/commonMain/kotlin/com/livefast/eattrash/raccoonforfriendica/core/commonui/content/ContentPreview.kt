@@ -104,6 +104,7 @@ fun ContentPreview(
                     val annotatedTitle =
                         title.parseHtml(
                             linkColor = MaterialTheme.colorScheme.primary,
+                            quoteColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
                         )
                     Text(
                         text = annotatedTitle,
@@ -115,6 +116,7 @@ fun ContentPreview(
                     val annotatedDescription =
                         description.parseHtml(
                             linkColor = MaterialTheme.colorScheme.primary,
+                            quoteColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
                         )
                     Text(
                         text = annotatedDescription,

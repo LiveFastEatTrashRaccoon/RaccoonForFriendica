@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
@@ -127,6 +128,7 @@ private fun RuleItem(
         val annotatedContent =
             rule.text.parseHtml(
                 linkColor = MaterialTheme.colorScheme.primary,
+                quoteColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
             )
         Text(
             modifier = Modifier.weight(1f),

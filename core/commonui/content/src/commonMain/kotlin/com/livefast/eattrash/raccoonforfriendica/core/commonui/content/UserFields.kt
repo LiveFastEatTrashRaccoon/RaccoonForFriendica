@@ -60,6 +60,7 @@ fun UserFields(
                     val annotatedContent =
                         field.value.parseHtml(
                             linkColor = MaterialTheme.colorScheme.primary,
+                            quoteColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
                         )
                     TextWithCustomEmojis(
                         style = MaterialTheme.typography.bodyMedium,
