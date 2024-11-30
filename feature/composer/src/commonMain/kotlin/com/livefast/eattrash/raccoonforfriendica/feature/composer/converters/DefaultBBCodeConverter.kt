@@ -2,13 +2,22 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer.converters
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.replaceNewlines
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
 
 internal class DefaultBBCodeConverter : BBCodeConverter {
     override fun toHtml(value: String) =
         value
+            .replace("[h1]", "<h1>")
+            .replace("[/h1]", "</h1>")
+            .replace("[h2]", "<h2>")
+            .replace("[/h2]", "</h2>")
+            .replace("[h3]", "<h3>")
+            .replace("[/h3]", "</h3>")
+            .replace("[h4]", "<h4>")
+            .replace("[/h4]", "</h4>")
+            .replace("[h5]", "<h5>")
+            .replace("[/h5]", "</h5>")
             .replace("[u]", "<u>")
             .replace("[/u]", "</u>")
             .replace("[s]", "<s>")
@@ -98,3 +107,5 @@ internal class DefaultBBCodeConverter : BBCodeConverter {
         return builder.toString()
     }
 }
+
+private fun String.replaceNewlines(): String = replace("\n", "<br />")
