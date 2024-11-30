@@ -8,7 +8,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiC
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.converters.BBCodeConverter
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.converters.MarkdownConverter
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.replaceNewlines
 
 internal class DefaultPrepareForPreviewUseCase(
     private val apiConfigurationRepository: ApiConfigurationRepository,
@@ -22,7 +21,7 @@ internal class DefaultPrepareForPreviewUseCase(
         when (mode) {
             MarkupMode.BBCode -> bbCodeConverter.toHtml(text)
             MarkupMode.Markdown -> markdownConverter.toHtml(text)
-            else -> text.replaceNewlines()
+            else -> text
         }.withMentions().withHashtags()
 
     private fun String.withMentions(): String =

@@ -9,6 +9,4 @@ internal object ComposerRegexes {
         Regex("#(?<hashtag>.+?)(?=\\b)")
     val BBCODE_URL =
         Regex("\\[url=(?<url>.*?)](?<anchor>.*?)\\[/url]")
-    val HTML_URL =
-        Regex("<a \"href\"=(?<url>.*?)>(?<anchor>.*?)</a>")
 }
