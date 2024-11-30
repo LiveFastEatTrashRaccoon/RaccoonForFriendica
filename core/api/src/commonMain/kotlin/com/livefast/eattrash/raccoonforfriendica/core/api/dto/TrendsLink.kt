@@ -10,4 +10,8 @@ data class TrendsLink(
     @SerialName("image") val image: String? = null,
     @SerialName("title") val title: String? = null,
     @SerialName("url") val url: String?,
-)
+) {
+    companion object {
+        fun fromJson(value: String): List<TrendsLink> = JsonSerializer.decodeFromString<List<TrendsLink>>(value)
+    }
+}
