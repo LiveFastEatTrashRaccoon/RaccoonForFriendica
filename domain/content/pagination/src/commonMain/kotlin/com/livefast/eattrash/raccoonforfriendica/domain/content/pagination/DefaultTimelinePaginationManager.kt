@@ -110,13 +110,7 @@ internal class DefaultTimelinePaginationManager(
                                         .orEmpty(),
                                 pageCursor = pageCursor,
                             )
-                    }?.updatePaginationData()
-                        ?.filterReplies(included = !specification.excludeReplies)
-                        ?.filterNsfw(specification.includeNsfw)
-                        ?.deduplicate()
-                        ?.fixupCreatorEmojis()
-                        ?.fixupInReplyTo()
-                        .orEmpty()
+                    }?.toListWithPageCursor()
                 }
 
                 is TimelinePaginationSpecification.Hashtag -> {
@@ -124,12 +118,7 @@ internal class DefaultTimelinePaginationManager(
                         .getHashtag(
                             hashtag = specification.hashtag,
                             pageCursor = pageCursor,
-                        )?.updatePaginationData()
-                        ?.filterNsfw(specification.includeNsfw)
-                        ?.deduplicate()
-                        ?.fixupCreatorEmojis()
-                        ?.fixupInReplyTo()
-                        .orEmpty()
+                        )
                 }
 
                 is TimelinePaginationSpecification.User ->
@@ -143,14 +132,7 @@ internal class DefaultTimelinePaginationManager(
                             pinned = specification.pinned,
                             enableCache = specification.enableCache,
                             refresh = specification.refresh,
-                        )
-                        // intended: there is a bug in user post pagination
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.filterNsfw(specification.includeNsfw)
-                        ?.fixupCreatorEmojis()
-                        ?.fixupInReplyTo()
-                        .orEmpty()
+                        )?.toListWithPageCursor()
 
                 is TimelinePaginationSpecification.Forum ->
                     timelineEntryRepository
@@ -158,27 +140,55 @@ internal class DefaultTimelinePaginationManager(
                             userId = specification.userId,
                             pageCursor = pageCursor,
                             excludeReplies = true,
-                        )?.updatePaginationData()
+                        )?.toListWithPageCursor()
+            }
+        return mutex.withLock {
+            when (specification) {
+                is TimelinePaginationSpecification.Feed -> {
+                    results
+                        ?.updatePaginationData()
+                        ?.filterReplies(included = !specification.excludeReplies)
+                        ?.filterNsfw(specification.includeNsfw)
+                        ?.deduplicate()
+                        ?.fixupCreatorEmojis()
+                        ?.fixupInReplyTo()
+                }
+
+                is TimelinePaginationSpecification.Hashtag -> {
+                    results
+                        ?.updatePaginationData()
+                        ?.filterNsfw(specification.includeNsfw)
+                        ?.deduplicate()
+                        ?.fixupCreatorEmojis()
+                        ?.fixupInReplyTo()
+                }
+
+                is TimelinePaginationSpecification.User -> {
+                    results
+                        ?.updatePaginationData()
+                        ?.deduplicate()
+                        ?.filterNsfw(specification.includeNsfw)
+                        ?.fixupCreatorEmojis()
+                        ?.fixupInReplyTo()
+                }
+
+                is TimelinePaginationSpecification.Forum -> {
+                    results
+                        ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.filter { it.reblog != null && it.reblog?.inReplyTo == null }
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
-                        .orEmpty()
-            }
-        mutex.withLock {
-            history.addAll(results)
+                }
+            }.orEmpty().also { history.addAll(it) }
+            history.map { it }
         }
-
-        // return a copy
-        return history.map { it }
     }
 
-    private fun List<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> =
-        apply {
-            lastOrNull()?.also {
-                pageCursor = it.id
-            }
-            canFetchMore = isNotEmpty()
+    private fun List<TimelineEntryModel>.toListWithPageCursor(): ListWithPageCursor<TimelineEntryModel> =
+        let { list ->
+            val cursor = list.lastOrNull()?.id
+            ListWithPageCursor(list = list, cursor = cursor)
         }
 
     private fun ListWithPageCursor<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> =

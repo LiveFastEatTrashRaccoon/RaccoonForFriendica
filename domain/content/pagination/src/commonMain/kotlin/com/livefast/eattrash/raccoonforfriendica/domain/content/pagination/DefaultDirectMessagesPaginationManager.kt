@@ -3,6 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DefaultDirectMessagesPaginationManager(
     private val directMessageRepository: DirectMessageRepository,
@@ -12,11 +14,14 @@ internal class DefaultDirectMessagesPaginationManager(
     private var page = 1
     override var canFetchMore: Boolean = true
     private val history = mutableListOf<DirectMessageModel>()
+    private val mutex = Mutex()
 
     override suspend fun reset(specification: DirectMessagesPaginationSpecification) {
         this.specification = specification
         page = 1
-        history.clear()
+        mutex.withLock {
+            history.clear()
+        }
         canFetchMore = true
     }
 
@@ -30,26 +35,24 @@ internal class DefaultDirectMessagesPaginationManager(
                         .getAll(
                             page = page,
                             limit = 40,
-                        )?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                        .orEmpty()
+                        ).orEmpty()
 
                 is DirectMessagesPaginationSpecification.Replies ->
                     directMessageRepository
                         .getReplies(
                             parentUri = specification.parentUri,
                             page = page,
-                        )
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                        .orEmpty()
+                        ).orEmpty()
             }
-        history.addAll(results)
-
-        // return a copy
-        return history.map { it }
+        return mutex.withLock {
+            results
+                .deduplicate()
+                .updatePaginationData()
+                .fixupCreatorEmojis()
+                .also { history.addAll(it) }
+            // return a copy
+            history.map { it }
+        }
     }
 
     private fun List<DirectMessageModel>.updatePaginationData(): List<DirectMessageModel> =

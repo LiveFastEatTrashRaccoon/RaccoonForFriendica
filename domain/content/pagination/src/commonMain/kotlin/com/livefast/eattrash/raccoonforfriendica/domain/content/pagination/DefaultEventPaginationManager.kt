@@ -31,16 +31,18 @@ internal class DefaultEventPaginationManager(
                     eventRepository.getAll(
                         pageCursor = pageCursor,
                     )
-            }?.updatePaginationData()
+            }
+
+        return mutex.withLock {
+            results
+                ?.updatePaginationData()
                 ?.deduplicate()
-                .orEmpty()
-
-        mutex.withLock {
-            history.addAll(results)
+                ?.also {
+                    history.addAll(it)
+                }
+            // return a copy
+            history.map { it }
         }
-
-        // return a copy
-        return history.map { it }
     }
 
     private fun List<EventModel>.updatePaginationData(): List<EventModel> =

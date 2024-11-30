@@ -4,6 +4,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DefaultFollowRequestPaginationManager(
     private val userRepository: UserRepository,
@@ -12,26 +14,28 @@ internal class DefaultFollowRequestPaginationManager(
     private var pageCursor: String? = null
     override var canFetchMore: Boolean = true
     private val history = mutableListOf<UserModel>()
+    private val mutex = Mutex()
 
     override suspend fun reset() {
         pageCursor = null
-        history.clear()
+        mutex.withLock {
+            history.clear()
+        }
         canFetchMore = true
     }
 
     override suspend fun loadNextPage(): List<UserModel> {
-        val results =
-            userRepository
-                .getFollowRequests(pageCursor)
+        val results = userRepository.getFollowRequests(pageCursor)
+
+        return mutex.withLock {
+            results
                 ?.updatePaginationData()
                 ?.deduplicate()
                 ?.fixupCreatorEmojis()
-                .orEmpty()
-
-        history.addAll(results)
-
-        // return a copy
-        return history.map { it }
+                ?.also { history.addAll(it) }
+            // return a copy
+            history.map { it }
+        }
     }
 
     private fun ListWithPageCursor<UserModel>.updatePaginationData(): List<UserModel> =

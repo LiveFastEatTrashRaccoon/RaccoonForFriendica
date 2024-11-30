@@ -8,6 +8,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DefaultNotificationsPaginationManager(
     private val notificationRepository: NotificationRepository,
@@ -19,11 +21,14 @@ internal class DefaultNotificationsPaginationManager(
     private var pageCursor: String? = null
     override var canFetchMore: Boolean = true
     private val history = mutableListOf<NotificationModel>()
+    private val mutex = Mutex()
 
     override suspend fun reset(specification: NotificationsPaginationSpecification) {
         this.specification = specification
         pageCursor = null
-        history.clear()
+        mutex.withLock {
+            history.clear()
+        }
         canFetchMore = true
     }
 
@@ -38,17 +43,21 @@ internal class DefaultNotificationsPaginationManager(
                             pageCursor = pageCursor,
                             types = specification.types,
                             refresh = specification.refresh,
-                        )?.determineRelationshipStatus()
-                        ?.updatePaginationData()
-                        ?.filterNsfw(specification.includeNsfw)
-                        .orEmpty()
-            }.deduplicate()
+                        )
+            }.orEmpty()
+
+        return mutex.withLock {
+            results
+                .determineRelationshipStatus()
+                .updatePaginationData()
+                .filterNsfw(specification.includeNsfw)
+                .deduplicate()
                 .fixupCreatorEmojis()
                 .fixupInReplyTo()
-        history.addAll(results)
-
-        // return a copy
-        return history.map { it }
+                .also { history.addAll(it) }
+            // return a copy
+            history.map { it }
+        }
     }
 
     private fun List<NotificationModel>.updatePaginationData(): List<NotificationModel> =

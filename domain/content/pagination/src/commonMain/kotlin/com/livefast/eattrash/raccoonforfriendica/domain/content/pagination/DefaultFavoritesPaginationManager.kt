@@ -36,9 +36,11 @@ internal class DefaultFavoritesPaginationManager(
         notificationCenter
             .subscribe(TimelineEntryUpdatedEvent::class)
             .onEach { event ->
-                val idx = history.indexOfFirst { e -> e.id == event.entry.id }
-                if (idx >= 0) {
-                    history[idx] = event.entry
+                mutex.withLock {
+                    val idx = history.indexOfFirst { e -> e.id == event.entry.id }
+                    if (idx >= 0) {
+                        history[idx] = event.entry
+                    }
                 }
             }.launchIn(scope)
         notificationCenter
@@ -81,12 +83,12 @@ internal class DefaultFavoritesPaginationManager(
                 ?.fixupCreatorEmojis()
                 ?.fixupInReplyTo()
                 .orEmpty()
-        mutex.withLock {
-            history.addAll(results)
-        }
 
-        // return a copy
-        return history.map { it }
+        return mutex.withLock {
+            history.addAll(results)
+            // return a copy
+            history.map { it }
+        }
     }
 
     private fun List<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> =
@@ -97,10 +99,12 @@ internal class DefaultFavoritesPaginationManager(
             canFetchMore = isNotEmpty()
         }
 
-    private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> =
-        filter { e1 ->
-            history.none { e2 -> e1.id == e2.id }
-        }.distinctBy { it.id }
+    private suspend fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> =
+        mutex.withLock {
+            filter { e1 ->
+                history.none { e2 -> e1.id == e2.id }
+            }.distinctBy { it.id }
+        }
 
     private fun List<TimelineEntryModel>.filterNsfw(included: Boolean): List<TimelineEntryModel> = filter { included || !it.isNsfw }
 

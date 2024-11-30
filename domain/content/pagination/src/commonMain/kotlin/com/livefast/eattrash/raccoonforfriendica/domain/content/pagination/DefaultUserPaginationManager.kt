@@ -66,44 +66,28 @@ internal class DefaultUserPaginationManager(
                         .getFollowers(
                             id = specification.userId,
                             pageCursor = pageCursor,
-                        )?.deduplicate()
-                        ?.determineRelationshipStatus()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                        .orEmpty()
+                        )
 
                 is UserPaginationSpecification.Following ->
                     userRepository
                         .getFollowing(
                             id = specification.userId,
                             pageCursor = pageCursor,
-                        )?.deduplicate()
-                        ?.determineRelationshipStatus()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                        .orEmpty()
+                        )
 
                 is UserPaginationSpecification.EntryUsersFavorite ->
                     timelineEntryRepository
                         .getUsersWhoFavorited(
                             id = specification.entryId,
                             pageCursor = pageCursor,
-                        )?.determineRelationshipStatus()
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                        .orEmpty()
+                        )
 
                 is UserPaginationSpecification.EntryUsersReblog ->
                     timelineEntryRepository
                         .getUsersWhoReblogged(
                             id = specification.entryId,
                             pageCursor = pageCursor,
-                        )?.deduplicate()
-                        ?.determineRelationshipStatus()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                        .orEmpty()
+                        )
 
                 is UserPaginationSpecification.Search ->
                     userRepository
@@ -117,7 +101,67 @@ internal class DefaultUserPaginationManager(
                                         // offset is count, not index
                                         it + 1
                                     } ?: 0,
-                        )?.deduplicate()
+                        )
+
+                UserPaginationSpecification.Blocked ->
+                    userRepository.getBlocked(pageCursor = pageCursor)
+
+                UserPaginationSpecification.Muted ->
+                    userRepository.getMuted(pageCursor = pageCursor)
+
+                is UserPaginationSpecification.CircleMembers ->
+                    circlesRepository
+                        .getMembers(
+                            id = specification.id,
+                            pageCursor = pageCursor,
+                        )
+
+                is UserPaginationSpecification.SearchFollowing ->
+                    userRepository
+                        .searchMyFollowing(
+                            query = specification.query,
+                            pageCursor = pageCursor,
+                        )
+            }
+
+        return mutex.withLock {
+            // result post-processing
+            when (specification) {
+                is UserPaginationSpecification.Follower -> {
+                    results
+                        ?.deduplicate()
+                        ?.determineRelationshipStatus()
+                        ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
+                }
+
+                is UserPaginationSpecification.Following -> {
+                    results
+                        ?.deduplicate()
+                        ?.determineRelationshipStatus()
+                        ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
+                }
+
+                is UserPaginationSpecification.EntryUsersFavorite -> {
+                    results
+                        ?.determineRelationshipStatus()
+                        ?.deduplicate()
+                        ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
+                }
+
+                is UserPaginationSpecification.EntryUsersReblog -> {
+                    results
+                        ?.deduplicate()
+                        ?.determineRelationshipStatus()
+                        ?.updatePaginationData()
+                        ?.fixupCreatorEmojis()
+                }
+
+                is UserPaginationSpecification.Search -> {
+                    results
+                        ?.deduplicate()
                         ?.let {
                             if (specification.withRelationship) {
                                 it.determineRelationshipStatus()
@@ -126,43 +170,33 @@ internal class DefaultUserPaginationManager(
                             }
                         }?.updatePaginationData()
                         ?.fixupCreatorEmojis()
-                        .orEmpty()
+                }
 
-                UserPaginationSpecification.Blocked ->
-                    userRepository
-                        .getBlocked(
-                            pageCursor = pageCursor,
-                        )?.deduplicate()
+                UserPaginationSpecification.Blocked -> {
+                    results
+                        ?.deduplicate()
                         ?.updatePaginationData()
                         ?.fixupCreatorEmojis()
-                        .orEmpty()
+                }
 
-                UserPaginationSpecification.Muted ->
-                    userRepository
-                        .getMuted(
-                            pageCursor = pageCursor,
-                        )?.deduplicate()
+                UserPaginationSpecification.Muted -> {
+                    results
+                        ?.deduplicate()
                         ?.updatePaginationData()
                         ?.fixupCreatorEmojis()
-                        .orEmpty()
+                }
 
-                is UserPaginationSpecification.CircleMembers ->
-                    circlesRepository
-                        .getMembers(
-                            id = specification.id,
-                            pageCursor = pageCursor,
-                        )?.deduplicate()
+                is UserPaginationSpecification.CircleMembers -> {
+                    results
+                        ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filter(specification.query)
                         ?.fixupCreatorEmojis()
-                        .orEmpty()
+                }
 
-                is UserPaginationSpecification.SearchFollowing ->
-                    userRepository
-                        .searchMyFollowing(
-                            query = specification.query,
-                            pageCursor = pageCursor,
-                        )?.deduplicate()
+                is UserPaginationSpecification.SearchFollowing -> {
+                    results
+                        ?.deduplicate()
                         ?.let {
                             if (specification.withRelationship) {
                                 it.determineRelationshipStatus()
@@ -173,14 +207,11 @@ internal class DefaultUserPaginationManager(
                         ?.filter {
                             it.id !in specification.excludeIds
                         }?.fixupCreatorEmojis()
-                        .orEmpty()
-            }
-        mutex.withLock {
-            history.addAll(results)
+                }
+            }.orEmpty().also { history.addAll(it) }
+            // return a copy
+            history.map { it }
         }
-
-        // return a copy
-        return history.map { it }
     }
 
     private fun List<UserModel>.updatePaginationData(): List<UserModel> =
