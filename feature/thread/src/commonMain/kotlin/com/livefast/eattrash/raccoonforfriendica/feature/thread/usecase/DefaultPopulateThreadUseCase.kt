@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.thread.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.data.ConversationNode
@@ -76,15 +77,7 @@ internal class DefaultPopulateThreadUseCase(
         }
     }
 
-    private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> {
-        val res = mutableListOf<TimelineEntryModel>()
-        for (e in this) {
-            if (res.none { it.id == e.id }) {
-                res += e
-            }
-        }
-        return res
-    }
+    private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> = distinctBy { it.safeKey }
 
     private fun List<TimelineEntryModel>.populateLoadMore() =
         mapIndexed { idx, entry ->
