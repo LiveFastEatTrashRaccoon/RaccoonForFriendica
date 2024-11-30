@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer.converters
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.replaceNewlines
 
 internal class DefaultMarkdownConverter : MarkdownConverter {
     override fun toHtml(value: String) =
@@ -58,21 +57,12 @@ internal class DefaultMarkdownConverter : MarkdownConverter {
                     val content = match.groups["title"]?.value.orEmpty()
                     append("<h5>$content</h5>\n")
                 }
-            }.replace("<ul>", "\n")
-            .replace("</ul>", "\n\n")
-            .replace("<ol>", "\n")
-            .replace("</ol>", "\n\n")
-            .run {
-                Regex("^- (?<content>.*?)$").substituteAllOccurrences(this) { match ->
-                    val content = match.groups["content"]?.value.orEmpty()
-                    append("<li>$content</li>")
-                }
             }.run {
                 ComposerRegexes.BBCODE_SHARE.substituteAllOccurrences(this) { match ->
                     val url = match.groups["url"]?.value.orEmpty()
                     append(url)
                 }
-            }.replaceNewlines()
+            }
 
     override fun fromHtml(value: String) = value
 }
