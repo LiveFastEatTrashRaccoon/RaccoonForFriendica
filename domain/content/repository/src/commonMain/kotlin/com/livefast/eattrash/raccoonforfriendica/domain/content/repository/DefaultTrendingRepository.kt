@@ -1,11 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
+import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.sync.Mutex
@@ -72,7 +74,10 @@ internal class DefaultTrendingRepository(
                             offset = offset,
                             limit = DEFAULT_PAGE_SIZE,
                         )
-                response.map { it.toModel() }
+                // workaround for a server bug which inserts empty arrays "[]," among valid results
+                // (at least on some Friendica versions)
+                val body = response.raw().bodyAsText().replace("[],", "")
+                TrendsLink.fromJson(body).map { it.toModel() }
             }.getOrNull()
         }
 
