@@ -2,6 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DefaultAlbumPhotoPaginationManager(
     private val albumRepository: PhotoAlbumRepository,
@@ -10,11 +12,14 @@ internal class DefaultAlbumPhotoPaginationManager(
     private var pageCursor: String? = null
     override var canFetchMore = false
     private val history = mutableListOf<AttachmentModel>()
+    private val mutex = Mutex()
 
     override suspend fun reset(specification: AlbumPhotoPaginationSpecification) {
         this.specification = specification
         pageCursor = null
-        history.clear()
+        mutex.withLock {
+            history.clear()
+        }
         canFetchMore = true
     }
 
@@ -29,14 +34,16 @@ internal class DefaultAlbumPhotoPaginationManager(
                         pageCursor = pageCursor,
                         latestFirst = true,
                     )
-            }?.deduplicate()
-                ?.updatePaginationData()
-                .orEmpty()
+            }.orEmpty()
 
-        history.addAll(results)
-
-        // return a copy
-        return history.map { it }
+        return mutex.withLock {
+            results
+                .deduplicate()
+                .updatePaginationData()
+                .also { history.addAll(it) }
+            // return a copy
+            history.map { it }
+        }
     }
 
     private fun List<AttachmentModel>.updatePaginationData(): List<AttachmentModel> =

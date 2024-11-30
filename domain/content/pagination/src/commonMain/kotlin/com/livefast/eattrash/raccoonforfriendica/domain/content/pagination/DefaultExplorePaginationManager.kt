@@ -128,17 +128,18 @@ internal class DefaultExplorePaginationManager(
                         ?.map {
                             ExploreItemModel.User(it)
                         }?.determineUserRelationshipStatus()
-            }?.deduplicate()
-                ?.updatePaginationData()
-                ?.fixupCreatorEmojis()
-                ?.fixupInReplyTo()
-                .orEmpty()
-        mutex.withLock {
-            history.addAll(results)
-        }
+            }.orEmpty()
 
-        // return a copy
-        return history.map { it }
+        return mutex.withLock {
+            results
+                .deduplicate()
+                .updatePaginationData()
+                .fixupCreatorEmojis()
+                .fixupInReplyTo()
+                .also { history.addAll(it) }
+            // return a copy
+            history.map { it }
+        }
     }
 
     private fun List<ExploreItemModel>.updatePaginationData(): List<ExploreItemModel> =

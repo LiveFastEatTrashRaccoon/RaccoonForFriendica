@@ -73,16 +73,16 @@ internal class DefaultUnpublishedPaginationManager(
 
                 UnpublishedPaginationSpecification.Drafts ->
                     draftRepository.getAll(page = page)
-            }?.updatePaginationData()
-                ?.deduplicate()
-                .orEmpty()
+            }.orEmpty()
 
-        mutex.withLock {
-            history.addAll(results)
+        return mutex.withLock {
+            results
+                .updatePaginationData()
+                .deduplicate()
+                .also { history.addAll(it) }
+            // return a copy
+            history.map { it }
         }
-
-        // return a copy
-        return history.map { it }
     }
 
     private fun List<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> =
