@@ -221,6 +221,8 @@ kover {
                     "*.di",
                     "*.auth",
                     "*.bottomnavigation",
+                    "*.core.appearance.data",
+                    "*.core.appearance.theme",
                     "*.core.utils.appicon",
                     "*.core.utils.compose",
                     "*.core.utils.datetime",
