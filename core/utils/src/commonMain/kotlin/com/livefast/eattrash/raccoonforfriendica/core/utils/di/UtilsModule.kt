@@ -14,6 +14,18 @@ import org.koin.dsl.module
 
 val coreUtilsModule =
     module {
+        includes(
+            nativeFileSystemModule,
+            nativeGalleryModule,
+            nativeShareModule,
+            nativeUrlModule,
+            nativeDebugModule,
+            nativeHapticFeedbackModule,
+            nativeCrashReportModule,
+            nativeCalendarModule,
+            nativeAppIconModule,
+        )
+
         single<ImageLoaderProvider> {
             DefaultImageLoaderProvider(
                 context = get(),
