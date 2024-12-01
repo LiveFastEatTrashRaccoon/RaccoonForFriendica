@@ -11,7 +11,7 @@ import org.koin.dsl.module
 
 actual fun getThemeRepository(): ThemeRepository = CoreAppearanceHelper.repository
 
-actual val nativeAppearanceModule =
+internal actual val nativeAppearanceModule =
     module {
         single<ColorSchemeProvider> {
             DefaultColorSchemeProvider()

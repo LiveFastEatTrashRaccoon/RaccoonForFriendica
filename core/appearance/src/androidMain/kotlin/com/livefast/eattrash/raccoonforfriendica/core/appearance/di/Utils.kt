@@ -13,7 +13,7 @@ actual fun getThemeRepository(): ThemeRepository {
     return res
 }
 
-actual val nativeAppearanceModule =
+internal actual val nativeAppearanceModule =
     module {
         single<ColorSchemeProvider> {
             DefaultColorSchemeProvider(context = get())
