@@ -9,16 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.coreNavigati
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.coreNotificationsModule
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.di.corePersistenceModule
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.di.corePreferencesModule
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreAppIconModule
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreCrashReportModule
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreHapticFeedbackModule
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsCalendarModule
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsDebugModule
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsFileSystemModule
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsGalleryModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsModule
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsShareModule
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.coreUtilsUrlModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.domainContentPaginationModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.domainContentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.di.domainContentUseCaseModule
@@ -60,24 +51,15 @@ val sharedHelperModule =
         includes(
             sharedModule,
             coreApiModule,
-            coreAppIconModule,
             coreAppearanceModule,
             coreCommonUiComponentsModule,
-            coreCrashReportModule,
-            coreHapticFeedbackModule,
             coreL10nModule,
             corePersistenceModule,
             corePreferencesModule,
             coreNavigationModule,
             coreNotificationsModule,
             coreResourceModule,
-            coreUtilsCalendarModule,
-            coreUtilsDebugModule,
-            coreUtilsFileSystemModule,
-            coreUtilsGalleryModule,
             coreUtilsModule,
-            coreUtilsShareModule,
-            coreUtilsUrlModule,
             domainContentPaginationModule,
             domainContentRepositoryModule,
             domainContentUseCaseModule,
