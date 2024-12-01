@@ -47,7 +47,7 @@ internal class DefaultPhotoAlbumRepository(
                             append("album", name)
                         },
                     )
-                val res = provider.photoAlbum.update(data)
+                val res = provider.photoAlbum.delete(data)
                 res.result == "deleted"
             }.getOrElse { false }
         }
