@@ -19,8 +19,8 @@ actual fun IntArray.toComposeImageBitmap(
 actual fun getNativeDecoders(): List<Decoder.Factory> =
     buildList {
         if (Build.VERSION.SDK_INT >= 28) {
-            AnimatedImageDecoder.Factory()
+            this += AnimatedImageDecoder.Factory()
         } else {
-            GifDecoder.Factory()
+            this += GifDecoder.Factory()
         }
     }

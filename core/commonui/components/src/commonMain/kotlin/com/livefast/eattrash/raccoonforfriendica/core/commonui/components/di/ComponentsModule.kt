@@ -1,12 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.DefaultFabNestedScrollConnection
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FabNestedScrollConnection
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val coreCommonUiComponentsModule =
-    module {
-        factory<FabNestedScrollConnection> {
-            DefaultFabNestedScrollConnection()
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.commonui.components")
+internal class CommonUiComponentsModule
+
+val coreCommonUiComponentsModule = CommonUiComponentsModule().module

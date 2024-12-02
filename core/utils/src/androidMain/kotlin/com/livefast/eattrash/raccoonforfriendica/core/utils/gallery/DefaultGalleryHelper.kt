@@ -13,9 +13,11 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 
 private const val DEFAULT_BASE_PATH = "RaccoonForFriendica"
 
+@Single
 internal class DefaultGalleryHelper(
     private val context: Context,
 ) : GalleryHelper {

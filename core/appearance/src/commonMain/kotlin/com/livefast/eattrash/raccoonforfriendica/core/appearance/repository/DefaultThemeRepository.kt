@@ -6,7 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScal
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultThemeRepository : ThemeRepository {
     override val theme = MutableStateFlow<UiTheme>(UiTheme.Default)
     override val fontFamily = MutableStateFlow<UiFontFamily>(UiFontFamily.Default)

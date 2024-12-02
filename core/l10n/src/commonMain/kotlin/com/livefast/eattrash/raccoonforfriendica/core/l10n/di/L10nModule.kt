@@ -1,12 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.l10n.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.DefaultL10nManager
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val coreL10nModule =
-    module {
-        single<L10nManager> {
-            DefaultL10nManager()
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.l10n")
+internal class L10nModule
+
+val coreL10nModule = L10nModule().module

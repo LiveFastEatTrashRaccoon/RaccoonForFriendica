@@ -5,11 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
+import org.koin.core.annotation.Single
 import platform.UIKit.UIApplication
 import platform.UIKit.UIStatusBarStyleDarkContent
 import platform.UIKit.UIStatusBarStyleLightContent
 import platform.UIKit.setStatusBarStyle
 
+@Single
 class DefaultBarColorProvider : BarColorProvider {
     @Composable
     override fun setBarColorAccordingToTheme(

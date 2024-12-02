@@ -1,12 +1,15 @@
-package com.livefast.eattrash.raccoonforfriendica.core.persistence
+package com.livefast.eattrash.raccoonforfriendica.core.persistence.builder
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.livefast.eattrash.raccoonforfriendica.core.persistence.AppDatabase
 import kotlinx.cinterop.ExperimentalForeignApi
+import org.koin.core.annotation.Single
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
+@Single
 class DefaultDatabaseBuilderProvider : DatabaseBuilderProvider {
     override fun provideDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
         val dbFilePath = documentDirectory() + "/raccoonforfriendica.db"

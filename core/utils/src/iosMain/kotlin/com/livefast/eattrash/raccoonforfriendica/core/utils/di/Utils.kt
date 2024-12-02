@@ -41,66 +41,34 @@ actual fun getCalendarHelper(): CalendarHelper = CoreUtilsDiHelper.calendarHelpe
 
 actual fun getNetworkStateObserver(): NetworkStateObserver = CoreUtilsDiHelper.networkStateObserver
 
-internal actual val nativeFileSystemModule =
+internal actual val nativeUtilsModule =
     module {
         single<FileSystemManager> {
             DefaultFileSystemManager()
         }
-    }
-
-internal actual val nativeGalleryModule =
-    module {
         single<GalleryHelper> {
             DefaultGalleryHelper()
         }
-    }
-
-internal actual val nativeShareModule =
-    module {
         single<ShareHelper> {
             DefaultShareHelper()
         }
-    }
-
-internal actual val nativeUrlModule =
-    module {
         single<CustomTabsHelper> {
             DefaultCustomTabsHelper()
         }
-    }
-
-internal actual val nativeDebugModule =
-    module {
         single<AppInfoRepository> {
             DefaultAppInfoRepository()
         }
-    }
-
-internal actual val nativeHapticFeedbackModule =
-    module {
         single<HapticFeedback> {
             DefaultHapticFeedback()
         }
-    }
-
-internal actual val nativeCrashReportModule =
-    module {
         single<CrashReportManager> {
             DefaultCrashReportManager(
                 keyStore = get(),
             )
         }
-    }
-
-internal actual val nativeCalendarModule =
-    module {
         single<CalendarHelper> {
             DefaultCalendarHelper()
         }
-    }
-
-internal actual val nativeAppIconModule =
-    module {
         single<AppIconManager> {
             DefaultAppIconManager()
         }

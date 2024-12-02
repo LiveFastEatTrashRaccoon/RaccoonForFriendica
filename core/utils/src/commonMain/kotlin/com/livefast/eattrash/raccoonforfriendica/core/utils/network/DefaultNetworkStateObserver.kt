@@ -9,7 +9,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultNetworkStateObserver(
     private val connectivity: Connectivity = Connectivity(),
     dispatcher: CoroutineDispatcher = Dispatchers.IO,

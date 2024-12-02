@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.os.Build
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.koin.core.annotation.Single
 
+@Single
 class DefaultAppInfoRepository(
     private val context: Context,
 ) : AppInfoRepository {

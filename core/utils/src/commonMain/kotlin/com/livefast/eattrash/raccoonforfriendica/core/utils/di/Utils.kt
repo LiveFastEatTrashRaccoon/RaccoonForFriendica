@@ -26,20 +26,4 @@ expect fun getCalendarHelper(): CalendarHelper
 
 expect fun getNetworkStateObserver(): NetworkStateObserver
 
-internal expect val nativeFileSystemModule: Module
-
-internal expect val nativeGalleryModule: Module
-
-internal expect val nativeShareModule: Module
-
-internal expect val nativeUrlModule: Module
-
-internal expect val nativeDebugModule: Module
-
-internal expect val nativeHapticFeedbackModule: Module
-
-internal expect val nativeCrashReportModule: Module
-
-internal expect val nativeCalendarModule: Module
-
-internal expect val nativeAppIconModule: Module
+internal expect val nativeUtilsModule: Module

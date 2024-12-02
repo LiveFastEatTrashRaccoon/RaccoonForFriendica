@@ -1,5 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences
 
+import org.koin.core.annotation.Single
+
+@Single
 internal class DefaultTemporaryKeyStore(
     private val settings: SettingsWrapper,
 ) : TemporaryKeyStore {

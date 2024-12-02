@@ -3,9 +3,11 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.fs
 import androidx.compose.runtime.Composable
 import okio.FileSystem
 import okio.Path
+import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+@Single
 class DefaultFileSystemManager : FileSystemManager {
     override val isSupported = false
 

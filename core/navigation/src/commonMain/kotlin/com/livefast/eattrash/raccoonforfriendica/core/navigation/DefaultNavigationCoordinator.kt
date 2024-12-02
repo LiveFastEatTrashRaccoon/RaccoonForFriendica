@@ -12,7 +12,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultNavigationCoordinator(
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
 ) : NavigationCoordinator {

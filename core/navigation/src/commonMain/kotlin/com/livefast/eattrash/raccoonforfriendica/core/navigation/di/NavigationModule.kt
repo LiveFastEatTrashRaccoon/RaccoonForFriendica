@@ -1,17 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultDrawerCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val coreNavigationModule =
-    module {
-        single<NavigationCoordinator> {
-            DefaultNavigationCoordinator()
-        }
-        single<DrawerCoordinator> {
-            DefaultDrawerCoordinator()
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.navigation")
+internal class NavigationModule
+
+val coreNavigationModule = NavigationModule().module

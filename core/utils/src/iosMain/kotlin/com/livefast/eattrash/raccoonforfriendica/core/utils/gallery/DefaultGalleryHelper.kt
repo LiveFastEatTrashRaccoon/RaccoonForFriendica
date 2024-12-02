@@ -6,11 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.interop.LocalUIViewController
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.usePinned
+import org.koin.core.annotation.Single
 import platform.Foundation.NSData
 import platform.Foundation.create
 import platform.PhotosUI.PHPickerConfiguration
@@ -25,7 +27,7 @@ import platform.posix.memcpy
 
 typealias ImageBytes = NSData
 
-@OptIn(ExperimentalForeignApi::class)
+@OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 fun ByteArray.toImageBytes(): ImageBytes =
     memScoped {
         return NSData.create(
@@ -42,6 +44,7 @@ fun ImageBytes.toByteArray(): ByteArray =
         }
     }
 
+@Single
 internal class DefaultGalleryHelper : GalleryHelper {
     override val supportsCustomPath: Boolean = false
 
