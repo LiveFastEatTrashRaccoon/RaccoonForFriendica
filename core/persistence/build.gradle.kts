@@ -1,6 +1,4 @@
-import com.google.devtools.ksp.gradle.KspTaskMetadata
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -73,8 +71,4 @@ dependencies {
 
 kotlin.sourceSets.commonMain {
     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-}
-
-tasks.withType<KotlinCompile> {
-    dependsOn(tasks.withType<KspTaskMetadata>())
 }
