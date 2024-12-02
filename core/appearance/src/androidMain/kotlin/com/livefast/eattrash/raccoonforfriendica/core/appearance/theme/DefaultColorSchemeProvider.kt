@@ -11,7 +11,9 @@ import androidx.compose.ui.graphics.Color
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.materialkolor.PaletteStyle
 import com.materialkolor.dynamicColorScheme
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultColorSchemeProvider(
     private val context: Context,
 ) : ColorSchemeProvider {
