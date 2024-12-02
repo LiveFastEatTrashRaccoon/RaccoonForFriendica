@@ -7,10 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import okio.FileSystem
 import okio.Path
+import org.koin.core.annotation.Single
 import org.koin.java.KoinJavaComponent
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 
+@Single
 class DefaultFileSystemManager(
     private val context: Context,
 ) : FileSystemManager {

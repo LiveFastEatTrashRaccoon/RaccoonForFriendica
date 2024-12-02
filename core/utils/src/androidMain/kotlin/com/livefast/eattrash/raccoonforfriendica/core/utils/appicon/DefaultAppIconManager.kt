@@ -6,7 +6,9 @@ import android.content.pm.PackageManager
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeyStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import org.koin.core.annotation.Single
 
+@Single
 class DefaultAppIconManager(
     private val context: Context,
     private val keyStore: TemporaryKeyStore,

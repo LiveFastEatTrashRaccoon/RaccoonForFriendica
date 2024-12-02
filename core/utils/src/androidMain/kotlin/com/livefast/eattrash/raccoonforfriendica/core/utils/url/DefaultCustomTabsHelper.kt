@@ -5,7 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
+import org.koin.core.annotation.Single
 
+@Single
 class DefaultCustomTabsHelper(
     private val context: Context,
 ) : CustomTabsHelper {

@@ -5,7 +5,9 @@ import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import org.koin.core.annotation.Single
 
+@Single
 class DefaultHapticFeedback(
     private val context: Context,
 ) : HapticFeedback {

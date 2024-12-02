@@ -1,9 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.debug
 
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.koin.core.annotation.Single
 import platform.Foundation.NSBundle
 import kotlin.experimental.ExperimentalNativeApi
 
+@Single
 class DefaultAppInfoRepository : AppInfoRepository {
     override val appInfo = MutableStateFlow(getInfo())
 

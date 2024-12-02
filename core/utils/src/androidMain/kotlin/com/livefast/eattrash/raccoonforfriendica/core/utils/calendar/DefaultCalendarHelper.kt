@@ -3,7 +3,9 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.calendar
 import android.content.Intent
 import android.provider.CalendarContract
 import io.sentry.kotlin.multiplatform.Context
+import org.koin.core.annotation.Single
 
+@Single
 class DefaultCalendarHelper(
     private val context: Context,
 ) : CalendarHelper {

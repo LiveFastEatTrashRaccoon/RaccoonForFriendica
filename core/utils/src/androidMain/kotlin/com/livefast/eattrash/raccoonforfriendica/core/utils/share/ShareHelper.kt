@@ -3,7 +3,9 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.share
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import org.koin.core.annotation.Single
 
+@Single
 class DefaultShareHelper(
     private val context: Context,
 ) : ShareHelper {

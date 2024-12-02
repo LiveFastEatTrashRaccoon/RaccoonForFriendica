@@ -1,9 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.share
 
+import org.koin.core.annotation.Single
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
 import platform.UIKit.UIImage
 
+@Single
 class DefaultShareHelper : ShareHelper {
     override val supportsShareImage = false
 

@@ -5,8 +5,10 @@ import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import org.koin.core.annotation.Single
 import platform.Foundation.NSBundle
 
+@Single
 internal class DefaultCrashReportManager(
     private val keyStore: TemporaryKeyStore,
 ) : CrashReportManager {
