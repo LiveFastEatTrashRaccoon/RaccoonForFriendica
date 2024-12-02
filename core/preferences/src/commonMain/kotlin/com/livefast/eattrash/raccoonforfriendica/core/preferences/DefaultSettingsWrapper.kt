@@ -3,7 +3,9 @@ package com.livefast.eattrash.raccoonforfriendica.core.preferences
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultSettingsWrapper(
     private val settings: Settings,
 ) : SettingsWrapper {
