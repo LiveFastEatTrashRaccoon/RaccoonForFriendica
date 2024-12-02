@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -33,6 +34,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines)
 
                 implementation(libs.koin.core)
+                api(libs.koin.annotations)
                 implementation(libs.room.sqlite)
                 implementation(libs.room.runtime)
 
@@ -67,8 +69,19 @@ dependencies {
     add("kspIosX64", libs.room.ksp)
     add("kspIosArm64", libs.room.ksp)
     add("kspIosSimulatorArm64", libs.room.ksp)
+    add("kspCommonMainMetadata", libs.koin.ksp)
+    add("kspAndroid", libs.koin.ksp)
+    add("kspIosX64", libs.koin.ksp)
+    add("kspIosArm64", libs.koin.ksp)
+    add("kspIosSimulatorArm64", libs.koin.ksp)
 }
 
 kotlin.sourceSets.commonMain {
     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+}
+
+tasks.withType(KotlinCompilationTask::class.java).configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
 }

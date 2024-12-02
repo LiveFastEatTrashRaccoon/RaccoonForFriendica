@@ -1,9 +1,13 @@
-package com.livefast.eattrash.raccoonforfriendica.core.persistence
+package com.livefast.eattrash.raccoonforfriendica.core.persistence.builder
 
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.livefast.eattrash.raccoonforfriendica.core.persistence.AppDatabase
+import com.livefast.eattrash.raccoonforfriendica.core.persistence.builder.DatabaseBuilderProvider
+import org.koin.core.annotation.Single
 
+@Single
 class DefaultDatabaseBuilderProvider(
     private val context: Context,
 ) : DatabaseBuilderProvider {
