@@ -65,7 +65,6 @@ room {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", libs.ktorfit.ksp)
     add("kspAndroid", libs.room.ksp)
     add("kspIosX64", libs.room.ksp)
     add("kspIosArm64", libs.room.ksp)
