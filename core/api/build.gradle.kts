@@ -1,4 +1,3 @@
-import com.google.devtools.ksp.gradle.KspTaskMetadata
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -75,5 +74,7 @@ kotlin.sourceSets.commonMain {
 }
 
 tasks.withType<KotlinCompile> {
-    dependsOn(tasks.withType<KspTaskMetadata>())
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
 }
