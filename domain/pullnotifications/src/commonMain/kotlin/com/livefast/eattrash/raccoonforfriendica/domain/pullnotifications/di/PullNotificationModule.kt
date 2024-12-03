@@ -4,5 +4,5 @@ import org.koin.dsl.module
 
 val domainPullNotificationModule =
     module {
-        includes(pullNotificationsNativeModule)
+        includes(nativePullNotificationsModule)
     }

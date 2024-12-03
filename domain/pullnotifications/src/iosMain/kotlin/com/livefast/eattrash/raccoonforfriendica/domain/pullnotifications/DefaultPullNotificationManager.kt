@@ -1,5 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications
 
+import org.koin.core.annotation.Single
+
+@Single
 class DefaultPullNotificationManager : PullNotificationManager {
     override val isSupported = false
     override val isBackgroundRestricted = false

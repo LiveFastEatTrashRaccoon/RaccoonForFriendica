@@ -5,7 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResul
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import kotlinx.coroutines.withTimeoutOrNull
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultFetchUserUseCase(
     private val searchRepository: SearchRepository,
 ) : FetchUserUseCase {

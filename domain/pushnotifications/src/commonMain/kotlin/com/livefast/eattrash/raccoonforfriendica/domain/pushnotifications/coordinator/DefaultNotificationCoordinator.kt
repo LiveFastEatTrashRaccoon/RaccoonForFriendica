@@ -1,9 +1,10 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications
+package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.coordinator
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +15,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultNotificationCoordinator(
     private val settingsRepository: SettingsRepository,
     private val inboxManager: InboxManager,

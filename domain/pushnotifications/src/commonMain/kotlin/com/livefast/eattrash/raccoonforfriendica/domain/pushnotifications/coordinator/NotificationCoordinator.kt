@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications
+package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.coordinator
 
 interface NotificationCoordinator {
     suspend fun setupAnonymousUser()

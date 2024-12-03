@@ -69,7 +69,7 @@ dependencies {
 android {
     namespace = "com.livefast.eattrash.raccoonforfriendica.core.appearance"
     compileSdk =
-        libs.versions.android.targetSdk
+        libs.versions.android.compileSdk
             .get()
             .toInt()
     defaultConfig {

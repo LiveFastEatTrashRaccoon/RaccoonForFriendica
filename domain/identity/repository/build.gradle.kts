@@ -70,7 +70,7 @@ dependencies {
 android {
     namespace = "com.livefast.eattrash.raccoonforfriendica.domain.identity.repository"
     compileSdk =
-        libs.versions.android.targetSdk
+        libs.versions.android.compileSdk
             .get()
             .toInt()
     defaultConfig {

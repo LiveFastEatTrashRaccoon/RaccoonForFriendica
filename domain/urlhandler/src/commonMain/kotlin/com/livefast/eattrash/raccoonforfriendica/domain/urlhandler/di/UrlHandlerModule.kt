@@ -1,57 +1,16 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di
 
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandler
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.DefaultCustomUriHandler
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultEntryProcessor
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultFetchEntryUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultFetchUserUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultHashtagProcessor
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultUserProcessor
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.EntryProcessor
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.FetchEntryUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.FetchUserUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.HashtagProcessor
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.UserProcessor
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 import org.koin.dsl.module
+import org.koin.ksp.generated.module
 
-val domainUrlHandlerModule =
-    module {
-        single<FetchUserUseCase> {
-            DefaultFetchUserUseCase(
-                searchRepository = get(),
-            )
-        }
-        single<FetchEntryUseCase> {
-            DefaultFetchEntryUseCase(
-                searchRepository = get(),
-            )
-        }
-        single<HashtagProcessor> {
-            DefaultHashtagProcessor(
-                detailOpener = get(),
-            )
-        }
-        single<UserProcessor> {
-            DefaultUserProcessor(
-                detailOpener = get(),
-                fetchUser = get(),
-            )
-        }
-        single<EntryProcessor> {
-            DefaultEntryProcessor(
-                detailOpener = get(),
-                fetchEntry = get(),
-            )
-        }
-        single<CustomUriHandler> { params ->
-            DefaultCustomUriHandler(
-                defaultHandler = params[0],
-                customTabsHelper = get(),
-                settingsRepository = get(),
-                detailOpener = get(),
-                hashtagProcessor = get(),
-                userProcessor = get(),
-                entryProcessor = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor")
+internal class UrlHandlerProcessorModule
+
+@Module(includes = [UrlHandlerProcessorModule::class])
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.urlhandler")
+internal class UrlHandlerModule
+
+val domainUrlHandlerModule = UrlHandlerModule().module

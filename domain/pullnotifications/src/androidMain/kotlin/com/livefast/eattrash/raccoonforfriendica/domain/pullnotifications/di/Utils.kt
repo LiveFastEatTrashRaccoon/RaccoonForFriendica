@@ -1,14 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di
 
-import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.DefaultPullNotificationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-actual val pullNotificationsNativeModule =
-    module {
-        single<PullNotificationManager> {
-            DefaultPullNotificationManager(
-                context = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications")
+internal class PullNotificationsModule
+
+internal actual val nativePullNotificationsModule = PullNotificationsModule().module
