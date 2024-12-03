@@ -19,4 +19,8 @@ class DefaultPullNotificationManager : PullNotificationManager {
     override fun cancelAll() {
         // NO-OP
     }
+
+    override fun oneshotCheck() {
+        // NO-OP
+    }
 }

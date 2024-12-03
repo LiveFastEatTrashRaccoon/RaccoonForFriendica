@@ -5,9 +5,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeySt
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withTimeoutOrNull
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultApiConfigurationRepository(
-    private val serviceProvider: ServiceProvider,
+    @Named("default") private val serviceProvider: ServiceProvider,
     private val keyStore: TemporaryKeyStore,
     private val credentialsRepository: CredentialsRepository,
 ) : ApiConfigurationRepository {
