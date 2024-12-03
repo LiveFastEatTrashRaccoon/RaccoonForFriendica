@@ -3,9 +3,11 @@ package com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.UriHandlerConstants.DETAIL_FRAGMENT
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.UriHandlerConstants.INSTANCE_FRAGMENT
+import org.koin.core.annotation.Single
 
 internal interface HashtagProcessor : UrlProcessor
 
+@Single
 internal class DefaultHashtagProcessor(
     private val detailOpener: DetailOpener,
 ) : HashtagProcessor {

@@ -5,7 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResul
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import kotlinx.coroutines.withTimeoutOrNull
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultFetchEntryUseCase(
     private val searchRepository: SearchRepository,
 ) : FetchEntryUseCase {
