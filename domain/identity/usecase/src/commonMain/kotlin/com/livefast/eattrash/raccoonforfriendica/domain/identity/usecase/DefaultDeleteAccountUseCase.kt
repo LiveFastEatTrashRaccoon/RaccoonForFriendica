@@ -4,7 +4,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountMod
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountCredentialsCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultDeleteAccountUseCase(
     private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,

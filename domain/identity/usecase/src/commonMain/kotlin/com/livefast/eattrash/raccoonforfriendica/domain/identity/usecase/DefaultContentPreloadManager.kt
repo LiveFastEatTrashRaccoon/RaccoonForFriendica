@@ -6,7 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Trend
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultContentPreloadManager(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val trendingRepository: TrendingRepository,
