@@ -43,6 +43,9 @@ kotlin {
                 implementation(projects.core.utils)
             }
         }
+        val iosMain by getting {
+            kotlin.srcDir("build/generated/ksp/metadata")
+        }
     }
 }
 

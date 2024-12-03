@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.persistence.builder
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.util.findDatabaseConstructorAndInitDatabaseImpl
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.AppDatabase
 import kotlinx.cinterop.ExperimentalForeignApi
 import org.koin.core.annotation.Single
@@ -17,7 +18,7 @@ class DefaultDatabaseBuilderProvider : DatabaseBuilderProvider {
             .databaseBuilder<AppDatabase>(
                 name = dbFilePath,
                 factory = {
-                    AppDatabase::class.instantiateImpl()
+                    findDatabaseConstructorAndInitDatabaseImpl(AppDatabase::class)
                 },
             )
     }
