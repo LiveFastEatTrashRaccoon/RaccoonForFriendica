@@ -11,8 +11,10 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import org.koin.core.annotation.Single
 import java.util.concurrent.TimeUnit
 
+@Single
 class DefaultPullNotificationManager(
     private val context: Context,
 ) : PullNotificationManager {
