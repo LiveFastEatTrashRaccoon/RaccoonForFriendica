@@ -64,7 +64,7 @@ dependencies {
 android {
     namespace = "com.livefast.eattrash.raccoonforfriendica.domain.content.pagination"
     compileSdk =
-        libs.versions.android.targetSdk
+        libs.versions.android.compileSdk
             .get()
             .toInt()
     defaultConfig {

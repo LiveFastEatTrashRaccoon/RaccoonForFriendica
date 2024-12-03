@@ -61,7 +61,7 @@ kotlin {
 android {
     namespace = "com.livefast.eattrash.raccoonforfriendica.feature.manageblocks"
     compileSdk =
-        libs.versions.android.targetSdk
+        libs.versions.android.compileSdk
             .get()
             .toInt()
     defaultConfig {

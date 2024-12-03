@@ -62,7 +62,7 @@ kotlin {
 android {
     namespace = "com.livefast.eattrash.raccoonforfriendica.feature.followrequests"
     compileSdk =
-        libs.versions.android.targetSdk
+        libs.versions.android.compileSdk
             .get()
             .toInt()
     defaultConfig {

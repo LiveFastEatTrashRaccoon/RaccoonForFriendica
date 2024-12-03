@@ -45,7 +45,7 @@ kotlin {
 android {
     namespace = "com.livefast.eattrash.raccoonforfriendica.domain.content.data"
     compileSdk =
-        libs.versions.android.targetSdk
+        libs.versions.android.compileSdk
             .get()
             .toInt()
     defaultConfig {
