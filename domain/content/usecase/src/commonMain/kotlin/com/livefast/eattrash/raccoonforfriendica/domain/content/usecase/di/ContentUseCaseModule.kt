@@ -1,14 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.di
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultExportUserListUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ExportUserListUseCase
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val domainContentUseCaseModule =
-    module {
-        single<ExportUserListUseCase> {
-            DefaultExportUserListUseCase(
-                userRepository = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.content.usecase")
+internal class ContentUseCaseModule
+
+val domainContentUseCaseModule = ContentUseCaseModule().module
