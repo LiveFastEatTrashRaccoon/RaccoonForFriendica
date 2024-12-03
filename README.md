@@ -1,6 +1,6 @@
 <div align="center">
   <img alt="badge for Kotlin" src="https://img.shields.io/badge/Kotlin-2.1.0-7F52FF?logo=kotlin" />
-  <img alt="badge for Gradle" src="https://img.shields.io/badge/Gradle-8.8-02303A?logo=gradle" />
+  <img alt="badge for Gradle" src="https://img.shields.io/badge/Gradle-8.10.2-02303A?logo=gradle" />
   <img alt="badge for Android" src="https://img.shields.io/badge/Android-26+-34A853?logo=android" />
   <img alt="badge for Compose Multiplatform" src="https://img.shields.io/badge/Compose-1.7.1-4285F4?logo=jetpackcompose" />
   <a href="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/LICENSE"><img alt="badge for project license" src="https://img.shields.io/github/license/LiveFastEatTrashRaccoon/RaccoonForFriendica" /></a>
@@ -8,7 +8,7 @@
   <a href="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/unit_tests.yml"><img alt="badge for unit test status" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/unit_tests.yml/badge.svg" /></a>
 </div>
 <div align="center">
-  <a href="https://codecov.io/gh/LiveFastEatTrashRaccoon/RaccoonForFriendica" ><img src="https://codecov.io/gh/LiveFastEatTrashRaccoon/RaccoonForFriendica/branch/master/graph/badge.svg?token=VADFKJC8DF"/></a>
+  <a href="https://codecov.io/gh/LiveFastEatTrashRaccoon/RaccoonForFriendica" ><img alt="badge for code coverage" src="https://codecov.io/gh/LiveFastEatTrashRaccoon/RaccoonForFriendica/branch/master/graph/badge.svg?token=VADFKJC8DF"/></a>
   <a href="https://livefasteattrashraccoon.github.io/RaccoonForFriendica" target="_blank"><img alt="badge for website" src="https://img.shields.io/badge/website-9812db?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNDBweCIgdmlld0JveD0iMCAtOTYwIDk2MCA5NjAiIHdpZHRoPSI0MHB4IiBmaWxsPSIjZThlYWVkIj48cGF0aCBkPSJNNDgwLTgwcS04MyAwLTE1Ni0zMS41VDE5Ny0xOTdxLTU0LTU0LTg1LjUtMTI3VDgwLTQ4MHEwLTgzIDMxLjUtMTU2VDE5Ny03NjNxNTQtNTQgMTI3LTg1LjVUNDgwLTg4MHE4MyAwIDE1NiAzMS41VDc2My03NjNxNTQgNTQgODUuNSAxMjdUODgwLTQ4MHEwIDgzLTMxLjUgMTU2VDc2My0xOTdxLTU0IDU0LTEyNyA4NS41VDQ4MC04MFptLTQyLTY4di04MC42N3EtMzQuMzMgMC01OC4xNy0yNS4xNlEzNTYtMjc5IDM1Ni0zMTMuMzNWLTM1NkwxNTUuMzMtNTU2LjY3cS00LjMzIDE5LjM0LTYuNSAzOC4zNC0yLjE2IDE5LTIuMTYgMzguMzMgMCAxMjcgODIuODMgMjIyVDQzOC0xNDhabTI4OC0xMDZxMjEuMzMtMjMuMzMgMzcuNjctNDkuODMgMTYuMzMtMjYuNSAyNy41LTU1LjM0IDExLjE2LTI4LjgzIDE2LjY2LTU5LjE2IDUuNS0zMC4zNCA1LjUtNjEuNjcgMC0xMDMuMzMtNTYuODMtMTg4VDYwNC42Ny03OTEuMzNWLTc3NHEwIDM0LjMzLTIzLjg0IDU5LjUtMjMuODMgMjUuMTctNTguMTYgMjUuMTdINDM4djg0LjY2cTAgMTctMTIuODMgMjguMTctMTIuODQgMTEuMTctMjkuODQgMTEuMTdoLTgyVi00ODBoMjUycTE3IDAgMjguMTcgMTIuNSAxMS4xNyAxMi41IDExLjE3IDI5LjV2MTI0LjY3aDQycTI4IDAgNDkuNjYgMTYuNVE3MTgtMjgwLjMzIDcyNi0yNTRaIi8+PC9zdmc+" /></a>
   <a href="https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/main.html" target="_blank"><img alt="badge for user manual" src="https://img.shields.io/badge/user%20manual-3c00c7?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNDBweCIgdmlld0JveD0iMCAtOTYwIDk2MCA5NjAiIHdpZHRoPSI0MHB4IiBmaWxsPSIjZThlYWVkIj48cGF0aCBkPSJNNTYwLTU3MC42N3YtNTQuNjZxMzMtMTQgNjcuNS0yMXQ3Mi41LTdxMjYgMCA1MSA0dDQ5IDEwdjUwLjY2cS0yNC05LTQ4LjUtMTMuNXQtNTEuNS00LjVxLTM4IDAtNzMgOS41dC02NyAyNi41Wm0wIDIyMFYtNDA2cTMzLTEzLjY3IDY3LjUtMjAuNXQ3Mi41LTYuODNxMjYgMCA1MSA0dDQ5IDEwdjUwLjY2cS0yNC05LTQ4LjUtMTMuNXQtNTEuNS00LjVxLTM4IDAtNzMgOXQtNjcgMjdabTAtMTEwdi01NC42NnEzMy0xNCA2Ny41LTIxdDcyLjUtN3EyNiAwIDUxIDR0NDkgMTB2NTAuNjZxLTI0LTktNDguNS0xMy41dC01MS41LTQuNXEtMzggMC03MyA5LjV0LTY3IDI2LjVabS0zMDggMTU0cTUxLjM4IDAgMTAwLjAyIDExLjg0UTQwMC42Ny0yODMgNDQ4LTI1OS4zM3YtNDE2cS00My42Ny0yOC05NC4wOC00M3QtMTAxLjkyLTE1cS0zNy4zMyAwLTczLjUgOC42NlExNDIuMzMtNzE2IDEwNi42Ny03MDJ2NDIxLjMzUTEzOS0yOTQgMTc2LjgzLTMwMC4zM3EzNy44NC02LjM0IDc1LjE3LTYuMzRabTI2Mi42NyA0Ny4zNHE0OC0yMy42NyA5NC44My0zNS41IDQ2LjgzLTExLjg0IDk4LjUtMTEuODQgMzcuMzMgMCA3NS44MyA2dDY5LjUgMTYuNjd2LTQxOHEtMzMuNjYtMTYtNzAuNzEtMjMuNjctMzcuMDUtNy42Ni03NC42Mi03LjY2LTUxLjY3IDAtMTAwLjY3IDE1dC05Mi42NiA0M3Y0MTZaTTQ4MS4zMy0xNjBxLTUwLTM4LTEwOC42Ni01OC42N1EzMTQtMjM5LjMzIDI1Mi0yMzkuMzNxLTM4LjM2IDAtNzUuMzUgOS42Ni0zNi45OCA5LjY3LTcyLjY1IDI1LTIyLjQgMTEtNDMuMi0yLjMzUTQwLTIyMC4zMyA0MC0yNDUuMzN2LTQ2OS4zNHEwLTEzLjY2IDYuNS0yNS4zM1E1My03NTEuNjcgNjYtNzU4cTQzLjMzLTIxLjMzIDkwLjI2LTMxLjY3UTIwMy4xOS04MDAgMjUyLTgwMHE2MS4zMyAwIDExOS41IDE2LjMzIDU4LjE3IDE2LjM0IDEwOS44MyA0OS42NyA1MS0zMy4zMyAxMDguNS00OS42N1E2NDcuMzMtODAwIDcwOC04MDBxNDguNTggMCA5NS4yOSAxMC4zM1E4NTAtNzc5LjMzIDg5My4zMy03NThxMTMgNi4zMyAxOS44NCAxOCA2LjgzIDExLjY3IDYuODMgMjUuMzN2NDY5LjM0cTAgMjYuMjYtMjEuNSAzOS45NnQtNDMuMTcuN3EtMzUtMTYtNzEuOTgtMjUuMzMtMzYuOTktOS4zMy03NS4zNS05LjMzLTYyIDAtMTE5LjMzIDIxLTU3LjM0IDIxLTEwNy4zNCA1OC4zM1ptLTIwNC0zMzAuNjdaIi8+PC9zdmc+" /></a>
   <a href="https://matrix.to/#/#raccoonforfriendicaapp:matrix.org" target="_blank"><img alt="Matrix logo" src="https://img.shields.io/badge/matrix-009900?logo=Matrix" /></a>
@@ -187,6 +187,8 @@ The app is under ongoing development, here is a list of the features that are be
 
 ## Technologies used
 
+For the main project:
+
 - [Calf](https://github.com/MohamedRejeb/Calf) for a web view implementation;
 - [Coil](https://github.com/coil-kt/coil) for image loading;
 - [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform) for UI;
@@ -194,7 +196,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [Compose Multiplatform Media Player](https://github.com/Chaintech-Network/ComposeMultiplatformMediaPlayer)
   for video playback;
 - [Connectivity](https://github.com/jordond/connectivity) to detect network state changes;
-- [Koin](https://insert-koin.io/) for dependency injection;
+- [Koin](https://insert-koin.io/) for dependency injection (with annotations);
 - [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing;
 - [Ktor](https://ktor.io/) and [Ktorfit](https://foso.github.io/Ktorfit) for networking;
 - [Lyricist](https://github.com/adrielcafe/lyricist) for localization;
@@ -205,6 +207,13 @@ The app is under ongoing development, here is a list of the features that are be
 - [Sentry](https://sentry.io) for crash reporting and user feedback collection;
 - [UnifiedPush](https://unifiedpush.org) for push notifications;
 - [Voyager](https://voyager.adriel.cafe/) for navigation;
+
+For QA:
+
+- [Kover](https://github.com/Kotlin/kotlinx-kover) to calculate test coverage;
+- [Mokkery](https://mokkery.dev/) to generate mocks which can be used in the `commonTest`;
+- [Robolectric](https://robolectric.org/) to run Compose tests quickly (even in the CI);
+- [Turbine](https://github.com/cashapp/turbine) to test Flow (from kotlinx.coroutines);
 
 ## Want to leave your feedback or report a bug?
 
