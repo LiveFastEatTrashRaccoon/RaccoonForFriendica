@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeyStore
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultAccountCredentialsCache(
     private val keyStore: TemporaryKeyStore,
 ) : AccountCredentialsCache {

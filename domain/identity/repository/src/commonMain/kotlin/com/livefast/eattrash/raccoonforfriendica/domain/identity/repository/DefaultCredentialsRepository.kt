@@ -23,9 +23,12 @@ import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultCredentialsRepository(
-    private val provider: ServiceProvider,
+    @Named("other") private val provider: ServiceProvider,
     engine: HttpClientEngine = provideHttpClientEngine(),
 ) : CredentialsRepository {
     private val httpClient =

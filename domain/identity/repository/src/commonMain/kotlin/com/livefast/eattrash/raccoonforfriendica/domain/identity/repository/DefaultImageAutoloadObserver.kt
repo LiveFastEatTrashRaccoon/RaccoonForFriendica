@@ -11,7 +11,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultImageAutoloadObserver(
     networkStateObserver: NetworkStateObserver,
     settingsRepository: SettingsRepository,
