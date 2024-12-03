@@ -20,9 +20,12 @@ import io.ktor.http.parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultUserRepository(
-    private val provider: ServiceProvider,
+    @Named("default") private val provider: ServiceProvider,
 ) : UserRepository {
     private var cachedUser: UserModel? = null
 

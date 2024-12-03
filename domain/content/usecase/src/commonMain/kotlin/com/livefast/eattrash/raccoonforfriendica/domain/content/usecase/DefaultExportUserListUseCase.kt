@@ -2,7 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultExportUserListUseCase(
     private val userRepository: UserRepository,
 ) : ExportUserListUseCase {

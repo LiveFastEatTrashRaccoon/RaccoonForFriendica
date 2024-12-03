@@ -4,7 +4,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultEmojiHelper(
     private val repository: EmojiRepository,
 ) : EmojiHelper {

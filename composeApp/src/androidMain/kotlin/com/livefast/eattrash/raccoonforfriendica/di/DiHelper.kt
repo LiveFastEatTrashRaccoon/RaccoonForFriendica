@@ -46,7 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.feaure.search.di.featureSearchM
 import com.livefast.eattrash.raccoonforfriendica.unit.licences.di.featureLicenceModule
 import org.koin.dsl.module
 
-val sharedHelperModule =
+internal val sharedHelperModule =
     module {
         includes(
             sharedModule,

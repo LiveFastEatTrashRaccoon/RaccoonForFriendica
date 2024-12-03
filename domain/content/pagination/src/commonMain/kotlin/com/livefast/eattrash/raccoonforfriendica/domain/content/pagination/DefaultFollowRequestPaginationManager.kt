@@ -6,7 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultFollowRequestPaginationManager(
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,

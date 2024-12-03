@@ -8,9 +8,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultTagRepository(
-    private val provider: ServiceProvider,
+    @Named("default") private val provider: ServiceProvider,
 ) : TagRepository {
     override suspend fun getFollowed(pageCursor: String?): ListWithPageCursor<TagModel>? =
         withContext(Dispatchers.IO) {
