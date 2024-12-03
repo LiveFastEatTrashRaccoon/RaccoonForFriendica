@@ -1,16 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.di
 
-import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.DefaultPushNotificationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManager
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-actual val nativePushNotificationsModule =
-    module {
-        single<PushNotificationManager> {
-            DefaultPushNotificationManager(
-                context = get(),
-                pushNotificationRepository = get(),
-                accountRepository = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.impl")
+internal class NativePushNotificationsModule
+
+internal actual val nativePushNotificationsModule = NativePushNotificationsModule().module

@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.Notificati
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.coordinator.DefaultNotificationCoordinator
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
