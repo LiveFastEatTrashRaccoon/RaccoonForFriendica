@@ -11,9 +11,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultCirclesRepository(
-    private val provider: ServiceProvider,
+    @Named("default") private val provider: ServiceProvider,
 ) : CirclesRepository {
     override suspend fun getAll(): List<CircleModel>? =
         withContext(Dispatchers.IO) {

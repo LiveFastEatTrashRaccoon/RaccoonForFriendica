@@ -12,9 +12,12 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultMediaRepository(
-    private val provider: ServiceProvider,
+    @Named("default") private val provider: ServiceProvider,
 ) : MediaRepository {
     override suspend fun getBy(id: String): AttachmentModel? =
         withContext(Dispatchers.IO) {

@@ -8,9 +8,12 @@ import io.ktor.http.parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultScheduledEntryRepository(
-    private val provider: ServiceProvider,
+    @Named("default") private val provider: ServiceProvider,
 ) : ScheduledEntryRepository {
     override suspend fun getAll(pageCursor: String?): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {

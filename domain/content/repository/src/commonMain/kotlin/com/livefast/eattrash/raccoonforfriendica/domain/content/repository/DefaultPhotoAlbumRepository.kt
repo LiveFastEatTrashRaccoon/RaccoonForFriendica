@@ -9,9 +9,12 @@ import io.ktor.http.Parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultPhotoAlbumRepository(
-    private val provider: ServiceProvider,
+    @Named("default") private val provider: ServiceProvider,
 ) : PhotoAlbumRepository {
     override suspend fun getAll(): List<MediaAlbumModel>? =
         withContext(Dispatchers.IO) {

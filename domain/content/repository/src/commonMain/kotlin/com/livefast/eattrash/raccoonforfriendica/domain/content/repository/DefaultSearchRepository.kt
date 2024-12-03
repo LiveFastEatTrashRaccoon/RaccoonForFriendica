@@ -9,9 +9,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultSearchRepository(
-    private val provider: ServiceProvider,
+    @Named("default") private val provider: ServiceProvider,
 ) : SearchRepository {
     override suspend fun search(
         query: String,
@@ -31,9 +34,20 @@ internal class DefaultSearchRepository(
                             resolve = resolve,
                         )
                 when (type) {
-                    SearchResultType.Entries -> response.statuses.map { ExploreItemModel.Entry(it.toModelWithReply()) }
-                    SearchResultType.Hashtags -> response.hashtags.map { ExploreItemModel.HashTag(it.toModel()) }
-                    SearchResultType.Users -> response.accounts.map { ExploreItemModel.User(it.toModel()) }
+                    SearchResultType.Entries ->
+                        response.statuses.map {
+                            ExploreItemModel.Entry(it.toModelWithReply())
+                        }
+
+                    SearchResultType.Hashtags ->
+                        response.hashtags.map {
+                            ExploreItemModel.HashTag(it.toModel())
+                        }
+
+                    SearchResultType.Users ->
+                        response.accounts.map {
+                            ExploreItemModel.User(it.toModel())
+                    }
                 }
             }.getOrNull()
         }
