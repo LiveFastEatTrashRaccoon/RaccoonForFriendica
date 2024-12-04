@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
@@ -11,7 +10,6 @@ plugins {
     alias(libs.plugins.mokkery)
 }
 
-@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     applyDefaultHierarchyTemplate()
     androidTarget {
@@ -28,6 +26,10 @@ kotlin {
             baseName = "core.preferences"
             isStatic = true
         }
+    }
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
     sourceSets {
@@ -60,6 +62,10 @@ dependencies {
     add("kspIosX64", libs.koin.ksp)
     add("kspIosArm64", libs.koin.ksp)
     add("kspIosSimulatorArm64", libs.koin.ksp)
+}
+
+ksp {
+    arg("KOIN_DEFAULT_MODULE", "false")
 }
 
 android {

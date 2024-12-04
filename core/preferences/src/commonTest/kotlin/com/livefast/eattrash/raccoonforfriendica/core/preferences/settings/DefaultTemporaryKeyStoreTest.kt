@@ -1,5 +1,6 @@
-package com.livefast.eattrash.raccoonforfriendica.core.preferences
+package com.livefast.eattrash.raccoonforfriendica.core.preferences.settings
 
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.DefaultTemporaryKeyStore
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every

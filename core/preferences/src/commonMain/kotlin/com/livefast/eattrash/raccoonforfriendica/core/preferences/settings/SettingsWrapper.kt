@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.core.preferences
+package com.livefast.eattrash.raccoonforfriendica.core.preferences.settings
 
 internal interface SettingsWrapper {
     val keys: Set<String>
