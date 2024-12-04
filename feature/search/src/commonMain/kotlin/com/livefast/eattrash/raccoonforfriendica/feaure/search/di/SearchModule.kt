@@ -1,23 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feaure.search.di
 
-import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchMviModel
-import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureSearchModule =
-    module {
-        factory<SearchMviModel> {
-            SearchViewModel(
-                paginationManager = get(),
-                userRepository = get(),
-                timelineEntryRepository = get(),
-                settingsRepository = get(),
-                identityRepository = get(),
-                hapticFeedback = get(),
-                notificationCenter = get(),
-                imagePreloadManager = get(),
-                blurHashRepository = get(),
-                imageAutoloadObserver = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feaure.search")
+internal class SearchModule
+
+val featureSearchModule = SearchModule().module

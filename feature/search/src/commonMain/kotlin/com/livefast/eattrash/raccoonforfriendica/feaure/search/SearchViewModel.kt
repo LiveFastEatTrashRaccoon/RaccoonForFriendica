@@ -33,8 +33,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
 import kotlin.time.Duration
 
+@Factory(binds = [SearchMviModel::class])
 @OptIn(FlowPreview::class)
 class SearchViewModel(
     private val paginationManager: SearchPaginationManager,
