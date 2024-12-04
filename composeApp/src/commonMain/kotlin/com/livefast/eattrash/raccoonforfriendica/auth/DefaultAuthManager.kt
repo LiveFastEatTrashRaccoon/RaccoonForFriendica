@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.auth
 
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeyStore
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository

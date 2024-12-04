@@ -16,7 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadi
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
-import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManagerState
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import kotlin.time.Duration
 
 @Stable

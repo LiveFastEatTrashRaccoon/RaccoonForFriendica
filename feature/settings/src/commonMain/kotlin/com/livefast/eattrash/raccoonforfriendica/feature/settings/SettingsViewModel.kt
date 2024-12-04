@@ -33,8 +33,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ExportSettingsUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ImportSettingsUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManagerState
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch

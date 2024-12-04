@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
-import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeyStore
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import org.koin.core.annotation.Single
 
 @Single
