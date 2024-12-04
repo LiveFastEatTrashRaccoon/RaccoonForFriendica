@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications
+package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager
 
 import androidx.compose.runtime.Composable
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings

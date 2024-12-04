@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications
+package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager
 
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import kotlinx.coroutines.flow.StateFlow
