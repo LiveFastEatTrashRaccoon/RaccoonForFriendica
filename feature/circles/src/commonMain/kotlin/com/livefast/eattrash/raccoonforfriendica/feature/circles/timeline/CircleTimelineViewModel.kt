@@ -26,10 +26,13 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 import kotlin.time.Duration
 
+@Factory(binds = [CircleTimelineMviModel::class])
 class CircleTimelineViewModel(
-    id: String,
+    @InjectedParam id: String,
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
