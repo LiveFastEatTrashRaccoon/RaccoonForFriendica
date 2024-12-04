@@ -12,7 +12,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
 
+@Factory(binds = [FollowedHashtagsMviModel::class])
 class FollowedHashtagsViewModel(
     private val paginationManager: FollowedHashtagsPaginationManager,
     private val tagRepository: TagRepository,
