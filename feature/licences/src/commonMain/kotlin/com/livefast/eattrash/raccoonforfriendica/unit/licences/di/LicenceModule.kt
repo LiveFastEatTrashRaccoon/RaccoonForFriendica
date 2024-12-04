@@ -1,14 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.unit.licences.di
 
-import com.livefast.eattrash.raccoonforfriendica.unit.licences.LicencesMviModel
-import com.livefast.eattrash.raccoonforfriendica.unit.licences.LicencesViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureLicenceModule =
-    module {
-        factory<LicencesMviModel> {
-            LicencesViewModel(
-                settingsRepository = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.unit.licences")
+internal class LicenceModule
+
+val featureLicenceModule = LicenceModule().module
