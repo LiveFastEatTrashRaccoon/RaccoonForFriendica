@@ -7,12 +7,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.Datab
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
-import org.koin.dsl.module
 import org.koin.ksp.generated.module
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.persistence.provider")
-internal class PersistenceModule {
+internal class ProviderModule {
     @Single
     fun provideAccountDao(dbProvider: DatabaseProvider): AccountDao = dbProvider.provideDatabase().getAccountDao()
 
@@ -23,10 +22,7 @@ internal class PersistenceModule {
     fun provideDraftDao(dbProvider: DatabaseProvider): DraftDao = dbProvider.provideDatabase().getDraftDao()
 }
 
-val corePersistenceModule =
-    module {
-        includes(
-            BuilderModule().module,
-            PersistenceModule().module,
-        )
-    }
+@Module(includes = [BuilderModule::class, ProviderModule::class])
+internal class PersistenceModule
+
+val corePersistenceModule = PersistenceModule().module
