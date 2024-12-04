@@ -7,7 +7,7 @@ import org.koin.ksp.generated.module
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.preferences")
-class PreferencesModule
+internal class PreferencesModule
 
 val corePreferencesModule =
     module {

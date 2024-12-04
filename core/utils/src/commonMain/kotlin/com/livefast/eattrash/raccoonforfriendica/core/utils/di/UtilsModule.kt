@@ -7,11 +7,11 @@ import org.koin.ksp.generated.module
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.utils.imageload")
-class ImageLoadModule
+internal class ImageLoadModule
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.utils.network")
-class NetworkStateModule
+internal class NetworkStateModule
 
 val coreUtilsModule =
     module {
