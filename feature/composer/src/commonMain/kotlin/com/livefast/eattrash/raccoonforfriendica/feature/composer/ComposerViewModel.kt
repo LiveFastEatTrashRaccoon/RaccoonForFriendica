@@ -65,7 +65,7 @@ private const val PLACEHOLDER_ID = "placeholder"
 @Factory(binds = [ComposerMviModel::class])
 @OptIn(FlowPreview::class)
 class ComposerViewModel(
-    @InjectedParam private val inReplyToId: String? = null,
+    @InjectedParam private val inReplyToId: String?,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val photoRepository: PhotoRepository,

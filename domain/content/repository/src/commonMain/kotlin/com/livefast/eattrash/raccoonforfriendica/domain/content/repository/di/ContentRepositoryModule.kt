@@ -12,9 +12,12 @@ import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import org.koin.ksp.generated.module
 
-@Module
+@Module(includes = [CacheModule::class])
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.content.repository")
-internal class ContentRepositoryModule {
+internal class ContentRepositoryModule
+
+@Module
+internal class CacheModule {
     @Single
     fun provideLocalItemCacheUserModel(): LocalItemCache<UserModel> = DefaultLocalItemCache()
 
