@@ -8,11 +8,11 @@ import android.os.Vibrator
 import org.koin.core.annotation.Single
 
 @Single
-class DefaultHapticFeedback(
+internal actual class DefaultHapticFeedback(
     private val context: Context,
 ) : HapticFeedback {
     @SuppressLint("MissingPermission")
-    override fun vibrate() {
+    actual override fun vibrate() {
         val vibrator = context.getSystemService(Vibrator::class.java)
         val effect =
             if (Build.VERSION.SDK_INT >= 29) {

@@ -16,7 +16,15 @@ internal class NetworkStateModule
 val coreUtilsModule =
     module {
         includes(
-            nativeUtilsModule,
+            AppInfoModule().module,
+            AppIconModule().module,
+            CalendarModule().module,
+            DebugModule().module,
+            FileSystemModule().module,
+            GalleryModule().module,
+            ShareModule().module,
+            UrlModule().module,
+            VibrateModule().module,
             ImageLoadModule().module,
             NetworkStateModule().module,
         )

@@ -13,13 +13,13 @@ import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 
 @Single
-class DefaultFileSystemManager(
+internal actual class DefaultFileSystemManager(
     private val context: Context,
 ) : FileSystemManager {
-    override val isSupported = true
+    actual override val isSupported = true
 
     @Composable
-    override fun readFromFile(
+    actual override fun readFromFile(
         mimeTypes: Array<String>,
         callback: (String?) -> Unit,
     ) {
@@ -39,7 +39,7 @@ class DefaultFileSystemManager(
     }
 
     @Composable
-    override fun writeToFile(
+    actual override fun writeToFile(
         mimeType: String,
         name: String,
         data: String,
@@ -60,7 +60,7 @@ class DefaultFileSystemManager(
         }
     }
 
-    override fun getTempDir(): Path = FileSystem.SYSTEM_TEMPORARY_DIRECTORY
+    actual override fun getTempDir(): Path = FileSystem.SYSTEM_TEMPORARY_DIRECTORY
 }
 
 actual fun getFileSystemManager(): FileSystemManager {

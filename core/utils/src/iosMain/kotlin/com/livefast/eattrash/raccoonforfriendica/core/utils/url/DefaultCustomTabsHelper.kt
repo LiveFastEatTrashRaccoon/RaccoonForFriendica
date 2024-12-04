@@ -3,10 +3,10 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.url
 import org.koin.core.annotation.Single
 
 @Single
-class DefaultCustomTabsHelper : CustomTabsHelper {
-    override val isSupported = false
+internal actual class DefaultCustomTabsHelper : CustomTabsHelper {
+    actual override val isSupported = false
 
-    override fun handle(url: String) {
+    actual override fun handle(url: String) {
         // no-op
     }
 }

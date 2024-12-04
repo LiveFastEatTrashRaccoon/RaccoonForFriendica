@@ -1,16 +1,18 @@
-package com.livefast.eattrash.raccoonforfriendica.core.utils.debug
+package com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.os.Build
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.annotation.Single
 
 @Single
-class DefaultAppInfoRepository(
+internal actual class DefaultAppInfoRepository(
     private val context: Context,
 ) : AppInfoRepository {
-    override val appInfo = MutableStateFlow(geInfo())
+    private val _appInfo = MutableStateFlow(geInfo())
+    actual override val appInfo: StateFlow<AppInfo?> = _appInfo
 
     private fun geInfo(): AppInfo? =
         runCatching {

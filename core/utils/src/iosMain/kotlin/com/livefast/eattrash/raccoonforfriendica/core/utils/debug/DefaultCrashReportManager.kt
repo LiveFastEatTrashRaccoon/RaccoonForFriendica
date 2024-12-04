@@ -1,39 +1,42 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.debug
 
-import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeyStore
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import org.koin.core.annotation.Single
 import platform.Foundation.NSBundle
 
 @Single
-internal class DefaultCrashReportManager(
+internal actual class DefaultCrashReportManager(
     private val keyStore: TemporaryKeyStore,
 ) : CrashReportManager {
-    override val enabled = MutableStateFlow(false)
-    override val restartRequired = MutableStateFlow(false)
+    private val _enabled = MutableStateFlow(false)
+    actual override val enabled: StateFlow<Boolean> = _enabled
+    private val _restartRequired = MutableStateFlow(false)
+    actual override val restartRequired: StateFlow<Boolean> = _restartRequired
 
     init {
-        enabled.update {
+        _enabled.update {
             keyStore[KEY_CRASH_REPORT_ENABLED, false]
         }
     }
 
-    override fun enable() {
+    actual override fun enable() {
         keyStore.save(KEY_CRASH_REPORT_ENABLED, true)
-        enabled.update { true }
-        restartRequired.update { true }
+        _enabled.update { true }
+        _restartRequired.update { true }
     }
 
-    override fun disable() {
+    actual override fun disable() {
         keyStore.save(KEY_CRASH_REPORT_ENABLED, false)
-        enabled.update { false }
-        restartRequired.update { true }
+        _enabled.update { false }
+        _restartRequired.update { true }
     }
 
-    override fun initialize() {
+    actual override fun initialize() {
         if (!enabled.value) {
             return
         }
@@ -43,7 +46,7 @@ internal class DefaultCrashReportManager(
         }
     }
 
-    override fun collectUserFeedback(
+    actual override fun collectUserFeedback(
         tag: CrashReportTag,
         comment: String,
         email: String?,

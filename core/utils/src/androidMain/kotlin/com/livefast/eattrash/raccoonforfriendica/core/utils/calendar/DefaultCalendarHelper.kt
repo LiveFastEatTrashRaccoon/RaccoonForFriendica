@@ -6,12 +6,12 @@ import io.sentry.kotlin.multiplatform.Context
 import org.koin.core.annotation.Single
 
 @Single
-class DefaultCalendarHelper(
+internal actual class DefaultCalendarHelper(
     private val context: Context,
 ) : CalendarHelper {
-    override val supportsExport: Boolean = true
+    actual override val supportsExport: Boolean = true
 
-    override fun export(
+    actual override fun export(
         title: String,
         startDate: Long,
         endDate: Long?,

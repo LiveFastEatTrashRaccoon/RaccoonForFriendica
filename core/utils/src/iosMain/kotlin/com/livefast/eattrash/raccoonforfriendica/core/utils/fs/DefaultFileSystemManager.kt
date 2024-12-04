@@ -8,11 +8,11 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 @Single
-class DefaultFileSystemManager : FileSystemManager {
-    override val isSupported = false
+internal actual class DefaultFileSystemManager : FileSystemManager {
+    actual override val isSupported = false
 
     @Composable
-    override fun readFromFile(
+    actual override fun readFromFile(
         mimeTypes: Array<String>,
         callback: (String?) -> Unit,
     ) {
@@ -20,7 +20,7 @@ class DefaultFileSystemManager : FileSystemManager {
     }
 
     @Composable
-    override fun writeToFile(
+    actual override fun writeToFile(
         mimeType: String,
         name: String,
         data: String,
@@ -29,7 +29,7 @@ class DefaultFileSystemManager : FileSystemManager {
         callback(false)
     }
 
-    override fun getTempDir(): Path = FileSystem.SYSTEM_TEMPORARY_DIRECTORY
+    actual override fun getTempDir(): Path = FileSystem.SYSTEM_TEMPORARY_DIRECTORY
 }
 
 object FileSystemManagerDiHelper : KoinComponent {

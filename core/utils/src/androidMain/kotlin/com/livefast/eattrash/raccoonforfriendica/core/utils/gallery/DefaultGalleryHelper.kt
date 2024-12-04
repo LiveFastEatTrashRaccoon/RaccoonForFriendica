@@ -18,12 +18,12 @@ import org.koin.core.annotation.Single
 private const val DEFAULT_BASE_PATH = "RaccoonForFriendica"
 
 @Single
-internal class DefaultGalleryHelper(
+internal actual class DefaultGalleryHelper(
     private val context: Context,
 ) : GalleryHelper {
-    override val supportsCustomPath: Boolean = true
+    actual override val supportsCustomPath: Boolean = true
 
-    override fun saveToGallery(
+    actual override fun saveToGallery(
         bytes: ByteArray,
         name: String,
         additionalPathSegment: String?,
@@ -63,7 +63,7 @@ internal class DefaultGalleryHelper(
     }
 
     @Composable
-    override fun getImageFromGallery(result: (ByteArray) -> Unit) {
+    actual override fun getImageFromGallery(result: (ByteArray) -> Unit) {
         val scope = rememberCoroutineScope()
         val resolver = context.contentResolver
         val pickMedia =
