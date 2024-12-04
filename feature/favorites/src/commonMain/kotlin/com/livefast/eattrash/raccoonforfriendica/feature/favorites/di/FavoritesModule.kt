@@ -1,24 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.favorites.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureFavoritesModule =
-    module {
-        factory<FavoritesMviModel> { params ->
-            FavoritesViewModel(
-                type = params[0],
-                paginationManager = get(),
-                timelineEntryRepository = get(),
-                settingsRepository = get(),
-                identityRepository = get(),
-                userRepository = get(),
-                hapticFeedback = get(),
-                notificationCenter = get(),
-                imagePreloadManager = get(),
-                blurHashRepository = get(),
-                imageAutoloadObserver = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.favorites")
+internal class FavoritesModule
+
+val featureFavoritesModule = FavoritesModule().module

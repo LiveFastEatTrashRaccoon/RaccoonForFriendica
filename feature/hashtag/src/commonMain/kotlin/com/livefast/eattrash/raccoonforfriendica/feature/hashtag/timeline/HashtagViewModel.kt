@@ -24,10 +24,13 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 import kotlin.time.Duration
 
+@Factory(binds = [HashtagMviModel::class])
 class HashtagViewModel(
-    private val tag: String,
+    @InjectedParam private val tag: String,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val tagRepository: TagRepository,

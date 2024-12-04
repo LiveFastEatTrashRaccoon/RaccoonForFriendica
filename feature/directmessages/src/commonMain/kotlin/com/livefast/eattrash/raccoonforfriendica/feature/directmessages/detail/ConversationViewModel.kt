@@ -21,12 +21,15 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
 private const val POLLING_INTERVAL = 1200L
 
+@Factory(binds = [ConversationMviModel::class])
 class ConversationViewModel(
-    private val otherUserId: String,
-    parentUri: String,
+    @InjectedParam private val otherUserId: String,
+    @InjectedParam parentUri: String,
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,

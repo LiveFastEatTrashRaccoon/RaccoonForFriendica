@@ -8,7 +8,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiC
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.converters.BBCodeConverter
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.converters.MarkdownConverter
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultPrepareForPreviewUseCase(
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val bbCodeConverter: BBCodeConverter,

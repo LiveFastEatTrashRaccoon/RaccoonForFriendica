@@ -1,27 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.timeline.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureTimelineModule =
-    module {
-        factory<TimelineMviModel> {
-            TimelineViewModel(
-                paginationManager = get(),
-                identityRepository = get(),
-                apiConfigurationRepository = get(),
-                activeAccountMonitor = get(),
-                timelineEntryRepository = get(),
-                settingsRepository = get(),
-                userRepository = get(),
-                circlesRepository = get(),
-                hapticFeedback = get(),
-                notificationCenter = get(),
-                imagePreloadManager = get(),
-                blurHashRepository = get(),
-                imageAutoloadObserver = get(),
-                announcementsManager = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.timeline")
+internal class TimelineModule
+
+val featureTimelineModule = TimelineModule().module

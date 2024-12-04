@@ -1,17 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureNodeInfoModule =
-    module {
-        factory<NodeInfoMviModel> {
-            NodeInfoViewModel(
-                nodeInfoRepository = get(),
-                settingsRepository = get(),
-                emojiHelper = get(),
-                imageAutoloadObserver = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo")
+internal class NodeInfoModule
+
+val featureNodeInfoModule = NodeInfoModule().module

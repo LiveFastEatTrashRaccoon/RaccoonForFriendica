@@ -1,26 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureEntryDetailModule =
-    module {
-        factory<EntryDetailMviModel> { params ->
-            EntryDetailViewModel(
-                id = params[0],
-                timelineEntryRepository = get(),
-                identityRepository = get(),
-                settingsRepository = get(),
-                userRepository = get(),
-                hapticFeedback = get(),
-                entryCache = get(),
-                notificationCenter = get(),
-                imagePreloadManager = get(),
-                blurHashRepository = get(),
-                emojiHelper = get(),
-                replyHelper = get(),
-                imageAutoloadObserver = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.entrydetail")
+internal class EntryDetailModule
+
+val featureEntryDetailModule = EntryDetailModule().module

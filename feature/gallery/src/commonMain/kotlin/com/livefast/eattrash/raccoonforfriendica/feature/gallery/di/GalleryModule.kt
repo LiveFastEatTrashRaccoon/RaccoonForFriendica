@@ -1,29 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.gallery.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail.AlbumDetailMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail.AlbumDetailViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureGalleryModule =
-    module {
-        factory<GalleryMviModel> {
-            GalleryViewModel(
-                albumRepository = get(),
-                settingsRepository = get(),
-                notificationCenter = get(),
-            )
-        }
-        factory<AlbumDetailMviModel> { params ->
-            AlbumDetailViewModel(
-                albumName = params[0],
-                paginationManager = get(),
-                albumRepository = get(),
-                photoRepository = get(),
-                settingsRepository = get(),
-                notificationCenter = get(),
-                imageAutoloadObserver = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.gallery")
+internal class GalleryModule
+
+val featureGalleryModule = GalleryModule().module

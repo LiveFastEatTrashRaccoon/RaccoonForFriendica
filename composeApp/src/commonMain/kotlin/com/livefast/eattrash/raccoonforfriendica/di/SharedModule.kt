@@ -1,36 +1,25 @@
 package com.livefast.eattrash.raccoonforfriendica.di
 
-import com.livefast.eattrash.raccoonforfriendica.auth.DefaultAuthManager
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
-import com.livefast.eattrash.raccoonforfriendica.main.MainMviModel
-import com.livefast.eattrash.raccoonforfriendica.main.MainViewModel
-import com.livefast.eattrash.raccoonforfriendica.navigation.DefaultDetailOpener
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 import org.koin.dsl.module
+import org.koin.ksp.generated.module
+
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.main")
+internal class MainModule
+
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.navigation")
+internal class NavigationModule
+
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.auth")
+internal class AuthModule
 
 internal val sharedModule =
     module {
-        factory<MainMviModel> {
-            MainViewModel(
-                inboxManager = get(),
-            )
-        }
-        single<DetailOpener> {
-            DefaultDetailOpener(
-                navigationCoordinator = get(),
-                identityRepository = get(),
-                userCache = get(),
-                settingsRepository = get(),
-                entryCache = get(),
-                eventCache = get(),
-                circleCache = get(),
-            )
-        }
-        single<AuthManager> {
-            DefaultAuthManager(
-                navigationCoordinator = get(),
-                credentialsRepository = get(),
-                keyStore = get(),
-            )
-        }
+        includes(MainModule().module)
+        includes(NavigationModule().module)
+        includes(AuthModule().module)
     }

@@ -6,6 +6,6 @@ import org.koin.ksp.generated.module
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.notifications")
-class NotificationsModule
+internal class NotificationsModule
 
 val coreNotificationsModule = NotificationsModule().module

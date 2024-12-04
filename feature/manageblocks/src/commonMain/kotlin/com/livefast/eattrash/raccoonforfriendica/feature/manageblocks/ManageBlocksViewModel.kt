@@ -13,7 +13,9 @@ import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.Manag
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
 
+@Factory(binds = [ManageBlocksMviModel::class])
 class ManageBlocksViewModel(
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,

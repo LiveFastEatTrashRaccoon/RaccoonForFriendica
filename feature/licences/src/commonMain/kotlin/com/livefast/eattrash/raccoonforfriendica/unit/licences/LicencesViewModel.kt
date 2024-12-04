@@ -8,7 +8,9 @@ import com.livefast.eattrash.raccoonforfriendica.unit.licences.models.LicenceIte
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
 
+@Factory(binds = [LicencesMviModel::class])
 class LicencesViewModel(
     private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<LicencesMviModel.Intent, LicencesMviModel.State, LicencesMviModel.Effect>(

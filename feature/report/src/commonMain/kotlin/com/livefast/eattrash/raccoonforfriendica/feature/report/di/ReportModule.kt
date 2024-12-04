@@ -1,20 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.report.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureReportModule =
-    module {
-        factory<CreateReportMviModel> { params ->
-            CreateReportViewModel(
-                userId = params[0],
-                entryId = params[1],
-                nodeInfoRepository = get(),
-                supportedFeatureRepository = get(),
-                reportRepository = get(),
-                userCache = get(),
-                entryCache = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.report")
+internal class ReportModule
+
+val featureReportModule = ReportModule().module

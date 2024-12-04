@@ -1,26 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.userlist.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureUserListModule =
-    module {
-        factory<UserListMviModel> { params ->
-            UserListViewModel(
-                type = params[0],
-                userId = params[1],
-                entryId = params[2],
-                paginationManager = get(),
-                userRepository = get(),
-                identityRepository = get(),
-                settingsRepository = get(),
-                hapticFeedback = get(),
-                imagePreloadManager = get(),
-                notificationCenter = get(),
-                userCache = get(),
-                imageAutoloadObserver = get(),
-                exportUserList = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.userlist")
+internal class UserListModule
+
+val featureUserListModule = UserListModule().module

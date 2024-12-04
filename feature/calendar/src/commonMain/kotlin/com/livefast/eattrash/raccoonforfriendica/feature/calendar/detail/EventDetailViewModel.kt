@@ -8,9 +8,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
+@Factory(binds = [EventDetailMviModel::class])
 class EventDetailViewModel(
-    eventId: String,
+    @InjectedParam eventId: String,
     eventCache: LocalItemCache<EventModel>,
     private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<EventDetailMviModel.Intent, EventDetailMviModel.State, EventDetailMviModel.Effect>(

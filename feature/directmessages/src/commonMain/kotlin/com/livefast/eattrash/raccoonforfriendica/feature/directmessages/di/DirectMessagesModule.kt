@@ -1,32 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.ConversationMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.ConversationViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureDirectMessagesModule =
-    module {
-        factory<DirectMessageListMviModel> {
-            DirectMessageListViewModel(
-                paginationManager = get(),
-                identityRepository = get(),
-                settingsRepository = get(),
-                userPaginationManager = get(),
-                imageAutoloadObserver = get(),
-            )
-        }
-        factory<ConversationMviModel> { params ->
-            ConversationViewModel(
-                otherUserId = params[0],
-                parentUri = params[1],
-                paginationManager = get(),
-                userRepository = get(),
-                identityRepository = get(),
-                messageRepository = get(),
-                userCache = get(),
-                imageAutoloadObserver = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.directmessages")
+internal class DirectMessagesModule
+
+val featureDirectMessagesModule = DirectMessagesModule().module
