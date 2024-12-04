@@ -12,10 +12,13 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Suppo
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
+@Factory(binds = [CreateReportMviModel::class])
 class CreateReportViewModel(
-    private val userId: String,
-    private val entryId: String?,
+    @InjectedParam private val userId: String,
+    @InjectedParam private val entryId: String?,
     private val nodeInfoRepository: NodeInfoRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val reportRepository: ReportRepository,
