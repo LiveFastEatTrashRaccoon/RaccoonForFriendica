@@ -3,21 +3,14 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.di
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.BarColorProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSchemeProvider
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.DefaultBarColorProvider
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.DefaultColorSchemeProvider
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.dsl.module
 
-internal actual val nativeAppearanceModule =
-    module {
-        single<ColorSchemeProvider> {
-            DefaultColorSchemeProvider()
-        }
-        single<BarColorProvider> {
-            DefaultBarColorProvider()
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.appearance.theme")
+internal actual class ThemeModule
 
 actual fun getThemeRepository(): ThemeRepository = CoreAppearanceHelper.repository
 

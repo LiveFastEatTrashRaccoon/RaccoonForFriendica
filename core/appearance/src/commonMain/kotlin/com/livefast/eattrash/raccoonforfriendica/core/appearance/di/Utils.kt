@@ -3,9 +3,10 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.di
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.BarColorProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSchemeProvider
-import org.koin.core.module.Module
+import org.koin.core.annotation.Module
 
-internal expect val nativeAppearanceModule: Module
+@Module
+internal expect class ThemeModule()
 
 expect fun getThemeRepository(): ThemeRepository
 

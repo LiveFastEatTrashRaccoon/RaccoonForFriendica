@@ -8,10 +8,10 @@ import com.materialkolor.dynamicColorScheme
 import org.koin.core.annotation.Single
 
 @Single
-internal class DefaultColorSchemeProvider : ColorSchemeProvider {
-    override val supportsDynamicColors = false
+internal actual class DefaultColorSchemeProvider : ColorSchemeProvider {
+    actual override val supportsDynamicColors = false
 
-    override fun getColorScheme(
+    actual override fun getColorScheme(
         theme: UiTheme,
         dynamic: Boolean,
         customSeed: Color?,
