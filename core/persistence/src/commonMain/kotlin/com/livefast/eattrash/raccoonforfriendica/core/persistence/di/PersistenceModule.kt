@@ -11,7 +11,10 @@ import org.koin.ksp.generated.module
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.persistence.provider")
-internal class ProviderModule {
+internal class ProviderModule
+
+@Module
+internal class DaoModule {
     @Single
     fun provideAccountDao(dbProvider: DatabaseProvider): AccountDao = dbProvider.provideDatabase().getAccountDao()
 
@@ -22,7 +25,7 @@ internal class ProviderModule {
     fun provideDraftDao(dbProvider: DatabaseProvider): DraftDao = dbProvider.provideDatabase().getDraftDao()
 }
 
-@Module(includes = [BuilderModule::class, ProviderModule::class])
+@Module(includes = [BuilderModule::class, ProviderModule::class, DaoModule::class])
 internal class PersistenceModule
 
 val corePersistenceModule = PersistenceModule().module

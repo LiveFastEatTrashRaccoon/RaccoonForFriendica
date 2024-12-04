@@ -9,16 +9,26 @@ import org.koin.ksp.generated.module
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.preferences.settings")
-internal class SettingsModule {
-    @Single
-    fun provideSettings(provider: SettingsProvider): Settings = provider.provide()
-}
+internal class SettingsWrapperModule
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.preferences.store")
 internal class StoreModule
 
-@Module(includes = [SettingsModule::class, StoreModule::class])
+@Module
+internal class SettingsModule {
+    @Single
+    fun provideSettings(provider: SettingsProvider): Settings = provider.provide()
+}
+
+@Module(
+    includes = [
+        ProviderModule::class,
+        SettingsModule::class,
+        SettingsWrapperModule::class,
+        StoreModule::class,
+    ],
+)
 internal class PreferencesModule
 
 val corePreferencesModule = PreferencesModule().module
