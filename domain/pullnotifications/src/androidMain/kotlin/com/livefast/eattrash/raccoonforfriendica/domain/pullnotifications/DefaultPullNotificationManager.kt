@@ -15,11 +15,11 @@ import org.koin.core.annotation.Single
 import java.util.concurrent.TimeUnit
 
 @Single
-class DefaultPullNotificationManager(
+internal actual class DefaultPullNotificationManager(
     private val context: Context,
 ) : PullNotificationManager {
-    override val isSupported = true
-    override val isBackgroundRestricted: Boolean
+    actual override val isSupported = true
+    actual override val isBackgroundRestricted: Boolean
         get() =
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
                 activityManager.isBackgroundRestricted
@@ -39,11 +39,11 @@ class DefaultPullNotificationManager(
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
-    override fun setPeriod(minutes: Long) {
+    actual override fun setPeriod(minutes: Long) {
         intervalMinutes = minutes
     }
 
-    override fun start() {
+    actual override fun start() {
         WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
 
         createNotificationChannel()
@@ -54,7 +54,7 @@ class DefaultPullNotificationManager(
         periodicCheck()
     }
 
-    override fun oneshotCheck() {
+    actual override fun oneshotCheck() {
         OneTimeWorkRequestBuilder<CheckNotificationWorker>()
             .addTag(TAG)
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
@@ -65,11 +65,11 @@ class DefaultPullNotificationManager(
             }
     }
 
-    override fun stop() {
+    actual override fun stop() {
         WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
     }
 
-    override fun cancelAll() {
+    actual override fun cancelAll() {
         notificationManager.cancelAll()
     }
 

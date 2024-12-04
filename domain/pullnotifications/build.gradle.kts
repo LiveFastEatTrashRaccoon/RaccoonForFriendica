@@ -27,6 +27,10 @@ kotlin {
         }
     }
 
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     sourceSets {
         val androidMain by getting {
             dependencies {
@@ -63,6 +67,10 @@ dependencies {
     add("kspIosX64", libs.koin.ksp)
     add("kspIosArm64", libs.koin.ksp)
     add("kspIosSimulatorArm64", libs.koin.ksp)
+}
+
+ksp {
+    arg("KOIN_DEFAULT_MODULE", "false")
 }
 
 android {

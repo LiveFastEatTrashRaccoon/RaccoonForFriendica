@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di
 
-import org.koin.core.module.Module
+import org.koin.core.annotation.Module
 
-internal expect val nativePullNotificationsModule: Module
+@Module
+internal expect class PullNotificationsModule()
