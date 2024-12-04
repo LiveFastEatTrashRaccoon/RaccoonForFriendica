@@ -22,10 +22,13 @@ import com.livefast.eattrash.raccoonforfriendica.feature.thread.usecase.Populate
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 import kotlin.time.Duration
 
+@Factory(binds = [ThreadMviModel::class])
 class ThreadViewModel(
-    private val entryId: String,
+    @InjectedParam private val entryId: String,
     private val populateThreadUseCase: PopulateThreadUseCase,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,

@@ -7,7 +7,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.data.ConversationNode
 import kotlinx.coroutines.coroutineScope
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultPopulateThreadUseCase(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val emojiHelper: EmojiHelper,
