@@ -28,8 +28,10 @@ import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSec
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
 import kotlin.time.Duration
 
+@Factory(binds = [ExploreMviModel::class])
 class ExploreViewModel(
     private val paginationManager: ExplorePaginationManager,
     private val userRepository: UserRepository,
