@@ -28,8 +28,8 @@ import org.koin.core.annotation.InjectedParam
 @Factory(binds = [UserListMviModel::class])
 internal class UserListViewModel(
     @InjectedParam private val type: UserListType,
-    @InjectedParam private val userId: String? = null,
-    @InjectedParam private val entryId: String? = null,
+    @InjectedParam private val userId: String?,
+    @InjectedParam private val entryId: String?,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
