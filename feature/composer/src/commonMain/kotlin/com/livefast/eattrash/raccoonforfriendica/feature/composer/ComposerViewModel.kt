@@ -56,13 +56,16 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 import kotlin.time.Duration
 
 private const val PLACEHOLDER_ID = "placeholder"
 
+@Factory(binds = [ComposerMviModel::class])
 @OptIn(FlowPreview::class)
 class ComposerViewModel(
-    private val inReplyToId: String? = null,
+    @InjectedParam private val inReplyToId: String? = null,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val photoRepository: PhotoRepository,

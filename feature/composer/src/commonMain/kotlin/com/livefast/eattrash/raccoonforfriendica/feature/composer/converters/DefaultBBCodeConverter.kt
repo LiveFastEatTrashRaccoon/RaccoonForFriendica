@@ -4,7 +4,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurre
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultBBCodeConverter : BBCodeConverter {
     override fun toHtml(value: String) =
         value
