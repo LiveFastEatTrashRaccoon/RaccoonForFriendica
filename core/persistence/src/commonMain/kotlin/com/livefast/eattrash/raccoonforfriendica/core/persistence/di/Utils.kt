@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.persistence.di
 
-import org.koin.core.module.Module
+import org.koin.core.annotation.Module
 
-internal expect val nativePersistenceModule: Module
+@Module
+internal expect class BuilderModule()
