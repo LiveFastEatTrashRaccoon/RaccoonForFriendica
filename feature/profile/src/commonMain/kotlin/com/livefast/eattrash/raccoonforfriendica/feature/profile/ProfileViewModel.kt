@@ -14,7 +14,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SwitchA
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
 
+@Factory(binds = [ProfileMviModel::class])
 class ProfileViewModel(
     private val identityRepository: IdentityRepository,
     private val accountRepository: AccountRepository,
