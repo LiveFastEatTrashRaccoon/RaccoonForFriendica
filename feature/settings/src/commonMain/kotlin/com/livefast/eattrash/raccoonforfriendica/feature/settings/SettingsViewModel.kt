@@ -38,8 +38,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNo
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
 import kotlin.time.Duration
 
+@Factory(binds = [SettingsMviModel::class])
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val l10nManager: L10nManager,
