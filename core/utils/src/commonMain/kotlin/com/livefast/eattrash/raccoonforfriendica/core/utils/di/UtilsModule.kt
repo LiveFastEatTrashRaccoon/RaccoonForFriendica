@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
-import org.koin.dsl.module
 import org.koin.ksp.generated.module
 
 @Module
@@ -13,19 +12,21 @@ internal class ImageLoadModule
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.utils.network")
 internal class NetworkStateModule
 
-val coreUtilsModule =
-    module {
-        includes(
-            AppInfoModule().module,
-            AppIconModule().module,
-            CalendarModule().module,
-            DebugModule().module,
-            FileSystemModule().module,
-            GalleryModule().module,
-            ShareModule().module,
-            UrlModule().module,
-            VibrateModule().module,
-            ImageLoadModule().module,
-            NetworkStateModule().module,
-        )
-    }
+@Module(
+    includes = [
+        AppInfoModule::class,
+        AppIconModule::class,
+        CalendarModule::class,
+        DebugModule::class,
+        FileSystemModule::class,
+        GalleryModule::class,
+        ShareModule::class,
+        UrlModule::class,
+        VibrateModule::class,
+        ImageLoadModule::class,
+        NetworkStateModule::class,
+    ],
+)
+internal class UtilsModule
+
+val coreUtilsModule = UtilsModule().module

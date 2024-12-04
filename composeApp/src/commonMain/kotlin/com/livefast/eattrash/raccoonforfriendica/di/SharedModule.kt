@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.di
 
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
-import org.koin.dsl.module
 import org.koin.ksp.generated.module
 
 @Module
@@ -17,9 +16,7 @@ internal class NavigationModule
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.auth")
 internal class AuthModule
 
-internal val sharedModule =
-    module {
-        includes(MainModule().module)
-        includes(NavigationModule().module)
-        includes(AuthModule().module)
-    }
+@Module(includes = [AuthModule::class, NavigationModule::class, MainModule::class])
+internal class SharedModule
+
+internal val sharedModule = SharedModule().module

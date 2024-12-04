@@ -5,7 +5,6 @@ import com.russhwolf.settings.Settings
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
-import org.koin.dsl.module
 import org.koin.ksp.generated.module
 
 @Module
@@ -19,11 +18,7 @@ internal class SettingsModule {
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.preferences.store")
 internal class StoreModule
 
-val corePreferencesModule =
-    module {
-        includes(
-            ProviderModule().module,
-            SettingsModule().module,
-            StoreModule().module,
-        )
-    }
+@Module(includes = [SettingsModule::class, StoreModule::class])
+internal class PreferencesModule
+
+val corePreferencesModule = PreferencesModule().module
