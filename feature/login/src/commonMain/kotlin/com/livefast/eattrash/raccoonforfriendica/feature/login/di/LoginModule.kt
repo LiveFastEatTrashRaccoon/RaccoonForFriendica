@@ -1,27 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.login.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.login.legacy.LegacyLoginMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.login.legacy.LegacyLoginViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureLoginModule =
-    module {
-        factory<LegacyLoginMviModel> {
-            LegacyLoginViewModel(
-                credentialsRepository = get(),
-                apiConfigurationRepository = get(),
-                loginUseCase = get(),
-            )
-        }
-        factory<LoginMviModel> { params ->
-            LoginViewModel(
-                type = params[0],
-                credentialsRepository = get(),
-                apiConfigurationRepository = get(),
-                authManager = get(),
-                loginUseCase = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.login")
+internal class LoginModule
+
+val featureLoginModule = LoginModule().module
