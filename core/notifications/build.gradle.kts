@@ -60,6 +60,10 @@ dependencies {
     add("kspIosSimulatorArm64", libs.koin.ksp)
 }
 
+ksp {
+    arg("KOIN_DEFAULT_MODULE", "false")
+}
+
 android {
     namespace = "com.livefast.eattrash.raccoonforfriendica.core.notifications"
     compileSdk =

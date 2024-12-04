@@ -219,6 +219,10 @@ dependencies {
     kover(projects.feature.nodeinfo)
 }
 
+ksp {
+    arg("KOIN_DEFAULT_MODULE", "false")
+}
+
 kotlin.sourceSets.commonMain.configure {
     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
 }
