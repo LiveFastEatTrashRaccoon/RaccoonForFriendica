@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.recei
 import android.content.Context
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

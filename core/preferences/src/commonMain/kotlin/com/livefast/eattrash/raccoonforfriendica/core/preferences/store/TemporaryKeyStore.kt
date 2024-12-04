@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.core.preferences
+package com.livefast.eattrash.raccoonforfriendica.core.preferences.store
 
 /**
  * Secondary storage in the form of a key store (persistence across application restarts).

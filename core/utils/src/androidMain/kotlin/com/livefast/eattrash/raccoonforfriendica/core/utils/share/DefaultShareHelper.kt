@@ -6,12 +6,12 @@ import android.net.Uri
 import org.koin.core.annotation.Single
 
 @Single
-class DefaultShareHelper(
+internal actual class DefaultShareHelper(
     private val context: Context,
 ) : ShareHelper {
-    override val supportsShareImage = true
+    actual override val supportsShareImage = true
 
-    override fun share(
+    actual override fun share(
         url: String,
         mimeType: String,
     ) {
@@ -29,7 +29,7 @@ class DefaultShareHelper(
         context.startActivity(shareIntent)
     }
 
-    override fun shareImage(
+    actual override fun shareImage(
         path: Any?,
         mimeType: String,
     ) {

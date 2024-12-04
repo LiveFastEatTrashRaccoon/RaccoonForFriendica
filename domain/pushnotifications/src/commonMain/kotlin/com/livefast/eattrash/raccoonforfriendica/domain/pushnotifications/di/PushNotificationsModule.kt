@@ -7,12 +7,12 @@ import org.koin.ksp.generated.module
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.coordinator")
-internal class PushNotificationsModule
+internal class CoordinatorModule
 
 val domainPushNotificationsModule =
     module {
         includes(
-            nativePushNotificationsModule,
-            PushNotificationsModule().module,
+            ManagerModule().module,
+            CoordinatorModule().module,
         )
     }

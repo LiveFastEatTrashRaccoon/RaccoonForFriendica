@@ -1,12 +1,7 @@
-package com.livefast.eattrash.raccoonforfriendica.core.utils.debug
+package com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo
 
 import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.StateFlow
-
-data class AppInfo(
-    val versionCode: String,
-    val isDebug: Boolean,
-)
 
 @Stable
 interface AppInfoRepository {

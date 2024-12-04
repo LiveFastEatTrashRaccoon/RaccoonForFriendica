@@ -43,7 +43,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.createTimeline
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createTrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.createUserService
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.defaultLogger
-import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.AppInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.converter.ResponseConverterFactory

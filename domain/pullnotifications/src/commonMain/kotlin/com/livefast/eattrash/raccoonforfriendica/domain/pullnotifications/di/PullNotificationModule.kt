@@ -1,8 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di
 
-import org.koin.dsl.module
+import org.koin.ksp.generated.module
 
-val domainPullNotificationModule =
-    module {
-        includes(nativePullNotificationsModule)
-    }
+val domainPullNotificationModule = PullNotificationsModule().module

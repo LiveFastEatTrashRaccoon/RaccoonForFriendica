@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
-import com.livefast.eattrash.raccoonforfriendica.core.preferences.TemporaryKeyStore
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every

@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.impl
+package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager
 
 import android.app.NotificationManager
 import android.content.Context
@@ -7,73 +7,74 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PushNotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManagerState
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.utils.CryptoUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single
 import org.unifiedpush.android.connector.UnifiedPush
 
 @Single
-internal class DefaultPushNotificationManager(
+internal actual class DefaultPushNotificationManager(
     private val context: Context,
     private val pushNotificationRepository: PushNotificationRepository,
     private val accountRepository: AccountRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : PushNotificationManager {
-    override val state =
+    private val _state =
         MutableStateFlow<PushNotificationManagerState>(PushNotificationManagerState.Initializing)
+
+    actual override val state: StateFlow<PushNotificationManagerState> = _state
 
     private val notificationManager by lazy { context.getSystemService(NotificationManager::class.java) }
 
-    override suspend fun getAvailableDistributors(): List<String> =
+    actual override suspend fun getAvailableDistributors(): List<String> =
         withContext(dispatcher) {
             UnifiedPush.getDistributors(context)
         }
 
-    override suspend fun refreshState() {
+    actual override suspend fun refreshState() {
         val account = accountRepository.getActive() ?: return
         val availableDistributors = getAvailableDistributors()
         if (availableDistributors.isEmpty()) {
-            state.update { PushNotificationManagerState.NoDistributors }
+            _state.update { PushNotificationManagerState.NoDistributors }
             return
         }
 
         if (account.notificationEnabled) {
-            state.update { PushNotificationManagerState.Idle }
+            _state.update { PushNotificationManagerState.Idle }
             return
         }
 
         if (availableDistributors.isEmpty()) {
-            state.update { PushNotificationManagerState.NoDistributors }
+            _state.update { PushNotificationManagerState.NoDistributors }
             return
         }
 
         val selectedDistributor = getSelectedDistributor()
         if (selectedDistributor.isNullOrEmpty()) {
             if (availableDistributors.size == 1) {
-                state.update { PushNotificationManagerState.Idle }
+                _state.update { PushNotificationManagerState.Idle }
             } else {
-                state.update { PushNotificationManagerState.NoDistributorSelected }
+                _state.update { PushNotificationManagerState.NoDistributorSelected }
             }
         }
     }
 
-    override suspend fun startup() {
+    actual override suspend fun startup() {
         val account = accountRepository.getActive() ?: return
         if (account.notificationEnabled) {
             updateSubscription(account)
-            state.update { PushNotificationManagerState.Enabled }
+            _state.update { PushNotificationManagerState.Enabled }
             return
         }
 
         val availableDistributors = getAvailableDistributors()
         if (availableDistributors.isEmpty()) {
-            state.update { PushNotificationManagerState.NoDistributors }
+            _state.update { PushNotificationManagerState.NoDistributors }
             return
         }
 
@@ -91,7 +92,7 @@ internal class DefaultPushNotificationManager(
         }
     }
 
-    override suspend fun saveDistributor(distributor: String) =
+    actual override suspend fun saveDistributor(distributor: String) =
         withContext(dispatcher) {
             UnifiedPush.saveDistributor(
                 context = context,
@@ -99,32 +100,32 @@ internal class DefaultPushNotificationManager(
             )
         }
 
-    override suspend fun clearDistributor() =
+    actual override suspend fun clearDistributor() =
         withContext(dispatcher) {
             UnifiedPush.safeRemoveDistributor(context)
         }
 
-    override suspend fun enable() {
+    actual override suspend fun enable() {
         val account = accountRepository.getActive() ?: return
         if (account.notificationEnabled) {
             return
         }
 
         registerForPushNotification(account)
-        state.update { PushNotificationManagerState.Enabled }
+        _state.update { PushNotificationManagerState.Enabled }
     }
 
-    override suspend fun disable() {
+    actual override suspend fun disable() {
         val account = accountRepository.getActive() ?: return
         if (!account.notificationEnabled) {
             return
         }
 
         unregisterForPushNotifications(account)
-        state.update { PushNotificationManagerState.Initializing }
+        _state.update { PushNotificationManagerState.Initializing }
     }
 
-    override suspend fun registerEndpoint(
+    actual override suspend fun registerEndpoint(
         account: AccountModel,
         endpoint: String,
     ) {
@@ -151,7 +152,7 @@ internal class DefaultPushNotificationManager(
         accountRepository.update(updateAccount)
     }
 
-    override suspend fun unregisterEndpoint(account: AccountModel) {
+    actual override suspend fun unregisterEndpoint(account: AccountModel) {
         pushNotificationRepository.delete()
         val updateAccount =
             account.copy(

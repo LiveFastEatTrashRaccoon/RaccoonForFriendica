@@ -14,9 +14,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import org.koin.core.annotation.Single
 
 @Single
-class DefaultBarColorProvider : BarColorProvider {
+internal actual class DefaultBarColorProvider : BarColorProvider {
     @Composable
-    override fun setBarColorAccordingToTheme(
+    actual override fun setBarColorAccordingToTheme(
         theme: UiTheme,
         barTheme: UiBarTheme,
     ) {

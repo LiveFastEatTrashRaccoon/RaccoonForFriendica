@@ -11,8 +11,8 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
 @Single
-class DefaultDatabaseBuilderProvider : DatabaseBuilderProvider {
-    override fun provideDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+internal actual class DefaultDatabaseBuilderProvider : DatabaseBuilderProvider {
+    actual override fun provideDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
         val dbFilePath = documentDirectory() + "/raccoonforfriendica.db"
         return Room
             .databaseBuilder<AppDatabase>(

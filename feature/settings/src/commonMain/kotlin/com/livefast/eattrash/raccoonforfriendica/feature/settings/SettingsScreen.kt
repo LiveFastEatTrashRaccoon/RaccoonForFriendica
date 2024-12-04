@@ -82,8 +82,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadi
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.PushNotificationManagerState
-import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.toReadableName
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch

@@ -1,16 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences.di
 
-import com.russhwolf.settings.ExperimentalSettingsImplementation
-import com.russhwolf.settings.KeychainSettings
-import com.russhwolf.settings.Settings
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-private const val DEFAULT_NAME = "secret_shared_prefs"
-
-internal actual val nativePreferencesModule =
-    module {
-        single<Settings> {
-            @OptIn(ExperimentalSettingsImplementation::class)
-            KeychainSettings(service = DEFAULT_NAME)
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.preferences.provider")
+internal actual class ProviderModule

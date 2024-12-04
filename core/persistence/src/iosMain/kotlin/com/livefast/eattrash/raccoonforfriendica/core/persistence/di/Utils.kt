@@ -1,12 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.persistence.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.persistence.builder.DatabaseBuilderProvider
-import com.livefast.eattrash.raccoonforfriendica.core.persistence.builder.DefaultDatabaseBuilderProvider
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-actual val nativePersistenceModule =
-    module {
-        single<DatabaseBuilderProvider> {
-            DefaultDatabaseBuilderProvider()
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.persistence.builder")
+internal actual class BuilderModule

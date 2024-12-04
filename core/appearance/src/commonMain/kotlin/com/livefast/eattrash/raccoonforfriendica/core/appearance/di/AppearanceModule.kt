@@ -8,12 +8,12 @@ import org.koin.core.module.Module as KoinModule
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.appearance.repository")
-internal class AppearanceRepositoryModule
+internal class RepositoryModule
 
 val coreAppearanceModule: KoinModule =
     module {
         includes(
-            nativeAppearanceModule,
-            AppearanceRepositoryModule().module,
+            ThemeModule().module,
+            RepositoryModule().module,
         )
     }

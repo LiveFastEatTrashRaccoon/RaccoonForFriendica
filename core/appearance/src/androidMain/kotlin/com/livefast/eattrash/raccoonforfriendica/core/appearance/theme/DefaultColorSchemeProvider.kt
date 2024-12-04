@@ -14,17 +14,17 @@ import com.materialkolor.dynamicColorScheme
 import org.koin.core.annotation.Single
 
 @Single
-internal class DefaultColorSchemeProvider(
+internal actual class DefaultColorSchemeProvider(
     private val context: Context,
 ) : ColorSchemeProvider {
-    override val supportsDynamicColors: Boolean
+    actual override val supportsDynamicColors: Boolean
         @ChecksSdkIntAtLeast(31)
         get() {
             return Build.VERSION.SDK_INT >= 31
         }
 
     @SuppressLint("NewApi")
-    override fun getColorScheme(
+    actual override fun getColorScheme(
         theme: UiTheme,
         dynamic: Boolean,
         customSeed: Color?,

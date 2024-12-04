@@ -75,6 +75,10 @@ dependencies {
     add("kspIosSimulatorArm64", libs.koin.ksp)
 }
 
+ksp {
+    arg("KOIN_DEFAULT_MODULE", "false")
+}
+
 kotlin.sourceSets.commonMain {
     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
 }

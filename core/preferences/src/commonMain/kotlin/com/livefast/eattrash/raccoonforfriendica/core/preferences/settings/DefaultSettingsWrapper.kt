@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.core.preferences
+package com.livefast.eattrash.raccoonforfriendica.core.preferences.settings
 
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get

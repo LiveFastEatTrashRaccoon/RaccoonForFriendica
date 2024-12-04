@@ -6,10 +6,10 @@ import platform.UIKit.UIApplication
 import platform.UIKit.UIImage
 
 @Single
-class DefaultShareHelper : ShareHelper {
-    override val supportsShareImage = false
+internal actual class DefaultShareHelper : ShareHelper {
+    actual override val supportsShareImage = false
 
-    override fun share(
+    actual override fun share(
         url: String,
         mimeType: String,
     ) {
@@ -18,7 +18,7 @@ class DefaultShareHelper : ShareHelper {
         rvc?.presentViewController(shareActivity, true, null)
     }
 
-    override fun shareImage(
+    actual override fun shareImage(
         path: Any?,
         mimeType: String,
     ) {

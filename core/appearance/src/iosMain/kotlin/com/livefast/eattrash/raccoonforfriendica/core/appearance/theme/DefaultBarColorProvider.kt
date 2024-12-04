@@ -12,9 +12,9 @@ import platform.UIKit.UIStatusBarStyleLightContent
 import platform.UIKit.setStatusBarStyle
 
 @Single
-class DefaultBarColorProvider : BarColorProvider {
+internal actual class DefaultBarColorProvider : BarColorProvider {
     @Composable
-    override fun setBarColorAccordingToTheme(
+    actual override fun setBarColorAccordingToTheme(
         theme: UiTheme,
         barTheme: UiBarTheme,
     ) {

@@ -45,11 +45,11 @@ fun ImageBytes.toByteArray(): ByteArray =
     }
 
 @Single
-internal class DefaultGalleryHelper : GalleryHelper {
-    override val supportsCustomPath: Boolean = false
+internal actual class DefaultGalleryHelper : GalleryHelper {
+    actual override val supportsCustomPath: Boolean = false
 
     @OptIn(ExperimentalForeignApi::class)
-    override fun saveToGallery(
+    actual override fun saveToGallery(
         bytes: ByteArray,
         name: String,
         additionalPathSegment: String?,
@@ -60,7 +60,7 @@ internal class DefaultGalleryHelper : GalleryHelper {
     }
 
     @Composable
-    override fun getImageFromGallery(result: (ByteArray) -> Unit) {
+    actual override fun getImageFromGallery(result: (ByteArray) -> Unit) {
         val uiViewController = LocalUIViewController.current
         val pickerDelegate =
             remember {

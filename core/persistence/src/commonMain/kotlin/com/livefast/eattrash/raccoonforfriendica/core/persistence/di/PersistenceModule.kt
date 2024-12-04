@@ -25,5 +25,8 @@ internal class PersistenceModule {
 
 val corePersistenceModule =
     module {
-        includes(nativePersistenceModule, PersistenceModule().module)
+        includes(
+            BuilderModule().module,
+            PersistenceModule().module,
+        )
     }
