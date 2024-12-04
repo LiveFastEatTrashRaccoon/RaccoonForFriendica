@@ -1,18 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureImageDetailModule =
-    module {
-        factory<ImageDetailMviModel> { params ->
-            ImageDetailViewModel(
-                urls = params[0],
-                initialIndex = params[1],
-                shareHelper = get(),
-                galleryHelper = get(),
-                imagePreloadManager = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.imagedetail")
+class ImageDetailModule
+
+val featureImageDetailModule = ImageDetailModule().module
