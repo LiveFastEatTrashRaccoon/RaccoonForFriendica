@@ -7,7 +7,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Inbox
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
 
+@Factory(binds = [MainMviModel::class])
 class MainViewModel(
     private val inboxManager: InboxManager,
 ) : DefaultMviModel<MainMviModel.Intent, MainMviModel.UiState, MainMviModel.Effect>(

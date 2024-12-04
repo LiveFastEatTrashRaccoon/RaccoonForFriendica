@@ -50,7 +50,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 
+@Single
 class DefaultDetailOpener(
     private val navigationCoordinator: NavigationCoordinator,
     private val identityRepository: IdentityRepository,
