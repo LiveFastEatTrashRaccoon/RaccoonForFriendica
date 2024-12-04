@@ -1,25 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.inbox.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxViewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.ksp.generated.module
 
-val featureInboxModule =
-    module {
-        factory<InboxMviModel> {
-            InboxViewModel(
-                paginationManager = get(),
-                userRepository = get(),
-                identityRepository = get(),
-                settingsRepository = get(),
-                notificationRepository = get(),
-                inboxManager = get(),
-                hapticFeedback = get(),
-                imagePreloadManager = get(),
-                blurHashRepository = get(),
-                markerRepository = get(),
-                pullNotificationManager = get(),
-                imageAutoloadObserver = get(),
-            )
-        }
-    }
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.inbox")
+internal class InboxModule
+
+val featureInboxModule = InboxModule().module
