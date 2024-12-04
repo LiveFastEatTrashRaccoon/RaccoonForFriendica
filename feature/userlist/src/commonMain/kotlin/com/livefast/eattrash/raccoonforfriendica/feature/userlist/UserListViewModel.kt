@@ -22,11 +22,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
+@Factory(binds = [UserListMviModel::class])
 internal class UserListViewModel(
-    private val type: UserListType,
-    private val userId: String? = null,
-    private val entryId: String? = null,
+    @InjectedParam private val type: UserListType,
+    @InjectedParam private val userId: String? = null,
+    @InjectedParam private val entryId: String? = null,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
