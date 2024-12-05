@@ -10,11 +10,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Sched
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
-import org.koin.ksp.generated.module
-
-@Module(includes = [CacheModule::class])
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.content.repository")
-internal class ContentRepositoryModule
 
 @Module
 internal class CacheModule {
@@ -34,4 +29,6 @@ internal class CacheModule {
     fun provideLocalItemCacheScheduledEntryRepository(): LocalItemCache<ScheduledEntryRepository> = DefaultLocalItemCache()
 }
 
-val domainContentRepositoryModule = ContentRepositoryModule().module
+@Module(includes = [CacheModule::class])
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.content.repository")
+class ContentRepositoryModule
