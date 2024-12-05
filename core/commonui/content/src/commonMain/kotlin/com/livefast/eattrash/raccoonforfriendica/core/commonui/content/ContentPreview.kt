@@ -4,8 +4,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -68,21 +71,30 @@ fun ContentPreview(
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             if (image.isNotBlank() && autoloadImages) {
-                CustomImage(
+                Box(
                     modifier =
-                        Modifier
-                            .clip(
-                                RoundedCornerShape(
-                                    topStart = cornerSize,
-                                    topEnd = cornerSize,
-                                ),
-                            ).clickable {
-                                onOpenImage?.invoke(image)
-                            },
-                    url = image,
-                    quality = FilterQuality.Low,
-                    contentScale = ContentScale.FillWidth,
-                )
+                        Modifier.heightIn(
+                            min = 50.dp,
+                            max = 200.dp,
+                        ),
+                ) {
+                    CustomImage(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .clip(
+                                    RoundedCornerShape(
+                                        topStart = cornerSize,
+                                        topEnd = cornerSize,
+                                    ),
+                                ).clickable {
+                                    onOpenImage?.invoke(image)
+                                },
+                        url = image,
+                        quality = FilterQuality.Low,
+                        contentScale = ContentScale.FillWidth,
+                    )
+                }
             } else if (type == PreviewType.Video && url.isNotBlank()) {
                 VideoPlayer(
                     modifier = Modifier.fillMaxWidth(),
@@ -104,7 +116,10 @@ fun ContentPreview(
                     val annotatedTitle =
                         title.parseHtml(
                             linkColor = MaterialTheme.colorScheme.primary,
-                            quoteColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
+                            quoteColor =
+                                MaterialTheme.colorScheme.onBackground.copy(
+                                    ancillaryTextAlpha,
+                                ),
                         )
                     Text(
                         text = annotatedTitle,
@@ -116,7 +131,10 @@ fun ContentPreview(
                     val annotatedDescription =
                         description.parseHtml(
                             linkColor = MaterialTheme.colorScheme.primary,
-                            quoteColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
+                            quoteColor =
+                                MaterialTheme.colorScheme.onBackground.copy(
+                                    ancillaryTextAlpha,
+                                ),
                         )
                     Text(
                         text = annotatedDescription,
