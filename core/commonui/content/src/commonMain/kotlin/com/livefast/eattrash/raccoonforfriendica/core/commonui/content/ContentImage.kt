@@ -56,7 +56,7 @@ fun ContentImage(
     originalWidth: Int = 0,
     originalHeight: Int = 0,
     minHeight: Dp = 50.dp,
-    maxHeight: Dp = Dp.Unspecified,
+    maxHeight: Dp = 200.dp,
     contentScale: ContentScale = ContentScale.FillWidth,
     onClick: (() -> Unit)? = null,
     centerComposable: (@Composable () -> Unit) = {},

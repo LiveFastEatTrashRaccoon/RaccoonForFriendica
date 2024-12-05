@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -79,7 +80,13 @@ fun LinkItem(
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         if (!image.isNullOrBlank()) {
-            Box {
+            Box(
+                modifier =
+                    Modifier.heightIn(
+                        min = 50.dp,
+                        max = 200.dp,
+                    ),
+            ) {
                 CustomImage(
                     modifier =
                         Modifier
