@@ -6,10 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepos
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Single
-import org.koin.ksp.generated.module
 
 @Module
-internal class ApiModule {
+class ApiModule {
     @Single
     @Named("default")
     fun provideLocalServiceProvider(appInfoRepository: AppInfoRepository): ServiceProvider =
@@ -20,5 +19,3 @@ internal class ApiModule {
     fun provideOtherServiceProvider(appInfoRepository: AppInfoRepository): ServiceProvider =
         DefaultServiceProvider(appInfoRepository = appInfoRepository)
 }
-
-val coreApiModule = ApiModule().module

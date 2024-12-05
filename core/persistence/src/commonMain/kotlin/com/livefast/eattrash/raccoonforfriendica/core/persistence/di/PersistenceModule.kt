@@ -7,7 +7,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.Datab
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
-import org.koin.ksp.generated.module
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.persistence.provider")
@@ -26,6 +25,4 @@ internal class DaoModule {
 }
 
 @Module(includes = [BuilderModule::class, ProviderModule::class, DaoModule::class])
-internal class PersistenceModule
-
-val corePersistenceModule = PersistenceModule().module
+class PersistenceModule

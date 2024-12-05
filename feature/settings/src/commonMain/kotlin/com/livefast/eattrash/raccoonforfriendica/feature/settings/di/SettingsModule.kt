@@ -2,10 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.settings.di
 
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
-import org.koin.ksp.generated.module
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.settings")
-internal class SettingsModule
-
-val featureSettingsModule = SettingsModule().module
+class SettingsModule

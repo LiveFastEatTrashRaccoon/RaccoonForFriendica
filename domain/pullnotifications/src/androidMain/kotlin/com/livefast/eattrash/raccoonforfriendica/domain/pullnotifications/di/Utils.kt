@@ -5,4 +5,4 @@ import org.koin.core.annotation.Module
 
 @Module
 @ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications")
-internal actual class PullNotificationsModule
+internal actual class PullNotificationManagerModule
