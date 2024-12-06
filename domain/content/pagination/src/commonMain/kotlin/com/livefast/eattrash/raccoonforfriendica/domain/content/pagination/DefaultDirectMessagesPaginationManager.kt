@@ -5,9 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Direc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.koin.core.annotation.Single
+import org.koin.core.annotation.Factory
 
-@Single
+@Factory
 internal class DefaultDirectMessagesPaginationManager(
     private val directMessageRepository: DirectMessageRepository,
     private val emojiHelper: EmojiHelper,
