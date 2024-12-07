@@ -167,8 +167,9 @@ internal class DefaultTimelinePaginationManager(
 
                 is TimelinePaginationSpecification.User -> {
                     results
-                        ?.updatePaginationData()
+                        // for users deduplication must be done first due to a backend bug
                         ?.deduplicate()
+                        ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
@@ -204,6 +205,15 @@ internal class DefaultTimelinePaginationManager(
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
         }.distinctBy { it.safeKey }
+
+    private fun ListWithPageCursor<TimelineEntryModel>.deduplicate(): ListWithPageCursor<TimelineEntryModel> =
+        run {
+            val newList = list.deduplicate()
+            ListWithPageCursor(
+                list = newList,
+                cursor = newList.lastOrNull()?.id,
+            )
+        }
 
     private fun List<TimelineEntryModel>.filterReplies(included: Boolean): List<TimelineEntryModel> =
         filter {
