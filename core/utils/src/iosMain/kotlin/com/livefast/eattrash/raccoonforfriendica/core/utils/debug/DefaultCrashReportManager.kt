@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.debug
 
+import com.livefast.eattrash.raccoonforfriendica.SentryConfigurationValues
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
@@ -7,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import org.koin.core.annotation.Single
-import platform.Foundation.NSBundle
 
 @Single
 internal actual class DefaultCrashReportManager(
@@ -40,9 +40,8 @@ internal actual class DefaultCrashReportManager(
         if (!enabled.value) {
             return
         }
-        val dict = NSBundle.mainBundle.infoDictionary
         Sentry.init { options ->
-            options.dsn = dict?.get("SENTRY_DSN") as? String ?: ""
+            options.dsn = SentryConfigurationValues.DSN
         }
     }
 
