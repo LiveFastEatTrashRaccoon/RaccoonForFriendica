@@ -18,7 +18,7 @@ import org.koin.core.annotation.InjectedParam
 @Factory(binds = [CreateReportMviModel::class])
 class CreateReportViewModel(
     @InjectedParam private val userId: String,
-    @InjectedParam private val entryId: String?,
+    @InjectedParam private val entryId: String,
     private val nodeInfoRepository: NodeInfoRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val reportRepository: ReportRepository,
@@ -47,7 +47,7 @@ class CreateReportViewModel(
                     }
                 }.launchIn(this)
             val user = userCache.get(userId)
-            val entry = entryId?.let { entryCache.get(it) }
+            val entry = entryId.takeIf { it.isNotEmpty() }?.let { entryCache.get(it) }
             val rules = nodeInfoRepository.getRules().orEmpty()
             updateState {
                 it.copy(
@@ -101,7 +101,7 @@ class CreateReportViewModel(
             val successful =
                 reportRepository.create(
                     userId = userId,
-                    entryIds = entryId?.let { listOf(it) },
+                    entryIds = entryId.takeIf { it.isNotEmpty() }?.let { listOf(it) },
                     category = category,
                     comment = currentState.commentValue.text,
                     forward = currentState.forward,

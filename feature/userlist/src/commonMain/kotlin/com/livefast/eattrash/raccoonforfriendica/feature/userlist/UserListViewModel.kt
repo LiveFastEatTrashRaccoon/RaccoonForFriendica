@@ -28,8 +28,8 @@ import org.koin.core.annotation.InjectedParam
 @Factory(binds = [UserListMviModel::class])
 internal class UserListViewModel(
     @InjectedParam private val type: UserListType,
-    @InjectedParam private val userId: String?,
-    @InjectedParam private val entryId: String?,
+    @InjectedParam private val userId: String,
+    @InjectedParam private val entryId: String,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
@@ -87,8 +87,8 @@ internal class UserListViewModel(
     private suspend fun loadUser() {
         val userId =
             when (type) {
-                is UserListType.Follower -> userId
-                is UserListType.Following -> userId
+                is UserListType.Follower -> userId.takeIf { it.isNotEmpty() }
+                is UserListType.Following -> userId.takeIf { it.isNotEmpty() }
                 else -> null
             }
         if (userId != null) {
@@ -122,11 +122,12 @@ internal class UserListViewModel(
         }
         paginationManager.reset(
             when (type) {
-                is UserListType.Follower -> UserPaginationSpecification.Follower(userId.orEmpty())
-                is UserListType.Following -> UserPaginationSpecification.Following(userId.orEmpty())
+                is UserListType.Follower -> UserPaginationSpecification.Follower(userId)
+                is UserListType.Following -> UserPaginationSpecification.Following(userId)
                 is UserListType.UsersFavorite ->
-                    UserPaginationSpecification.EntryUsersFavorite(entryId.orEmpty())
-                is UserListType.UsersReblog -> UserPaginationSpecification.EntryUsersReblog(entryId.orEmpty())
+                    UserPaginationSpecification.EntryUsersFavorite(entryId)
+
+                is UserListType.UsersReblog -> UserPaginationSpecification.EntryUsersReblog(entryId)
             },
         )
         loadNextPage()
@@ -240,8 +241,8 @@ internal class UserListViewModel(
     private fun handleExport() {
         val specification =
             when (type) {
-                UserListType.Follower -> ExportUserSpecification.Follower(userId.orEmpty())
-                UserListType.Following -> ExportUserSpecification.Following(userId.orEmpty())
+                UserListType.Follower -> ExportUserSpecification.Follower(userId)
+                UserListType.Following -> ExportUserSpecification.Following(userId)
                 UserListType.UsersFavorite -> null
                 UserListType.UsersReblog -> null
             } ?: return

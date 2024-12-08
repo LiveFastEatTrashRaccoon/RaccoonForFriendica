@@ -68,7 +68,7 @@ class CreateReportScreen(
         val model =
             getScreenModel<CreateReportMviModel>(
                 parameters = {
-                    parametersOf(userId, entryId)
+                    parametersOf(userId, entryId.orEmpty())
                 },
             )
         val uiState by model.uiState.collectAsState()

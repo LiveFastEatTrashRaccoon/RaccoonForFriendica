@@ -118,7 +118,7 @@ class ComposerScreen(
     @Composable
     override fun Content() {
         val model =
-            getScreenModel<ComposerMviModel>(parameters = { parametersOf(inReplyToId) })
+            getScreenModel<ComposerMviModel>(parameters = { parametersOf(inReplyToId.orEmpty()) })
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
