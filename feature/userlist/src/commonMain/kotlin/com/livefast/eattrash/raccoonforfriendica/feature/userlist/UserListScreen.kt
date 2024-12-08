@@ -112,8 +112,8 @@ class UserListScreen(
             getScreenModel<UserListMviModel>(parameters = {
                 parametersOf(
                     type.toUserListType(),
-                    userId,
-                    entryId,
+                    userId.orEmpty(),
+                    entryId.orEmpty(),
                 )
             })
         val uiState by model.uiState.collectAsState()

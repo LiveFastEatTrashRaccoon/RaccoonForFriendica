@@ -65,7 +65,7 @@ private const val PLACEHOLDER_ID = "placeholder"
 @Factory(binds = [ComposerMviModel::class])
 @OptIn(FlowPreview::class)
 class ComposerViewModel(
-    @InjectedParam private val inReplyToId: String?,
+    @InjectedParam private val inReplyToId: String,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val photoRepository: PhotoRepository,
@@ -150,9 +150,10 @@ class ComposerViewModel(
                         )
                     }
                 }.launchIn(this)
-            val parent = inReplyToId?.let { e -> entryCache.get(e) }
+            val parentId = inReplyToId.takeIf { it.isNotEmpty() }
+            val parent = parentId?.let { e -> entryCache.get(e) }
             val initialVisibility =
-                if (inReplyToId != null) {
+                if (parentId != null) {
                     currentSettings
                         ?.defaultReplyVisibility
                         ?.toVisibility()
@@ -301,6 +302,7 @@ class ComposerViewModel(
                             }
                             val mentions =
                                 inReplyToId
+                                    .takeIf { it.isNotEmpty() }
                                     ?.let { entryCache.get(it) }
                                     ?.mentions
                                     .orEmpty()
@@ -1360,7 +1362,7 @@ class ComposerViewModel(
 
     private suspend fun createPreview() {
         val currentState = uiState.value
-        val inReplyTo = inReplyToId?.let { entryCache.get(it) }
+        val inReplyTo = inReplyToId.takeIf { it.isNotEmpty() }?.let { entryCache.get(it) }
         val localId = getUuid()
         val entry =
             TimelineEntryModel(
@@ -1532,7 +1534,7 @@ class ComposerViewModel(
                                     localId = key,
                                     title = title,
                                     text = text,
-                                    inReplyTo = inReplyToId,
+                                    inReplyTo = inReplyToId.takeIf { it.isNotEmpty() },
                                     spoilerText = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
@@ -1552,7 +1554,7 @@ class ComposerViewModel(
                                     id = editId,
                                     title = title,
                                     text = text,
-                                    inReplyTo = inReplyToId,
+                                    inReplyTo = inReplyToId.takeIf { it.isNotEmpty() },
                                     spoilerText = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
@@ -1567,7 +1569,7 @@ class ComposerViewModel(
                                     localId = key,
                                     title = title,
                                     text = text,
-                                    inReplyTo = inReplyToId,
+                                    inReplyTo = inReplyToId.takeIf { it.isNotEmpty() },
                                     spoilerText = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
@@ -1591,7 +1593,7 @@ class ComposerViewModel(
                                     spoiler = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
-                                    parentId = inReplyToId,
+                                    parentId = inReplyToId.takeIf { it.isNotEmpty() },
                                     lang = currentState.lang,
                                     attachments =
                                         attachmentIds.map {
