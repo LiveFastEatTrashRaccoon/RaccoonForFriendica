@@ -1,8 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.debug
 
-import android.content.Context
+import com.livefast.eattrash.raccoonforfriendica.SentryConfigurationValues
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
-import com.livefast.eattrash.raccoonforfriendica.core.utils.R
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +11,6 @@ import org.koin.core.annotation.Single
 
 @Single
 internal actual class DefaultCrashReportManager(
-    private val context: Context,
     private val keyStore: TemporaryKeyStore,
 ) : CrashReportManager {
     private val _enabled = MutableStateFlow(false)
@@ -43,7 +41,7 @@ internal actual class DefaultCrashReportManager(
             return
         }
         Sentry.init { options ->
-            options.dsn = context.getString(R.string.sentry_dsn)
+            options.dsn = SentryConfigurationValues.DSN
         }
         Thread.currentThread().apply {
             val originalHandler = uncaughtExceptionHandler

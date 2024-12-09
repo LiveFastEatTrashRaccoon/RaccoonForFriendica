@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
 import java.util.Collections.max
-import com.livefast.eattrash.raccoonforfriendica.core.resources.R as resourcesR
 
 internal class CheckNotificationWorker(
     private val context: Context,
@@ -31,7 +30,7 @@ internal class CheckNotificationWorker(
             Notification
                 .Builder(context, NotificationConstants.CHANNEL_ID)
                 .setContentTitle("RaccoonForFriendica")
-                .setSmallIcon(resourcesR.drawable.ic_monochrome)
+                .setSmallIcon(R.drawable.ic_monochrome)
                 .setContentIntent(getPendingIntent())
                 .build(),
         )
@@ -53,7 +52,7 @@ internal class CheckNotificationWorker(
                 .Builder(context, NotificationConstants.CHANNEL_ID)
                 .setContentTitle(messages.unreadNotificationTitle)
                 .setContentText(messages.unreadNotificationBody(count))
-                .setSmallIcon(resourcesR.drawable.ic_monochrome)
+                .setSmallIcon(R.drawable.ic_monochrome)
                 .setContentIntent(getPendingIntent())
                 .setNumber(count)
                 .build()
