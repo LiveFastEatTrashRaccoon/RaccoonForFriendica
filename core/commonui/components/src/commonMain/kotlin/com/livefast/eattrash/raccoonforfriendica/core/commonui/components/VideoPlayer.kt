@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import chaintech.videoplayer.ui.video.VideoPlayerView
+import chaintech.videoplayer.ui.video.VideoPlayerComposable
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 
 @Composable
@@ -19,8 +19,8 @@ fun VideoPlayer(
         resources.getPlayerConfig(
             contentScale = contentScale,
             muted = muted,
-    )
-    VideoPlayerView(
+        )
+    VideoPlayerComposable(
         modifier = modifier,
         url = url,
         playerConfig = config,
