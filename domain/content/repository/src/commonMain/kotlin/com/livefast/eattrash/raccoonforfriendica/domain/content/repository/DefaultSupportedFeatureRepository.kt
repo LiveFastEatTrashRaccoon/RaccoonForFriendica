@@ -33,7 +33,7 @@ internal class DefaultSupportedFeatureRepository(
 }
 
 private val FRIENDICA_REGEX =
-    Regex("\\(compatible; Friendica (?<version>[a-zA-Z0-9.-_]*)\\)")
+    Regex("\\(compatible; Friendica (?<version>[a-zA-Z0-9.\\-_]*)\\)")
 
 private val NodeInfoModel?.isFriendica: Boolean
     get() = this?.version?.contains(FRIENDICA_REGEX) ?: false
