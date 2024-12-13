@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.thread.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -76,13 +81,121 @@ fun TimelineReplyItem(
     val localDensity = LocalDensity.current
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
+    val replyActionLabel =
+        buildString {
+            append(LocalStrings.current.actionReply)
+            if (entryToDisplay.replyCount > 0) {
+                append(": ")
+                append(entryToDisplay.replyCount)
+            }
+        }
+    val reblogActionLabel =
+        buildString {
+            append(LocalStrings.current.actionReblog)
+            if (entryToDisplay.reblogCount > 0) {
+                append(": ")
+                append(entryToDisplay.reblogCount)
+            }
+        }
+    val favoriteActionLabel =
+        buildString {
+            if (entryToDisplay.favorite) {
+                append(LocalStrings.current.actionRemoveFromFavorites)
+            } else {
+                append(LocalStrings.current.actionAddToFavorites)
+            }
+            if (entryToDisplay.favoriteCount > 0) {
+                append(": ")
+                append(entryToDisplay.favoriteCount)
+            }
+        }
+    val bookmarkActionLabel =
+        buildString {
+            if (entryToDisplay.bookmarked) {
+                append(LocalStrings.current.actionRemoveFromBookmarks)
+            } else {
+                append(LocalStrings.current.actionAddToBookmarks)
+            }
+        }
+    val userActionLabel =
+        buildString {
+            append(entryToDisplay.creator?.let { it.displayName ?: it.handle }.orEmpty())
+            if (isNotEmpty()) {
+                append(": ")
+            }
+            append(LocalStrings.current.postTitle)
+            append(" ")
+            append(LocalStrings.current.postBy)
+        }
+    val optionsActionLabel = LocalStrings.current.actionOpenOptions
 
     Box(
         modifier =
             modifier
-                .clickable {
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) {
                     onClick?.invoke(entryToDisplay)
+                }.semantics(mergeDescendants = true) {
+                    val helperActions: MutableList<CustomAccessibilityAction> = mutableListOf()
+                    if (actionsEnabled) {
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = replyActionLabel,
+                                action = {
+                                    onReply?.invoke(entryToDisplay)
+                                    true
+                                },
+                            )
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = reblogActionLabel,
+                                action = {
+                                    onReblog?.invoke(entryToDisplay)
+                                    true
+                                },
+                            )
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = favoriteActionLabel,
+                                action = {
+                                    onFavorite?.invoke(entryToDisplay)
+                                    true
+                                },
+                            )
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = bookmarkActionLabel,
+                                action = {
+                                    onBookmark?.invoke(entryToDisplay)
+                                    true
+                                },
+                            )
+                    }
+                    helperActions +=
+                        CustomAccessibilityAction(
+                            label = userActionLabel,
+                            action = {
+                                entryToDisplay.creator?.let { onOpenUser?.invoke(it) }
+                                true
+                            },
+                        )
+                    if (options.isNotEmpty()) {
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = optionsActionLabel,
+                                action = {
+                                    optionsMenuOpen = true
+                                    true
+                                },
+                            )
+                        if (helperActions.isNotEmpty()) {
+                            customActions = helperActions
+                        }
+                    }
                 },
+        contentAlignment = Alignment.Center,
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
@@ -128,9 +241,10 @@ fun TimelineReplyItem(
                         Box {
                             IconButton(
                                 modifier =
-                                    Modifier.onGloballyPositioned {
-                                        optionsOffset = it.positionInParent()
-                                    },
+                                    Modifier
+                                        .onGloballyPositioned {
+                                            optionsOffset = it.positionInParent()
+                                        }.clearAndSetSemantics { },
                                 onClick = {
                                     optionsMenuOpen = true
                                 },
