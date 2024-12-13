@@ -30,7 +30,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FeedbackButton
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 
 @Composable
 fun ContentFooter(
@@ -55,16 +54,20 @@ fun ContentFooter(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         FooterItem(
-            modifier = Modifier.clearAndSetSemantics { }
-            .width(baseItemWidth),
+            modifier =
+                Modifier
+                    .clearAndSetSemantics { }
+                    .width(baseItemWidth),
             icon = Icons.AutoMirrored.Default.Reply,
             contentDescription = null,
             value = replyCount,
             onClick = onReply,
         )
         FooterItem(
-            modifier = Modifier.clearAndSetSemantics { }
-            .width(baseItemWidth),
+            modifier =
+                Modifier
+                    .clearAndSetSemantics { }
+                    .width(baseItemWidth),
             icon = Icons.Outlined.RocketLaunch,
             toggledIcon = Icons.Filled.RocketLaunch,
             contentDescription = null,
@@ -74,8 +77,10 @@ fun ContentFooter(
             onClick = onReblog,
         )
         FooterItem(
-            modifier = Modifier.clearAndSetSemantics { }
-            .width(baseItemWidth),
+            modifier =
+                Modifier
+                    .clearAndSetSemantics { }
+                    .width(baseItemWidth),
             icon = Icons.Default.FavoriteBorder,
             toggledIcon = Icons.Default.Favorite,
             contentDescription = null,
@@ -85,8 +90,10 @@ fun ContentFooter(
             onClick = onFavorite,
         )
         FooterItem(
-            modifier = Modifier.clearAndSetSemantics { }
-            .width(baseItemWidth),
+            modifier =
+                Modifier
+                    .clearAndSetSemantics { }
+                    .width(baseItemWidth),
             icon = Icons.Default.BookmarkBorder,
             toggledIcon = Icons.Default.Bookmark,
             contentDescription = null,
