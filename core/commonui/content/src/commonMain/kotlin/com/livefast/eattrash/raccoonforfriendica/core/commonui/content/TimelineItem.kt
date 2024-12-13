@@ -28,8 +28,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.DpOffset
@@ -76,64 +76,76 @@ fun TimelineItem(
     val spoiler = entryToDisplay.spoiler.orEmpty()
     val contentHorizontalPadding = Spacing.s
 
-    val replyActionLabel = buildString {
-        append(LocalStrings.current.actionReply)
-    if (entryToDisplay.replyCount > 0) {
-        append(": ")
-        append(entryToDisplay.replyCount)
-   }
-    }
-    val reblogActionLabel = buildString {
-        append(LocalStrings.current.actionReblog)
-    if (entryToDisplay.reblogCount > 0) {
-        append(": ")
-        append(entryToDisplay.reblogCount)
-   }
-    }
-    val favoriteActionLabel = buildString {
-    if (entryToDisplay.favorite) {
-            append(LocalStrings.current.actionRemoveFromFavorites)
-   } else {
-            append(LocalStrings.current.actionAddToFavorites)
-   }
-    if (entryToDisplay.favoriteCount > 0) {
-        append(": ")
-        append(entryToDisplay.favoriteCount)
-   }
-    }
-    val bookmarkActionLabel = buildString {
-    if (entryToDisplay.bookmarked) {
-            append(LocalStrings.current.actionRemoveFromBookmarks)
-   } else {
-            append(LocalStrings.current.actionAddToBookmarks)
-   }
-    }
-    val inReplyToActionLabel = buildString {
-    append(entry.inReplyTo?.creator?.let { it.displayName ?: it.handle }.orEmpty())
-    if (isNotEmpty()) {
-        append(": ")
-   }
-        append(LocalStrings.current.timelineEntryInReplyTo)
-    }
-    val rebloggedActionLabel = buildString {
-    append(entry.creator?.let { it.displayName ?: it.handle }.orEmpty())
-    if (isNotEmpty()) {
-        append(": ")
-   }
-        append(LocalStrings.current.timelineEntryRebloggedBy)
-    }
-    val userActionLabel = buildString {
-    append(entryToDisplay.creator?.let { it.displayName ?: it.handle }.orEmpty())
-    if (isNotEmpty()) {
-        append(": ")
-   }
-        append(LocalStrings.current.postTitle)
-        append(" ")
-        append(LocalStrings.current.postBy)
-    }
+    val replyActionLabel =
+        buildString {
+            append(LocalStrings.current.actionReply)
+            if (entryToDisplay.replyCount > 0) {
+                append(": ")
+                append(entryToDisplay.replyCount)
+            }
+        }
+    val reblogActionLabel =
+        buildString {
+            append(LocalStrings.current.actionReblog)
+            if (entryToDisplay.reblogCount > 0) {
+                append(": ")
+                append(entryToDisplay.reblogCount)
+            }
+        }
+    val favoriteActionLabel =
+        buildString {
+            if (entryToDisplay.favorite) {
+                append(LocalStrings.current.actionRemoveFromFavorites)
+            } else {
+                append(LocalStrings.current.actionAddToFavorites)
+            }
+            if (entryToDisplay.favoriteCount > 0) {
+                append(": ")
+                append(entryToDisplay.favoriteCount)
+            }
+        }
+    val bookmarkActionLabel =
+        buildString {
+            if (entryToDisplay.bookmarked) {
+                append(LocalStrings.current.actionRemoveFromBookmarks)
+            } else {
+                append(LocalStrings.current.actionAddToBookmarks)
+            }
+        }
+    val inReplyToActionLabel =
+        buildString {
+            append(
+                entry.inReplyTo
+                    ?.creator
+                    ?.let { it.displayName ?: it.handle }
+                    .orEmpty(),
+            )
+            if (isNotEmpty()) {
+                append(": ")
+            }
+            append(LocalStrings.current.timelineEntryInReplyTo)
+        }
+    val rebloggedActionLabel =
+        buildString {
+            append(entry.creator?.let { it.displayName ?: it.handle }.orEmpty())
+            if (isNotEmpty()) {
+                append(": ")
+            }
+            append(LocalStrings.current.timelineEntryRebloggedBy)
+        }
+    val userActionLabel =
+        buildString {
+            append(entryToDisplay.creator?.let { it.displayName ?: it.handle }.orEmpty())
+            if (isNotEmpty()) {
+                append(": ")
+            }
+            append(LocalStrings.current.postTitle)
+            append(" ")
+            append(LocalStrings.current.postBy)
+        }
     val optionsActionLabel = LocalStrings.current.actionOpenOptions
 
-    Column(
+    Box(
         modifier =
             modifier
                 .clickable(
@@ -141,54 +153,85 @@ fun TimelineItem(
                     indication = null,
                 ) {
                     onClick?.invoke(entryToDisplay)
-                }
-                .semantics(mergeDescendants = true) {
-                    var helperActions: List<CustomAccessibilityAction> = emptyList()
+                }.semantics(mergeDescendants = true) {
+                    val helperActions: MutableList<CustomAccessibilityAction> = mutableListOf()
                     if (actionsEnabled) {
-                        helperActions += CustomAccessibilityAction(
-                            label = replyActionLabel,
-                            action = { onReply?.invoke(entryToDisplay); true }
-                        )
-                        helperActions += CustomAccessibilityAction(
-                            label = reblogActionLabel,
-                            action = { onReblog?.invoke(entryToDisplay); true }
-                        )
-                        helperActions += CustomAccessibilityAction(
-                            label = favoriteActionLabel,
-                            action = { onFavorite?.invoke(entryToDisplay); true }
-                        )
-                        helperActions += CustomAccessibilityAction(
-                            label = bookmarkActionLabel,
-                            action = { onBookmark?.invoke(entryToDisplay); true }
-                        )
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = replyActionLabel,
+                                action = {
+                                    onReply?.invoke(entryToDisplay)
+                                    true
+                                },
+                            )
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = reblogActionLabel,
+                                action = {
+                                    onReblog?.invoke(entryToDisplay)
+                                    true
+                                },
+                            )
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = favoriteActionLabel,
+                                action = {
+                                    onFavorite?.invoke(entryToDisplay)
+                                    true
+                                },
+                            )
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = bookmarkActionLabel,
+                                action = {
+                                    onBookmark?.invoke(entryToDisplay)
+                                    true
+                                },
+                            )
                     }
                     if (reshareAndReplyVisible and isReblog) {
-                        helperActions += CustomAccessibilityAction(
-                            label = rebloggedActionLabel,
-                            action = { entry.creator?.let { onOpenUser?.invoke(it) }; true }
-                        )
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = rebloggedActionLabel,
+                                action = {
+                                    entry.creator?.let { onOpenUser?.invoke(it) }
+                                    true
+                                },
+                            )
                     }
                     if (reshareAndReplyVisible and isReply) {
-                        helperActions += CustomAccessibilityAction(
-                            label = inReplyToActionLabel,
-                            action = { entry.inReplyTo?.creator?.let { onOpenUser?.invoke(it) }; true }
-                        )
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = inReplyToActionLabel,
+                                action = {
+                                    entry.inReplyTo?.creator?.let { onOpenUser?.invoke(it) }
+                                    true
+                                },
+                            )
                     }
-                    helperActions += CustomAccessibilityAction(
-                        label = userActionLabel,
-                        action = { entryToDisplay.creator?.let { onOpenUser?.invoke(it) }; true }
-                    )
-                    if (options.isNotEmpty()) {
-                        helperActions += CustomAccessibilityAction(
-                            label = optionsActionLabel,
-                            action = { optionsMenuOpen = true; true }
+                    helperActions +=
+                        CustomAccessibilityAction(
+                            label = userActionLabel,
+                            action = {
+                                entryToDisplay.creator?.let { onOpenUser?.invoke(it) }
+                                true
+                            },
                         )
+                    if (options.isNotEmpty()) {
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = optionsActionLabel,
+                                action = {
+                                    optionsMenuOpen = true
+                                    true
+                                },
+                            )
                         if (helperActions.isNotEmpty()) {
                             customActions = helperActions
                         }
                     }
-},
-        verticalArrangement = Arrangement.spacedBy(Spacing.s),
+                },
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
@@ -237,10 +280,10 @@ fun TimelineItem(
                     Box {
                         IconButton(
                             modifier =
-                                Modifier.onGloballyPositioned {
-                                    optionsOffset = it.positionInParent()
-                                }
-                                .clearAndSetSemantics { },
+                                Modifier
+                                    .onGloballyPositioned {
+                                        optionsOffset = it.positionInParent()
+                                    }.clearAndSetSemantics { },
                             onClick = {
                                 optionsMenuOpen = true
                             },
