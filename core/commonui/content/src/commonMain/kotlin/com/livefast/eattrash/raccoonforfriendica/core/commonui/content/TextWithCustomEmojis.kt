@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
@@ -97,7 +100,7 @@ fun TextWithCustomEmojis(
                         ),
                 ) {
                     CustomImage(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.size(with(LocalDensity.current) { EMOJI_SIZE.toDp() }),
                         url = emoji.url,
                         contentDescription = null,
                         contentScale = ContentScale.FillWidth,
@@ -118,7 +121,7 @@ fun TextWithCustomEmojis(
                         ),
                 ) {
                     CustomImage(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().aspectRatio(16 / 9f),
                         url = imageData.url,
                         autoload = autoloadImages,
                         contentDescription = imageData.description,
