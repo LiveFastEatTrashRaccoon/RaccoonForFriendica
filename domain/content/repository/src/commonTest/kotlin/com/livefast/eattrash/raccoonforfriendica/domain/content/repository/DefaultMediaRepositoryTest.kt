@@ -9,6 +9,7 @@ import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
+import dev.mokkery.matcher.matching
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
@@ -81,7 +82,13 @@ class DefaultMediaRepositoryTest {
 
             assertTrue(res)
             verifySuspend {
-                mediaService.update(id = any(), content = any())
+                mediaService.update(
+                    id = any(),
+                    content =
+                        matching {
+                            it.formData["description"] == "fake-description"
+                        },
+                )
             }
         }
 }

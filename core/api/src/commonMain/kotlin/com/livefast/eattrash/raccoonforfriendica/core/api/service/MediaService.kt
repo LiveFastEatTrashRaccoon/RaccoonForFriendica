@@ -8,6 +8,7 @@ import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.PUT
 import de.jensklingenberg.ktorfit.http.Path
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
 
 interface MediaService {
@@ -24,7 +25,7 @@ interface MediaService {
     @PUT("v1/media/{id}")
     suspend fun update(
         @Path("id") id: String,
-        @Body content: MultiPartFormDataContent,
+        @Body content: FormDataContent,
     ): MediaAttachment
 
     @DELETE("v1/media/{id}")

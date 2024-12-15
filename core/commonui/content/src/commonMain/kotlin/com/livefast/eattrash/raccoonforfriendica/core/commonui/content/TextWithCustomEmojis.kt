@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
@@ -23,6 +22,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.em
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
@@ -100,7 +100,7 @@ fun TextWithCustomEmojis(
                         ),
                 ) {
                     CustomImage(
-                        modifier = Modifier.size(with(LocalDensity.current) { EMOJI_SIZE.toDp() }),
+                        modifier = Modifier.size(IconSize.m),
                         url = emoji.url,
                         contentDescription = null,
                         contentScale = ContentScale.FillWidth,

@@ -1183,18 +1183,10 @@ class ComposerViewModel(
     ) {
         screenModelScope.launch {
             val successful =
-                if (shouldUserPhotoRepository) {
-                    photoRepository.update(
-                        id = attachment.id,
-                        album = attachment.album.orEmpty(),
-                        alt = description,
-                    )
-                } else {
-                    mediaRepository.update(
-                        id = attachment.id,
-                        alt = description,
-                    )
-                }
+                mediaRepository.update(
+                    id = attachment.id,
+                    alt = description,
+                )
 
             if (successful) {
                 updateAttachmentInState(attachment.id) {
