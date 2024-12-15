@@ -58,6 +58,11 @@ internal class DefaultBBCodeConverter : BBCodeConverter {
                 .Builder()
                 .onOpenTag { name, attributes, _ ->
                     when (name) {
+                        "h1" -> builder.append("[h1]")
+                        "h2" -> builder.append("[h2]")
+                        "h3" -> builder.append("[h3]")
+                        "h4" -> builder.append("[h4]")
+                        "h5" -> builder.append("[h5]")
                         "br" -> builder.appendLine()
                         "b", "strong" -> builder.append("[b]")
                         "u" -> builder.append("[u]")
@@ -68,6 +73,7 @@ internal class DefaultBBCodeConverter : BBCodeConverter {
                         "li" -> builder.append("[li]")
                         "code" -> builder.append("[code]")
                         "blockquote" -> builder.append("[quote]")
+                        "q" -> builder.append("[quote]")
                         "a" -> {
                             val url = attributes["href"] ?: ""
                             builder.append("[url=$url]")
@@ -83,7 +89,13 @@ internal class DefaultBBCodeConverter : BBCodeConverter {
                     }
                 }.onCloseTag { name, _ ->
                     when (name) {
-                        "p", "span", "br" -> Unit
+                        "h1" -> builder.append("[/h1]")
+                        "h2" -> builder.append("[/h2]")
+                        "h3" -> builder.append("[/h3]")
+                        "h4" -> builder.append("[/h4]")
+                        "h5" -> builder.append("[/h5]")
+                        "span" -> Unit
+                        "p", "br" -> builder.append("\n")
                         "img" -> builder.append("[/img]")
                         "b", "strong" -> builder.append("[/b]")
                         "u" -> builder.append("[/u]")
@@ -95,6 +107,7 @@ internal class DefaultBBCodeConverter : BBCodeConverter {
                         "ol" -> builder.append("[/ol]")
                         "li" -> builder.append("[/li]")
                         "blockquote" -> builder.append("[/quote]")
+                        "q" -> builder.append("[/quote]")
                         else -> Unit
                     }
                 }.onText { text ->
