@@ -34,7 +34,7 @@ internal fun InReplyToInfo(
         Icon(
             modifier = Modifier.size(IconSize.s),
             imageVector = Icons.AutoMirrored.Default.Reply,
-            contentDescription = LocalStrings.current.actionReply,
+            contentDescription = null,
             tint = ancillaryColor,
         )
         Text(

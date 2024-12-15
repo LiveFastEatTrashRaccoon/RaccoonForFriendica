@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -35,14 +36,15 @@ internal fun NotificationHeaderUserInfo(
     val fullColor = MaterialTheme.colorScheme.onBackground
     val onOpenUserModifier =
         if (onOpenUser != null) {
-            Modifier.clickable(
+            Modifier.clearAndSetSemantics { }
+            .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
             ) {
                 onOpenUser.invoke()
             }
         } else {
-            Modifier
+            Modifier.clearAndSetSemantics { }
         }
 
     Row(

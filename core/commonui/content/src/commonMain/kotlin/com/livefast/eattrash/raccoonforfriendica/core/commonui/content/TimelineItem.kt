@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -153,8 +154,9 @@ fun TimelineItem(
                     indication = null,
                 ) {
                     onClick?.invoke(entryToDisplay)
-                }.semantics(mergeDescendants = true) {
-                    val helperActions: MutableList<CustomAccessibilityAction> = mutableListOf()
+                }
+                .semantics(mergeDescendants = true) {
+                    val helperActions = mutableListOf<CustomAccessibilityAction>()
                     if (actionsEnabled) {
                         helperActions +=
                             CustomAccessibilityAction(
@@ -354,7 +356,9 @@ fun TimelineItem(
                     val title = entryToDisplay.title
                     if (!title.isNullOrBlank()) {
                         ContentTitle(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .semantics { heading() },
                             content = title,
                             maxLines = maxTitleLines,
                             autoloadImages = autoloadImages,

@@ -27,6 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayer
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 
@@ -57,6 +58,7 @@ fun ContentPreview(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
+                        onClickLabel = LocalStrings.current.actionOpenLink,
                     ) {
                         if (url.isNotEmpty()) {
                             onOpen?.invoke(url)
@@ -91,6 +93,7 @@ fun ContentPreview(
                                     onOpenImage?.invoke(image)
                                 },
                         url = image,
+                        contentDescription = LocalStrings.current.previewImage,
                         quality = FilterQuality.Low,
                         contentScale = ContentScale.FillWidth,
                     )

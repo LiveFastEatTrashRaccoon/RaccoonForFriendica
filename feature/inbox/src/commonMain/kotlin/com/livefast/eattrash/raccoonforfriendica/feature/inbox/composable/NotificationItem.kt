@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
@@ -60,7 +61,7 @@ internal fun NotificationItem(
     val contentHorizontalPadding = Spacing.xs
 
     Column(
-        modifier = modifier,
+        modifier = modifier.semantics(mergeDescendants = true) { },
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         Row(
@@ -71,7 +72,7 @@ internal fun NotificationItem(
             Icon(
                 modifier = Modifier.size(IconSize.s).padding(1.dp),
                 imageVector = notification.type.toIcon(),
-                contentDescription = notification.type.toReadableName(),
+                contentDescription = null,
                 tint = ancillaryColor,
             )
             if (user != null) {

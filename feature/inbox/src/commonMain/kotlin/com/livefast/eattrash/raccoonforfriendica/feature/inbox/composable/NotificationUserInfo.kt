@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
@@ -88,6 +89,7 @@ fun NotificationUserInfo(
                     CustomImage(
                         modifier =
                             Modifier
+                                .clearAndSetSemantics { }
                                 .size(avatarSize)
                                 .clip(RoundedCornerShape(avatarSize / 2)),
                         url = avatar,
@@ -96,6 +98,7 @@ fun NotificationUserInfo(
                     )
                 } else {
                     PlaceholderImage(
+                        modifier = Modifier.clearAndSetSemantics { },
                         size = avatarSize,
                         title = user.displayName ?: user.handle ?: "?",
                     )

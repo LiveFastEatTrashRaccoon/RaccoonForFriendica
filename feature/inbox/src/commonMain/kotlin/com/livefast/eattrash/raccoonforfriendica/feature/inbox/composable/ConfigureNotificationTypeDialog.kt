@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -77,7 +79,20 @@ internal fun ConfigureNotificationTypeDialog(
                 items(availableTypes) { type ->
                     val selected = currentSelection.contains(type)
                     Row(
-                        modifier = Modifier.padding(vertical = Spacing.s, horizontal = Spacing.s),
+                        modifier = Modifier
+                            .toggleable(
+                                value = selected,
+                                role = Role.Checkbox,
+                                enabled = true,
+                                onValueChange = {
+                                    if (selected) {
+                                        currentSelection -= type
+                                    } else {
+                                        currentSelection += type
+                                    }
+                            }
+                            )
+                            .padding(vertical = Spacing.s, horizontal = Spacing.s),
                     ) {
                         Text(
                             text = type.toReadableName(),
@@ -87,13 +102,7 @@ internal fun ConfigureNotificationTypeDialog(
                         Checkbox(
                             modifier = Modifier.size(IconSize.s),
                             checked = selected,
-                            onCheckedChange = {
-                                if (selected) {
-                                    currentSelection -= type
-                                } else {
-                                    currentSelection += type
-                                }
-                            },
+                            onCheckedChange = null,
                         )
                     }
                 }
