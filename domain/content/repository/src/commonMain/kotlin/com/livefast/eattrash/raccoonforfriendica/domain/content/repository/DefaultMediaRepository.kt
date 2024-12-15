@@ -3,10 +3,12 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
@@ -73,8 +75,9 @@ internal class DefaultMediaRepository(
         withContext(Dispatchers.IO) {
             runCatching {
                 val content =
-                    MultiPartFormDataContent(
-                        formData {
+                    FormDataContent(
+                        parameters {
+                            append("description", alt)
                         },
                     )
                 provider.media.update(id = id, content = content)
