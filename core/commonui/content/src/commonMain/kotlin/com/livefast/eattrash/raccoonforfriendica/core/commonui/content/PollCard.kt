@@ -273,8 +273,6 @@ private fun PollCardFooter(
         Text(
             text =
                 buildString {
-                    append(votes)
-                    append(" ")
                     append(LocalStrings.current.pollVote(votes))
                     append(" • ")
                     if (expired) {

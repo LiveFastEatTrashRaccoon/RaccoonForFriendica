@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -135,17 +134,11 @@ internal fun ConversationItem(
                 ),
             text =
                 buildAnnotatedString {
-                    append(conversation.messageCount.toString())
-                    append(" ")
                     append(LocalStrings.current.messages(conversation.messageCount))
 
                     if (conversation.unreadCount > 0) {
                         append(" (")
                         withStyle(SpanStyle(color = fullColor)) {
-                            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
-                                append((conversation.unreadCount.toString()))
-                            }
-                            append(" ")
                             append(LocalStrings.current.unreadMessages(conversation.unreadCount))
                         }
                         append(")")

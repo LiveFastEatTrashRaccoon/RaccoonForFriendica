@@ -123,12 +123,7 @@ fun UserHeader(
                                             onOpenFollowers?.invoke()
                                         }
                                     }.padding(horizontal = Spacing.s),
-                            text =
-                                buildString {
-                                    append(followers)
-                                    append(" ")
-                                    append(LocalStrings.current.accountFollower(followers))
-                                },
+                            text = LocalStrings.current.accountFollower(followers),
                             style = MaterialTheme.typography.labelMedium,
                             color = ancillaryColor,
                         )
@@ -146,12 +141,7 @@ fun UserHeader(
                                             onOpenFollowing?.invoke()
                                         }
                                     }.padding(horizontal = Spacing.s),
-                            text =
-                                buildString {
-                                    append(following)
-                                    append(" ")
-                                    append(LocalStrings.current.accountFollowing(following))
-                                },
+                            text = LocalStrings.current.accountFollowing(following),
                             style = MaterialTheme.typography.labelMedium,
                             color = ancillaryColor,
                         )
