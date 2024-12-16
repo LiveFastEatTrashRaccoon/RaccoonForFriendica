@@ -75,9 +75,11 @@ quality while using the app!
 If you want to help with the localization of Raccoon, please have a look at Weblate down below
 
 <div align="center">
-<a href="https://hosted.weblate.org/engage/raccoonforfriendica/">
-  <img src="https://hosted.weblate.org/widget/raccoonforfriendica/multi-blue.svg" alt="Stato traduzione" />
-</a>
+  <div style="width: 250px;">
+    <a href="https://hosted.weblate.org/engage/raccoonforfriendica/">
+      <img src="https://hosted.weblate.org/widget/raccoonforfriendica/multi-blue.svg" alt="Stato traduzione" />
+    </a>
+  </div>
 </div>
 
 ## Screenshots
