@@ -50,7 +50,6 @@ kotlin {
             implementation(libs.compose.multiplatform.media.player)
             implementation(libs.koin.core)
             implementation(libs.ktor.client.core)
-            implementation(libs.lyricist)
 
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenmodel)
