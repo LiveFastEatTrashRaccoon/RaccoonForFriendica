@@ -15,7 +15,6 @@ internal object LicenceUrls {
     const val KSOUP = "https://github.com/fleeksoft/ksoup/blob/release/LICENSE.md"
     const val KTOR = "https://github.com/ktorio/ktor/blob/main/LICENSE"
     const val KTORFIT = "https://github.com/Foso/Ktorfit/blob/master/LICENSE"
-    const val LYRICIST = "https://github.com/adrielcafe/lyricist/blob/main/LICENSE.md"
     const val MASTODON = "https://github.com/mastodon/mastodon/blob/main/LICENSE"
     const val MATERIAL_ICONS = "https://github.com/google/material-design-icons/blob/master/LICENSE"
     const val MATERIAL_KOLOR = "https://github.com/jordond/MaterialKolor/blob/main/LICENSE"
