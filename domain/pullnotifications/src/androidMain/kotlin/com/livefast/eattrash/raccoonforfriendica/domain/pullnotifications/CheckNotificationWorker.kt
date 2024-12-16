@@ -8,7 +8,7 @@ import android.content.Intent
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Strings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,7 +20,7 @@ internal class CheckNotificationWorker(
     parameters: WorkerParameters,
 ) : CoroutineWorker(context, parameters) {
     private val inboxManager by inject<InboxManager>(InboxManager::class.java)
-    private val l10nManager by inject<L10nManager>(L10nManager::class.java)
+    private val strings by inject<Strings>(Strings::class.java)
     private val notificationManager: NotificationManager
         get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -45,13 +45,12 @@ internal class CheckNotificationWorker(
             Result.success()
         }
 
-    private fun sendNotification(count: Int) {
-        val messages = l10nManager.messages()
+    private suspend fun sendNotification(count: Int) {
         val notification =
             Notification
                 .Builder(context, NotificationConstants.CHANNEL_ID)
-                .setContentTitle(messages.unreadNotificationTitle)
-                .setContentText(messages.unreadNotificationBody(count))
+                .setContentTitle(strings.unreadNotificationTitle())
+                .setContentText(strings.unreadNotificationBody(count))
                 .setSmallIcon(R.drawable.ic_monochrome)
                 .setContentIntent(getPendingIntent())
                 .setNumber(count)
