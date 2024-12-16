@@ -156,12 +156,8 @@ fun NotificationUserInfo(
             val following = user.following
             val annotatedContent =
                 buildAnnotatedString {
-                    append("$followers")
-                    append(" ")
                     append(LocalStrings.current.accountFollower(followers))
                     append(" • ")
-                    append("$following")
-                    append(" ")
                     append(LocalStrings.current.accountFollowing(following))
                 }
             Text(

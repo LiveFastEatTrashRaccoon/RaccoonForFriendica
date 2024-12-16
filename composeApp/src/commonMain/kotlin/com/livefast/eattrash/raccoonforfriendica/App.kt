@@ -22,6 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.getL10nManager
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.VoyagerNavigator
@@ -153,7 +154,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
         ProvideCustomUriHandler {
             ProvideCustomFontScale {
                 ProvideStrings(
-                    lyricist = l10nManager.lyricist,
+                    lang = currentSettings?.lang ?: Locales.EN,
                 ) {
                     ModalNavigationDrawer(
                         modifier = Modifier.fillMaxSize(),

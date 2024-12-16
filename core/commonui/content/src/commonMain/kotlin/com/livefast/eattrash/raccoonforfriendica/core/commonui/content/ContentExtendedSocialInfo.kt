@@ -55,12 +55,7 @@ fun ContentExtendedSocialInfo(
                 tint = ancillaryColor,
             )
             Text(
-                text =
-                    buildString {
-                        append(reblogCount)
-                        append(" ")
-                        append(LocalStrings.current.extendedSocialInfoReblogs(reblogCount))
-                    },
+                text = LocalStrings.current.extendedSocialInfoReblogs(reblogCount),
                 style = MaterialTheme.typography.labelMedium,
                 color = ancillaryColor,
             )
@@ -89,12 +84,7 @@ fun ContentExtendedSocialInfo(
                 tint = ancillaryColor,
             )
             Text(
-                text =
-                    buildString {
-                        append(favoriteCount)
-                        append(" ")
-                        append(LocalStrings.current.extendedSocialInfoFavorites(favoriteCount))
-                    },
+                text = LocalStrings.current.extendedSocialInfoFavorites(favoriteCount),
                 style = MaterialTheme.typography.labelMedium,
                 color = ancillaryColor,
             )

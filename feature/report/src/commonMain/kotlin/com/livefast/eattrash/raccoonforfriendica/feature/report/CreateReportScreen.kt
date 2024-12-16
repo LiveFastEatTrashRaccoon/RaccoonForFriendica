@@ -184,15 +184,10 @@ class CreateReportScreen(
 
                 // violated rules
                 if (uiState.category == ReportCategory.Violation) {
+                    val count = uiState.violatedRuleIds.size
                     SettingsRow(
                         title = LocalStrings.current.createReportItemRules,
-                        value =
-                            buildString {
-                                val count = uiState.violatedRuleIds.size
-                                append(count)
-                                append(" ")
-                                append(LocalStrings.current.createReportSelectedRules(count))
-                            },
+                        value = LocalStrings.current.createReportSelectedRules(count),
                         onTap = {
                             ruleSelectionOpened = true
                         },

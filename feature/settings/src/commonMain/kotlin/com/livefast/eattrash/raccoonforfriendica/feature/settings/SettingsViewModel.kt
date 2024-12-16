@@ -114,10 +114,10 @@ class SettingsViewModel(
                     }
                 }.launchIn(this)
 
-            l10nManager.lyricist.state
-                .onEach { state ->
+            l10nManager.lang
+                .onEach { lang ->
                     updateState {
-                        it.copy(lang = state.languageTag)
+                        it.copy(lang = lang)
                     }
                 }.launchIn(this)
 

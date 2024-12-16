@@ -1,0 +1,1285 @@
+package com.livefast.eattrash.raccoonforfriendica.resources
+
+import androidx.compose.runtime.Composable
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Strings
+import org.jetbrains.compose.resources.getPluralString
+import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.core.annotation.Factory
+import raccoonforfriendica.composeapp.generated.resources.Res
+import raccoonforfriendica.composeapp.generated.resources.account_age
+import raccoonforfriendica.composeapp.generated.resources.account_follower
+import raccoonforfriendica.composeapp.generated.resources.account_following
+import raccoonforfriendica.composeapp.generated.resources.account_section_all
+import raccoonforfriendica.composeapp.generated.resources.account_section_media
+import raccoonforfriendica.composeapp.generated.resources.account_section_pinned
+import raccoonforfriendica.composeapp.generated.resources.account_section_posts
+import raccoonforfriendica.composeapp.generated.resources.action_accept
+import raccoonforfriendica.composeapp.generated.resources.action_add_image
+import raccoonforfriendica.composeapp.generated.resources.action_add_image_from_gallery
+import raccoonforfriendica.composeapp.generated.resources.action_add_new
+import raccoonforfriendica.composeapp.generated.resources.action_add_poll
+import raccoonforfriendica.composeapp.generated.resources.action_add_reaction
+import raccoonforfriendica.composeapp.generated.resources.action_add_spoiler
+import raccoonforfriendica.composeapp.generated.resources.action_add_title
+import raccoonforfriendica.composeapp.generated.resources.action_add_to_bookmarks
+import raccoonforfriendica.composeapp.generated.resources.action_add_to_favorites
+import raccoonforfriendica.composeapp.generated.resources.action_block
+import raccoonforfriendica.composeapp.generated.resources.action_cancel_edit_personal_note
+import raccoonforfriendica.composeapp.generated.resources.action_change_markup_mode
+import raccoonforfriendica.composeapp.generated.resources.action_change_visibility
+import raccoonforfriendica.composeapp.generated.resources.action_clear
+import raccoonforfriendica.composeapp.generated.resources.action_copy_to_clipboard
+import raccoonforfriendica.composeapp.generated.resources.action_copy_url
+import raccoonforfriendica.composeapp.generated.resources.action_create_thread_in_group
+import raccoonforfriendica.composeapp.generated.resources.action_delete
+import raccoonforfriendica.composeapp.generated.resources.action_delete_account
+import raccoonforfriendica.composeapp.generated.resources.action_delete_follow_request
+import raccoonforfriendica.composeapp.generated.resources.action_dismiss_all_notifications
+import raccoonforfriendica.composeapp.generated.resources.action_download
+import raccoonforfriendica.composeapp.generated.resources.action_edit
+import raccoonforfriendica.composeapp.generated.resources.action_edit_members
+import raccoonforfriendica.composeapp.generated.resources.action_edit_personal_note
+import raccoonforfriendica.composeapp.generated.resources.action_export
+import raccoonforfriendica.composeapp.generated.resources.action_filter
+import raccoonforfriendica.composeapp.generated.resources.action_follow
+import raccoonforfriendica.composeapp.generated.resources.action_go_back
+import raccoonforfriendica.composeapp.generated.resources.action_hide_content
+import raccoonforfriendica.composeapp.generated.resources.action_hide_results
+import raccoonforfriendica.composeapp.generated.resources.action_insert_link
+import raccoonforfriendica.composeapp.generated.resources.action_insert_list
+import raccoonforfriendica.composeapp.generated.resources.action_logout
+import raccoonforfriendica.composeapp.generated.resources.action_move
+import raccoonforfriendica.composeapp.generated.resources.action_mute
+import raccoonforfriendica.composeapp.generated.resources.action_mute_notifications
+import raccoonforfriendica.composeapp.generated.resources.action_open_detail
+import raccoonforfriendica.composeapp.generated.resources.action_open_full_screen
+import raccoonforfriendica.composeapp.generated.resources.action_open_link
+import raccoonforfriendica.composeapp.generated.resources.action_open_options
+import raccoonforfriendica.composeapp.generated.resources.action_open_preview
+import raccoonforfriendica.composeapp.generated.resources.action_open_side_menu
+import raccoonforfriendica.composeapp.generated.resources.action_pin
+import raccoonforfriendica.composeapp.generated.resources.action_publish_default
+import raccoonforfriendica.composeapp.generated.resources.action_quote
+import raccoonforfriendica.composeapp.generated.resources.action_reblog
+import raccoonforfriendica.composeapp.generated.resources.action_reject
+import raccoonforfriendica.composeapp.generated.resources.action_remove_from_bookmarks
+import raccoonforfriendica.composeapp.generated.resources.action_remove_from_favorites
+import raccoonforfriendica.composeapp.generated.resources.action_remove_poll
+import raccoonforfriendica.composeapp.generated.resources.action_remove_spoiler
+import raccoonforfriendica.composeapp.generated.resources.action_remove_title
+import raccoonforfriendica.composeapp.generated.resources.action_reply
+import raccoonforfriendica.composeapp.generated.resources.action_report_entry
+import raccoonforfriendica.composeapp.generated.resources.action_report_user
+import raccoonforfriendica.composeapp.generated.resources.action_reveal_content
+import raccoonforfriendica.composeapp.generated.resources.action_save
+import raccoonforfriendica.composeapp.generated.resources.action_save_draft
+import raccoonforfriendica.composeapp.generated.resources.action_save_to_calendar
+import raccoonforfriendica.composeapp.generated.resources.action_search
+import raccoonforfriendica.composeapp.generated.resources.action_select
+import raccoonforfriendica.composeapp.generated.resources.action_send_follow_request
+import raccoonforfriendica.composeapp.generated.resources.action_set_schedule_date
+import raccoonforfriendica.composeapp.generated.resources.action_share
+import raccoonforfriendica.composeapp.generated.resources.action_show_content_description
+import raccoonforfriendica.composeapp.generated.resources.action_show_results
+import raccoonforfriendica.composeapp.generated.resources.action_submit
+import raccoonforfriendica.composeapp.generated.resources.action_switch_account
+import raccoonforfriendica.composeapp.generated.resources.action_switch_to_classic_mode
+import raccoonforfriendica.composeapp.generated.resources.action_switch_to_forum_mode
+import raccoonforfriendica.composeapp.generated.resources.action_toggle_reveal
+import raccoonforfriendica.composeapp.generated.resources.action_unblock
+import raccoonforfriendica.composeapp.generated.resources.action_unfollow
+import raccoonforfriendica.composeapp.generated.resources.action_unmute
+import raccoonforfriendica.composeapp.generated.resources.action_unpin
+import raccoonforfriendica.composeapp.generated.resources.action_update_schedule_date
+import raccoonforfriendica.composeapp.generated.resources.action_view_details
+import raccoonforfriendica.composeapp.generated.resources.action_vote
+import raccoonforfriendica.composeapp.generated.resources.announcements_title
+import raccoonforfriendica.composeapp.generated.resources.app_icon_classical
+import raccoonforfriendica.composeapp.generated.resources.app_icon_default
+import raccoonforfriendica.composeapp.generated.resources.bar_theme_opaque
+import raccoonforfriendica.composeapp.generated.resources.bar_theme_solid
+import raccoonforfriendica.composeapp.generated.resources.bar_theme_transparent
+import raccoonforfriendica.composeapp.generated.resources.bookmarks_title
+import raccoonforfriendica.composeapp.generated.resources.button_cancel
+import raccoonforfriendica.composeapp.generated.resources.button_close
+import raccoonforfriendica.composeapp.generated.resources.button_confirm
+import raccoonforfriendica.composeapp.generated.resources.button_load
+import raccoonforfriendica.composeapp.generated.resources.button_load_more_replies
+import raccoonforfriendica.composeapp.generated.resources.button_login
+import raccoonforfriendica.composeapp.generated.resources.button_ok
+import raccoonforfriendica.composeapp.generated.resources.button_poll_error_open_issue
+import raccoonforfriendica.composeapp.generated.resources.button_publish_anyway
+import raccoonforfriendica.composeapp.generated.resources.button_save
+import raccoonforfriendica.composeapp.generated.resources.calendar_title
+import raccoonforfriendica.composeapp.generated.resources.change_node_dialog_title
+import raccoonforfriendica.composeapp.generated.resources.circle_add_users_dialog_title
+import raccoonforfriendica.composeapp.generated.resources.circle_edit_field_name
+import raccoonforfriendica.composeapp.generated.resources.circle_type_group
+import raccoonforfriendica.composeapp.generated.resources.circle_type_predefined
+import raccoonforfriendica.composeapp.generated.resources.circle_type_user_defined
+import raccoonforfriendica.composeapp.generated.resources.color_picker_dialog_title
+import raccoonforfriendica.composeapp.generated.resources.confirm_change_markup_mode
+import raccoonforfriendica.composeapp.generated.resources.content_scale_fill_height
+import raccoonforfriendica.composeapp.generated.resources.content_scale_fill_width
+import raccoonforfriendica.composeapp.generated.resources.content_scale_fit
+import raccoonforfriendica.composeapp.generated.resources.content_scale_title
+import raccoonforfriendica.composeapp.generated.resources.create_circle_title
+import raccoonforfriendica.composeapp.generated.resources.create_post_attachments_section
+import raccoonforfriendica.composeapp.generated.resources.create_post_body_placeholder
+import raccoonforfriendica.composeapp.generated.resources.create_post_poll_item_expiration_date
+import raccoonforfriendica.composeapp.generated.resources.create_post_poll_item_multiple
+import raccoonforfriendica.composeapp.generated.resources.create_post_poll_option_label
+import raccoonforfriendica.composeapp.generated.resources.create_post_poll_section
+import raccoonforfriendica.composeapp.generated.resources.create_post_spoiler_placeholder
+import raccoonforfriendica.composeapp.generated.resources.create_post_title
+import raccoonforfriendica.composeapp.generated.resources.create_post_title_placeholder
+import raccoonforfriendica.composeapp.generated.resources.create_report_comment_placeholder
+import raccoonforfriendica.composeapp.generated.resources.create_report_item_category
+import raccoonforfriendica.composeapp.generated.resources.create_report_item_forward
+import raccoonforfriendica.composeapp.generated.resources.create_report_item_rules
+import raccoonforfriendica.composeapp.generated.resources.create_report_selected_rules
+import raccoonforfriendica.composeapp.generated.resources.create_report_title_entry
+import raccoonforfriendica.composeapp.generated.resources.create_report_title_user
+import raccoonforfriendica.composeapp.generated.resources.creation_date
+import raccoonforfriendica.composeapp.generated.resources.custom_option
+import raccoonforfriendica.composeapp.generated.resources.date_day_short
+import raccoonforfriendica.composeapp.generated.resources.date_month_short
+import raccoonforfriendica.composeapp.generated.resources.date_year_short
+import raccoonforfriendica.composeapp.generated.resources.dialog_error_title
+import raccoonforfriendica.composeapp.generated.resources.direct_messages_title
+import raccoonforfriendica.composeapp.generated.resources.dislikes_count
+import raccoonforfriendica.composeapp.generated.resources.duration_never
+import raccoonforfriendica.composeapp.generated.resources.edit_circle_title
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_item_avatar
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_item_bio
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_item_bot
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_item_discoverable
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_item_display_name
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_item_field_key
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_item_field_value
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_item_header
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_item_hide_collections
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_item_locked
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_item_no_index
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_section_fields
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_section_flags
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_section_images
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_section_personal
+import raccoonforfriendica.composeapp.generated.resources.edit_profile_title
+import raccoonforfriendica.composeapp.generated.resources.exempli_gratia
+import raccoonforfriendica.composeapp.generated.resources.experimental
+import raccoonforfriendica.composeapp.generated.resources.explore_section_hashtags
+import raccoonforfriendica.composeapp.generated.resources.explore_section_links
+import raccoonforfriendica.composeapp.generated.resources.explore_section_suggestions
+import raccoonforfriendica.composeapp.generated.resources.extended_social_info_favorites
+import raccoonforfriendica.composeapp.generated.resources.extended_social_info_reblogs
+import raccoonforfriendica.composeapp.generated.resources.favorites_title
+import raccoonforfriendica.composeapp.generated.resources.feed_type_title
+import raccoonforfriendica.composeapp.generated.resources.field_node_name
+import raccoonforfriendica.composeapp.generated.resources.field_password
+import raccoonforfriendica.composeapp.generated.resources.field_username
+import raccoonforfriendica.composeapp.generated.resources.follow_requests_title
+import raccoonforfriendica.composeapp.generated.resources.follow_required_message
+import raccoonforfriendica.composeapp.generated.resources.followed_hashtags_title
+import raccoonforfriendica.composeapp.generated.resources.follower_title
+import raccoonforfriendica.composeapp.generated.resources.following_title
+import raccoonforfriendica.composeapp.generated.resources.font_scale_larger
+import raccoonforfriendica.composeapp.generated.resources.font_scale_largest
+import raccoonforfriendica.composeapp.generated.resources.font_scale_normal
+import raccoonforfriendica.composeapp.generated.resources.font_scale_smaller
+import raccoonforfriendica.composeapp.generated.resources.font_scale_smallest
+import raccoonforfriendica.composeapp.generated.resources.format_bold
+import raccoonforfriendica.composeapp.generated.resources.format_italic
+import raccoonforfriendica.composeapp.generated.resources.format_monospace
+import raccoonforfriendica.composeapp.generated.resources.format_strikethrough
+import raccoonforfriendica.composeapp.generated.resources.format_underlined
+import raccoonforfriendica.composeapp.generated.resources.gallery_field_album_name
+import raccoonforfriendica.composeapp.generated.resources.gallery_title
+import raccoonforfriendica.composeapp.generated.resources.hashtag_people_using
+import raccoonforfriendica.composeapp.generated.resources.help_me_choose_an_instance
+import raccoonforfriendica.composeapp.generated.resources.highest_score
+import raccoonforfriendica.composeapp.generated.resources.image_loading_mode_always
+import raccoonforfriendica.composeapp.generated.resources.image_loading_mode_on_demand
+import raccoonforfriendica.composeapp.generated.resources.image_loading_mode_on_wi_fi
+import raccoonforfriendica.composeapp.generated.resources.inbox_configure_filter_dialog_subtitle
+import raccoonforfriendica.composeapp.generated.resources.inbox_configure_filter_dialog_title
+import raccoonforfriendica.composeapp.generated.resources.info_edited
+import raccoonforfriendica.composeapp.generated.resources.insert_emoji_title
+import raccoonforfriendica.composeapp.generated.resources.insert_link_dialog_title
+import raccoonforfriendica.composeapp.generated.resources.insert_link_field_anchor
+import raccoonforfriendica.composeapp.generated.resources.insert_link_field_url
+import raccoonforfriendica.composeapp.generated.resources.item_other
+import raccoonforfriendica.composeapp.generated.resources.items
+import raccoonforfriendica.composeapp.generated.resources.language_de
+import raccoonforfriendica.composeapp.generated.resources.language_en
+import raccoonforfriendica.composeapp.generated.resources.language_es
+import raccoonforfriendica.composeapp.generated.resources.language_fi
+import raccoonforfriendica.composeapp.generated.resources.language_fr
+import raccoonforfriendica.composeapp.generated.resources.language_it
+import raccoonforfriendica.composeapp.generated.resources.language_pl
+import raccoonforfriendica.composeapp.generated.resources.language_pt
+import raccoonforfriendica.composeapp.generated.resources.language_ua
+import raccoonforfriendica.composeapp.generated.resources.login_friendica_header
+import raccoonforfriendica.composeapp.generated.resources.login_mastodon_header
+import raccoonforfriendica.composeapp.generated.resources.login_method_basic
+import raccoonforfriendica.composeapp.generated.resources.login_more_info_bottom_sheet_content
+import raccoonforfriendica.composeapp.generated.resources.login_subtitle
+import raccoonforfriendica.composeapp.generated.resources.login_title
+import raccoonforfriendica.composeapp.generated.resources.manage_blocks_section_blocked
+import raccoonforfriendica.composeapp.generated.resources.manage_blocks_section_muted
+import raccoonforfriendica.composeapp.generated.resources.manage_circles_title
+import raccoonforfriendica.composeapp.generated.resources.markup_mode_bbcode
+import raccoonforfriendica.composeapp.generated.resources.markup_mode_html
+import raccoonforfriendica.composeapp.generated.resources.markup_mode_markdown
+import raccoonforfriendica.composeapp.generated.resources.markup_mode_plain_text
+import raccoonforfriendica.composeapp.generated.resources.message_alt_text_missing_error
+import raccoonforfriendica.composeapp.generated.resources.message_are_you_sure
+import raccoonforfriendica.composeapp.generated.resources.message_are_you_sure_exit
+import raccoonforfriendica.composeapp.generated.resources.message_are_you_sure_reblog
+import raccoonforfriendica.composeapp.generated.resources.message_auth_issue
+import raccoonforfriendica.composeapp.generated.resources.message_auth_issue_hint_1
+import raccoonforfriendica.composeapp.generated.resources.message_auth_issue_hint_2
+import raccoonforfriendica.composeapp.generated.resources.message_auth_issue_hint_3
+import raccoonforfriendica.composeapp.generated.resources.message_auth_issue_hints_title
+import raccoonforfriendica.composeapp.generated.resources.message_character_limit_exceeded
+import raccoonforfriendica.composeapp.generated.resources.message_confirm_exit
+import raccoonforfriendica.composeapp.generated.resources.message_empty_album
+import raccoonforfriendica.composeapp.generated.resources.message_empty_conversation
+import raccoonforfriendica.composeapp.generated.resources.message_empty_inbox
+import raccoonforfriendica.composeapp.generated.resources.message_empty_list
+import raccoonforfriendica.composeapp.generated.resources.message_generic_error
+import raccoonforfriendica.composeapp.generated.resources.message_invalid_field
+import raccoonforfriendica.composeapp.generated.resources.message_invalid_poll_error
+import raccoonforfriendica.composeapp.generated.resources.message_loading_users
+import raccoonforfriendica.composeapp.generated.resources.message_missing_field
+import raccoonforfriendica.composeapp.generated.resources.message_missing_rules
+import raccoonforfriendica.composeapp.generated.resources.message_poll_vote_error_body
+import raccoonforfriendica.composeapp.generated.resources.message_post_empty_text
+import raccoonforfriendica.composeapp.generated.resources.message_post_invalid_visibility
+import raccoonforfriendica.composeapp.generated.resources.message_reply_visibility_greater_than_parent_error
+import raccoonforfriendica.composeapp.generated.resources.message_restart_to_apply_changes
+import raccoonforfriendica.composeapp.generated.resources.message_schedule_date_in_the_past
+import raccoonforfriendica.composeapp.generated.resources.message_search_initial_empty
+import raccoonforfriendica.composeapp.generated.resources.message_success
+import raccoonforfriendica.composeapp.generated.resources.message_user_unlogged
+import raccoonforfriendica.composeapp.generated.resources.message_video_nsfw
+import raccoonforfriendica.composeapp.generated.resources.messages
+import raccoonforfriendica.composeapp.generated.resources.more_info
+import raccoonforfriendica.composeapp.generated.resources.mute_disable_notifications_item
+import raccoonforfriendica.composeapp.generated.resources.mute_duration_indefinite
+import raccoonforfriendica.composeapp.generated.resources.mute_duration_item
+import raccoonforfriendica.composeapp.generated.resources.new_account_title
+import raccoonforfriendica.composeapp.generated.resources.node_info_section_contact
+import raccoonforfriendica.composeapp.generated.resources.node_info_section_rules
+import raccoonforfriendica.composeapp.generated.resources.node_info_title
+import raccoonforfriendica.composeapp.generated.resources.node_via
+import raccoonforfriendica.composeapp.generated.resources.notification_type_entry
+import raccoonforfriendica.composeapp.generated.resources.notification_type_entry_name
+import raccoonforfriendica.composeapp.generated.resources.notification_type_favorite
+import raccoonforfriendica.composeapp.generated.resources.notification_type_favorite_name
+import raccoonforfriendica.composeapp.generated.resources.notification_type_follow
+import raccoonforfriendica.composeapp.generated.resources.notification_type_follow_name
+import raccoonforfriendica.composeapp.generated.resources.notification_type_follow_request
+import raccoonforfriendica.composeapp.generated.resources.notification_type_follow_request_name
+import raccoonforfriendica.composeapp.generated.resources.notification_type_mention
+import raccoonforfriendica.composeapp.generated.resources.notification_type_mention_name
+import raccoonforfriendica.composeapp.generated.resources.notification_type_poll
+import raccoonforfriendica.composeapp.generated.resources.notification_type_poll_name
+import raccoonforfriendica.composeapp.generated.resources.notification_type_reblog
+import raccoonforfriendica.composeapp.generated.resources.notification_type_reblog_name
+import raccoonforfriendica.composeapp.generated.resources.notification_type_update
+import raccoonforfriendica.composeapp.generated.resources.notification_type_update_name
+import raccoonforfriendica.composeapp.generated.resources.pick_from_gallery_dialog_title
+import raccoonforfriendica.composeapp.generated.resources.picture_description_placeholder
+import raccoonforfriendica.composeapp.generated.resources.poll_expired
+import raccoonforfriendica.composeapp.generated.resources.poll_expires_in
+import raccoonforfriendica.composeapp.generated.resources.poll_vote
+import raccoonforfriendica.composeapp.generated.resources.post_by
+import raccoonforfriendica.composeapp.generated.resources.post_sensitive
+import raccoonforfriendica.composeapp.generated.resources.post_title
+import raccoonforfriendica.composeapp.generated.resources.preview_image
+import raccoonforfriendica.composeapp.generated.resources.relationship_status_following
+import raccoonforfriendica.composeapp.generated.resources.relationship_status_follows_you
+import raccoonforfriendica.composeapp.generated.resources.relationship_status_mutual
+import raccoonforfriendica.composeapp.generated.resources.relationship_status_requested_to_other
+import raccoonforfriendica.composeapp.generated.resources.relationship_status_requested_to_you
+import raccoonforfriendica.composeapp.generated.resources.report_category_legal
+import raccoonforfriendica.composeapp.generated.resources.report_category_spam
+import raccoonforfriendica.composeapp.generated.resources.report_category_violation
+import raccoonforfriendica.composeapp.generated.resources.schedule_date_indication
+import raccoonforfriendica.composeapp.generated.resources.search_placeholder
+import raccoonforfriendica.composeapp.generated.resources.search_section_users
+import raccoonforfriendica.composeapp.generated.resources.section_title_explore
+import raccoonforfriendica.composeapp.generated.resources.section_title_home
+import raccoonforfriendica.composeapp.generated.resources.section_title_inbox
+import raccoonforfriendica.composeapp.generated.resources.section_title_profile
+import raccoonforfriendica.composeapp.generated.resources.select_circle_dialog_title
+import raccoonforfriendica.composeapp.generated.resources.select_duration_dialog_title
+import raccoonforfriendica.composeapp.generated.resources.select_user_dialog_title
+import raccoonforfriendica.composeapp.generated.resources.select_user_search_placeholder
+import raccoonforfriendica.composeapp.generated.resources.settings_about
+import raccoonforfriendica.composeapp.generated.resources.settings_about_app_version
+import raccoonforfriendica.composeapp.generated.resources.settings_about_changelog
+import raccoonforfriendica.composeapp.generated.resources.settings_about_licences
+import raccoonforfriendica.composeapp.generated.resources.settings_about_matrix
+import raccoonforfriendica.composeapp.generated.resources.settings_about_report_issue
+import raccoonforfriendica.composeapp.generated.resources.settings_about_user_manual
+import raccoonforfriendica.composeapp.generated.resources.settings_about_view_friendica
+import raccoonforfriendica.composeapp.generated.resources.settings_about_view_github
+import raccoonforfriendica.composeapp.generated.resources.settings_autoload_images
+import raccoonforfriendica.composeapp.generated.resources.settings_header_general
+import raccoonforfriendica.composeapp.generated.resources.settings_header_look_and_feel
+import raccoonforfriendica.composeapp.generated.resources.settings_header_nsfw
+import raccoonforfriendica.composeapp.generated.resources.settings_item_app_icon
+import raccoonforfriendica.composeapp.generated.resources.settings_item_bar_theme
+import raccoonforfriendica.composeapp.generated.resources.settings_item_blocked_and_muted
+import raccoonforfriendica.composeapp.generated.resources.settings_item_blur_nsfw
+import raccoonforfriendica.composeapp.generated.resources.settings_item_crash_report_enabled
+import raccoonforfriendica.composeapp.generated.resources.settings_item_default_post_visibility
+import raccoonforfriendica.composeapp.generated.resources.settings_item_default_reply_visibility
+import raccoonforfriendica.composeapp.generated.resources.settings_item_default_timeline_type
+import raccoonforfriendica.composeapp.generated.resources.settings_item_dynamic_colors
+import raccoonforfriendica.composeapp.generated.resources.settings_item_dynamic_colors_subtitle
+import raccoonforfriendica.composeapp.generated.resources.settings_item_exclude_replies_from_timeline
+import raccoonforfriendica.composeapp.generated.resources.settings_item_export
+import raccoonforfriendica.composeapp.generated.resources.settings_item_font_family
+import raccoonforfriendica.composeapp.generated.resources.settings_item_font_scale
+import raccoonforfriendica.composeapp.generated.resources.settings_item_hide_navigation_bar_while_scrolling
+import raccoonforfriendica.composeapp.generated.resources.settings_item_import
+import raccoonforfriendica.composeapp.generated.resources.settings_item_include_nsfw
+import raccoonforfriendica.composeapp.generated.resources.settings_item_language
+import raccoonforfriendica.composeapp.generated.resources.settings_item_markup_mode
+import raccoonforfriendica.composeapp.generated.resources.settings_item_max_post_body_lines
+import raccoonforfriendica.composeapp.generated.resources.settings_item_notification_mode
+import raccoonforfriendica.composeapp.generated.resources.settings_item_open_groups_in_forum_mode_by_default
+import raccoonforfriendica.composeapp.generated.resources.settings_item_push_notification_state
+import raccoonforfriendica.composeapp.generated.resources.settings_item_theme
+import raccoonforfriendica.composeapp.generated.resources.settings_item_theme_color
+import raccoonforfriendica.composeapp.generated.resources.settings_item_theme_color_subtitle
+import raccoonforfriendica.composeapp.generated.resources.settings_item_url_opening_mode
+import raccoonforfriendica.composeapp.generated.resources.settings_notification_mode_disabled
+import raccoonforfriendica.composeapp.generated.resources.settings_notification_mode_pull
+import raccoonforfriendica.composeapp.generated.resources.settings_notification_mode_pull_explanation
+import raccoonforfriendica.composeapp.generated.resources.settings_notification_mode_push
+import raccoonforfriendica.composeapp.generated.resources.settings_notification_mode_push_explanation
+import raccoonforfriendica.composeapp.generated.resources.settings_option_background_notification_check
+import raccoonforfriendica.composeapp.generated.resources.settings_option_unlimited
+import raccoonforfriendica.composeapp.generated.resources.settings_push_notification_state_enabled
+import raccoonforfriendica.composeapp.generated.resources.settings_push_notification_state_idle
+import raccoonforfriendica.composeapp.generated.resources.settings_push_notification_state_initializing
+import raccoonforfriendica.composeapp.generated.resources.settings_push_notification_state_no_distributor_selected
+import raccoonforfriendica.composeapp.generated.resources.settings_push_notification_state_no_distributors
+import raccoonforfriendica.composeapp.generated.resources.settings_push_notification_state_unsupported
+import raccoonforfriendica.composeapp.generated.resources.settings_section_debug
+import raccoonforfriendica.composeapp.generated.resources.settings_subtitle_background_notification_not_restricted
+import raccoonforfriendica.composeapp.generated.resources.settings_subtitle_background_notification_restricted
+import raccoonforfriendica.composeapp.generated.resources.settings_theme_black
+import raccoonforfriendica.composeapp.generated.resources.settings_theme_dark
+import raccoonforfriendica.composeapp.generated.resources.settings_theme_light
+import raccoonforfriendica.composeapp.generated.resources.settings_title
+import raccoonforfriendica.composeapp.generated.resources.share_as_file
+import raccoonforfriendica.composeapp.generated.resources.share_as_url
+import raccoonforfriendica.composeapp.generated.resources.short_unavailable
+import raccoonforfriendica.composeapp.generated.resources.sidebar_anonymous_message
+import raccoonforfriendica.composeapp.generated.resources.sidebar_anonymous_title
+import raccoonforfriendica.composeapp.generated.resources.system_default
+import raccoonforfriendica.composeapp.generated.resources.theme_color_blue
+import raccoonforfriendica.composeapp.generated.resources.theme_color_gray
+import raccoonforfriendica.composeapp.generated.resources.theme_color_green
+import raccoonforfriendica.composeapp.generated.resources.theme_color_light_blue
+import raccoonforfriendica.composeapp.generated.resources.theme_color_orange
+import raccoonforfriendica.composeapp.generated.resources.theme_color_pink
+import raccoonforfriendica.composeapp.generated.resources.theme_color_purple
+import raccoonforfriendica.composeapp.generated.resources.theme_color_red
+import raccoonforfriendica.composeapp.generated.resources.theme_color_white
+import raccoonforfriendica.composeapp.generated.resources.theme_color_yellow
+import raccoonforfriendica.composeapp.generated.resources.thread_title
+import raccoonforfriendica.composeapp.generated.resources.time_hour_short
+import raccoonforfriendica.composeapp.generated.resources.time_minute_short
+import raccoonforfriendica.composeapp.generated.resources.time_second_short
+import raccoonforfriendica.composeapp.generated.resources.timeline_all
+import raccoonforfriendica.composeapp.generated.resources.timeline_entry_in_reply_to
+import raccoonforfriendica.composeapp.generated.resources.timeline_entry_reblogged_by
+import raccoonforfriendica.composeapp.generated.resources.timeline_local
+import raccoonforfriendica.composeapp.generated.resources.timeline_subscriptions
+import raccoonforfriendica.composeapp.generated.resources.topic_title
+import raccoonforfriendica.composeapp.generated.resources.unpublished_section_drafts
+import raccoonforfriendica.composeapp.generated.resources.unpublished_section_scheduled
+import raccoonforfriendica.composeapp.generated.resources.unpublished_title
+import raccoonforfriendica.composeapp.generated.resources.unread_messages
+import raccoonforfriendica.composeapp.generated.resources.unread_notification_body
+import raccoonforfriendica.composeapp.generated.resources.unread_notification_title
+import raccoonforfriendica.composeapp.generated.resources.unsaved_changes_title
+import raccoonforfriendica.composeapp.generated.resources.update_date
+import raccoonforfriendica.composeapp.generated.resources.url_opening_mode_custom_tabs
+import raccoonforfriendica.composeapp.generated.resources.url_opening_mode_external
+import raccoonforfriendica.composeapp.generated.resources.url_opening_mode_internal
+import raccoonforfriendica.composeapp.generated.resources.user_feedback_comment_placeholder
+import raccoonforfriendica.composeapp.generated.resources.user_feedback_field_comment
+import raccoonforfriendica.composeapp.generated.resources.user_feedback_field_email
+import raccoonforfriendica.composeapp.generated.resources.user_field_personal_note
+import raccoonforfriendica.composeapp.generated.resources.verified_field
+import raccoonforfriendica.composeapp.generated.resources.visibility_circle
+import raccoonforfriendica.composeapp.generated.resources.visibility_direct
+import raccoonforfriendica.composeapp.generated.resources.visibility_private
+import raccoonforfriendica.composeapp.generated.resources.visibility_public
+import raccoonforfriendica.composeapp.generated.resources.visibility_unlisted
+
+@Factory
+class SharedStrings : Strings {
+    override val accountAge: String
+        @Composable get() = stringResource(Res.string.account_age)
+    override val accountSectionAll: String
+        @Composable get() = stringResource(Res.string.account_section_all)
+    override val accountSectionMedia: String
+        @Composable get() = stringResource(Res.string.account_section_media)
+    override val accountSectionPinned: String
+        @Composable get() = stringResource(Res.string.account_section_pinned)
+    override val accountSectionPosts: String
+        @Composable get() = stringResource(Res.string.account_section_posts)
+    override val actionAccept: String
+        @Composable get() = stringResource(Res.string.action_accept)
+    override val actionAddImage: String
+        @Composable get() = stringResource(Res.string.action_add_image)
+    override val actionAddImageFromGallery: String
+        @Composable get() = stringResource(Res.string.action_add_image_from_gallery)
+    override val actionAddNew: String
+        @Composable get() = stringResource(Res.string.action_add_new)
+    override val actionAddPoll: String
+        @Composable get() = stringResource(Res.string.action_add_poll)
+    override val actionAddReaction: String
+        @Composable get() = stringResource(Res.string.action_add_reaction)
+    override val actionAddSpoiler: String
+        @Composable get() = stringResource(Res.string.action_add_spoiler)
+    override val actionAddTitle: String
+        @Composable get() = stringResource(Res.string.action_add_title)
+    override val actionAddToBookmarks: String
+        @Composable get() = stringResource(Res.string.action_add_to_bookmarks)
+    override val actionAddToFavorites: String
+        @Composable get() = stringResource(Res.string.action_add_to_favorites)
+    override val actionBlock: String
+        @Composable get() = stringResource(Res.string.action_block)
+    override val actionCancelEditPersonalNote: String
+        @Composable get() = stringResource(Res.string.action_cancel_edit_personal_note)
+    override val actionChangeMarkupMode: String
+        @Composable get() = stringResource(Res.string.action_change_markup_mode)
+    override val actionChangeVisibility: String
+        @Composable get() = stringResource(Res.string.action_change_visibility)
+    override val actionClear: String
+        @Composable get() = stringResource(Res.string.action_clear)
+    override val actionCopyToClipboard: String
+        @Composable get() = stringResource(Res.string.action_copy_to_clipboard)
+    override val actionCopyUrl: String
+        @Composable get() = stringResource(Res.string.action_copy_url)
+    override val actionCreateThreadInGroup: String
+        @Composable get() = stringResource(Res.string.action_create_thread_in_group)
+    override val actionDelete: String
+        @Composable get() = stringResource(Res.string.action_delete)
+    override val actionDeleteAccount: String
+        @Composable get() = stringResource(Res.string.action_delete_account)
+    override val actionDeleteFollowRequest: String
+        @Composable get() = stringResource(Res.string.action_delete_follow_request)
+    override val actionDismissAllNotifications: String
+        @Composable get() = stringResource(Res.string.action_dismiss_all_notifications)
+    override val actionDownload: String
+        @Composable get() = stringResource(Res.string.action_download)
+    override val actionEdit: String
+        @Composable get() = stringResource(Res.string.action_edit)
+    override val actionEditMembers: String
+        @Composable get() = stringResource(Res.string.action_edit_members)
+    override val actionEditPersonalNote: String
+        @Composable get() = stringResource(Res.string.action_edit_personal_note)
+    override val actionExport: String
+        @Composable get() = stringResource(Res.string.action_export)
+    override val actionFilter: String
+        @Composable get() = stringResource(Res.string.action_filter)
+    override val actionFollow: String
+        @Composable get() = stringResource(Res.string.action_follow)
+    override val actionGoBack: String
+        @Composable get() = stringResource(Res.string.action_go_back)
+    override val actionHideContent: String
+        @Composable get() = stringResource(Res.string.action_hide_content)
+    override val actionHideResults: String
+        @Composable get() = stringResource(Res.string.action_hide_results)
+    override val actionInsertLink: String
+        @Composable get() = stringResource(Res.string.action_insert_link)
+    override val actionInsertList: String
+        @Composable get() = stringResource(Res.string.action_insert_list)
+    override val actionLogout: String
+        @Composable get() = stringResource(Res.string.action_logout)
+    override val actionMove: String
+        @Composable get() = stringResource(Res.string.action_move)
+    override val actionMute: String
+        @Composable get() = stringResource(Res.string.action_mute)
+    override val actionMuteNotifications: String
+        @Composable get() = stringResource(Res.string.action_mute_notifications)
+    override val actionOpenDetail: String
+        @Composable get() = stringResource(Res.string.action_open_detail)
+    override val actionOpenFullScreen: String
+        @Composable get() = stringResource(Res.string.action_open_full_screen)
+    override val actionOpenLink: String
+        @Composable get() = stringResource(Res.string.action_open_link)
+    override val actionOpenOptions: String
+        @Composable get() = stringResource(Res.string.action_open_options)
+    override val actionOpenPreview: String
+        @Composable get() = stringResource(Res.string.action_open_preview)
+    override val actionOpenSideMenu: String
+        @Composable get() = stringResource(Res.string.action_open_side_menu)
+    override val actionPin: String
+        @Composable get() = stringResource(Res.string.action_pin)
+    override val actionPublishDefault: String
+        @Composable get() = stringResource(Res.string.action_publish_default)
+    override val actionQuote: String
+        @Composable get() = stringResource(Res.string.action_quote)
+    override val actionReblog: String
+        @Composable get() = stringResource(Res.string.action_reblog)
+    override val actionReject: String
+        @Composable get() = stringResource(Res.string.action_reject)
+    override val actionRemoveFromBookmarks: String
+        @Composable get() = stringResource(Res.string.action_remove_from_bookmarks)
+    override val actionRemoveFromFavorites: String
+        @Composable get() = stringResource(Res.string.action_remove_from_favorites)
+    override val actionRemovePoll: String
+        @Composable get() = stringResource(Res.string.action_remove_poll)
+    override val actionRemoveSpoiler: String
+        @Composable get() = stringResource(Res.string.action_remove_spoiler)
+    override val actionRemoveTitle: String
+        @Composable get() = stringResource(Res.string.action_remove_title)
+    override val actionReply: String
+        @Composable get() = stringResource(Res.string.action_reply)
+    override val actionReportEntry: String
+        @Composable get() = stringResource(Res.string.action_report_entry)
+    override val actionReportUser: String
+        @Composable get() = stringResource(Res.string.action_report_user)
+    override val actionRevealContent: String
+        @Composable get() = stringResource(Res.string.action_reveal_content)
+    override val actionSave: String
+        @Composable get() = stringResource(Res.string.action_save)
+    override val actionSaveDraft: String
+        @Composable get() = stringResource(Res.string.action_save_draft)
+    override val actionSaveToCalendar: String
+        @Composable get() = stringResource(Res.string.action_save_to_calendar)
+    override val actionSearch: String
+        @Composable get() = stringResource(Res.string.action_search)
+    override val actionSelect: String
+        @Composable get() = stringResource(Res.string.action_select)
+    override val actionSendFollowRequest: String
+        @Composable get() = stringResource(Res.string.action_send_follow_request)
+    override val actionSetScheduleDate: String
+        @Composable get() = stringResource(Res.string.action_set_schedule_date)
+    override val actionShare: String
+        @Composable get() = stringResource(Res.string.action_share)
+    override val actionShowContentDescription: String
+        @Composable get() = stringResource(Res.string.action_show_content_description)
+    override val actionShowResults: String
+        @Composable get() = stringResource(Res.string.action_show_results)
+    override val actionSubmit: String
+        @Composable get() = stringResource(Res.string.action_submit)
+    override val actionSwitchAccount: String
+        @Composable get() = stringResource(Res.string.action_switch_account)
+    override val actionSwitchToClassicMode: String
+        @Composable get() = stringResource(Res.string.action_switch_to_classic_mode)
+    override val actionSwitchToForumMode: String
+        @Composable get() = stringResource(Res.string.action_switch_to_forum_mode)
+    override val actionToggleReveal: String
+        @Composable get() = stringResource(Res.string.action_toggle_reveal)
+    override val actionUnblock: String
+        @Composable get() = stringResource(Res.string.action_unblock)
+    override val actionUnfollow: String
+        @Composable get() = stringResource(Res.string.action_unfollow)
+    override val actionUnmute: String
+        @Composable get() = stringResource(Res.string.action_unmute)
+    override val actionUnpin: String
+        @Composable get() = stringResource(Res.string.action_unpin)
+    override val actionUpdateScheduleDate: String
+        @Composable get() = stringResource(Res.string.action_update_schedule_date)
+    override val actionViewDetails: String
+        @Composable get() = stringResource(Res.string.action_view_details)
+    override val actionVote: String
+        @Composable get() = stringResource(Res.string.action_vote)
+    override val announcementsTitle: String
+        @Composable get() = stringResource(Res.string.announcements_title)
+    override val appIconClassical: String
+        @Composable get() = stringResource(Res.string.app_icon_classical)
+    override val appIconDefault: String
+        @Composable get() = stringResource(Res.string.app_icon_default)
+    override val barThemeOpaque: String
+        @Composable get() = stringResource(Res.string.bar_theme_opaque)
+    override val barThemeSolid: String
+        @Composable get() = stringResource(Res.string.bar_theme_solid)
+    override val barThemeTransparent: String
+        @Composable get() = stringResource(Res.string.bar_theme_transparent)
+    override val bookmarksTitle: String
+        @Composable get() = stringResource(Res.string.bookmarks_title)
+    override val buttonCancel: String
+        @Composable get() = stringResource(Res.string.button_cancel)
+    override val buttonClose: String
+        @Composable get() = stringResource(Res.string.button_close)
+    override val buttonConfirm: String
+        @Composable get() = stringResource(Res.string.button_confirm)
+    override val buttonLoad: String
+        @Composable get() = stringResource(Res.string.button_load)
+    override val buttonLoadMoreReplies: String
+        @Composable get() = stringResource(Res.string.button_load_more_replies)
+    override val buttonLogin: String
+        @Composable get() = stringResource(Res.string.button_login)
+    override val buttonOk: String
+        @Composable get() = stringResource(Res.string.button_ok)
+    override val buttonPollErrorOpenIssue: String
+        @Composable get() = stringResource(Res.string.button_poll_error_open_issue)
+    override val buttonPublishAnyway: String
+        @Composable get() = stringResource(Res.string.button_publish_anyway)
+    override val buttonSave: String
+        @Composable get() = stringResource(Res.string.button_save)
+    override val calendarTitle: String
+        @Composable get() = stringResource(Res.string.calendar_title)
+    override val changeNodeDialogTitle: String
+        @Composable get() = stringResource(Res.string.change_node_dialog_title)
+    override val circleAddUsersDialogTitle: String
+        @Composable get() = stringResource(Res.string.circle_add_users_dialog_title)
+    override val circleEditFieldName: String
+        @Composable get() = stringResource(Res.string.circle_edit_field_name)
+    override val circleTypeGroup: String
+        @Composable get() = stringResource(Res.string.circle_type_group)
+    override val circleTypePredefined: String
+        @Composable get() = stringResource(Res.string.circle_type_predefined)
+    override val circleTypeUserDefined: String
+        @Composable get() = stringResource(Res.string.circle_type_user_defined)
+    override val colorPickerDialogTitle: String
+        @Composable get() = stringResource(Res.string.color_picker_dialog_title)
+    override val confirmChangeMarkupMode: String
+        @Composable get() = stringResource(Res.string.confirm_change_markup_mode)
+    override val contentScaleFillHeight: String
+        @Composable get() = stringResource(Res.string.content_scale_fill_height)
+    override val contentScaleFillWidth: String
+        @Composable get() = stringResource(Res.string.content_scale_fill_width)
+    override val contentScaleFit: String
+        @Composable get() = stringResource(Res.string.content_scale_fit)
+    override val contentScaleTitle: String
+        @Composable get() = stringResource(Res.string.content_scale_title)
+    override val createCircleTitle: String
+        @Composable get() = stringResource(Res.string.create_circle_title)
+    override val createPostAttachmentsSection: String
+        @Composable get() = stringResource(Res.string.create_post_attachments_section)
+    override val createPostBodyPlaceholder: String
+        @Composable get() = stringResource(Res.string.create_post_body_placeholder)
+    override val createPostPollItemExpirationDate: String
+        @Composable get() = stringResource(Res.string.create_post_poll_item_expiration_date)
+    override val createPostPollItemMultiple: String
+        @Composable get() = stringResource(Res.string.create_post_poll_item_multiple)
+    override val createPostPollOptionLabel: String
+        @Composable get() = stringResource(Res.string.create_post_poll_option_label)
+    override val createPostPollSection: String
+        @Composable get() = stringResource(Res.string.create_post_poll_section)
+    override val createPostSpoilerPlaceholder: String
+        @Composable get() = stringResource(Res.string.create_post_spoiler_placeholder)
+    override val createPostTitle: String
+        @Composable get() = stringResource(Res.string.create_post_title)
+    override val createPostTitlePlaceholder: String
+        @Composable get() = stringResource(Res.string.create_post_title_placeholder)
+    override val createReportCommentPlaceholder: String
+        @Composable get() = stringResource(Res.string.create_report_comment_placeholder)
+    override val createReportItemCategory: String
+        @Composable get() = stringResource(Res.string.create_report_item_category)
+    override val createReportItemForward: String
+        @Composable get() = stringResource(Res.string.create_report_item_forward)
+    override val createReportItemRules: String
+        @Composable get() = stringResource(Res.string.create_report_item_rules)
+    override val createReportTitleEntry: String
+        @Composable get() = stringResource(Res.string.create_report_title_entry)
+    override val createReportTitleUser: String
+        @Composable get() = stringResource(Res.string.create_report_title_user)
+    override val creationDate: String
+        @Composable get() = stringResource(Res.string.creation_date)
+    override val customOption: String
+        @Composable get() = stringResource(Res.string.custom_option)
+    override val dateDayShort: String
+        @Composable get() = stringResource(Res.string.date_day_short)
+    override val dateMonthShort: String
+        @Composable get() = stringResource(Res.string.date_month_short)
+    override val dateYearShort: String
+        @Composable get() = stringResource(Res.string.date_year_short)
+    override val dialogErrorTitle: String
+        @Composable get() = stringResource(Res.string.dialog_error_title)
+    override val directMessagesTitle: String
+        @Composable get() = stringResource(Res.string.direct_messages_title)
+    override val durationNever: String
+        @Composable get() = stringResource(Res.string.duration_never)
+    override val editCircleTitle: String
+        @Composable get() = stringResource(Res.string.edit_circle_title)
+    override val editProfileItemAvatar: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_avatar)
+    override val editProfileItemBio: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_bio)
+    override val editProfileItemBot: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_bot)
+    override val editProfileItemDiscoverable: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_discoverable)
+    override val editProfileItemDisplayName: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_display_name)
+    override val editProfileItemFieldKey: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_field_key)
+    override val editProfileItemFieldValue: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_field_value)
+    override val editProfileItemHeader: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_header)
+    override val editProfileItemHideCollections: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_hide_collections)
+    override val editProfileItemLocked: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_locked)
+    override val editProfileItemNoIndex: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_no_index)
+    override val editProfileSectionFields: String
+        @Composable get() = stringResource(Res.string.edit_profile_section_fields)
+    override val editProfileSectionFlags: String
+        @Composable get() = stringResource(Res.string.edit_profile_section_flags)
+    override val editProfileSectionImages: String
+        @Composable get() = stringResource(Res.string.edit_profile_section_images)
+    override val editProfileSectionPersonal: String
+        @Composable get() = stringResource(Res.string.edit_profile_section_personal)
+    override val editProfileTitle: String
+        @Composable get() = stringResource(Res.string.edit_profile_title)
+    override val exempliGratia: String
+        @Composable get() = stringResource(Res.string.exempli_gratia)
+    override val experimental: String
+        @Composable get() = stringResource(Res.string.experimental)
+    override val exploreSectionHashtags: String
+        @Composable get() = stringResource(Res.string.explore_section_hashtags)
+    override val exploreSectionLinks: String
+        @Composable get() = stringResource(Res.string.explore_section_links)
+    override val exploreSectionSuggestions: String
+        @Composable get() = stringResource(Res.string.explore_section_suggestions)
+    override val favoritesTitle: String
+        @Composable get() = stringResource(Res.string.favorites_title)
+    override val feedTypeTitle: String
+        @Composable get() = stringResource(Res.string.feed_type_title)
+    override val fieldNodeName: String
+        @Composable get() = stringResource(Res.string.field_node_name)
+    override val fieldPassword: String
+        @Composable get() = stringResource(Res.string.field_password)
+    override val fieldUsername: String
+        @Composable get() = stringResource(Res.string.field_username)
+    override val followRequestsTitle: String
+        @Composable get() = stringResource(Res.string.follow_requests_title)
+    override val followRequiredMessage: String
+        @Composable get() = stringResource(Res.string.follow_required_message)
+    override val followedHashtagsTitle: String
+        @Composable get() = stringResource(Res.string.followed_hashtags_title)
+    override val followerTitle: String
+        @Composable get() = stringResource(Res.string.follower_title)
+    override val followingTitle: String
+        @Composable get() = stringResource(Res.string.following_title)
+    override val fontScaleLarger: String
+        @Composable get() = stringResource(Res.string.font_scale_larger)
+    override val fontScaleLargest: String
+        @Composable get() = stringResource(Res.string.font_scale_largest)
+    override val fontScaleNormal: String
+        @Composable get() = stringResource(Res.string.font_scale_normal)
+    override val fontScaleSmaller: String
+        @Composable get() = stringResource(Res.string.font_scale_smaller)
+    override val fontScaleSmallest: String
+        @Composable get() = stringResource(Res.string.font_scale_smallest)
+    override val formatBold: String
+        @Composable get() = stringResource(Res.string.format_bold)
+    override val formatItalic: String
+        @Composable get() = stringResource(Res.string.format_italic)
+    override val formatMonospace: String
+        @Composable get() = stringResource(Res.string.format_monospace)
+    override val formatStrikethrough: String
+        @Composable get() = stringResource(Res.string.format_strikethrough)
+    override val formatUnderlined: String
+        @Composable get() = stringResource(Res.string.format_underlined)
+    override val galleryFieldAlbumName: String
+        @Composable get() = stringResource(Res.string.gallery_field_album_name)
+    override val galleryTitle: String
+        @Composable get() = stringResource(Res.string.gallery_title)
+    override val helpMeChooseAnInstance: String
+        @Composable get() = stringResource(Res.string.help_me_choose_an_instance)
+    override val highestScore: String
+        @Composable get() = stringResource(Res.string.highest_score)
+    override val imageLoadingModeAlways: String
+        @Composable get() = stringResource(Res.string.image_loading_mode_always)
+    override val imageLoadingModeOnDemand: String
+        @Composable get() = stringResource(Res.string.image_loading_mode_on_demand)
+    override val imageLoadingModeOnWiFi: String
+        @Composable get() = stringResource(Res.string.image_loading_mode_on_wi_fi)
+    override val inboxConfigureFilterDialogSubtitle: String
+        @Composable get() = stringResource(Res.string.inbox_configure_filter_dialog_subtitle)
+    override val inboxConfigureFilterDialogTitle: String
+        @Composable get() = stringResource(Res.string.inbox_configure_filter_dialog_title)
+    override val infoEdited: String
+        @Composable get() = stringResource(Res.string.info_edited)
+    override val insertEmojiTitle: String
+        @Composable get() = stringResource(Res.string.insert_emoji_title)
+    override val insertLinkDialogTitle: String
+        @Composable get() = stringResource(Res.string.insert_link_dialog_title)
+    override val insertLinkFieldAnchor: String
+        @Composable get() = stringResource(Res.string.insert_link_field_anchor)
+    override val insertLinkFieldUrl: String
+        @Composable get() = stringResource(Res.string.insert_link_field_url)
+    override val itemOther: String
+        @Composable get() = stringResource(Res.string.item_other)
+    override val languageDe: String
+        @Composable get() = stringResource(Res.string.language_de)
+    override val languageEn: String
+        @Composable get() = stringResource(Res.string.language_en)
+    override val languageEs: String
+        @Composable get() = stringResource(Res.string.language_es)
+    override val languageFi: String
+        @Composable get() = stringResource(Res.string.language_fi)
+    override val languageFr: String
+        @Composable get() = stringResource(Res.string.language_fr)
+    override val languageIt: String
+        @Composable get() = stringResource(Res.string.language_it)
+    override val languagePl: String
+        @Composable get() = stringResource(Res.string.language_pl)
+    override val languagePt: String
+        @Composable get() = stringResource(Res.string.language_pt)
+    override val languageUa: String
+        @Composable get() = stringResource(Res.string.language_ua)
+    override val loginFriendicaHeader: String
+        @Composable get() = stringResource(Res.string.login_friendica_header)
+    override val loginMastodonHeader: String
+        @Composable get() = stringResource(Res.string.login_mastodon_header)
+    override val loginMethodBasic: String
+        @Composable get() = stringResource(Res.string.login_method_basic)
+    override val loginMoreInfoBottomSheetContent: String
+        @Composable get() = stringResource(Res.string.login_more_info_bottom_sheet_content)
+    override val loginSubtitle: String
+        @Composable get() = stringResource(Res.string.login_subtitle)
+    override val loginTitle: String
+        @Composable get() = stringResource(Res.string.login_title)
+    override val manageBlocksSectionBlocked: String
+        @Composable get() = stringResource(Res.string.manage_blocks_section_blocked)
+    override val manageBlocksSectionMuted: String
+        @Composable get() = stringResource(Res.string.manage_blocks_section_muted)
+    override val manageCirclesTitle: String
+        @Composable get() = stringResource(Res.string.manage_circles_title)
+    override val markupModeBBCode: String
+        @Composable get() = stringResource(Res.string.markup_mode_bbcode)
+    override val markupModeHTML: String
+        @Composable get() = stringResource(Res.string.markup_mode_html)
+    override val markupModeMarkdown: String
+        @Composable get() = stringResource(Res.string.markup_mode_markdown)
+    override val markupModePlainText: String
+        @Composable get() = stringResource(Res.string.markup_mode_plain_text)
+    override val messageAltTextMissingError: String
+        @Composable get() = stringResource(Res.string.message_alt_text_missing_error)
+    override val messageAreYouSure: String
+        @Composable get() = stringResource(Res.string.message_are_you_sure)
+    override val messageAreYouSureExit: String
+        @Composable get() = stringResource(Res.string.message_are_you_sure_exit)
+    override val messageAreYouSureReblog: String
+        @Composable get() = stringResource(Res.string.message_are_you_sure_reblog)
+    override val messageAuthIssue: String
+        @Composable get() = stringResource(Res.string.message_auth_issue)
+    override val messageAuthIssueHint1: String
+        @Composable get() = stringResource(Res.string.message_auth_issue_hint_1)
+    override val messageAuthIssueHint2: String
+        @Composable get() = stringResource(Res.string.message_auth_issue_hint_2)
+    override val messageAuthIssueHint3: String
+        @Composable get() = stringResource(Res.string.message_auth_issue_hint_3)
+    override val messageAuthIssueHintsTitle: String
+        @Composable get() = stringResource(Res.string.message_auth_issue_hints_title)
+    override val messageCharacterLimitExceeded: String
+        @Composable get() = stringResource(Res.string.message_character_limit_exceeded)
+    override val messageConfirmExit: String
+        @Composable get() = stringResource(Res.string.message_confirm_exit)
+    override val messageEmptyAlbum: String
+        @Composable get() = stringResource(Res.string.message_empty_album)
+    override val messageEmptyConversation: String
+        @Composable get() = stringResource(Res.string.message_empty_conversation)
+    override val messageEmptyInbox: String
+        @Composable get() = stringResource(Res.string.message_empty_inbox)
+    override val messageEmptyList: String
+        @Composable get() = stringResource(Res.string.message_empty_list)
+    override val messageGenericError: String
+        @Composable get() = stringResource(Res.string.message_generic_error)
+    override val messageInvalidField: String
+        @Composable get() = stringResource(Res.string.message_invalid_field)
+    override val messageInvalidPollError: String
+        @Composable get() = stringResource(Res.string.message_invalid_poll_error)
+    override val messageLoadingUsers: String
+        @Composable get() = stringResource(Res.string.message_loading_users)
+    override val messageMissingField: String
+        @Composable get() = stringResource(Res.string.message_missing_field)
+    override val messageMissingRules: String
+        @Composable get() = stringResource(Res.string.message_missing_rules)
+    override val messagePollVoteErrorBody: String
+        @Composable get() = stringResource(Res.string.message_poll_vote_error_body)
+    override val messagePostEmptyText: String
+        @Composable get() = stringResource(Res.string.message_post_empty_text)
+    override val messagePostInvalidVisibility: String
+        @Composable get() = stringResource(Res.string.message_post_invalid_visibility)
+    override val messageReplyVisibilityGreaterThanParentError: String
+        @Composable get() = stringResource(Res.string.message_reply_visibility_greater_than_parent_error)
+    override val messageRestartToApplyChanges: String
+        @Composable get() = stringResource(Res.string.message_restart_to_apply_changes)
+    override val messageScheduleDateInThePast: String
+        @Composable get() = stringResource(Res.string.message_schedule_date_in_the_past)
+    override val messageSearchInitialEmpty: String
+        @Composable get() = stringResource(Res.string.message_search_initial_empty)
+    override val messageSuccess: String
+        @Composable get() = stringResource(Res.string.message_success)
+    override val messageTextCopiedToClipboard: String
+        @Composable get() = stringResource(Res.string.action_copy_to_clipboard)
+    override val messageUserUnlogged: String
+        @Composable get() = stringResource(Res.string.message_user_unlogged)
+    override val messageVideoNsfw: String
+        @Composable get() = stringResource(Res.string.message_video_nsfw)
+    override val moreInfo: String
+        @Composable get() = stringResource(Res.string.more_info)
+    override val muteDisableNotificationsItem: String
+        @Composable get() = stringResource(Res.string.mute_disable_notifications_item)
+    override val muteDurationIndefinite: String
+        @Composable get() = stringResource(Res.string.mute_duration_indefinite)
+    override val muteDurationItem: String
+        @Composable get() = stringResource(Res.string.mute_duration_item)
+    override val newAccountTitle: String
+        @Composable get() = stringResource(Res.string.new_account_title)
+    override val nodeInfoSectionContact: String
+        @Composable get() = stringResource(Res.string.node_info_section_contact)
+    override val nodeInfoSectionRules: String
+        @Composable get() = stringResource(Res.string.node_info_section_rules)
+    override val nodeInfoTitle: String
+        @Composable get() = stringResource(Res.string.node_info_title)
+    override val nodeVia: String
+        @Composable get() = stringResource(Res.string.node_via)
+    override val notificationTypeEntry: String
+        @Composable get() = stringResource(Res.string.notification_type_entry)
+    override val notificationTypeEntryName: String
+        @Composable get() = stringResource(Res.string.notification_type_entry_name)
+    override val notificationTypeFavorite: String
+        @Composable get() = stringResource(Res.string.notification_type_favorite)
+    override val notificationTypeFavoriteName: String
+        @Composable get() = stringResource(Res.string.notification_type_favorite_name)
+    override val notificationTypeFollow: String
+        @Composable get() = stringResource(Res.string.notification_type_follow)
+    override val notificationTypeFollowName: String
+        @Composable get() = stringResource(Res.string.notification_type_follow_name)
+    override val notificationTypeFollowRequest: String
+        @Composable get() = stringResource(Res.string.notification_type_follow_request)
+    override val notificationTypeFollowRequestName: String
+        @Composable get() = stringResource(Res.string.notification_type_follow_request_name)
+    override val notificationTypeMention: String
+        @Composable get() = stringResource(Res.string.notification_type_mention)
+    override val notificationTypeMentionName: String
+        @Composable get() = stringResource(Res.string.notification_type_mention_name)
+    override val notificationTypePoll: String
+        @Composable get() = stringResource(Res.string.notification_type_poll)
+    override val notificationTypePollName: String
+        @Composable get() = stringResource(Res.string.notification_type_poll_name)
+    override val notificationTypeReblog: String
+        @Composable get() = stringResource(Res.string.notification_type_reblog)
+    override val notificationTypeReblogName: String
+        @Composable get() = stringResource(Res.string.notification_type_reblog_name)
+    override val notificationTypeUpdate: String
+        @Composable get() = stringResource(Res.string.notification_type_update)
+    override val notificationTypeUpdateName: String
+        @Composable get() = stringResource(Res.string.notification_type_update_name)
+    override val pickFromGalleryDialogTitle: String
+        @Composable get() = stringResource(Res.string.pick_from_gallery_dialog_title)
+    override val pictureDescriptionPlaceholder: String
+        @Composable get() = stringResource(Res.string.picture_description_placeholder)
+    override val pollExpired: String
+        @Composable get() = stringResource(Res.string.poll_expired)
+    override val pollExpiresIn: String
+        @Composable get() = stringResource(Res.string.poll_expires_in)
+    override val postBy: String
+        @Composable get() = stringResource(Res.string.post_by)
+    override val postSensitive: String
+        @Composable get() = stringResource(Res.string.post_sensitive)
+    override val postTitle: String
+        @Composable get() = stringResource(Res.string.post_title)
+    override val previewImage: String
+        @Composable get() = stringResource(Res.string.preview_image)
+    override val relationshipStatusFollowing: String
+        @Composable get() = stringResource(Res.string.relationship_status_following)
+    override val relationshipStatusFollowsYou: String
+        @Composable get() = stringResource(Res.string.relationship_status_follows_you)
+    override val relationshipStatusMutual: String
+        @Composable get() = stringResource(Res.string.relationship_status_mutual)
+    override val relationshipStatusRequestedToOther: String
+        @Composable get() = stringResource(Res.string.relationship_status_requested_to_other)
+    override val relationshipStatusRequestedToYou: String
+        @Composable get() = stringResource(Res.string.relationship_status_requested_to_you)
+    override val reportCategoryLegal: String
+        @Composable get() = stringResource(Res.string.report_category_legal)
+    override val reportCategorySpam: String
+        @Composable get() = stringResource(Res.string.report_category_spam)
+    override val reportCategoryViolation: String
+        @Composable get() = stringResource(Res.string.report_category_violation)
+    override val scheduleDateIndication: String
+        @Composable get() = stringResource(Res.string.schedule_date_indication)
+    override val searchPlaceholder: String
+        @Composable get() = stringResource(Res.string.search_placeholder)
+    override val searchSectionUsers: String
+        @Composable get() = stringResource(Res.string.search_section_users)
+    override val sectionTitleExplore: String
+        @Composable get() = stringResource(Res.string.section_title_explore)
+    override val sectionTitleHome: String
+        @Composable get() = stringResource(Res.string.section_title_home)
+    override val sectionTitleInbox: String
+        @Composable get() = stringResource(Res.string.section_title_inbox)
+    override val sectionTitleProfile: String
+        @Composable get() = stringResource(Res.string.section_title_profile)
+    override val selectCircleDialogTitle: String
+        @Composable get() = stringResource(Res.string.select_circle_dialog_title)
+    override val selectDurationDialogTitle: String
+        @Composable get() = stringResource(Res.string.select_duration_dialog_title)
+    override val selectUserDialogTitle: String
+        @Composable get() = stringResource(Res.string.select_user_dialog_title)
+    override val selectUserSearchPlaceholder: String
+        @Composable get() = stringResource(Res.string.select_user_search_placeholder)
+    override val settingsAbout: String
+        @Composable get() = stringResource(Res.string.settings_about)
+    override val settingsAboutAppVersion: String
+        @Composable get() = stringResource(Res.string.settings_about_app_version)
+    override val settingsAboutChangelog: String
+        @Composable get() = stringResource(Res.string.settings_about_changelog)
+    override val settingsAboutLicences: String
+        @Composable get() = stringResource(Res.string.settings_about_licences)
+    override val settingsAboutMatrix: String
+        @Composable get() = stringResource(Res.string.settings_about_matrix)
+    override val settingsAboutReportIssue: String
+        @Composable get() = stringResource(Res.string.settings_about_report_issue)
+    override val settingsAboutUserManual: String
+        @Composable get() = stringResource(Res.string.settings_about_user_manual)
+    override val settingsAboutViewFriendica: String
+        @Composable get() = stringResource(Res.string.settings_about_view_friendica)
+    override val settingsAboutViewGithub: String
+        @Composable get() = stringResource(Res.string.settings_about_view_github)
+    override val settingsAutoloadImages: String
+        @Composable get() = stringResource(Res.string.settings_autoload_images)
+    override val settingsHeaderGeneral: String
+        @Composable get() = stringResource(Res.string.settings_header_general)
+    override val settingsHeaderLookAndFeel: String
+        @Composable get() = stringResource(Res.string.settings_header_look_and_feel)
+    override val settingsHeaderNsfw: String
+        @Composable get() = stringResource(Res.string.settings_header_nsfw)
+    override val settingsItemAppIcon: String
+        @Composable get() = stringResource(Res.string.settings_item_app_icon)
+    override val settingsItemBarTheme: String
+        @Composable get() = stringResource(Res.string.settings_item_bar_theme)
+    override val settingsItemBlockedAndMuted: String
+        @Composable get() = stringResource(Res.string.settings_item_blocked_and_muted)
+    override val settingsItemBlurNsfw: String
+        @Composable get() = stringResource(Res.string.settings_item_blur_nsfw)
+    override val settingsItemCrashReportEnabled: String
+        @Composable get() = stringResource(Res.string.settings_item_crash_report_enabled)
+    override val settingsItemDefaultPostVisibility: String
+        @Composable get() = stringResource(Res.string.settings_item_default_post_visibility)
+    override val settingsItemDefaultReplyVisibility: String
+        @Composable get() = stringResource(Res.string.settings_item_default_reply_visibility)
+    override val settingsItemDefaultTimelineType: String
+        @Composable get() = stringResource(Res.string.settings_item_default_timeline_type)
+    override val settingsItemDynamicColors: String
+        @Composable get() = stringResource(Res.string.settings_item_dynamic_colors)
+    override val settingsItemDynamicColorsSubtitle: String
+        @Composable get() = stringResource(Res.string.settings_item_dynamic_colors_subtitle)
+    override val settingsItemExcludeRepliesFromTimeline: String
+        @Composable get() = stringResource(Res.string.settings_item_exclude_replies_from_timeline)
+    override val settingsItemExport: String
+        @Composable get() = stringResource(Res.string.settings_item_export)
+    override val settingsItemFontFamily: String
+        @Composable get() = stringResource(Res.string.settings_item_font_family)
+    override val settingsItemFontScale: String
+        @Composable get() = stringResource(Res.string.settings_item_font_scale)
+    override val settingsItemHideNavigationBarWhileScrolling: String
+        @Composable get() = stringResource(Res.string.settings_item_hide_navigation_bar_while_scrolling)
+    override val settingsItemImport: String
+        @Composable get() = stringResource(Res.string.settings_item_import)
+    override val settingsItemIncludeNsfw: String
+        @Composable get() = stringResource(Res.string.settings_item_include_nsfw)
+    override val settingsItemLanguage: String
+        @Composable get() = stringResource(Res.string.settings_item_language)
+    override val settingsItemMarkupMode: String
+        @Composable get() = stringResource(Res.string.settings_item_markup_mode)
+    override val settingsItemMaxPostBodyLines: String
+        @Composable get() = stringResource(Res.string.settings_item_max_post_body_lines)
+    override val settingsItemNotificationMode: String
+        @Composable get() = stringResource(Res.string.settings_item_notification_mode)
+    override val settingsItemOpenGroupsInForumModeByDefault: String
+        @Composable get() = stringResource(Res.string.settings_item_open_groups_in_forum_mode_by_default)
+    override val settingsItemPushNotificationState: String
+        @Composable get() = stringResource(Res.string.settings_item_push_notification_state)
+    override val settingsItemTheme: String
+        @Composable get() = stringResource(Res.string.settings_item_theme)
+    override val settingsItemThemeColor: String
+        @Composable get() = stringResource(Res.string.settings_item_theme_color)
+    override val settingsItemThemeColorSubtitle: String
+        @Composable get() = stringResource(Res.string.settings_item_theme_color_subtitle)
+    override val settingsItemUrlOpeningMode: String
+        @Composable get() = stringResource(Res.string.settings_item_url_opening_mode)
+    override val settingsNotificationModeDisabled: String
+        @Composable get() = stringResource(Res.string.settings_notification_mode_disabled)
+    override val settingsNotificationModePull: String
+        @Composable get() = stringResource(Res.string.settings_notification_mode_pull)
+    override val settingsNotificationModePullExplanation: String
+        @Composable get() = stringResource(Res.string.settings_notification_mode_pull_explanation)
+    override val settingsNotificationModePush: String
+        @Composable get() = stringResource(Res.string.settings_notification_mode_push)
+    override val settingsNotificationModePushExplanation: String
+        @Composable get() = stringResource(Res.string.settings_notification_mode_push_explanation)
+    override val settingsOptionBackgroundNotificationCheck: String
+        @Composable get() = stringResource(Res.string.settings_option_background_notification_check)
+    override val settingsOptionUnlimited: String
+        @Composable get() = stringResource(Res.string.settings_option_unlimited)
+    override val settingsPushNotificationStateEnabled: String
+        @Composable get() = stringResource(Res.string.settings_push_notification_state_enabled)
+    override val settingsPushNotificationStateIdle: String
+        @Composable get() = stringResource(Res.string.settings_push_notification_state_idle)
+    override val settingsPushNotificationStateInitializing: String
+        @Composable get() = stringResource(Res.string.settings_push_notification_state_initializing)
+    override val settingsPushNotificationStateNoDistributorSelected: String
+        @Composable get() = stringResource(Res.string.settings_push_notification_state_no_distributor_selected)
+    override val settingsPushNotificationStateNoDistributors: String
+        @Composable get() = stringResource(Res.string.settings_push_notification_state_no_distributors)
+    override val settingsPushNotificationStateUnsupported: String
+        @Composable get() = stringResource(Res.string.settings_push_notification_state_unsupported)
+    override val settingsSectionDebug: String
+        @Composable get() = stringResource(Res.string.settings_section_debug)
+    override val settingsSubtitleBackgroundNotificationNotRestricted: String
+        @Composable get() = stringResource(Res.string.settings_subtitle_background_notification_not_restricted)
+    override val settingsSubtitleBackgroundNotificationRestricted: String
+        @Composable get() = stringResource(Res.string.settings_subtitle_background_notification_restricted)
+    override val settingsThemeBlack: String
+        @Composable get() = stringResource(Res.string.settings_theme_black)
+    override val settingsThemeDark: String
+        @Composable get() = stringResource(Res.string.settings_theme_dark)
+    override val settingsThemeLight: String
+        @Composable get() = stringResource(Res.string.settings_theme_light)
+    override val settingsTitle: String
+        @Composable get() = stringResource(Res.string.settings_title)
+    override val shareAsFile: String
+        @Composable get() = stringResource(Res.string.share_as_file)
+    override val shareAsUrl: String
+        @Composable get() = stringResource(Res.string.share_as_url)
+    override val shortUnavailable: String
+        @Composable get() = stringResource(Res.string.short_unavailable)
+    override val sidebarAnonymousMessage: String
+        @Composable get() = stringResource(Res.string.sidebar_anonymous_message)
+    override val sidebarAnonymousTitle: String
+        @Composable get() = stringResource(Res.string.sidebar_anonymous_title)
+    override val systemDefault: String
+        @Composable get() = stringResource(Res.string.system_default)
+    override val themeColorBlue: String
+        @Composable get() = stringResource(Res.string.theme_color_blue)
+    override val themeColorGray: String
+        @Composable get() = stringResource(Res.string.theme_color_gray)
+    override val themeColorGreen: String
+        @Composable get() = stringResource(Res.string.theme_color_green)
+    override val themeColorLightBlue: String
+        @Composable get() = stringResource(Res.string.theme_color_light_blue)
+    override val themeColorOrange: String
+        @Composable get() = stringResource(Res.string.theme_color_orange)
+    override val themeColorPink: String
+        @Composable get() = stringResource(Res.string.theme_color_pink)
+    override val themeColorPurple: String
+        @Composable get() = stringResource(Res.string.theme_color_purple)
+    override val themeColorRed: String
+        @Composable get() = stringResource(Res.string.theme_color_red)
+    override val themeColorWhite: String
+        @Composable get() = stringResource(Res.string.theme_color_white)
+    override val themeColorYellow: String
+        @Composable get() = stringResource(Res.string.theme_color_yellow)
+    override val threadTitle: String
+        @Composable get() = stringResource(Res.string.thread_title)
+    override val timeHourShort: String
+        @Composable get() = stringResource(Res.string.time_hour_short)
+    override val timeMinuteShort: String
+        @Composable get() = stringResource(Res.string.time_minute_short)
+    override val timeSecondShort: String
+        @Composable get() = stringResource(Res.string.time_second_short)
+    override val timelineAll: String
+        @Composable get() = stringResource(Res.string.timeline_all)
+    override val timelineEntryInReplyTo: String
+        @Composable get() = stringResource(Res.string.timeline_entry_in_reply_to)
+    override val timelineEntryRebloggedBy: String
+        @Composable get() = stringResource(Res.string.timeline_entry_reblogged_by)
+    override val timelineLocal: String
+        @Composable get() = stringResource(Res.string.timeline_local)
+    override val timelineSubscriptions: String
+        @Composable get() = stringResource(Res.string.timeline_subscriptions)
+    override val topicTitle: String
+        @Composable get() = stringResource(Res.string.topic_title)
+    override val unpublishedSectionDrafts: String
+        @Composable get() = stringResource(Res.string.unpublished_section_drafts)
+    override val unpublishedSectionScheduled: String
+        @Composable get() = stringResource(Res.string.unpublished_section_scheduled)
+    override val unpublishedTitle: String
+        @Composable get() = stringResource(Res.string.unpublished_title)
+    override val unsavedChangesTitle: String
+        @Composable get() = stringResource(Res.string.unsaved_changes_title)
+    override val updateDate: String
+        @Composable get() = stringResource(Res.string.update_date)
+    override val urlOpeningModeCustomTabs: String
+        @Composable get() = stringResource(Res.string.url_opening_mode_custom_tabs)
+    override val urlOpeningModeExternal: String
+        @Composable get() = stringResource(Res.string.url_opening_mode_external)
+    override val urlOpeningModeInternal: String
+        @Composable get() = stringResource(Res.string.url_opening_mode_internal)
+    override val userFeedbackCommentPlaceholder: String
+        @Composable get() = stringResource(Res.string.user_feedback_comment_placeholder)
+    override val userFeedbackFieldComment: String
+        @Composable get() = stringResource(Res.string.user_feedback_field_comment)
+    override val userFeedbackFieldEmail: String
+        @Composable get() = stringResource(Res.string.user_feedback_field_email)
+    override val userFieldPersonalNote: String
+        @Composable get() = stringResource(Res.string.user_field_personal_note)
+    override val verifiedField: String
+        @Composable get() = stringResource(Res.string.verified_field)
+    override val visibilityCircle: String
+        @Composable get() = stringResource(Res.string.visibility_circle)
+    override val visibilityDirect: String
+        @Composable get() = stringResource(Res.string.visibility_direct)
+    override val visibilityPrivate: String
+        @Composable get() = stringResource(Res.string.visibility_private)
+    override val visibilityPublic: String
+        @Composable get() = stringResource(Res.string.visibility_public)
+    override val visibilityUnlisted: String
+        @Composable get() = stringResource(Res.string.visibility_unlisted)
+
+    @Composable
+    override fun accountFollower(count: Int): String = pluralStringResource(Res.plurals.account_follower, count, count)
+
+    @Composable
+    override fun accountFollowing(count: Int): String = pluralStringResource(Res.plurals.account_following, count, count)
+
+    @Composable
+    override fun createReportSelectedRules(count: Int): String =
+        pluralStringResource(Res.plurals.create_report_selected_rules, count, count)
+
+    @Composable
+    override fun dislikesCount(count: Int): String = pluralStringResource(Res.plurals.dislikes_count, count, count)
+
+    @Composable
+    override fun extendedSocialInfoFavorites(count: Int): String =
+        pluralStringResource(Res.plurals.extended_social_info_favorites, count, count)
+
+    @Composable
+    override fun extendedSocialInfoReblogs(count: Int): String =
+        pluralStringResource(Res.plurals.extended_social_info_reblogs, count, count)
+
+    @Composable
+    override fun hashtagPeopleUsing(count: Int): String = pluralStringResource(Res.plurals.hashtag_people_using, count, count)
+
+    @Composable
+    override fun items(count: Int): String = pluralStringResource(Res.plurals.items, count, count)
+
+    @Composable
+    override fun messages(count: Int): String = pluralStringResource(Res.plurals.messages, count, count)
+
+    @Composable
+    override fun pollVote(count: Int): String = pluralStringResource(Res.plurals.poll_vote, count, count)
+
+    @Composable
+    override fun unreadMessages(count: Int): String = pluralStringResource(Res.plurals.unread_messages, count, count)
+
+    override suspend fun unreadNotificationBody(count: Int): String =
+        getPluralString(resource = Res.plurals.unread_notification_body, quantity = count, count)
+
+    override suspend fun unreadNotificationTitle(): String = getString(Res.string.unread_notification_title)
+}

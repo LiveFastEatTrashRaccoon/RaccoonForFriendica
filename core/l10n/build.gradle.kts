@@ -6,10 +6,6 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(libs.lyricist)
-            }
-        }
+        val commonMain by getting
     }
 }

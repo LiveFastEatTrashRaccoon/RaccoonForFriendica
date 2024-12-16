@@ -62,12 +62,7 @@ fun HashtagItem(
             if (hashtag.history.isNotEmpty()) {
                 val count = hashtag.history.run { first().users.toInt() }
                 Text(
-                    text =
-                        buildString {
-                            append(count)
-                            append(" ")
-                            append(LocalStrings.current.hashtagPeopleUsing(count))
-                        },
+                    text = LocalStrings.current.hashtagPeopleUsing(count),
                     style = MaterialTheme.typography.labelMedium,
                     color = ancillaryColor,
                 )

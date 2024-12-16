@@ -243,7 +243,8 @@ fun EntryDetailDialog(
                             Icon(
                                 modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
                                 imageVector = Icons.Default.ArrowCircleUp,
-                                contentDescription = LocalStrings.current.likesCount,
+                                contentDescription =
+                                    LocalStrings.current.extendedSocialInfoFavorites(entry.favoriteCount),
                                 tint = fullColor,
                             )
                             Text(
@@ -255,7 +256,8 @@ fun EntryDetailDialog(
                             Icon(
                                 modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
                                 imageVector = Icons.Default.ArrowCircleDown,
-                                contentDescription = LocalStrings.current.dislikesCount,
+                                contentDescription =
+                                    LocalStrings.current.dislikesCount(entry.dislikesCount),
                                 tint = fullColor,
                             )
                             Text(

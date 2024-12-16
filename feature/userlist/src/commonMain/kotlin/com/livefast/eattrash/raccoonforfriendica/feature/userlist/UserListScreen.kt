@@ -192,8 +192,6 @@ class UserListScreen(
                                         is UserListType.UsersFavorite -> {
                                             val count = infoCount ?: 0
                                             if (count > 0) {
-                                                append(count)
-                                                append(" ")
                                                 append(
                                                     LocalStrings.current.extendedSocialInfoFavorites(
                                                         count,
@@ -205,8 +203,6 @@ class UserListScreen(
                                         is UserListType.UsersReblog -> {
                                             val count = infoCount ?: 0
                                             if (count > 0) {
-                                                append(count)
-                                                append(" ")
                                                 append(
                                                     LocalStrings.current.extendedSocialInfoReblogs(
                                                         count,

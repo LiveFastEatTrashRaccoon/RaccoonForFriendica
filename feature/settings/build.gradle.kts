@@ -10,7 +10,6 @@ kotlin {
             dependencies {
                 implementation(libs.voyager.screenmodel)
                 implementation(libs.voyager.koin)
-                implementation(libs.lyricist)
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.architecture)

@@ -94,8 +94,6 @@ internal fun MediaAlbumItem(
                         if (isNotEmpty()) {
                             append(" • ")
                         }
-                        append(album.items)
-                        append(" ")
                         append(LocalStrings.current.items(album.items))
                     },
                 style = MaterialTheme.typography.titleSmall,
