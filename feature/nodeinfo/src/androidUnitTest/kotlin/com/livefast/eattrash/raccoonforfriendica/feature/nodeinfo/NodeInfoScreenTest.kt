@@ -12,7 +12,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
 import cafe.adriel.voyager.navigator.Navigator
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Strings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.testutils.MockStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.testutils.KoinTestRule
@@ -32,18 +32,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class NodeInfoScreenTest {
-    private val strings =
-        mock<Strings> {
-            every { nodeInfoTitle } returns "Node Info"
-            every { settingsHeaderGeneral } returns "General"
-            every { nodeInfoSectionContact } returns "Contact"
-            every { nodeInfoSectionRules } returns "Rules"
-            every { itemOther } returns "Other"
-            every { settingsAboutAppVersion } returns "Version"
-            every { settingsAboutAppVersion } returns "Version"
-            every { actionGoBack } returns "Go back"
-            every { actionOpenDetail } returns "Open detail"
-        }
     private val uriHandler = mock<UriHandler>()
 
     private val viewModel =
@@ -188,7 +176,17 @@ class NodeInfoScreenTest {
     private fun ComposeContentTestRule.setup() {
         setContent {
             CompositionLocalProvider(
-                LocalStrings provides strings,
+                LocalStrings provides
+                    MockStrings().apply {
+                        this["nodeInfoTitle"] = "Node Info"
+                        this["settingsHeaderGeneral"] = "General"
+                        this["nodeInfoSectionContact"] = "Contact"
+                        this["nodeInfoSectionRules"] = "Rules"
+                        this["itemOther"] = "Other"
+                        this["settingsAboutAppVersion"] = "Version"
+                        this["actionGoBack"] = "Go back"
+                        this["actionOpenDetail"] = "Open detail"
+                    },
                 LocalUriHandler provides uriHandler,
             ) {
                 Navigator(NodeInfoScreen())
