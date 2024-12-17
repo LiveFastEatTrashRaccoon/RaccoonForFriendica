@@ -97,21 +97,26 @@ fun String.parseHtml(
             }.onCloseTag { name, _ ->
                 when (name) {
                     "p", "span", "br", "img" -> Unit
-                    "b", "strong", "u", "i", "em", "s", "code" -> builder.pop()
-                    "a" -> {
-                        builder.pop() // corresponds to pushStyle
-                        builder.pop() // corresponds to pushStringAnnotation
-                    }
+                    "b", "strong", "u", "i", "em", "s", "code" ->
+                        runCatching {
+                            builder.pop()
+                        }
+                    "a" ->
+                        runCatching {
+                            builder.pop() // corresponds to pushStyle
+                            builder.pop() // corresponds to pushStringAnnotation
+                        }
                     "ul" -> Unit
                     "ol" -> {
                         orderedListIndex = 0
                         inOrderedList = false
                     }
                     "li" -> builder.appendLine()
-                    "blockquote" -> {
-                        builder.pop() // corresponds to pushStyle (ParagraphStyle)
-                        builder.pop() // corresponds to pushStyle (SpanStyle)
-                    }
+                    "blockquote" ->
+                        runCatching {
+                            builder.pop() // corresponds to pushStyle (ParagraphStyle)
+                            builder.pop() // corresponds to pushStyle (SpanStyle)
+                        }
                     else -> println("onCloseTag: Unhandled tag $name")
                 }
             }.onText { text ->
