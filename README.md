@@ -23,7 +23,7 @@ and Mastodon-like backends.
 The project is _heavily_ inspired by the **RaccoonForLemmy** app for Lemmy, which demonstrated
 something like this can be achieved with this tech stack. This is why it retains its name, making
 clear that the two projects are related and share a lot of common heritage and are maintained by
-the same people.
+the same people with the same spirit.
 
 ## Want to try it out?
 
@@ -64,9 +64,14 @@ use [Obtainium](https://github.com/ImranR98/Obtainium) and add a new app by inse
 Reach out to the community on Friendica, Matrix or file a report in the [issue tracker](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/issues) here on GitHub.
 
 Alternatively, you can use the "Report an issue" in-app form you can find in the "App information" dialog
-(it only works if you have enabled crash reporting).
+(it only works if you have enabled crash reporting). If none of the above methods fits your needs you can always write
+an [email](mailto://livefast.eattrash.raccoon@gmail.com).
 
-If none of the above methods fits your needs you can always write an [email](mailto://livefast.eattrash.raccoon@gmail.com).
+Please remember: every contribution is welcome and everyone's opinion matters here. This is a
+community project, open source, ad-free and free of charge, and it belongs to us all so don't be
+afraid to get involved.
+
+And don't forget every 🦝's motto: `#livefasteattrash`.
 
 ## Would you like to improve the existing translation?
 
