@@ -1,0 +1,1 @@
+Aplikacja mobilna dla Friendicii, Mastodona i sfederowanych sieci społecznościowych.
