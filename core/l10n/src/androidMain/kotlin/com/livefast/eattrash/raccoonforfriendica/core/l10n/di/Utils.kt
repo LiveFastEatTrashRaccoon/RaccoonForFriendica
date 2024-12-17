@@ -1,7 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.l10n.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Strings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.Strings
 import org.koin.java.KoinJavaComponent
 import java.util.Locale
 
@@ -11,8 +12,10 @@ actual fun getL10nManager(): L10nManager {
 }
 
 internal actual fun replaceLang(lang: String) {
-    val locale = Locale(lang)
-    Locale.setDefault(locale)
+    val tokens = lang.split("_")
+    val country = tokens.getOrNull(1).orEmpty()
+    val langCode = tokens.firstOrNull() ?: Locales.EN
+    Locale.setDefault(Locale(langCode, country))
 }
 
 actual fun getStrings(lang: String): Strings {
