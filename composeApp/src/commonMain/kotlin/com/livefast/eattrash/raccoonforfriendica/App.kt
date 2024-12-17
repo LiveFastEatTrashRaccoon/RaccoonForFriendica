@@ -21,9 +21,9 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.getL10nManager
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Locales
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.VoyagerNavigator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
