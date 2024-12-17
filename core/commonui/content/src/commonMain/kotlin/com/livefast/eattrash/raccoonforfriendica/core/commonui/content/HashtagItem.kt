@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHistoryItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 

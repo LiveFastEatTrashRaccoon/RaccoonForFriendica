@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.l10n.testutils
 
 import androidx.compose.runtime.Composable
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Strings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.Strings
 
 class MockStrings : Strings {
     private val answers = mutableMapOf<String, String>()

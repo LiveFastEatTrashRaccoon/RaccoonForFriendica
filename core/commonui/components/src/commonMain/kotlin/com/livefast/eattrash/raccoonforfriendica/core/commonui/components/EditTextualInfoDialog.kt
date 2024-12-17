@@ -31,7 +31,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

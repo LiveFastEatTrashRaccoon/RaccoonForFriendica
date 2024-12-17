@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.appicon
 
 import androidx.compose.runtime.Composable
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import kotlinx.coroutines.flow.StateFlow
 
 sealed interface AppIconVariant {

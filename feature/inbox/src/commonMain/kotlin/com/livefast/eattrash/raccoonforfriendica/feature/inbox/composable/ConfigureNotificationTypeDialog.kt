@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 
@@ -79,20 +79,20 @@ internal fun ConfigureNotificationTypeDialog(
                 items(availableTypes) { type ->
                     val selected = currentSelection.contains(type)
                     Row(
-                        modifier = Modifier
-                            .toggleable(
-                                value = selected,
-                                role = Role.Checkbox,
-                                enabled = true,
-                                onValueChange = {
-                                    if (selected) {
-                                        currentSelection -= type
-                                    } else {
-                                        currentSelection += type
-                                    }
-                            }
-                            )
-                            .padding(vertical = Spacing.s, horizontal = Spacing.s),
+                        modifier =
+                            Modifier
+                                .toggleable(
+                                    value = selected,
+                                    role = Role.Checkbox,
+                                    enabled = true,
+                                    onValueChange = {
+                                        if (selected) {
+                                            currentSelection -= type
+                                        } else {
+                                            currentSelection += type
+                                        }
+                                    },
+                                ).padding(vertical = Spacing.s, horizontal = Spacing.s),
                     ) {
                         Text(
                             text = type.toReadableName(),

@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.data
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 sealed interface ThemeColor {
     data object Blue : ThemeColor

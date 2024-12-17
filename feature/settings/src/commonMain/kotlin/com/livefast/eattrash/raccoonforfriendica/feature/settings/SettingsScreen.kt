@@ -65,8 +65,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsC
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Locales
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener

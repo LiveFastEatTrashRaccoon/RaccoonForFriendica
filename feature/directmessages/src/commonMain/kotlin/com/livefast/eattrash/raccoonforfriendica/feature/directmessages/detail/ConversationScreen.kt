@@ -60,7 +60,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow

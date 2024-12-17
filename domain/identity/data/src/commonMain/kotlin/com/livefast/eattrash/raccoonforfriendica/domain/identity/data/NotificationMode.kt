@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.data
 
 import androidx.compose.runtime.Composable
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 sealed interface NotificationMode {
     data object Pull : NotificationMode

@@ -44,7 +44,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.InsertEmojiBottomSheet
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.components.AnnouncementCard
 import kotlinx.coroutines.flow.launchIn

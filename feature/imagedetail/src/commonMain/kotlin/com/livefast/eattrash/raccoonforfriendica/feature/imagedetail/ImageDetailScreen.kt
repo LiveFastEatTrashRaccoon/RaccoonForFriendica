@@ -42,7 +42,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayer
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ZoomableImage
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import kotlinx.coroutines.flow.launchIn

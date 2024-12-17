@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feaure.search.data
 
 import androidx.compose.runtime.Composable
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 sealed interface SearchSection {
     data object Posts : SearchSection

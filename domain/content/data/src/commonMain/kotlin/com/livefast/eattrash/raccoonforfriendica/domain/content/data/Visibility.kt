@@ -8,7 +8,7 @@ import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Workspaces
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 sealed interface Visibility {
     data object Public : Visibility

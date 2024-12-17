@@ -31,7 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Placeh
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserRelationshipButton
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
