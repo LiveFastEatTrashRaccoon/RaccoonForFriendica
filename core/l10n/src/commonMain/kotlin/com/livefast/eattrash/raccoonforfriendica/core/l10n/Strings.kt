@@ -1,10 +1,6 @@
-package com.livefast.eattrash.raccoonforfriendica.core.l10n.messages
+package com.livefast.eattrash.raccoonforfriendica.core.l10n
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.staticCompositionLocalOf
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.getStrings
 
 interface Strings {
     val accountAge: String @Composable get
@@ -439,43 +435,4 @@ interface Strings {
     suspend fun unreadNotificationBody(count: Int): String
 
     suspend fun unreadNotificationTitle(): String
-}
-
-object Locales {
-    const val EN = "en"
-    const val DE = "de"
-    const val ES = "es"
-    const val FI = "fi"
-    const val FR = "fr"
-    const val IT = "it"
-    const val PL = "pl"
-    const val PT = "pt"
-    const val UA = "ua"
-
-    val AVAILABLE_LANGUAGES =
-        listOf(
-            EN,
-            DE,
-            ES,
-            FI,
-            FR,
-            IT,
-            PL,
-            PT,
-            UA,
-        )
-}
-
-val LocalStrings: ProvidableCompositionLocal<Strings> =
-    staticCompositionLocalOf { getStrings(Locales.EN) }
-
-@Composable
-fun ProvideStrings(
-    lang: String,
-    content: @Composable () -> Unit,
-) {
-    CompositionLocalProvider(
-        value = LocalStrings provides getStrings(lang),
-        content = content,
-    )
 }

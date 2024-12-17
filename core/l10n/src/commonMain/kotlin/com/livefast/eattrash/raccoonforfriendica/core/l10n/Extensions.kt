@@ -1,8 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.l10n
 
 import androidx.compose.runtime.Composable
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Locales
+import androidx.compose.ui.unit.LayoutDirection
 
 @Composable
 fun String?.toLanguageName(): String? =
@@ -17,6 +16,12 @@ fun String?.toLanguageName(): String? =
         Locales.PT -> LocalStrings.current.languagePt
         Locales.UA -> LocalStrings.current.languageUa
         else -> null
+    }
+
+internal fun String.toLanguageDirection(): LayoutDirection =
+    when (this) {
+        "ar" -> LayoutDirection.Rtl
+        else -> LayoutDirection.Ltr
     }
 
 fun String?.toLanguageFlag(): String? =

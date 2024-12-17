@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.embeddedImageUrls
@@ -154,8 +154,7 @@ fun TimelineItem(
                     indication = null,
                 ) {
                     onClick?.invoke(entryToDisplay)
-                }
-                .semantics(mergeDescendants = true) {
+                }.semantics(mergeDescendants = true) {
                     val helperActions = mutableListOf<CustomAccessibilityAction>()
                     if (actionsEnabled) {
                         helperActions +=
@@ -356,9 +355,10 @@ fun TimelineItem(
                     val title = entryToDisplay.title
                     if (!title.isNullOrBlank()) {
                         ContentTitle(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .semantics { heading() },
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .semantics { heading() },
                             content = title,
                             maxLines = maxTitleLines,
                             autoloadImages = autoloadImages,

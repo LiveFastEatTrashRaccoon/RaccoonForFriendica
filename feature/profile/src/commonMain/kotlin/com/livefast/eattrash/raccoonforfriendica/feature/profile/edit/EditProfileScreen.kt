@@ -78,7 +78,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsH
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsImageInfo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper

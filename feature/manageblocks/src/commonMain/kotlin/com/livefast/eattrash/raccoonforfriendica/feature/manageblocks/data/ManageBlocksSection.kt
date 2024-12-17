@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data
 
 import androidx.compose.runtime.Composable
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 sealed interface ManageBlocksSection {
     data object Muted : ManageBlocksSection

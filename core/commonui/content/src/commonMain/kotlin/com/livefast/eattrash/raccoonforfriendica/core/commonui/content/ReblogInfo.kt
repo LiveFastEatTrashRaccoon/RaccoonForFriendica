@@ -27,7 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
@@ -44,15 +44,16 @@ internal fun ReblogInfo(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val onOpenUserModifier =
         if (onOpenUser != null) {
-            Modifier.clearAndSetSemantics { }
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                if (user != null) {
-                    onOpenUser.invoke(user)
+            Modifier
+                .clearAndSetSemantics { }
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) {
+                    if (user != null) {
+                        onOpenUser.invoke(user)
+                    }
                 }
-            }
         } else {
             Modifier
         }

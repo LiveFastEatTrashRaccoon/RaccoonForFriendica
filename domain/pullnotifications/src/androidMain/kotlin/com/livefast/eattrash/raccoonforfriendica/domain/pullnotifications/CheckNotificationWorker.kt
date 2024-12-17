@@ -8,7 +8,7 @@ import android.content.Intent
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Strings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.Strings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

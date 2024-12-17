@@ -63,7 +63,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsH
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel

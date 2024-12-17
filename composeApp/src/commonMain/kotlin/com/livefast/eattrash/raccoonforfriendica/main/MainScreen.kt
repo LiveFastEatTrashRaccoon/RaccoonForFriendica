@@ -34,7 +34,7 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigationItem
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.HomeTab
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.toTab
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import kotlinx.coroutines.flow.launchIn

@@ -18,7 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.concatDateWithTime
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.extractTimePart
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Timestamp

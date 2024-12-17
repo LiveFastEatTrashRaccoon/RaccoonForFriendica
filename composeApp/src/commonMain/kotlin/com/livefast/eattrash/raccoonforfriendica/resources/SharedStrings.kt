@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.resources
 
 import androidx.compose.runtime.Composable
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.messages.Strings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.Strings
 import org.jetbrains.compose.resources.getPluralString
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.pluralStringResource
