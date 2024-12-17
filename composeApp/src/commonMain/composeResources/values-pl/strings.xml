@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="account_age">wiek konta</string>
     <string name="account_section_all">Posty i odpowiedzi</string>
@@ -397,7 +397,6 @@
     <string name="visibility_private">Tylko obserwujący</string>
     <string name="visibility_public">Publiczny</string>
     <string name="visibility_unlisted">Bez listy</string>
-
     <plurals name="account_follower">
         <item quantity="one">%1$d zwolennik</item>
         <item quantity="other">%1$d zwolennicy</item>
@@ -446,4 +445,5 @@
         <item quantity="one">W koszu na 🗑️ znajduje się %1$d przedmiot</item>
         <item quantity="other">W koszu na 🗑️ znajdują się %1$d przedmioty</item>
     </plurals>
+    <string name="preview_image">Obraz podglądowy</string>
 </resources>
