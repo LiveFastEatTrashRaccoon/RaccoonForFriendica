@@ -1,7 +1,5 @@
-package com.livefast.eattrash.raccoonforfriendica.unit.licences
+package com.livefast.eattrash.raccoonforfriendica.feat.licences
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -34,7 +32,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.unit.licences.components.LicenceItem
+import com.livefast.eattrash.raccoonforfriendica.feat.licences.components.LicenceItem
 
 class LicencesScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -49,10 +47,6 @@ class LicencesScreen : Screen {
 
         Scaffold(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            modifier =
-                Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(Spacing.xs),
             topBar = {
                 TopAppBar(
                     scrollBehavior = scrollBehavior,
@@ -91,20 +85,19 @@ class LicencesScreen : Screen {
                             } else {
                                 Modifier
                             },
-                        ).fillMaxSize(),
+                        ).fillMaxSize()
+                        .padding(horizontal = Spacing.xs),
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
                 items(uiState.items) { item ->
                     LicenceItem(
                         item = item,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    if (item.url.isNotBlank()) {
-                                        uriHandler.openUri(item.url)
-                                    }
-                                },
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            if (item.url.isNotBlank()) {
+                                uriHandler.openUri(item.url)
+                            }
+                        },
                     )
                 }
                 item {

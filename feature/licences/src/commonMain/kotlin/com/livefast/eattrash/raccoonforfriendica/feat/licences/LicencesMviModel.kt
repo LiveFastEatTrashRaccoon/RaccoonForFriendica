@@ -1,8 +1,8 @@
-package com.livefast.eattrash.raccoonforfriendica.unit.licences
+package com.livefast.eattrash.raccoonforfriendica.feat.licences
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
-import com.livefast.eattrash.raccoonforfriendica.unit.licences.models.LicenceItem
+import com.livefast.eattrash.raccoonforfriendica.feat.licences.models.LicenceItem
 
 interface LicencesMviModel :
     ScreenModel,

@@ -18,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di.PullNotificationsModule
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.di.PushNotificationsModule
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.UrlHandlerModule
+import com.livefast.eattrash.raccoonforfriendica.feat.licences.di.LicenceModule
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.di.AnnouncementsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.di.CalendarModule
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.CirclesModule
@@ -43,7 +44,6 @@ import com.livefast.eattrash.raccoonforfriendica.feature.timeline.di.TimelineMod
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.di.UnpublishedModule
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.UserListModule
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.di.SearchModule
-import com.livefast.eattrash.raccoonforfriendica.unit.licences.di.LicenceModule
 import org.koin.core.annotation.Module
 import org.koin.ksp.generated.module
 

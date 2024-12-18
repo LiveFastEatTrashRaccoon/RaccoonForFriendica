@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feat.licences.LicencesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.AnnouncementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarScreen
@@ -43,7 +44,6 @@ import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
-import com.livefast.eattrash.raccoonforfriendica.unit.licences.LicencesScreen
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
