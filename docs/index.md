@@ -97,12 +97,13 @@ A special thanks goes to all those who contributed so far:
 - [informapirata](https://poliverso.org/profile/informapirata)
 - [N7-X](https://github.com/N7-X)
 - [pvagner](https://github.com/pvagner)
+- [toas-koas](https://github.com/toas-koas)
 - all those who reported feedback and ideas through Friendica, Mastodon, GitHub, emails,
   private messages, homing pigeons and every possibly imaginable medium.
 
 This project would not be what it is were it not for the huge amount of patience and dedication of
 these early adopters who sent me continuous feedback and ideas for improvement after every release,
-reported bugs, offered to help, submitted translations to their local language, offered help to
+reported bugs, offered to help, submitted translations in their local language, offered help to
 other users and made the community a better place, etc.
 
 You are **awesome**… THANKS ❤️🦝️❤️
