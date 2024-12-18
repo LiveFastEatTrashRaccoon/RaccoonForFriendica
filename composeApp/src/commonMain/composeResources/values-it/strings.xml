@@ -446,4 +446,5 @@
         <item quantity="one">C'è %1$d elemento nel 🗑️</item>
         <item quantity="other">Ci sono %1$d elementi nel 🗑️</item>
     </plurals>
+    <string name="settings_about_acknowledgements">Riconoscimenti</string>
 </resources>
