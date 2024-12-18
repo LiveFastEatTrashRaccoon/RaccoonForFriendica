@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Local
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.main.AcknowledgementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feat.licences.LicencesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.AnnouncementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
@@ -496,6 +497,15 @@ class DefaultDetailOpenerTest {
 
         verify {
             navigationCoordinator.push(any<AnnouncementsScreen>())
+        }
+    }
+
+    @Test
+    fun `when openAcknowledgements then interactions are as expected`() {
+        sut.openAcknowledgements()
+
+        verify {
+            navigationCoordinator.push(any<AcknowledgementsScreen>())
         }
     }
 }

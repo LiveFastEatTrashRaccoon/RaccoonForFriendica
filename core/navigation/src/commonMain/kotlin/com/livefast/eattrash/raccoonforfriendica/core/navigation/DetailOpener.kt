@@ -123,4 +123,6 @@ interface DetailOpener {
     fun openInternalWebView(url: String)
 
     fun openAnnouncements()
+
+    fun openAcknowledgements()
 }
