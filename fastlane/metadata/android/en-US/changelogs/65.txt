@@ -1,0 +1,13 @@
+- feat: add Acknowledgements screen
+- feat: support for block quotes
+- fix: prevent crashes while loading timeline
+- fix: load suggestions and trending links
+- fix: retrieve source for post editing
+- fix: user post pagination
+- fix: images overlapping text
+- fix: detect Friendica RC versions
+- enhancement: accessibility improvements
+- enhancement: post preview
+- enhancement: exclude replies from timeline (Friendica)
+- enhancement: make Markdown mode always available
+- enhancement: l10n updates
