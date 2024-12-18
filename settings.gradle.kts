@@ -56,6 +56,7 @@ include(":domain:pullnotifications")
 include(":domain:pushnotifications")
 include(":domain:urlhandler")
 
+include(":feature:acknowledgements")
 include(":feature:announcements")
 include(":feature:calendar")
 include(":feature:circles")

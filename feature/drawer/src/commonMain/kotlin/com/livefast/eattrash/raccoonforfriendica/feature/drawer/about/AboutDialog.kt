@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.OpenInBrowser
+import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -168,6 +169,18 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
                         onClick = {
                             handleAction {
                                 uriHandler.openUri(AboutConstants.MANUAL_URL)
+                            }
+                        },
+                    )
+                }
+                item {
+                    AboutItem(
+                        text = LocalStrings.current.settingsAboutAcknowledgements,
+                        icon = Icons.Default.VolunteerActivism,
+                        textDecoration = TextDecoration.Underline,
+                        onClick = {
+                            handleAction {
+                                detailOpener.openAcknowledgements()
                             }
                         },
                     )

@@ -294,6 +294,7 @@
     <string name="select_user_dialog_title">Select a user</string>
     <string name="select_user_search_placeholder">username or handle</string>
     <string name="settings_about">App information</string>
+    <string name="settings_about_acknowledgements">Acknowledgements</string>
     <string name="settings_about_app_version">Version</string>
     <string name="settings_about_changelog">Changelog</string>
     <string name="settings_about_licences">Licenses</string>

@@ -306,6 +306,7 @@ interface Strings {
     val selectUserDialogTitle: String @Composable get
     val selectUserSearchPlaceholder: String @Composable get
     val settingsAbout: String @Composable get
+    val settingsAboutAcknowledgements: String @Composable get
     val settingsAboutAppVersion: String @Composable get
     val settingsAboutChangelog: String @Composable get
     val settingsAboutLicences: String @Composable get
