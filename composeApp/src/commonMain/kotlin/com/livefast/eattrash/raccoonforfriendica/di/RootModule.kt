@@ -18,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di.PullNotificationsModule
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.di.PushNotificationsModule
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.UrlHandlerModule
+import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.di.AcknowledgementsModule
 import com.livefast.eattrash.raccoonforfriendica.feat.licences.di.LicenceModule
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.di.AnnouncementsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.di.CalendarModule
@@ -78,6 +79,7 @@ internal class DomainModules
 
 @Module(
     includes = [
+        AcknowledgementsModule::class,
         AnnouncementsModule::class,
         CalendarModule::class,
         CirclesModule::class,

@@ -81,6 +81,7 @@ kotlin {
             implementation(projects.domain.pushnotifications)
             implementation(projects.domain.urlhandler)
 
+            implementation(projects.feature.acknowledgements)
             implementation(projects.feature.announcements)
             implementation(projects.feature.calendar)
             implementation(projects.feature.circles)
