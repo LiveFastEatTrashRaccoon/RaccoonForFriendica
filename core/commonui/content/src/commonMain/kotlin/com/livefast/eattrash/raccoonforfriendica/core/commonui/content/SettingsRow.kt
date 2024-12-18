@@ -50,7 +50,7 @@ fun SettingsRow(
                 ).then(
                     if (onTap != null) {
                         Modifier.clickable {
-                            onTap.invoke()
+                            onTap()
                         }
                     } else {
                         Modifier
