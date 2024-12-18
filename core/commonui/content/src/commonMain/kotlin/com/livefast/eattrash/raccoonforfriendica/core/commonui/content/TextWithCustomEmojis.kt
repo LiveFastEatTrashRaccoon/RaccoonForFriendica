@@ -77,13 +77,30 @@ fun TextWithCustomEmojis(
                 IMAGE_REGEX.substituteAllOccurrences(this) { occurrence ->
                     val rawString = occurrence.value
                     val imageData = extractImageData(rawString)
-                    if (imageData != null) {
+                    val alternateText =
+                        imageData?.description.takeIf {
+                            !it.isNullOrEmpty()
+                        } ?: rawString
+                    // on some instances (e.g. anonsys.net) emojis are sent as <img /> elements
+                    val looksLikeAnEmoji = EMOJI_REGEX.matches(alternateText)
+                    if (looksLikeAnEmoji) {
+                        val emojiCode = alternateText.replace(":", "")
+                        val foundEmoji = emojis.firstOrNull { it.code == emojiCode }
+                        if (foundEmoji != null) {
+                            if (autoloadImages) {
+                                appendInlineContent(
+                                    id = emojiCode,
+                                    alternateText = occurrence.value,
+                                )
+                                foundEmojis += foundEmoji
+                            }
+                        }
+                    } else if (imageData != null) {
                         val id = getUuid()
                         foundImages[id] = imageData
                         appendInlineContent(
                             id = id,
-                            alternateText =
-                                imageData.description.takeIf { !it.isNullOrEmpty() } ?: rawString,
+                            alternateText = alternateText,
                         )
                     }
                 }
@@ -103,7 +120,7 @@ fun TextWithCustomEmojis(
                         modifier = Modifier.size(IconSize.m),
                         url = emoji.url,
                         contentDescription = null,
-                        contentScale = ContentScale.FillWidth,
+                        contentScale = ContentScale.FillBounds,
                     )
                 }
         }
@@ -125,7 +142,7 @@ fun TextWithCustomEmojis(
                         url = imageData.url,
                         autoload = autoloadImages,
                         contentDescription = imageData.description,
-                        contentScale = ContentScale.FillWidth,
+                        contentScale = ContentScale.FillBounds,
                     )
                 }
         }
