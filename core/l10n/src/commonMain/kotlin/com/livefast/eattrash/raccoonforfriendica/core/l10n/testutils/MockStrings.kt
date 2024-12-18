@@ -619,6 +619,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("selectUserSearchPlaceholder")
     override val settingsAbout: String
         @Composable get() = retrieve("settingsAbout")
+    override val settingsAboutAcknowledgements: String
+        @Composable get() = retrieve("settingsAboutAcknowledgements")
     override val settingsAboutAppVersion: String
         @Composable get() = retrieve("settingsAboutAppVersion")
     override val settingsAboutChangelog: String

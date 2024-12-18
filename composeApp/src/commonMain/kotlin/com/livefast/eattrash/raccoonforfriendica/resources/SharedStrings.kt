@@ -320,6 +320,7 @@ import raccoonforfriendica.composeapp.generated.resources.select_duration_dialog
 import raccoonforfriendica.composeapp.generated.resources.select_user_dialog_title
 import raccoonforfriendica.composeapp.generated.resources.select_user_search_placeholder
 import raccoonforfriendica.composeapp.generated.resources.settings_about
+import raccoonforfriendica.composeapp.generated.resources.settings_about_acknowledgements
 import raccoonforfriendica.composeapp.generated.resources.settings_about_app_version
 import raccoonforfriendica.composeapp.generated.resources.settings_about_changelog
 import raccoonforfriendica.composeapp.generated.resources.settings_about_licences
@@ -1035,6 +1036,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.select_user_search_placeholder)
     override val settingsAbout: String
         @Composable get() = stringResource(Res.string.settings_about)
+    override val settingsAboutAcknowledgements: String
+        @Composable get() = stringResource(Res.string.settings_about_acknowledgements)
     override val settingsAboutAppVersion: String
         @Composable get() = stringResource(Res.string.settings_about_app_version)
     override val settingsAboutChangelog: String
