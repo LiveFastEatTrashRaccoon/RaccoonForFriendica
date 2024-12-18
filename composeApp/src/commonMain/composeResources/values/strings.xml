@@ -313,7 +313,7 @@
     <string name="settings_item_crash_report_enabled">Enable anonymous crash reports</string>
     <string name="settings_item_default_post_visibility">Default visibility for posts</string>
     <string name="settings_item_default_reply_visibility">Default visibility for replies</string>
-    <string name="settings_item_default_timeline_type">Default timeline type"</string>
+    <string name="settings_item_default_timeline_type">Default timeline type</string>
     <string name="settings_item_dynamic_colors">Material You</string>
     <string name="settings_item_dynamic_colors_subtitle">generate a palette based on your background</string>
     <string name="settings_item_exclude_replies_from_timeline">Exclude replies from timeline</string>
