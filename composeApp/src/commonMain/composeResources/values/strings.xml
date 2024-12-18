@@ -449,7 +449,7 @@
         <item quantity="other">There are %1$d items in your 🗑️</item>
     </plurals>
 
-    <string name="language_de" translatable="false">Deutch</string>
+    <string name="language_de" translatable="false">Deutsch</string>
     <string name="language_en" translatable="false">English</string>
     <string name="language_es" translatable="false">Español</string>
     <string name="language_fi" translatable="false">Suomi</string>
