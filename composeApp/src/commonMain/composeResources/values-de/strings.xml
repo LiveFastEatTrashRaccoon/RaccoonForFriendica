@@ -170,7 +170,7 @@
     <string name="follow_required_message">Du musst dem anderen Nutzer folgen, um eine Direktnachricht senden zu können!</string>
     <string name="followed_hashtags_title">Gefolgte Hashtags</string>
     <string name="follower_title">Anhänger</string>
-    <string name="following_title">Folgende</string>
+    <string name="following_title">Folge ich</string>
     <string name="font_scale_larger">Größer</string>
     <string name="font_scale_largest">Größte</string>
     <string name="font_scale_normal">Normal</string>
@@ -254,9 +254,9 @@
     <string name="notification_type_entry_name">Benachrichtigungen veröffentlichen</string>
     <string name="notification_type_favorite">Beitrag zu den Favoriten hinzugefügt</string>
     <string name="notification_type_favorite_name">Favoriten</string>
-    <string name="notification_type_follow">hat begonnen, Ihnen zu folgen</string>
+    <string name="notification_type_follow">hat begonnen, dir zu folgen</string>
     <string name="notification_type_follow_name">Neue Follower</string>
-    <string name="notification_type_follow_request">hat Ihnen eine Folgeanfrage geschickt</string>
+    <string name="notification_type_follow_request">hat dir eine Folgeanfrage geschickt</string>
     <string name="notification_type_follow_request_name">Folgeanfragen</string>
     <string name="notification_type_mention">hat dich erwähnt</string>
     <string name="notification_type_mention_name">Erwähnungen &amp; Antworten</string>
@@ -403,8 +403,8 @@
         <item quantity="other">%1$d Folgende</item>
     </plurals>
     <plurals name="account_following">
-        <item quantity="one">%1$d folgende</item>
-        <item quantity="other">%1$d folgenden</item>
+        <item quantity="one">%1$d Followe</item>
+        <item quantity="other">%1$d Follower</item>
     </plurals>
     <plurals name="create_report_selected_rules">
         <item quantity="one">%1$d Regel ausgewählt</item>
