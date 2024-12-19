@@ -19,6 +19,7 @@ internal fun Project.configureKoinAnnotations(extension: KotlinMultiplatformExte
                 }
 
                 kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+                kotlin.exclude("**/KoinMeta-*.kt")
             }
         }
     }
