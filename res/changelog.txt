@@ -1,24 +1,7 @@
 ## What's Changed
 
-- feat: add Acknowledgements screen by @AkesiSeli in #653
-- feat: add support for block quotes by @AkesiSeli in #597
-- fix: prevent crashes while loading timeline by @AkesiSeli in #601, #648
-- fix: prevent crash if alt text missing by @AkesiSeli in #595
-- fix: restore follow suggestions by @AkesiSeli in #589
-- fix: restore trending links by @AkesiSeli in #602
-- fix: retrieve source for post editing by @AkesiSeli in #592, #596, #598, #642
-- fix: user post pagination by @AkesiSeli in #628
-- fix: embedded images overlapping text by @AkesiSeli in #624, #637, #654
-- fix: detect Friendica RC versions by @AkesiSeli in #632
-- enhancement: accessibility improvements by @pvagner and @AkesiSeli in #638, #641
-- enhancement: improve post preview by @AkesiSeli in #600
-- enhancement: exclude replies from timeline on Friendica by default by @AkesiSeli in #588
-- enhancement: make Markdown mode always available by @AkesiSeli in #594
-- enhancement: l10n updates by @Weblate and @toas-koas in #646, #651, #652, #655
-- refactor: update build scripts with convention plugins by @AkesiSeli #605, #609, #610, #630
-- refactor: migrate to Koin annotations by @AkesiSeli in #612, #613, #615, #616, #619, #620, #621, #622, #623, #627, #629
-- refactor: migrate l10n to Compose resources and support RTL direction by @AkesiSeli in #645, #649
-- chore: add more unit tests by @AkesiSeli in #587, #593, #603, #606, #626
-- chore: update deps by @dependabot and @AkesiSeli in #590, #604, #614, #617, #618, #625, #631, #635, #644
+- fix: prevent Koin metadata from being compiled by @AkesiSeli in #658
+- fix: typos in language names by @AkesiSeli
+- chore: bump ktor from 3.0.2 to 3.0.3 by @dependabot in #656
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.3.1...0.3.2
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.3.2...0.3.3

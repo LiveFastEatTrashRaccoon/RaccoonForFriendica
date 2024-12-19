@@ -1,0 +1,3 @@
+- fix: prevent Koin metadata from being compiled
+- fix: typos in language names
+- chore: bump ktor from 3.0.2 to 3.0.3
