@@ -169,7 +169,7 @@
     <string name="follow_requests_title">Folgeanfragen</string>
     <string name="follow_required_message">Du musst dem anderen Nutzer folgen, um eine Direktnachricht senden zu können!</string>
     <string name="followed_hashtags_title">Gefolgte Hashtags</string>
-    <string name="follower_title">Anhänger</string>
+    <string name="follower_title">Folgende</string>
     <string name="following_title">Folge ich</string>
     <string name="font_scale_larger">Größer</string>
     <string name="font_scale_largest">Größte</string>
@@ -403,8 +403,8 @@
         <item quantity="other">%1$d Folgende</item>
     </plurals>
     <plurals name="account_following">
-        <item quantity="one">%1$d Followe</item>
-        <item quantity="other">%1$d Follower</item>
+        <item quantity="one">%1$d Gefolgt</item>
+        <item quantity="other">%1$d Gefolgte</item>
     </plurals>
     <plurals name="create_report_selected_rules">
         <item quantity="one">%1$d Regel ausgewählt</item>
@@ -419,8 +419,8 @@
         <item quantity="other">%1$d Favoriten</item>
     </plurals>
     <plurals name="extended_social_info_reblogs">
-        <item quantity="one">%1$d Aktie</item>
-        <item quantity="other">%1$d Aktien</item>
+        <item quantity="one">%1$d geteilt</item>
+        <item quantity="other">%1$d geteilt</item>
     </plurals>
     <plurals name="hashtag_people_using">
         <item quantity="one">$1%d Person spricht darüber</item>
