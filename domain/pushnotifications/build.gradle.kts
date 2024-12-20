@@ -8,7 +8,6 @@ kotlin {
     sourceSets {
         val androidMain by getting {
             dependencies {
-                implementation(libs.bouncycastle)
                 implementation(libs.unifiedpush)
             }
         }
