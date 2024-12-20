@@ -11,7 +11,6 @@ import chaintech.videoplayer.model.ScreenResize
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
-import org.koin.core.annotation.Single
 import raccoonforfriendica.composeapp.generated.resources.Res
 import raccoonforfriendica.composeapp.generated.resources.atkinsonhyperlegible_bold
 import raccoonforfriendica.composeapp.generated.resources.atkinsonhyperlegible_italic
@@ -29,7 +28,6 @@ import raccoonforfriendica.composeapp.generated.resources.notosans_italic
 import raccoonforfriendica.composeapp.generated.resources.notosans_medium
 import raccoonforfriendica.composeapp.generated.resources.notosans_regular
 
-@Single
 internal class SharedResources : CoreResources {
     override val atkinsonHyperlegible: FontFamily
         @Composable

@@ -15,9 +15,7 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 import io.ktor.http.path
 import kotlinx.coroutines.flow.MutableSharedFlow
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultAuthManager(
     private val navigationCoordinator: NavigationCoordinator,
     private val credentialsRepository: CredentialsRepository,

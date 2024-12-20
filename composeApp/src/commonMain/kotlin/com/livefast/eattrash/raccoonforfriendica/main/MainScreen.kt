@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigationItem
@@ -44,7 +44,7 @@ import kotlin.math.roundToInt
 object MainScreen : Screen {
     @Composable
     override fun Content() {
-        val model = getScreenModel<MainMviModel>()
+        val model = rememberScreenModel<MainMviModel>()
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val currentSection by navigationCoordinator.currentSection.collectAsState()
