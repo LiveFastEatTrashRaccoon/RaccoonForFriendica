@@ -1,8 +1,19 @@
 package com.livefast.eattrash.raccoonforfriendica.feat.licences.di
 
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
+import com.livefast.eattrash.raccoonforfriendica.feat.licences.LicencesMviModel
+import com.livefast.eattrash.raccoonforfriendica.feat.licences.LicencesViewModel
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.provider
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feat.licences")
-class LicenceModule
+val licenceModule =
+    DI.Module("LicenceModule") {
+        bind<LicencesMviModel> {
+            provider {
+                LicencesViewModel(
+                    settingsRepository = instance(),
+                )
+            }
+        }
+    }

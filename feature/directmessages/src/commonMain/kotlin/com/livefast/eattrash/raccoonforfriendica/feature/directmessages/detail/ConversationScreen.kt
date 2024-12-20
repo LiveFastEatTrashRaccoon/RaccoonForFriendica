@@ -52,7 +52,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -68,10 +68,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItem
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItemPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.ConversationMviModelParams
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.parameter.parametersOf
 import kotlin.math.abs
 
 class ConversationScreen(
@@ -81,11 +81,13 @@ class ConversationScreen(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model =
-            getScreenModel<ConversationMviModel>(
-                parameters = {
-                    parametersOf(otherUserId, parentUri)
-                },
+        val model: ConversationMviModel =
+            rememberScreenModel(
+                arg =
+                    ConversationMviModelParams(
+                        otherUserId = otherUserId,
+                        parentUri = parentUri,
+                    ),
             )
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }

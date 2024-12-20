@@ -2,9 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer.converters
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultMarkdownConverter : MarkdownConverter {
     override fun toHtml(value: String) =
         value

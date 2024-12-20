@@ -1,8 +1,28 @@
 package com.livefast.eattrash.raccoonforfriendica.feaure.search.di
 
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
+import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchMviModel
+import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchViewModel
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.provider
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feaure.search")
-class SearchModule
+val searchModule =
+    DI.Module("SearchModule") {
+        bind<SearchMviModel> {
+            provider {
+                SearchViewModel(
+                    paginationManager = instance(),
+                    userRepository = instance(),
+                    timelineEntryRepository = instance(),
+                    settingsRepository = instance(),
+                    identityRepository = instance(),
+                    hapticFeedback = instance(),
+                    imagePreloadManager = instance(),
+                    blurHashRepository = instance(),
+                    imageAutoloadObserver = instance(),
+                    notificationCenter = instance(),
+            )
+        }
+    }
+}

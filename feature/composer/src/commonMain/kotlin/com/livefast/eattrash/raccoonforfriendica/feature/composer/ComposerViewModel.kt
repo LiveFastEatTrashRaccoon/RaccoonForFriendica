@@ -6,6 +6,7 @@ import androidx.compose.ui.text.input.getSelectedText
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
@@ -56,16 +57,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 import kotlin.time.Duration
 
 private const val PLACEHOLDER_ID = "placeholder"
 
-@Factory(binds = [ComposerMviModel::class])
 @OptIn(FlowPreview::class)
 class ComposerViewModel(
-    @InjectedParam private val inReplyToId: String,
+    private val inReplyToId: String,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val photoRepository: PhotoRepository,
@@ -84,8 +82,8 @@ class ComposerViewModel(
     private val userRepository: UserRepository,
     private val prepareForPreview: PrepareForPreviewUseCase,
     private val stripMarkup: StripMarkupUseCase,
-    private val notificationCenter: NotificationCenter,
     private val bbCodeConverter: BBCodeConverter,
+    private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
         initialState = ComposerMviModel.State(),
     ),

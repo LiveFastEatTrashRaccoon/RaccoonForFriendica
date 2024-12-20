@@ -1,8 +1,23 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.di
 
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
+import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.ManageBlocksMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.ManageBlocksViewModel
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.provider
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.manageblocks")
-class ManageBlocksModule
+val manageBlocksModule =
+    DI.Module("ManageBlocksModule") {
+        bind<ManageBlocksMviModel> {
+            provider {
+                ManageBlocksViewModel(
+                    paginationManager = instance(),
+                    userRepository = instance(),
+                    settingsRepository = instance(),
+                    imagePreloadManager = instance(),
+                    imageAutoloadObserver = instance(),
+                )
+            }
+        }
+    }

@@ -12,12 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory(binds = [ImageDetailMviModel::class])
 class ImageDetailViewModel(
-    @InjectedParam private val urls: List<String>,
+    private val urls: List<String>,
     private val initialIndex: Int = 0,
     private val shareHelper: ShareHelper,
     private val galleryHelper: GalleryHelper,
