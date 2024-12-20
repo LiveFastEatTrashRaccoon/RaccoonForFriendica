@@ -1,0 +1,3 @@
+- refactor: migrate from Koin to Kodein
+- chore: update German translation
+- chore: update dependencies

@@ -1,7 +1,7 @@
 ## What's Changed
 
-- fix: prevent Koin metadata from being compiled by @AkesiSeli in #658
-- fix: typos in language names by @AkesiSeli
-- chore: bump ktor from 3.0.2 to 3.0.3 by @dependabot in #656
+- refactor(di): migrate from Koin to Kodein by @AkesiSeli in #666
+- chore(l10n): update German translation by @Weblate and @koas-toas in #665
+- chore: update dependencies by @dependabot and @AkesiSeli in #660, #661, #663, #662
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.3.2...0.3.3
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.3.3...0.3.4
