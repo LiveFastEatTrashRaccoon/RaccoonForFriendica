@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
@@ -15,18 +16,15 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory(binds = [AlbumDetailMviModel::class])
 class AlbumDetailViewModel(
-    @InjectedParam private val albumName: String,
+    private val albumName: String,
     private val paginationManager: AlbumPhotoPaginationManager,
     private val photoRepository: PhotoRepository,
     private val albumRepository: PhotoAlbumRepository,
     private val settingsRepository: SettingsRepository,
-    private val notificationCenter: NotificationCenter,
     private val imageAutoloadObserver: ImageAutoloadObserver,
+    private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<AlbumDetailMviModel.Intent, AlbumDetailMviModel.State, AlbumDetailMviModel.Effect>(
         initialState = AlbumDetailMviModel.State(),
     ),

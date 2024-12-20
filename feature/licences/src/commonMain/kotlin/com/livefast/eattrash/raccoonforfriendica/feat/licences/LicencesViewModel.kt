@@ -8,9 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.feat.licences.models.LicenceIte
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
 
-@Factory(binds = [LicencesMviModel::class])
 class LicencesViewModel(
     private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<LicencesMviModel.Intent, LicencesMviModel.State, LicencesMviModel.Effect>(
@@ -108,9 +106,9 @@ class LicencesViewModel(
                         this +=
                             LicenceItem(
                                 type = LicenceItemType.Library,
-                                title = "Koin",
-                                subtitle = "A pragmatic lightweight dependency injection framework",
-                                url = LicenceUrls.KOIN,
+                                title = "Kodein",
+                                subtitle = "A straightforward and yet very useful dependency retrieval container",
+                                url = LicenceUrls.KODEIN,
                             )
                         this +=
                             LicenceItem(

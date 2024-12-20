@@ -10,12 +10,9 @@ import io.ktor.http.Parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Named
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultMarkerRepository(
-    @Named("default") private val provider: ServiceProvider,
+    private val provider: ServiceProvider,
 ) : MarkerRepository {
     private val cachedValues = mutableMapOf<MarkerType, MarkerModel>()
 

@@ -17,10 +17,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toSerialMa
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toUrlOpeningMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.seconds
 
-@Single
 internal class DefaultSettingsRepository(
     private val settingsDao: SettingsDao,
 ) : SettingsRepository {

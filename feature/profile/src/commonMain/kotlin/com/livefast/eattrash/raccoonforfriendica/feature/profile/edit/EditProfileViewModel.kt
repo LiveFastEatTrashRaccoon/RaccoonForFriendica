@@ -15,7 +15,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
 
 sealed interface EditProfilerFieldType {
     data object DisplayName : EditProfilerFieldType
@@ -23,7 +22,6 @@ sealed interface EditProfilerFieldType {
     data object Bio : EditProfilerFieldType
 }
 
-@Factory(binds = [EditProfileMviModel::class])
 class EditProfileViewModel(
     private val userRepository: UserRepository,
     private val emojiRepository: EmojiRepository,

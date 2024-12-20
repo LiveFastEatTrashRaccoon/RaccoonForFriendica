@@ -2,9 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultReplyHelper(
     private val entryRepository: TimelineEntryRepository,
     private val entryCache: LruCache<String, TimelineEntryModel> = LruCache(100),

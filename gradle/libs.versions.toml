@@ -19,8 +19,7 @@ compose-ui-test = "1.7.5"
 connectivity = "1.2.0"
 compose-multiplatform-media-player = "1.0.27"
 gradle = "8.7.3"
-koin = "4.0.0"
-koin-annotations = "2.0.0-Beta2"
+kodein = "7.23.1"
 kotlin = "2.1.0"
 kotlinpoet = "2.0.0"
 kotlinx-coroutines = "1.9.0"
@@ -71,10 +70,7 @@ connectivity-device = { module = "dev.jordond.connectivity:connectivity-device",
 
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
-koin-ksp = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }
+kodein = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
 
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
@@ -122,7 +118,7 @@ voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
 voyager-tab = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-transition = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
-voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
+voyager-kodein = { module = "cafe.adriel.voyager:voyager-kodein", version.ref = "voyager" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

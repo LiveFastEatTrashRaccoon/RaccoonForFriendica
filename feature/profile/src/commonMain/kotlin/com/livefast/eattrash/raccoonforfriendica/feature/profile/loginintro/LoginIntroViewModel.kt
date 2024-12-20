@@ -2,9 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro
 
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
-import org.koin.core.annotation.Factory
 
-@Factory(binds = [LoginIntroMviModel::class])
 class LoginIntroViewModel(
     private val authManager: AuthManager,
 ) : DefaultMviModel<LoginIntroMviModel.Intent, LoginIntroMviModel.State, LoginIntroMviModel.Effect>(

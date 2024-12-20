@@ -2,20 +2,30 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.DefaultServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
-import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
-import org.koin.core.annotation.Module
-import org.koin.core.annotation.Named
-import org.koin.core.annotation.Single
+import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
+import io.ktor.client.engine.HttpClientEngine
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.singleton
 
-@Module
-class ApiModule {
-    @Single
-    @Named("default")
-    fun provideLocalServiceProvider(appInfoRepository: AppInfoRepository): ServiceProvider =
-        DefaultServiceProvider(appInfoRepository = appInfoRepository)
-
-    @Single
-    @Named("other")
-    fun provideOtherServiceProvider(appInfoRepository: AppInfoRepository): ServiceProvider =
-        DefaultServiceProvider(appInfoRepository = appInfoRepository)
-}
+val apiModule =
+    DI.Module("ApiModule") {
+        bind<HttpClientEngine> {
+            instance(provideHttpClientEngine())
+        }
+        bind<ServiceProvider>(tag = "default") {
+            singleton {
+                DefaultServiceProvider(
+                    appInfoRepository = instance(),
+                )
+            }
+        }
+        bind<ServiceProvider>(tag = "other") {
+            singleton {
+                DefaultServiceProvider(
+                    appInfoRepository = instance(),
+                )
+            }
+        }
+    }

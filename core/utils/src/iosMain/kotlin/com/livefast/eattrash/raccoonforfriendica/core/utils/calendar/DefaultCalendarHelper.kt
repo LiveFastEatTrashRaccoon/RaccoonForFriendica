@@ -1,12 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.calendar
 
-import org.koin.core.annotation.Single
+internal class DefaultCalendarHelper : CalendarHelper {
+    override val supportsExport: Boolean = false
 
-@Single
-internal actual class DefaultCalendarHelper : CalendarHelper {
-    actual override val supportsExport: Boolean = false
-
-    actual override fun export(
+    override fun export(
         title: String,
         startDate: Long,
         endDate: Long?,

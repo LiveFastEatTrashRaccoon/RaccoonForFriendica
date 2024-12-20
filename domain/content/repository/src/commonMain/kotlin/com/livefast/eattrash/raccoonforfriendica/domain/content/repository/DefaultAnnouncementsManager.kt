@@ -3,9 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultAnnouncementsManager(
     private val announcementRepository: AnnouncementRepository,
 ) : AnnouncementsManager {

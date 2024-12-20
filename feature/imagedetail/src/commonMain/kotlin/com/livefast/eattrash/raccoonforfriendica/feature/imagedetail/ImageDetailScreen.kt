@@ -36,7 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
@@ -45,9 +45,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Zoomab
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.di.ImageDetailMviModelParams
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.core.parameter.parametersOf
 
 class ImageDetailScreen(
     private val urls: List<String>,
@@ -60,14 +60,13 @@ class ImageDetailScreen(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model =
-            getScreenModel<ImageDetailMviModel>(
-                parameters = {
-                    parametersOf(
-                        urls,
-                        initialIndex,
-                    )
-                },
+        val model: ImageDetailMviModel =
+            rememberScreenModel(
+                arg =
+                    ImageDetailMviModelParams(
+                        urls = urls,
+                        initialIndex = initialIndex,
+                    ),
             )
         val uiState by model.uiState.collectAsState()
         val snackbarHostState = remember { SnackbarHostState() }

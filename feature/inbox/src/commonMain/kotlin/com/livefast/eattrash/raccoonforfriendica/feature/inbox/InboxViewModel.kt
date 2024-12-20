@@ -26,9 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNo
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
 
-@Factory(binds = [InboxMviModel::class])
 class InboxViewModel(
     private val paginationManager: NotificationsPaginationManager,
     private val userRepository: UserRepository,

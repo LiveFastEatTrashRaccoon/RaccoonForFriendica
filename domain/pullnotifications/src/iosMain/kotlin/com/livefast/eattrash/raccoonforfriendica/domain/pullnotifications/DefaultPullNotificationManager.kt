@@ -1,29 +1,26 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications
 
-import org.koin.core.annotation.Single
+internal class DefaultPullNotificationManager : PullNotificationManager {
+    override val isSupported = false
+    override val isBackgroundRestricted = false
 
-@Single
-internal actual class DefaultPullNotificationManager : PullNotificationManager {
-    actual override val isSupported = false
-    actual override val isBackgroundRestricted = false
-
-    actual override fun setPeriod(minutes: Long) {
+    override fun setPeriod(minutes: Long) {
         // NO-OP
     }
 
-    actual override fun start() {
+    override fun start() {
         // NO-OP
     }
 
-    actual override fun stop() {
+    override fun stop() {
         // NO-OP
     }
 
-    actual override fun cancelAll() {
+    override fun cancelAll() {
         // NO-OP
     }
 
-    actual override fun oneshotCheck() {
+    override fun oneshotCheck() {
         // NO-OP
     }
 }

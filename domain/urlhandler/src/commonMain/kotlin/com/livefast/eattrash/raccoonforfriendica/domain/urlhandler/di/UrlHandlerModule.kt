@@ -1,12 +1,75 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di
 
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
+import androidx.compose.ui.platform.UriHandler
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandler
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.DefaultCustomUriHandler
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultEntryProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultFetchEntryUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultFetchUserUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultHashtagProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.DefaultUserProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.EntryProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.FetchEntryUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.FetchUserUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.HashtagProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.UserProcessor
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.factory
+import org.kodein.di.instance
+import org.kodein.di.singleton
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor")
-internal class UrlHandlerProcessorModule
+val urlHandlerModule =
+    DI.Module("UrlHandlerModule") {
+        bind<FetchUserUseCase> {
+            singleton {
+                DefaultFetchUserUseCase(
+                    searchRepository = instance(),
+                )
+            }
+        }
+        bind<FetchEntryUseCase> {
+            singleton {
+                DefaultFetchEntryUseCase(
+                    searchRepository = instance(),
+                )
+            }
+        }
+        bind<HashtagProcessor> {
+            singleton {
+                DefaultHashtagProcessor(
+                    detailOpener = instance(),
+                )
+            }
+        }
+        bind<UserProcessor> {
+            singleton {
+                DefaultUserProcessor(
+                    detailOpener = instance(),
+                    fetchUser = instance(),
+                )
+            }
+        }
+        bind<EntryProcessor> {
+            singleton {
+                DefaultEntryProcessor(
+                    detailOpener = instance(),
+                    fetchEntry = instance(),
+                )
+            }
+        }
 
-@Module(includes = [UrlHandlerProcessorModule::class])
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.urlhandler")
-class UrlHandlerModule
+        bind<CustomUriHandler> {
+            factory { fallback: UriHandler ->
+                DefaultCustomUriHandler(
+                    defaultHandler = fallback,
+                    customTabsHelper = instance(),
+                    settingsRepository = instance(),
+                    detailOpener = instance(),
+                    hashtagProcessor = instance(),
+                    userProcessor = instance(),
+                    entryProcessor = instance(),
+                )
+            }
+        }
+    }

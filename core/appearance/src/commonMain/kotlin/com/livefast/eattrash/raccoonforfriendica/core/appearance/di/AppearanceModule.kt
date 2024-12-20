@@ -1,11 +1,16 @@
 package com.livefast.eattrash.raccoonforfriendica.core.appearance.di
 
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.DefaultThemeColorRepository
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.DefaultThemeRepository
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeColorRepository
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.singleton
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.appearance.repository")
-internal class RepositoryModule
-
-@Module(includes = [ThemeModule::class, RepositoryModule::class])
-class AppearanceModule
+val appearanceModule =
+    DI.Module("AppearanceModule") {
+        import(nativeAppearanceModule)
+        bind<ThemeColorRepository> { singleton { DefaultThemeColorRepository() } }
+        bind<ThemeRepository> { singleton { DefaultThemeRepository() } }
+    }

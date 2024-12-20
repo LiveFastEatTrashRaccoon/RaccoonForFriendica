@@ -3,10 +3,9 @@ import composeApp
 
 @main
 struct iOSApp: App {
-    private let koin: Koin
 
     init() {
-        koin = DiHelperKt.doInitKoin()
+       DiHelperKt.initDi()
     }
 
     var body: some Scene {
@@ -35,6 +34,7 @@ struct iOSApp: App {
             print("Unknown host")
             return
         }
-        koin.get<AuthManager>().performTokenExchange(url.absoluteString)
+        let authManager = UtilsKt.getAuthManager()
+        authManager.performTokenExchange(url.absoluteString)
     }
 }

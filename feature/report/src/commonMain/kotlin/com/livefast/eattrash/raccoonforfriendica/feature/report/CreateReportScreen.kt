@@ -40,7 +40,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
@@ -54,9 +54,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePaddi
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.report.components.SelectViolatedRulesDialog
+import com.livefast.eattrash.raccoonforfriendica.feature.report.di.CreateReportMviModelParams
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.core.parameter.parametersOf
 
 class CreateReportScreen(
     private val userId: String,
@@ -65,11 +65,13 @@ class CreateReportScreen(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model =
-            getScreenModel<CreateReportMviModel>(
-                parameters = {
-                    parametersOf(userId, entryId.orEmpty())
-                },
+        val model: CreateReportMviModel =
+            rememberScreenModel(
+                arg =
+                    CreateReportMviModelParams(
+                        userId = userId,
+                        entryId = entryId.orEmpty(),
+                    ),
             )
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()

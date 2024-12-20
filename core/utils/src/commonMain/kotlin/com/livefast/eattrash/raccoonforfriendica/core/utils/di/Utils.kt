@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.CalendarHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
@@ -8,47 +9,44 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRe
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
-import org.koin.core.annotation.Module
+import org.kodein.di.instance
 
-@Module
-internal expect class AppIconModule()
+fun getImageLoaderProvider(): ImageLoaderProvider {
+    val res by RootDI.di.instance<ImageLoaderProvider>()
+    return res
+}
 
-@Module
-internal expect class AppInfoModule()
+fun getGalleryHelper(): GalleryHelper {
+    val res by RootDI.di.instance<GalleryHelper>()
+    return res
+}
 
-@Module
-internal expect class CalendarModule()
+fun getShareHelper(): ShareHelper {
+    val res by RootDI.di.instance<ShareHelper>()
+    return res
+}
 
-@Module
-internal expect class DebugModule()
+fun getAppInfoRepository(): AppInfoRepository {
+    val res by RootDI.di.instance<AppInfoRepository>()
+    return res
+}
 
-@Module
-internal expect class FileSystemModule()
+fun getBlurHashRepository(): BlurHashRepository {
+    val res by RootDI.di.instance<BlurHashRepository>()
+    return res
+}
 
-@Module
-internal expect class GalleryModule()
+fun getCrashReportManager(): CrashReportManager {
+    val res by RootDI.di.instance<CrashReportManager>()
+    return res
+}
 
-@Module
-internal expect class ShareModule()
+fun getCalendarHelper(): CalendarHelper {
+    val res by RootDI.di.instance<CalendarHelper>()
+    return res
+}
 
-@Module
-internal expect class UrlModule()
-
-@Module
-internal expect class VibrateModule()
-
-expect fun getImageLoaderProvider(): ImageLoaderProvider
-
-expect fun getGalleryHelper(): GalleryHelper
-
-expect fun getShareHelper(): ShareHelper
-
-expect fun getAppInfoRepository(): AppInfoRepository
-
-expect fun getBlurHashRepository(): BlurHashRepository
-
-expect fun getCrashReportManager(): CrashReportManager
-
-expect fun getCalendarHelper(): CalendarHelper
-
-expect fun getNetworkStateObserver(): NetworkStateObserver
+fun getNetworkStateObserver(): NetworkStateObserver {
+    val res by RootDI.di.instance<NetworkStateObserver>()
+    return res
+}

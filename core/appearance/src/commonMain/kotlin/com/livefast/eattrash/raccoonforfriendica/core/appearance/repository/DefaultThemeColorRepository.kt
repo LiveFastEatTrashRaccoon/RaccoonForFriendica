@@ -1,9 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.appearance.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.ThemeColor
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultThemeColorRepository : ThemeColorRepository {
     override fun getColors(): List<ThemeColor> =
         listOf(

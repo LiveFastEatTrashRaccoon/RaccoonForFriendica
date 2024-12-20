@@ -12,7 +12,6 @@ import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.usePinned
-import org.koin.core.annotation.Single
 import platform.Foundation.NSData
 import platform.Foundation.create
 import platform.PhotosUI.PHPickerConfiguration
@@ -44,12 +43,11 @@ fun ImageBytes.toByteArray(): ByteArray =
         }
     }
 
-@Single
-internal actual class DefaultGalleryHelper : GalleryHelper {
-    actual override val supportsCustomPath: Boolean = false
+internal class DefaultGalleryHelper : GalleryHelper {
+    override val supportsCustomPath: Boolean = false
 
     @OptIn(ExperimentalForeignApi::class)
-    actual override fun saveToGallery(
+    override fun saveToGallery(
         bytes: ByteArray,
         name: String,
         additionalPathSegment: String?,
@@ -60,7 +58,7 @@ internal actual class DefaultGalleryHelper : GalleryHelper {
     }
 
     @Composable
-    actual override fun getImageFromGallery(result: (ByteArray) -> Unit) {
+    override fun getImageFromGallery(result: (ByteArray) -> Unit) {
         val uiViewController = LocalUIViewController.current
         val pickerDelegate =
             remember {

@@ -38,7 +38,7 @@ class DefaultApiConfigurationRepositoryTest {
 
     private val sut =
         DefaultApiConfigurationRepository(
-            serviceProvider = serviceProvider,
+            provider = serviceProvider,
             keyStore = keyStore,
             credentialsRepository = credentialsRepository,
         )

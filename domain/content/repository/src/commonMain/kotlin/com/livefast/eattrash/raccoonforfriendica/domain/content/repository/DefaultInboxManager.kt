@@ -5,9 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.hasLaterIdT
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultInboxManager(
     private val notificationRepository: NotificationRepository,
     private val markerRepository: MarkerRepository,

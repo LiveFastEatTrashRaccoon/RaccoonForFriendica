@@ -4,9 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeFeature
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultSupportedFeatureRepository(
     private val nodeInfoRepository: NodeInfoRepository,
 ) : SupportedFeatureRepository {

@@ -3,9 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase
 import androidx.compose.ui.graphics.Color
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultStripMarkupUseCase(
     private val prepareForPreview: PrepareForPreviewUseCase,
 ) : StripMarkupUseCase {

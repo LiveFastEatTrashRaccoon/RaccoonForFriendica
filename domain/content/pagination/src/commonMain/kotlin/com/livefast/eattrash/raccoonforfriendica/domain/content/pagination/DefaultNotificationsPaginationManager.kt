@@ -10,9 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Reply
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.koin.core.annotation.Factory
 
-@Factory
 internal class DefaultNotificationsPaginationManager(
     private val notificationRepository: NotificationRepository,
     private val userRepository: UserRepository,

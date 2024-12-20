@@ -1,7 +1,6 @@
 plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
     id("com.livefast.eattrash.composeMultiplatform")
-    id("com.livefast.eattrash.koinWithKsp")
     id("com.livefast.eattrash.sentryDsn")
     id("com.livefast.eattrash.test")
 }
@@ -10,13 +9,15 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(libs.ktor.cio)
                 implementation(libs.coil)
                 implementation(libs.coil.network.ktor)
                 implementation(libs.connectivity.core)
                 implementation(libs.connectivity.device)
+                implementation(libs.kodein)
+                implementation(libs.ktor.cio)
                 implementation(libs.sentry)
 
+                implementation(projects.core.di)
                 implementation(projects.core.l10n)
                 implementation(projects.core.preferences)
             }

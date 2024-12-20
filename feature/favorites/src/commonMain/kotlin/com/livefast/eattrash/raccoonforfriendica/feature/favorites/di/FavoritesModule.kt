@@ -1,8 +1,30 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.favorites.di
 
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
+import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesViewModel
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.factory
+import org.kodein.di.instance
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.favorites")
-class FavoritesModule
+val favoritesModule =
+    DI.Module("FavoritesModule") {
+        bind<FavoritesMviModel> {
+            factory { type: FavoritesType ->
+                FavoritesViewModel(
+                    type = type,
+                    paginationManager = instance(),
+                    timelineEntryRepository = instance(),
+                    settingsRepository = instance(),
+                    identityRepository = instance(),
+                    userRepository = instance(),
+                    hapticFeedback = instance(),
+                    imagePreloadManager = instance(),
+                    blurHashRepository = instance(),
+                    imageAutoloadObserver = instance(),
+                    notificationCenter = instance(),
+            )
+        }
+    }
+}

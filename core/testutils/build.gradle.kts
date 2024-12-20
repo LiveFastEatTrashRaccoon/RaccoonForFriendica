@@ -8,7 +8,8 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
-                implementation(libs.koin.core)
+                implementation(libs.kodein)
+                implementation(projects.core.di)
             }
         }
     }

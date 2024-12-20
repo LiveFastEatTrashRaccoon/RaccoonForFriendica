@@ -4,25 +4,39 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.AccountDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.DraftDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.DatabaseProvider
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
-import org.koin.core.annotation.Single
+import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.DefaultDatabaseProvider
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.singleton
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.persistence.provider")
-internal class ProviderModule
+val persistenceModule =
+    DI.Module("PersistenceModule") {
+        import(nativePersistenceModule)
 
-@Module
-internal class DaoModule {
-    @Single
-    fun provideAccountDao(dbProvider: DatabaseProvider): AccountDao = dbProvider.provideDatabase().getAccountDao()
-
-    @Single
-    fun provideSettingsDao(dbProvider: DatabaseProvider): SettingsDao = dbProvider.provideDatabase().getSettingsDao()
-
-    @Single
-    fun provideDraftDao(dbProvider: DatabaseProvider): DraftDao = dbProvider.provideDatabase().getDraftDao()
-}
-
-@Module(includes = [BuilderModule::class, ProviderModule::class, DaoModule::class])
-class PersistenceModule
+        bind<DatabaseProvider> {
+            singleton {
+                DefaultDatabaseProvider(
+                    builderProvider = instance(),
+                )
+            }
+        }
+        bind<AccountDao> {
+            singleton {
+                val provider = instance<DatabaseProvider>()
+                provider.provideDatabase().getAccountDao()
+            }
+        }
+        bind<SettingsDao> {
+            singleton {
+                val provider = instance<DatabaseProvider>()
+                provider.provideDatabase().getSettingsDao()
+            }
+        }
+        bind<DraftDao> {
+            singleton {
+                val provider = instance<DatabaseProvider>()
+                provider.provideDatabase().getDraftDao()
+            }
+        }
+    }

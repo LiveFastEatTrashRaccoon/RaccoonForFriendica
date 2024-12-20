@@ -5,9 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultExportSettingsUseCase(
     private val settingsRepository: SettingsRepository,
 ) : ExportSettingsUseCase {

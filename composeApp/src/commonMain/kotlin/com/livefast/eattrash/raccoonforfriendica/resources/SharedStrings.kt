@@ -6,7 +6,6 @@ import org.jetbrains.compose.resources.getPluralString
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.core.annotation.Factory
 import raccoonforfriendica.composeapp.generated.resources.Res
 import raccoonforfriendica.composeapp.generated.resources.account_age
 import raccoonforfriendica.composeapp.generated.resources.account_follower
@@ -428,7 +427,6 @@ import raccoonforfriendica.composeapp.generated.resources.visibility_private
 import raccoonforfriendica.composeapp.generated.resources.visibility_public
 import raccoonforfriendica.composeapp.generated.resources.visibility_unlisted
 
-@Factory
 class SharedStrings : Strings {
     override val accountAge: String
         @Composable get() = stringResource(Res.string.account_age)

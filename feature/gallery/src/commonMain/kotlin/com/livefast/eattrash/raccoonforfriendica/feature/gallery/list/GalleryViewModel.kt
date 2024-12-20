@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.gallery.list
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
@@ -10,13 +11,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
 
-@Factory(binds = [GalleryMviModel::class])
 class GalleryViewModel(
     private val albumRepository: PhotoAlbumRepository,
     private val settingsRepository: SettingsRepository,
-    private val notificationCenter: NotificationCenter,
+    private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<GalleryMviModel.Intent, GalleryMviModel.State, GalleryMviModel.Effect>(
         initialState = GalleryMviModel.State(),
     ),

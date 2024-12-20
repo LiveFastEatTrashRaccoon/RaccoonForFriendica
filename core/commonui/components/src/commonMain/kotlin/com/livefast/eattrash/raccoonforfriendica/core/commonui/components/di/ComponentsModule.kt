@@ -1,8 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di
 
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.DefaultFabNestedScrollConnection
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FabNestedScrollConnection
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.singleton
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.commonui.components")
-class CommonUiComponentsModule
+val commonUiComponentsModule =
+    DI.Module("CommonUiComponentsModule") {
+        bind<FabNestedScrollConnection> { singleton { DefaultFabNestedScrollConnection() } }
+    }

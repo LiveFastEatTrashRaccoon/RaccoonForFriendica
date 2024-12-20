@@ -15,7 +15,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.testutils.MockStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.testutils.KoinTestRule
+import com.livefast.eattrash.raccoonforfriendica.core.testutils.KodeinTestApplication
+import com.livefast.eattrash.raccoonforfriendica.core.testutils.KodeinTestRule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -27,10 +28,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.dsl.module
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.provider
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
+@Config(application = KodeinTestApplication::class)
 class NodeInfoScreenTest {
     private val uriHandler = mock<UriHandler>()
 
@@ -48,13 +53,13 @@ class NodeInfoScreenTest {
     val composeTestRule = createComposeRule()
 
     @get:Rule
-    val koinRule =
-        KoinTestRule(
+    val diRule =
+        KodeinTestRule(
             listOf(
-                module {
-                    factory<NodeInfoMviModel> { viewModel }
-                    single<NavigationCoordinator> { navigationCoordinator }
-                    single<DetailOpener> { detailOpener }
+                DI.Module("NodeInfoScreenTestModule") {
+                    bind<NodeInfoMviModel> { provider { viewModel } }
+                    bind<NavigationCoordinator> { provider { navigationCoordinator } }
+                    bind<DetailOpener> { provider { detailOpener } }
                 },
             ),
         )

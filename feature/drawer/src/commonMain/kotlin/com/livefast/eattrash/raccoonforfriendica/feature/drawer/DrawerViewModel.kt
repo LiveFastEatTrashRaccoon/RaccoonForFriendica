@@ -15,9 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SwitchA
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
 
-@Factory(binds = [DrawerMviModel::class])
 class DrawerViewModel(
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val identityRepository: IdentityRepository,

@@ -1,8 +1,28 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.explore.di
 
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreViewModel
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.provider
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.explore")
-class ExploreModule
+val exploreModule =
+    DI.Module("ExploreModule") {
+        bind<ExploreMviModel> {
+            provider {
+                ExploreViewModel(
+                    paginationManager = instance(),
+                    userRepository = instance(),
+                    timelineEntryRepository = instance(),
+                    identityRepository = instance(),
+                    settingsRepository = instance(),
+                    hapticFeedback = instance(),
+                    imagePreloadManager = instance(),
+                    blurHashRepository = instance(),
+                    imageAutoloadObserver = instance(),
+                    notificationCenter = instance(),
+                )
+            }
+        }
+    }

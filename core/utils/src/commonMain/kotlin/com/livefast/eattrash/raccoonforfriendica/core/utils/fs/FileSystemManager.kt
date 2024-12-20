@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.fs
 
 import androidx.compose.runtime.Composable
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import okio.Path
+import org.kodein.di.instance
 
 interface FileSystemManager {
     val isSupported: Boolean
@@ -23,4 +25,7 @@ interface FileSystemManager {
     fun getTempDir(): Path
 }
 
-expect fun getFileSystemManager(): FileSystemManager
+fun getFileSystemManager(): FileSystemManager {
+    val res by RootDI.di.instance<FileSystemManager>()
+    return res
+}

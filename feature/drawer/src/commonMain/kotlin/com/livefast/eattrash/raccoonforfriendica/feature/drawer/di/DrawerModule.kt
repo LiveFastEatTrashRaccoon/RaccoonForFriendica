@@ -1,8 +1,26 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.drawer.di
 
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
+import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerViewModel
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.provider
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.drawer")
-class DrawerModule
+val drawerModule =
+    DI.Module("DrawerModule") {
+        bind<DrawerMviModel> {
+            provider {
+                DrawerViewModel(
+                    apiConfigurationRepository = instance(),
+                    identityRepository = instance(),
+                    supportedFeatureRepository = instance(),
+                    credentialsRepository = instance(),
+                    switchAccountUseCase = instance(),
+                    emojiHelper = instance(),
+                    imageAutoloadObserver = instance(),
+                    accountRepository = instance(),
+                )
+            }
+        }
+    }

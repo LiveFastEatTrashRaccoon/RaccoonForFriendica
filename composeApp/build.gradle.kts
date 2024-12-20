@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -14,7 +13,7 @@ plugins {
 kotlin {
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_1_8)
+            jvmTarget.set(JvmTarget.JVM_11)
         }
     }
 
@@ -33,7 +32,6 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.koin.android)
             implementation(libs.androidx.splashscreen)
         }
         commonMain.dependencies {
@@ -48,18 +46,19 @@ kotlin {
 
             implementation(libs.coil)
             implementation(libs.compose.multiplatform.media.player)
-            implementation(libs.koin.core)
+            implementation(libs.kodein)
             implementation(libs.ktor.client.core)
 
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenmodel)
-            implementation(libs.voyager.koin)
             implementation(libs.voyager.transition)
             implementation(libs.voyager.tab)
+            implementation(libs.voyager.kodein)
 
             implementation(projects.core.api)
             implementation(projects.core.appearance)
             implementation(projects.core.architecture)
+            implementation(projects.core.di)
             implementation(projects.core.commonui.components)
             implementation(projects.core.commonui.content)
             implementation(projects.core.l10n)
@@ -175,8 +174,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
         compose = true
@@ -198,12 +197,6 @@ android {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", libs.koin.ksp)
-    add("kspAndroid", libs.koin.ksp)
-    add("kspIosX64", libs.koin.ksp)
-    add("kspIosArm64", libs.koin.ksp)
-    add("kspIosSimulatorArm64", libs.koin.ksp)
-
     kover(projects.core.appearance)
     kover(projects.core.navigation)
     kover(projects.core.notifications)
@@ -217,20 +210,6 @@ dependencies {
     kover(projects.domain.pushnotifications)
     kover(projects.domain.urlhandler)
     kover(projects.feature.nodeinfo)
-}
-
-ksp {
-    arg("KOIN_DEFAULT_MODULE", "false")
-}
-
-kotlin.sourceSets.commonMain.configure {
-    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-}
-
-tasks.withType(KotlinCompilationTask::class.java).configureEach {
-    if (name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
 }
 
 kover {
