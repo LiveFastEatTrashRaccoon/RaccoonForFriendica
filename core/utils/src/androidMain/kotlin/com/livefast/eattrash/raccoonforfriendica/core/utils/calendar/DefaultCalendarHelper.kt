@@ -3,15 +3,13 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.calendar
 import android.content.Intent
 import android.provider.CalendarContract
 import io.sentry.kotlin.multiplatform.Context
-import org.koin.core.annotation.Single
 
-@Single
-internal actual class DefaultCalendarHelper(
+internal class DefaultCalendarHelper(
     private val context: Context,
 ) : CalendarHelper {
-    actual override val supportsExport: Boolean = true
+    override val supportsExport: Boolean = true
 
-    actual override fun export(
+    override fun export(
         title: String,
         startDate: Long,
         endDate: Long?,

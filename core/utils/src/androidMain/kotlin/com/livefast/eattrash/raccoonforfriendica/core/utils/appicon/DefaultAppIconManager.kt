@@ -7,15 +7,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.Temporar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import org.koin.core.annotation.Single
 
-@Single
-internal actual class DefaultAppIconManager(
+internal class DefaultAppIconManager(
     private val context: Context,
     private val keyStore: TemporaryKeyStore,
 ) : AppIconManager {
     private val _current = MutableStateFlow<AppIconVariant>(AppIconVariant.Default)
-    actual override val current: StateFlow<AppIconVariant> = _current
+    override val current: StateFlow<AppIconVariant> = _current
 
     private val allComponentNames =
         listOf(
@@ -23,14 +21,14 @@ internal actual class DefaultAppIconManager(
             "com.livefast.eattrash.raccoonforfriendica.MainActivityAlias",
         )
 
-    actual override val supportsMultipleIcons = allComponentNames.isNotEmpty()
+    override val supportsMultipleIcons = allComponentNames.isNotEmpty()
 
     init {
         val lastUsedVariant = keyStore[KEY_APP_ICON_VARIANT, 0].toAppIconVariant()
         _current.update { lastUsedVariant }
     }
 
-    actual override fun changeIcon(variant: AppIconVariant) {
+    override fun changeIcon(variant: AppIconVariant) {
         val indexToEnable = variant.toInt()
         with(context.packageManager) {
             allComponentNames.forEachIndexed { i, name ->

@@ -3,13 +3,20 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.di
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.BarColorProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSchemeProvider
-import org.koin.core.annotation.Module
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import org.kodein.di.instance
 
-@Module
-internal expect class ThemeModule()
+fun getThemeRepository(): ThemeRepository {
+    val res by RootDI.di.instance<ThemeRepository>()
+    return res
+}
 
-expect fun getThemeRepository(): ThemeRepository
+fun getColorSchemeProvider(): ColorSchemeProvider {
+    val res by RootDI.di.instance<ColorSchemeProvider>()
+    return res
+}
 
-expect fun getColorSchemeProvider(): ColorSchemeProvider
-
-expect fun getBarColorProvider(): BarColorProvider
+fun getBarColorProvider(): BarColorProvider {
+    val res by RootDI.di.instance<BarColorProvider>()
+    return res
+}

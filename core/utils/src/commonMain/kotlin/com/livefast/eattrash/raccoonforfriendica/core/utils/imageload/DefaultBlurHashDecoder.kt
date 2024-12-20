@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
-import org.koin.core.annotation.Single
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow
@@ -19,7 +18,6 @@ private const val MAX_CACHE_SIZE = 10
  * The original code has been modified here to work with Compose (multiplatform) ImageBitmap
  * and Color in order to be used in common source set and shared across platforms.
  */
-@Single
 internal class DefaultBlurHashDecoder : BlurHashDecoder {
     private val cacheCosinesX = LruCache<Int, DoubleArray>(MAX_CACHE_SIZE)
     private val cacheCosinesY = LruCache<Int, DoubleArray>(MAX_CACHE_SIZE)

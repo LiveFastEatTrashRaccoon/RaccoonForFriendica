@@ -2,14 +2,12 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.koin.core.annotation.Single
 import platform.Foundation.NSBundle
 import kotlin.experimental.ExperimentalNativeApi
 
-@Single
-internal actual class DefaultAppInfoRepository : AppInfoRepository {
+internal class DefaultAppInfoRepository : AppInfoRepository {
     private val _appInfo = MutableStateFlow(getInfo())
-    actual override val appInfo: StateFlow<AppInfo?> = _appInfo
+    override val appInfo: StateFlow<AppInfo?> = _appInfo
 
     @OptIn(ExperimentalNativeApi::class)
     private fun getInfo(): AppInfo {

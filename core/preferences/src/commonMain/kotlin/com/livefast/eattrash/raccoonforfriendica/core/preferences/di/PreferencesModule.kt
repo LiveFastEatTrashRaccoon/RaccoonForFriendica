@@ -1,31 +1,30 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.provider.SettingsProvider
-import com.russhwolf.settings.Settings
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
-import org.koin.core.annotation.Single
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.settings.DefaultSettingsWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.settings.SettingsWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.DefaultTemporaryKeyStore
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.singleton
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.preferences.settings")
-internal class SettingsWrapperModule
+val preferencesModule =
+    DI.Module("PreferencesModule") {
+        import(nativePreferencesModule)
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.preferences.store")
-internal class StoreModule
-
-@Module
-internal class SettingsModule {
-    @Single
-    fun provideSettings(provider: SettingsProvider): Settings = provider.provide()
-}
-
-@Module(
-    includes = [
-        ProviderModule::class,
-        SettingsModule::class,
-        SettingsWrapperModule::class,
-        StoreModule::class,
-    ],
-)
-class PreferencesModule
+        bind<SettingsWrapper> {
+            singleton {
+                val provider = instance<SettingsProvider>()
+                DefaultSettingsWrapper(settings = provider.provide())
+            }
+        }
+        bind<TemporaryKeyStore> {
+            singleton {
+                DefaultTemporaryKeyStore(
+                    settings = instance(),
+                )
+            }
+        }
+    }

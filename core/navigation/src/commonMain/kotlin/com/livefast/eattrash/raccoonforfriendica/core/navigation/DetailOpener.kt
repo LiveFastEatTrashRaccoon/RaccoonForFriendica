@@ -100,10 +100,7 @@ interface DetailOpener {
 
     fun openGallery()
 
-    fun openAlbum(
-        name: String,
-        createMode: Boolean = false,
-    )
+    fun openAlbum(name: String)
 
     fun openUnpublished()
 

@@ -7,8 +7,10 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(libs.koin.core)
+                implementation(libs.kodein)
                 implementation(libs.compose.multiplatform.media.player)
+
+                implementation(projects.core.di)
             }
         }
     }

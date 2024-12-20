@@ -6,9 +6,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultBlurHashRepository(
     private val decoder: BlurHashDecoder,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,

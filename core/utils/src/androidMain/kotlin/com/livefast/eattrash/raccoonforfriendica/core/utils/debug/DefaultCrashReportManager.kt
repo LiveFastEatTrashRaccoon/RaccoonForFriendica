@@ -7,16 +7,14 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import org.koin.core.annotation.Single
 
-@Single
-internal actual class DefaultCrashReportManager(
+internal class DefaultCrashReportManager(
     private val keyStore: TemporaryKeyStore,
 ) : CrashReportManager {
     private val _enabled = MutableStateFlow(false)
-    actual override val enabled: StateFlow<Boolean> = _enabled
+    override val enabled: StateFlow<Boolean> = _enabled
     private val _restartRequired = MutableStateFlow(false)
-    actual override val restartRequired: StateFlow<Boolean> = _restartRequired
+    override val restartRequired: StateFlow<Boolean> = _restartRequired
 
     init {
         _enabled.update {
@@ -24,19 +22,19 @@ internal actual class DefaultCrashReportManager(
         }
     }
 
-    actual override fun enable() {
+    override fun enable() {
         keyStore.save(KEY_CRASH_REPORT_ENABLED, true)
         _enabled.update { true }
         _restartRequired.update { true }
     }
 
-    actual override fun disable() {
+    override fun disable() {
         keyStore.save(KEY_CRASH_REPORT_ENABLED, false)
         _enabled.update { false }
         _restartRequired.update { true }
     }
 
-    actual override fun initialize() {
+    override fun initialize() {
         if (!enabled.value) {
             return
         }
@@ -52,7 +50,7 @@ internal actual class DefaultCrashReportManager(
         }
     }
 
-    actual override fun collectUserFeedback(
+    override fun collectUserFeedback(
         tag: CrashReportTag,
         comment: String,
         email: String?,
