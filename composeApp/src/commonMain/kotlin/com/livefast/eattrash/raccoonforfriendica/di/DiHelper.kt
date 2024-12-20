@@ -24,6 +24,7 @@ import com.livefast.eattrash.raccoonforfriendica.feat.licences.di.licenceModule
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.di.announcementsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.di.calendarModule
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.circlesModule
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.composerModule
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.directMessagesModule
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.di.drawerModule
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.entryDetailModule
@@ -83,6 +84,7 @@ internal fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
                 announcementsModule,
                 calendarModule,
                 circlesModule,
+                composerModule,
                 directMessagesModule,
                 drawerModule,
                 entryDetailModule,
