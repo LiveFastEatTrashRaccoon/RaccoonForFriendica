@@ -6,12 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Named
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultEventRepository(
-    @Named("default") private val provider: ServiceProvider,
+    private val provider: ServiceProvider,
 ) : EventRepository {
     override suspend fun getAll(pageCursor: String?): List<EventModel>? =
         withContext(Dispatchers.IO) {

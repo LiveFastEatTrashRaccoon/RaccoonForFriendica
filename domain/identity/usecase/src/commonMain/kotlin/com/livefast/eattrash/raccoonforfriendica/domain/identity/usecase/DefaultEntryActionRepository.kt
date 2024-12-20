@@ -3,9 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultEntryActionRepository(
     private val identityRepository: IdentityRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,

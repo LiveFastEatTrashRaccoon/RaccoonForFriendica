@@ -4,9 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EventRepository
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.koin.core.annotation.Factory
 
-@Factory
 internal class DefaultEventPaginationManager(
     private val eventRepository: EventRepository,
 ) : EventPaginationManager {

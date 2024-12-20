@@ -8,12 +8,9 @@ import io.ktor.http.Parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Named
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultReportRepository(
-    @Named("default") private val provider: ServiceProvider,
+    private val provider: ServiceProvider,
 ) : ReportRepository {
     override suspend fun create(
         userId: String,

@@ -5,9 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRe
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.koin.core.annotation.Factory
 
-@Factory
 internal class DefaultFollowedHashtagsPaginationManager(
     private val tagRepository: TagRepository,
 ) : FollowedHashtagsPaginationManager {

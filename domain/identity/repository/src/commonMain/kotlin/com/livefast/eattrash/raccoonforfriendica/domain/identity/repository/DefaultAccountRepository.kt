@@ -5,9 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.Accou
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultAccountRepository(
     private val accountDao: AccountDao,
 ) : AccountRepository {

@@ -5,12 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.Temporar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withTimeoutOrNull
-import org.koin.core.annotation.Named
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultApiConfigurationRepository(
-    @Named("default") private val serviceProvider: ServiceProvider,
+    private val provider: ServiceProvider,
     private val keyStore: TemporaryKeyStore,
     private val credentialsRepository: CredentialsRepository,
 ) : ApiConfigurationRepository {
@@ -22,13 +19,13 @@ internal class DefaultApiConfigurationRepository(
 
     override fun changeNode(value: String) {
         node.update { value }
-        serviceProvider.changeNode(value)
+        provider.changeNode(value)
         keyStore.save(KEY_LAST_NODE, value)
     }
 
     override fun setAuth(credentials: ApiCredentials?) {
         val serviceCredentials = credentials?.toServiceCredentials()
-        serviceProvider.setAuth(serviceCredentials)
+        provider.setAuth(serviceCredentials)
         if (credentials != null) {
             saveInKeyStore(credentials)
             isLogged.update { true }

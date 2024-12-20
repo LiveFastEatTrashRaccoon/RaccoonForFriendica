@@ -8,12 +8,9 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Named
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultAnnouncementRepository(
-    @Named("default") private val provider: ServiceProvider,
+    private val provider: ServiceProvider,
 ) : AnnouncementRepository {
     private val mutex = Mutex()
     private val cachedValues: MutableList<AnnouncementModel> = mutableListOf()

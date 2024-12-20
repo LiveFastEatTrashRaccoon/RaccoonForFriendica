@@ -10,9 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiC
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultLoginUseCase(
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val credentialsRepository: CredentialsRepository,

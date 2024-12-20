@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di
 
-import org.koin.core.annotation.Module
+import org.kodein.di.DI
 
-@Module(includes = [PullNotificationManagerModule::class])
-class PullNotificationsModule
+val pullNotificationsModule =
+    DI.Module("PullNotificationsModule") {
+        import(nativePullNotificationsModule)
+    }

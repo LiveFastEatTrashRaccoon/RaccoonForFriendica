@@ -1,11 +1,22 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di
 
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
+import org.kodein.di.instance
 
-expect fun getActiveAccountMonitor(): ActiveAccountMonitor
+fun getActiveAccountMonitor(): ActiveAccountMonitor {
+    val res by RootDI.di.instance<ActiveAccountMonitor>()
+    return res
+}
 
-expect fun getSetupAccountUseCase(): SetupAccountUseCase
+fun getSetupAccountUseCase(): SetupAccountUseCase {
+    val res by RootDI.di.instance<SetupAccountUseCase>()
+    return res
+}
 
-expect fun getEntryActionRepository(): EntryActionRepository
+fun getEntryActionRepository(): EntryActionRepository {
+    val res by RootDI.di.instance<EntryActionRepository>()
+    return res
+}

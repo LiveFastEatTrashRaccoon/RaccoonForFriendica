@@ -11,15 +11,13 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import org.koin.core.annotation.Single
 import java.util.concurrent.TimeUnit
 
-@Single
-internal actual class DefaultPullNotificationManager(
+internal class DefaultPullNotificationManager(
     private val context: Context,
 ) : PullNotificationManager {
-    actual override val isSupported = true
-    actual override val isBackgroundRestricted: Boolean
+    override val isSupported = true
+    override val isBackgroundRestricted: Boolean
         get() =
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
                 activityManager.isBackgroundRestricted
@@ -39,11 +37,11 @@ internal actual class DefaultPullNotificationManager(
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
-    actual override fun setPeriod(minutes: Long) {
+    override fun setPeriod(minutes: Long) {
         intervalMinutes = minutes
     }
 
-    actual override fun start() {
+    override fun start() {
         WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
 
         createNotificationChannel()
@@ -54,7 +52,7 @@ internal actual class DefaultPullNotificationManager(
         periodicCheck()
     }
 
-    actual override fun oneshotCheck() {
+    override fun oneshotCheck() {
         OneTimeWorkRequestBuilder<CheckNotificationWorker>()
             .addTag(TAG)
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
@@ -65,11 +63,11 @@ internal actual class DefaultPullNotificationManager(
             }
     }
 
-    actual override fun stop() {
+    override fun stop() {
         WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
     }
 
-    actual override fun cancelAll() {
+    override fun cancelAll() {
         notificationManager.cancelAll()
     }
 

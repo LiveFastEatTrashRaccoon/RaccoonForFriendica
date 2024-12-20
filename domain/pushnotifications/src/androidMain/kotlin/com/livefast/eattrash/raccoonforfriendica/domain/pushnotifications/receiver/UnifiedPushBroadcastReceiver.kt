@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.receiver
 
 import android.content.Context
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
@@ -8,15 +9,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
+import org.kodein.di.instance
 import org.unifiedpush.android.connector.MessagingReceiver
 
 class UnifiedPushBroadcastReceiver : MessagingReceiver() {
-    private val pullNotificationManager
-        by inject<PullNotificationManager>(PullNotificationManager::class.java)
-    private val pushNotificationManager
-        by inject<PushNotificationManager>(PushNotificationManager::class.java)
-    private val accountRepository by inject<AccountRepository>(AccountRepository::class.java)
+    private val pullNotificationManager by RootDI.di.instance<PullNotificationManager>()
+    private val pushNotificationManager by RootDI.di.instance<PushNotificationManager>()
+    private val accountRepository by RootDI.di.instance<AccountRepository>()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onMessage(

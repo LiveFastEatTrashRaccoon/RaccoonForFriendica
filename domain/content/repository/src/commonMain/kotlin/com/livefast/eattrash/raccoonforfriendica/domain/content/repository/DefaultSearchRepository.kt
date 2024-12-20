@@ -9,12 +9,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Named
-import org.koin.core.annotation.Single
 
-@Single
 internal class DefaultSearchRepository(
-    @Named("default") private val provider: ServiceProvider,
+    private val provider: ServiceProvider,
 ) : SearchRepository {
     override suspend fun search(
         query: String,
@@ -47,7 +44,7 @@ internal class DefaultSearchRepository(
                     SearchResultType.Users ->
                         response.accounts.map {
                             ExploreItemModel.User(it.toModel())
-                    }
+                        }
                 }
             }.getOrNull()
         }
