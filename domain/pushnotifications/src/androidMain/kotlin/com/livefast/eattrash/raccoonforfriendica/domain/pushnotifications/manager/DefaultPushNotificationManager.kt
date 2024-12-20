@@ -7,7 +7,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PushNotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.utils.CryptoUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -100,7 +99,7 @@ internal class DefaultPushNotificationManager(
 
     override suspend fun clearDistributor() =
         withContext(dispatcher) {
-            UnifiedPush.safeRemoveDistributor(context)
+            UnifiedPush.removeDistributor(context)
         }
 
     override suspend fun enable() {
@@ -125,16 +124,16 @@ internal class DefaultPushNotificationManager(
 
     override suspend fun registerEndpoint(
         account: AccountModel,
-        endpoint: String,
+        endpointUrl: String,
+        pubKey: String,
+        auth: String,
     ) {
-        val keyPair = CryptoUtil.generateECKeyPair()
-        val auth = CryptoUtil.secureRandomBytesEncoded(length = 16)
         val types = NotificationType.ALL.filter { it.isEnabled(account) }
         val policy = NotificationPolicy.Followed
         val serverKey =
             pushNotificationRepository.create(
-                endpoint = endpoint,
-                pubKey = keyPair.pubKey,
+                endpoint = endpointUrl,
+                pubKey = pubKey,
                 auth = auth,
                 types = types,
                 policy = policy,
@@ -143,9 +142,9 @@ internal class DefaultPushNotificationManager(
             account.copy(
                 pushAuth = auth,
                 pushServerKey = serverKey,
-                pushPubKey = keyPair.pubKey,
-                pushPrivKey = keyPair.privKey,
-                unifiedPushUrl = endpoint,
+                pushPubKey = pubKey,
+                pushPrivKey = "",
+                unifiedPushUrl = endpointUrl,
             )
         accountRepository.update(updateAccount)
     }
@@ -170,10 +169,9 @@ internal class DefaultPushNotificationManager(
 
     private suspend fun registerForPushNotification(account: AccountModel) =
         withContext(dispatcher) {
-            UnifiedPush.registerApp(
+            UnifiedPush.register(
                 context = context,
                 instance = account.channelId,
-                features = arrayListOf(UnifiedPush.FEATURE_BYTES_MESSAGE),
             )
         }
 
@@ -191,7 +189,7 @@ internal class DefaultPushNotificationManager(
 
     private suspend fun unregisterForPushNotifications(account: AccountModel) =
         withContext(dispatcher) {
-            UnifiedPush.unregisterApp(
+            UnifiedPush.unregister(
                 context = context,
                 instance = account.channelId,
             )
