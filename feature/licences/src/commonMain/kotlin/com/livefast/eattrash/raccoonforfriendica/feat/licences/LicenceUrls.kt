@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.feat.licences
 
 internal object LicenceUrls {
     const val ANDROIDX = "https://github.com/androidx/androidx/blob/androidx-main/LICENSE.txt"
-    const val BOUNCY_CASTLE = "https://www.bouncycastle.org/about/license"
     const val CALF = "https://github.com/MohamedRejeb/Calf/blob/main/LICENSE"
     const val COIL = "https://github.com/coil-kt/coil/blob/main/LICENSE.txt"
     const val COMPOSE_COLORPICKER =

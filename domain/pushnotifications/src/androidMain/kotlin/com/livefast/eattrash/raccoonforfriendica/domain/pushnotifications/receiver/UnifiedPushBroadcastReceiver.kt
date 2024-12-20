@@ -10,7 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.kodein.di.instance
+import org.unifiedpush.android.connector.FailedReason
 import org.unifiedpush.android.connector.MessagingReceiver
+import org.unifiedpush.android.connector.data.PushEndpoint
+import org.unifiedpush.android.connector.data.PushMessage
 
 class UnifiedPushBroadcastReceiver : MessagingReceiver() {
     private val pullNotificationManager by RootDI.di.instance<PullNotificationManager>()
@@ -20,24 +23,34 @@ class UnifiedPushBroadcastReceiver : MessagingReceiver() {
 
     override fun onMessage(
         context: Context,
-        message: ByteArray,
-        instance: String,
-    ) {
+        message: PushMessage,
+        instance: String) {
         pullNotificationManager.oneshotCheck()
     }
 
     override fun onNewEndpoint(
         context: Context,
-        endpoint: String,
-        instance: String,
-    ) {
+        endpoint: PushEndpoint, instance: String) {
         val accountId = instance.toLongOrNull() ?: return
         scope.launch {
             val account = accountRepository.getBy(accountId) ?: return@launch
+            endpoint.pubKeySet
             pushNotificationManager.registerEndpoint(
                 account = account,
-                endpoint = endpoint,
+                endpointUrl = endpoint.url,
+                pubKey = endpoint.pubKeySet?.pubKey.orEmpty(),
+                auth = endpoint.pubKeySet?.auth.orEmpty(),
             )
+        }
+    }
+
+    override fun onRegistrationFailed(
+        context: Context,
+        reason: FailedReason, instance: String) {
+        val accountId = instance.toLongOrNull() ?: return
+        scope.launch {
+            val account = accountRepository.getBy(accountId) ?: return@launch
+            pushNotificationManager.unregisterEndpoint(account)
         }
     }
 

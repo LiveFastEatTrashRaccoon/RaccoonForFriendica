@@ -53,14 +53,6 @@ class LicencesViewModel(
                         this +=
                             LicenceItem(
                                 type = LicenceItemType.Library,
-                                title = "Bouncy Castle",
-                                subtitle =
-                                    "The Bouncy Castle Crypto package is a Java implementation of cryptographic algorithms",
-                                url = LicenceUrls.BOUNCY_CASTLE,
-                            )
-                        this +=
-                            LicenceItem(
-                                type = LicenceItemType.Library,
                                 title = "Calf webview",
                                 subtitle =
                                     "Calf is a library that allows you to easily create adaptive UIs and access platform specific APIs from your Compose Multiplatform apps",

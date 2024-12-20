@@ -8,8 +8,9 @@ kotlin {
     sourceSets {
         val androidMain by getting {
             dependencies {
-                implementation(libs.bouncycastle)
-                implementation(libs.unifiedpush)
+                implementation(libs.unifiedpush.get().toString()) {
+                    exclude("com.google.crypto.tink", "tink")
+                }
             }
         }
         val commonMain by getting {

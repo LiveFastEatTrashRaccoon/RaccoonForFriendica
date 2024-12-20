@@ -10,7 +10,6 @@ androidx-crypto = "1.0.0"
 androidx-splashscreen = "1.0.1"
 androidx-sqlite = "2.5.0-alpha11"
 androidx-work = "2.10.0"
-bouncycastle = "1.79"
 calf = "0.6.1"
 coil = "3.0.4"
 compose-colorpicker = "1.1.2"
@@ -38,7 +37,7 @@ room = "2.7.0-alpha11"
 sentry = "0.10.0"
 stately = "2.1.0"
 turbine = "1.2.0"
-unifiedpush = "2.5.0"
+unifiedpush = "3.0.0"
 voyager = "1.0.1"
 
 [libraries]
@@ -48,8 +47,6 @@ androidx-browser = { module = "androidx.browser:browser", version.ref = "android
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidx-crypto" }
 androidx-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidx-splashscreen" }
 androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
-
-bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 
 calf = { module = "com.mohamedrejeb.calf:calf-webview", version.ref = "calf" }
 
