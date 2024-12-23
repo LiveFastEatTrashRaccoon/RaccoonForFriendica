@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.data
 
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
@@ -31,6 +32,7 @@ data class SettingsModel(
     val autoloadImages: ImageLoadingMode = ImageLoadingMode.Always,
     val hideNavigationBarWhileScrolling: Boolean = true,
     val barTheme: UiBarTheme = UiBarTheme.Transparent,
+    val timelineLayout: TimelineLayout = TimelineLayout.Full,
 )
 
 fun Int.toDomainMaxLines(): Int =
