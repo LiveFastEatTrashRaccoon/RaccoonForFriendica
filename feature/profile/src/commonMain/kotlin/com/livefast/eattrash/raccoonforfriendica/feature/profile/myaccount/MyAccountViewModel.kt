@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount
 
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
@@ -81,6 +82,7 @@ class MyAccountViewModel(
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
                                 settings?.hideNavigationBarWhileScrolling ?: true,
+                            layout = settings?.timelineLayout ?: TimelineLayout.Full,
                         )
                     }
                 }.launchIn(this)

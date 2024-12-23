@@ -227,6 +227,7 @@ class CircleTimelineScreen(
                     ) { idx, entry ->
                         TimelineItem(
                             entry = entry,
+                            layout = uiState.layout,
                             blurNsfw = uiState.blurNsfw,
                             autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,

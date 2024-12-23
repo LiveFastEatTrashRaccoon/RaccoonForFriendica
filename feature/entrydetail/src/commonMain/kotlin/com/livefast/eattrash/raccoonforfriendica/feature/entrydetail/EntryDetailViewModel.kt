@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.entrydetail
 
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
@@ -59,6 +60,7 @@ class EntryDetailViewModel(
                             blurNsfw = settings?.blurNsfw ?: true,
                             hideNavigationBarWhileScrolling =
                                 settings?.hideNavigationBarWhileScrolling ?: true,
+                            layout = settings?.timelineLayout ?: TimelineLayout.Full,
                         )
                     }
                 }.launchIn(this)
