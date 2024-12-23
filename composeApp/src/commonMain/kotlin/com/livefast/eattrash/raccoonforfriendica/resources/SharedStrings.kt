@@ -358,6 +358,7 @@ import raccoonforfriendica.composeapp.generated.resources.settings_item_push_not
 import raccoonforfriendica.composeapp.generated.resources.settings_item_theme
 import raccoonforfriendica.composeapp.generated.resources.settings_item_theme_color
 import raccoonforfriendica.composeapp.generated.resources.settings_item_theme_color_subtitle
+import raccoonforfriendica.composeapp.generated.resources.settings_item_timeline_layout
 import raccoonforfriendica.composeapp.generated.resources.settings_item_url_opening_mode
 import raccoonforfriendica.composeapp.generated.resources.settings_notification_mode_disabled
 import raccoonforfriendica.composeapp.generated.resources.settings_notification_mode_pull
@@ -402,6 +403,8 @@ import raccoonforfriendica.composeapp.generated.resources.time_second_short
 import raccoonforfriendica.composeapp.generated.resources.timeline_all
 import raccoonforfriendica.composeapp.generated.resources.timeline_entry_in_reply_to
 import raccoonforfriendica.composeapp.generated.resources.timeline_entry_reblogged_by
+import raccoonforfriendica.composeapp.generated.resources.timeline_layout_distraction_free
+import raccoonforfriendica.composeapp.generated.resources.timeline_layout_full
 import raccoonforfriendica.composeapp.generated.resources.timeline_local
 import raccoonforfriendica.composeapp.generated.resources.timeline_subscriptions
 import raccoonforfriendica.composeapp.generated.resources.topic_title
@@ -1112,6 +1115,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.settings_item_theme_color)
     override val settingsItemThemeColorSubtitle: String
         @Composable get() = stringResource(Res.string.settings_item_theme_color_subtitle)
+    override val settingsItemTimelineLayout: String
+        @Composable get() = stringResource(Res.string.settings_item_timeline_layout)
     override val settingsItemUrlOpeningMode: String
         @Composable get() = stringResource(Res.string.settings_item_url_opening_mode)
     override val settingsNotificationModeDisabled: String
@@ -1200,6 +1205,10 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.timeline_entry_in_reply_to)
     override val timelineEntryRebloggedBy: String
         @Composable get() = stringResource(Res.string.timeline_entry_reblogged_by)
+    override val timelineLayoutDistractionFree: String
+        @Composable get() = stringResource(Res.string.timeline_layout_distraction_free)
+    override val timelineLayoutFull: String
+        @Composable get() = stringResource(Res.string.timeline_layout_full)
     override val timelineLocal: String
         @Composable get() = stringResource(Res.string.timeline_local)
     override val timelineSubscriptions: String

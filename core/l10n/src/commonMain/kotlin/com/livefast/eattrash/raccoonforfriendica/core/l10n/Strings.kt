@@ -345,6 +345,7 @@ interface Strings {
     val settingsItemTheme: String @Composable get
     val settingsItemThemeColor: String @Composable get
     val settingsItemThemeColorSubtitle: String @Composable get
+    val settingsItemTimelineLayout: String @Composable get
     val settingsItemUrlOpeningMode: String @Composable get
     val settingsNotificationModeDisabled: String @Composable get
     val settingsNotificationModePull: String @Composable get
@@ -389,6 +390,8 @@ interface Strings {
     val timelineAll: String @Composable get
     val timelineEntryInReplyTo: String @Composable get
     val timelineEntryRebloggedBy: String @Composable get
+    val timelineLayoutDistractionFree: String @Composable get
+    val timelineLayoutFull: String @Composable get
     val timelineLocal: String @Composable get
     val timelineSubscriptions: String @Composable get
     val topicTitle: String @Composable get
