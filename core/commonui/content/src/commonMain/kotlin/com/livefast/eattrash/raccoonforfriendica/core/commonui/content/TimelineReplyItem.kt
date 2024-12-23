@@ -1,8 +1,14 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,27 +16,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 
 @Composable
-fun TimelineItem(
+fun TimelineReplyItem(
     entry: TimelineEntryModel,
     modifier: Modifier = Modifier,
     actionsEnabled: Boolean = true,
-    pollEnabled: Boolean = true,
-    extendedSocialInfoEnabled: Boolean = false,
-    reshareAndReplyVisible: Boolean = true,
     blurNsfw: Boolean = true,
     autoloadImages: Boolean = true,
-    maxTitleLines: Int = Int.MAX_VALUE,
-    maxBodyLines: Int = Int.MAX_VALUE,
     layout: TimelineLayout = TimelineLayout.Full,
     options: List<Option> = emptyList(),
     onOpenUrl: ((String) -> Unit)? = null,
@@ -40,17 +48,19 @@ fun TimelineItem(
     onReblog: ((TimelineEntryModel) -> Unit)? = null,
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
-    onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
-    onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
-    onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
 ) {
-    val isReblog = entry.reblog != null
-    val isReply = entry.inReplyTo != null
     val entryToDisplay = entry.original
+    val depthZeroBased = entry.depth - 1
+    val themeRepository = remember { getThemeRepository() }
+    val barWidth = 3.dp
+    val barColor = themeRepository.getCommentBarColor(depthZeroBased)
+    var barHeight by remember { mutableStateOf(0.dp) }
+    val indentAmount = Spacing.s + (barWidth + Spacing.s) * depthZeroBased
+    val localDensity = LocalDensity.current
+    var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
-
     val replyActionLabel =
         buildString {
             append(LocalStrings.current.actionReply)
@@ -87,27 +97,6 @@ fun TimelineItem(
                 append(LocalStrings.current.actionAddToBookmarks)
             }
         }
-    val inReplyToActionLabel =
-        buildString {
-            append(
-                entry.inReplyTo
-                    ?.creator
-                    ?.let { it.displayName ?: it.handle }
-                    .orEmpty(),
-            )
-            if (isNotEmpty()) {
-                append(": ")
-            }
-            append(LocalStrings.current.timelineEntryInReplyTo)
-        }
-    val rebloggedActionLabel =
-        buildString {
-            append(entry.creator?.let { it.displayName ?: it.handle }.orEmpty())
-            if (isNotEmpty()) {
-                append(": ")
-            }
-            append(LocalStrings.current.timelineEntryRebloggedBy)
-        }
     val userActionLabel =
         buildString {
             append(entryToDisplay.creator?.let { it.displayName ?: it.handle }.orEmpty())
@@ -129,7 +118,7 @@ fun TimelineItem(
                 ) {
                     onClick?.invoke(entryToDisplay)
                 }.semantics(mergeDescendants = true) {
-                    val helperActions = mutableListOf<CustomAccessibilityAction>()
+                    val helperActions: MutableList<CustomAccessibilityAction> = mutableListOf()
                     if (actionsEnabled) {
                         helperActions +=
                             CustomAccessibilityAction(
@@ -164,26 +153,6 @@ fun TimelineItem(
                                 },
                             )
                     }
-                    if (reshareAndReplyVisible && isReblog) {
-                        helperActions +=
-                            CustomAccessibilityAction(
-                                label = rebloggedActionLabel,
-                                action = {
-                                    entry.creator?.let { onOpenUser?.invoke(it) }
-                                    true
-                                },
-                            )
-                    }
-                    if (reshareAndReplyVisible && isReply) {
-                        helperActions +=
-                            CustomAccessibilityAction(
-                                label = inReplyToActionLabel,
-                                action = {
-                                    entry.inReplyTo?.creator?.let { onOpenUser?.invoke(it) }
-                                    true
-                                },
-                            )
-                    }
                     helperActions +=
                         CustomAccessibilityAction(
                             label = userActionLabel,
@@ -208,63 +177,77 @@ fun TimelineItem(
                 },
         contentAlignment = Alignment.Center,
     ) {
-        when (layout) {
-            TimelineLayout.Full ->
-                FullTimelineItem(
-                    actionsEnabled = actionsEnabled,
-                    autoloadImages = autoloadImages,
-                    blurNsfw = blurNsfw,
-                    entryToDisplay = entryToDisplay,
-                    extendedSocialInfoEnabled = extendedSocialInfoEnabled,
-                    originalCreator = entry.creator?.takeIf { isReblog },
-                    originalInReplyTo = entry.inReplyTo?.takeIf { isReply },
-                    maxBodyLines = maxBodyLines,
-                    maxTitleLines = maxTitleLines,
-                    options = options,
-                    optionsMenuOpen = optionsMenuOpen,
-                    pollEnabled = pollEnabled,
-                    reshareAndReplyVisible = reshareAndReplyVisible,
-                    onBookmark = onBookmark,
-                    onClick = onClick,
-                    onFavorite = onFavorite,
-                    onOpenImage = onOpenImage,
-                    onOpenUrl = onOpenUrl,
-                    onOpenUser = onOpenUser,
-                    onOpenUsersFavorite = onOpenUsersFavorite,
-                    onOpenUsersReblog = onOpenUsersReblog,
-                    onOptionSelected = onOptionSelected,
-                    onOptionsMenuToggled = {
-                        optionsMenuOpen = it
-                    },
-                    onPollVote = onPollVote,
-                    onReblog = onReblog,
-                    onReply = onReply,
-                )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+        ) {
+            // comment bar
+            Box(
+                modifier =
+                    Modifier
+                        .padding(start = indentAmount)
+                        .size(width = barWidth, height = barHeight)
+                        .background(
+                            color = barColor,
+                            shape = RoundedCornerShape(barWidth / 2),
+                        ),
+            )
 
-            TimelineLayout.DistractionFree ->
-                DistractionFreeTimelineItem(
-                    actionsEnabled = actionsEnabled,
-                    autoloadImages = autoloadImages,
-                    entryToDisplay = entryToDisplay,
-                    originalCreator = entry.creator?.takeIf { isReblog },
-                    originalInReplyTo = entry.inReplyTo?.takeIf { isReply },
-                    maxBodyLines = maxBodyLines,
-                    maxTitleLines = maxTitleLines,
-                    options = options,
-                    optionsMenuOpen = optionsMenuOpen,
-                    reshareAndReplyVisible = reshareAndReplyVisible,
-                    onBookmark = onBookmark,
-                    onClick = onClick,
-                    onFavorite = onFavorite,
-                    onOpenUrl = onOpenUrl,
-                    onOpenUser = onOpenUser,
-                    onOptionSelected = onOptionSelected,
-                    onOptionsMenuToggled = {
-                        optionsMenuOpen = it
-                    },
-                    onReblog = onReblog,
-                    onReply = onReply,
-                )
+            // comment content
+            val contentModifier =
+                Modifier.onGloballyPositioned {
+                    barHeight =
+                        with(localDensity) {
+                            it.size
+                                .toSize()
+                                .height
+                                .toDp()
+                        }
+                }
+            when (layout) {
+                TimelineLayout.Full ->
+                    FullTimelineItem(
+                        modifier = contentModifier,
+                        actionsEnabled = actionsEnabled,
+                        autoloadImages = autoloadImages,
+                        blurNsfw = blurNsfw,
+                        entryToDisplay = entryToDisplay,
+                        options = options,
+                        optionsMenuOpen = optionsMenuOpen,
+                        onBookmark = onBookmark,
+                        onClick = onClick,
+                        onFavorite = onFavorite,
+                        onOpenImage = onOpenImage,
+                        onOpenUrl = onOpenUrl,
+                        onOpenUser = onOpenUser,
+                        onOptionSelected = onOptionSelected,
+                        onOptionsMenuToggled = {
+                            optionsMenuOpen = it
+                        },
+                        onReblog = onReblog,
+                        onReply = onReply,
+                    )
+
+                TimelineLayout.DistractionFree ->
+                    DistractionFreeTimelineItem(
+                        modifier = contentModifier,
+                        actionsEnabled = actionsEnabled,
+                        autoloadImages = autoloadImages,
+                        entryToDisplay = entryToDisplay,
+                        options = options,
+                        optionsMenuOpen = optionsMenuOpen,
+                        onBookmark = onBookmark,
+                        onClick = onClick,
+                        onFavorite = onFavorite,
+                        onOpenUrl = onOpenUrl,
+                        onOpenUser = onOpenUser,
+                        onOptionSelected = onOptionSelected,
+                        onOptionsMenuToggled = {
+                            optionsMenuOpen = it
+                        },
+                        onReblog = onReblog,
+                        onReply = onReply,
+                    )
+            }
         }
     }
 }
