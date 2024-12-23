@@ -265,6 +265,38 @@ fun TimelineItem(
                     onReblog = onReblog,
                     onReply = onReply,
                 )
+
+            TimelineLayout.Compact ->
+                CompactTimelineItem(
+                    actionsEnabled = actionsEnabled,
+                    autoloadImages = autoloadImages,
+                    blurNsfw = blurNsfw,
+                    entryToDisplay = entryToDisplay,
+                    extendedSocialInfoEnabled = extendedSocialInfoEnabled,
+                    originalCreator = entry.creator?.takeIf { isReblog },
+                    originalInReplyTo = entry.inReplyTo?.takeIf { isReply },
+                    maxBodyLines = maxBodyLines,
+                    maxTitleLines = maxTitleLines,
+                    options = options,
+                    optionsMenuOpen = optionsMenuOpen,
+                    pollEnabled = pollEnabled,
+                    reshareAndReplyVisible = reshareAndReplyVisible,
+                    onBookmark = onBookmark,
+                    onClick = onClick,
+                    onFavorite = onFavorite,
+                    onOpenImage = onOpenImage,
+                    onOpenUrl = onOpenUrl,
+                    onOpenUser = onOpenUser,
+                    onOpenUsersFavorite = onOpenUsersFavorite,
+                    onOpenUsersReblog = onOpenUsersReblog,
+                    onOptionSelected = onOptionSelected,
+                    onOptionsMenuToggled = {
+                        optionsMenuOpen = it
+                    },
+                    onPollVote = onPollVote,
+                    onReblog = onReblog,
+                    onReply = onReply,
+                )
         }
     }
 }

@@ -990,6 +990,7 @@ class SettingsScreen : Screen {
             val values =
                 listOf(
                     TimelineLayout.Full,
+                    TimelineLayout.Compact,
                     TimelineLayout.DistractionFree,
                 )
             CustomModalBottomSheet(

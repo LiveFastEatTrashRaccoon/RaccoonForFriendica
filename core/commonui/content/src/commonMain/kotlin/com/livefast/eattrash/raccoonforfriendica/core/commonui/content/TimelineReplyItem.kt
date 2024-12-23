@@ -247,6 +247,29 @@ fun TimelineReplyItem(
                         onReblog = onReblog,
                         onReply = onReply,
                     )
+
+                TimelineLayout.Compact ->
+                    CompactTimelineItem(
+                        modifier = contentModifier,
+                        actionsEnabled = actionsEnabled,
+                        autoloadImages = autoloadImages,
+                        blurNsfw = blurNsfw,
+                        entryToDisplay = entryToDisplay,
+                        options = options,
+                        optionsMenuOpen = optionsMenuOpen,
+                        onBookmark = onBookmark,
+                        onClick = onClick,
+                        onFavorite = onFavorite,
+                        onOpenImage = onOpenImage,
+                        onOpenUrl = onOpenUrl,
+                        onOpenUser = onOpenUser,
+                        onOptionSelected = onOptionSelected,
+                        onOptionsMenuToggled = {
+                            optionsMenuOpen = it
+                        },
+                        onReblog = onReblog,
+                        onReply = onReply,
+                    )
             }
         }
     }
