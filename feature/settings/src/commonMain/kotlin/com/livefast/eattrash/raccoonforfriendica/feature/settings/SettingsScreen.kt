@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.kodein.rememberScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
@@ -126,6 +127,7 @@ class SettingsScreen : Screen {
         var barThemeBottomSheetOpened by remember { mutableStateOf(false) }
         var fileInputOpened by remember { mutableStateOf(false) }
         var settingsContent by remember { mutableStateOf<String?>(null) }
+        var timelineLayoutBottomSheetOpened by remember { mutableStateOf(false) }
 
         LaunchedEffect(model) {
             model.effects
@@ -326,6 +328,13 @@ class SettingsScreen : Screen {
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderLookAndFeel,
                             icon = Icons.Default.Style,
+                        )
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemTimelineLayout,
+                            value = uiState.timelineLayout.toReadableName(),
+                            onTap = {
+                                timelineLayoutBottomSheetOpened = true
+                            },
                         )
                         SettingsRow(
                             title = LocalStrings.current.settingsItemTheme,
@@ -971,6 +980,27 @@ class SettingsScreen : Screen {
                     if (index != null) {
                         model.reduce(
                             SettingsMviModel.Intent.ChangeBarTheme(values[index]),
+                        )
+                    }
+                },
+            )
+        }
+
+        if (timelineLayoutBottomSheetOpened) {
+            val values =
+                listOf(
+                    TimelineLayout.Full,
+                    TimelineLayout.DistractionFree,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemTimelineLayout,
+                items =
+                    values.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+                onSelected = { index ->
+                    timelineLayoutBottomSheetOpened = false
+                    if (index != null) {
+                        model.reduce(
+                            SettingsMviModel.Intent.ChangeTimelineLayout(values[index]),
                         )
                     }
                 },

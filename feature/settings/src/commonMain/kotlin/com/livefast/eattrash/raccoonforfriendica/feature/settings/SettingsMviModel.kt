@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.ThemeColor
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
@@ -120,6 +121,10 @@ interface SettingsMviModel :
             val theme: UiBarTheme,
         ) : Intent
 
+        data class ChangeTimelineLayout(
+            val layout: TimelineLayout,
+        ) : Intent
+
         data object ExportSettings : Intent
 
         data class ImportSettings(
@@ -167,6 +172,7 @@ interface SettingsMviModel :
         val loading: Boolean = false,
         val supportSettingsImportExport: Boolean = true,
         val barTheme: UiBarTheme = UiBarTheme.Transparent,
+        val timelineLayout: TimelineLayout = TimelineLayout.Full,
     )
 
     sealed interface Effect {
