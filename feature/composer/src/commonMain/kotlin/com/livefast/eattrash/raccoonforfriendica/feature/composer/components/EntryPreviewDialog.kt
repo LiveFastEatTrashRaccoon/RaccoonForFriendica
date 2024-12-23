@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -55,6 +56,7 @@ fun EntryPreviewDialog(
                     TimelineItem(
                         modifier = Modifier.fillMaxWidth(),
                         entry = entry,
+                        layout = TimelineLayout.Full,
                         autoloadImages = autoloadImages,
                         actionsEnabled = false,
                     )

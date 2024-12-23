@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.unpublished
 
 import cafe.adriel.voyager.core.model.ScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
@@ -35,6 +36,7 @@ interface UnpublishedMviModel :
         val maxBodyLines: Int = Int.MAX_VALUE,
         val autoloadImages: Boolean = true,
         val hideNavigationBarWhileScrolling: Boolean = true,
+        val layout: TimelineLayout = TimelineLayout.Full,
     )
 
     sealed interface Effect {

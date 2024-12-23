@@ -333,6 +333,7 @@
     <string name="settings_item_theme">UI theme</string>
     <string name="settings_item_theme_color">Theme color</string>
     <string name="settings_item_theme_color_subtitle">only applied if "Material You" is disabled</string>
+    <string name="settings_item_timeline_layout">Post layout</string>
     <string name="settings_item_url_opening_mode">URL opening mode</string>
     <string name="settings_notification_mode_disabled">Disabled</string>
     <string name="settings_notification_mode_pull">Pull</string>
@@ -378,6 +379,8 @@
     <string name="timeline_entry_in_reply_to">in reply to</string>
     <string name="timeline_entry_reblogged_by">re-shared by</string>
     <string name="timeline_local">Local</string>
+    <string name="timeline_layout_distraction_free">Distraction free</string>
+    <string name="timeline_layout_full">Full</string>
     <string name="timeline_subscriptions">Subscriptions</string>
     <string name="topic_title">Topic</string>
     <string name="unpublished_section_drafts">Drafts</string>

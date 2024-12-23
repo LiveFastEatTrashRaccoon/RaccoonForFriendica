@@ -210,6 +210,7 @@ class InboxScreen : Screen {
                     ) { idx, notification ->
                         NotificationItem(
                             notification = notification,
+                            layout = uiState.layout,
                             blurNsfw = uiState.blurNsfw,
                             autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,

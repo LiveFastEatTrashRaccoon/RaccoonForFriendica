@@ -697,6 +697,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("settingsItemThemeColor")
     override val settingsItemThemeColorSubtitle: String
         @Composable get() = retrieve("settingsItemThemeColorSubtitle")
+    override val settingsItemTimelineLayout: String
+        @Composable get() = retrieve("settingsItemTimelineLayout")
     override val settingsItemUrlOpeningMode: String
         @Composable get() = retrieve("settingsItemUrlOpeningMode")
     override val settingsNotificationModeDisabled: String
@@ -785,6 +787,10 @@ class MockStrings : Strings {
         @Composable get() = retrieve("timelineEntryInReplyTo")
     override val timelineEntryRebloggedBy: String
         @Composable get() = retrieve("timelineEntryRebloggedBy")
+    override val timelineLayoutDistractionFree: String
+        @Composable get() = retrieve("timelineLayoutDistractionFree")
+    override val timelineLayoutFull: String
+        @Composable get() = retrieve("timelineLayoutFull")
     override val timelineLocal: String
         @Composable get() = retrieve("timelineLocal")
     override val timelineSubscriptions: String

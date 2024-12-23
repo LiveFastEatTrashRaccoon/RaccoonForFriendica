@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.settings
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
@@ -192,6 +193,7 @@ class SettingsViewModel(
                                 notificationMode = settings.notificationMode,
                                 hideNavigationBarWhileScrolling = settings.hideNavigationBarWhileScrolling,
                                 barTheme = settings.barTheme,
+                                timelineLayout = settings.timelineLayout,
                             )
                         }
                     }
@@ -349,6 +351,11 @@ class SettingsViewModel(
                     changeBarTheme(intent.theme)
                 }
 
+            is SettingsMviModel.Intent.ChangeTimelineLayout ->
+                screenModelScope.launch {
+                    changeTimelineLayout(intent.layout)
+                }
+
             is SettingsMviModel.Intent.ExportSettings -> handleExportSettings()
             is SettingsMviModel.Intent.ImportSettings -> handleImportSettings(intent.content)
         }
@@ -499,6 +506,12 @@ class SettingsViewModel(
     private suspend fun changeBarTheme(value: UiBarTheme) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(barTheme = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeTimelineLayout(value: TimelineLayout) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(timelineLayout = value)
         saveSettings(newSettings)
     }
 

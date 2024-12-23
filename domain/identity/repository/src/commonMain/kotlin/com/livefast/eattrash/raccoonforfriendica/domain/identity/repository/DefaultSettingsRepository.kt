@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toInt
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toTimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUIBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUiFontScale
@@ -69,6 +70,7 @@ private fun SettingsEntity.toModel() =
         autoloadImages = autoloadImages.toImageLoadingMode(),
         hideNavigationBarWhileScrolling = hideNavigationBarWhileScrolling,
         barTheme = barTheme.toUIBarTheme(),
+        timelineLayout = timelineLayout.toTimelineLayout(),
     )
 
 private fun SettingsModel.toEntity() =
@@ -97,4 +99,5 @@ private fun SettingsModel.toEntity() =
         autoloadImages = autoloadImages.toInt(),
         hideNavigationBarWhileScrolling = hideNavigationBarWhileScrolling,
         barTheme = barTheme.toInt(),
+        timelineLayout = timelineLayout.toInt(),
     )

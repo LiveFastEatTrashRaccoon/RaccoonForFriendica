@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -49,6 +50,7 @@ internal fun NotificationItem(
     blurNsfw: Boolean = false,
     maxBodyLines: Int = Int.MAX_VALUE,
     autoloadImages: Boolean = true,
+    layout: TimelineLayout = TimelineLayout.Full,
     onOpenUrl: ((String) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
@@ -131,6 +133,7 @@ internal fun NotificationItem(
                             bottom = Spacing.s,
                         ),
                     entry = entry,
+                    layout = layout,
                     blurNsfw = blurNsfw,
                     maxBodyLines = maxBodyLines,
                     autoloadImages = autoloadImages,

@@ -2,6 +2,7 @@ package com.livefast.eattrash.feature.userdetail.classic
 
 import androidx.compose.runtime.Stable
 import cafe.adriel.voyager.core.model.ScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -84,6 +85,7 @@ interface UserDetailMviModel :
         val maxBodyLines: Int = Int.MAX_VALUE,
         val autoloadImages: Boolean = true,
         val hideNavigationBarWhileScrolling: Boolean = true,
+        val layout: TimelineLayout = TimelineLayout.Full,
     )
 
     sealed interface Effect {

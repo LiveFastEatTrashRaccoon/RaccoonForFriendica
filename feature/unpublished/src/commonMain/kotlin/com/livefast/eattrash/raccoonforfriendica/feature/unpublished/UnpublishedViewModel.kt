@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.unpublished
 
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
@@ -75,6 +76,7 @@ class UnpublishedViewModel(
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
                                 settings?.hideNavigationBarWhileScrolling ?: true,
+                            layout = settings?.timelineLayout ?: TimelineLayout.Full,
                         )
                     }
                 }.launchIn(this)

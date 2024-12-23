@@ -302,6 +302,7 @@ class ExploreScreen : Screen {
                             is ExploreItemModel.Entry -> {
                                 TimelineItem(
                                     entry = item.entry,
+                                    layout = uiState.layout,
                                     blurNsfw = uiState.blurNsfw,
                                     autoloadImages = uiState.autoloadImages,
                                     maxBodyLines = uiState.maxBodyLines,

@@ -47,6 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.kodein.rememberScreenModel
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
@@ -239,9 +240,16 @@ class EntryDetailScreen(
                         items = uiState.entries,
                         key = { _, e -> "entry-detail-${e.safeKey}" },
                     ) { idx, entry ->
+                        val isMainEntry = entry.id == id
                         TimelineItem(
                             entry = entry,
-                            extendedSocialInfoEnabled = (entry.id == id),
+                            extendedSocialInfoEnabled = isMainEntry,
+                            layout =
+                                if (isMainEntry) {
+                                    TimelineLayout.Full
+                                } else {
+                                    uiState.layout
+                                },
                             blurNsfw = uiState.blurNsfw,
                             autoloadImages = uiState.autoloadImages,
                             onOpenUrl = { url ->

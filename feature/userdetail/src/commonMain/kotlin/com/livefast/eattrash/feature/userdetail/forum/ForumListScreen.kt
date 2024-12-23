@@ -323,6 +323,7 @@ class ForumListScreen(
                     ) { idx, entry ->
                         TimelineItem(
                             entry = entry,
+                            layout = uiState.layout,
                             reshareAndReplyVisible = false,
                             blurNsfw = uiState.blurNsfw,
                             autoloadImages = uiState.autoloadImages,
