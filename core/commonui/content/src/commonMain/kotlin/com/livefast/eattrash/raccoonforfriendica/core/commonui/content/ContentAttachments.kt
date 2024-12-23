@@ -20,7 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
@@ -33,6 +35,7 @@ fun ContentAttachments(
     blurNsfw: Boolean = true,
     autoloadImages: Boolean = true,
     sensitive: Boolean = false,
+    cornerSize: Dp = CornerSize.xl,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
 ) {
     val filteredAttachments =
@@ -84,6 +87,7 @@ fun ContentAttachments(
                     sensitive = blurNsfw && sensitive,
                     autoload = autoloadImages,
                     contentScale = ContentScale.FillWidth,
+                    cornerSize = cornerSize,
                     onClick = {
                         handleClick(0)
                     },
@@ -140,6 +144,7 @@ private fun AttachmentElement(
     blurNsfw: Boolean = true,
     autoload: Boolean = true,
     sensitive: Boolean = false,
+    cornerSize: Dp = CornerSize.xl,
     onClick: (() -> Unit)? = null,
 ) {
     val attachmentWidth = attachment.originalWidth ?: 0
@@ -154,6 +159,7 @@ private fun AttachmentElement(
                 blurHash = attachment.blurHash,
                 originalWidth = attachmentWidth,
                 originalHeight = attachmentHeight,
+                cornerSize = cornerSize,
                 sensitive = blurNsfw && sensitive,
                 autoload = autoload,
                 contentScale = contentScale,

@@ -57,6 +57,7 @@ fun ContentImage(
     originalHeight: Int = 0,
     minHeight: Dp = 50.dp,
     maxHeight: Dp = 200.dp,
+    cornerSize: Dp = CornerSize.xl,
     contentScale: ContentScale = ContentScale.FillWidth,
     onClick: (() -> Unit)? = null,
     centerComposable: (@Composable () -> Unit) = {},
@@ -76,7 +77,7 @@ fun ContentImage(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(CornerSize.xl))
+                        .clip(RoundedCornerShape(cornerSize))
                         .clickable {
                             onClick?.invoke()
                         },
@@ -91,7 +92,7 @@ fun ContentImage(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(CornerSize.xl))
+                    .clip(RoundedCornerShape(cornerSize))
                     .clickable {
                         onClick?.invoke()
                     },
