@@ -787,6 +787,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("timelineEntryInReplyTo")
     override val timelineEntryRebloggedBy: String
         @Composable get() = retrieve("timelineEntryRebloggedBy")
+    override val timelineLayoutCompact: String
+        @Composable get() = retrieve("timelineLayoutCompact")
     override val timelineLayoutDistractionFree: String
         @Composable get() = retrieve("timelineLayoutDistractionFree")
     override val timelineLayoutFull: String

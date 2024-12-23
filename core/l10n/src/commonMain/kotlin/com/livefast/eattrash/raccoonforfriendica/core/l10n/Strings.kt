@@ -390,6 +390,7 @@ interface Strings {
     val timelineAll: String @Composable get
     val timelineEntryInReplyTo: String @Composable get
     val timelineEntryRebloggedBy: String @Composable get
+    val timelineLayoutCompact: String @Composable get
     val timelineLayoutDistractionFree: String @Composable get
     val timelineLayoutFull: String @Composable get
     val timelineLocal: String @Composable get
