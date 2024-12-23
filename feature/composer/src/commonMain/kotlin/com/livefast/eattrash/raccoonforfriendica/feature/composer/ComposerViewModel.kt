@@ -1329,8 +1329,9 @@ class ComposerViewModel(
                     entry.copy(content = bbCode)
                 }
                 // make the server strip off all the HTML
-                MarkupMode.HTML -> timelineEntryRepository.getSource(entry.id) ?: entry
-                // Markdown or PlainText are good to go
+                MarkupMode.HTML, MarkupMode.PlainText ->
+                    timelineEntryRepository.getSource(entry.id) ?: entry
+                // Markdown is good to go
                 else -> entry
             }
 
