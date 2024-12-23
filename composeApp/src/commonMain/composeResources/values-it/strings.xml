@@ -165,7 +165,7 @@
     <string name="feed_type_title">Tipo di feed</string>
     <string name="field_node_name">Nome istanza</string>
     <string name="field_password">Password</string>
-    <string name="field_username">Username</string>
+    <string name="field_username">Nome utente</string>
     <string name="follow_requests_title">Richieste di seguirti</string>
     <string name="follow_required_message">È necessario seguire l'altro utente per poter inviare un messaggio diretto!</string>
     <string name="followed_hashtags_title">Hashtag che segui</string>
@@ -210,7 +210,7 @@
     <string name="markup_mode_markdown">Markdown</string>
     <string name="markup_mode_plain_text">Testo semplice</string>
     <string name="message_alt_text_missing_error">Alcuni allegati non hanno il testo alternativo, inserirlo può migliorare l'accessibilità</string>
-    <string name="message_are_you_sure">Sei sicuro/a di voler continuare</string>
+    <string name="message_are_you_sure">Sei sicuro/a di voler continuare?</string>
     <string name="message_are_you_sure_exit">Sei sicuro/a di voler uscire?</string>
     <string name="message_are_you_sure_reblog">Questo post è più vecchio di un mese. Sei sicuro/a di volerlo ricondividere?</string>
     <string name="message_auth_issue">Si è verificato un errore, forse il token attuale è scaduto.</string>
@@ -400,51 +400,66 @@
     <string name="visibility_unlisted">Non in lista</string>
     <plurals name="account_follower">
         <item quantity="one">%1$d seguace</item>
+        <item quantity="many">%1$d di seguaci</item>
         <item quantity="other">%1$d seguaci</item>
     </plurals>
     <plurals name="account_following">
         <item quantity="one">%1$d seguito</item>
+        <item quantity="many">%1$d di seguiti</item>
         <item quantity="other">%1$d seguiti</item>
     </plurals>
     <plurals name="create_report_selected_rules">
         <item quantity="one">%1$d regola selezionata</item>
+        <item quantity="many">%1$d di regole selezionate</item>
         <item quantity="other">%1$d regole selezionate</item>
     </plurals>
     <plurals name="dislikes_count">
         <item quantity="one">%1$d voti negativi</item>
+        <item quantity="many">%1$d di voti negativi</item>
         <item quantity="other">%1$d voti negativi</item>
     </plurals>
     <plurals name="extended_social_info_favorites">
         <item quantity="one">%1$d preferito</item>
+        <item quantity="many">%1$d di preferiti</item>
         <item quantity="other">%1$d preferiti</item>
     </plurals>
     <plurals name="extended_social_info_reblogs">
         <item quantity="one">%1$d ricondivisione</item>
+        <item quantity="many">%1$d di ricondivisioni</item>
         <item quantity="other">%1$d ricondivisioni</item>
     </plurals>
     <plurals name="hashtag_people_using">
         <item quantity="one">$1%d persona ne sta parlando</item>
+        <item quantity="many">$1%d di persone ne stanno parlando</item>
         <item quantity="other">$1%d persone ne stanno parlando</item>
     </plurals>
     <plurals name="items">
         <item quantity="one">$1%d elemento</item>
+        <item quantity="many">$1%d di elementi</item>
         <item quantity="other">$1%d elementi</item>
     </plurals>
     <plurals name="messages">
         <item quantity="one">%1$d messaggio</item>
+        <item quantity="many">%1$d di messaggi</item>
         <item quantity="other">%1$d messaggi</item>
     </plurals>
     <plurals name="poll_vote">
         <item quantity="one">%1$d voto</item>
+        <item quantity="many">%1$d di voti</item>
         <item quantity="other">%1$d voti</item>
     </plurals>
     <plurals name="unread_messages">
         <item quantity="one">%1$d non letto</item>
+        <item quantity="many">%1$d non letti</item>
         <item quantity="other">%1$d non letti</item>
     </plurals>
     <plurals name="unread_notification_body">
-        <item quantity="one">C'è %1$d elemento nel 🗑️</item>
+        <item quantity="one">C\'è %1$d elemento nel 🗑️</item>
+        <item quantity="many">C\'è %1$d di elementi nel 🗑️</item>
         <item quantity="other">Ci sono %1$d elementi nel 🗑️</item>
     </plurals>
     <string name="settings_about_acknowledgements">Riconoscimenti</string>
+    <string name="timeline_layout_distraction_free">Senza distrazioni</string>
+    <string name="settings_item_timeline_layout">Layout post</string>
+    <string name="timeline_layout_full">Completo</string>
 </resources>
