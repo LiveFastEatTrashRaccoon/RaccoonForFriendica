@@ -65,6 +65,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionDeleteAccount")
     override val actionDeleteFollowRequest: String
         @Composable get() = retrieve("actionDeleteFollowRequest")
+    override val actionDislike: String
+        @Composable get() = retrieve("actionDislike")
     override val actionDismissAllNotifications: String
         @Composable get() = retrieve("actionDismissAllNotifications")
     override val actionDownload: String
@@ -121,6 +123,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionReblog")
     override val actionReject: String
         @Composable get() = retrieve("actionReject")
+    override val actionRemoveDislike: String
+        @Composable get() = retrieve("actionRemoveDislike")
     override val actionRemoveFromBookmarks: String
         @Composable get() = retrieve("actionRemoveFromBookmarks")
     override val actionRemoveFromFavorites: String
