@@ -93,4 +93,8 @@ interface TimelineEntryRepository {
         pollId: String,
         choices: List<Int>,
     ): PollModel?
+
+    suspend fun dislike(id: String): Boolean
+
+    suspend fun undislike(id: String): Boolean
 }

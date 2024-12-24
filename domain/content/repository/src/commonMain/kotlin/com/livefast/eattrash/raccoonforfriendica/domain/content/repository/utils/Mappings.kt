@@ -113,6 +113,7 @@ internal fun Status.toModel() =
         created = createdAt,
         creator = account?.toModel(),
         dislikesCount = addons?.dislikesCount ?: 0,
+        disliked = addons?.disliked == true,
         emojis = emojis?.map { it.toModel() }.orEmpty(),
         favorite = favourited,
         favoriteCount = favoritesCount,
