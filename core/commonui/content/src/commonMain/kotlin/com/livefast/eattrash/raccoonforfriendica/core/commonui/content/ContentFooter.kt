@@ -15,7 +15,11 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.RocketLaunch
+import androidx.compose.material.icons.filled.ThumbDown
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.RocketLaunch
+import androidx.compose.material.icons.outlined.ThumbDown
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,64 +47,102 @@ fun ContentFooter(
     bookmarked: Boolean = false,
     bookmarkLoading: Boolean = false,
     replyCount: Int = 0,
+    disliked: Boolean = false,
+    dislikeCount: Int = 0,
+    dislikeLoading: Boolean = false,
     onReply: (() -> Unit)? = null,
     onReblog: (() -> Unit)? = null,
     onFavorite: (() -> Unit)? = null,
+    onDislike: (() -> Unit)? = null,
     onBookmark: (() -> Unit)? = null,
 ) {
+    val canLikeAndDislike = onFavorite != null && onDislike != null
     val baseItemWidth = 70.dp
     Row(
         modifier = modifier.padding(vertical = Spacing.xs),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        FooterItem(
-            modifier =
-                Modifier
-                    .clearAndSetSemantics { }
-                    .width(baseItemWidth),
-            icon = Icons.AutoMirrored.Default.Reply,
-            contentDescription = null,
-            value = replyCount,
-            onClick = onReply,
-        )
-        FooterItem(
-            modifier =
-                Modifier
-                    .clearAndSetSemantics { }
-                    .width(baseItemWidth),
-            icon = Icons.Outlined.RocketLaunch,
-            toggledIcon = Icons.Filled.RocketLaunch,
-            contentDescription = null,
-            value = reblogCount,
-            toggled = reblogged,
-            loading = reblogLoading,
-            onClick = onReblog,
-        )
-        FooterItem(
-            modifier =
-                Modifier
-                    .clearAndSetSemantics { }
-                    .width(baseItemWidth),
-            icon = Icons.Default.FavoriteBorder,
-            toggledIcon = Icons.Default.Favorite,
-            contentDescription = null,
-            value = favoriteCount,
-            toggled = favorite,
-            loading = favoriteLoading,
-            onClick = onFavorite,
-        )
-        FooterItem(
-            modifier =
-                Modifier
-                    .clearAndSetSemantics { }
-                    .width(baseItemWidth),
-            icon = Icons.Default.BookmarkBorder,
-            toggledIcon = Icons.Default.Bookmark,
-            contentDescription = null,
-            toggled = bookmarked,
-            loading = bookmarkLoading,
-            onClick = onBookmark,
-        )
+        if (onReply != null) {
+            FooterItem(
+                modifier =
+                    Modifier
+                        .clearAndSetSemantics { }
+                        .width(baseItemWidth),
+                icon = Icons.AutoMirrored.Default.Reply,
+                contentDescription = null,
+                value = replyCount,
+                onClick = onReply,
+            )
+        }
+        if (onReblog != null) {
+            FooterItem(
+                modifier =
+                    Modifier
+                        .clearAndSetSemantics { }
+                        .width(baseItemWidth),
+                icon = Icons.Outlined.RocketLaunch,
+                toggledIcon = Icons.Filled.RocketLaunch,
+                contentDescription = null,
+                value = reblogCount,
+                toggled = reblogged,
+                loading = reblogLoading,
+                onClick = onReblog,
+            )
+        }
+        if (onFavorite != null) {
+            FooterItem(
+                modifier =
+                    Modifier
+                        .clearAndSetSemantics { }
+                        .width(baseItemWidth),
+                icon =
+                    if (canLikeAndDislike) {
+                        Icons.Outlined.ThumbUp
+                    } else {
+                        Icons.Default.FavoriteBorder
+                    },
+                toggledIcon =
+                    if (canLikeAndDislike) {
+                        Icons.Default.ThumbUp
+                    } else {
+                        Icons.Default.Favorite
+                    },
+                contentDescription = null,
+                value = favoriteCount,
+                toggled = favorite,
+                loading = favoriteLoading,
+                onClick = onFavorite,
+            )
+        }
+        if (onDislike != null) {
+            FooterItem(
+                modifier =
+                    Modifier
+                        .clearAndSetSemantics { }
+                        .width(baseItemWidth),
+                icon = Icons.Outlined.ThumbDown,
+                toggledIcon = Icons.Default.ThumbDown,
+                contentDescription = null,
+                value = dislikeCount,
+                toggled = disliked,
+                loading = dislikeLoading,
+                onClick = onDislike,
+            )
+        }
+        if (onBookmark != null) {
+            FooterItem(
+                modifier =
+                    Modifier
+                        .clearAndSetSemantics { }
+                        .width(baseItemWidth),
+                icon = Icons.Default.BookmarkBorder,
+                toggledIcon = Icons.Default.Bookmark,
+                contentDescription = null,
+                toggled = bookmarked,
+                loading = bookmarkLoading,
+                onClick = onBookmark,
+            )
+        }
     }
 }
 
