@@ -39,6 +39,7 @@ fun TimelineItem(
     onReply: ((TimelineEntryModel) -> Unit)? = null,
     onReblog: ((TimelineEntryModel) -> Unit)? = null,
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
+    onDislike: ((TimelineEntryModel) -> Unit)? = null,
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
@@ -77,6 +78,18 @@ fun TimelineItem(
             if (entryToDisplay.favoriteCount > 0) {
                 append(": ")
                 append(entryToDisplay.favoriteCount)
+            }
+        }
+    val dislikeActionLabel =
+        buildString {
+            if (entryToDisplay.disliked) {
+                append(LocalStrings.current.actionRemoveDislike)
+            } else {
+                append(LocalStrings.current.actionDislike)
+            }
+            if (entryToDisplay.dislikesCount > 0) {
+                append(": ")
+                append(entryToDisplay.dislikesCount)
             }
         }
     val bookmarkActionLabel =
@@ -123,75 +136,101 @@ fun TimelineItem(
     Box(
         modifier =
             modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    onClick?.invoke(entryToDisplay)
-                }.semantics(mergeDescendants = true) {
+                .then(
+                    if (onClick != null) {
+                        Modifier.clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) {
+                            onClick(entryToDisplay)
+                        }
+                    } else {
+                        Modifier
+                    },
+                ).semantics(mergeDescendants = true) {
                     val helperActions = mutableListOf<CustomAccessibilityAction>()
                     if (actionsEnabled) {
-                        helperActions +=
-                            CustomAccessibilityAction(
-                                label = replyActionLabel,
-                                action = {
-                                    onReply?.invoke(entryToDisplay)
-                                    true
-                                },
-                            )
-                        helperActions +=
-                            CustomAccessibilityAction(
-                                label = reblogActionLabel,
-                                action = {
-                                    onReblog?.invoke(entryToDisplay)
-                                    true
-                                },
-                            )
-                        helperActions +=
-                            CustomAccessibilityAction(
-                                label = favoriteActionLabel,
-                                action = {
-                                    onFavorite?.invoke(entryToDisplay)
-                                    true
-                                },
-                            )
-                        helperActions +=
-                            CustomAccessibilityAction(
-                                label = bookmarkActionLabel,
-                                action = {
-                                    onBookmark?.invoke(entryToDisplay)
-                                    true
-                                },
-                            )
+                        if (onReply != null) {
+                            helperActions +=
+                                CustomAccessibilityAction(
+                                    label = replyActionLabel,
+                                    action = {
+                                        onReply(entryToDisplay)
+                                        true
+                                    },
+                                )
+                        }
+                        if (onReblog != null) {
+                            helperActions +=
+                                CustomAccessibilityAction(
+                                    label = reblogActionLabel,
+                                    action = {
+                                        onReblog(entryToDisplay)
+                                        true
+                                    },
+                                )
+                        }
+                        if (onFavorite != null) {
+                            helperActions +=
+                                CustomAccessibilityAction(
+                                    label = favoriteActionLabel,
+                                    action = {
+                                        onFavorite(entryToDisplay)
+                                        true
+                                    },
+                                )
+                        }
+                        if (onDislike != null) {
+                            helperActions +=
+                                CustomAccessibilityAction(
+                                    label = dislikeActionLabel,
+                                    action = {
+                                        onDislike(entryToDisplay)
+                                        true
+                                    },
+                                )
+                        }
+                        if (onBookmark != null) {
+                            helperActions +=
+                                CustomAccessibilityAction(
+                                    label = bookmarkActionLabel,
+                                    action = {
+                                        onBookmark(entryToDisplay)
+                                        true
+                                    },
+                                )
+                        }
                     }
-                    if (reshareAndReplyVisible && isReblog) {
+                    if (reshareAndReplyVisible && isReblog && onOpenUser != null) {
                         helperActions +=
                             CustomAccessibilityAction(
                                 label = rebloggedActionLabel,
                                 action = {
-                                    entry.creator?.let { onOpenUser?.invoke(it) }
+                                    entry.creator?.let { onOpenUser(it) }
                                     true
                                 },
                             )
                     }
-                    if (reshareAndReplyVisible && isReply) {
+                    if (reshareAndReplyVisible && isReply && onOpenUser != null) {
                         helperActions +=
                             CustomAccessibilityAction(
                                 label = inReplyToActionLabel,
                                 action = {
-                                    entry.inReplyTo?.creator?.let { onOpenUser?.invoke(it) }
+                                    entry.inReplyTo?.creator?.let { onOpenUser(it) }
                                     true
                                 },
                             )
                     }
-                    helperActions +=
-                        CustomAccessibilityAction(
-                            label = userActionLabel,
-                            action = {
-                                entryToDisplay.creator?.let { onOpenUser?.invoke(it) }
-                                true
-                            },
-                        )
+                    if (onOpenUser != null) {
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = userActionLabel,
+                                action = {
+                                    entryToDisplay.creator?.let { onOpenUser(it) }
+                                    true
+                                },
+                            )
+                    }
                     if (options.isNotEmpty()) {
                         helperActions +=
                             CustomAccessibilityAction(
@@ -227,6 +266,7 @@ fun TimelineItem(
                     onBookmark = onBookmark,
                     onClick = onClick,
                     onFavorite = onFavorite,
+                    onDislike = onDislike,
                     onOpenImage = onOpenImage,
                     onOpenUrl = onOpenUrl,
                     onOpenUser = onOpenUser,
@@ -256,6 +296,7 @@ fun TimelineItem(
                     onBookmark = onBookmark,
                     onClick = onClick,
                     onFavorite = onFavorite,
+                    onDislike = onDislike,
                     onOpenUrl = onOpenUrl,
                     onOpenUser = onOpenUser,
                     onOptionSelected = onOptionSelected,
@@ -284,6 +325,7 @@ fun TimelineItem(
                     onBookmark = onBookmark,
                     onClick = onClick,
                     onFavorite = onFavorite,
+                    onDislike = onDislike,
                     onOpenImage = onOpenImage,
                     onOpenUrl = onOpenUrl,
                     onOpenUser = onOpenUser,
