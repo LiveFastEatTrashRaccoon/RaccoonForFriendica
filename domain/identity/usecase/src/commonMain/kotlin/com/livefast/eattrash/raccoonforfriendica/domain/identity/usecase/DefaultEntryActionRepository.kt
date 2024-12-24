@@ -15,7 +15,9 @@ internal class DefaultEntryActionRepository(
 
     override fun canReply(entry: TimelineEntryModel): Boolean = isLogged
 
-    override fun canReact(entry: TimelineEntryModel): Boolean = isLogged
+    override fun canFavorite(entry: TimelineEntryModel): Boolean = isLogged
+
+    override fun canDislike(entry: TimelineEntryModel): Boolean = isLogged && supportedFeatureRepository.features.value.supportsDislike
 
     override fun canBookmark(entry: TimelineEntryModel): Boolean = isLogged
 
