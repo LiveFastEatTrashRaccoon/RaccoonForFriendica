@@ -130,4 +130,14 @@ interface StatusService {
     suspend fun deleteScheduled(
         @Path("id") id: String,
     ): Response<Unit>
+
+    @POST("friendica/activity/dislike")
+    suspend fun dislike(
+        @Body data: FormDataContent,
+    ): Response<Unit>
+
+    @POST("friendica/activity/undislike")
+    suspend fun undislike(
+        @Body data: FormDataContent,
+    ): Response<Unit>
 }
