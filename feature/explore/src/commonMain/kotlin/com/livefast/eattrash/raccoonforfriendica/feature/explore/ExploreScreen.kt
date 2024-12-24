@@ -345,7 +345,7 @@ class ExploreScreen : Screen {
                                     onFavorite =
                                         { e: TimelineEntryModel ->
                                             model.reduce(ExploreMviModel.Intent.ToggleFavorite(e))
-                                        }.takeIf { actionRepository.canReact(item.entry.original) },
+                                        }.takeIf { actionRepository.canFavorite(item.entry.original) },
                                     onReply =
                                         { e: TimelineEntryModel ->
                                             detailOpener.openComposer(

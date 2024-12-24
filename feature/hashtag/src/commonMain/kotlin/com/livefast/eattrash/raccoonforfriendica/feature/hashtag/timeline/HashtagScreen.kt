@@ -277,7 +277,7 @@ class HashtagScreen(
                             onFavorite =
                                 { e: TimelineEntryModel ->
                                     model.reduce(HashtagMviModel.Intent.ToggleFavorite(e))
-                                }.takeIf { actionRepository.canReact(entry.original) },
+                                }.takeIf { actionRepository.canFavorite(entry.original) },
                             onReply =
                                 { e: TimelineEntryModel ->
                                     detailOpener.openComposer(

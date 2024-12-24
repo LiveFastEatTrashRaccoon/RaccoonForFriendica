@@ -17,6 +17,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPrel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -38,6 +40,8 @@ class ThreadViewModel(
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
+    private val toggleEntryDislike: ToggleEntryDislikeUseCase,
+    private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>(
         initialState = ThreadMviModel.State(),
@@ -269,21 +273,38 @@ class ThreadViewModel(
                 )
             }
             val newEntry =
-                if (entry.favorite) {
-                    timelineEntryRepository.unfavorite(entry.id)
-                } else {
-                    timelineEntryRepository.favorite(entry.id)
+                toggleEntryFavorite(entry)?.also { e ->
+                    notificationCenter.send(TimelineEntryUpdatedEvent(entry = e))
                 }
             if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it
-                        .copy(
-                            favorite = newEntry.favorite,
-                            favoriteCount = newEntry.favoriteCount,
-                            favoriteLoading = false,
-                        ).also { entry ->
-                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
-                        }
+                    newEntry
+                }
+            } else {
+                updateEntryInState(entry.id) {
+                    it.copy(
+                        favoriteLoading = false,
+                    )
+                }
+            }
+        }
+    }
+
+    private fun toggleDislike(entry: TimelineEntryModel) {
+        hapticFeedback.vibrate()
+        screenModelScope.launch {
+            updateEntryInState(entry.id) {
+                it.copy(
+                    dislikeLoading = true,
+                )
+            }
+            val newEntry =
+                toggleEntryDislike(entry)?.also { e ->
+                    notificationCenter.send(TimelineEntryUpdatedEvent(entry = e))
+                }
+            if (newEntry != null) {
+                updateEntryInState(entry.id) {
+                    newEntry
                 }
             } else {
                 updateEntryInState(entry.id) {
