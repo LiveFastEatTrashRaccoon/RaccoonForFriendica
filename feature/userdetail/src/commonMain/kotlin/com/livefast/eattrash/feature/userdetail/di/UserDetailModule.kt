@@ -26,6 +26,8 @@ val userDetailModule =
                     blurHashRepository = instance(),
                     emojiHelper = instance(),
                     imageAutoloadObserver = instance(),
+                    toggleEntryFavorite = instance(),
+                    toggleEntryDislike = instance(),
                     notificationCenter = instance(),
                 )
             }
@@ -44,6 +46,8 @@ val userDetailModule =
                     imagePreloadManager = instance(),
                     blurHashRepository = instance(),
                     imageAutoloadObserver = instance(),
+                    toggleEntryFavorite = instance(),
+                    toggleEntryDislike = instance(),
                     notificationCenter = instance(),
                 )
             }

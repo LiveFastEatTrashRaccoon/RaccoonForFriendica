@@ -48,6 +48,8 @@ val profileModule =
                     replyHelper = instance(),
                     imageAutoloadObserver = instance(),
                     logout = instance(),
+                    toggleEntryFavorite = instance(),
+                    toggleEntryDislike = instance(),
                     notificationCenter = instance(),
                 )
             }

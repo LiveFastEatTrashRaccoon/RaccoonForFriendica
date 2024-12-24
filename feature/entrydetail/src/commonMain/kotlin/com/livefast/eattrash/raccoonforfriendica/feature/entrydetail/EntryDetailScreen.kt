@@ -296,7 +296,7 @@ class EntryDetailScreen(
                             onFavorite =
                                 { e: TimelineEntryModel ->
                                     model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
-                                }.takeIf { actionRepository.canReact(entry.original) },
+                                }.takeIf { actionRepository.canFavorite(entry.original) },
                             onOpenUsersFavorite = { e ->
                                 detailOpener.openEntryUsersFavorite(
                                     entryId = e.id,

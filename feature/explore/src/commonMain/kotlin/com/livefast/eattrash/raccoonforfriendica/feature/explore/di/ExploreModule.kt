@@ -21,6 +21,8 @@ val exploreModule =
                     imagePreloadManager = instance(),
                     blurHashRepository = instance(),
                     imageAutoloadObserver = instance(),
+                    toggleEntryFavorite = instance(),
+                    toggleEntryDislike = instance(),
                     notificationCenter = instance(),
                 )
             }

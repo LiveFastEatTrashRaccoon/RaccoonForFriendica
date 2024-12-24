@@ -25,6 +25,8 @@ val timelineModule =
                     blurHashRepository = instance(),
                     imageAutoloadObserver = instance(),
                     announcementsManager = instance(),
+                    toggleEntryFavorite = instance(),
+                    toggleEntryDislike = instance(),
                     notificationCenter = instance(),
             )
         }

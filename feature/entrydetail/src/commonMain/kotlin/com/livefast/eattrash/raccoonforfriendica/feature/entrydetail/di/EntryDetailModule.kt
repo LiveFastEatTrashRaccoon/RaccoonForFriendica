@@ -24,6 +24,8 @@ val entryDetailModule =
                     emojiHelper = instance(),
                     replyHelper = instance(),
                     imageAutoloadObserver = instance(),
+                    toggleEntryFavorite = instance(),
+                    toggleEntryDislike = instance(),
                     notificationCenter = instance(),
                 )
             }
