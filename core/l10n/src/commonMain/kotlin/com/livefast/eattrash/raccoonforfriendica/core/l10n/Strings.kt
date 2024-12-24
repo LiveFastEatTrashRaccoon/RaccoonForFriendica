@@ -29,6 +29,7 @@ interface Strings {
     val actionDelete: String @Composable get
     val actionDeleteAccount: String @Composable get
     val actionDeleteFollowRequest: String @Composable get
+    val actionDislike: String @Composable get
     val actionDismissAllNotifications: String @Composable get
     val actionDownload: String @Composable get
     val actionEdit: String @Composable get
@@ -57,6 +58,7 @@ interface Strings {
     val actionQuote: String @Composable get
     val actionReblog: String @Composable get
     val actionReject: String @Composable get
+    val actionRemoveDislike: String @Composable get
     val actionRemoveFromBookmarks: String @Composable get
     val actionRemoveFromFavorites: String @Composable get
     val actionRemovePoll: String @Composable get

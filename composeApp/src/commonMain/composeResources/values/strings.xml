@@ -26,6 +26,7 @@
     <string name="action_delete">Delete</string>
     <string name="action_delete_account">Delete account</string>
     <string name="action_delete_follow_request">Cancel follow request</string>
+    <string name="action_dislike">Dislike</string>
     <string name="action_dismiss_all_notifications">Dismiss all notifications</string>
     <string name="action_download">Download</string>
     <string name="action_edit">Edit</string>
@@ -54,6 +55,7 @@
     <string name="action_quote">Quote</string>
     <string name="action_reblog">Reshare</string>
     <string name="action_reject">Reject</string>
+    <string name="action_remove_dislike">Undo dislike</string>
     <string name="action_remove_from_bookmarks">Remove from bookmarks</string>
     <string name="action_remove_from_favorites">Remove from favorites</string>
     <string name="action_remove_poll">Remove poll</string>
