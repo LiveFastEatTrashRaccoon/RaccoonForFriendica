@@ -397,7 +397,7 @@ object MyAccountScreen : Tab {
                         onFavorite =
                             { e: TimelineEntryModel ->
                                 model.reduce(MyAccountMviModel.Intent.ToggleFavorite(e))
-                            }.takeIf { actionRepository.canReact(entry.original) },
+                            }.takeIf { actionRepository.canFavorite(entry.original) },
                         onReply =
                             { e: TimelineEntryModel ->
                                 detailOpener.openComposer(

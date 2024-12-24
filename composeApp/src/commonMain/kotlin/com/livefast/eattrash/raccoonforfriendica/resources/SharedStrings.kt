@@ -35,6 +35,7 @@ import raccoonforfriendica.composeapp.generated.resources.action_create_thread_i
 import raccoonforfriendica.composeapp.generated.resources.action_delete
 import raccoonforfriendica.composeapp.generated.resources.action_delete_account
 import raccoonforfriendica.composeapp.generated.resources.action_delete_follow_request
+import raccoonforfriendica.composeapp.generated.resources.action_dislike
 import raccoonforfriendica.composeapp.generated.resources.action_dismiss_all_notifications
 import raccoonforfriendica.composeapp.generated.resources.action_download
 import raccoonforfriendica.composeapp.generated.resources.action_edit
@@ -63,6 +64,7 @@ import raccoonforfriendica.composeapp.generated.resources.action_publish_default
 import raccoonforfriendica.composeapp.generated.resources.action_quote
 import raccoonforfriendica.composeapp.generated.resources.action_reblog
 import raccoonforfriendica.composeapp.generated.resources.action_reject
+import raccoonforfriendica.composeapp.generated.resources.action_remove_dislike
 import raccoonforfriendica.composeapp.generated.resources.action_remove_from_bookmarks
 import raccoonforfriendica.composeapp.generated.resources.action_remove_from_favorites
 import raccoonforfriendica.composeapp.generated.resources.action_remove_poll
@@ -484,6 +486,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_delete_account)
     override val actionDeleteFollowRequest: String
         @Composable get() = stringResource(Res.string.action_delete_follow_request)
+    override val actionDislike: String
+        @Composable get() = stringResource(Res.string.action_dislike)
     override val actionDismissAllNotifications: String
         @Composable get() = stringResource(Res.string.action_dismiss_all_notifications)
     override val actionDownload: String
@@ -540,6 +544,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_reblog)
     override val actionReject: String
         @Composable get() = stringResource(Res.string.action_reject)
+    override val actionRemoveDislike: String
+        @Composable get() = stringResource(Res.string.action_remove_dislike)
     override val actionRemoveFromBookmarks: String
         @Composable get() = stringResource(Res.string.action_remove_from_bookmarks)
     override val actionRemoveFromFavorites: String

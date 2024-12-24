@@ -21,8 +21,10 @@ val searchModule =
                     imagePreloadManager = instance(),
                     blurHashRepository = instance(),
                     imageAutoloadObserver = instance(),
+                    toggleEntryFavorite = instance(),
+                    toggleEntryDislike = instance(),
                     notificationCenter = instance(),
-            )
+                )
+            }
         }
     }
-}

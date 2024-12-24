@@ -364,7 +364,11 @@ class TimelineScreen : Screen {
                             onFavorite =
                                 { e: TimelineEntryModel ->
                                     model.reduce(TimelineMviModel.Intent.ToggleFavorite(e))
-                                }.takeIf { actionRepository.canReact(entry.original) },
+                                }.takeIf { actionRepository.canFavorite(entry.original) },
+                            onDislike =
+                                { e: TimelineEntryModel ->
+                                    model.reduce(TimelineMviModel.Intent.ToggleDislike(e))
+                                }.takeIf { actionRepository.canDislike(entry.original) },
                             onReply =
                                 { e: TimelineEntryModel ->
                                     detailOpener.openComposer(
