@@ -463,4 +463,6 @@
     <string name="settings_item_timeline_layout">Layout post</string>
     <string name="timeline_layout_full">Completo</string>
     <string name="timeline_layout_compact">Compatto</string>
+    <string name="action_remove_dislike">Rimuovi \"non mi piace\"</string>
+    <string name="action_dislike">Non mi piace</string>
 </resources>
