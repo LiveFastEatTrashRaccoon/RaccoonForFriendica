@@ -462,4 +462,5 @@
     <string name="timeline_layout_distraction_free">Senza distrazioni</string>
     <string name="settings_item_timeline_layout">Layout post</string>
     <string name="timeline_layout_full">Completo</string>
+    <string name="timeline_layout_compact">Compatto</string>
 </resources>
