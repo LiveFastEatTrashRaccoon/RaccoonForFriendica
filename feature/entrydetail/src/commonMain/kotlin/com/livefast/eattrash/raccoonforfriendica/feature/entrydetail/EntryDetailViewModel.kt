@@ -120,6 +120,7 @@ class EntryDetailViewModel(
 
             is EntryDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is EntryDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is EntryDetailMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
             is EntryDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is EntryDetailMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is EntryDetailMviModel.Intent.MuteUser ->

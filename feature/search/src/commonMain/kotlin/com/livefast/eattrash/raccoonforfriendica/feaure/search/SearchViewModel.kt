@@ -149,6 +149,7 @@ class SearchViewModel(
             is SearchMviModel.Intent.Unfollow -> unfollow(intent.userId)
             is SearchMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is SearchMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is SearchMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
             is SearchMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is SearchMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is SearchMviModel.Intent.MuteUser ->

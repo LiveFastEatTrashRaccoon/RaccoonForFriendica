@@ -24,6 +24,10 @@ interface FavoritesMviModel :
             val entry: TimelineEntryModel,
         ) : Intent
 
+        data class ToggleDislike(
+            val entry: TimelineEntryModel,
+        ) : Intent
+
         data class ToggleBookmark(
             val entry: TimelineEntryModel,
         ) : Intent

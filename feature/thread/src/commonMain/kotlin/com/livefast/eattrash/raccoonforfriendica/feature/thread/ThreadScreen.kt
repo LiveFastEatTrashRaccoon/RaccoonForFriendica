@@ -263,30 +263,44 @@ class ThreadScreen(
                                     )
                                 },
                                 onReblog =
-                                    uiState.currentUserId?.let {
-                                        { e ->
-                                            val timeSinceCreation =
-                                                e.created?.run {
-                                                    getDurationFromDateToNow(this)
-                                                } ?: Duration.ZERO
-                                            when {
-                                                !e.reblogged && timeSinceCreation.isOldEntry ->
-                                                    confirmReblogEntry = e
+                                    { e: TimelineEntryModel ->
+                                        val timeSinceCreation =
+                                            e.created?.run {
+                                                getDurationFromDateToNow(this)
+                                            } ?: Duration.ZERO
+                                        when {
+                                            !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                confirmReblogEntry = e
 
-                                                else ->
-                                                    model.reduce(
-                                                        ThreadMviModel.Intent.ToggleReblog(e),
-                                                    )
-                                            }
+                                            else ->
+                                                model.reduce(
+                                                    ThreadMviModel.Intent.ToggleReblog(e),
+                                                )
                                         }
+                                    }.takeIf {
+                                        val e = uiState.entry ?: return@takeIf false
+                                        actionRepository.canFavorite(e)
                                     },
                                 onBookmark =
-                                    uiState.currentUserId?.let {
-                                        { e -> model.reduce(ThreadMviModel.Intent.ToggleBookmark(e)) }
+                                    { e: TimelineEntryModel ->
+                                        model.reduce(ThreadMviModel.Intent.ToggleBookmark(e))
+                                    }.takeIf {
+                                        val e = uiState.entry ?: return@takeIf false
+                                        actionRepository.canBookmark(e)
                                     },
                                 onFavorite =
-                                    uiState.currentUserId?.let {
-                                        { e -> model.reduce(ThreadMviModel.Intent.ToggleFavorite(e)) }
+                                    { e: TimelineEntryModel ->
+                                        model.reduce(ThreadMviModel.Intent.ToggleFavorite(e))
+                                    }.takeIf {
+                                        val e = uiState.entry ?: return@takeIf false
+                                        actionRepository.canFavorite(e)
+                                    },
+                                onDislike =
+                                    { e: TimelineEntryModel ->
+                                        model.reduce(ThreadMviModel.Intent.ToggleDislike(e))
+                                    }.takeIf {
+                                        val e = uiState.entry ?: return@takeIf false
+                                    actionRepository.canDislike(e)
                                     },
                                 onOpenUsersFavorite = { e ->
                                     detailOpener.openEntryUsersFavorite(
@@ -426,6 +440,10 @@ class ThreadScreen(
                                 { e: TimelineEntryModel ->
                                     model.reduce(ThreadMviModel.Intent.ToggleFavorite(e))
                                 }.takeIf { actionRepository.canFavorite(entry.original) },
+                            onDislike =
+                                { e: TimelineEntryModel ->
+                                    model.reduce(ThreadMviModel.Intent.ToggleDislike(e))
+                            }.takeIf { actionRepository.canDislike(entry.original) },
                             onReply =
                                 { e: TimelineEntryModel ->
                                     detailOpener.openComposer(

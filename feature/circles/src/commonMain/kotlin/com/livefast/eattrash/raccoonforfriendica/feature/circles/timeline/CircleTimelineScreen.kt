@@ -271,6 +271,10 @@ class CircleTimelineScreen(
                                 { e: TimelineEntryModel ->
                                     model.reduce(CircleTimelineMviModel.Intent.ToggleFavorite(e))
                                 }.takeIf { actionRepository.canFavorite(entry.original) },
+                            onDislike =
+                                { e: TimelineEntryModel ->
+                                    model.reduce(CircleTimelineMviModel.Intent.ToggleDislike(e))
+                                }.takeIf { actionRepository.canDislike(entry.original) },
                             onReply =
                                 { e: TimelineEntryModel ->
                                     detailOpener.openComposer(

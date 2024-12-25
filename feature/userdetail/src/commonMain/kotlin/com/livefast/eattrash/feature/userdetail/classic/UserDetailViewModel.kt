@@ -122,6 +122,7 @@ class UserDetailViewModel(
             UserDetailMviModel.Intent.Unfollow -> unfollow()
             is UserDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is UserDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is UserDetailMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
             is UserDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             UserDetailMviModel.Intent.DisableNotifications -> toggleNotifications(enabled = false)
             UserDetailMviModel.Intent.EnableNotifications -> toggleNotifications(enabled = true)

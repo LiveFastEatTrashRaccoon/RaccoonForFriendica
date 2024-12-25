@@ -112,6 +112,7 @@ class CircleTimelineViewModel(
 
             is CircleTimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is CircleTimelineMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is CircleTimelineMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
             is CircleTimelineMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is CircleTimelineMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is CircleTimelineMviModel.Intent.MuteUser ->
