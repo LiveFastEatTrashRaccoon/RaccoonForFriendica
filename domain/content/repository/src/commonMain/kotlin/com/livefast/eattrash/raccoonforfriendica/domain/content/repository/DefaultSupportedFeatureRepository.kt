@@ -25,6 +25,7 @@ internal class DefaultSupportedFeatureRepository(
                 supportsEntryShare = info.isFriendica,
                 supportsCalendar = info.isFriendica,
                 supportsAnnouncements = info.isMastodon,
+                supportsDislike = info.isFriendica,
             )
         }
     }

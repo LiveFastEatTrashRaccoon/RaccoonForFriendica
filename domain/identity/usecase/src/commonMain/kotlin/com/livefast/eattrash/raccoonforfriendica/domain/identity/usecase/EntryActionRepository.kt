@@ -9,7 +9,9 @@ interface EntryActionRepository {
 
     fun canReply(entry: TimelineEntryModel): Boolean
 
-    fun canReact(entry: TimelineEntryModel): Boolean
+    fun canFavorite(entry: TimelineEntryModel): Boolean
+
+    fun canDislike(entry: TimelineEntryModel): Boolean
 
     fun canBookmark(entry: TimelineEntryModel): Boolean
 

@@ -52,6 +52,7 @@ internal fun DistractionFreeTimelineItem(
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
     onClick: ((TimelineEntryModel) -> Unit)? = null,
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
+    onDislike: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
@@ -236,18 +237,39 @@ internal fun DistractionFreeTimelineItem(
                 bookmarked = entryToDisplay.bookmarked,
                 bookmarkLoading = entryToDisplay.bookmarkLoading,
                 replyCount = entryToDisplay.replyCount,
-                onReply = {
-                    onReply?.invoke(entryToDisplay)
-                },
-                onReblog = {
-                    onReblog?.invoke(entryToDisplay)
-                },
-                onFavorite = {
-                    onFavorite?.invoke(entryToDisplay)
-                },
-                onBookmark = {
-                    onBookmark?.invoke(entryToDisplay)
-                },
+                disliked = entryToDisplay.disliked,
+                dislikeCount = entryToDisplay.dislikesCount,
+                dislikeLoading = entryToDisplay.dislikeLoading,
+                onReply =
+                    if (onReply != null) {
+                        { onReply(entryToDisplay) }
+                    } else {
+                        null
+                    },
+                onReblog =
+                    if (onReblog != null) {
+                        { onReblog(entryToDisplay) }
+                    } else {
+                        null
+                    },
+                onFavorite =
+                    if (onFavorite != null) {
+                        { onFavorite(entryToDisplay) }
+                    } else {
+                        null
+                    },
+                onBookmark =
+                    if (onBookmark != null) {
+                        { onBookmark(entryToDisplay) }
+                    } else {
+                        null
+                    },
+                onDislike =
+                    if (onDislike != null) {
+                        { onDislike(entryToDisplay) }
+                    } else {
+                        null
+                    },
             )
         }
     }

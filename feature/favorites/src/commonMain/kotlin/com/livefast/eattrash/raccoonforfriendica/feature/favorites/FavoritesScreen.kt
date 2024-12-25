@@ -256,7 +256,7 @@ class FavoritesScreen(
                             onFavorite =
                                 { e: TimelineEntryModel ->
                                     model.reduce(FavoritesMviModel.Intent.ToggleFavorite(e))
-                                }.takeIf { actionRepository.canReact(entry.original) },
+                                }.takeIf { actionRepository.canFavorite(entry.original) },
                             onReply =
                                 { e: TimelineEntryModel ->
                                     detailOpener.openComposer(

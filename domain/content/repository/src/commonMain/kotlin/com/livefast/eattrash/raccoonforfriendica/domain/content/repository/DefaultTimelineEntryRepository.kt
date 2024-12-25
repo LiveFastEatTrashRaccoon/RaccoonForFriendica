@@ -339,6 +339,34 @@ internal class DefaultTimelineEntryRepository(
             }.getOrNull()
         }
 
+    override suspend fun dislike(id: String): Boolean =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val data =
+                    FormDataContent(
+                        parameters {
+                            append("id", id)
+                        },
+                    )
+                val res = provider.statuses.dislike(data)
+                res.isSuccessful
+            }.getOrElse { false }
+        }
+
+    override suspend fun undislike(id: String): Boolean =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val data =
+                    FormDataContent(
+                        parameters {
+                            append("id", id)
+                        },
+                    )
+                val res = provider.statuses.undislike(data)
+                res.isSuccessful
+            }.getOrElse { false }
+        }
+
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20
     }

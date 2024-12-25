@@ -84,7 +84,7 @@ class DefaultEntryActionRepositoryTest {
     }
 
     @Test
-    fun `given logged when canBookmark then result is as expected`() {
+    fun `given logged when canFavorite then result is as expected`() {
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -92,7 +92,69 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canBookmark(entry)
+        val res = sut.canFavorite(entry)
+
+        assertTrue(res)
+    }
+
+    @Test
+    fun `given not logged when canFavorite then result is as expected`() {
+        every { identityRepository.currentUser } returns MutableStateFlow(null)
+        val entry =
+            TimelineEntryModel(
+                id = "0",
+                content = "",
+                creator = UserModel(id = OTHER_USER_ID),
+            )
+
+        val res = sut.canFavorite(entry)
+
+        assertFalse(res)
+    }
+
+    @Test
+    fun `given not logged when canDislike then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
+        every { identityRepository.currentUser } returns MutableStateFlow(null)
+        val entry =
+            TimelineEntryModel(
+                id = "0",
+                content = "",
+                creator = UserModel(id = OTHER_USER_ID),
+            )
+
+        val res = sut.canDislike(entry)
+
+        assertFalse(res)
+    }
+
+    @Test
+    fun `given logged and dislike not supported when canDislike then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
+        val entry =
+            TimelineEntryModel(
+                id = "0",
+                content = "",
+                creator = UserModel(id = OTHER_USER_ID),
+            )
+
+        val res = sut.canDislike(entry)
+
+        assertFalse(res)
+    }
+
+    @Test
+    fun `given logged and dislike supported when canDislike then result is as expected`() {
+        every { supportedFeatureRepository.features } returns
+            MutableStateFlow(NodeFeatures(supportsDislike = true))
+        val entry =
+            TimelineEntryModel(
+                id = "0",
+                content = "",
+                creator = UserModel(id = OTHER_USER_ID),
+            )
+
+        val res = sut.canDislike(entry)
 
         assertTrue(res)
     }
