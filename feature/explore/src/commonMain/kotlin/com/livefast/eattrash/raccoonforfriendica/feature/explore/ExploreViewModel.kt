@@ -136,6 +136,7 @@ class ExploreViewModel(
             is ExploreMviModel.Intent.Unfollow -> unfollow(intent.userId)
             is ExploreMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is ExploreMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ExploreMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
             is ExploreMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is ExploreMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is ExploreMviModel.Intent.MuteUser ->

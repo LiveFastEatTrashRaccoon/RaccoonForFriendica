@@ -101,6 +101,7 @@ class ThreadViewModel(
 
             is ThreadMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is ThreadMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ThreadMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
             is ThreadMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is ThreadMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is ThreadMviModel.Intent.MuteUser ->

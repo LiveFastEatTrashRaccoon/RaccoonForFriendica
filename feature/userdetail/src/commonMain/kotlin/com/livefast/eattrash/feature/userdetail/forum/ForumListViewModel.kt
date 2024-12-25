@@ -105,6 +105,7 @@ class ForumListViewModel(
 
             is ForumListMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is ForumListMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ForumListMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
             is ForumListMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is ForumListMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is ForumListMviModel.Intent.MuteUser ->

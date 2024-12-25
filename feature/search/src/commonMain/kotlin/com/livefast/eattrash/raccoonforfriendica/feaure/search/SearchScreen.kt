@@ -348,6 +348,10 @@ class SearchScreen : Screen {
                                         { e: TimelineEntryModel ->
                                             model.reduce(SearchMviModel.Intent.ToggleFavorite(e))
                                         }.takeIf { actionRepository.canFavorite(item.entry.original) },
+                                    onDislike =
+                                        { e: TimelineEntryModel ->
+                                            model.reduce(SearchMviModel.Intent.ToggleDislike(e))
+                                        }.takeIf { actionRepository.canDislike(item.entry.original) },
                                     onReply =
                                         { e: TimelineEntryModel ->
                                             detailOpener.openComposer(

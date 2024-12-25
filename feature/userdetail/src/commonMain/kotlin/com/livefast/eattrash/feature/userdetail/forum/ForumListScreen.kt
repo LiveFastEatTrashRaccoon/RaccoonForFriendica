@@ -368,6 +368,10 @@ class ForumListScreen(
                                 { e: TimelineEntryModel ->
                                     model.reduce(ForumListMviModel.Intent.ToggleFavorite(e))
                                 }.takeIf { actionRepository.canFavorite(entry.original) },
+                            onDislike =
+                                { e: TimelineEntryModel ->
+                                    model.reduce(ForumListMviModel.Intent.ToggleDislike(e))
+                                }.takeIf { actionRepository.canDislike(entry.original) },
                             onReply =
                                 { e: TimelineEntryModel ->
                                     detailOpener.openComposer(

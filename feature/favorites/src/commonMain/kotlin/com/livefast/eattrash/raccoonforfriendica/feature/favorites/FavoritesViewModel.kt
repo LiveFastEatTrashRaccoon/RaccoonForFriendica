@@ -102,6 +102,7 @@ class FavoritesViewModel(
 
             is FavoritesMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is FavoritesMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is FavoritesMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
             is FavoritesMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is FavoritesMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is FavoritesMviModel.Intent.MuteUser ->

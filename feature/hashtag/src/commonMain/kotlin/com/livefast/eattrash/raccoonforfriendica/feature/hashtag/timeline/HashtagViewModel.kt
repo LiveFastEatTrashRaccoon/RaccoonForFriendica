@@ -118,6 +118,7 @@ class HashtagViewModel(
 
             is HashtagMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is HashtagMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is HashtagMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
             is HashtagMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is HashtagMviModel.Intent.ToggleTagFollow -> toggleTagFollow(intent.newValue)
             is HashtagMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)

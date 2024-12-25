@@ -189,6 +189,7 @@ class MyAccountViewModel(
 
             is MyAccountMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is MyAccountMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is MyAccountMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
             is MyAccountMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
             is MyAccountMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is MyAccountMviModel.Intent.TogglePin -> togglePin(intent.entry)
