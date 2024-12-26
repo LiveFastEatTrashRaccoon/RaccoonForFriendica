@@ -992,6 +992,7 @@ class SettingsScreen : Screen {
                     TimelineLayout.Full,
                     TimelineLayout.Compact,
                     TimelineLayout.DistractionFree,
+                    TimelineLayout.Card,
                 )
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemTimelineLayout,
