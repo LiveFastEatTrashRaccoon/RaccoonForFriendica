@@ -6,8 +6,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import chaintech.videoplayer.model.AudioPlayerConfig
 import chaintech.videoplayer.model.PlayerConfig
 import chaintech.videoplayer.model.ScreenResize
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
@@ -87,5 +89,10 @@ internal class SharedResources : CoreResources {
                 } else {
                     ScreenResize.FILL
                 },
+        )
+
+    override fun getAudioPlayerConfig(): AudioPlayerConfig =
+        AudioPlayerConfig(
+            controlsBottomPadding = Spacing.s,
         )
 }

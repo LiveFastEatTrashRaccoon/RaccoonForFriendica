@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.embeddedImageUrls
@@ -225,21 +226,35 @@ internal fun FullTimelineItem(
                 }
 
                 // attachments
-                ContentAttachments(
-                    modifier =
-                        Modifier.fillMaxWidth().padding(
-                            top = Spacing.s,
-                            bottom = Spacing.xxxs,
-                        ),
-                    attachments =
-                        entryToDisplay.attachments.filter {
-                            it.url !in entryToDisplay.embeddedImageUrls
-                        },
-                    blurNsfw = blurNsfw,
-                    autoloadImages = autoloadImages,
-                    sensitive = entryToDisplay.sensitive,
-                    onOpenImage = onOpenImage,
-                )
+                val attachments =
+                    entryToDisplay.attachments.filter { it.url !in entryToDisplay.embeddedImageUrls }
+                val visualAttachments =
+                    attachments.filter { it.type == MediaType.Image || it.type == MediaType.Video }
+                val audioAttachments = attachments.filter { it.type == MediaType.Audio }
+                if (visualAttachments.isNotEmpty()) {
+                    ContentVisualAttachments(
+                        modifier =
+                            Modifier.fillMaxWidth().padding(
+                                top = Spacing.s,
+                                bottom = Spacing.xxxs,
+                            ),
+                        attachments =
+                            entryToDisplay.attachments.filter {
+                                it.url !in entryToDisplay.embeddedImageUrls
+                            },
+                        blurNsfw = blurNsfw,
+                        autoloadImages = autoloadImages,
+                        sensitive = entryToDisplay.sensitive,
+                        onOpenImage = onOpenImage,
+                    )
+                }
+                if (audioAttachments.isNotEmpty()) {
+                    ContentAudioAttachments(
+                        modifier =
+                            Modifier.fillMaxWidth().padding(vertical = Spacing.xxxs),
+                        attachments = audioAttachments,
+                    )
+                }
 
                 // poll
                 entryToDisplay.poll?.also { poll ->
@@ -256,7 +271,6 @@ internal fun FullTimelineItem(
 
                 // preview
                 entryToDisplay.card?.also { preview ->
-                    val attachments = entryToDisplay.attachments
                     ContentPreview(
                         modifier =
                             Modifier

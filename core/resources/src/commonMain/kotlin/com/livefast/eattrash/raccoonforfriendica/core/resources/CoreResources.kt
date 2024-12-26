@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
+import chaintech.videoplayer.model.AudioPlayerConfig
 import chaintech.videoplayer.model.PlayerConfig
 
 interface CoreResources {
@@ -19,4 +20,6 @@ interface CoreResources {
         contentScale: ContentScale,
         muted: Boolean,
     ): PlayerConfig
+
+    fun getAudioPlayerConfig(): AudioPlayerConfig
 }
