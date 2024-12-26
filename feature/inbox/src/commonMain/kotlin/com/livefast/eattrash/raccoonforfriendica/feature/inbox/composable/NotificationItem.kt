@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,13 +51,11 @@ internal fun NotificationItem(
     blurNsfw: Boolean = false,
     maxBodyLines: Int = Int.MAX_VALUE,
     autoloadImages: Boolean = true,
-    layout: TimelineLayout = TimelineLayout.Full,
     onOpenUrl: ((String) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
     onUserRelationshipClicked: ((String, RelationshipStatusNextAction) -> Unit)? = null,
 ) {
-    val boxColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp)
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val entry = notification.entry
     val user = notification.user
@@ -115,8 +114,11 @@ internal fun NotificationItem(
             modifier =
                 Modifier
                     .padding(horizontal = contentHorizontalPadding)
-                    .background(
-                        color = boxColor,
+                    .shadow(
+                        elevation = 5.dp,
+                        shape = RoundedCornerShape(CornerSize.l),
+                    ).background(
+                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
                         shape = RoundedCornerShape(CornerSize.l),
                     ).clip(RoundedCornerShape(CornerSize.l))
                     .padding(
@@ -133,7 +135,7 @@ internal fun NotificationItem(
                             bottom = Spacing.s,
                         ),
                     entry = entry,
-                    layout = layout,
+                    layout = TimelineLayout.DistractionFree,
                     blurNsfw = blurNsfw,
                     maxBodyLines = maxBodyLines,
                     autoloadImages = autoloadImages,
