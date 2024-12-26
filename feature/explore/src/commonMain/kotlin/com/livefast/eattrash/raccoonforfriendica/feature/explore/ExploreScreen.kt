@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -58,6 +57,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.HashtagIt
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.LinkItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
@@ -264,9 +264,7 @@ class ExploreScreen : Screen {
                                 ExploreSection.Posts -> {
                                     TimelineItemPlaceholder(modifier = modifier)
                                     if (idx < placeholderCount - 1) {
-                                        HorizontalDivider(
-                                            modifier = Modifier.padding(vertical = Spacing.s),
-                                        )
+                                        TimelineDivider(layout = uiState.layout)
                                     }
                                 }
 
@@ -470,9 +468,7 @@ class ExploreScreen : Screen {
                                     },
                                 )
                                 if (idx < uiState.items.lastIndex) {
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(vertical = Spacing.s),
-                                    )
+                                    TimelineDivider(layout = uiState.layout)
                                 }
                             }
 

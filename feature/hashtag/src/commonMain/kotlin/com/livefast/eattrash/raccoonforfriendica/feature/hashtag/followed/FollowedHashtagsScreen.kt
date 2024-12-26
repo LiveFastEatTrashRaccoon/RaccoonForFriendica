@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,6 +40,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.FollowHashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -126,9 +126,7 @@ class FollowedHashtagsScreen : Screen {
                         items(placeholderCount) { idx ->
                             GenericPlaceholder(modifier = Modifier.fillMaxWidth())
                             if (idx < placeholderCount - 1) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = Spacing.s),
-                                )
+                                TimelineDivider()
                             }
                         }
                     }

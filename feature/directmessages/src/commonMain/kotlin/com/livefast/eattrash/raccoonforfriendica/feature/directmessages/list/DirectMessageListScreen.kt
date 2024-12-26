@@ -18,7 +18,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -49,6 +48,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SelectUserDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -172,9 +172,7 @@ class DirectMessageListScreen : Screen {
                         items(placeholderCount) { idx ->
                             GenericPlaceholder(height = 120.dp)
                             if (idx < placeholderCount - 1) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = Spacing.s),
-                                )
+                                TimelineDivider()
                             }
                         }
                     }
@@ -211,9 +209,7 @@ class DirectMessageListScreen : Screen {
                             },
                         )
                         if (idx < uiState.items.lastIndex) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = Spacing.s),
-                            )
+                            TimelineDivider()
                         }
 
                         val canFetchMore =

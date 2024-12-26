@@ -54,6 +54,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Sectio
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserFields
@@ -356,9 +357,7 @@ object MyAccountScreen : Tab {
                     items(placeholderCount) { idx ->
                         TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
                         if (idx < placeholderCount - 1) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = Spacing.s),
-                            )
+                            TimelineDivider(layout = uiState.layout)
                         }
                     }
                 }
@@ -485,9 +484,7 @@ object MyAccountScreen : Tab {
                         },
                     )
                     if (idx < uiState.entries.lastIndex) {
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = Spacing.s),
-                        )
+                        TimelineDivider(layout = uiState.layout)
                     }
 
                     val canFetchMore =

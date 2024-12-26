@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +51,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomCon
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TwoStateButton
@@ -210,9 +210,7 @@ class HashtagScreen(
                         items(placeholderCount) { idx ->
                             TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
                             if (idx < placeholderCount - 1) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = Spacing.s),
-                                )
+                                TimelineDivider(layout = uiState.layout)
                             }
                         }
                     }
@@ -394,9 +392,7 @@ class HashtagScreen(
                             },
                         )
                         if (idx < uiState.entries.lastIndex) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = Spacing.s),
-                            )
+                            TimelineDivider(layout = uiState.layout)
                         }
 
                         val canFetchMore =
