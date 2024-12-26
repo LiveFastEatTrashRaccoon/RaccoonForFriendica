@@ -29,7 +29,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.aspectRatio
 
 @Composable
-fun ContentAttachments(
+fun ContentVisualAttachments(
     attachments: List<AttachmentModel>,
     modifier: Modifier = Modifier,
     blurNsfw: Boolean = true,
@@ -38,15 +38,10 @@ fun ContentAttachments(
     cornerSize: Dp = CornerSize.xl,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
 ) {
-    val filteredAttachments =
-        attachments
-            .filter { it.type == MediaType.Image || it.type == MediaType.Video }
-            .takeIf { it.isNotEmpty() } ?: return
-
     fun handleClick(index: Int) {
-        val urls = filteredAttachments.map { it.url }
+        val urls = attachments.map { it.url }
         val videoIndices =
-            filteredAttachments.mapIndexedNotNull { idx, attachmentModel ->
+            attachments.mapIndexedNotNull { idx, attachmentModel ->
                 if (attachmentModel.type == MediaType.Video) {
                     idx
                 } else {
@@ -59,14 +54,14 @@ fun ContentAttachments(
     val pagerState =
         rememberPagerState(
             initialPage = 0,
-            pageCount = { filteredAttachments.size },
+            pageCount = { attachments.size },
         )
     val referenceAspectRatio =
-        filteredAttachments
+        attachments
             .minBy { it.originalHeight ?: 0 }
             .aspectRatio
             .takeIf { it > 0 } ?: (16 / 9f)
-    val hasMultipleElements = filteredAttachments.size > 1
+    val hasMultipleElements = attachments.size > 1
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
@@ -83,7 +78,7 @@ fun ContentAttachments(
             Box {
                 AttachmentElement(
                     modifier = Modifier.fillMaxSize(),
-                    attachment = filteredAttachments[index],
+                    attachment = attachments[index],
                     sensitive = blurNsfw && sensitive,
                     autoload = autoloadImages,
                     contentScale = ContentScale.FillWidth,
