@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="account_age">edad cuenta</string>
+    <string name="account_age">Edad cuenta</string>
     <string name="account_section_all">Publicaciones &amp; Respuestas</string>
     <string name="account_section_media">Multimediales</string>
     <string name="account_section_pinned">Fijados</string>
@@ -447,4 +447,10 @@
         <item quantity="other">Hay %1$d elementos en el 🗑️</item>
     </plurals>
     <string name="settings_about_acknowledgements">Reconocimientos</string>
+    <string name="settings_item_timeline_layout">Formato publicaciones</string>
+    <string name="timeline_layout_distraction_free">Sin distracciones</string>
+    <string name="timeline_layout_full">Entero</string>
+    <string name="action_dislike">No me gusta</string>
+    <string name="action_remove_dislike">Remover \"no me gusta\"</string>
+    <string name="timeline_layout_compact">Compacto</string>
 </resources>
