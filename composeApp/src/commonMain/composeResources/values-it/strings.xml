@@ -465,4 +465,5 @@
     <string name="timeline_layout_compact">Compatto</string>
     <string name="action_remove_dislike">Rimuovi \"non mi piace\"</string>
     <string name="action_dislike">Non mi piace</string>
+    <string name="timeline_layout_card">Scheda</string>
 </resources>
