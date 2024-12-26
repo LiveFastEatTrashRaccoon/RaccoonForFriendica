@@ -34,6 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.embeddedImageUrls
@@ -184,6 +185,8 @@ internal fun CompactTimelineItem(
             modifier = Modifier.padding(horizontal = contentHorizontalPadding),
             visible = spoilerActive || spoiler.isEmpty(),
         ) {
+            val attachments =
+                entryToDisplay.attachments.filter { it.url !in entryToDisplay.embeddedImageUrls }
             Column(
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
@@ -235,18 +238,31 @@ internal fun CompactTimelineItem(
                         }
                     }
 
-                    // attachments
-                    ContentAttachments(
-                        modifier = Modifier.weight(1 - COMPACT_POST_TITLE_WEIGHT),
-                        attachments =
-                            entryToDisplay.attachments.filter {
-                                it.url !in entryToDisplay.embeddedImageUrls
-                            },
-                        blurNsfw = blurNsfw,
-                        autoloadImages = autoloadImages,
-                        sensitive = entryToDisplay.sensitive,
-                        cornerSize = CornerSize.s,
-                        onOpenImage = onOpenImage,
+                    // visual attachments
+                    val visualAttachments =
+                        attachments.filter { it.type == MediaType.Image || it.type == MediaType.Video }
+                    if (visualAttachments.isNotEmpty()) {
+                        ContentVisualAttachments(
+                            modifier = Modifier.weight(1 - COMPACT_POST_TITLE_WEIGHT),
+                            attachments =
+                                entryToDisplay.attachments.filter {
+                                    it.url !in entryToDisplay.embeddedImageUrls
+                                },
+                            blurNsfw = blurNsfw,
+                            autoloadImages = autoloadImages,
+                            sensitive = entryToDisplay.sensitive,
+                            cornerSize = CornerSize.s,
+                            onOpenImage = onOpenImage,
+                        )
+                    }
+                }
+                // audio attachments
+                val audioAttachments = attachments.filter { it.type == MediaType.Audio }
+                if (audioAttachments.isNotEmpty()) {
+                    ContentAudioAttachments(
+                        modifier =
+                            Modifier.fillMaxWidth().padding(vertical = Spacing.xxxs),
+                        attachments = audioAttachments,
                     )
                 }
 
@@ -334,8 +350,8 @@ internal fun CompactTimelineItem(
                     if (onDislike != null) {
                         { onDislike(entryToDisplay) }
                     } else {
-                    null
-                },
+                        null
+                    },
             )
         }
     }
