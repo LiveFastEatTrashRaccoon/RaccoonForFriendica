@@ -115,6 +115,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionOpenSideMenu")
     override val actionPin: String
         @Composable get() = retrieve("actionPin")
+    override val actionPlay: String
+        @Composable get() = retrieve("actionPlay")
     override val actionPublishDefault: String
         @Composable get() = retrieve("actionPublishDefault")
     override val actionQuote: String

@@ -60,6 +60,7 @@ import raccoonforfriendica.composeapp.generated.resources.action_open_options
 import raccoonforfriendica.composeapp.generated.resources.action_open_preview
 import raccoonforfriendica.composeapp.generated.resources.action_open_side_menu
 import raccoonforfriendica.composeapp.generated.resources.action_pin
+import raccoonforfriendica.composeapp.generated.resources.action_play
 import raccoonforfriendica.composeapp.generated.resources.action_publish_default
 import raccoonforfriendica.composeapp.generated.resources.action_quote
 import raccoonforfriendica.composeapp.generated.resources.action_reblog
@@ -537,6 +538,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_open_side_menu)
     override val actionPin: String
         @Composable get() = stringResource(Res.string.action_pin)
+    override val actionPlay: String
+        @Composable get() = stringResource(Res.string.action_play)
     override val actionPublishDefault: String
         @Composable get() = stringResource(Res.string.action_publish_default)
     override val actionQuote: String

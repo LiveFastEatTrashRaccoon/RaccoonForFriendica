@@ -51,6 +51,7 @@
     <string name="action_open_preview">Open preview</string>
     <string name="action_open_side_menu">Open side menu</string>
     <string name="action_pin">Pin to profile</string>
+    <string name="action_play">Play</string>
     <string name="action_publish_default">Publish now</string>
     <string name="action_quote">Quote</string>
     <string name="action_reblog">Reshare</string>

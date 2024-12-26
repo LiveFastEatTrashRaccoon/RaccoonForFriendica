@@ -54,6 +54,7 @@ interface Strings {
     val actionOpenPreview: String @Composable get
     val actionOpenSideMenu: String @Composable get
     val actionPin: String @Composable get
+    val actionPlay: String @Composable get
     val actionPublishDefault: String @Composable get
     val actionQuote: String @Composable get
     val actionReblog: String @Composable get
