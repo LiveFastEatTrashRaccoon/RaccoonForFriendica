@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.thread
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -22,7 +22,6 @@ import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +34,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,17 +44,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
@@ -62,6 +62,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomCon
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineReplyItem
@@ -232,12 +233,12 @@ class ThreadScreen(
                             TimelineItem(
                                 modifier =
                                     Modifier
-                                        .border(
-                                            width = Dp.Hairline,
-                                            color =
-                                                MaterialTheme.colorScheme.onBackground.copy(
-                                                    ancillaryTextAlpha,
-                                                ),
+                                        .padding(horizontal = Spacing.xs)
+                                        .shadow(
+                                            elevation = 5.dp,
+                                            shape = RoundedCornerShape(CornerSize.l),
+                                        ).background(
+                                            color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
                                             shape = RoundedCornerShape(CornerSize.l),
                                         ).padding(
                                             vertical = Spacing.s,
@@ -300,7 +301,7 @@ class ThreadScreen(
                                         model.reduce(ThreadMviModel.Intent.ToggleDislike(e))
                                     }.takeIf {
                                         val e = uiState.entry ?: return@takeIf false
-                                    actionRepository.canDislike(e)
+                                        actionRepository.canDislike(e)
                                     },
                                 onOpenUsersFavorite = { e ->
                                     detailOpener.openEntryUsersFavorite(
@@ -387,9 +388,7 @@ class ThreadScreen(
                         items(placeholderCount) { idx ->
                             TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
                             if (idx < placeholderCount - 1) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = Spacing.s),
-                                )
+                                TimelineDivider(layout = uiState.layout)
                             }
                         }
                     }
@@ -443,7 +442,7 @@ class ThreadScreen(
                             onDislike =
                                 { e: TimelineEntryModel ->
                                     model.reduce(ThreadMviModel.Intent.ToggleDislike(e))
-                            }.takeIf { actionRepository.canDislike(entry.original) },
+                                }.takeIf { actionRepository.canDislike(entry.original) },
                             onReply =
                                 { e: TimelineEntryModel ->
                                     detailOpener.openComposer(
@@ -565,9 +564,7 @@ class ThreadScreen(
                             }
                         }
                         if (idx < uiState.replies.lastIndex) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = Spacing.s),
-                            )
+                            TimelineDivider(layout = uiState.layout)
                         }
                     }
                     item {

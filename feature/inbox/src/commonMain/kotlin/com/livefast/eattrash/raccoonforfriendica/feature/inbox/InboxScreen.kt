@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.inbox
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,7 +17,6 @@ import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -191,16 +191,12 @@ class InboxScreen : Screen {
             ) {
                 LazyColumn(
                     state = lazyListState,
+                    verticalArrangement = Arrangement.spacedBy(Spacing.s),
                 ) {
                     if (uiState.initial) {
                         val placeholderCount = 5
                         items(placeholderCount) { idx ->
                             NotificationItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                            if (idx < placeholderCount - 1) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = Spacing.interItem),
-                                )
-                            }
                         }
                     }
 
@@ -210,7 +206,6 @@ class InboxScreen : Screen {
                     ) { idx, notification ->
                         NotificationItem(
                             notification = notification,
-                            layout = uiState.layout,
                             blurNsfw = uiState.blurNsfw,
                             autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
@@ -250,11 +245,6 @@ class InboxScreen : Screen {
                                 }
                             },
                         )
-                        if (idx < uiState.notifications.lastIndex) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = Spacing.interItem),
-                            )
-                        }
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore

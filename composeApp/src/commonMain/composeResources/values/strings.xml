@@ -381,6 +381,7 @@
     <string name="timeline_entry_in_reply_to">in reply to</string>
     <string name="timeline_entry_reblogged_by">re-shared by</string>
     <string name="timeline_local">Local</string>
+    <string name="timeline_layout_card">Card</string>
     <string name="timeline_layout_compact">Compact</string>
     <string name="timeline_layout_distraction_free">Distraction free</string>
     <string name="timeline_layout_full">Full</string>

@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +42,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
@@ -147,9 +147,7 @@ class CalendarScreen : Screen {
                         items(placeholderCount) { idx ->
                             CalendarRowPlaceholder(modifier = Modifier.fillMaxWidth())
                             if (idx < placeholderCount - 1) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = Spacing.s),
-                                )
+                                TimelineDivider()
                             }
                         }
                     }
@@ -206,9 +204,7 @@ class CalendarScreen : Screen {
                                     },
                                 )
                                 if (idx < uiState.items.lastIndex && uiState.items[idx + 1] !is CalendarItem.Header) {
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(vertical = Spacing.s),
-                                    )
+                                    TimelineDivider()
                                 }
                             }
                         }

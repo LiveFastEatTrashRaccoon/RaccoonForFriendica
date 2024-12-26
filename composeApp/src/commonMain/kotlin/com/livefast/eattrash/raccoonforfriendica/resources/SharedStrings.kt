@@ -405,6 +405,7 @@ import raccoonforfriendica.composeapp.generated.resources.time_second_short
 import raccoonforfriendica.composeapp.generated.resources.timeline_all
 import raccoonforfriendica.composeapp.generated.resources.timeline_entry_in_reply_to
 import raccoonforfriendica.composeapp.generated.resources.timeline_entry_reblogged_by
+import raccoonforfriendica.composeapp.generated.resources.timeline_layout_card
 import raccoonforfriendica.composeapp.generated.resources.timeline_layout_compact
 import raccoonforfriendica.composeapp.generated.resources.timeline_layout_distraction_free
 import raccoonforfriendica.composeapp.generated.resources.timeline_layout_full
@@ -1212,6 +1213,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.timeline_entry_in_reply_to)
     override val timelineEntryRebloggedBy: String
         @Composable get() = stringResource(Res.string.timeline_entry_reblogged_by)
+    override val timelineLayoutCard: String
+        @Composable get() = stringResource(Res.string.timeline_layout_card)
     override val timelineLayoutCompact: String
         @Composable get() = stringResource(Res.string.timeline_layout_compact)
     override val timelineLayoutDistractionFree: String

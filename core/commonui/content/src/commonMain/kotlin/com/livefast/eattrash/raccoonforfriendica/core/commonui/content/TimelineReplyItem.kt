@@ -241,7 +241,7 @@ fun TimelineReplyItem(
                         }
                 }
             when (layout) {
-                TimelineLayout.Full ->
+                TimelineLayout.Full, TimelineLayout.Card ->
                     FullTimelineItem(
                         modifier = contentModifier,
                         actionsEnabled = actionsEnabled,
