@@ -339,6 +339,39 @@ fun TimelineItem(
                     onReblog = onReblog,
                     onReply = onReply,
                 )
+
+            TimelineLayout.Card ->
+                CardTimelineItem(
+                    actionsEnabled = actionsEnabled,
+                    autoloadImages = autoloadImages,
+                    blurNsfw = blurNsfw,
+                    entryToDisplay = entryToDisplay,
+                    extendedSocialInfoEnabled = extendedSocialInfoEnabled,
+                    originalCreator = entry.creator?.takeIf { isReblog },
+                    originalInReplyTo = entry.inReplyTo?.takeIf { isReply },
+                    maxBodyLines = maxBodyLines,
+                    maxTitleLines = maxTitleLines,
+                    options = options,
+                    optionsMenuOpen = optionsMenuOpen,
+                    pollEnabled = pollEnabled,
+                    reshareAndReplyVisible = reshareAndReplyVisible,
+                    onBookmark = onBookmark,
+                    onClick = onClick,
+                    onFavorite = onFavorite,
+                    onDislike = onDislike,
+                    onOpenImage = onOpenImage,
+                    onOpenUrl = onOpenUrl,
+                    onOpenUser = onOpenUser,
+                    onOpenUsersFavorite = onOpenUsersFavorite,
+                    onOpenUsersReblog = onOpenUsersReblog,
+                    onOptionSelected = onOptionSelected,
+                    onOptionsMenuToggled = {
+                        optionsMenuOpen = it
+                    },
+                    onPollVote = onPollVote,
+                    onReblog = onReblog,
+                    onReply = onReply,
+                )
         }
     }
 }
