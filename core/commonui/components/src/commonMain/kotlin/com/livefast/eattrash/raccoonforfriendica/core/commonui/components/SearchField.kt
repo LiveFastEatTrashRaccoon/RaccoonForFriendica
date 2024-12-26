@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,20 +43,21 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @Composable
 fun SearchField(
-    hint: String? = null,
-    hintTextStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
-    onValueChange: (String) -> Unit,
+    hint: String? = null,
+    hintTextStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     onClear: (() -> Unit)? = null,
-    modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions =
         KeyboardOptions(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Search,
         ),
 ) {
+    val textColor = MaterialTheme.colorScheme.onBackground
     var textFieldValue by remember {
         mutableStateOf(
             TextFieldValue(text = value),
@@ -65,6 +67,7 @@ fun SearchField(
         onValueChange(textFieldValue.text)
     }
     var height by remember { mutableStateOf(0f) }
+
     BasicTextField(
         modifier =
             modifier.onGloballyPositioned {
@@ -75,14 +78,15 @@ fun SearchField(
             textFieldValue = newValue
         },
         keyboardOptions = keyboardOptions,
-        maxLines = 1,
-        cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
-        textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onBackground),
+        singleLine = true,
+        cursorBrush = SolidColor(textColor),
+        textStyle = textStyle.copy(color = textColor),
         decorationBox =
             { innerTextField ->
                 Row(
                     modifier =
                         Modifier
+                            .fillMaxWidth()
                             .background(
                                 color = backgroundColor,
                                 shape =
@@ -101,7 +105,7 @@ fun SearchField(
                         modifier = iconModifier,
                         imageVector = Icons.Default.Search,
                         contentDescription = LocalStrings.current.actionSearch,
-                        tint = MaterialTheme.colorScheme.onBackground,
+                        tint = textColor,
                     )
                     Box(
                         modifier = Modifier.weight(1f),
@@ -112,10 +116,7 @@ fun SearchField(
                         if (textFieldValue.text.isEmpty() && hint != null) {
                             Text(
                                 text = hint,
-                                color =
-                                    MaterialTheme.colorScheme.onBackground.copy(
-                                        ancillaryTextAlpha,
-                                    ),
+                                color = textColor.copy(ancillaryTextAlpha),
                                 style = hintTextStyle,
                             )
                         }
@@ -129,7 +130,7 @@ fun SearchField(
                                 },
                             imageVector = Icons.Default.Clear,
                             contentDescription = LocalStrings.current.actionClear,
-                            tint = MaterialTheme.colorScheme.onBackground,
+                            tint = textColor,
                         )
                     }
                 }
