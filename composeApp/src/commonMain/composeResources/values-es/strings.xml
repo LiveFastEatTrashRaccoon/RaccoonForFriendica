@@ -454,4 +454,5 @@
     <string name="action_remove_dislike">Remover \"no me gusta\"</string>
     <string name="timeline_layout_compact">Compacto</string>
     <string name="timeline_layout_card">Ficha</string>
+    <string name="action_play">Reproducir</string>
 </resources>
