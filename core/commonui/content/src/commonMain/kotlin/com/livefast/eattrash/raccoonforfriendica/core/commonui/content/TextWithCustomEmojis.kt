@@ -1,8 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
@@ -25,19 +23,12 @@ import androidx.compose.ui.unit.em
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
-import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
-import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
-import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
 
 private val EMOJI_REGEX = Regex(":(\\w+):")
 private val EMOJI_SIZE = 1.15.em
-private val IMAGE_REGEX = Regex("<img.*?/>")
 
-private data class ImageData(
-    val url: String,
-    val description: String? = null,
-)
+internal val String.looksLikeAnEmoji: Boolean get() = EMOJI_REGEX.matches(this)
 
 @Composable
 fun TextWithCustomEmojis(
@@ -54,7 +45,6 @@ fun TextWithCustomEmojis(
     onClick: ((Int) -> Unit) = {},
 ) {
     val foundEmojis = mutableListOf<EmojiModel>()
-    val foundImages = mutableMapOf<String, ImageData>()
     val processedText =
         text
             .run {
@@ -82,7 +72,7 @@ fun TextWithCustomEmojis(
                             !it.isNullOrEmpty()
                         } ?: rawString
                     // on some instances (e.g. anonsys.net) emojis are sent as <img /> elements
-                    val looksLikeAnEmoji = EMOJI_REGEX.matches(alternateText)
+                    val looksLikeAnEmoji = alternateText.looksLikeAnEmoji
                     if (looksLikeAnEmoji) {
                         val emojiCode = alternateText.replace(":", "")
                         val foundEmoji = emojis.firstOrNull { it.code == emojiCode }
@@ -95,13 +85,6 @@ fun TextWithCustomEmojis(
                                 foundEmojis += foundEmoji
                             }
                         }
-                    } else if (imageData != null) {
-                        val id = getUuid()
-                        foundImages[id] = imageData
-                        appendInlineContent(
-                            id = id,
-                            alternateText = alternateText,
-                        )
                     }
                 }
             }
@@ -124,28 +107,6 @@ fun TextWithCustomEmojis(
                     )
                 }
         }
-    val inlineContentImages =
-        foundImages.map {
-            val key = it.key
-            val imageData = it.value
-            key to
-                InlineTextContent(
-                    placeholder =
-                        Placeholder(
-                            width = 50.em,
-                            height = 50.em,
-                            placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter,
-                        ),
-                ) {
-                    CustomImage(
-                        modifier = Modifier.fillMaxSize().aspectRatio(16 / 9f),
-                        url = imageData.url,
-                        autoload = autoloadImages,
-                        contentDescription = imageData.description,
-                        contentScale = ContentScale.FillBounds,
-                    )
-                }
-        }
 
     val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
     val pressIndicator =
@@ -159,7 +120,7 @@ fun TextWithCustomEmojis(
     BasicText(
         modifier = modifier.then(pressIndicator),
         text = processedText,
-        inlineContent = inlineContentEmojis + inlineContentImages,
+        inlineContent = inlineContentEmojis,
         style = style,
         color = { color },
         softWrap = softWrap,
@@ -199,28 +160,4 @@ fun TextWithCustomEmojis(
         onTextLayout = onTextLayout,
         onClick = onClick,
     )
-}
-
-private fun extractImageData(html: String): ImageData? {
-    var url: String? = null
-    var description: String? = null
-    KsoupHtmlParser(
-        KsoupHtmlHandler
-            .Builder()
-            .onOpenTag { name, attributes, _ ->
-                when (name) {
-                    "img" -> {
-                        url = attributes["src"]
-                        description = attributes["alt"]
-                    }
-
-                    else -> Unit
-                }
-            }.build(),
-    ).apply {
-        write(html)
-        end()
-    }
-
-    return url?.let { ImageData(url = it, description = description) }
 }
