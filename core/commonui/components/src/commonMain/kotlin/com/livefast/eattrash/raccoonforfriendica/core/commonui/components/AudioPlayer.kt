@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import chaintech.videoplayer.model.AudioFile
@@ -118,8 +119,12 @@ private fun FakeAudioPlayerComposable(
                             modifier = Modifier.weight(1f),
                         ) {
                             Slider(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(25.dp)
+                                        .clearAndSetSemantics { },
                                 enabled = false,
-                                modifier = Modifier.fillMaxWidth().height(25.dp),
                                 value = 0f,
                                 onValueChange = {},
                                 colors =
