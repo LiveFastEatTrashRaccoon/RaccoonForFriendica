@@ -30,7 +30,7 @@ fun String.parseHtml(
                     "p" ->
                         if (builder.length != 0) {
                             // separate paragraphs with a blank line
-                            builder.appendLineIfNeeded()
+                            builder.appendLine()
                             builder.appendLine()
                         }
 
@@ -50,9 +50,9 @@ fun String.parseHtml(
                     "u" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
                     "i", "em" -> builder.pushStyle(SpanStyle(fontStyle = FontStyle.Italic))
                     "s" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
-                    "ul" -> builder.appendLineIfNeeded()
+                    "ul" -> builder.appendLine()
                     "ol" -> {
-                        builder.appendLineIfNeeded()
+                        builder.appendLine()
                         inOrderedList = true
                     }
 
@@ -131,13 +131,6 @@ fun String.parseHtml(
     }
 
     return builder.toAnnotatedString()
-}
-
-private fun AnnotatedString.Builder.appendLineIfNeeded() {
-    val lastChar = toAnnotatedString().lastOrNull()
-    if (lastChar != null && lastChar != '\n') {
-        appendLine()
-    }
 }
 
 private fun String.sanitize(requiresHtmlDecode: Boolean): String =
