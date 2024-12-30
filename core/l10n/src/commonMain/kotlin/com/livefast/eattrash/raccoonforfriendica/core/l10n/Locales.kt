@@ -9,6 +9,7 @@ object Locales {
     const val IT = "it"
     const val PL = "pl"
     const val PT = "pt"
+    const val RO = "ro"
     const val UA = "ua"
 
     val AVAILABLE_LANGUAGES =
@@ -21,6 +22,7 @@ object Locales {
             IT,
             PL,
             PT,
+            RO,
             UA,
         )
 }
