@@ -11,15 +11,16 @@ import kotlinx.coroutines.withContext
 internal class DefaultEmojiRepository(
     private val provider: ServiceProvider,
     private val otherProvider: ServiceProvider,
-    private val cache: LruCache<String, List<EmojiModel>> = LruCache(20),
+    private val cache: LruCache<String, List<EmojiModel>> = LruCache.factory(20),
 ) : EmojiRepository {
     override suspend fun getAll(
         node: String?,
         refresh: Boolean,
-    ): List<EmojiModel>? {
+    ): List<EmojiModel> {
         val key = node.orEmpty()
-        return if (cache.containsKey(key) && !refresh) {
-            cache.get(key)
+        val cachedValue = cache.get(key)
+        return if (cachedValue != null && !refresh) {
+            cachedValue
         } else {
             retrieve(node).orEmpty().also {
                 cache.put(key, it)
