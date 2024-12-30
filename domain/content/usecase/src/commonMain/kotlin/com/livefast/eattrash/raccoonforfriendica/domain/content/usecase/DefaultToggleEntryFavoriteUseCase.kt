@@ -23,14 +23,17 @@ internal class DefaultToggleEntryFavoriteUseCase(
             } else {
                 entryRepository.unfavorite(entryId)
             }?.let { referenceEntry ->
-                if (dislikeRemoved) {
-                    referenceEntry.copy(
-                        disliked = false,
-                        dislikesCount = (entry.dislikesCount - 1).coerceAtLeast(0),
-                    )
-                } else {
-                    referenceEntry
-                }
+                entry.copy(
+                    disliked = false,
+                    dislikesCount =
+                        if (dislikeRemoved) {
+                            (entry.dislikesCount - 1).coerceAtLeast(0)
+                        } else {
+                            entry.dislikesCount
+                        },
+                    favorite = referenceEntry.favorite,
+                    favoriteCount = referenceEntry.favoriteCount,
+                )
             }
         } else {
             null
