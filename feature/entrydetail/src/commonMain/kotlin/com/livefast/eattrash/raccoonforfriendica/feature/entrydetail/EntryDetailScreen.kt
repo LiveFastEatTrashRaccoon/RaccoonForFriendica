@@ -458,7 +458,16 @@ class EntryDetailScreen(
                     if (uiState.initial) {
                         val placeholderCount = 5
                         items(placeholderCount) { idx ->
-                            TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                            TimelineItemPlaceholder(
+                                modifier =
+                                    Modifier.fillMaxWidth().then(
+                                        if (idx == 0) {
+                                            Modifier.padding(top = Spacing.s)
+                                        } else {
+                                            Modifier
+                                        },
+                                    ),
+                            )
                             if (idx < placeholderCount - 1) {
                                 TimelineDivider(layout = uiState.layout)
                             }
