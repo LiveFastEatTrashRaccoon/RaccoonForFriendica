@@ -8,8 +8,8 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class LruCacheTest {
-    private val sut = LruCache<String, Any>(CAPACITY)
+class DefaultLruCacheTest {
+    private val sut = DefaultLruCache<String, Any>(CAPACITY)
 
     @Test
     fun `given ley not in cache when get then result is as expected`() =

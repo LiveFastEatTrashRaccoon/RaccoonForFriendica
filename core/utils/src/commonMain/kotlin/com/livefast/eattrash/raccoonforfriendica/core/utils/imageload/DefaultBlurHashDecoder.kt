@@ -18,10 +18,10 @@ private const val MAX_CACHE_SIZE = 10
  * The original code has been modified here to work with Compose (multiplatform) ImageBitmap
  * and Color in order to be used in common source set and shared across platforms.
  */
-internal class DefaultBlurHashDecoder : BlurHashDecoder {
-    private val cacheCosinesX = LruCache<Int, DoubleArray>(MAX_CACHE_SIZE)
-    private val cacheCosinesY = LruCache<Int, DoubleArray>(MAX_CACHE_SIZE)
-
+internal class DefaultBlurHashDecoder(
+    private val cacheCosinesX: LruCache<Int, DoubleArray> = LruCache.factory(MAX_CACHE_SIZE),
+    private val cacheCosinesY: LruCache<Int, DoubleArray> = LruCache.factory(MAX_CACHE_SIZE),
+) : BlurHashDecoder {
     override suspend fun clearCache() {
         cacheCosinesX.clear()
         cacheCosinesY.clear()

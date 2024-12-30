@@ -5,7 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 
 internal class DefaultReplyHelper(
     private val entryRepository: TimelineEntryRepository,
-    private val entryCache: LruCache<String, TimelineEntryModel> = LruCache(100),
+    private val entryCache: LruCache<String, TimelineEntryModel> = LruCache.factory(100),
 ) : ReplyHelper {
     override suspend fun TimelineEntryModel.withInReplyToIfMissing(): TimelineEntryModel {
         val parent = inReplyTo ?: return this
@@ -16,7 +16,7 @@ internal class DefaultReplyHelper(
         val parentId = parent.id
         val cachedValue = entryCache.get(parentId)
         if (cachedValue != null) {
-            return cachedValue
+            return copy(inReplyTo = cachedValue)
         }
 
         val remoteParent =

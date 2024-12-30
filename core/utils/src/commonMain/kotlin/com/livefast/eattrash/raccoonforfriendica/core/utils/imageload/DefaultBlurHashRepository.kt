@@ -9,10 +9,9 @@ import kotlinx.coroutines.withContext
 
 internal class DefaultBlurHashRepository(
     private val decoder: BlurHashDecoder,
+    private val cache: LruCache<String, ImageBitmap> = LruCache.factory(CACHE_SIZE),
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BlurHashRepository {
-    private val cache = LruCache<String, ImageBitmap>(CACHE_SIZE)
-
     override suspend fun preload(params: BlurHashParams) {
         val key = params.hash
         if (!cache.containsKey(key)) {
