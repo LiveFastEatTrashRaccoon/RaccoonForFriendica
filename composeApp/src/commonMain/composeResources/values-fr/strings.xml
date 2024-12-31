@@ -423,12 +423,12 @@
         <item quantity="other">%1$d repartages</item>
     </plurals>
     <plurals name="hashtag_people_using">
-        <item quantity="one">$1%d personne en parle</item>
-        <item quantity="other">$1%d personnes en parlent</item>
+        <item quantity="one">%1$d personne en parle</item>
+        <item quantity="other">%1$d personnes en parlent</item>
     </plurals>
     <plurals name="items">
-        <item quantity="one">$1%d objet</item>
-        <item quantity="other">$1%d objets</item>
+        <item quantity="one">%1$d objet</item>
+        <item quantity="other">%1$d objets</item>
     </plurals>
     <plurals name="messages">
         <item quantity="one">%1$d message</item>

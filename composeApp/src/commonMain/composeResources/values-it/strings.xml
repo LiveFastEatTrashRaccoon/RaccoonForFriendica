@@ -429,14 +429,14 @@
         <item quantity="other">%1$d ricondivisioni</item>
     </plurals>
     <plurals name="hashtag_people_using">
-        <item quantity="one">$1%d persona ne sta parlando</item>
-        <item quantity="many">$1%d di persone ne stanno parlando</item>
-        <item quantity="other">$1%d persone ne stanno parlando</item>
+        <item quantity="one">%1$d persona ne sta parlando</item>
+        <item quantity="many">%1$d di persone ne stanno parlando</item>
+        <item quantity="other">%1$d persone ne stanno parlando</item>
     </plurals>
     <plurals name="items">
-        <item quantity="one">$1%d elemento</item>
-        <item quantity="many">$1%d di elementi</item>
-        <item quantity="other">$1%d elementi</item>
+        <item quantity="one">%1$d elemento</item>
+        <item quantity="many">%1$d di elementi</item>
+        <item quantity="other">%1$d elementi</item>
     </plurals>
     <plurals name="messages">
         <item quantity="one">%1$d messaggio</item>

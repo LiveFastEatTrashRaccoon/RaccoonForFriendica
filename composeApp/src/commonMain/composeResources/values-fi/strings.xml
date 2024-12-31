@@ -424,12 +424,12 @@
         <item quantity="other">%1$d uusintaosaketta</item>
     </plurals>
     <plurals name="hashtag_people_using">
-        <item quantity="one">$1%d henkilö puhuu siitä</item>
-        <item quantity="other">$1%d ihmistä puhuu siitä</item>
+        <item quantity="one">%1$d henkilö puhuu siitä</item>
+        <item quantity="other">%1$d ihmistä puhuu siitä</item>
     </plurals>
     <plurals name="items">
-        <item quantity="one">$1%d kohde</item>
-        <item quantity="other">$1%d kohteet</item>
+        <item quantity="one">%1$d kohde</item>
+        <item quantity="other">%1$d kohteet</item>
     </plurals>
     <plurals name="messages">
         <item quantity="one">%1$d viesti</item>

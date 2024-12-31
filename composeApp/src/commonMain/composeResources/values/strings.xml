@@ -433,12 +433,12 @@
         <item quantity="other">%1$d re-shares</item>
     </plurals>
     <plurals name="hashtag_people_using">
-        <item quantity="one">$1%d person is talking about it</item>
-        <item quantity="other">$1%d people are talking about it</item>
+        <item quantity="one">%1$d person is talking about it</item>
+        <item quantity="other">%1$d people are talking about it</item>
     </plurals>
     <plurals name="items">
-        <item quantity="one">$1%d item</item>
-        <item quantity="other">$1%d items</item>
+        <item quantity="one">%1$d item</item>
+        <item quantity="other">%1$d items</item>
     </plurals>
     <plurals name="messages">
         <item quantity="one">%1$d message</item>
