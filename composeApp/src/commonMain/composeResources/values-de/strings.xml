@@ -423,12 +423,12 @@
         <item quantity="other">%1$d geteilt</item>
     </plurals>
     <plurals name="hashtag_people_using">
-        <item quantity="one">$1%d Person spricht darüber</item>
-        <item quantity="other">$1%d Personen sprechen darüber</item>
+        <item quantity="one">%1$d Person spricht darüber</item>
+        <item quantity="other">%1$d Personen sprechen darüber</item>
     </plurals>
     <plurals name="items">
-        <item quantity="one">$1%d Element</item>
-        <item quantity="other">$1%d Elemente</item>
+        <item quantity="one">%1$d Element</item>
+        <item quantity="other">%1$d Elemente</item>
     </plurals>
     <plurals name="messages">
         <item quantity="one">%1$d Nachricht</item>

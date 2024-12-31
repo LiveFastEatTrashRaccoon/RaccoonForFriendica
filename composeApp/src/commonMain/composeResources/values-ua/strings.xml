@@ -424,12 +424,12 @@
         <item quantity="other">%1$d репости</item>
     </plurals>
     <plurals name="hashtag_people_using">
-        <item quantity="one">$1%d pлюдина говорить про це</item>
-        <item quantity="other">$1%d люди говорять про це</item>
+        <item quantity="one">%1$d pлюдина говорить про це</item>
+        <item quantity="other">%1$d люди говорять про це</item>
     </plurals>
     <plurals name="items">
-        <item quantity="one">$1%d пункт</item>
-        <item quantity="other">$1%d предмети</item>
+        <item quantity="one">%1$d пункт</item>
+        <item quantity="other">%1$d предмети</item>
     </plurals>
     <plurals name="messages">
         <item quantity="one">%1$d повідомлення</item>
