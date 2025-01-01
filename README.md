@@ -35,9 +35,16 @@ Here are some options to install the application on your device:
      &nbsp;
     <a href="https://apt.izzysoft.de/fdroid/index/apk/com.livefast.eattrash.raccoonforfriendica"><img alt="Get it on IzzyOnDroid banner" width="200" height="59.5" src="https://github.com/user-attachments/assets/9e248f35-594c-49e5-92a5-0cca62724fd8" /></a>
     &nbsp;
-    <a href="https://f-droid.org/packages/com.livefast.eattrash.raccoonforfriendica"><img alt="Get it on F-Droid" width="200" src="https://github.com/user-attachments/assets/ab7b99b5-8496-4f65-a12c-db1ab11a75d7"></a>
+    <a href="https://f-droid.org/packages/com.livefast.eattrash.raccoonforfriendica"><img alt="Get it on F-Droid" width="200" height="59.5" src="https://github.com/user-attachments/assets/ab7b99b5-8496-4f65-a12c-db1ab11a75d7"></a>
+    &nbsp;
+    <a href="https://play.google.com/apps/testing/com.livefast.eattrash.raccoonforfriendica"><img alt="Get it on Google Play" width="200" height="59.5" src="https://github.com/user-attachments/assets/43fd6623-2ba3-464f-950a-f8f27618a800"></a>
    </div>
 </div>
+
+> [!TIP]
+> To participate in the Google Play test program, you need to join [this group](https://groups.google.com/g/raccoonforfriendica-tester)
+> with the email address you are going to use in the Play Store. This will add you to alpha testers, then you will be able
+> to enroll in the closed test program.
 
 If you use [IzzyOnDroid](https://apt.izzysoft.de/fdroid/) as a source in your FDroid app, you can easily
 install the app, please refer to the link in the badge above to see the app details.
