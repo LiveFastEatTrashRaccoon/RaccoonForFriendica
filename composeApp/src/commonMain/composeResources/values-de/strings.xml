@@ -3,7 +3,7 @@
     <string name="account_age">Kontenalter</string>
     <string name="account_section_all">Beiträge und Antworten</string>
     <string name="account_section_media">Medien</string>
-    <string name="account_section_pinned">Angeheftet</string>
+    <string name="account_section_pinned">Angepinnt</string>
     <string name="account_section_posts">Beiträge</string>
     <string name="action_accept">Akzeptieren</string>
     <string name="action_add_image">Bild hinzufügen</string>
