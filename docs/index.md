@@ -98,6 +98,7 @@ A special thanks goes to all those who contributed so far:
 - [N7-X](https://github.com/N7-X)
 - [pvagner](https://github.com/pvagner)
 - [toas-koas](https://github.com/toas-koas)
+- [ktlinux](https://hosted.weblate.org/user/ktlinux)
 - all those who reported feedback and ideas through Friendica, Mastodon, GitHub, emails,
   private messages, homing pigeons and every possibly imaginable medium.
 
