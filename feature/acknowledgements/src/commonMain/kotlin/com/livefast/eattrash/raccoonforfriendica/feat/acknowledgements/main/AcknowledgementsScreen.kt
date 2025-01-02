@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.components.AcknowledgementItem
@@ -52,6 +53,7 @@ class AcknowledgementsScreen : Screen {
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             topBar = {
                 TopAppBar(
+                    windowInsets = topAppBarState.toWindowInsets(),
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
@@ -94,7 +96,7 @@ class AcknowledgementsScreen : Screen {
                         Modifier
                             .fillMaxSize()
                             .padding(horizontal = Spacing.xs),
-                        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
                     if (uiState.initial) {
                         items(5) {
