@@ -39,15 +39,17 @@ internal class DefaultBarColorProvider : BarColorProvider {
                         UiBarTheme.Transparent -> baseColor.copy(alpha = 0.01f)
                         else -> baseColor
                     }.toArgb()
-                statusBarColor = barColor
-                navigationBarColor = barColor
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                    statusBarColor = barColor
+                    navigationBarColor = barColor
+                }
 
                 if (barTheme != UiBarTheme.Solid) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        setDecorFitsSystemWindows(false)
-                    }
+                    WindowCompat.setDecorFitsSystemWindows(this, false)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        isStatusBarContrastEnforced = true
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                            isStatusBarContrastEnforced = true
+                        }
                         isNavigationBarContrastEnforced = true
                     }
                 }
