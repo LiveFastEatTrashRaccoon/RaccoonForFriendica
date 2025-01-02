@@ -92,6 +92,7 @@ class ComposerViewModel(
     private var editedPostId: String? = null
     private var draftId: String? = null
     private var mentionSuggestionJob: Job? = null
+    private var newAttachmentIds = mutableListOf<String>()
 
     private val shouldUserPhotoRepository: Boolean by lazy {
         supportedFeatureRepository.features.value.supportsPhotoGallery
@@ -1135,6 +1136,7 @@ class ComposerViewModel(
                     mediaRepository.create(byteArray)
                 }
             if (attachment != null) {
+                newAttachmentIds += attachment.id
                 updateState {
                     it.copy(
                         attachments = it.attachments.filter { a -> a.id != PLACEHOLDER_ID } + attachment,
@@ -1181,10 +1183,28 @@ class ComposerViewModel(
     ) {
         screenModelScope.launch {
             val successful =
-                mediaRepository.update(
-                    id = attachment.id,
-                    alt = description,
-                )
+                /*
+                 * Before even thinking about "optimizing" this, have a look at:
+                 * - https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/issues/640
+                 * - https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/issues/707
+                 *
+                 * If you decide to proceed anyway and you fail (most surely), please increment
+                 * the counter below as a warning for the next person:
+                 *
+                 * TOTAL_HOURS_WASTED_HERE: 4
+                 */
+                if (shouldUserPhotoRepository && newAttachmentIds.contains(attachment.id)) {
+                    photoRepository.update(
+                        id = attachment.id,
+                        album = attachment.album.orEmpty(),
+                        alt = description,
+                    )
+                } else {
+                    mediaRepository.update(
+                        id = attachment.id,
+                        alt = description,
+                    )
+                }
 
             if (successful) {
                 updateAttachmentInState(attachment.id) {
