@@ -240,9 +240,10 @@ fun TimelineItem(
                                     true
                                 },
                             )
-                        if (helperActions.isNotEmpty()) {
-                            customActions = helperActions
-                        }
+                    }
+
+                    if (helperActions.isNotEmpty()) {
+                        customActions = helperActions
                     }
                 },
         contentAlignment = Alignment.Center,
