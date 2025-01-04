@@ -17,6 +17,7 @@ internal object LicenceUrls {
     const val MASTODON = "https://github.com/mastodon/mastodon/blob/main/LICENSE"
     const val MATERIAL_ICONS = "https://github.com/google/material-design-icons/blob/master/LICENSE"
     const val MATERIAL_KOLOR = "https://github.com/jordond/MaterialKolor/blob/main/LICENSE"
+    const val MOKO_PERMISSIONS = "https://github.com/icerockdev/moko-permissions/blob/master/LICENSE.md"
     const val OFL = "https://openfontlicense.org/"
     const val SETTINGS = "https://github.com/russhwolf/multiplatform-settings/blob/main/LICENSE.txt"
     const val SENTRY = "https://github.com/getsentry/sentry-kotlin-multiplatform/blob/main/LICENSE"

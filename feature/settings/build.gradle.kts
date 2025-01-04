@@ -8,6 +8,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kodein)
+                implementation(libs.moko.permissions)
+                implementation(libs.moko.permissions.compose)
                 implementation(libs.voyager.screenmodel)
                 implementation(libs.voyager.kodein)
 

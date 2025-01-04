@@ -234,6 +234,7 @@ For the main app:
 - [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings) for encrypted shared
   preferences;
 - [MaterialKolor](https://github.com/jordond/MaterialKolor) for custom theme generation;
+- [Moko-Permissions](https://github.com/icerockdev/moko-permissions) for runtime permission management;
 - [Room](https://developer.android.com/kotlin/multiplatform/room) for local persistence;
 - [Sentry](https://sentry.io) for crash reporting and user feedback collection;
 - [UnifiedPush](https://unifiedpush.org) for push notifications;

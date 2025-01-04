@@ -31,6 +31,7 @@ ktorfit = "2.2.0"
 ktorfit-ksp = "2.2.0-1.0.29"
 materialKolor = "2.0.0"
 mokkery = "2.6.1"
+moko = "0.18.1"
 multiplatform-settings = "1.3.0"
 robolectric = "4.14.1"
 room = "2.7.0-alpha12"
@@ -94,7 +95,8 @@ ktorfit-converters-response = { module = "de.jensklingenberg.ktorfit:ktorfit-con
 ksp-gradlePlugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
-
+moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko" }
+moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 
 sentry = { module = "io.sentry:sentry-kotlin-multiplatform", version.ref = "sentry" }

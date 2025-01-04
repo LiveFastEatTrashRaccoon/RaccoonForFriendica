@@ -18,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
+import dev.icerock.moko.permissions.PermissionState
 import kotlin.time.Duration
 
 @Stable
@@ -105,6 +106,8 @@ interface SettingsMviModel :
             val value: String,
         ) : Intent
 
+        data object GrantPushNotificationsPermission : Intent
+
         data class ChangeCrashReportEnabled(
             val value: Boolean,
         ) : Intent
@@ -173,6 +176,7 @@ interface SettingsMviModel :
         val supportSettingsImportExport: Boolean = true,
         val barTheme: UiBarTheme = UiBarTheme.Transparent,
         val timelineLayout: TimelineLayout = TimelineLayout.Full,
+        val pushNotificationPermissionState: PermissionState = PermissionState.NotDetermined,
     )
 
     sealed interface Effect {

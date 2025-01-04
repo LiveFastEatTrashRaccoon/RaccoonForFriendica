@@ -85,6 +85,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionFollow")
     override val actionGoBack: String
         @Composable get() = retrieve("actionGoBack")
+    override val actionGrantPermission: String
+        @Composable get() = retrieve("actionGrantPermission")
     override val actionHideContent: String
         @Composable get() = retrieve("actionHideContent")
     override val actionHideResults: String
@@ -113,6 +115,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionOpenPreview")
     override val actionOpenSideMenu: String
         @Composable get() = retrieve("actionOpenSideMenu")
+    override val actionOpenSettings: String
+        @Composable get() = retrieve("actionOpenSettings")
     override val actionPin: String
         @Composable get() = retrieve("actionPin")
     override val actionPlay: String
@@ -723,6 +727,10 @@ class MockStrings : Strings {
         @Composable get() = retrieve("settingsOptionBackgroundNotificationCheck")
     override val settingsOptionUnlimited: String
         @Composable get() = retrieve("settingsOptionUnlimited")
+    override val settingsPushNotificationPermissionDeniedPermanently: String
+        @Composable get() = retrieve("settingsPushNotificationPermissionDeniedPermanently")
+    override val settingsPushNotificationPermissionNotGranted: String
+        @Composable get() = retrieve("settingsPushNotificationPermissionNotGranted")
     override val settingsPushNotificationStateEnabled: String
         @Composable get() = retrieve("settingsPushNotificationStateEnabled")
     override val settingsPushNotificationStateIdle: String

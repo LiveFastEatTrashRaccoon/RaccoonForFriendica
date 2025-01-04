@@ -147,6 +147,13 @@ class LicencesViewModel(
                         this +=
                             LicenceItem(
                                 type = LicenceItemType.Library,
+                                title = "Moko-Permissions",
+                                subtitle = "Kotlin MultiPlatform library for providing runtime permissions on iOS & Android",
+                                url = LicenceUrls.MOKO_PERMISSIONS,
+                            )
+                        this +=
+                            LicenceItem(
+                                type = LicenceItemType.Library,
                                 title = "Multiplatform Settings",
                                 subtitle = "A Kotlin library for Multiplatform apps, so that common code can persist key-value data",
                                 url = LicenceUrls.SETTINGS,
