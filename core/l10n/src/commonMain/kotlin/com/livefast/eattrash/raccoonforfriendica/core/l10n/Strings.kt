@@ -39,6 +39,7 @@ interface Strings {
     val actionFilter: String @Composable get
     val actionFollow: String @Composable get
     val actionGoBack: String @Composable get
+    val actionGrantPermission: String @Composable get
     val actionHideContent: String @Composable get
     val actionHideResults: String @Composable get
     val actionInsertLink: String @Composable get
@@ -52,6 +53,7 @@ interface Strings {
     val actionOpenLink: String @Composable get
     val actionOpenOptions: String @Composable get
     val actionOpenPreview: String @Composable get
+    val actionOpenSettings: String @Composable get
     val actionOpenSideMenu: String @Composable get
     val actionPin: String @Composable get
     val actionPlay: String @Composable get
@@ -358,6 +360,8 @@ interface Strings {
     val settingsNotificationModePushExplanation: String @Composable get
     val settingsOptionBackgroundNotificationCheck: String @Composable get
     val settingsOptionUnlimited: String @Composable get
+    val settingsPushNotificationPermissionDeniedPermanently: String @Composable get
+    val settingsPushNotificationPermissionNotGranted: String @Composable get
     val settingsPushNotificationStateEnabled: String @Composable get
     val settingsPushNotificationStateIdle: String @Composable get
     val settingsPushNotificationStateInitializing: String @Composable get

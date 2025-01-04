@@ -36,6 +36,7 @@
     <string name="action_filter">Filter</string>
     <string name="action_follow">Follow</string>
     <string name="action_go_back">Go back</string>
+    <string name="action_grant_permission">Grant</string>
     <string name="action_hide_content">Hide content</string>
     <string name="action_hide_results">Show results</string>
     <string name="action_insert_link">Insert link</string>
@@ -49,6 +50,7 @@
     <string name="action_open_link">Open link</string>
     <string name="action_open_options">Options</string>
     <string name="action_open_preview">Open preview</string>
+    <string name="action_open_settings">Open settings</string>
     <string name="action_open_side_menu">Open side menu</string>
     <string name="action_pin">Pin to profile</string>
     <string name="action_play">Play</string>
@@ -345,6 +347,8 @@
     <string name="settings_notification_mode_push_explanation">UnifiedPush</string>
     <string name="settings_option_background_notification_check">Check for notifications in background</string>
     <string name="settings_option_unlimited">Unlimited</string>
+    <string name="settings_push_notification_permission_denied_permanently">Push notification permission permanently denied</string>
+    <string name="settings_push_notification_permission_not_granted">Push notification permission not granted</string>
     <string name="settings_push_notification_state_enabled">Active</string>
     <string name="settings_push_notification_state_idle">Idle</string>
     <string name="settings_push_notification_state_initializing">Initializing…</string>

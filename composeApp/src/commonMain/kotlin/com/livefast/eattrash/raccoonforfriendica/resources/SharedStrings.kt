@@ -45,6 +45,7 @@ import raccoonforfriendica.composeapp.generated.resources.action_export
 import raccoonforfriendica.composeapp.generated.resources.action_filter
 import raccoonforfriendica.composeapp.generated.resources.action_follow
 import raccoonforfriendica.composeapp.generated.resources.action_go_back
+import raccoonforfriendica.composeapp.generated.resources.action_grant_permission
 import raccoonforfriendica.composeapp.generated.resources.action_hide_content
 import raccoonforfriendica.composeapp.generated.resources.action_hide_results
 import raccoonforfriendica.composeapp.generated.resources.action_insert_link
@@ -58,6 +59,7 @@ import raccoonforfriendica.composeapp.generated.resources.action_open_full_scree
 import raccoonforfriendica.composeapp.generated.resources.action_open_link
 import raccoonforfriendica.composeapp.generated.resources.action_open_options
 import raccoonforfriendica.composeapp.generated.resources.action_open_preview
+import raccoonforfriendica.composeapp.generated.resources.action_open_settings
 import raccoonforfriendica.composeapp.generated.resources.action_open_side_menu
 import raccoonforfriendica.composeapp.generated.resources.action_pin
 import raccoonforfriendica.composeapp.generated.resources.action_play
@@ -371,6 +373,8 @@ import raccoonforfriendica.composeapp.generated.resources.settings_notification_
 import raccoonforfriendica.composeapp.generated.resources.settings_notification_mode_push_explanation
 import raccoonforfriendica.composeapp.generated.resources.settings_option_background_notification_check
 import raccoonforfriendica.composeapp.generated.resources.settings_option_unlimited
+import raccoonforfriendica.composeapp.generated.resources.settings_push_notification_permission_denied_permanently
+import raccoonforfriendica.composeapp.generated.resources.settings_push_notification_permission_not_granted
 import raccoonforfriendica.composeapp.generated.resources.settings_push_notification_state_enabled
 import raccoonforfriendica.composeapp.generated.resources.settings_push_notification_state_idle
 import raccoonforfriendica.composeapp.generated.resources.settings_push_notification_state_initializing
@@ -509,6 +513,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_follow)
     override val actionGoBack: String
         @Composable get() = stringResource(Res.string.action_go_back)
+    override val actionGrantPermission: String
+        @Composable get() = stringResource(Res.string.action_grant_permission)
     override val actionHideContent: String
         @Composable get() = stringResource(Res.string.action_hide_content)
     override val actionHideResults: String
@@ -535,6 +541,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_open_options)
     override val actionOpenPreview: String
         @Composable get() = stringResource(Res.string.action_open_preview)
+    override val actionOpenSettings: String
+        @Composable get() = stringResource(Res.string.action_open_settings)
     override val actionOpenSideMenu: String
         @Composable get() = stringResource(Res.string.action_open_side_menu)
     override val actionPin: String
@@ -1147,6 +1155,10 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.settings_option_background_notification_check)
     override val settingsOptionUnlimited: String
         @Composable get() = stringResource(Res.string.settings_option_unlimited)
+    override val settingsPushNotificationPermissionDeniedPermanently: String
+        @Composable get() = stringResource(Res.string.settings_push_notification_permission_denied_permanently)
+    override val settingsPushNotificationPermissionNotGranted: String
+        @Composable get() = stringResource(Res.string.settings_push_notification_permission_not_granted)
     override val settingsPushNotificationStateEnabled: String
         @Composable get() = stringResource(Res.string.settings_push_notification_state_enabled)
     override val settingsPushNotificationStateIdle: String
