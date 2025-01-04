@@ -1,0 +1,14 @@
+- feat: implement dislike
+- feat: add post layouts (Compact, Distraction-free, Card)
+- feat: support audio attachments
+- fix: edit posts with markup
+- fix: search field horizontal scrolling
+- fix: avoid crash in HTML parsing
+- fix: status bar color and insets
+- fix: create/edit posts with attachments (Friendica)
+- fix: handle runtime permissions
+- enhancement: support for embedded images
+- chore: update l10n
+- chore: update acknowledgements
+- chore: update dependencies
+- chore: add unit tests

@@ -139,8 +139,8 @@ android {
             libs.versions.android.targetSdk
                 .get()
                 .toInt()
-        versionCode = 73
-        versionName = "0.4.0-beta06"
+        versionCode = 74
+        versionName = "0.4.0"
     }
     base.archivesName = "RaccoonForFriendica"
     packaging {

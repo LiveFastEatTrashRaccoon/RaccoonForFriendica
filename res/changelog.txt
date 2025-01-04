@@ -1,7 +1,19 @@
 ## What's Changed
 
-- refactor(di): migrate from Koin to Kodein by @AkesiSeli in #666
-- chore(l10n): update German translation by @Weblate and @koas-toas in #665
-- chore: update dependencies by @dependabot and @AkesiSeli in #660, #661, #663, #662
+- feat: implement dislike by @AkesiSeli in #675, #679, #698
+- feat: add new post layouts (Compact, Distraction-free, Card) by @AkesiSeli in #672, #673, #680, #700
+- feat: add support for audio attachments by @AkesiSeli in #686, #690, #691
+- fix: post editing with markup by @AkesiSeli in #671, #683
+- fix: search text field horizontal scrolling by @AkesiSeli in #684
+- fix: avoid crash while parsing HTML by @AkesiSeli in #693
+- fix: plural messages for people using hashtags and unread items by @AkesiSeli in #705
+- fix: status bar color and top bar insets by @AkesiSeli in #710
+- fix: create and edit posts with attachments on Friendica by @AkesiSeli in #711
+- fix: handle runtime permissions (push notifications, vibrate) by @AkesiSeli in #712
+- enhancement: improve support for embedded images by @AkesiSeli in #692
+- chore: update l10n by @Weblate, @diegoberaldin and @ktlinux in #674, #677, #678, #682, #685, #694, #699, #701, #703, #706, #708, #713
+- chore: update acknowledgements by @AkesiSeli in #709
+- chore: update dependencies by @dependabot and @AkesiSeli in #667, #668, #669, #670, #676, #696, #697
+- chore: add more unit tests by @AkesiSeli in #702
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.3.3...0.3.4
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.3.4...0.4.0
