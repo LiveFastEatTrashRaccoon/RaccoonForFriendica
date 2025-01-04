@@ -467,4 +467,8 @@
     <string name="action_dislike">Non mi piace</string>
     <string name="timeline_layout_card">Scheda</string>
     <string name="action_play">Riproduci</string>
+    <string name="action_grant_permission">Consenti</string>
+    <string name="settings_push_notification_permission_denied_permanently">Permesso notifiche push negato permanentemente</string>
+    <string name="settings_push_notification_permission_not_granted">Permesso notifiche push non concesso</string>
+    <string name="action_open_settings">Apri impostazioni</string>
 </resources>
