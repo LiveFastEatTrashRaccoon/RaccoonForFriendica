@@ -36,6 +36,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ImportS
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
+import dev.icerock.moko.permissions.DeniedAlwaysException
+import dev.icerock.moko.permissions.DeniedException
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionState
+import dev.icerock.moko.permissions.PermissionsController
+import dev.icerock.moko.permissions.RequestCanceledException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -57,6 +63,7 @@ class SettingsViewModel(
     private val fileSystemManager: FileSystemManager,
     private val importSettings: ImportSettingsUseCase,
     private val exportSettings: ExportSettingsUseCase,
+    private val permissionController: PermissionsController,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
@@ -68,6 +75,8 @@ class SettingsViewModel(
             val supportsPullNotifications = pullNotificationManager.isSupported
             val pushDistributors = pushNotificationManager.getAvailableDistributors()
             val supportsDynamicColors = colorSchemeProvider.supportsDynamicColors
+            val pushNotificationPermissionState =
+                permissionController.getPermissionState(Permission.REMOTE_NOTIFICATION)
             updateState {
                 it.copy(
                     supportsNotifications = supportsPullNotifications || supportsPushNotifications,
@@ -86,6 +95,7 @@ class SettingsViewModel(
                     availableThemeColors = themeColorRepository.getColors(),
                     appIconChangeSupported = appIconManager.supportsMultipleIcons,
                     supportSettingsImportExport = fileSystemManager.isSupported,
+                    pushNotificationPermissionState = pushNotificationPermissionState,
                 )
             }
 
@@ -333,6 +343,11 @@ class SettingsViewModel(
                     selectPushDistributor(intent.value)
                 }
 
+            SettingsMviModel.Intent.GrantPushNotificationsPermission ->
+                screenModelScope.launch {
+                    grantPushNotificationPermission()
+                }
+
             is SettingsMviModel.Intent.ChangeCrashReportEnabled ->
                 changeCrashReportEnabled(intent.value)
 
@@ -482,6 +497,28 @@ class SettingsViewModel(
     private suspend fun selectPushDistributor(distributor: String) {
         pushNotificationManager.saveDistributor(distributor)
         pushNotificationManager.enable()
+    }
+
+    private suspend fun grantPushNotificationPermission() {
+        when (val state = uiState.value.pushNotificationPermissionState) {
+            PermissionState.DeniedAlways -> permissionController.openAppSettings()
+            else -> {
+                val newState =
+                    try {
+                        permissionController.providePermission(Permission.REMOTE_NOTIFICATION)
+                        PermissionState.Granted
+                    } catch (e: DeniedAlwaysException) {
+                        PermissionState.DeniedAlways
+                    } catch (e: DeniedException) {
+                        PermissionState.Denied
+                    } catch (e: RequestCanceledException) {
+                        state
+                    }
+                updateState {
+                    it.copy(pushNotificationPermissionState = newState)
+                }
+            }
+        }
     }
 
     private fun changeCrashReportEnabled(value: Boolean) {

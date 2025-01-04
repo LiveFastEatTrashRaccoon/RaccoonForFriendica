@@ -85,6 +85,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpening
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.toReadableName
+import dev.icerock.moko.permissions.PermissionState
+import dev.icerock.moko.permissions.PermissionsController
+import dev.icerock.moko.permissions.compose.BindEffect
+import dev.icerock.moko.permissions.compose.PermissionsControllerFactory
+import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -95,7 +100,12 @@ class SettingsScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model: SettingsMviModel = rememberScreenModel()
+        val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
+        val controller: PermissionsController =
+            remember(factory) {
+                factory.createPermissionsController()
+            }
+        val model: SettingsMviModel = rememberScreenModel(arg = controller)
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -129,6 +139,7 @@ class SettingsScreen : Screen {
         var settingsContent by remember { mutableStateOf<String?>(null) }
         var timelineLayoutBottomSheetOpened by remember { mutableStateOf(false) }
 
+        BindEffect(permissionsController = controller)
         LaunchedEffect(model) {
             model.effects
                 .onEach { evt ->
@@ -313,6 +324,29 @@ class SettingsScreen : Screen {
                                 )
                             }
                             if (uiState.notificationMode == NotificationMode.Push) {
+                                val permissionState = uiState.pushNotificationPermissionState
+                                when (permissionState) {
+                                    PermissionState.NotGranted,
+                                    PermissionState.Denied,
+                                    ->
+                                        SettingsRow(
+                                            title = LocalStrings.current.settingsPushNotificationPermissionNotGranted,
+                                            value = LocalStrings.current.actionGrantPermission,
+                                            onTap = {
+                                                model.reduce(SettingsMviModel.Intent.GrantPushNotificationsPermission)
+                                            },
+                                        )
+
+                                    PermissionState.DeniedAlways ->
+                                        SettingsRow(
+                                            title = LocalStrings.current.settingsPushNotificationPermissionDeniedPermanently,
+                                            value = LocalStrings.current.actionOpenSettings,
+                                            onTap = {
+                                            },
+                                        )
+
+                                    else -> Unit
+                                }
                                 SettingsRow(
                                     title = LocalStrings.current.settingsItemPushNotificationState,
                                     value = uiState.pushNotificationState.toReadableName(),
