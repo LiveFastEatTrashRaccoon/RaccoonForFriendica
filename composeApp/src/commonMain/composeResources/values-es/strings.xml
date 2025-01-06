@@ -455,4 +455,8 @@
     <string name="timeline_layout_compact">Compacto</string>
     <string name="timeline_layout_card">Ficha</string>
     <string name="action_play">Reproducir</string>
+    <string name="settings_push_notification_permission_not_granted">Permiso de notificaciones push no concedido</string>
+    <string name="action_open_settings">Abrir ajustes</string>
+    <string name="action_grant_permission">Conceder</string>
+    <string name="settings_push_notification_permission_denied_permanently">Permiso de notificaciones push denegado permanentemente</string>
 </resources>
