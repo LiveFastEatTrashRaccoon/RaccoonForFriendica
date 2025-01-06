@@ -33,6 +33,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTrendingRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
@@ -57,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRe
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import org.kodein.di.DI
 import org.kodein.di.bind
@@ -258,6 +260,13 @@ val contentRepositoryModule =
             singleton {
                 DefaultUserRepository(
                     provider = instance(tag = "default"),
+                )
+            }
+        }
+        bind<UserRateLimitRepository> {
+            singleton {
+                DefaultUserRateLimitRepository(
+                    userRateLimitDao = instance(),
                 )
             }
         }
