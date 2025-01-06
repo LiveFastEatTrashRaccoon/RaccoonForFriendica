@@ -115,6 +115,8 @@ val contentPaginationModule =
                 DefaultTimelinePaginationManager(
                     timelineRepository = instance(),
                     timelineEntryRepository = instance(),
+                    accountRepository = instance(),
+                    userRateLimitRepository = instance(),
                     emojiHelper = instance(),
                     replyHelper = instance(),
                     notificationCenter = instance(),

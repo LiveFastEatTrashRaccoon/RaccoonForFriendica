@@ -6,11 +6,15 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.answering.sequentiallyReturns
@@ -30,7 +34,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TimelinePaginationManagerTest {
+class DefaultTimelinePaginationManagerTest {
     private val timelineRepository = mock<TimelineRepository>()
     private val timelineEntryRepository = mock<TimelineEntryRepository>()
     private val emojiHelper =
@@ -46,10 +50,17 @@ class TimelinePaginationManagerTest {
         mock<NotificationCenter> {
             every { subscribe(any<KClass<NotificationCenterEvent>>()) } returns MutableSharedFlow()
         }
+    private val accountRepository =
+        mock<AccountRepository> {
+            everySuspend { getActive() } returns null
+        }
+    private val userRateLimitRepository = mock<UserRateLimitRepository>()
     private val sut =
         DefaultTimelinePaginationManager(
             timelineRepository = timelineRepository,
             timelineEntryRepository = timelineEntryRepository,
+            accountRepository = accountRepository,
+            userRateLimitRepository = userRateLimitRepository,
             emojiHelper = emojiHelper,
             replyHelper = replyHelper,
             notificationCenter = notificationCenter,
@@ -384,6 +395,62 @@ class TimelinePaginationManagerTest {
                     pageCursor = "1",
                     refresh = false,
                 )
+            }
+        }
+
+    @Test
+    fun `given results when loadNextPage with home Feed and rate limit then result is as expected`() =
+        runTest {
+            val accountId = 1L
+            val list =
+                listOf(
+                    TimelineEntryModel(
+                        id = "1",
+                        content = "",
+                        creator = UserModel(id = "1", handle = "user-1"),
+                    ),
+                    TimelineEntryModel(
+                        id = "2",
+                        content = "",
+                        creator = UserModel(id = "2", handle = "user-2"),
+                    ),
+                    TimelineEntryModel(
+                        id = "3",
+                        content = "",
+                        creator = UserModel(id = "1", handle = "user-1"),
+                    ),
+                )
+            everySuspend {
+                timelineRepository.getHome(
+                    pageCursor = any(),
+                    refresh = any(),
+                )
+            } returns list
+            everySuspend { accountRepository.getActive() } returns AccountModel(id = accountId)
+            everySuspend { userRateLimitRepository.getAll(any()) } returns
+                listOf(
+                    UserRateLimitModel(handle = "user-1", rate = 0.5),
+                )
+
+            sut.reset(
+                TimelinePaginationSpecification.Feed(
+                    timelineType = TimelineType.Subscriptions,
+                    excludeReplies = false,
+                    includeNsfw = false,
+                    refresh = false,
+                ),
+            )
+            val res = sut.loadNextPage()
+
+            assertEquals(list.subList(0, 2), res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                timelineRepository.getHome(
+                    pageCursor = null,
+                    refresh = false,
+                )
+                accountRepository.getActive()
+                userRateLimitRepository.getAll(accountId)
             }
         }
     // endregion

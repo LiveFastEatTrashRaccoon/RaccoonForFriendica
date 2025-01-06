@@ -12,7 +12,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +28,8 @@ import kotlinx.coroutines.sync.withLock
 internal class DefaultTimelinePaginationManager(
     private val timelineRepository: TimelineRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
+    private val accountRepository: AccountRepository,
+    private val userRateLimitRepository: UserRateLimitRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
     notificationCenter: NotificationCenter = getNotificationCenter(),
@@ -37,6 +41,7 @@ internal class DefaultTimelinePaginationManager(
     override val history = mutableListOf<TimelineEntryModel>()
     private val mutex = Mutex()
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
+    private val userRateLimits = mutableMapOf<String, Double>()
 
     init {
         notificationCenter
@@ -65,6 +70,12 @@ internal class DefaultTimelinePaginationManager(
         this.specification = specification
         pageCursor = null
         mutex.withLock {
+            userRateLimits.clear()
+            accountRepository.getActive()?.id?.also { accountId ->
+                userRateLimitRepository.getAll(accountId).forEach { limit ->
+                    userRateLimits[limit.handle] = limit.rate
+                }
+            }
             history.clear()
         }
         canFetchMore = true
@@ -150,6 +161,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.updatePaginationData()
                         ?.filterReplies(included = !specification.excludeReplies)
                         ?.filterNsfw(specification.includeNsfw)
+                        ?.filterWithRateLimits()
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
@@ -159,6 +171,7 @@ internal class DefaultTimelinePaginationManager(
                     results
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
+                        ?.filterWithRateLimits()
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
@@ -204,6 +217,22 @@ internal class DefaultTimelinePaginationManager(
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
         }.distinctBy { it.safeKey }
+
+    private fun List<TimelineEntryModel>.filterWithRateLimits(): List<TimelineEntryModel> =
+        filterIndexed { index, timelineEntryModel ->
+            val creator = timelineEntryModel.creator ?: return@filterIndexed true
+            val rateLimit = userRateLimits[creator.handle] ?: return@filterIndexed true
+            val entriesByThisUserInHistory = history.count { it.creator?.id == creator.id }
+            val entriesByThisUserSoFar =
+                subList(0, index).count { it.creator?.id == creator.id }
+            val total = history.size + index
+            if (total == 0) {
+                return@filterIndexed true
+            }
+            val rate =
+                (entriesByThisUserInHistory + entriesByThisUserSoFar + 1).toDouble() / (total + 1)
+            rate <= rateLimit
+        }
 
     private fun ListWithPageCursor<TimelineEntryModel>.deduplicate(): ListWithPageCursor<TimelineEntryModel> =
         run {
