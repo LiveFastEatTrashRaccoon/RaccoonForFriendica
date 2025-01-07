@@ -471,4 +471,7 @@
     <string name="settings_push_notification_permission_denied_permanently">Permesso notifiche push negato permanentemente</string>
     <string name="settings_push_notification_permission_not_granted">Permesso notifiche push non concesso</string>
     <string name="action_open_settings">Apri impostazioni</string>
+    <string name="item_selected">selezionato</string>
+    <string name="action_change_rate_limit">Cambia frequenza limite</string>
+    <string name="manage_blocks_section_limited">Limitati</string>
 </resources>
