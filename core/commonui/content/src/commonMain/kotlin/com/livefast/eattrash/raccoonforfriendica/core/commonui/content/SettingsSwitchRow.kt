@@ -36,7 +36,7 @@ fun SettingsSwitchRow(
                     enabled = true,
                     onValueChange = {
                         onValueChanged(!value)
-                    }
+                    },
                 ).padding(horizontal = Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -61,7 +61,7 @@ fun SettingsSwitchRow(
             }
         }
         Switch(
-            modifier = Modifier.padding(start = Spacing.xs, top = Spacing.xxxs),
+            modifier = Modifier.padding(start = Spacing.xs, top = Spacing.xs),
             checked = value,
             onCheckedChange = null,
         )

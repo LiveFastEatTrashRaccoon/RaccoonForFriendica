@@ -47,6 +47,7 @@ fun UserItem(
     user: UserModel,
     modifier: Modifier = Modifier,
     autoloadImages: Boolean = true,
+    withSubtitle: Boolean = true,
     options: List<Option> = emptyList(),
     onClick: (() -> Unit)? = null,
     onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
@@ -104,13 +105,15 @@ fun UserItem(
                     onClick?.invoke()
                 },
             )
-            Text(
-                text = user.handle ?: user.username ?: "",
-                style = MaterialTheme.typography.titleMedium,
-                color = ancillaryColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            if (withSubtitle) {
+                Text(
+                    text = user.handle ?: user.username ?: "",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = ancillaryColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
 
         if (relationshipStatus != null) {
