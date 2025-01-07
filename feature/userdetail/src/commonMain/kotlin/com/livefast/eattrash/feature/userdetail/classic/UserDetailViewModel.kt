@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePrelo
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
@@ -23,9 +24,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -45,6 +48,8 @@ class UserDetailViewModel(
     private val userCache: LocalItemCache<UserModel>,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
+    private val accountRepository: AccountRepository,
+    private val userRateLimitRepository: UserRateLimitRepository,
     private val emojiHelper: EmojiHelper,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
@@ -144,6 +149,7 @@ class UserDetailViewModel(
 
             UserDetailMviModel.Intent.SubmitPersonalNote -> updatePersonalNote()
             is UserDetailMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is UserDetailMviModel.Intent.SetRateLimit -> setRateLimit(intent.value)
         }
     }
 
@@ -159,6 +165,14 @@ class UserDetailViewModel(
             } else {
                 null
             }
+        val accountId = accountRepository.getActive()?.id
+        val handle = user?.handle.orEmpty()
+        val rateLimit =
+            if (accountId != null && handle.isNotEmpty()) {
+                userRateLimitRepository.getBy(handle = handle, accountId = accountId)
+            } else {
+                null
+            }
         updateState {
             it.copy(
                 user =
@@ -169,6 +183,7 @@ class UserDetailViewModel(
                         blocked = relationship?.blocking == true,
                     ),
                 personalNote = relationship?.note,
+                rateLimit = rateLimit,
             )
         }
     }
@@ -567,6 +582,44 @@ class UserDetailViewModel(
                     }
                 emitEffect(UserDetailMviModel.Effect.TriggerCopy(text))
             }
+        }
+    }
+
+    private fun setRateLimit(value: Double) {
+        screenModelScope.launch {
+            val accountId = accountRepository.getActive()?.id ?: return@launch
+            val handle = uiState.value.user?.handle ?: return@launch
+
+            val currentRate = uiState.value.rateLimit
+            val newRate =
+                when {
+                    value >= 1 && currentRate != null -> {
+                        val success = userRateLimitRepository.delete(currentRate.id)
+                        if (success) {
+                            null
+                        } else {
+                            currentRate
+                        }
+                    }
+
+                    value < 1 && currentRate != null -> {
+                        userRateLimitRepository.update(currentRate.copy(rate = value))
+                    }
+
+                    value < 1 -> {
+                        userRateLimitRepository.create(
+                            UserRateLimitModel(
+                                accountId = accountId,
+                                handle = handle,
+                                rate = value,
+                            ),
+                        )
+                    }
+
+                    else -> currentRate
+                }
+
+            updateState { it.copy(rateLimit = newRate) }
         }
     }
 }
