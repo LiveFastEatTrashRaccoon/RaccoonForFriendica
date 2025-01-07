@@ -15,6 +15,8 @@ val manageBlocksModule =
                     paginationManager = instance(),
                     userRepository = instance(),
                     settingsRepository = instance(),
+                    accountRepository = instance(),
+                    userRateLimitRepository = instance(),
                     imagePreloadManager = instance(),
                     imageAutoloadObserver = instance(),
                 )

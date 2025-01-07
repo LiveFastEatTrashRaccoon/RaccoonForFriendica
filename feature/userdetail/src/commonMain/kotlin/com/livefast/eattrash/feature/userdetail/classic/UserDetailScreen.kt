@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -69,6 +70,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
@@ -150,6 +153,7 @@ class UserDetailScreen(
         var confirmBlockUserDialogOpen by remember { mutableStateOf(false) }
         var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var changeRateLimitBottomSheetOpen by remember { mutableStateOf(false) }
 
         suspend fun goBackToTop() {
             runCatching {
@@ -229,6 +233,12 @@ class UserDetailScreen(
                                         this += OptionId.Unblock.toOption()
                                     } else {
                                         this += OptionId.Block.toOption()
+                                    }
+                                    if (uiState.currentUserId != null) {
+                                        this +=
+                                            CustomOptions.ChangeRateLimit.toOption(
+                                                label = LocalStrings.current.actionChangeRateLimit,
+                                            )
                                     }
                                     this += OptionId.ReportUser.toOption()
                                     this +=
@@ -326,6 +336,10 @@ class UserDetailScreen(
                                                         uiState.user?.also { user ->
                                                             detailOpener.switchUserDetailToForumMode(user)
                                                         }
+                                                    }
+
+                                                    CustomOptions.ChangeRateLimit -> {
+                                                        changeRateLimitBottomSheetOpen = true
                                                     }
                                                     else -> Unit
                                                 }
@@ -813,6 +827,47 @@ class UserDetailScreen(
             )
         }
 
+        if (changeRateLimitBottomSheetOpen) {
+            val availableRates =
+                listOf(
+                    0.1,
+                    0.25,
+                    0.5,
+                    1.0,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.actionChangeRateLimit,
+                items =
+                    availableRates.map { rate ->
+                        CustomModalBottomSheetItem(
+                            label =
+                                if (rate < 1.0) {
+                                    "${rate * 100} %"
+                                } else {
+                                    LocalStrings.current.settingsOptionUnlimited
+                                },
+                            trailingContent = {
+                                val selected =
+                                    rate == uiState.rateLimit?.rate || (rate >= 1 && uiState.rateLimit == null)
+                                if (selected) {
+                                    Icon(
+                                        imageVector = Icons.Default.RadioButtonChecked,
+                                        contentDescription = LocalStrings.current.itemSelected,
+                                    )
+                                }
+                            },
+                        )
+                    },
+                onSelected = { index ->
+                    changeRateLimitBottomSheetOpen = false
+                    if (index != null) {
+                        val newRate = availableRates[index]
+                        model.reduce(UserDetailMviModel.Intent.SetRateLimit(newRate))
+                    }
+                },
+            )
+        }
+
         seeDetailsEntry?.let { entry ->
             EntryDetailDialog(
                 entry = entry,
@@ -826,4 +881,6 @@ class UserDetailScreen(
 
 private sealed interface CustomOptions : OptionId.Custom {
     data object SwitchToForumMode : CustomOptions
+
+    data object ChangeRateLimit : CustomOptions
 }

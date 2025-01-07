@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import kotlin.time.Duration
 
 @Stable
@@ -72,6 +73,10 @@ interface UserDetailMviModel :
         data class CopyToClipboard(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class SetRateLimit(
+            val value: Double,
+        ) : Intent
     }
 
     data class State(
@@ -90,6 +95,7 @@ interface UserDetailMviModel :
         val autoloadImages: Boolean = true,
         val hideNavigationBarWhileScrolling: Boolean = true,
         val layout: TimelineLayout = TimelineLayout.Full,
+        val rateLimit: UserRateLimitModel? = null,
     )
 
     sealed interface Effect {

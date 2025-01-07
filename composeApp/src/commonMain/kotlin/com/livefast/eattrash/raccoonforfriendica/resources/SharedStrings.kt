@@ -27,6 +27,7 @@ import raccoonforfriendica.composeapp.generated.resources.action_add_to_favorite
 import raccoonforfriendica.composeapp.generated.resources.action_block
 import raccoonforfriendica.composeapp.generated.resources.action_cancel_edit_personal_note
 import raccoonforfriendica.composeapp.generated.resources.action_change_markup_mode
+import raccoonforfriendica.composeapp.generated.resources.action_change_rate_limit
 import raccoonforfriendica.composeapp.generated.resources.action_change_visibility
 import raccoonforfriendica.composeapp.generated.resources.action_clear
 import raccoonforfriendica.composeapp.generated.resources.action_copy_to_clipboard
@@ -215,6 +216,7 @@ import raccoonforfriendica.composeapp.generated.resources.insert_link_dialog_tit
 import raccoonforfriendica.composeapp.generated.resources.insert_link_field_anchor
 import raccoonforfriendica.composeapp.generated.resources.insert_link_field_url
 import raccoonforfriendica.composeapp.generated.resources.item_other
+import raccoonforfriendica.composeapp.generated.resources.item_selected
 import raccoonforfriendica.composeapp.generated.resources.items
 import raccoonforfriendica.composeapp.generated.resources.language_de
 import raccoonforfriendica.composeapp.generated.resources.language_en
@@ -233,6 +235,7 @@ import raccoonforfriendica.composeapp.generated.resources.login_more_info_bottom
 import raccoonforfriendica.composeapp.generated.resources.login_subtitle
 import raccoonforfriendica.composeapp.generated.resources.login_title
 import raccoonforfriendica.composeapp.generated.resources.manage_blocks_section_blocked
+import raccoonforfriendica.composeapp.generated.resources.manage_blocks_section_limited
 import raccoonforfriendica.composeapp.generated.resources.manage_blocks_section_muted
 import raccoonforfriendica.composeapp.generated.resources.manage_circles_title
 import raccoonforfriendica.composeapp.generated.resources.markup_mode_bbcode
@@ -477,6 +480,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_cancel_edit_personal_note)
     override val actionChangeMarkupMode: String
         @Composable get() = stringResource(Res.string.action_change_markup_mode)
+    override val actionChangeRateLimit: String
+        @Composable get() = stringResource(Res.string.action_change_rate_limit)
     override val actionChangeVisibility: String
         @Composable get() = stringResource(Res.string.action_change_visibility)
     override val actionClear: String
@@ -843,6 +848,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.insert_link_field_url)
     override val itemOther: String
         @Composable get() = stringResource(Res.string.item_other)
+    override val itemSelected: String
+        @Composable get() = stringResource(Res.string.item_selected)
     override val languageDe: String
         @Composable get() = stringResource(Res.string.language_de)
     override val languageEn: String
@@ -877,6 +884,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.login_title)
     override val manageBlocksSectionBlocked: String
         @Composable get() = stringResource(Res.string.manage_blocks_section_blocked)
+    override val manageBlocksSectionLimited: String
+        @Composable get() = stringResource(Res.string.manage_blocks_section_limited)
     override val manageBlocksSectionMuted: String
         @Composable get() = stringResource(Res.string.manage_blocks_section_muted)
     override val manageCirclesTitle: String

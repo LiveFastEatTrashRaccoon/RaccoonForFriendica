@@ -18,6 +18,7 @@
     <string name="action_block">Block</string>
     <string name="action_cancel_edit_personal_note">Cancel edit note</string>
     <string name="action_change_markup_mode">Change markup type</string>
+    <string name="action_change_rate_limit">Change rate limit</string>
     <string name="action_change_visibility">Change visibility</string>
     <string name="action_clear">Clear</string>
     <string name="action_copy_to_clipboard">Copy to clipboard</string>
@@ -201,6 +202,7 @@
     <string name="insert_link_field_anchor">Anchor</string>
     <string name="insert_link_field_url">URL</string>
     <string name="item_other">Other</string>
+    <string name="item_selected">selected</string>
     <string name="login_friendica_header">I'm on Friendica</string>
     <string name="login_mastodon_header">I'm on Mastodon</string>
     <string name="login_method_basic">legacy</string>
@@ -208,6 +210,7 @@
     <string name="login_subtitle">Log in to an instance to start following other people, create new posts or replies and manage your favorites or bookmarks.</string>
     <string name="login_title">🦝 Welcome! 🦝</string>
     <string name="manage_blocks_section_blocked">Blocked</string>
+    <string name="manage_blocks_section_limited">Limited</string>
     <string name="manage_blocks_section_muted">Muted</string>
     <string name="manage_circles_title">Circles</string>
     <string name="markup_mode_bbcode">BBCode</string>

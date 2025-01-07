@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.persistence.di
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.AccountDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.DraftDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
+import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.UserRateLimitDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.DatabaseProvider
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.DefaultDatabaseProvider
 import org.kodein.di.DI
@@ -37,6 +38,12 @@ val persistenceModule =
             singleton {
                 val provider = instance<DatabaseProvider>()
                 provider.provideDatabase().getDraftDao()
+            }
+        }
+        bind<UserRateLimitDao> {
+            singleton {
+                val provider = instance<DatabaseProvider>()
+                provider.provideDatabase().getUserRateLimitDao()
             }
         }
     }
