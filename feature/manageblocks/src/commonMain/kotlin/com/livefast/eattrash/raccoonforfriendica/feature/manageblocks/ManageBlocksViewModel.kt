@@ -6,7 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePrelo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
@@ -18,6 +20,8 @@ class ManageBlocksViewModel(
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val settingsRepository: SettingsRepository,
+    private val accountRepository: AccountRepository,
+    private val userRateLimitRepository: UserRateLimitRepository,
     private val imagePreloadManager: ImagePreloadManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<ManageBlocksMviModel.Intent, ManageBlocksMviModel.State, ManageBlocksMviModel.Effect>(
@@ -66,6 +70,11 @@ class ManageBlocksViewModel(
             ManageBlocksMviModel.Intent.Refresh -> screenModelScope.launch { refresh() }
             is ManageBlocksMviModel.Intent.ToggleMute -> unmute(intent.userId)
             is ManageBlocksMviModel.Intent.ToggleBlock -> unblock(intent.userId)
+            is ManageBlocksMviModel.Intent.SetRateLimit ->
+                setRateLimit(
+                    handle = intent.handle,
+                    value = intent.rate,
+                )
         }
     }
 
@@ -77,6 +86,7 @@ class ManageBlocksViewModel(
             when (uiState.value.section) {
                 ManageBlocksSection.Muted -> UserPaginationSpecification.Muted
                 ManageBlocksSection.Blocked -> UserPaginationSpecification.Blocked
+                ManageBlocksSection.Limited -> UserPaginationSpecification.Limited
             },
         )
         loadNextPage()
@@ -132,6 +142,27 @@ class ManageBlocksViewModel(
             if (res != null) {
                 removeUserFromState(userId)
             }
+        }
+    }
+
+    private fun setRateLimit(
+        handle: String,
+        value: Double,
+    ) {
+        screenModelScope.launch {
+            val accountId = accountRepository.getActive()?.id ?: return@launch
+            val currentRate = userRateLimitRepository.getBy(handle = handle, accountId = accountId)
+            when {
+                value >= 1 && currentRate != null -> {
+                    userRateLimitRepository.delete(currentRate.id)
+                }
+
+                value < 1 && currentRate != null -> {
+                    userRateLimitRepository.update(currentRate.copy(rate = value))
+                }
+            }
+
+            refresh()
         }
     }
 }

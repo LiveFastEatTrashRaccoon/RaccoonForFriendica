@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +45,8 @@ import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
@@ -55,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.toReadableName
 import kotlinx.coroutines.flow.launchIn
@@ -76,6 +80,7 @@ class ManageBlocksScreen : Screen {
         val snackbarHostState = remember { SnackbarHostState() }
         var confirmUnmuteUserId by remember { mutableStateOf<String?>(null) }
         var confirmUnblockUserId by remember { mutableStateOf<String?>(null) }
+        var changeRateLimitUser by remember { mutableStateOf<UserModel?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -162,6 +167,7 @@ class ManageBlocksScreen : Screen {
                             listOf(
                                 ManageBlocksSection.Muted,
                                 ManageBlocksSection.Blocked,
+                                ManageBlocksSection.Limited,
                             )
                         SectionSelector(
                             modifier =
@@ -209,6 +215,7 @@ class ManageBlocksScreen : Screen {
                         UserItem(
                             user = item,
                             autoloadImages = uiState.autoloadImages,
+                            withSubtitle = uiState.section != ManageBlocksSection.Limited,
                             onClick = {
                                 detailOpener.openUserDetail(item)
                             },
@@ -222,12 +229,17 @@ class ManageBlocksScreen : Screen {
                                         ManageBlocksSection.Blocked -> {
                                             this += OptionId.Unblock.toOption()
                                         }
+
+                                        ManageBlocksSection.Limited -> {
+                                            this += OptionId.Edit.toOption()
+                                        }
                                     }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
                                     OptionId.Unmute -> confirmUnmuteUserId = item.id
                                     OptionId.Unblock -> confirmUnblockUserId = item.id
+                                    OptionId.Edit -> changeRateLimitUser = item
                                     else -> Unit
                                 }
                             },
@@ -280,6 +292,52 @@ class ManageBlocksScreen : Screen {
                     confirmUnblockUserId = null
                     if (confirm && userId != null) {
                         model.reduce(ManageBlocksMviModel.Intent.ToggleBlock(userId))
+                    }
+                },
+            )
+        }
+
+        if (changeRateLimitUser != null) {
+            val availableRates =
+                listOf(
+                    0.1,
+                    0.25,
+                    0.5,
+                    1.0,
+                )
+            CustomModalBottomSheet(
+                title = LocalStrings.current.actionChangeRateLimit,
+                items =
+                    availableRates.map { rate ->
+                        CustomModalBottomSheetItem(
+                            label =
+                                if (rate < 1.0) {
+                                    "${rate * 100} %"
+                                } else {
+                                    LocalStrings.current.settingsOptionUnlimited
+                                },
+                            trailingContent = {
+                                val selected = rate == changeRateLimitUser?.username?.toDoubleOrNull()
+                                if (selected) {
+                                    Icon(
+                                        imageVector = Icons.Default.RadioButtonChecked,
+                                        contentDescription = LocalStrings.current.itemSelected,
+                                    )
+                                }
+                            },
+                        )
+                    },
+                onSelected = { index ->
+                    val user = changeRateLimitUser
+                    changeRateLimitUser = null
+                    if (user != null && index != null) {
+                        val newRate = availableRates[index]
+                        model.reduce(
+                            ManageBlocksMviModel.Intent.SetRateLimit(
+                                handle = user.handle.orEmpty(),
+                                rate = newRate,
+                            ),
+                        )
                     }
                 },
             )

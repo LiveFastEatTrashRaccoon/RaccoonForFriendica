@@ -24,6 +24,11 @@ interface ManageBlocksMviModel :
         data class ToggleBlock(
             val userId: String,
         ) : Intent
+
+        data class SetRateLimit(
+            val handle: String,
+            val rate: Double,
+        ) : Intent
     }
 
     data class State(
