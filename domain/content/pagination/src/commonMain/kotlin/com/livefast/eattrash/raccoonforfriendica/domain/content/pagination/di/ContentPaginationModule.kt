@@ -138,6 +138,8 @@ val contentPaginationModule =
                     userRepository = instance(),
                     timelineEntryRepository = instance(),
                     circlesRepository = instance(),
+                    accountRepository = instance(),
+                    userRateLimitRepository = instance(),
                     emojiHelper = instance(),
                     notificationCenter = instance(),
                 )

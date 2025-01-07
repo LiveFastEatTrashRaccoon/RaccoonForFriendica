@@ -9,7 +9,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +26,8 @@ internal class DefaultUserPaginationManager(
     private val userRepository: UserRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val circlesRepository: CirclesRepository,
+    private val accountRepository: AccountRepository,
+    private val userRateLimitRepository: UserRateLimitRepository,
     private val emojiHelper: EmojiHelper,
     notificationCenter: NotificationCenter = getNotificationCenter(),
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -123,6 +127,19 @@ internal class DefaultUserPaginationManager(
                             query = specification.query,
                             pageCursor = pageCursor,
                         )
+
+                UserPaginationSpecification.Limited -> {
+                    val accountId = accountRepository.getActive()?.id ?: 0
+                    val rates = userRateLimitRepository.getAll(accountId)
+                    rates.map {
+                        UserModel(
+                            id = it.handle,
+                            handle = it.handle,
+                            displayName = it.handle,
+                            username = "${it.rate}",
+                        )
+                    }
+                }
             }
 
         return mutex.withLock {
@@ -208,6 +225,11 @@ internal class DefaultUserPaginationManager(
                         ?.filter {
                             it.id !in specification.excludeIds
                         }?.fixupCreatorEmojis()
+                }
+
+                UserPaginationSpecification.Limited -> {
+                    canFetchMore = false
+                    results
                 }
             }.orEmpty().also { history.addAll(it) }
             // return a copy

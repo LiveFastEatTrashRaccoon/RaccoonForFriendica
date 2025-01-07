@@ -32,6 +32,8 @@ sealed interface UserPaginationSpecification {
 
     data object Blocked : UserPaginationSpecification
 
+    data object Limited : UserPaginationSpecification
+
     data class CircleMembers(
         val id: String,
         val query: String = "",

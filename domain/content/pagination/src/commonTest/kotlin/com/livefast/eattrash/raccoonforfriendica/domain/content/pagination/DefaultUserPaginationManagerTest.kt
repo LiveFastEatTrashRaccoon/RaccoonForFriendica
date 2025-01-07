@@ -4,10 +4,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.NotificationCenterEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.answering.sequentiallyReturns
@@ -43,11 +47,18 @@ class DefaultUserPaginationManagerTest {
         mock<NotificationCenter> {
             every { subscribe(any<KClass<NotificationCenterEvent>>()) } returns MutableSharedFlow()
         }
+    private val accountRepository =
+        mock<AccountRepository> {
+            everySuspend { getActive() } returns null
+        }
+    private val userRateLimitRepository = mock<UserRateLimitRepository>()
     private val sut =
         DefaultUserPaginationManager(
             userRepository = userRepository,
             timelineEntryRepository = timelineEntryRepository,
             circlesRepository = circlesRepository,
+            accountRepository = accountRepository,
+            userRateLimitRepository = userRateLimitRepository,
             emojiHelper = emojiHelper,
             notificationCenter = notificationCenter,
             dispatcher = UnconfinedTestDispatcher(),
@@ -707,6 +718,41 @@ class DefaultUserPaginationManagerTest {
                     id = "1",
                     pageCursor = "2",
                 )
+            }
+        }
+    // endregion
+
+    // region Limited
+    @Test
+    fun `given results when loadNextPage with Limited then result is as expected`() =
+        runTest {
+            val handle = "user"
+            everySuspend {
+                accountRepository.getActive()
+            } returns AccountModel(id = 1, active = true)
+            everySuspend {
+                userRateLimitRepository.getAll(any())
+            } returns
+                listOf(
+                    UserRateLimitModel(id = 0, handle = handle, rate = 0.5),
+                )
+            val list =
+                listOf(
+                    UserModel(
+                        id = handle,
+                        handle = handle,
+                        displayName = handle,
+                        username = "0.5"
+                    ),
+                )
+
+            sut.reset(UserPaginationSpecification.Limited)
+            val res = sut.loadNextPage()
+
+            assertEquals(list, res)
+            assertFalse(sut.canFetchMore)
+            verifySuspend {
+                userRateLimitRepository.getAll(1)
             }
         }
     // endregion
