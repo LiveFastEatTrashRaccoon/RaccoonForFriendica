@@ -49,6 +49,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionCancelEditPersonalNote")
     override val actionChangeMarkupMode: String
         @Composable get() = retrieve("actionChangeMarkupMode")
+    override val actionChangeRateLimit: String
+        @Composable get() = retrieve("actionChangeRateLimit")
     override val actionChangeVisibility: String
         @Composable get() = retrieve("actionChangeVisibility")
     override val actionClear: String
@@ -415,6 +417,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("insertLinkFieldUrl")
     override val itemOther: String
         @Composable get() = retrieve("itemOther")
+    override val itemSelected: String
+        @Composable get() = retrieve("itemSelected")
     override val languageDe: String
         @Composable get() = retrieve("languageDe")
     override val languageEn: String
@@ -449,6 +453,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("loginTitle")
     override val manageBlocksSectionBlocked: String
         @Composable get() = retrieve("manageBlocksSectionBlocked")
+    override val manageBlocksSectionLimited: String
+        @Composable get() = retrieve("manageBlocksSectionLimited")
     override val manageBlocksSectionMuted: String
         @Composable get() = retrieve("manageBlocksSectionMuted")
     override val manageCirclesTitle: String

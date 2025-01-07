@@ -21,6 +21,7 @@ interface Strings {
     val actionBlock: String @Composable get
     val actionCancelEditPersonalNote: String @Composable get
     val actionChangeMarkupMode: String @Composable get
+    val actionChangeRateLimit: String @Composable get
     val actionChangeVisibility: String @Composable get
     val actionClear: String @Composable get
     val actionCopyToClipboard: String @Composable get
@@ -204,6 +205,7 @@ interface Strings {
     val insertLinkFieldAnchor: String @Composable get
     val insertLinkFieldUrl: String @Composable get
     val itemOther: String @Composable get
+    val itemSelected: String @Composable get
     val languageDe: String @Composable get
     val languageEn: String @Composable get
     val languageEs: String @Composable get
@@ -221,6 +223,7 @@ interface Strings {
     val loginSubtitle: String @Composable get
     val loginTitle: String @Composable get
     val manageBlocksSectionBlocked: String @Composable get
+    val manageBlocksSectionLimited: String @Composable get
     val manageBlocksSectionMuted: String @Composable get
     val manageCirclesTitle: String @Composable get
     val markupModeBBCode: String @Composable get
