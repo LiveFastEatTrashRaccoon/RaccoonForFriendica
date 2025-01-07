@@ -459,4 +459,7 @@
     <string name="action_open_settings">Abrir ajustes</string>
     <string name="action_grant_permission">Conceder</string>
     <string name="settings_push_notification_permission_denied_permanently">Permiso de notificaciones push denegado permanentemente</string>
+    <string name="item_selected">seleccionado</string>
+    <string name="action_change_rate_limit">Cambiar frecuencia límite</string>
+    <string name="manage_blocks_section_limited">Limitados</string>
 </resources>
