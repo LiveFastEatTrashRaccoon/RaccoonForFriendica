@@ -243,6 +243,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("circleTypePredefined")
     override val circleTypeUserDefined: String
         @Composable get() = retrieve("circleTypeUserDefined")
+    override val colorPickerDialogInsertHex: String
+        @Composable get() = retrieve("colorPickerDialogInsertHex")
     override val colorPickerDialogTitle: String
         @Composable get() = retrieve("colorPickerDialogTitle")
     override val confirmChangeMarkupMode: String

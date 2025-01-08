@@ -124,6 +124,7 @@ import raccoonforfriendica.composeapp.generated.resources.circle_edit_field_name
 import raccoonforfriendica.composeapp.generated.resources.circle_type_group
 import raccoonforfriendica.composeapp.generated.resources.circle_type_predefined
 import raccoonforfriendica.composeapp.generated.resources.circle_type_user_defined
+import raccoonforfriendica.composeapp.generated.resources.color_picker_dialog_insert_hex
 import raccoonforfriendica.composeapp.generated.resources.color_picker_dialog_title
 import raccoonforfriendica.composeapp.generated.resources.confirm_change_markup_mode
 import raccoonforfriendica.composeapp.generated.resources.content_scale_fill_height
@@ -674,6 +675,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.circle_type_predefined)
     override val circleTypeUserDefined: String
         @Composable get() = stringResource(Res.string.circle_type_user_defined)
+    override val colorPickerDialogInsertHex: String
+        @Composable get() = stringResource(Res.string.color_picker_dialog_insert_hex)
     override val colorPickerDialogTitle: String
         @Composable get() = stringResource(Res.string.color_picker_dialog_title)
     override val confirmChangeMarkupMode: String

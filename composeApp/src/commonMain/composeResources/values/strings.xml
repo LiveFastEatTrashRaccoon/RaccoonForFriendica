@@ -115,6 +115,7 @@
     <string name="circle_type_group">Groups</string>
     <string name="circle_type_predefined">Channels</string>
     <string name="circle_type_user_defined">Your lists</string>
+    <string name="color_picker_dialog_insert_hex">Insert hex color code</string>
     <string name="color_picker_dialog_title">Select a color</string>
     <string name="confirm_change_markup_mode">If you change the markup type, all the formatting will be lost. Proceed anyway?</string>
     <string name="content_scale_fill_height">Fill height</string>
