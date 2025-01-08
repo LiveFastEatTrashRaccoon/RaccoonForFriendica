@@ -118,6 +118,7 @@ interface Strings {
     val circleTypeGroup: String @Composable get
     val circleTypePredefined: String @Composable get
     val circleTypeUserDefined: String @Composable get
+    val colorPickerDialogInsertHex: String @Composable get
     val colorPickerDialogTitle: String @Composable get
     val confirmChangeMarkupMode: String @Composable get
     val contentScaleFillHeight: String @Composable get
