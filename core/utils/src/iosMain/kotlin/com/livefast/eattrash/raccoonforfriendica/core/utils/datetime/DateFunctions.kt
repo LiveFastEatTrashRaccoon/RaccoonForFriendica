@@ -152,6 +152,7 @@ actual fun getPrettyDate(
     hourLabel: String,
     minuteLabel: String,
     secondLabel: String,
+    finePrecision: Boolean,
 ): String {
     val date = getDateFromIso8601Timestamp(iso8601Timestamp) ?: return ""
     val now = NSDate()
@@ -173,35 +174,47 @@ actual fun getPrettyDate(
         delta.year >= 1 ->
             buildString {
                 append("${delta.year}$yearLabel")
-                if (delta.month >= 1) {
-                    append(" ${delta.month}$monthLabel")
-                }
-                if (delta.day >= 1) {
-                    append(" ${delta.day}$dayLabel")
+                if (finePrecision) {
+                    if (delta.month > 0) {
+                        append(" ${delta.month}$monthLabel")
+                    }
+                    if (delta.day > 0) {
+                        append(" ${delta.day}$dayLabel")
+                    }
                 }
             }
 
         delta.month >= 1 ->
             buildString {
                 append("${delta.month}$monthLabel")
-                if (delta.day >= 1) {
-                    append(" ${delta.day}$dayLabel")
+                if (finePrecision) {
+                    if (delta.day > 0) {
+                        append(" ${delta.day}$dayLabel")
+                    }
                 }
             }
 
         delta.day >= 1 ->
             buildString {
                 append("${delta.day}$dayLabel")
+                if (finePrecision) {
+                    if (delta.hour > 0 || delta.minute > 0) {
+                        append(" ${delta.hour}$hourLabel")
+                    }
+                    // minutes and seconds are intentionally omitted
+                }
             }
 
         delta.hour >= 1 ->
             buildString {
                 append(" ${delta.hour}$hourLabel")
+                // minutes and seconds are intentionally omitted
             }
 
         delta.minute >= 1 ->
             buildString {
                 append(" ${delta.minute}$minuteLabel")
+                // seconds are intentionally omitted
             }
 
         else ->
