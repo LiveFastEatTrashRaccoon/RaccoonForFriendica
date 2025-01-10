@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,7 @@ class EditProfileViewModel(
     private val userRepository: UserRepository,
     private val emojiRepository: EmojiRepository,
     private val settingsRepository: SettingsRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect>(
         initialState = EditProfileMviModel.State(),
@@ -159,6 +161,14 @@ class EditProfileViewModel(
             is EditProfileMviModel.Intent.HeaderSelected -> loadImageHeader(intent.value)
             is EditProfileMviModel.Intent.InsertCustomEmoji ->
                 insertCustomEmoji(intent.fieldType, intent.emoji)
+
+            EditProfileMviModel.Intent.DeleteAccount ->
+                screenModelScope.launch {
+                    val node = apiConfigurationRepository.node.value
+                    val url = "https://$node"
+                    emitEffect(EditProfileMviModel.Effect.OpenUrl(url))
+                }
+
             EditProfileMviModel.Intent.Submit -> submit()
         }
     }

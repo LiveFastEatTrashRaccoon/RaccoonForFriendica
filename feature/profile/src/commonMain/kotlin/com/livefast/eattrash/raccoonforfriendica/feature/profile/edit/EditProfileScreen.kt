@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.edit
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,6 +59,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
@@ -99,6 +101,7 @@ class EditProfileScreen : Screen {
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
         val galleryHelper = remember { getGalleryHelper() }
+        val uriHandler = LocalUriHandler.current
         val genericError = LocalStrings.current.messageGenericError
         val messageSuccess = LocalStrings.current.messageSuccess
         var confirmBackWithUnsavedChangesDialog by remember { mutableStateOf(false) }
@@ -124,14 +127,13 @@ class EditProfileScreen : Screen {
                 .onEach { event ->
                     when (event) {
                         EditProfileMviModel.Effect.Failure ->
-                            snackbarHostState.showSnackbar(
-                                genericError,
-                            )
+                            snackbarHostState.showSnackbar(genericError)
 
                         EditProfileMviModel.Effect.Success ->
-                            snackbarHostState.showSnackbar(
-                                messageSuccess,
-                            )
+                            snackbarHostState.showSnackbar(messageSuccess)
+
+                        is EditProfileMviModel.Effect.OpenUrl ->
+                            uriHandler.openUri(event.url)
                     }
                 }.launchIn(this)
         }
@@ -191,6 +193,16 @@ class EditProfileScreen : Screen {
                                             label = LocalStrings.current.insertEmojiTitle,
                                         )
                                 }
+                                this +=
+                                    CustomOptions.DeleteAccount.toOption(
+                                        label =
+                                            buildString {
+                                                append(LocalStrings.current.actionDeleteAccount)
+                                                append(" (")
+                                                append(LocalStrings.current.urlOpeningModeExternal)
+                                                append(")")
+                                            },
+                                    )
                             }
                         if (options.isNotEmpty()) {
                             Box {
@@ -232,8 +244,13 @@ class EditProfileScreen : Screen {
                                             onClick = {
                                                 optionsMenuOpen = false
                                                 when (option.id) {
-                                                    CustomOptions.InsertCustomEmoji -> {
+                                                    CustomOptions.InsertCustomEmoji ->
                                                         insertEmojiModalOpen = true
+
+                                                    CustomOptions.DeleteAccount -> {
+                                                        model.reduce(
+                                                            EditProfileMviModel.Intent.DeleteAccount,
+                                                        )
                                                     }
 
                                                     else -> Unit
@@ -474,6 +491,10 @@ class EditProfileScreen : Screen {
                         },
                     )
                 }
+
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.xxxl))
+                }
             }
         }
 
@@ -536,4 +557,6 @@ class EditProfileScreen : Screen {
 
 private sealed interface CustomOptions : OptionId.Custom {
     data object InsertCustomEmoji : CustomOptions
+
+    data object DeleteAccount : CustomOptions
 }
