@@ -462,4 +462,5 @@
     <string name="item_selected">seleccionado</string>
     <string name="action_change_rate_limit">Cambiar frecuencia límite</string>
     <string name="manage_blocks_section_limited">Limitados</string>
+    <string name="color_picker_dialog_insert_hex">Insertar código color hex</string>
 </resources>
