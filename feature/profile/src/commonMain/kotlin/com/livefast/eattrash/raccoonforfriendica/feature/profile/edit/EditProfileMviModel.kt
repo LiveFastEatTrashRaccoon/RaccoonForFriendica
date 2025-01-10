@@ -87,6 +87,8 @@ interface EditProfileMviModel :
             val emoji: EmojiModel,
         ) : Intent
 
+        data object DeleteAccount : Intent
+
         data object Submit : Intent
     }
 
@@ -173,5 +175,9 @@ interface EditProfileMviModel :
         data object Success : Effect
 
         data object Failure : Effect
+
+        data class OpenUrl(
+            val url: String,
+        ) : Effect
     }
 }
