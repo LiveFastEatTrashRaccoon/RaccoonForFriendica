@@ -17,7 +17,6 @@ compose-plugin = "1.7.3"
 compose-ui-test = "1.7.6"
 connectivity = "1.2.0"
 compose-multiplatform-media-player = "1.0.28"
-gradle = "8.7.3"
 kodein = "7.24.1"
 kotlin = "2.1.0"
 kotlinpoet = "2.0.0"
@@ -66,7 +65,7 @@ compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", ve
 connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
 connectivity-device = { module = "dev.jordond.connectivity:connectivity-device", version.ref = "connectivity" }
 
-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 
 kodein = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
 
