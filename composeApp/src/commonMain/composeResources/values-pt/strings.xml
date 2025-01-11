@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="account_age">idade da conta</string>
     <string name="account_section_all">Mensagens e respostas</string>
@@ -398,7 +398,6 @@
     <string name="visibility_private">Apenas seguidores</string>
     <string name="visibility_public">Público</string>
     <string name="visibility_unlisted">Não listado</string>
-
     <plurals name="account_follower">
         <item quantity="one">%1$d seguidor</item>
         <item quantity="other">%1$d seguidores</item>

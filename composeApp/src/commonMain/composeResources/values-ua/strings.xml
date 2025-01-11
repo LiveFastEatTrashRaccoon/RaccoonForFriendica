@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="account_age">Вік облікового запису</string>
     <string name="account_section_all">Повідомлення та відповіді</string>
@@ -398,7 +398,6 @@
     <string name="visibility_private">Тільки підписники</string>
     <string name="visibility_public">Публічні</string>
     <string name="visibility_unlisted">Немає в списку</string>
-
     <plurals name="account_follower">
         <item quantity="one">%1$d послідовник</item>
         <item quantity="other">%1$d послідовники</item>
