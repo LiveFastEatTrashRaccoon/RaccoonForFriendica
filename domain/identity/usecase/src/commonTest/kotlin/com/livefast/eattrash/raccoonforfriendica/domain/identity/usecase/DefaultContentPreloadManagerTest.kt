@@ -8,29 +8,53 @@ import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultContentPreloadManagerTest {
     private val timelineEntryRepository =
         mock<TimelineEntryRepository> {
             everySuspend {
-                getByUser(any(), any(), any(), any(), any(), any(), any(), any())
+                getByUser(
+                    userId = any(),
+                    pageCursor = any(),
+                    excludeReplies = any(),
+                    excludeReblogs = any(),
+                    pinned = any(),
+                    onlyMedia = any(),
+                    enableCache = any(),
+                    refresh = any(),
+                )
             } returns listOf()
         }
     private val trendingRepository =
         mock<TrendingRepository> {
-            everySuspend { getHashtags(any(), any()) } returns listOf()
+            everySuspend {
+                getHashtags(
+                    offset = any(),
+                    refresh = any(),
+                )
+            } returns listOf()
         }
     private val notificationRepository =
         mock<NotificationRepository> {
-            everySuspend { getAll(any(), any(), any()) } returns listOf()
+            everySuspend {
+                getAll(
+                    types = any(),
+                    pageCursor = any(),
+                    refresh = any(),
+                )
+            } returns listOf()
         }
     private val sut =
         DefaultContentPreloadManager(
             timelineEntryRepository = timelineEntryRepository,
             trendingRepository = trendingRepository,
             notificationRepository = notificationRepository,
+            dispatcher = UnconfinedTestDispatcher(),
         )
 
     @Test

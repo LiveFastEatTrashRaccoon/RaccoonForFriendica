@@ -49,6 +49,7 @@ class DefaultDeleteAccountUseCaseTest {
         }
 
     @Test
+    @Throws(IllegalStateException::class)
     fun `given account is active when executed then interactions are as expected`() =
         runTest {
             val accountId = 1L
