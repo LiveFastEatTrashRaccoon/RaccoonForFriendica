@@ -18,8 +18,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.compareTo
@@ -37,6 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeI
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -59,8 +62,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
-private const val PLACEHOLDER_ID = "placeholder"
-
 @OptIn(FlowPreview::class)
 class ComposerViewModel(
     private val inReplyToId: String,
@@ -80,6 +81,7 @@ class ComposerViewModel(
     private val settingsRepository: SettingsRepository,
     private val emojiRepository: EmojiRepository,
     private val userRepository: UserRepository,
+    private val searchRepository: SearchRepository,
     private val prepareForPreview: PrepareForPreviewUseCase,
     private val stripMarkup: StripMarkupUseCase,
     private val bbCodeConverter: BBCodeConverter,
@@ -92,6 +94,7 @@ class ComposerViewModel(
     private var editedPostId: String? = null
     private var draftId: String? = null
     private var mentionSuggestionJob: Job? = null
+    private var hashtagSuggestionJob: Job? = null
     private var newAttachmentIds = mutableListOf<String>()
 
     private val shouldUserPhotoRepository: Boolean by lazy {
@@ -285,7 +288,8 @@ class ComposerViewModel(
 
             is ComposerMviModel.Intent.AddMention -> addMention(handle = intent.handle)
 
-            is ComposerMviModel.Intent.CompleteMention -> completeMention(handle = intent.handle)
+            is ComposerMviModel.Intent.CompleteMention -> completeMention(intent.handle)
+            is ComposerMviModel.Intent.CompleteHashtag -> completeHashtag(intent.name)
 
             is ComposerMviModel.Intent.AddInitialMentions ->
                 screenModelScope.launch {
@@ -509,7 +513,8 @@ class ComposerViewModel(
     }
 
     private suspend fun updateBody(value: TextFieldValue) {
-        val wasShowingSuggestions = uiState.value.shouldShowMentionSuggestions
+        val wasShowingMentionSuggestions = uiState.value.shouldShowMentionSuggestions
+        val wasShowingHashtagSuggestions = uiState.value.shouldShowHashtagSuggestions
         val currentText = value.text
         val currentPosition =
             if (value.selection.collapsed) {
@@ -517,23 +522,40 @@ class ComposerViewModel(
             } else {
                 null
             }
-        val matches = ComposerRegexes.USER_MENTION.findAll(currentText).toList()
-        val currentMention = matches.firstOrNull { it.range.contains(currentPosition) }
-        val shouldShowSuggestions = currentMention != null
+
+        val mentionMatches = ComposerRegexes.USER_MENTION.findAll(currentText).toList()
+        val currentMention = mentionMatches.firstOrNull { it.range.contains(currentPosition) }
+        val shouldShowMentionSuggestions = currentMention != null
         if (currentMention != null) {
             val handlePrefix = currentMention.groups["handlePrefix"]?.value.orEmpty()
             refreshMentionSuggestions(handlePrefix)
         }
+
+        val hashtagMatches = ComposerRegexes.HASHTAG.findAll(currentText).toList()
+        val currentHashtag = hashtagMatches.firstOrNull { it.range.contains(currentPosition) }
+        val shouldShowHashtagSuggestions = currentHashtag != null
+        if (currentHashtag != null) {
+            val hashtagPrefix = currentHashtag.groups["hashtag"]?.value.orEmpty()
+            refreshHashtagSuggestions(hashtagPrefix)
+        }
+
         updateState {
             it.copy(
                 bodyValue = value,
                 hasUnsavedChanges = true,
-                shouldShowMentionSuggestions = shouldShowSuggestions,
+                shouldShowMentionSuggestions = shouldShowMentionSuggestions,
                 mentionSuggestions =
-                    if (shouldShowSuggestions && !wasShowingSuggestions) {
+                    if (shouldShowMentionSuggestions && !wasShowingMentionSuggestions) {
                         emptyList()
                     } else {
                         it.mentionSuggestions
+                    },
+                shouldShowHashtagSuggestions = shouldShowHashtagSuggestions,
+                hashtagSuggestions =
+                    if (shouldShowHashtagSuggestions && !wasShowingHashtagSuggestions) {
+                        emptyList()
+                    } else {
+                        it.hashtagSuggestions
                     },
             )
         }
@@ -546,12 +568,40 @@ class ComposerViewModel(
             mentionSuggestionJob =
                 screenModelScope.launch {
                     launch {
-                        delay(750)
+                        delay(SUGGESTION_DELAY)
                         val users = userRepository.search(prefix, 0).orEmpty()
                         updateState {
                             it.copy(
                                 mentionSuggestions = users,
                                 mentionSuggestionsLoading = users.isEmpty(),
+                            )
+                        }
+                        mentionSuggestionJob = null
+                    }
+                }
+        }
+    }
+
+    private suspend fun refreshHashtagSuggestions(prefix: String) {
+        updateState { it.copy(mentionSuggestionsLoading = true) }
+        if (prefix.isNotEmpty()) {
+            hashtagSuggestionJob?.cancel()
+            hashtagSuggestionJob =
+                screenModelScope.launch {
+                    launch {
+                        delay(SUGGESTION_DELAY)
+                        val hashtags =
+                            searchRepository
+                                .search(
+                                    query = prefix,
+                                    type = SearchResultType.Hashtags,
+                                )?.filterIsInstance<ExploreItemModel.HashTag>()
+                                ?.map { it.hashtag }
+                                .orEmpty()
+                        updateState {
+                            it.copy(
+                                hashtagSuggestions = hashtags,
+                                hashtagSuggestionsLoading = hashtags.isEmpty(),
                             )
                         }
                         mentionSuggestionJob = null
@@ -660,8 +710,8 @@ class ComposerViewModel(
                 }
             val newText =
                 ComposerRegexes.USER_MENTION.substituteAllOccurrences(text) { match ->
-                    val isCurrentMention = match.range.contains(currentPosition)
-                    if (!isCurrentMention) {
+                    val isCurrentOccurrence = match.range.contains(currentPosition)
+                    if (!isCurrentOccurrence) {
                         // skips occurrence
                         append(match.value)
                     } else {
@@ -676,6 +726,49 @@ class ComposerViewModel(
                 )
             mentionSuggestionJob?.cancel()
             mentionSuggestionJob = null
+            updateState {
+                it.copy(
+                    bodyValue = newValue,
+                    hasUnsavedChanges = true,
+                    shouldShowMentionSuggestions = false,
+                )
+            }
+        }
+    }
+
+    private fun completeHashtag(name: String) {
+        screenModelScope.launch {
+            val additionalPart =
+                buildString {
+                    append("#")
+                    append(name)
+                }
+            val value = uiState.value.bodyValue
+            val text = value.text
+            val currentPosition =
+                if (value.selection.collapsed) {
+                    value.selection.start - 1
+                } else {
+                    null
+                }
+            val newText =
+                ComposerRegexes.HASHTAG.substituteAllOccurrences(text) { match ->
+                    val isCurrentOccurrence = match.range.contains(currentPosition)
+                    if (!isCurrentOccurrence) {
+                        // skips occurrence
+                        append(match.value)
+                    } else {
+                        append(additionalPart)
+                    }
+                }
+
+            val newValue =
+                uiState.value.bodyValue.copy(
+                    text = newText,
+                    selection = TextRange(newText.length),
+                )
+            hashtagSuggestionJob?.cancel()
+            hashtagSuggestionJob = null
             updateState {
                 it.copy(
                     bodyValue = newValue,
@@ -1668,5 +1761,10 @@ class ComposerViewModel(
                 emitEffect(ComposerMviModel.Effect.Failure(message = e.message))
             }
         }
+    }
+
+    companion object {
+        private const val PLACEHOLDER_ID = "placeholder"
+        private const val SUGGESTION_DELAY = 750L
     }
 }
