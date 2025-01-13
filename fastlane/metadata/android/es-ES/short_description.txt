@@ -1,0 +1,1 @@
+Cliente móvil para Friendica, Mastodon y redes sociales federadas compatibles.

@@ -1,0 +1,119 @@
+<p>
+    <b>Raccoon</b> es un client libre y de código abierto para Friendica y Mastodon específicamente creado para dispositivos móviles.
+</p>
+<p>
+    Friendica es una plataforma social sobresaliente, con unas características que la hacen única en el mundo de la federación como, por ejemplo:
+</p>
+<ul>
+    <li>
+        edición de texto enriquecido, publicaciones largas, soporte para títulos y spoiler;
+    </li>
+    <li>
+        soporte nativo para los <b>grupos</b> ActivityPub;
+    </li>
+    <li>
+        <b>mensajes directos</b>;
+    </li>
+    <li>
+        <b>galería</b> donde se pueden gestionar imágenes y álbumes;
+    </li>
+    <li>
+        posibilidad de organizar contactos en <b>círculos</b>;
+    </li>
+    <li>
+        posibilidad de citar (cross-post) publicaciones;
+    </li>
+    <li>
+        importar fuentes RSS;
+    </li>
+    <li>
+       <b>calendario de eventos</b>;
+    </li>
+    <li>
+        y, obviamente, mucho más (consultar la documentación oficial)…
+    </li>
+</ul>
+<p>
+    La interfaz web es magnífica para acceder a todas estas funcionalidades, pero en un dispositivo
+    móvil hay otros vínculos de usabilidad y legibilidad, por eso es conveniente una aplicación dedicada
+    para acceder a las características más importantes.
+</p>
+<p>
+    <b>Características principales:</b>
+</p>
+<ul>
+    <li>
+        vista cronológica con posibilidad de cambiar el tipo (pública, local, suscripciones, lista personalizada);
+    </li>
+    <li>
+        detalle publicación, o sea, abrir una conversación en su contexto y ver las respuestas, el número de personas que han
+        compartido o añadido esta publicación a sus favoritos;
+    </li>
+    <li>
+        detalle usuario, o sea, ver las publicaciones, publicaciones y respuestas, fijados y media,
+        suscribirse para las notificaciones desde un usuario, seguir/enviar una solicitud/dejar de seguirle, ver seguidores/seguidos;
+     </li>
+    <li>
+        soporte para grupos ActivityPub, con posibilidad de abrir los hilos en modalidad foro;
+    </li>
+    <li>
+        ver las publicaciones, etiquetas, enlaces de tendencia y las sugerencias para quienes seguir;
+    </li>
+    <li>
+        seguir/dejar de seguir una etiqueta y ver todas las publicaciones que la contienen;
+    </li>
+    <li>
+        interactuar con las publicaciones (compartir, añadir a favoritos/marcadores) y – para las propias – modificarlas, eliminarlas o fijarlas en el perfil;
+    </li>
+    <li>
+        búsqueda global de etiquetas, publicaciones y usuarios que contienen unos términos específicos;
+    </li>
+    <li>
+        personalizar el aspecto de la interfaz: colores, tipo y tamaño de letra, etc;
+    </li>
+    <li>
+        acceder con OAuth2;
+    </li>
+    <li>
+        ver/modificar los datos del perfil;
+    </li>
+    <li>
+        ver las notificaciones y filtrarlas;
+    </li>
+    <li>
+        gestionar solicitudes de ser seguido y aceptarlas/rechazarlas;
+    </li>
+    <li>
+        ver elenco de favoritos, marcadores y etiquetas seguidas;
+    </li>
+    <li>
+        crear publicación/respuesta con texto formateado, imágenes (y texto alternativo), spoiler y título;
+    </li>
+    <li>
+        programar publicación (y modificar su fecha de publicación) o guardarla en borradores;
+    </li>
+    <li>
+        denunciar publicaciones/usuarios a los administradores para moderación de contenidos;
+    </li>
+    <li>
+        silenciar/dejar de silenciar, bloquear/dejar de bloquear usuarios y gestionar los bloqueados/silenciados;
+    </li>
+    <li>
+        gestionar tus propios círculos (listas creadas por el usuario);
+    </li>
+    <li>
+        ver sondeos (sólo visualización);
+    </li>
+    <li>
+        soporte para cuentas múltiples con posibilidad the cambiar de cuenta (y, en modo anónimo, cambiar de instancia);
+    </li>
+    <li>
+        enviar mensajes directos y ver las conversaciones;
+    </li>
+    <li>
+        gestionar la galería;
+    </li>
+    <li>
+        ver calendario de eventos (sólo visualización).
+    </li>
+</ul>
