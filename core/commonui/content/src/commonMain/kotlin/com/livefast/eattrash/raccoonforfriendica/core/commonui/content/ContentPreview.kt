@@ -11,10 +11,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
@@ -25,7 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayer
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayerPreview
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
@@ -98,12 +104,37 @@ fun ContentPreview(
                         contentScale = ContentScale.FillWidth,
                     )
                 }
-            } else if (type == PreviewType.Video && url.isNotBlank()) {
-                VideoPlayer(
-                    modifier = Modifier.fillMaxWidth(),
-                    url = url,
-                    contentScale = ContentScale.Fit,
-                )
+            } else if (type == PreviewType.Video && url.isNotBlank() && autoloadImages) {
+                Box(
+                    modifier = modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    VideoPlayerPreview(
+                        modifier = Modifier.fillMaxSize(),
+                        url = url,
+                    )
+
+                    FilledIconButton(
+                        colors =
+                            IconButtonDefaults.filledIconButtonColors().copy(
+                                containerColor = MaterialTheme.colorScheme.onBackground,
+                            ),
+                        modifier =
+                            Modifier
+                                .align(Alignment.Center)
+                                .padding(
+                                    start = Spacing.xs,
+                                ),
+                        onClick = {
+                            onOpen?.invoke(url)
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = LocalStrings.current.actionOpenFullScreen,
+                        )
+                    }
+                }
             }
 
             Column(
