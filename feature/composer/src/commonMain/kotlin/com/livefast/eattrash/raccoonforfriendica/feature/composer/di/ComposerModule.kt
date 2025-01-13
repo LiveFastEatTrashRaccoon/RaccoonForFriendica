@@ -60,6 +60,7 @@ val composerModule =
                     settingsRepository = instance(),
                     emojiRepository = instance(),
                     userRepository = instance(),
+                    searchRepository = instance(),
                     prepareForPreview = instance(),
                     stripMarkup = instance(),
                     bbCodeConverter = instance(),
