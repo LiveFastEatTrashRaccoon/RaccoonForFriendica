@@ -261,6 +261,7 @@ import raccoonforfriendica.composeapp.generated.resources.message_empty_list
 import raccoonforfriendica.composeapp.generated.resources.message_generic_error
 import raccoonforfriendica.composeapp.generated.resources.message_invalid_field
 import raccoonforfriendica.composeapp.generated.resources.message_invalid_poll_error
+import raccoonforfriendica.composeapp.generated.resources.message_loading_hashtags
 import raccoonforfriendica.composeapp.generated.resources.message_loading_users
 import raccoonforfriendica.composeapp.generated.resources.message_missing_field
 import raccoonforfriendica.composeapp.generated.resources.message_missing_rules
@@ -937,6 +938,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.message_invalid_field)
     override val messageInvalidPollError: String
         @Composable get() = stringResource(Res.string.message_invalid_poll_error)
+    override val messageLoadingHashtags: String
+        @Composable get() = stringResource(Res.string.message_loading_hashtags)
     override val messageLoadingUsers: String
         @Composable get() = stringResource(Res.string.message_loading_users)
     override val messageMissingField: String
