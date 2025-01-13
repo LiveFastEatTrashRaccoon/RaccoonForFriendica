@@ -14,16 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
-internal fun MentionsBar(
+internal fun SuggestionsBar(
     modifier: Modifier = Modifier,
-    suggestions: List<UserModel> = emptyList(),
+    suggestions: List<String> = emptyList(),
+    loadingMessage: String,
     loading: Boolean = false,
-    onSelected: ((UserModel) -> Unit)? = null,
+    onSelected: ((Int) -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onSurfaceVariant
     val ancillaryColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(ancillaryTextAlpha)
@@ -35,15 +34,14 @@ internal fun MentionsBar(
                 .horizontalScroll(rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val users = suggestions.filter { !it.handle.isNullOrBlank() }
         val animatingPart = getAnimatedDots()
-        if (users.isEmpty()) {
+        if (suggestions.isEmpty()) {
             if (loading) {
                 Text(
                     modifier = Modifier.padding(Spacing.s),
                     text =
                         buildString {
-                            append(LocalStrings.current.messageLoadingUsers)
+                            append(loadingMessage)
                             append(animatingPart)
                         },
                     style = MaterialTheme.typography.labelMedium,
@@ -51,14 +49,14 @@ internal fun MentionsBar(
                 )
             }
         } else {
-            for (user in users) {
+            suggestions.forEachIndexed { idx, title ->
                 Text(
                     modifier =
                         Modifier
                             .clickable {
-                                onSelected?.invoke(user)
+                                onSelected?.invoke(idx)
                             }.padding(Spacing.s),
-                    text = user.handle.orEmpty(),
+                    text = title,
                     style = MaterialTheme.typography.labelMedium,
                     color = fullColor,
                 )
