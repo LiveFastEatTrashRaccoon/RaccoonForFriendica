@@ -505,6 +505,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("messageInvalidField")
     override val messageInvalidPollError: String
         @Composable get() = retrieve("messageInvalidPollError")
+    override val messageLoadingHashtags: String
+        @Composable get() = retrieve("messageLoadingHashtags")
     override val messageLoadingUsers: String
         @Composable get() = retrieve("messageLoadingUsers")
     override val messageMissingField: String

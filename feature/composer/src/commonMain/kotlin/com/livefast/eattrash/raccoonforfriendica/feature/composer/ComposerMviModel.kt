@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
@@ -110,6 +111,10 @@ interface ComposerMviModel :
 
         data class CompleteMention(
             val handle: String,
+        ) : Intent
+
+        data class CompleteHashtag(
+            val name: String,
         ) : Intent
 
         data class AddInitialMentions(
@@ -231,13 +236,16 @@ interface ComposerMviModel :
         val publicationType: PublicationType = PublicationType.Default,
         val availableEmojis: List<EmojiModel> = emptyList(),
         val hasUnsavedChanges: Boolean = false,
-        val shouldShowMentionSuggestions: Boolean = false,
-        val mentionSuggestionsLoading: Boolean = false,
-        val mentionSuggestions: List<UserModel> = emptyList(),
         val autoloadImages: Boolean = true,
         val inReplyTo: TimelineEntryModel? = null,
         val markupMode: MarkupMode = MarkupMode.PlainText,
         val availableMarkupModes: List<MarkupMode> = emptyList(),
+        val shouldShowMentionSuggestions: Boolean = false,
+        val mentionSuggestionsLoading: Boolean = false,
+        val mentionSuggestions: List<UserModel> = emptyList(),
+        val shouldShowHashtagSuggestions: Boolean = false,
+        val hashtagSuggestionsLoading: Boolean = false,
+        val hashtagSuggestions: List<TagModel> = emptyList(),
     )
 
     sealed interface Effect {

@@ -94,8 +94,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.Ent
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.GalleryPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InReplyToInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InsertLinkDialog
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.MentionsBar
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.PollForm
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SuggestionsBar
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -533,12 +533,26 @@ class ComposerScreen(
                             .padding(vertical = Spacing.xs),
                 ) {
                     if (uiState.shouldShowMentionSuggestions) {
-                        MentionsBar(
-                            suggestions = uiState.mentionSuggestions,
+                        val users = uiState.mentionSuggestions.filter { !it.handle.isNullOrBlank() }
+                        SuggestionsBar(
+                            suggestions = users.map { it.handle.orEmpty() },
                             loading = uiState.mentionSuggestionsLoading,
-                            onSelected = { user ->
-                                user.handle?.also { handle ->
+                            loadingMessage = LocalStrings.current.messageLoadingUsers,
+                            onSelected = { idx ->
+                                users[idx].handle?.takeIf { it.isNotEmpty() }?.also { handle ->
                                     model.reduce(ComposerMviModel.Intent.CompleteMention(handle))
+                                }
+                            },
+                        )
+                    } else if (uiState.shouldShowHashtagSuggestions) {
+                        val hashtags = uiState.hashtagSuggestions.filter { it.name.isNotEmpty() }
+                        SuggestionsBar(
+                            suggestions = hashtags.map { it.name },
+                            loading = uiState.mentionSuggestionsLoading,
+                            loadingMessage = LocalStrings.current.messageLoadingHashtags,
+                            onSelected = { idx ->
+                                hashtags[idx].name.also { name ->
+                                    model.reduce(ComposerMviModel.Intent.CompleteHashtag(name))
                                 }
                             },
                         )

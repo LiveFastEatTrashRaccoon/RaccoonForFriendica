@@ -236,6 +236,7 @@
     <string name="message_generic_error">An unexpected error occurred</string>
     <string name="message_invalid_field">Invalid field</string>
     <string name="message_invalid_poll_error">Invalid poll, please check the options and expiration date</string>
+    <string name="message_loading_hashtags">Loading hashtags</string>
     <string name="message_loading_users">Loading users</string>
     <string name="message_missing_field">Missing field</string>
     <string name="message_missing_rules">Please select at least one rule</string>

@@ -249,6 +249,7 @@ interface Strings {
     val messageGenericError: String @Composable get
     val messageInvalidField: String @Composable get
     val messageInvalidPollError: String @Composable get
+    val messageLoadingHashtags: String @Composable get
     val messageLoadingUsers: String @Composable get
     val messageMissingField: String @Composable get
     val messageMissingRules: String @Composable get
