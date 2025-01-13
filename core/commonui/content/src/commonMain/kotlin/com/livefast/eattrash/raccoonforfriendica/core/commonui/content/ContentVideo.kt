@@ -1,15 +1,15 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Fullscreen
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,72 +19,72 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayer
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayerPreview
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @Composable
 fun ContentVideo(
     url: String,
     modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Fit,
     sensitive: Boolean = false,
     autoload: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {
-    var revealing by remember { mutableStateOf(!sensitive && autoload) }
+    var shouldBeRendered by remember { mutableStateOf(autoload) }
 
     Box(
         modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center,
     ) {
-        if (!revealing) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center,
+        if (shouldBeRendered) {
+            VideoPlayerPreview(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .blur(radius = if (sensitive) 60.dp else 0.dp),
+                url = url,
+            )
+            FilledIconButton(
+                colors =
+                    IconButtonDefaults.filledIconButtonColors().copy(
+                        containerColor = MaterialTheme.colorScheme.onBackground,
+                    ),
+                modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .padding(
+                            start = Spacing.xs,
+                        ),
+                onClick = {
+                    onClick?.invoke()
+                },
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(Spacing.s),
-                ) {
-                    if (sensitive) {
-                        Text(
-                            text = LocalStrings.current.messageVideoNsfw,
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                    }
-                    Button(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        onClick = {
-                            revealing = true
-                        },
-                    ) {
-                        Text(text = LocalStrings.current.buttonLoad)
-                    }
-                }
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = LocalStrings.current.actionOpenFullScreen,
+                )
             }
         } else {
-            VideoPlayer(
-                url = url,
-                contentScale = contentScale,
-            )
-        }
-
-        IconButton(
-            modifier =
-                Modifier
-                    .align(Alignment.TopStart)
-                    .padding(
-                        start = Spacing.xs,
-                    ),
-            onClick = {
-                onClick?.invoke()
-            },
-        ) {
-            Icon(
-                imageVector = Icons.Default.Fullscreen,
-                contentDescription = LocalStrings.current.actionOpenFullScreen,
-            )
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Button(
+                    onClick = {
+                        shouldBeRendered = true
+                    },
+                ) {
+                    Text(
+                        text = LocalStrings.current.buttonLoad,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
         }
     }
 }
