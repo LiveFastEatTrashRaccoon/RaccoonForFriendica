@@ -33,7 +33,7 @@ ciò che puoi (o non puoi) fare dall'app.
   - [Modalità classica](#modalità-classica)
   - [Modalità forum](#modalità-forum)
 - [Dettaglio conversazione](#dettaglio-discussione)
-- [Elenco post contenenti un hashtag](#elenco-post-contententi-un-hashtag)
+- [Elenco post contenenti un hashtag](#elenco-post-contenenti-un-hashtag)
 - [Preferiti & segnalibri](#preferiti--segnalibri)
 - [Hashtag seguiti](#hashtag-seguiti)
 - [Esplora](#esplora)
@@ -105,8 +105,8 @@ altre piattaforme federate simili:
 - e, ovviamente, [molto altro ancora](https://friendi.ca/about/features).
 
 È possibile accedere a tutte queste funzionalità utilizzando l'interfaccia web ufficiale, tuttavia
-sono disponibili (per molte di queste) anche una serie di API pubbliche che possono essere richimate
-da app di terze parti.
+sono disponibili (per molte di queste) anche una serie di API pubbliche che possono essere
+richiamate da app di terze parti.
 
 Questo è esattamente quello che fa Raccoon: utilizza le API per creare un client pensato per
 i dispositivi mobile. Dal momento che utilizza le API Mastodon-like esposte dal backend, l'app è
@@ -121,7 +121,7 @@ L'interfaccia utente dell'applicazione è divisa in tre parti:
 
 - il menu laterale di navigazione (accessibile dall'icona hamburger nell'angolo in alto a sinistra o
   con uno swipe da sinistra a destra): se hai effettuato l'accesso mostra il tuo nome utente e
-  l'istanza cui sei connesso oppure, in modalità anonima, mstra semplicemente il nome dell'istanza —
+  l'istanza cui sei connesso oppure, in modalità anonima, mostra semplicemente il nome dell'istanza —
   seguito da una serie di scorciatoie a diverse sezioni dell'app (es. le impostazioni o la
   informazioni sull'istanza attuale);
 - la barra di navigazione inferiore, con le scorciatoie per le sezioni più importanti dell'app
@@ -171,8 +171,8 @@ Ogni elemento nella timeline ha la seguente struttura:
 - scheda di anteprima (contenuto aggiuntivo o URL esterno).
 
 Se un post contiene degli hashtag sarà possibile aprire per ognuno di essi
-l'[elenco dei post che lo contengono](#elenco-post-contententi-un-hashtag), se invece
-contiene delle menzioni sarè possible aprire la schermata [profilo](#profilo-utente) corrispondente.
+l'[elenco dei post che lo contengono](#elenco-post-contenenti-un-hashtag), se invece
+contiene delle menzioni sarà possibile aprire la schermata [profilo](#profilo-utente) corrispondente.
 
 Ogni post può essere ricondiviso, aggiunto ai preferiti ai segnalibri; puoi creare una
 risposta e visualizzare il numero di risposte/ricondivisioni e vedere se esso è presente nei tuoi
@@ -181,7 +181,7 @@ segnalibri o meno.
 Infine, a partire da ogni post è possibile:
 
 - accedere al [profilo](#profilo-utente) di tutti gli utenti coinvolti (autore, autore della
-  riconsidivzione o autore originale);
+  ricondivisione o autore originale);
 - entrare nella schermata di [dettaglio post](#dettaglio-post);
 - aprire il menu di azione a scomparsa per:
   - condividerlo tramite il meccanismo del sistema;
@@ -285,7 +285,7 @@ Dal menu a scomparsa nella barra superiore è inoltre possibile:
 ### Modalità forum
 
 In modalità forum vengono presentati tutti i post di primo livello che sono stati
-ricondivisi dal gruppo, che possono essere intrpretati come l'elenco degli argomenti del forum.
+ricondivisi dal gruppo, che possono essere interpretati come l'elenco degli argomenti del forum.
 Si tratta di un tipo speciale di timeline da cui, facendo tap su ciascuno elemento sarà possibile
 accedere al [dettaglio discussione](#dettaglio-discussione).
 
@@ -311,7 +311,7 @@ di discendenza tra ogni post e le sue risposte.
 
 [Torna su](#indice)
 
-## Elenco post contententi un hashtag
+## Elenco post contenenti un hashtag
 
 L'elenco post contenenti un hashtag è un tipo speciale di [timeline](#timeline) che consiste
 nell'aggregazione di tutti i post con all'interno determinato hashtag. Per il resto, questa
@@ -346,7 +346,7 @@ Questa schermata contiene l'elenco di tutti gli hashtag seguiti in ordine alfabe
 smettere di seguirli.
 
 Ciascun elemento di questa lista permette di aprire
-l'[elenco post](#elenco-post-contententi-un-hashtag) associato.
+l'[elenco post](#elenco-post-contenenti-un-hashtag) associato.
 
 <div align="center">
   <img width="310" alt="followed hashtags screen" src="../images/followed_hashtags.png" />
@@ -366,7 +366,7 @@ connesso. La schermata è suddivisa nelle seguenti sezioni:
 - (solo per utenti registrati) **Per te** contiene l'elenco dei suggerimenti su chi seguire per il
   tuo utente.
 
-L'apertura di un hashtag ti porterà all'[elenco dedicato](#elenco-post-contententi-un-hashtag),
+L'apertura di un hashtag ti porterà all'[elenco dedicato](#elenco-post-contenenti-un-hashtag),
 facendo tap su un post è possibile accedere al relativo [dettaglio](#post-dettaglio) e facendo tap
 su un utente si aprirà il relativo [profilo](#profilo-utente). Infine, al tap su un
 collegamento aprirà il browser esterno o una custom tab a seconda dell'opzione "Modalità apertura
@@ -394,7 +394,7 @@ risultato desiderato (Post, Utenti o Hashtag).
 criterio non vuoto.
 
 Facendo tap su un hashtag sarà possibile accedere al
-relativo [elenco post](#elenco-post-contententi-un-hashtag),
+relativo [elenco post](#elenco-post-contenenti-un-hashtag),
 facendo tap su un post si aprirà il relativo [dettaglio](#dettaglio-post) e facendo tap su un utente
 il [profilo](#profilo-utente) associato.
 
@@ -431,7 +431,7 @@ Inoltre, in questa schermata è possibile:
 - eliminare tutte le notifiche utilizzando il pulsante "Checkmark" nella barra in alto.
 
 **Attenzione**: dopo essere state eliminate, le notifiche verranno cancellate dal server e non sarà
-più possible visualizzarne l'elenco!
+più possibile visualizzarne l'elenco!
 
 Facendo tap su ciascuna voce della lista è possibile aprire il
 relativo [profilo utente](#profilo-utente) o [dettaglio post](#dettaglio-post).
@@ -634,7 +634,7 @@ costituita dalle seguenti sezioni:
     specifico di Mastodon;<a href="#markdown-formatting">*</a>
   - **Numero massimo righe testo post** configura il numero massimo di righe che verrà visualizzato
     nelle timeline per ciascun post;
-  - **Modalità notifiche** permtte di configurare la strategia da usare per le notifiche scegliendo
+  - **Modalità notifiche** permette di configurare la strategia da usare per le notifiche scegliendo
     tra i seguenti valori:
     - **Push** ricevi le notifiche push attraverso
       UnifiedPush;<a href="#notifications-unifiedpush">**</a>
@@ -643,7 +643,7 @@ costituita dalle seguenti sezioni:
     - **Disabilitate** le notifiche saranno ricevute all'avvio dell'app o facendo refresh della
       lista manualmente;
   - **Stato notifiche push** visualizza lo stato dell'integrazione UnifiedPush attuale (es. "Attivo"
-    o "Inizializzazione…", se sul dispositivo sono disposnibili più distributori la voce sarà "
+    o "Inizializzazione…", se sul dispositivo sono disponibili più distributori la voce sarà "
     Seleziona distributore" e permetterà di aprire una bottom sheet per sceglierne uno);
   - **Controlla notifiche in background** (se la strategia selezionata è "Pull") configura
     l'intervallo di tempo tra le verifiche periodiche delle notifiche in arrivo;
@@ -718,7 +718,7 @@ ad altri account. È suddivisa in due sezioni:
 
 ## Creazione post
 
-Questa schermata consente di creare nuovi post o risposte. Il menu azion nella barra superiore
+Questa schermata consente di creare nuovi post o risposte. Il menu azioni nella barra superiore
 contiene le seguenti voci:
 
 - **Salva bozza** cambia il tipo di pubblicazione da immediata a bozza;
@@ -754,7 +754,7 @@ pulsanti:
 - **Aggiungi link** per aggiungere un collegamento ipertestuale;
 - **Grassetto** per inserire del testo in grassetto;
 - **Corsivo** per inserire del testo in corsivo;
-- **Sottolineato** per inserire del testo sottolienato;
+- **Sottolineato** per inserire del testo sottolineato;
 - **Barrato** per inserire del testo sbarrato;
 - **Larghezza fissa** per inserire del testo con carattere a larghezza fissa;
 - **Procedi** pulsate per procedere all'invio del post che può presentare:
@@ -784,7 +784,7 @@ In alto è presente un selettore per selezionare la categoria di violazione tra:
 Sotto al selettore categoria, è presente un campo di testo per inserire il contenuto della
 segnalazione e, infine, viene mostrato uno switch "Inoltra segnalazione" al fine di selezionare se
 questo rapporto deve essere consegnato solo agli amministratori dell'istanza locale o, se stai
-segnalando un contenuto proveniente da un'istanza federata, la sgnalazione deve essere inoltrata
+segnalando un contenuto proveniente da un'istanza federata, la segnalazione deve essere inoltrata
 anche agli amministratori dell'istanza di origine.<a href="#report-forward-disclaimer">**</a>
 
 <p id="report-rule-disclaimer">
@@ -892,7 +892,7 @@ altrimenti sarà necessario fare refresh manualmente sull'elenco delle conversaz
 ## Galleria (solo Friendica)
 
 Questa schermata contiene l'elenco degli album presenti nella tua galleria multimediale. Per ogni
-album è possible modificare il nome, eliminarlo oppure, facendo tap sulla corrispondente voce
+album è possibile modificare il nome, eliminarlo oppure, facendo tap sulla corrispondente voce
 dell'elenco, accedere alle immagini in esso contenute.
 
 Per ogni immagine all'interno di un album è possibile:
@@ -944,7 +944,7 @@ condivisi con te suddivisi per mese con, per ciascuna voce:
 - (opzionale) data di fine;
 - (opzionale) posizione.
 
-È possible esportare ogni evebti nel calendario del tuo dispositivo mobile e, facendo tap
+È possibile esportare ogni eventi nel calendario del tuo dispositivo mobile e, facendo tap
 sugli elementi della lista, accedere alla schermata di dettaglio in cui verranno visualizzati
 maggiori dettagli(ad es. una descrizione più estesa).
 
@@ -960,7 +960,7 @@ maggiori dettagli(ad es. una descrizione più estesa).
 Questa schermata permette di visualizzare la lista degli annunci pubblicati dagli amministratori
 dell'istanza.
 
-Per ogni elemnto di questa lista, viene visualizzato:
+Per ogni elemento di questa lista, viene visualizzato:
 
 - un indicatore "non letto" (se il messaggio è nuovo);
 - il contenuto testuale dell'annuncio;
