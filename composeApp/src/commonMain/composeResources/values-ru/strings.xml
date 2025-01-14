@@ -1,2 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="action_add_reaction">Добавить реакцию</string>
+    <string name="account_section_all">Записи и Ответы</string>
+    <string name="account_section_media">Медиа</string>
+    <string name="account_section_posts">Записи</string>
+    <string name="action_add_image">Добавить изображение</string>
+    <string name="action_add_poll">Добавить опрос</string>
+    <string name="action_add_spoiler">Добавить спойлер</string>
+    <string name="action_add_title">Добавить заголовок</string>
+    <string name="action_add_to_bookmarks">Добавить в закладки</string>
+    <string name="action_add_to_favorites">Добавить в избранные</string>
+    <string name="action_block">Добавить в черный список</string>
+    <string name="action_copy_to_clipboard">Скопировать в буфер обмена</string>
+    <string name="action_copy_url">Скопировать ссылку</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_delete_account">Удалить учётную запись</string>
+    <string name="action_dislike">Не нравится</string>
+    <string name="action_edit">Редактировать</string>
+    <string name="action_add_new">Добавить новое</string>
+    <string name="action_clear">Очистить</string>
+    <string name="action_create_thread_in_group">Опубликовать в</string>
+    <string name="action_download">Скачать</string>
+    <string name="action_accept">Принять</string>
+    <string name="account_section_pinned">Закреплено</string>
+</resources>
