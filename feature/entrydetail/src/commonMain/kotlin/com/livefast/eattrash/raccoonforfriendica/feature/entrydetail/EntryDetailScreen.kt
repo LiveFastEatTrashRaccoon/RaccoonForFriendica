@@ -75,6 +75,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -277,8 +278,12 @@ class EntryDetailScreen(
                                 },
                             blurNsfw = uiState.blurNsfw,
                             autoloadImages = uiState.autoloadImages,
-                            onOpenUrl = { url ->
-                                uriHandler.openUri(url)
+                            onOpenUrl = { url, allowOpenInternal ->
+                                if (allowOpenInternal) {
+                                    uriHandler.openUri(url)
+                                } else {
+                                    uriHandler.openExternally(url)
+                                }
                             },
                             onClick = { e ->
                                 if (e.id != id) {
