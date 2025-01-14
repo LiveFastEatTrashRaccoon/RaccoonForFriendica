@@ -50,6 +50,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCalendarHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.CalendarHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.CalendarRow
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.CalendarRowPlaceholder
@@ -175,8 +176,12 @@ class CalendarScreen : Screen {
                                 CalendarRow(
                                     modifier = Modifier.fillMaxWidth(),
                                     event = item.event,
-                                    onOpenUrl = { url ->
-                                        uriHandler.openUri(url)
+                                    onOpenUrl = { url, allowOpenInternal ->
+                                        if (allowOpenInternal) {
+                                            uriHandler.openUri(url)
+                                        } else {
+                                            uriHandler.openExternally(url)
+                                        }
                                     },
                                     onClick = {
                                         detailOpener.openEvent(event = item.event)
