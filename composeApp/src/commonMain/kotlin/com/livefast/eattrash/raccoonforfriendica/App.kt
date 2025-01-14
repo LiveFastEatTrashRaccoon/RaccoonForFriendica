@@ -36,6 +36,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getA
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.ProvideCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.getCustomUriHandler
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
 import com.livefast.eattrash.raccoonforfriendica.main.MainScreen
 import kotlinx.coroutines.FlowPreview
@@ -130,10 +131,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
         navigationCoordinator.deepLinkUrl
             .debounce(750)
             .onEach { url ->
-                customUriHandler.openUri(
-                    uri = url,
-                    allowOpenExternal = false,
-                )
+                customUriHandler.openInternally(url)
             }.launchIn(this)
     }
 
