@@ -42,7 +42,7 @@ fun CalendarRow(
     event: EventModel,
     modifier: Modifier = Modifier,
     options: List<Option> = emptyList(),
-    onOpenUrl: ((String) -> Unit)? = null,
+    onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onClick: (() -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
 ) {
@@ -67,7 +67,7 @@ fun CalendarRow(
             ContentTitle(
                 modifier = Modifier.weight(1f).padding(horizontal = Spacing.s),
                 content = event.title,
-                onOpenUrl = onOpenUrl,
+                onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                 maxLines = 5,
                 onClick = {
                     onClick?.invoke()

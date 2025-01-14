@@ -30,6 +30,7 @@ internal class DefaultCustomUriHandler(
     override fun openUri(uri: String) {
         openUri(
             uri = uri,
+            allowOpenInternal = true,
             allowOpenExternal = true,
         )
     }
@@ -37,17 +38,20 @@ internal class DefaultCustomUriHandler(
     override fun openUri(
         uri: String,
         allowOpenExternal: Boolean,
+        allowOpenInternal: Boolean,
     ) {
         val urlOpeningMode =
             settingsRepository.current.value?.urlOpeningMode ?: UrlOpeningMode.External
 
         val processors =
-            // careful: topmost items have higher priority
-            listOf(
-                hashtagProcessor,
-                userProcessor,
-                entryProcessor,
-            )
+            buildList {
+                // careful: topmost items have higher priority
+                if (allowOpenInternal) {
+                    this += hashtagProcessor
+                    this += userProcessor
+                    this += entryProcessor
+                }
+            }
         scope.launch {
             if (processors.none { it.process(uri) }) {
                 if (allowOpenExternal) {

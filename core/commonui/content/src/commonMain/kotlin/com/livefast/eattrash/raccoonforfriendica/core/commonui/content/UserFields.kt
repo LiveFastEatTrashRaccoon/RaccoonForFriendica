@@ -31,7 +31,7 @@ fun UserFields(
     fields: List<FieldModel> = emptyList(),
     autoloadImages: Boolean = true,
     modifier: Modifier = Modifier,
-    onOpenUrl: ((String) -> Unit)? = null,
+    onOpenUrl: ((String, Boolean) -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
@@ -76,7 +76,7 @@ fun UserFields(
                                     .firstOrNull()
                                     ?.item
                             if (!url.isNullOrBlank()) {
-                                onOpenUrl?.invoke(url)
+                                onOpenUrl?.invoke(url, true)
                             }
                         },
                     )

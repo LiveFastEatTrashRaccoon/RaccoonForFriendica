@@ -40,7 +40,7 @@ fun TimelineReplyItem(
     autoloadImages: Boolean = true,
     layout: TimelineLayout = TimelineLayout.Full,
     options: List<Option> = emptyList(),
-    onOpenUrl: ((String) -> Unit)? = null,
+    onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onClick: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onReply: ((TimelineEntryModel) -> Unit)? = null,

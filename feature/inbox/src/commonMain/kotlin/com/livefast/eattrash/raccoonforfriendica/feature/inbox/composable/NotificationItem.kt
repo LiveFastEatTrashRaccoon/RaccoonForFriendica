@@ -51,7 +51,7 @@ internal fun NotificationItem(
     blurNsfw: Boolean = false,
     maxBodyLines: Int = Int.MAX_VALUE,
     autoloadImages: Boolean = true,
-    onOpenUrl: ((String) -> Unit)? = null,
+    onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
     onUserRelationshipClicked: ((String, RelationshipStatusNextAction) -> Unit)? = null,
@@ -155,7 +155,7 @@ internal fun NotificationItem(
                         ),
                     user = user,
                     autoloadImages = autoloadImages,
-                    onOpenUrl = onOpenUrl,
+                    onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     onOpenUser = {
                         onOpenUser?.invoke(user)
                     },

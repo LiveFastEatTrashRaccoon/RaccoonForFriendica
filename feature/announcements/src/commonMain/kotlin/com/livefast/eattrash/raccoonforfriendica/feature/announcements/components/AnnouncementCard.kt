@@ -27,7 +27,7 @@ internal fun AnnouncementCard(
     announcement: AnnouncementModel,
     modifier: Modifier = Modifier,
     autoloadImages: Boolean = true,
-    onOpenUrl: ((String) -> Unit)? = null,
+    onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onAddNewReaction: (() -> Unit)? = null,
     onAddReaction: ((String) -> Unit)? = null,
     onRemoveReaction: ((String) -> Unit)? = null,
@@ -67,7 +67,7 @@ internal fun AnnouncementCard(
                 content = body,
                 autoloadImages = autoloadImages,
                 emojis = announcement.emojis,
-                onOpenUrl = onOpenUrl,
+                onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
             )
         }
 

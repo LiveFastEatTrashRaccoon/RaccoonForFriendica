@@ -33,7 +33,7 @@ fun TimelineItem(
     maxBodyLines: Int = Int.MAX_VALUE,
     layout: TimelineLayout = TimelineLayout.Full,
     options: List<Option> = emptyList(),
-    onOpenUrl: ((String) -> Unit)? = null,
+    onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onClick: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onReply: ((TimelineEntryModel) -> Unit)? = null,

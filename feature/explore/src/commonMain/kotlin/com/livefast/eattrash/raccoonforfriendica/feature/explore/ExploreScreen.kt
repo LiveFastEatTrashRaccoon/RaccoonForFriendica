@@ -78,6 +78,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toReadableName
 import kotlinx.coroutines.flow.launchIn
@@ -307,8 +308,12 @@ class ExploreScreen : Screen {
                                     onClick = { e ->
                                         detailOpener.openEntryDetail(e)
                                     },
-                                    onOpenUrl = { url ->
-                                        uriHandler.openUri(url)
+                                    onOpenUrl = { url, allowOpenInternal ->
+                                        if (allowOpenInternal) {
+                                            uriHandler.openUri(url)
+                                        } else {
+                                            uriHandler.openExternally(url)
+                                        }
                                     },
                                     onOpenUser = {
                                         detailOpener.openUserDetail(it)
@@ -487,7 +492,7 @@ class ExploreScreen : Screen {
                                     link = item.link,
                                     autoloadImages = uiState.autoloadImages,
                                     onOpen = { url ->
-                                        uriHandler.openUri(url)
+                                        uriHandler.openExternally(url)
                                     },
                                 )
                                 Spacer(modifier = Modifier.height(Spacing.interItem))

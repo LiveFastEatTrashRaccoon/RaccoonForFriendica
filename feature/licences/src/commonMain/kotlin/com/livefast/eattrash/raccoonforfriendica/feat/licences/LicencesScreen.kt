@@ -33,6 +33,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feat.licences.components.LicenceItem
 
 class LicencesScreen : Screen {
@@ -97,7 +98,7 @@ class LicencesScreen : Screen {
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             if (item.url.isNotBlank()) {
-                                uriHandler.openUri(item.url)
+                                uriHandler.openExternally(item.url)
                             }
                         },
                     )

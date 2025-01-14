@@ -59,7 +59,7 @@ internal fun FullTimelineItem(
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onDislike: ((TimelineEntryModel) -> Unit)? = null,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
-    onOpenUrl: ((String) -> Unit)? = null,
+    onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
@@ -200,7 +200,7 @@ internal fun FullTimelineItem(
                         autoloadImages = autoloadImages,
                         emojis = entryToDisplay.emojis,
                         onClick = { onClick?.invoke(entryToDisplay) },
-                        onOpenUrl = onOpenUrl,
+                        onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     )
                 }
 
@@ -221,7 +221,7 @@ internal fun FullTimelineItem(
                         maxLines = maxBodyLines,
                         emojis = entryToDisplay.emojis,
                         onClick = { onClick?.invoke(entryToDisplay) },
-                        onOpenUrl = onOpenUrl,
+                        onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     )
                 }
 
@@ -285,7 +285,7 @@ internal fun FullTimelineItem(
                                 image = preview.image.takeIf { attachments.isEmpty() },
                             ),
                         autoloadImages = autoloadImages,
-                        onOpen = onOpenUrl,
+                        onOpen = onOpenUrl?.let { block -> { url -> block(url, false) } },
                         onOpenImage = { url ->
                             onOpenImage?.invoke(listOf(url), 0, emptyList())
                         },

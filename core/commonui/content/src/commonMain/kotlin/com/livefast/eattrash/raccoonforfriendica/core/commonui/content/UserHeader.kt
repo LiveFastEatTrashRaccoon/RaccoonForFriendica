@@ -40,7 +40,7 @@ fun UserHeader(
     onOpenImage: ((String) -> Unit)? = null,
     onOpenFollowers: (() -> Unit)? = null,
     onOpenFollowing: (() -> Unit)? = null,
-    onOpenUrl: ((String) -> Unit)? = null,
+    onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
     onNotificationsClicked: ((NotificationStatusNextAction) -> Unit)? = null,
     onEditClicked: (() -> Unit)? = null,
@@ -209,7 +209,7 @@ fun UserHeader(
                 ContentBody(
                     content = bio,
                     emojis = user.emojis,
-                    onOpenUrl = onOpenUrl,
+                    onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                 )
             }
         }

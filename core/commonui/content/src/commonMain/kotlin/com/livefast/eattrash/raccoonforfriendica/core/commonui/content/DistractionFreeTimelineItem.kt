@@ -53,7 +53,7 @@ internal fun DistractionFreeTimelineItem(
     onClick: ((TimelineEntryModel) -> Unit)? = null,
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onDislike: ((TimelineEntryModel) -> Unit)? = null,
-    onOpenUrl: ((String) -> Unit)? = null,
+    onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
     onOptionsMenuToggled: ((Boolean) -> Unit)? = null,
@@ -191,7 +191,7 @@ internal fun DistractionFreeTimelineItem(
                         autoloadImages = autoloadImages,
                         emojis = entryToDisplay.emojis,
                         onClick = { onClick?.invoke(entryToDisplay) },
-                        onOpenUrl = onOpenUrl,
+                        onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     )
                 }
 
@@ -212,7 +212,7 @@ internal fun DistractionFreeTimelineItem(
                         maxLines = maxBodyLines,
                         emojis = entryToDisplay.emojis,
                         onClick = { onClick?.invoke(entryToDisplay) },
-                        onOpenUrl = onOpenUrl,
+                        onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     )
                 }
             }
