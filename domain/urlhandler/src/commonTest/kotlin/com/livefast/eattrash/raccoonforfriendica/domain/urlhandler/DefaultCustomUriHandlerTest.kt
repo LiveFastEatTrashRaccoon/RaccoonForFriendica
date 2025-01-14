@@ -116,9 +116,6 @@ class DefaultCustomUriHandlerTest {
 
     @Test
     fun `given hashtag URL when openUri then interactions are as expected`() {
-        every {
-            settingsRepository.current
-        } returns MutableStateFlow(SettingsModel())
         everySuspend { hashtagProcessor.process(any()) } returns true
         val tag = "fake-hashtag"
         val url = "https://$CURRENT_INSTANCE/search?tag=$tag"
@@ -135,9 +132,6 @@ class DefaultCustomUriHandlerTest {
 
     @Test
     fun `given user profile URL when openUri then interactions are as expected`() {
-        every {
-            settingsRepository.current
-        } returns MutableStateFlow(SettingsModel())
         everySuspend { userProcessor.process(any()) } returns true
         val url = "https://$CURRENT_INSTANCE/profile/username"
 
@@ -153,9 +147,6 @@ class DefaultCustomUriHandlerTest {
 
     @Test
     fun `given post display URL when openUri then interactions are as expected`() {
-        every {
-            settingsRepository.current
-        } returns MutableStateFlow(SettingsModel())
         everySuspend { entryProcessor.process(any()) } returns true
         val url = "https://$CURRENT_INSTANCE/display/objectId"
 
@@ -169,8 +160,39 @@ class DefaultCustomUriHandlerTest {
         }
     }
 
+    @Test
+    fun `given URL when openUri with allowOpenInternal false then interactions are as expected`() {
+        val url = "https://$CURRENT_INSTANCE/display/objectId"
+
+        sut.openUri(uri = url, allowOpenInternal = false)
+
+        verifySuspend(mode = VerifyMode.not) {
+            hashtagProcessor.process(any())
+            userProcessor.process(any())
+            entryProcessor.process(any())
+        }
+        verify {
+            defaultHandler.openUri(url)
+        }
+    }
+
+    @Test
+    fun `given URL when openUri with allowOpenExternal false then interactions are as expected`() {
+        val url = "https://$CURRENT_INSTANCE/display/objectId"
+
+        sut.openUri(uri = url, allowOpenExternal = false)
+
+        verifySuspend {
+            hashtagProcessor.process(any())
+            userProcessor.process(any())
+            entryProcessor.process(any())
+        }
+        verify(mode = VerifyMode.not) {
+            defaultHandler.openUri(url)
+        }
+    }
+
     companion object {
         private const val CURRENT_INSTANCE = "fake-instance.com"
-        private const val OTHER_INSTANCE = "other-instance.com"
     }
 }
