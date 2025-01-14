@@ -65,7 +65,7 @@ internal fun CardTimelineItem(
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onDislike: ((TimelineEntryModel) -> Unit)? = null,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
-    onOpenUrl: ((String) -> Unit)? = null,
+    onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
@@ -218,7 +218,7 @@ internal fun CardTimelineItem(
                         autoloadImages = autoloadImages,
                         emojis = entryToDisplay.emojis,
                         onClick = { onClick?.invoke(entryToDisplay) },
-                        onOpenUrl = onOpenUrl,
+                        onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     )
                 }
 
@@ -239,7 +239,7 @@ internal fun CardTimelineItem(
                         maxLines = maxBodyLines,
                         emojis = entryToDisplay.emojis,
                         onClick = { onClick?.invoke(entryToDisplay) },
-                        onOpenUrl = onOpenUrl,
+                        onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     )
                 }
 
