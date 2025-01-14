@@ -46,6 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.InsertEmo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.components.AnnouncementCard
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -182,8 +183,12 @@ class AnnouncementsScreen : Screen {
                         AnnouncementCard(
                             announcement = announcement,
                             autoloadImages = uiState.autoloadImages,
-                            onOpenUrl = { url ->
-                                uriHandler.openUri(url)
+                            onOpenUrl = { url, allowOpenInternal ->
+                                if (allowOpenInternal) {
+                                    uriHandler.openUri(url)
+                                } else {
+                                    uriHandler.openExternally(url)
+                                }
                             },
                             onAddNewReaction = {
                                 chooseReactionAnnouncementIdBottomSheetOpened = announcement.id
