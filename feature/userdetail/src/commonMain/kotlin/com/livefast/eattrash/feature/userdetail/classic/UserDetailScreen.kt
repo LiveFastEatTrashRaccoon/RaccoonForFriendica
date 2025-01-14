@@ -106,6 +106,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -415,8 +416,12 @@ class UserDetailScreen(
                             UserHeader(
                                 user = uiState.user,
                                 autoloadImages = uiState.autoloadImages,
-                                onOpenUrl = { url ->
-                                    uriHandler.openUri(url)
+                                onOpenUrl = { url, allowOpenInternal ->
+                                    if (allowOpenInternal) {
+                                        uriHandler.openUri(url)
+                                    } else {
+                                        uriHandler.openExternally(url)
+                                    }
                                 },
                                 onOpenImage = { url ->
                                     detailOpener.openImageDetail(url)
@@ -518,8 +523,12 @@ class UserDetailScreen(
                             UserFields(
                                 fields = fields,
                                 autoloadImages = uiState.autoloadImages,
-                                onOpenUrl = { url ->
-                                    uriHandler.openUri(url)
+                                onOpenUrl = { url, allowOpenInternal ->
+                                    if (allowOpenInternal) {
+                                        uriHandler.openUri(url)
+                                    } else {
+                                        uriHandler.openExternally(url)
+                                    }
                                 },
                             )
                         }
@@ -575,8 +584,12 @@ class UserDetailScreen(
                             onClick = { e ->
                                 detailOpener.openEntryDetail(e)
                             },
-                            onOpenUrl = { url ->
-                                uriHandler.openUri(url)
+                            onOpenUrl = { url, allowOpenInternal ->
+                                if (allowOpenInternal) {
+                                    uriHandler.openUri(url)
+                                } else {
+                                    uriHandler.openExternally(url)
+                                }
                             },
                             onOpenUser = { user ->
                                 if (user.id != uiState.user?.id) {
