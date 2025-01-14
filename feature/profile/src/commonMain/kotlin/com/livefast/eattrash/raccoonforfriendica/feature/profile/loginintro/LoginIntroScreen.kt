@@ -63,6 +63,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 
 internal class LoginIntroScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -114,7 +115,7 @@ internal class LoginIntroScreen : Screen {
                 title = LocalStrings.current.loginFriendicaHeader,
                 painter = resources.friendicaLogo,
                 onInfoClicked = {
-                    uriHandler.openUri(LoginIntroLinks.ABOUT_FRIENDICA)
+                    uriHandler.openExternally(LoginIntroLinks.ABOUT_FRIENDICA)
                 },
             )
             Button(
@@ -129,7 +130,7 @@ internal class LoginIntroScreen : Screen {
             PlatformLink(
                 title = LocalStrings.current.helpMeChooseAnInstance,
                 onClick = {
-                    uriHandler.openUri(LoginIntroLinks.FRIENDICA_INSTANCE_HELP)
+                    uriHandler.openExternally(LoginIntroLinks.FRIENDICA_INSTANCE_HELP)
                 },
                 options =
                     buildList {
@@ -161,7 +162,7 @@ internal class LoginIntroScreen : Screen {
                 title = LocalStrings.current.loginMastodonHeader,
                 painter = resources.mastodonLogo,
                 onInfoClicked = {
-                    uriHandler.openUri(LoginIntroLinks.ABOUT_MASTODON)
+                    uriHandler.openExternally(LoginIntroLinks.ABOUT_MASTODON)
                 },
             )
             Button(
@@ -177,7 +178,7 @@ internal class LoginIntroScreen : Screen {
             PlatformLink(
                 title = LocalStrings.current.helpMeChooseAnInstance,
                 onClick = {
-                    uriHandler.openUri(LoginIntroLinks.MASTODON_INSTANCE_HELP)
+                    uriHandler.openExternally(LoginIntroLinks.MASTODON_INSTANCE_HELP)
                 },
             )
         }
