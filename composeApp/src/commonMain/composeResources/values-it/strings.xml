@@ -475,4 +475,5 @@
     <string name="action_change_rate_limit">Cambia frequenza limite</string>
     <string name="manage_blocks_section_limited">Limitati</string>
     <string name="color_picker_dialog_insert_hex">Inserisci codice colore hex</string>
+    <string name="message_loading_hashtags">Caricamento hashtag</string>
 </resources>

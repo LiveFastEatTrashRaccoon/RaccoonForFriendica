@@ -227,7 +227,7 @@
     <string name="message_generic_error">Se ha producido un error inesperado</string>
     <string name="message_invalid_field">Campo no válido</string>
     <string name="message_invalid_poll_error">Encuesta no válida, compruebe las opciones y la fecha de caducidad</string>
-    <string name="message_loading_users">Cargar usuarios</string>
+    <string name="message_loading_users">Cargando los usuarios</string>
     <string name="message_missing_field">Falta un campo</string>
     <string name="message_missing_rules">Por favor, seleccionar al menos una regla</string>
     <string name="message_poll_vote_error_body">Por desgracia, sólo soy un desarrollador móvil y no puedo añadir los métodos back-end que faltan. Revisa la issue y ponle un 👍 para que los devs sepan que puede valer la pena implementarlo.</string>
@@ -463,4 +463,5 @@
     <string name="action_change_rate_limit">Cambiar frecuencia límite</string>
     <string name="manage_blocks_section_limited">Limitados</string>
     <string name="color_picker_dialog_insert_hex">Insertar código color hex</string>
+    <string name="message_loading_hashtags">Cargando las etiquetas</string>
 </resources>
