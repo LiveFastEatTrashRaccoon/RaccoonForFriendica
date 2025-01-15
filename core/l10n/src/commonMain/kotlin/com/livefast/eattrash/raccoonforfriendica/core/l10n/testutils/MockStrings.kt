@@ -439,6 +439,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("languagePt")
     override val languageRo: String
         @Composable get() = retrieve("languageRo")
+    override val languageRu: String
+        @Composable get() = retrieve("languageRu")
     override val languageUa: String
         @Composable get() = retrieve("languageUa")
     override val loginFriendicaHeader: String
