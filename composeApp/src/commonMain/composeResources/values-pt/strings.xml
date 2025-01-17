@@ -13,7 +13,7 @@
     <string name="action_add_reaction">Adicionar reação</string>
     <string name="action_add_spoiler">Adicionar spoiler</string>
     <string name="action_add_title">Adicionar título</string>
-    <string name="action_add_to_bookmarks">Adicionar aos favoritos</string>
+    <string name="action_add_to_bookmarks">Adicionar aos marcadores</string>
     <string name="action_add_to_favorites">Adicionar aos favoritos</string>
     <string name="action_block">Bloquear</string>
     <string name="action_cancel_edit_personal_note">Cancelar nota de edição</string>
@@ -136,7 +136,7 @@
     <string name="date_day_short">d</string>
     <string name="date_month_short">m</string>
     <string name="date_year_short">a</string>
-    <string name="dialog_error_title">Oops…</string>
+    <string name="dialog_error_title">Ops…</string>
     <string name="direct_messages_title">Mensagens diretas</string>
     <string name="duration_never">Nunca</string>
     <string name="edit_circle_title">Editar círculo</string>
@@ -172,10 +172,10 @@
     <string name="follower_title">Seguidore</string>
     <string name="following_title">Seguind</string>
     <string name="font_scale_larger">Maior</string>
-    <string name="font_scale_largest">Maior</string>
+    <string name="font_scale_largest">Ainda maior</string>
     <string name="font_scale_normal">Normal</string>
     <string name="font_scale_smaller">Mais pequeno</string>
-    <string name="font_scale_smallest">Mais pequeno</string>
+    <string name="font_scale_smallest">Ainda mais pequeno</string>
     <string name="format_bold">Negrito</string>
     <string name="format_italic">Itálico</string>
     <string name="format_monospace">Monoespaço</string>
@@ -369,7 +369,7 @@
     <string name="theme_color_red">Caranguejo crocante</string>
     <string name="theme_color_white">Urso universitário</string>
     <string name="theme_color_yellow">Ouriço ossudo</string>
-    <string name="thread_title">Tópico</string>
+    <string name="thread_title">Linha</string>
     <string name="time_hour_short">h</string>
     <string name="time_minute_short">min</string>
     <string name="time_second_short">s</string>
@@ -400,50 +400,80 @@
     <string name="visibility_unlisted">Não listado</string>
     <plurals name="account_follower">
         <item quantity="one">%1$d seguidor</item>
+        <item quantity="many">%1$d de seguidores</item>
         <item quantity="other">%1$d seguidores</item>
     </plurals>
     <plurals name="account_following">
         <item quantity="one">%1$d seguido</item>
+        <item quantity="many">%1$d de seguidos</item>
         <item quantity="other">%1$d seguidos</item>
     </plurals>
     <plurals name="create_report_selected_rules">
         <item quantity="one">%1$d regra selecionada</item>
+        <item quantity="many">%1$d de regras selecionadas</item>
         <item quantity="other">%1$d regras selecionadas</item>
     </plurals>
     <plurals name="dislikes_count">
         <item quantity="one">%1$d voto negativo</item>
+        <item quantity="many">%1$d de votos negativos</item>
         <item quantity="other">%1$d votos negativos</item>
     </plurals>
     <plurals name="extended_social_info_favorites">
         <item quantity="one">%1$d favorito</item>
+        <item quantity="many">%1$d de favoritos</item>
         <item quantity="other">%1$d favoritos</item>
     </plurals>
     <plurals name="extended_social_info_reblogs">
         <item quantity="one">%1$d partilha</item>
+        <item quantity="many">%1$d de partilhas</item>
         <item quantity="other">%1$d partilhas</item>
     </plurals>
     <plurals name="hashtag_people_using">
         <item quantity="one">%1$d pessoa está a falar sobre isso</item>
+        <item quantity="many">%1$d de pessoas estão a falar sobre isso</item>
         <item quantity="other">%1$d pessoas estão a falar sobre isso</item>
     </plurals>
     <plurals name="items">
         <item quantity="one">%1$d elemento</item>
+        <item quantity="many">%1$d de elementos</item>
         <item quantity="other">%1$d elementos</item>
     </plurals>
     <plurals name="messages">
         <item quantity="one">%1$d mensagem</item>
+        <item quantity="many">%1$d de mensagens</item>
         <item quantity="other">%1$d mensagens</item>
     </plurals>
     <plurals name="poll_vote">
         <item quantity="one">%1$d voto</item>
+        <item quantity="many">%1$d de votos</item>
         <item quantity="other">%1$d votos</item>
     </plurals>
     <plurals name="unread_messages">
         <item quantity="one">%1$d não lido</item>
+        <item quantity="many">%1$d de não lidos</item>
         <item quantity="other">%1$d não lidos</item>
     </plurals>
     <plurals name="unread_notification_body">
         <item quantity="one">Existe %1$d elemento $count no seu 🗑️</item>
+        <item quantity="many">Existem %1$d de elementos no seu 🗑</item>
         <item quantity="other">Existem %1$d elementos no seu 🗑</item>
     </plurals>
+    <string name="settings_about_acknowledgements">Agradecimentos</string>
+    <string name="action_open_settings">Abrir configurações</string>
+    <string name="settings_push_notification_permission_not_granted">Permissão de notificação push não concedida</string>
+    <string name="timeline_layout_distraction_free">Sem distracções</string>
+    <string name="action_dislike">Desvalorizar</string>
+    <string name="settings_item_timeline_layout">Layout das postagens</string>
+    <string name="timeline_layout_full">Completo</string>
+    <string name="timeline_layout_card">Ficha</string>
+    <string name="timeline_layout_compact">Compacto</string>
+    <string name="message_loading_hashtags">Carregamento hashtags</string>
+    <string name="settings_push_notification_permission_denied_permanently">Permissão de notificação push negada permanentemente</string>
+    <string name="action_change_rate_limit">Alterar limite da frequência</string>
+    <string name="action_grant_permission">Conceder</string>
+    <string name="action_play">Reproduzir</string>
+    <string name="action_remove_dislike">Anular desvalorização</string>
+    <string name="color_picker_dialog_insert_hex">Inserir código de cor hex</string>
+    <string name="item_selected">selecionado</string>
+    <string name="manage_blocks_section_limited">Limitados</string>
 </resources>
