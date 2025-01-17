@@ -42,7 +42,7 @@
     <string name="action_logout">Déconnexion</string>
     <string name="action_move">Déplacer</string>
     <string name="action_mute">Couper le son</string>
-    <string name="action_mute_notifications">Désactiver les notifications</string>
+    <string name="action_mute_notifications">Mettre en sourdine les notifications</string>
     <string name="action_open_detail">Ouvrir le détail</string>
     <string name="action_open_full_screen">Ouvrir en plein écran</string>
     <string name="action_open_link">Ouvrir le lien</string>
@@ -52,7 +52,7 @@
     <string name="action_pin">Épingler au profil</string>
     <string name="action_publish_default">Publier maintenant</string>
     <string name="action_quote">Citation</string>
-    <string name="action_reblog">Partager</string>
+    <string name="action_reblog">Répartager</string>
     <string name="action_reject">Rejeter</string>
     <string name="action_remove_from_bookmarks">Supprimer des signets</string>
     <string name="action_remove_from_favorites">Supprimer des favoris</string>
@@ -170,7 +170,7 @@
     <string name="follow_required_message">Vous devez suivre l'autre utilisateur pour pouvoir lui envoyer un message direct !</string>
     <string name="followed_hashtags_title">Hashtags suivis</string>
     <string name="follower_title">Suiveurs</string>
-    <string name="following_title">Suivre</string>
+    <string name="following_title">Suivis</string>
     <string name="font_scale_larger">Plus grand</string>
     <string name="font_scale_largest">Le plus grand</string>
     <string name="font_scale_normal">Normal</string>
@@ -188,7 +188,7 @@
     <string name="image_loading_mode_always">Toujours</string>
     <string name="image_loading_mode_on_demand">Sur demande</string>
     <string name="image_loading_mode_on_wi_fi">En WiFi</string>
-    <string name="inbox_configure_filter_dialog_subtitle">Si une valeur est désélectionnée, le filtre ne renverra que les éléments non lus.</string>
+    <string name="inbox_configure_filter_dialog_subtitle">Si une valeur est désélectionnée, le filtre ne renverra que les éléments non lus</string>
     <string name="inbox_configure_filter_dialog_title">Configurer les filtres</string>
     <string name="info_edited">édité</string>
     <string name="insert_emoji_title">Insérer un emoji</string>
@@ -219,9 +219,9 @@
     <string name="message_auth_issue_hint_3">effacer les données de l'application</string>
     <string name="message_auth_issue_hints_title">Vous pouvez essayer l'une des actions suivantes :</string>
     <string name="message_character_limit_exceeded">Vous avez dépassé le nombre maximum de caractères autorisés</string>
-    <string name="message_confirm_exit">Appuyez à nouveau sur 🔙 pour quitter.</string>
+    <string name="message_confirm_exit">Appuyez à nouveau sur 🔙 pour quitter</string>
     <string name="message_empty_album">Il semble que cet album soit encore vide… ✨</string>
-    <string name="message_empty_conversation">C'est le début d'une conversation épique avec l'autre utilisateur.</string>
+    <string name="message_empty_conversation">C\'est le début d\'une conversation épique avec</string>
     <string name="message_empty_inbox">🎉 Vous êtes au courant ! 🎉\n\nVous verrez les nouvelles notifications dans cette page dès qu'elles arriveront</string>
     <string name="message_empty_list">Il n'y a rien à afficher ici 🗑️️</string>
     <string name="message_generic_error">Une erreur inattendue s'est produite</string>
@@ -231,7 +231,7 @@
     <string name="message_missing_field">Champ manquant</string>
     <string name="message_missing_rules">Veuillez sélectionner au moins une règle</string>
     <string name="message_poll_vote_error_body">Malheureusement, je ne suis qu'un développeur mobile et je ne peux pas ajouter les méthodes back-end manquantes !\nJetez un œil à ce problème et mettez un 👍 pour que les développeurs sachent que cela peut valoir la peine de l'implémenter.</string>
-    <string name="message_post_empty_text">Veuillez fournir une pièce jointe, un sondage ou un texte.</string>
+    <string name="message_post_empty_text">Veuillez fournir une pièce jointe, un sondage ou un texte</string>
     <string name="message_post_invalid_visibility">Veuillez sélectionner une option de visibilité valide</string>
     <string name="message_reply_visibility_greater_than_parent_error">Vous publiez une réponse dont la visibilité est plus large que celle du message original</string>
     <string name="message_restart_to_apply_changes">Veuillez redémarrer l'application pour appliquer les changements</string>
@@ -272,9 +272,9 @@
     <string name="poll_expires_in">Expire en</string>
     <string name="post_by">par</string>
     <string name="post_sensitive">Contenu sensible</string>
-    <string name="post_title">Postes</string>
+    <string name="post_title">Post</string>
     <string name="preview_image">Image d'aperçu</string>
-    <string name="relationship_status_following">Suivre</string>
+    <string name="relationship_status_following">Suivis</string>
     <string name="relationship_status_follows_you">Vous suit</string>
     <string name="relationship_status_mutual">Mutuelle</string>
     <string name="relationship_status_requested_to_other">Demande envoyée</string>
@@ -286,7 +286,7 @@
     <string name="search_placeholder">Rechercher dans Fediverse</string>
     <string name="search_section_users">Utilisateurs</string>
     <string name="section_title_explore">Explorer</string>
-    <string name="section_title_home">Postes</string>
+    <string name="section_title_home">Chronologie</string>
     <string name="section_title_inbox">Notifications</string>
     <string name="section_title_profile">Profil</string>
     <string name="select_circle_dialog_title">Sélectionner un cercle</string>
@@ -295,7 +295,7 @@
     <string name="select_user_search_placeholder">nom d'utilisateur ou pseudo</string>
     <string name="settings_about">Informations sur l'application</string>
     <string name="settings_about_app_version">Version</string>
-    <string name="settings_about_changelog">Changelog</string>
+    <string name="settings_about_changelog">Journal des modifications</string>
     <string name="settings_about_licences">Licences</string>
     <string name="settings_about_matrix">Rejoindre la salle Matrix</string>
     <string name="settings_about_report_issue">Signaler un problème</string>
@@ -400,50 +400,80 @@
     <string name="visibility_unlisted">Non répertorié</string>
     <plurals name="account_follower">
         <item quantity="one">%1$d suiveur</item>
+        <item quantity="many">%1$d de suiveurs</item>
         <item quantity="other">%1$d suiveurs</item>
     </plurals>
     <plurals name="account_following">
         <item quantity="one">%1$d suivi</item>
+        <item quantity="many">%1$d de suivis</item>
         <item quantity="other">%1$d suivis</item>
     </plurals>
     <plurals name="create_report_selected_rules">
         <item quantity="one">%1$d règle sélectionnée</item>
+        <item quantity="many">%1$d de règles sélectionnées</item>
         <item quantity="other">%1$d règles sélectionnées</item>
     </plurals>
     <plurals name="dislikes_count">
         <item quantity="one">%1$d vote négatif</item>
+        <item quantity="many">%1$d de votes négatifs</item>
         <item quantity="other">%1$d votes négatifs</item>
     </plurals>
     <plurals name="extended_social_info_favorites">
         <item quantity="one">%1$d préféré</item>
+        <item quantity="many">%1$d de préférés</item>
         <item quantity="other">%1$d préférés</item>
     </plurals>
     <plurals name="extended_social_info_reblogs">
-        <item quantity="one">%1$d repartage</item>
-        <item quantity="other">%1$d repartages</item>
+        <item quantity="one">%1$d répartage</item>
+        <item quantity="many">%1$d de répartages</item>
+        <item quantity="other">%1$d répartages</item>
     </plurals>
     <plurals name="hashtag_people_using">
         <item quantity="one">%1$d personne en parle</item>
+        <item quantity="many">%1$d de personnes en parlent</item>
         <item quantity="other">%1$d personnes en parlent</item>
     </plurals>
     <plurals name="items">
         <item quantity="one">%1$d objet</item>
+        <item quantity="many">%1$d d\'objets</item>
         <item quantity="other">%1$d objets</item>
     </plurals>
     <plurals name="messages">
         <item quantity="one">%1$d message</item>
+        <item quantity="many">%1$d de messages</item>
         <item quantity="other">%1$d messages</item>
     </plurals>
     <plurals name="poll_vote">
         <item quantity="one">%1$d vote</item>
+        <item quantity="many">%1$d de votes</item>
         <item quantity="other">%1$d votes</item>
     </plurals>
     <plurals name="unread_messages">
         <item quantity="one">%1$d non lu</item>
+        <item quantity="many">%1$d de non lus</item>
         <item quantity="other">%1$d non lus</item>
     </plurals>
     <plurals name="unread_notification_body">
         <item quantity="one">Il y a %1$d article dans le 🗑️</item>
+        <item quantity="many">Il y a %1$d d\'articles dans le 🗑️</item>
         <item quantity="other">Il y a %1$d articles dans le 🗑️</item>
     </plurals>
+    <string name="settings_about_acknowledgements">Remerciements</string>
+    <string name="action_change_rate_limit">Modifier la limite de fréquence</string>
+    <string name="action_grant_permission">Accorder</string>
+    <string name="action_open_settings">Ouvrir les paramètres</string>
+    <string name="action_play">Jouer</string>
+    <string name="settings_item_timeline_layout">Disposition des postes</string>
+    <string name="action_dislike">Désapprouver</string>
+    <string name="action_remove_dislike">Annuler la désapprobation</string>
+    <string name="timeline_layout_compact">Compact</string>
+    <string name="timeline_layout_distraction_free">Sans distractions</string>
+    <string name="timeline_layout_full">Complet</string>
+    <string name="message_loading_hashtags">Chargement des hashtags</string>
+    <string name="timeline_layout_card">Fiche</string>
+    <string name="settings_push_notification_permission_denied_permanently">L\'autorisation aux notifications push est refusée de façon permanente</string>
+    <string name="settings_push_notification_permission_not_granted">L\'autorisation aux notifications push n\'est pas accordée</string>
+    <string name="color_picker_dialog_insert_hex">Insérer le code couleur hex</string>
+    <string name="item_selected">sélectionné</string>
+    <string name="manage_blocks_section_limited">Limités</string>
 </resources>
