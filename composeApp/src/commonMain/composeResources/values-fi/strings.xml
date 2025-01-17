@@ -40,7 +40,7 @@
     <string name="action_insert_link">Lisää linkki</string>
     <string name="action_insert_list">Lisää lista</string>
     <string name="action_logout">Kirjaudu ulos</string>
-    <string name="action_move">Move</string>
+    <string name="action_move">Siirrä</string>
     <string name="action_mute">Mykistä</string>
     <string name="action_mute_notifications">Ilmoitusten mykistäminen</string>
     <string name="action_open_detail">Avaa tiedot</string>
@@ -79,7 +79,7 @@
     <string name="action_switch_to_forum_mode">Vaihda foorumitilaan</string>
     <string name="action_toggle_reveal">Vaihda näkyvyyttä</string>
     <string name="action_unblock">Poista esto</string>
-    <string name="action_unfollow">Unfollow</string>
+    <string name="action_unfollow">Poista seuraaminen</string>
     <string name="action_unmute">Poista mykistys</string>
     <string name="action_unpin">Poista kiinnitys profiilista</string>
     <string name="action_update_schedule_date">Muuta aikataulua</string>
@@ -89,7 +89,7 @@
     <string name="app_icon_classical">Klassinen</string>
     <string name="app_icon_default">Oletusarvoinen</string>
     <string name="bar_theme_opaque">Läpinäkymätön</string>
-    <string name="bar_theme_solid">Solid</string>
+    <string name="bar_theme_solid">Kiinteä</string>
     <string name="bar_theme_transparent">Läpinäkyvä</string>
     <string name="bookmarks_title">Kirjanmerkit</string>
     <string name="button_cancel">Peruuta</string>
@@ -113,7 +113,7 @@
     <string name="confirm_change_markup_mode">Jos vaihdat merkintätyyppiä, kaikki muotoilut menetetään. Jatka silti?</string>
     <string name="content_scale_fill_height">Täyttökorkeus</string>
     <string name="content_scale_fill_width">Täytä leveys</string>
-    <string name="content_scale_fit">Aspect fit</string>
+    <string name="content_scale_fit">Aspect-sovitus</string>
     <string name="content_scale_title">Skaalaustila</string>
     <string name="create_circle_title">Luo ympyrä</string>
     <string name="create_post_attachments_section">Liitteet</string>
@@ -132,7 +132,7 @@
     <string name="create_report_title_entry">Ilmoita viesti</string>
     <string name="create_report_title_user">Ilmoita</string>
     <string name="creation_date">luontipäivämäärä</string>
-    <string name="custom_option">Custom</string>
+    <string name="custom_option">Mukautettu</string>
     <string name="date_day_short">p</string>
     <string name="date_month_short">k</string>
     <string name="date_year_short">v</string>
@@ -150,7 +150,7 @@
     <string name="edit_profile_item_header">Banneri</string>
     <string name="edit_profile_item_hide_collections">Tee seuraajista ja seuraajalistoista yksityisiä</string>
     <string name="edit_profile_item_locked">Vaadi manuaalinen hyväksyntä seuraamispyynnöille</string>
-    <string name="edit_profile_item_no_index">Sulje postaukseni pois julkisista aikajanoista.</string>
+    <string name="edit_profile_item_no_index">Sulje postaukseni pois julkisista aikajanoista</string>
     <string name="edit_profile_section_fields">Mukautetut kentät (kokeellinen)</string>
     <string name="edit_profile_section_flags">Näkyvyys &amp; oikeudet</string>
     <string name="edit_profile_section_images">Kuvat (kokeellinen)</string>
@@ -176,7 +176,7 @@
     <string name="font_scale_normal">Normaali</string>
     <string name="font_scale_smaller">Pienempi</string>
     <string name="font_scale_smallest">Pienin</string>
-    <string name="format_bold">Bold</string>
+    <string name="format_bold">Rohkea</string>
     <string name="format_italic">Kursivoitu</string>
     <string name="format_monospace">Monospace</string>
     <string name="format_strikethrough">Yliviivattu</string>
@@ -188,7 +188,7 @@
     <string name="image_loading_mode_always">Aina</string>
     <string name="image_loading_mode_on_demand">Pyydettäessä</string>
     <string name="image_loading_mode_on_wi_fi">WiFi-verkossa</string>
-    <string name="inbox_configure_filter_dialog_subtitle">Jos jokin arvo on poistettu, suodatin palauttaa vain lukemattomat kohteet.</string>
+    <string name="inbox_configure_filter_dialog_subtitle">Jos jokin arvo on poistettu, suodatin palauttaa vain lukemattomat kohteet</string>
     <string name="inbox_configure_filter_dialog_title">Määritä suodattimet</string>
     <string name="info_edited">muokattu</string>
     <string name="insert_emoji_title">Lisää emoji</string>
@@ -198,7 +198,7 @@
     <string name="item_other">Muut</string>
     <string name="login_friendica_header">Olen Friendicassa</string>
     <string name="login_mastodon_header">Olen Mastodonissa</string>
-    <string name="login_method_basic">legacy</string>
+    <string name="login_method_basic">perintö</string>
     <string name="login_more_info_bottom_sheet_content">Kirjautumisvirta alkaa sovelluksessa valitsemalla instanssi, minkä jälkeen jatkat OAuth2-virtaa verkkoselaimessa.\n\n" + "Jos sinulla ei ole tiliä, valitse ensin instanssi ja rekisteröidy selaimessasi.</string>
     <string name="login_subtitle">Kirjaudu sisään instanssiin aloittaaksesi muiden ihmisten seuraamisen, luodaksesi uusia viestejä tai vastauksia ja hallinnoidaksesi suosikkejasi tai kirjanmerkkejäsi.</string>
     <string name="login_title">🦝 Tervetuloa! 🦝</string>
@@ -209,7 +209,7 @@
     <string name="markup_mode_html">HTML</string>
     <string name="markup_mode_markdown">Markdown</string>
     <string name="markup_mode_plain_text">Tavallinen teksti</string>
-    <string name="message_alt_text_missing_error">Joissakin liitteissä ei ole vaihtoehtoista tekstiä, harkitse sen lisäämistä saavutettavuuden vuoksi.</string>
+    <string name="message_alt_text_missing_error">Joissakin liitteissä ei ole vaihtoehtoista tekstiä, harkitse sen lisäämistä saavutettavuuden vuoksi</string>
     <string name="message_are_you_sure">Haluatko varmasti jatkaa?</string>
     <string name="message_are_you_sure_exit">Haluatko varmasti poistua?</string>
     <string name="message_are_you_sure_reblog">Tämä viesti on yli kuukauden vanha. Haluatko varmasti jakaa sen uudelleen?</string>
@@ -222,16 +222,16 @@
     <string name="message_confirm_exit">Poistu napauttamalla 🔙 uudelleen</string>
     <string name="message_empty_album">Näyttää siltä, että tämä albumi on vielä tyhjä… ✨</string>
     <string name="message_empty_conversation">Tämä on alku eeppiselle keskustelullesi -</string>
-    <string name="message_empty_inbox">🎉 Olette kaikki kiinni! 🎉\n\nNäet uudet ilmoitukset tällä sivulla heti, kun ne saapuvat.</string>
+    <string name="message_empty_inbox">🎉 Olette kaikki kiinni! 🎉\n\nNäet uudet ilmoitukset tällä sivulla heti, kun ne saapuvat</string>
     <string name="message_empty_list">Tässä ei ole mitään näytettävää 🗑️️</string>
     <string name="message_generic_error">Tapahtui odottamaton virhe</string>
     <string name="message_invalid_field">Virheellinen kenttä</string>
-    <string name="message_invalid_poll_error">Virheellinen kysely, tarkista vaihtoehdot ja päättymispäivä.</string>
+    <string name="message_invalid_poll_error">Virheellinen kysely, tarkista vaihtoehdot ja päättymispäivä</string>
     <string name="message_loading_users">Käyttäjien lataaminen</string>
     <string name="message_missing_field">Puuttuva kenttä</string>
     <string name="message_missing_rules">Valitse vähintään yksi sääntö</string>
     <string name="message_poll_vote_error_body">Valitettavasti olen vain mobiilipalvelun kehittäjä, enkä voi lisätä puuttuvia back-end-menetelmiä!\nTarkista tämä asia ja laita 👍, jotta kehittäjät tietävät, että se kannattaa ehkä toteuttaa.</string>
-    <string name="message_post_empty_text">Anna joko liitetiedosto, kysely tai tekstiä.</string>
+    <string name="message_post_empty_text">Anna joko liitetiedosto, kysely tai tekstiä</string>
     <string name="message_post_invalid_visibility">Valitse voimassa oleva näkyvyysvaihtoehto</string>
     <string name="message_reply_visibility_greater_than_parent_error">Julkaiset vastauksen, jonka näkyvyys on laajempi kuin alkuperäisen viestin näkyvyys</string>
     <string name="message_restart_to_apply_changes">Käynnistä sovellus uudelleen, jotta muutokset tulevat voimaan</string>
@@ -241,7 +241,7 @@
     <string name="message_text_copied_to_clipboard">Kopioitu leikepöydälle! 📋</string>
     <string name="message_user_unlogged">Sinun täytyy olla kirjautuneena sisään päästäksesi tähän osioon 🪵</string>
     <string name="message_video_nsfw">Tämä video saattaa sisältää arkaluonteista sisältöä 🙈</string>
-    <string name="more_info">Discover more</string>
+    <string name="more_info">Tutustu tarkemmin</string>
     <string name="mute_disable_notifications_item">Ilmoitusten poistaminen käytöstä</string>
     <string name="mute_duration_indefinite">Epämääräinen</string>
     <string name="mute_duration_item">Et näe tämän käyttäjän viestejä seuraaviin aikoihin</string>
@@ -249,7 +249,7 @@
     <string name="node_info_section_contact">Ota yhteyttä</string>
     <string name="node_info_section_rules">Säännöt</string>
     <string name="node_info_title">Solmun tiedot</string>
-    <string name="node_via">via</string>
+    <string name="node_via">kautta</string>
     <string name="notification_type_entry">julkaissut viestin</string>
     <string name="notification_type_entry_name">Posti-ilmoitukset</string>
     <string name="notification_type_favorite">lisäsi viestisi suosikkeihin</string>
@@ -388,7 +388,7 @@
     <string name="url_opening_mode_custom_tabs">Mukautetut välilehdet</string>
     <string name="url_opening_mode_external">Ulkoinen selain</string>
     <string name="url_opening_mode_internal">Sisäinen verkkonäkymä</string>
-    <string name="user_feedback_comment_placeholder">Kuvaile kohtaamaasi ongelmaa tai jätä vain palautetta 🖋️.</string>
+    <string name="user_feedback_comment_placeholder">Kuvaile kohtaamaasi ongelmaa tai jätä vain palautetta 🖋️</string>
     <string name="user_feedback_field_comment">Palaute</string>
     <string name="user_feedback_field_email">Sähköpostiosoite tai käyttäjätunnus (valinnainen)</string>
     <string name="user_field_personal_note">Henkilökohtainen huomautus</string>
@@ -397,7 +397,7 @@
     <string name="visibility_direct">Vain maininnat</string>
     <string name="visibility_private">Vain seuraajat</string>
     <string name="visibility_public">Julkinen</string>
-    <string name="visibility_unlisted">Unlisted</string>
+    <string name="visibility_unlisted">Luetteloimaton</string>
     <plurals name="account_follower">
         <item quantity="one">%1$d seuraaja</item>
         <item quantity="other">%1$d seuraaja</item>
@@ -446,4 +446,23 @@
         <item quantity="one">Kohteessasi on %1$d kohde 🗑️</item>
         <item quantity="other">Tuotteessasi on %1$d tuotetta 🗑️</item>
     </plurals>
+    <string name="settings_about_acknowledgements">Kiitokset</string>
+    <string name="action_grant_permission">Myöntäminen</string>
+    <string name="message_loading_hashtags">Hashtagien lataaminen</string>
+    <string name="settings_push_notification_permission_not_granted">Push-ilmoitusoikeutta ei myönnetä</string>
+    <string name="settings_item_timeline_layout">Postauksen ulkoasu</string>
+    <string name="action_dislike">Hylkääminen</string>
+    <string name="action_remove_dislike">Peruuta hylkääminen</string>
+    <string name="timeline_layout_compact">Kompakti</string>
+    <string name="timeline_layout_distraction_free">Häiriötön</string>
+    <string name="timeline_layout_full">Täysi</string>
+    <string name="action_play">Toista</string>
+    <string name="timeline_layout_card">Kortti</string>
+    <string name="settings_push_notification_permission_denied_permanently">Push-ilmoitusoikeus pysyvästi evätty</string>
+    <string name="account_age">Tilin ikä</string>
+    <string name="action_change_rate_limit">Vaihda taajuusraja</string>
+    <string name="action_open_settings">Avaa asetukset</string>
+    <string name="color_picker_dialog_insert_hex">Lisää heksavärikoodi</string>
+    <string name="item_selected">valittu</string>
+    <string name="manage_blocks_section_limited">Rajoitettu</string>
 </resources>
