@@ -4,7 +4,7 @@ android-compileSdk = "35"
 android-minSdk = "26"
 android-targetSdk = "35"
 
-androidx-activity = "1.9.3"
+androidx-activity = "1.10.0"
 androidx-browser = "1.8.0"
 androidx-crypto = "1.0.0"
 androidx-splashscreen = "1.0.1"
