@@ -81,6 +81,7 @@ interface Strings {
     val actionSetScheduleDate: String @Composable get
     val actionShare: String @Composable get
     val actionShowContentDescription: String @Composable get
+    val actionShowOriginal: String @Composable get
     val actionShowResults: String @Composable get
     val actionSubmit: String @Composable get
     val actionSwitchAccount: String @Composable get
@@ -251,6 +252,7 @@ interface Strings {
     val messageInvalidField: String @Composable get
     val messageInvalidPollError: String @Composable get
     val messageLoadingHashtags: String @Composable get
+    val messageLoadingTranslation: String @Composable get
     val messageLoadingUsers: String @Composable get
     val messageMissingField: String @Composable get
     val messageMissingRules: String @Composable get
@@ -432,6 +434,8 @@ interface Strings {
 
     @Composable fun accountFollower(count: Int): String
 
+    @Composable fun actionTranslateTo(lang: String): String
+
     @Composable fun accountFollowing(count: Int): String
 
     @Composable fun createReportSelectedRules(count: Int): String
@@ -451,6 +455,10 @@ interface Strings {
     @Composable fun pollVote(count: Int): String
 
     @Composable fun unreadMessages(count: Int): String
+
+    @Composable fun translatedFrom(lang: String): String
+
+    @Composable fun translatedUsing(provider: String): String
 
     suspend fun unreadNotificationBody(count: Int): String
 
