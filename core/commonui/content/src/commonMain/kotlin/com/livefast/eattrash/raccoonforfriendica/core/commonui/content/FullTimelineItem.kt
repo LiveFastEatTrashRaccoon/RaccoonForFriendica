@@ -313,6 +313,13 @@ internal fun FullTimelineItem(
             )
         }
 
+        TranslationFooter(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.m),
+            isShowingTranslation = entryToDisplay.isShowingTranslation,
+            provider = entryToDisplay.translationProvider,
+            translationLoading = entryToDisplay.translationLoading,
+        )
+
         if (actionsEnabled) {
             ContentFooter(
                 modifier =

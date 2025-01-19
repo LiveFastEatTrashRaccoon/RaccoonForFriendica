@@ -49,7 +49,12 @@ fun TimelineItem(
 ) {
     val isReblog = entry.reblog != null
     val isReply = entry.inReplyTo != null
-    val entryToDisplay = entry.original
+    val entryToDisplay =
+        if (entry.isShowingTranslation) {
+            entry.translation ?: entry.original
+        } else {
+            entry.original
+        }
     var optionsMenuOpen by remember { mutableStateOf(false) }
 
     val replyActionLabel =
