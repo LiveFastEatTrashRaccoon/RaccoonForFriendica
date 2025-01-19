@@ -32,6 +32,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTimelineRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTranslationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultTrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultUserRepository
@@ -40,6 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Draft
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EventRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FallbackTranslationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
@@ -57,6 +59,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Suppo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TranslationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -267,6 +270,20 @@ val contentRepositoryModule =
             singleton {
                 DefaultUserRateLimitRepository(
                     userRateLimitDao = instance(),
+                )
+            }
+        }
+        bind<TranslationRepository>(tag = "default") {
+            singleton {
+                DefaultTranslationRepository(
+                    provider = instance(tag = "default"),
+                )
+            }
+        }
+        bind<TranslationRepository>(tag = "fallback") {
+            singleton {
+                FallbackTranslationRepository(
+                    service = instance(),
                 )
             }
         }
