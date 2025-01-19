@@ -1,5 +1,6 @@
 plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
+    id("com.livefast.eattrash.composeMultiplatform")
     id("com.livefast.eattrash.test")
 }
 
@@ -9,9 +10,14 @@ kotlin {
             dependencies {
                 implementation(libs.kodein)
                 implementation(libs.kotlinx.coroutines)
+                implementation(libs.ksoup.html)
+
+                implementation(projects.core.htmlparse)
+                implementation(projects.core.utils)
 
                 implementation(projects.domain.content.data)
                 implementation(projects.domain.content.repository)
+                implementation(projects.domain.identity.data)
             }
         }
     }

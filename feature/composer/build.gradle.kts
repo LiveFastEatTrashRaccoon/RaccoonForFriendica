@@ -8,7 +8,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kodein)
-                implementation(libs.ksoup.html)
+
                 implementation(libs.voyager.navigator)
                 implementation(libs.voyager.screenmodel)
                 implementation(libs.voyager.kodein)
@@ -26,9 +26,13 @@ kotlin {
                 implementation(projects.domain.content.data)
                 implementation(projects.domain.content.pagination)
                 implementation(projects.domain.content.repository)
+                implementation(projects.domain.content.usecase)
                 implementation(projects.domain.identity.data)
                 implementation(projects.domain.identity.repository)
             }
         }
     }
+}
+dependencies {
+    implementation(project(":domain:content:usecase"))
 }

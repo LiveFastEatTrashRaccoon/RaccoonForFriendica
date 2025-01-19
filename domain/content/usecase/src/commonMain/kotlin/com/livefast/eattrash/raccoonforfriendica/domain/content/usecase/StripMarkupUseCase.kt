@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase
+package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 
