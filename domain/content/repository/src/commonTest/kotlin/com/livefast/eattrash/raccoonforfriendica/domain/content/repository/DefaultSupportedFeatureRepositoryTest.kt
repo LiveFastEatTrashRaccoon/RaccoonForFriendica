@@ -48,6 +48,7 @@ class DefaultSupportedFeatureRepositoryTest {
             assertFalse(res.supportsCalendar)
             assertTrue(res.supportsAnnouncements)
             assertFalse(res.supportsDislike)
+            assertTrue(res.supportsTranslation)
             verifySuspend {
                 nodeInfoRepository.getInfo()
             }
@@ -72,6 +73,7 @@ class DefaultSupportedFeatureRepositoryTest {
             assertTrue(res.supportsCalendar)
             assertFalse(res.supportsAnnouncements)
             assertTrue(res.supportsDislike)
+            assertFalse(res.supportsTranslation)
             verifySuspend {
                 nodeInfoRepository.getInfo()
             }
@@ -96,6 +98,7 @@ class DefaultSupportedFeatureRepositoryTest {
             assertTrue(res.supportsCalendar)
             assertFalse(res.supportsAnnouncements)
             assertTrue(res.supportsDislike)
+            assertFalse(res.supportsTranslation)
             verifySuspend {
                 nodeInfoRepository.getInfo()
             }

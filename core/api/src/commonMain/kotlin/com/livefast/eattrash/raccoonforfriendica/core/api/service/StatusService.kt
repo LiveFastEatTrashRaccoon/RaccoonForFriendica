@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ScheduledStatus
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Translation
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
 import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.Body
@@ -140,4 +141,10 @@ interface StatusService {
     suspend fun undislike(
         @Body data: FormDataContent,
     ): Response<Unit>
+
+    @POST("v1/statuses/{id}/translate")
+    suspend fun translate(
+        @Path("id") id: String,
+        @Body data: FormDataContent,
+    ): Translation
 }

@@ -169,6 +169,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionShare")
     override val actionShowContentDescription: String
         @Composable get() = retrieve("actionShowContentDescription")
+    override val actionShowOriginal: String
+        @Composable get() = retrieve("actionShowOriginal")
     override val actionShowResults: String
         @Composable get() = retrieve("actionShowResults")
     override val actionSubmit: String
@@ -509,6 +511,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("messageInvalidPollError")
     override val messageLoadingHashtags: String
         @Composable get() = retrieve("messageLoadingHashtags")
+    override val messageLoadingTranslation: String
+        @Composable get() = retrieve("messageLoadingTranslation")
     override val messageLoadingUsers: String
         @Composable get() = retrieve("messageLoadingUsers")
     override val messageMissingField: String
@@ -870,6 +874,9 @@ class MockStrings : Strings {
     override fun accountFollower(count: Int): String = retrieve("accountFollower")
 
     @Composable
+    override fun actionTranslateTo(lang: String): String = retrieve("actionTranslateTo")
+
+    @Composable
     override fun accountFollowing(count: Int): String = retrieve("accountFollowing")
 
     @Composable
@@ -898,6 +905,12 @@ class MockStrings : Strings {
 
     @Composable
     override fun unreadMessages(count: Int): String = retrieve("unreadMessages")
+
+    @Composable
+    override fun translatedFrom(sourceLang: String): String = retrieve("translatedFrom")
+
+    @Composable
+    override fun translatedUsing(provider: String): String = retrieve("translatedUsing")
 
     override suspend fun unreadNotificationBody(count: Int): String = retrieve("unreadNotificationBody")
 

@@ -22,6 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Annou
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
@@ -56,6 +57,7 @@ class TimelineViewModel(
     private val announcementsManager: AnnouncementsManager,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
+    private val getTranslation: GetTranslationUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
         initialState = TimelineMviModel.State(),
@@ -84,6 +86,7 @@ class TimelineViewModel(
                             hideNavigationBarWhileScrolling =
                                 settings?.hideNavigationBarWhileScrolling ?: true,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
+                            lang = settings?.lang,
                         )
                     }
                 }.launchIn(this)
@@ -180,6 +183,7 @@ class TimelineViewModel(
 
             is TimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is TimelineMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is TimelineMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
         }
     }
 
@@ -564,6 +568,37 @@ class TimelineViewModel(
                     }
                 emitEffect(TimelineMviModel.Effect.TriggerCopy(text))
             }
+        }
+    }
+
+    private fun toggleTranslation(entry: TimelineEntryModel) {
+        val targetLang = uiState.value.lang ?: return
+        if (entry.translationLoading) {
+            return
+        }
+
+        screenModelScope.launch {
+            updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
+
+            val (translation, provider) =
+                if (!entry.isShowingTranslation && entry.translation == null) {
+                    val result =
+                        getTranslation(
+                            entry = entry,
+                            targetLang = targetLang,
+                        )
+                    result?.target to result?.provider
+                } else {
+                    entry.translation to entry.translationProvider
+                }
+            val newEntry =
+                entry.copy(
+                    isShowingTranslation = !entry.isShowingTranslation,
+                    translation = translation?.copy(isShowingTranslation = true),
+                    translationProvider = provider,
+                    translationLoading = false,
+                )
+            updateEntryInState(entry.id) { newEntry }
         }
     }
 }

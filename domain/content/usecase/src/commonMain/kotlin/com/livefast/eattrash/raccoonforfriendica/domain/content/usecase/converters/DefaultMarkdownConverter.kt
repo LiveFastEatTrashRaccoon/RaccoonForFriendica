@@ -1,7 +1,7 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.composer.converters
+package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ContentRegexes
 
 internal class DefaultMarkdownConverter : MarkdownConverter {
     override fun toHtml(value: String) =
@@ -58,7 +58,7 @@ internal class DefaultMarkdownConverter : MarkdownConverter {
                     append("<h5>$content</h5>\n")
                 }
             }.run {
-                ComposerRegexes.BBCODE_SHARE.substituteAllOccurrences(this) { match ->
+                ContentRegexes.BBCODE_SHARE.substituteAllOccurrences(this) { match ->
                     val url = match.groups["url"]?.value.orEmpty()
                     append(url)
                 }
