@@ -13,4 +13,5 @@ data class NodeFeatures(
     val supportsCalendar: Boolean = false,
     val supportsAnnouncements: Boolean = false,
     val supportsDislike: Boolean = false,
+    val supportsTranslation: Boolean = false,
 )
