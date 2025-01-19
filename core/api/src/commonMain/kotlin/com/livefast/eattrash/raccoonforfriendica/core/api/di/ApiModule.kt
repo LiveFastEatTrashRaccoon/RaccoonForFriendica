@@ -2,6 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.DefaultServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.DefaultInnerTranslationService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.InnerTranslationService
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import io.ktor.client.engine.HttpClientEngine
 import org.kodein.di.DI
@@ -26,6 +28,11 @@ val apiModule =
                 DefaultServiceProvider(
                     appInfoRepository = instance(),
                 )
+            }
+        }
+        bind<InnerTranslationService> {
+            singleton {
+                DefaultInnerTranslationService()
             }
         }
     }
