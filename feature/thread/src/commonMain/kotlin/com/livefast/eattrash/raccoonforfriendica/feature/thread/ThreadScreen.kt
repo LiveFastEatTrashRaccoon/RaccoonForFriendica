@@ -60,6 +60,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.get
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
@@ -340,6 +341,14 @@ class ThreadScreen(
                                             )
                                         }
                                     },
+                                onShowOriginal =
+                                    uiState.entry?.original?.let { e ->
+                                        {
+                                            model.reduce(
+                                                ThreadMviModel.Intent.ToggleTranslation(e),
+                                            )
+                                        }
+                                    },
                                 options =
                                     buildList {
                                         val entry = uiState.entry ?: return@buildList
@@ -352,6 +361,24 @@ class ThreadScreen(
                                         }
                                         this += OptionId.ViewDetails.toOption()
                                         this += OptionId.CopyToClipboard.toOption()
+                                        val currentLang = uiState.lang.orEmpty()
+                                        if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
+                                            this +=
+                                                Option(
+                                                    id = OptionId.Translate,
+                                                    label =
+                                                        buildString {
+                                                            append(
+                                                                LocalStrings.current.actionTranslateTo(
+                                                                    currentLang,
+                                                                ),
+                                                            )
+                                                            append(" (")
+                                                            append(LocalStrings.current.experimental)
+                                                            append(")")
+                                                        },
+                                                )
+                                        }
                                     },
                                 onOptionSelected = { optionId ->
                                     when (optionId) {
@@ -378,6 +405,12 @@ class ThreadScreen(
                                         OptionId.CopyToClipboard ->
                                             uiState.entry?.original?.also { entry ->
                                                 model.reduce(ThreadMviModel.Intent.CopyToClipboard(entry))
+                                            }
+                                        OptionId.Translate ->
+                                            uiState.entry?.original?.also { entry ->
+                                                model.reduce(
+                                                    ThreadMviModel.Intent.ToggleTranslation(entry),
+                                                )
                                             }
                                         else -> Unit
                                     }
@@ -459,6 +492,11 @@ class ThreadScreen(
                                         inReplyToUser = e.creator,
                                     )
                                 }.takeIf { actionRepository.canReply(entry.original) },
+                            onShowOriginal = {
+                                model.reduce(
+                                    ThreadMviModel.Intent.ToggleTranslation(entry.original),
+                                )
+                            },
                             options =
                                 buildList {
                                     if (actionRepository.canShare(entry.original)) {
@@ -486,6 +524,24 @@ class ThreadScreen(
                                     }
                                     this += OptionId.ViewDetails.toOption()
                                     this += OptionId.CopyToClipboard.toOption()
+                                    val currentLang = uiState.lang.orEmpty()
+                                    if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
+                                        this +=
+                                            Option(
+                                                id = OptionId.Translate,
+                                                label =
+                                                    buildString {
+                                                        append(
+                                                            LocalStrings.current.actionTranslateTo(
+                                                                currentLang,
+                                                            ),
+                                                        )
+                                                        append(" (")
+                                                        append(LocalStrings.current.experimental)
+                                                        append(")")
+                                                    },
+                                            )
+                                    }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -537,6 +593,11 @@ class ThreadScreen(
                                     }
                                     OptionId.CopyToClipboard ->
                                         model.reduce(ThreadMviModel.Intent.CopyToClipboard(entry.original))
+
+                                    OptionId.Translate ->
+                                        model.reduce(
+                                            ThreadMviModel.Intent.ToggleTranslation(entry.original),
+                                        )
                                     else -> Unit
                                 }
                             },
