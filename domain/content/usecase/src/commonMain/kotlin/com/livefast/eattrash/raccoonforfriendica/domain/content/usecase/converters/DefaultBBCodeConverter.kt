@@ -1,7 +1,7 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.composer.converters
+package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ContentRegexes
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
 
@@ -39,12 +39,12 @@ internal class DefaultBBCodeConverter : BBCodeConverter {
             .replace("[quote]", "<blockquote>")
             .replace("[/quote]", "</blockquote>")
             .run {
-                ComposerRegexes.BBCODE_SHARE.substituteAllOccurrences(this) { match ->
+                ContentRegexes.BBCODE_SHARE.substituteAllOccurrences(this) { match ->
                     val url = match.groups["url"]?.value.orEmpty()
                     append("<a href=\"$url\">$url</a>")
                 }
             }.run {
-                ComposerRegexes.BBCODE_URL.substituteAllOccurrences(this) { match ->
+                ContentRegexes.BBCODE_URL.substituteAllOccurrences(this) { match ->
                     val url = match.groups["url"]?.value.orEmpty()
                     val anchor = match.groups["anchor"]?.value.orEmpty()
                     append("<a href=\"$url\">$anchor</a>")

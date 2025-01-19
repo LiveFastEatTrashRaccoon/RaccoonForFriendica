@@ -17,6 +17,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurre
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ContentRegexes
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
@@ -43,13 +44,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Searc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.StripMarkupUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.BBCodeConverter
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.converters.BBCodeConverter
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase.PrepareForPreviewUseCase
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase.StripMarkupUseCase
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.utils.ComposerRegexes
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -523,7 +523,7 @@ class ComposerViewModel(
                 null
             }
 
-        val mentionMatches = ComposerRegexes.USER_MENTION.findAll(currentText).toList()
+        val mentionMatches = ContentRegexes.USER_MENTION.findAll(currentText).toList()
         val currentMention = mentionMatches.firstOrNull { it.range.contains(currentPosition) }
         val shouldShowMentionSuggestions = currentMention != null
         if (currentMention != null) {
@@ -531,7 +531,7 @@ class ComposerViewModel(
             refreshMentionSuggestions(handlePrefix)
         }
 
-        val hashtagMatches = ComposerRegexes.HASHTAG.findAll(currentText).toList()
+        val hashtagMatches = ContentRegexes.HASHTAG.findAll(currentText).toList()
         val currentHashtag = hashtagMatches.firstOrNull { it.range.contains(currentPosition) }
         val shouldShowHashtagSuggestions = currentHashtag != null
         if (currentHashtag != null) {
@@ -709,7 +709,7 @@ class ComposerViewModel(
                     null
                 }
             val newText =
-                ComposerRegexes.USER_MENTION.substituteAllOccurrences(text) { match ->
+                ContentRegexes.USER_MENTION.substituteAllOccurrences(text) { match ->
                     val isCurrentOccurrence = match.range.contains(currentPosition)
                     if (!isCurrentOccurrence) {
                         // skips occurrence
@@ -752,7 +752,7 @@ class ComposerViewModel(
                     null
                 }
             val newText =
-                ComposerRegexes.HASHTAG.substituteAllOccurrences(text) { match ->
+                ContentRegexes.HASHTAG.substituteAllOccurrences(text) { match ->
                     val isCurrentOccurrence = match.range.contains(currentPosition)
                     if (!isCurrentOccurrence) {
                         // skips occurrence
