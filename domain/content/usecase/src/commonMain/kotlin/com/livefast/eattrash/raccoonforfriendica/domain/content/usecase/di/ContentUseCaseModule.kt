@@ -1,10 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultExportUserListUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultGetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultStripMarkupUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ExportUserListUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.StripMarkupUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
@@ -51,6 +53,16 @@ val contentUseCaseModule =
                 DefaultStripMarkupUseCase(
                     bbCodeConverter = instance(),
                     markdownConverter = instance(),
+                )
+            }
+        }
+        bind<GetTranslationUseCase> {
+            singleton {
+                DefaultGetTranslationUseCase(
+                    supportedFeatureRepository = instance(),
+                    defaultRepository = instance(tag = "default"),
+                    fallbackRepository = instance(tag = "fallback"),
+                    stripMarkup = instance(),
                 )
             }
         }
