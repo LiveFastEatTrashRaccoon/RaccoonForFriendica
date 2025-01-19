@@ -65,6 +65,10 @@ interface TimelineMviModel :
         data class CopyToClipboard(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class ToggleTranslation(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -82,6 +86,7 @@ interface TimelineMviModel :
         val hideNavigationBarWhileScrolling: Boolean = true,
         val unreadAnnouncements: Int = 0,
         val layout: TimelineLayout = TimelineLayout.Full,
+        val lang: String? = null,
     )
 
     sealed interface Effect {
