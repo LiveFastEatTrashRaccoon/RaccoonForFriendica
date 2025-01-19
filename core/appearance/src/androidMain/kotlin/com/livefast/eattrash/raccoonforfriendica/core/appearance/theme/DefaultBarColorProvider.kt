@@ -13,6 +13,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 
 internal class DefaultBarColorProvider : BarColorProvider {
+    override val isBarThemeSupported: Boolean
+        get() = Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM
+
     @Composable
     override fun setBarColorAccordingToTheme(
         theme: UiTheme,
@@ -39,19 +42,17 @@ internal class DefaultBarColorProvider : BarColorProvider {
                         UiBarTheme.Transparent -> baseColor.copy(alpha = 0.01f)
                         else -> baseColor
                     }.toArgb()
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                if (isBarThemeSupported) {
                     statusBarColor = barColor
                     navigationBarColor = barColor
                 }
 
-                if (barTheme != UiBarTheme.Solid) {
-                    WindowCompat.setDecorFitsSystemWindows(this, false)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                            isStatusBarContrastEnforced = true
-                        }
-                        isNavigationBarContrastEnforced = true
+                WindowCompat.setDecorFitsSystemWindows(this, false)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                        isStatusBarContrastEnforced = true
                     }
+                    isNavigationBarContrastEnforced = true
                 }
 
                 val forceLight = baseColor == Color.White
