@@ -177,6 +177,7 @@ interface SettingsMviModel :
         val barTheme: UiBarTheme = UiBarTheme.Transparent,
         val timelineLayout: TimelineLayout = TimelineLayout.Full,
         val pushNotificationPermissionState: PermissionState = PermissionState.NotDetermined,
+        val isBarThemeSupported: Boolean = false,
     )
 
     sealed interface Effect {

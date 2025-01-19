@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScal
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeColorRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.BarColorProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSchemeProvider
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
@@ -64,6 +65,7 @@ class SettingsViewModel(
     private val importSettings: ImportSettingsUseCase,
     private val exportSettings: ExportSettingsUseCase,
     private val permissionController: PermissionsController,
+    private val barColorProvider: BarColorProvider,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
@@ -96,6 +98,7 @@ class SettingsViewModel(
                     appIconChangeSupported = appIconManager.supportsMultipleIcons,
                     supportSettingsImportExport = fileSystemManager.isSupported,
                     pushNotificationPermissionState = pushNotificationPermissionState,
+                    isBarThemeSupported = barColorProvider.isBarThemeSupported,
                 )
             }
 

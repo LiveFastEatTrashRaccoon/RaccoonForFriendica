@@ -433,13 +433,15 @@ class SettingsScreen : Screen {
                                 },
                             )
                         }
-                        SettingsRow(
-                            title = LocalStrings.current.settingsItemBarTheme,
-                            value = uiState.barTheme.toReadableName(),
-                            onTap = {
-                                barThemeBottomSheetOpened = true
-                            },
-                        )
+                        if (uiState.isBarThemeSupported) {
+                            SettingsRow(
+                                title = LocalStrings.current.settingsItemBarTheme,
+                                value = uiState.barTheme.toReadableName(),
+                                onTap = {
+                                    barThemeBottomSheetOpened = true
+                                },
+                            )
+                        }
 
                         // NSFW section
                         SettingsHeader(
