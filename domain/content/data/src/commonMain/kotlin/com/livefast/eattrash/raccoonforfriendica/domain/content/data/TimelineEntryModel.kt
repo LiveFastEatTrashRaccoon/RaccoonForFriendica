@@ -45,6 +45,10 @@ data class TimelineEntryModel(
     val updated: String? = null,
     val url: String? = null,
     val visibility: Visibility = Visibility.Public,
+    @Transient val isShowingTranslation: Boolean = false,
+    @Transient val translation: TimelineEntryModel? = null,
+    @Transient val translationLoading: Boolean = false,
+    @Transient val translationProvider: String? = null,
 )
 
 val TimelineEntryModel.safeKey: String
