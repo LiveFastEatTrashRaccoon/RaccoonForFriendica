@@ -32,6 +32,7 @@ val settingsModule =
                     fileSystemManager = instance(),
                     importSettings = instance(),
                     exportSettings = instance(),
+                    barColorProvider = instance(),
                 )
             }
         }
