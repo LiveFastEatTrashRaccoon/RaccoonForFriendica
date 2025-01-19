@@ -27,8 +27,9 @@ val timelineModule =
                     announcementsManager = instance(),
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
+                    getTranslation = instance(),
                     notificationCenter = instance(),
-            )
+                )
+            }
         }
     }
-}
