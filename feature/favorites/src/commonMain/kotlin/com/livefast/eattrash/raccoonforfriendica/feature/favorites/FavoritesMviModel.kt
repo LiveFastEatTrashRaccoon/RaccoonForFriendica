@@ -60,6 +60,10 @@ interface FavoritesMviModel :
         data class CopyToClipboard(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class ToggleTranslation(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -74,6 +78,7 @@ interface FavoritesMviModel :
         val autoloadImages: Boolean = true,
         val hideNavigationBarWhileScrolling: Boolean = true,
         val layout: TimelineLayout = TimelineLayout.Full,
+        val lang: String? = null,
     )
 
     sealed interface Effect {
