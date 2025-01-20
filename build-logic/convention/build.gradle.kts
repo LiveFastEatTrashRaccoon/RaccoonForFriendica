@@ -25,6 +25,11 @@ gradlePlugin {
             implementationClass = "plugins.SentryDsnPlugin"
         }
 
+        register("innerTranslationApi") {
+            id = "com.livefast.eattrash.innerTranslationApi"
+            implementationClass = "plugins.InnerTranslationApiPlugin"
+        }
+
         register("composeMultiplatform") {
             id = "com.livefast.eattrash.composeMultiplatform"
             implementationClass = "plugins.ComposeMultiplatformPlugin"
