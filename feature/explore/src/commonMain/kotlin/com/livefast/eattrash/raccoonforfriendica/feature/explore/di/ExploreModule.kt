@@ -23,6 +23,7 @@ val exploreModule =
                     imageAutoloadObserver = instance(),
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
+                    getTranslation = instance(),
                     notificationCenter = instance(),
                 )
             }

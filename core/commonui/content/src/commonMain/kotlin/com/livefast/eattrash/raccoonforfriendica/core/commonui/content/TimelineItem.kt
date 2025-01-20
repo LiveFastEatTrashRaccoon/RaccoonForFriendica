@@ -46,6 +46,7 @@ fun TimelineItem(
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
     onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
+    onShowOriginal: (() -> Unit)? = null,
 ) {
     val isReblog = entry.reblog != null
     val isReply = entry.inReplyTo != null
@@ -254,7 +255,7 @@ fun TimelineItem(
                     actionsEnabled = actionsEnabled,
                     autoloadImages = autoloadImages,
                     blurNsfw = blurNsfw,
-                    entryToDisplay = entryToDisplay,
+                    entry = entryToDisplay,
                     extendedSocialInfoEnabled = extendedSocialInfoEnabled,
                     originalCreator = entry.creator?.takeIf { isReblog },
                     originalInReplyTo = entry.inReplyTo?.takeIf { isReply },
@@ -280,13 +281,14 @@ fun TimelineItem(
                     onPollVote = onPollVote,
                     onReblog = onReblog,
                     onReply = onReply,
+                    onShowOriginal = onShowOriginal,
                 )
 
             TimelineLayout.DistractionFree ->
                 DistractionFreeTimelineItem(
                     actionsEnabled = actionsEnabled,
                     autoloadImages = autoloadImages,
-                    entryToDisplay = entryToDisplay,
+                    entry = entryToDisplay,
                     originalCreator = entry.creator?.takeIf { isReblog },
                     originalInReplyTo = entry.inReplyTo?.takeIf { isReply },
                     maxBodyLines = maxBodyLines,
@@ -306,6 +308,7 @@ fun TimelineItem(
                     },
                     onReblog = onReblog,
                     onReply = onReply,
+                    onShowOriginal = onShowOriginal,
                 )
 
             TimelineLayout.Compact ->
@@ -313,7 +316,7 @@ fun TimelineItem(
                     actionsEnabled = actionsEnabled,
                     autoloadImages = autoloadImages,
                     blurNsfw = blurNsfw,
-                    entryToDisplay = entryToDisplay,
+                    entry = entryToDisplay,
                     extendedSocialInfoEnabled = extendedSocialInfoEnabled,
                     originalCreator = entry.creator?.takeIf { isReblog },
                     originalInReplyTo = entry.inReplyTo?.takeIf { isReply },
@@ -339,6 +342,7 @@ fun TimelineItem(
                     onPollVote = onPollVote,
                     onReblog = onReblog,
                     onReply = onReply,
+                    onShowOriginal = onShowOriginal,
                 )
 
             TimelineLayout.Card ->
@@ -346,7 +350,7 @@ fun TimelineItem(
                     actionsEnabled = actionsEnabled,
                     autoloadImages = autoloadImages,
                     blurNsfw = blurNsfw,
-                    entryToDisplay = entryToDisplay,
+                    entry = entryToDisplay,
                     extendedSocialInfoEnabled = extendedSocialInfoEnabled,
                     originalCreator = entry.creator?.takeIf { isReblog },
                     originalInReplyTo = entry.inReplyTo?.takeIf { isReply },
@@ -372,6 +376,7 @@ fun TimelineItem(
                     onPollVote = onPollVote,
                     onReblog = onReblog,
                     onReply = onReply,
+                    onShowOriginal = onShowOriginal,
                 )
         }
     }

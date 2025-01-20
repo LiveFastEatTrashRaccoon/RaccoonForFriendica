@@ -416,6 +416,11 @@
     <string name="visibility_private">Only followers</string>
     <string name="visibility_public">Public</string>
     <string name="visibility_unlisted">Unlisted</string>
+    <string name="action_show_original">show original</string>
+    <string name="action_translate_to">Translate to %1$s</string>
+    <string name="message_loading_translation">Loading translations</string>
+    <string name="translated_from">translated from %1$s</string>
+    <string name="translated_using">powered by %1$s</string>
 
     <plurals name="account_follower">
         <item quantity="one">%1$d follower</item>

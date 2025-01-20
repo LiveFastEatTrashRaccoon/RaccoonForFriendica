@@ -20,6 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -44,6 +45,7 @@ class HashtagViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
+    private val getTranslation: GetTranslationUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>(
         initialState = HashtagMviModel.State(),
@@ -58,6 +60,7 @@ class HashtagViewModel(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
+                            lang = settings?.lang,
                         )
                     }
                 }.launchIn(this)
@@ -137,6 +140,7 @@ class HashtagViewModel(
             is HashtagMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is HashtagMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
             is HashtagMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is HashtagMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
         }
     }
 
@@ -455,6 +459,38 @@ class HashtagViewModel(
                     }
                 emitEffect(HashtagMviModel.Effect.TriggerCopy(text))
             }
+        }
+    }
+
+    private fun toggleTranslation(entry: TimelineEntryModel) {
+        val targetLang = uiState.value.lang ?: return
+        if (entry.translationLoading) {
+            return
+        }
+
+        screenModelScope.launch {
+            updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
+            val isBeingTranslated = !entry.isShowingTranslation
+
+            val (translation, provider) =
+                when {
+                    isBeingTranslated && entry.translation == null -> {
+                        val result = getTranslation(entry = entry, targetLang = targetLang)
+                        result?.target to result?.provider
+                    }
+
+                    isBeingTranslated -> entry.translation to entry.translationProvider
+
+                    else -> entry to entry.translationProvider
+                }
+            val newEntry =
+                entry.copy(
+                    isShowingTranslation = isBeingTranslated,
+                    translation = translation,
+                    translationProvider = provider,
+                    translationLoading = false,
+                )
+            updateEntryInState(entry.id) { newEntry }
         }
     }
 }

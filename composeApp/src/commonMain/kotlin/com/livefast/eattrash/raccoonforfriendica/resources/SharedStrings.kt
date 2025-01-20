@@ -87,12 +87,14 @@ import raccoonforfriendica.composeapp.generated.resources.action_send_follow_req
 import raccoonforfriendica.composeapp.generated.resources.action_set_schedule_date
 import raccoonforfriendica.composeapp.generated.resources.action_share
 import raccoonforfriendica.composeapp.generated.resources.action_show_content_description
+import raccoonforfriendica.composeapp.generated.resources.action_show_original
 import raccoonforfriendica.composeapp.generated.resources.action_show_results
 import raccoonforfriendica.composeapp.generated.resources.action_submit
 import raccoonforfriendica.composeapp.generated.resources.action_switch_account
 import raccoonforfriendica.composeapp.generated.resources.action_switch_to_classic_mode
 import raccoonforfriendica.composeapp.generated.resources.action_switch_to_forum_mode
 import raccoonforfriendica.composeapp.generated.resources.action_toggle_reveal
+import raccoonforfriendica.composeapp.generated.resources.action_translate_to
 import raccoonforfriendica.composeapp.generated.resources.action_unblock
 import raccoonforfriendica.composeapp.generated.resources.action_unfollow
 import raccoonforfriendica.composeapp.generated.resources.action_unmute
@@ -263,6 +265,7 @@ import raccoonforfriendica.composeapp.generated.resources.message_generic_error
 import raccoonforfriendica.composeapp.generated.resources.message_invalid_field
 import raccoonforfriendica.composeapp.generated.resources.message_invalid_poll_error
 import raccoonforfriendica.composeapp.generated.resources.message_loading_hashtags
+import raccoonforfriendica.composeapp.generated.resources.message_loading_translation
 import raccoonforfriendica.composeapp.generated.resources.message_loading_users
 import raccoonforfriendica.composeapp.generated.resources.message_missing_field
 import raccoonforfriendica.composeapp.generated.resources.message_missing_rules
@@ -424,6 +427,8 @@ import raccoonforfriendica.composeapp.generated.resources.timeline_layout_full
 import raccoonforfriendica.composeapp.generated.resources.timeline_local
 import raccoonforfriendica.composeapp.generated.resources.timeline_subscriptions
 import raccoonforfriendica.composeapp.generated.resources.topic_title
+import raccoonforfriendica.composeapp.generated.resources.translated_from
+import raccoonforfriendica.composeapp.generated.resources.translated_using
 import raccoonforfriendica.composeapp.generated.resources.unpublished_section_drafts
 import raccoonforfriendica.composeapp.generated.resources.unpublished_section_scheduled
 import raccoonforfriendica.composeapp.generated.resources.unpublished_title
@@ -1299,9 +1304,16 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.visibility_public)
     override val visibilityUnlisted: String
         @Composable get() = stringResource(Res.string.visibility_unlisted)
+    override val actionShowOriginal: String
+        @Composable get() = stringResource(Res.string.action_show_original)
+    override val messageLoadingTranslation: String
+        @Composable get() = stringResource(Res.string.message_loading_translation)
 
     @Composable
     override fun accountFollower(count: Int): String = pluralStringResource(Res.plurals.account_follower, count, count)
+
+    @Composable
+    override fun actionTranslateTo(lang: String): String = stringResource(Res.string.action_translate_to, lang)
 
     @Composable
     override fun accountFollowing(count: Int): String = pluralStringResource(Res.plurals.account_following, count, count)
@@ -1335,6 +1347,12 @@ class SharedStrings : Strings {
 
     @Composable
     override fun unreadMessages(count: Int): String = pluralStringResource(Res.plurals.unread_messages, count, count)
+
+    @Composable
+    override fun translatedFrom(lang: String): String = stringResource(Res.string.translated_from, lang)
+
+    @Composable
+    override fun translatedUsing(provider: String): String = stringResource(Res.string.translated_using, provider)
 
     override suspend fun unreadNotificationBody(count: Int): String =
         getPluralString(resource = Res.plurals.unread_notification_body, quantity = count, count)

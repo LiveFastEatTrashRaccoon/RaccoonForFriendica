@@ -31,6 +31,12 @@ jobs:
         run: |
           echo sentry_dsn=$SENTRY_DSN > core/utils/build.properties
 
+      - name: Create Translation API config file
+        env:
+          TRANSLATION_API_URL: ${{ secrets.INNER_TRANSLATION_API_URL }}
+        run: |
+          echo inner_translation_api_url=$TRANSLATION_API_URL > core/api/build.properties
+
       - name: Decode keystore
         env:
           ENCODED_STRING: ${{ secrets.KEYSTORE_BASE_64 }}

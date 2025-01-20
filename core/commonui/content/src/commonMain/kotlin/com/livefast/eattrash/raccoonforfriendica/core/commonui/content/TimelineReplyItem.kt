@@ -50,6 +50,7 @@ fun TimelineReplyItem(
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
+    onShowOriginal: (() -> Unit)? = null,
 ) {
     val entryToDisplay = entry.original
     val depthZeroBased = entry.depth - 1
@@ -248,7 +249,7 @@ fun TimelineReplyItem(
                         actionsEnabled = actionsEnabled,
                         autoloadImages = autoloadImages,
                         blurNsfw = blurNsfw,
-                        entryToDisplay = entryToDisplay,
+                        entry = entryToDisplay,
                         options = options,
                         optionsMenuOpen = optionsMenuOpen,
                         onBookmark = onBookmark,
@@ -264,6 +265,7 @@ fun TimelineReplyItem(
                         },
                         onReblog = onReblog,
                         onReply = onReply,
+                        onShowOriginal = onShowOriginal,
                     )
 
                 TimelineLayout.DistractionFree ->
@@ -271,7 +273,7 @@ fun TimelineReplyItem(
                         modifier = contentModifier,
                         actionsEnabled = actionsEnabled,
                         autoloadImages = autoloadImages,
-                        entryToDisplay = entryToDisplay,
+                        entry = entryToDisplay,
                         options = options,
                         optionsMenuOpen = optionsMenuOpen,
                         onBookmark = onBookmark,
@@ -286,6 +288,7 @@ fun TimelineReplyItem(
                         },
                         onReblog = onReblog,
                         onReply = onReply,
+                        onShowOriginal = onShowOriginal,
                     )
 
                 TimelineLayout.Compact ->
@@ -294,7 +297,7 @@ fun TimelineReplyItem(
                         actionsEnabled = actionsEnabled,
                         autoloadImages = autoloadImages,
                         blurNsfw = blurNsfw,
-                        entryToDisplay = entryToDisplay,
+                        entry = entryToDisplay,
                         options = options,
                         optionsMenuOpen = optionsMenuOpen,
                         onBookmark = onBookmark,
@@ -310,6 +313,7 @@ fun TimelineReplyItem(
                         },
                         onReblog = onReblog,
                         onReply = onReply,
+                        onShowOriginal = onShowOriginal,
                     )
             }
         }

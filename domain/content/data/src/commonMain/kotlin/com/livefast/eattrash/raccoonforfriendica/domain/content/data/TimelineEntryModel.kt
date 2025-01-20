@@ -45,6 +45,10 @@ data class TimelineEntryModel(
     val updated: String? = null,
     val url: String? = null,
     val visibility: Visibility = Visibility.Public,
+    @Transient val isShowingTranslation: Boolean = false,
+    @Transient val translation: TimelineEntryModel? = null,
+    @Transient val translationLoading: Boolean = false,
+    @Transient val translationProvider: String? = null,
 )
 
 val TimelineEntryModel.safeKey: String
@@ -117,3 +121,21 @@ val TimelineEntryModel.embeddedImageUrls: List<String>
                 }
             }
         }
+
+val TimelineEntryModel.titleToDisplay: String?
+    get() = translation?.title?.takeIf { isShowingTranslation } ?: title
+
+val TimelineEntryModel.spoilerToDisplay: String?
+    get() = translation?.spoiler?.takeIf { isShowingTranslation } ?: spoiler
+
+val TimelineEntryModel.contentToDisplay: String
+    get() = translation?.content?.takeIf { isShowingTranslation } ?: content
+
+val TimelineEntryModel.pollToDisplay: PollModel?
+    get() = translation?.poll?.takeIf { isShowingTranslation } ?: poll
+
+val TimelineEntryModel.attachmentsToDisplay: List<AttachmentModel>
+    get() = translation?.attachments?.takeIf { isShowingTranslation } ?: attachments
+
+val TimelineEntryModel.cardToDisplay: PreviewCardModel?
+    get() = translation?.card?.takeIf { isShowingTranslation } ?: card

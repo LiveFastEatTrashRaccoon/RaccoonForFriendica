@@ -34,6 +34,8 @@ sealed interface OptionId {
 
     data object CopyToClipboard : OptionId
 
+    data object Translate : OptionId
+
     interface Custom : OptionId
 }
 

@@ -35,10 +35,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.contentToDisplay
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.spoilerToDisplay
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.titleToDisplay
 
 @Composable
 internal fun DistractionFreeTimelineItem(
-    entryToDisplay: TimelineEntryModel,
+    entry: TimelineEntryModel,
     modifier: Modifier = Modifier,
     actionsEnabled: Boolean = true,
     autoloadImages: Boolean = true,
@@ -59,10 +62,11 @@ internal fun DistractionFreeTimelineItem(
     onOptionsMenuToggled: ((Boolean) -> Unit)? = null,
     onReblog: ((TimelineEntryModel) -> Unit)? = null,
     onReply: ((TimelineEntryModel) -> Unit)? = null,
+    onShowOriginal: (() -> Unit)? = null,
 ) {
     val contentHorizontalPadding = Spacing.s
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
-    val spoiler = entryToDisplay.spoiler.orEmpty()
+    val spoiler = entry.spoilerToDisplay.orEmpty()
 
     Column(
         modifier = modifier,
@@ -97,11 +101,11 @@ internal fun DistractionFreeTimelineItem(
         ) {
             ContentHeader(
                 modifier = Modifier.weight(1f),
-                user = entryToDisplay.creator,
+                user = entry.creator,
                 autoloadImages = autoloadImages,
-                date = entryToDisplay.updated ?: entryToDisplay.created,
-                scheduleDate = entryToDisplay.scheduled,
-                isEdited = entryToDisplay.updated != null,
+                date = entry.updated ?: entry.created,
+                scheduleDate = entry.scheduled,
+                isEdited = entry.updated != null,
                 onOpenUser = onOpenUser,
             )
             if (options.isNotEmpty()) {
@@ -179,7 +183,7 @@ internal fun DistractionFreeTimelineItem(
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
                 // post title
-                val title = entryToDisplay.title
+                val title = entry.titleToDisplay
                 if (!title.isNullOrBlank()) {
                     ContentTitle(
                         modifier =
@@ -189,14 +193,14 @@ internal fun DistractionFreeTimelineItem(
                         content = title,
                         maxLines = maxTitleLines,
                         autoloadImages = autoloadImages,
-                        emojis = entryToDisplay.emojis,
-                        onClick = { onClick?.invoke(entryToDisplay) },
+                        emojis = entry.emojis,
+                        onClick = { onClick?.invoke(entry) },
                         onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     )
                 }
 
                 // post body
-                val body = entryToDisplay.content
+                val body = entry.contentToDisplay
                 if (body.isNotBlank()) {
                     ContentBody(
                         modifier =
@@ -210,13 +214,28 @@ internal fun DistractionFreeTimelineItem(
                         content = body,
                         autoloadImages = autoloadImages,
                         maxLines = maxBodyLines,
-                        emojis = entryToDisplay.emojis,
-                        onClick = { onClick?.invoke(entryToDisplay) },
+                        emojis = entry.emojis,
+                        onClick = { onClick?.invoke(entry) },
                         onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     )
                 }
             }
         }
+
+        TranslationFooter(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = Spacing.xs,
+                        end = Spacing.m,
+                    ),
+            lang = entry.lang,
+            isShowingTranslation = entry.isShowingTranslation,
+            provider = entry.translationProvider,
+            translationLoading = entry.translationLoading,
+            onShowOriginal = onShowOriginal,
+        )
 
         if (actionsEnabled) {
             ContentFooter(
@@ -228,45 +247,45 @@ internal fun DistractionFreeTimelineItem(
                             start = contentHorizontalPadding,
                             end = contentHorizontalPadding,
                         ),
-                favoriteCount = entryToDisplay.favoriteCount,
-                favorite = entryToDisplay.favorite,
-                favoriteLoading = entryToDisplay.favoriteLoading,
-                reblogCount = entryToDisplay.reblogCount,
-                reblogged = entryToDisplay.reblogged,
-                reblogLoading = entryToDisplay.reblogLoading,
-                bookmarked = entryToDisplay.bookmarked,
-                bookmarkLoading = entryToDisplay.bookmarkLoading,
-                replyCount = entryToDisplay.replyCount,
-                disliked = entryToDisplay.disliked,
-                dislikeCount = entryToDisplay.dislikesCount,
-                dislikeLoading = entryToDisplay.dislikeLoading,
+                favoriteCount = entry.favoriteCount,
+                favorite = entry.favorite,
+                favoriteLoading = entry.favoriteLoading,
+                reblogCount = entry.reblogCount,
+                reblogged = entry.reblogged,
+                reblogLoading = entry.reblogLoading,
+                bookmarked = entry.bookmarked,
+                bookmarkLoading = entry.bookmarkLoading,
+                replyCount = entry.replyCount,
+                disliked = entry.disliked,
+                dislikeCount = entry.dislikesCount,
+                dislikeLoading = entry.dislikeLoading,
                 onReply =
                     if (onReply != null) {
-                        { onReply(entryToDisplay) }
+                        { onReply(entry) }
                     } else {
                         null
                     },
                 onReblog =
                     if (onReblog != null) {
-                        { onReblog(entryToDisplay) }
+                        { onReblog(entry) }
                     } else {
                         null
                     },
                 onFavorite =
                     if (onFavorite != null) {
-                        { onFavorite(entryToDisplay) }
+                        { onFavorite(entry) }
                     } else {
                         null
                     },
                 onBookmark =
                     if (onBookmark != null) {
-                        { onBookmark(entryToDisplay) }
+                        { onBookmark(entry) }
                     } else {
                         null
                     },
                 onDislike =
                     if (onDislike != null) {
-                        { onDislike(entryToDisplay) }
+                        { onDislike(entry) }
                     } else {
                         null
                     },

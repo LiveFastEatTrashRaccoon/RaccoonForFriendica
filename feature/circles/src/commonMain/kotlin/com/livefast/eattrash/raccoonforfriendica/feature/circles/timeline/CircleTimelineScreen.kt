@@ -49,6 +49,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
@@ -296,6 +297,11 @@ class CircleTimelineScreen(
                                         )
                                     }
                                 },
+                            onShowOriginal = {
+                                model.reduce(
+                                    CircleTimelineMviModel.Intent.ToggleTranslation(entry.original),
+                                )
+                            },
                             options =
                                 buildList {
                                     if (actionRepository.canShare(entry.original)) {
@@ -330,6 +336,24 @@ class CircleTimelineScreen(
                                     }
                                     this += OptionId.ViewDetails.toOption()
                                     this += OptionId.CopyToClipboard.toOption()
+                                    val currentLang = uiState.lang.orEmpty()
+                                    if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
+                                        this +=
+                                            Option(
+                                                id = OptionId.Translate,
+                                                label =
+                                                    buildString {
+                                                        append(
+                                                            LocalStrings.current.actionTranslateTo(
+                                                                currentLang,
+                                                            ),
+                                                        )
+                                                        append(" (")
+                                                        append(LocalStrings.current.experimental)
+                                                        append(")")
+                                                    },
+                                            )
+                                    }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -389,6 +413,13 @@ class CircleTimelineScreen(
                                     OptionId.CopyToClipboard ->
                                         model.reduce(
                                             CircleTimelineMviModel.Intent.CopyToClipboard(
+                                                entry.original,
+                                            ),
+                                        )
+
+                                    OptionId.Translate ->
+                                        model.reduce(
+                                            CircleTimelineMviModel.Intent.ToggleTranslation(
                                                 entry.original,
                                             ),
                                         )

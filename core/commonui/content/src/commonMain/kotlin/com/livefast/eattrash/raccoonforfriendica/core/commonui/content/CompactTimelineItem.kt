@@ -37,11 +37,16 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.attachmentsToDisplay
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.contentToDisplay
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.embeddedImageUrls
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.pollToDisplay
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.spoilerToDisplay
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.titleToDisplay
 
 @Composable
 internal fun CompactTimelineItem(
-    entryToDisplay: TimelineEntryModel,
+    entry: TimelineEntryModel,
     modifier: Modifier = Modifier,
     actionsEnabled: Boolean = true,
     autoloadImages: Boolean = true,
@@ -69,10 +74,11 @@ internal fun CompactTimelineItem(
     onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
     onReblog: ((TimelineEntryModel) -> Unit)? = null,
     onReply: ((TimelineEntryModel) -> Unit)? = null,
+    onShowOriginal: (() -> Unit)? = null,
 ) {
     val contentHorizontalPadding = Spacing.s
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
-    val spoiler = entryToDisplay.spoiler.orEmpty()
+    val spoiler = entry.spoilerToDisplay.orEmpty()
 
     Column(
         modifier = modifier,
@@ -107,11 +113,11 @@ internal fun CompactTimelineItem(
         ) {
             ContentHeader(
                 modifier = Modifier.weight(1f),
-                user = entryToDisplay.creator,
+                user = entry.creator,
                 autoloadImages = autoloadImages,
-                date = entryToDisplay.updated ?: entryToDisplay.created,
-                scheduleDate = entryToDisplay.scheduled,
-                isEdited = entryToDisplay.updated != null,
+                date = entry.updated ?: entry.created,
+                scheduleDate = entry.scheduled,
+                isEdited = entry.updated != null,
                 onOpenUser = onOpenUser,
             )
             if (options.isNotEmpty()) {
@@ -186,7 +192,7 @@ internal fun CompactTimelineItem(
             visible = spoilerActive || spoiler.isEmpty(),
         ) {
             val attachments =
-                entryToDisplay.attachments.filter { it.url !in entryToDisplay.embeddedImageUrls }
+                entry.attachmentsToDisplay.filter { it.url !in entry.embeddedImageUrls }
             Column(
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
@@ -200,7 +206,7 @@ internal fun CompactTimelineItem(
                         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                     ) {
                         // post title
-                        val title = entryToDisplay.title
+                        val title = entry.titleToDisplay
                         if (!title.isNullOrBlank()) {
                             ContentTitle(
                                 modifier =
@@ -210,14 +216,14 @@ internal fun CompactTimelineItem(
                                 content = title,
                                 maxLines = maxTitleLines,
                                 autoloadImages = autoloadImages,
-                                emojis = entryToDisplay.emojis,
-                                onClick = { onClick?.invoke(entryToDisplay) },
+                                emojis = entry.emojis,
+                                onClick = { onClick?.invoke(entry) },
                                 onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                             )
                         }
 
                         // post body
-                        val body = entryToDisplay.content
+                        val body = entry.contentToDisplay
                         if (body.isNotBlank()) {
                             ContentBody(
                                 modifier =
@@ -231,8 +237,8 @@ internal fun CompactTimelineItem(
                                 content = body,
                                 autoloadImages = autoloadImages,
                                 maxLines = maxBodyLines,
-                                emojis = entryToDisplay.emojis,
-                                onClick = { onClick?.invoke(entryToDisplay) },
+                                emojis = entry.emojis,
+                                onClick = { onClick?.invoke(entry) },
                                 onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                             )
                         }
@@ -244,13 +250,10 @@ internal fun CompactTimelineItem(
                     if (visualAttachments.isNotEmpty()) {
                         ContentVisualAttachments(
                             modifier = Modifier.weight(1 - COMPACT_POST_TITLE_WEIGHT),
-                            attachments =
-                                entryToDisplay.attachments.filter {
-                                    it.url !in entryToDisplay.embeddedImageUrls
-                                },
+                            attachments = visualAttachments,
                             blurNsfw = blurNsfw,
                             autoloadImages = autoloadImages,
-                            sensitive = entryToDisplay.sensitive,
+                            sensitive = entry.sensitive,
                             cornerSize = CornerSize.s,
                             onOpenImage = onOpenImage,
                         )
@@ -267,14 +270,14 @@ internal fun CompactTimelineItem(
                 }
 
                 // poll
-                entryToDisplay.poll?.also { poll ->
+                entry.pollToDisplay?.also { poll ->
                     PollCard(
                         modifier = Modifier.fillMaxWidth(),
                         poll = poll,
-                        emojis = entryToDisplay.emojis,
+                        emojis = entry.emojis,
                         enabled = pollEnabled,
                         onVote = { choices ->
-                            onPollVote?.invoke(entryToDisplay, choices)
+                            onPollVote?.invoke(entry, choices)
                         },
                     )
                 }
@@ -289,16 +292,31 @@ internal fun CompactTimelineItem(
                         vertical = Spacing.xs,
                         horizontal = contentHorizontalPadding,
                     ),
-                reblogCount = entryToDisplay.reblogCount,
-                favoriteCount = entryToDisplay.favoriteCount,
+                reblogCount = entry.reblogCount,
+                favoriteCount = entry.favoriteCount,
                 onOpenUsersReblog = {
-                    onOpenUsersReblog?.invoke(entryToDisplay)
+                    onOpenUsersReblog?.invoke(entry)
                 },
                 onOpenUsersFavorite = {
-                    onOpenUsersFavorite?.invoke(entryToDisplay)
+                    onOpenUsersFavorite?.invoke(entry)
                 },
             )
         }
+
+        TranslationFooter(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = Spacing.xs,
+                        end = Spacing.m,
+                    ),
+            lang = entry.lang,
+            isShowingTranslation = entry.isShowingTranslation,
+            provider = entry.translationProvider,
+            translationLoading = entry.translationLoading,
+            onShowOriginal = onShowOriginal,
+        )
 
         if (actionsEnabled) {
             ContentFooter(
@@ -310,45 +328,45 @@ internal fun CompactTimelineItem(
                             start = contentHorizontalPadding,
                             end = contentHorizontalPadding,
                         ),
-                favoriteCount = entryToDisplay.favoriteCount,
-                favorite = entryToDisplay.favorite,
-                favoriteLoading = entryToDisplay.favoriteLoading,
-                reblogCount = entryToDisplay.reblogCount,
-                reblogged = entryToDisplay.reblogged,
-                reblogLoading = entryToDisplay.reblogLoading,
-                bookmarked = entryToDisplay.bookmarked,
-                bookmarkLoading = entryToDisplay.bookmarkLoading,
-                replyCount = entryToDisplay.replyCount,
-                disliked = entryToDisplay.disliked,
-                dislikeCount = entryToDisplay.dislikesCount,
-                dislikeLoading = entryToDisplay.dislikeLoading,
+                favoriteCount = entry.favoriteCount,
+                favorite = entry.favorite,
+                favoriteLoading = entry.favoriteLoading,
+                reblogCount = entry.reblogCount,
+                reblogged = entry.reblogged,
+                reblogLoading = entry.reblogLoading,
+                bookmarked = entry.bookmarked,
+                bookmarkLoading = entry.bookmarkLoading,
+                replyCount = entry.replyCount,
+                disliked = entry.disliked,
+                dislikeCount = entry.dislikesCount,
+                dislikeLoading = entry.dislikeLoading,
                 onReply =
                     if (onReply != null) {
-                        { onReply(entryToDisplay) }
+                        { onReply(entry) }
                     } else {
                         null
                     },
                 onReblog =
                     if (onReblog != null) {
-                        { onReblog(entryToDisplay) }
+                        { onReblog(entry) }
                     } else {
                         null
                     },
                 onFavorite =
                     if (onFavorite != null) {
-                        { onFavorite(entryToDisplay) }
+                        { onFavorite(entry) }
                     } else {
                         null
                     },
                 onBookmark =
                     if (onBookmark != null) {
-                        { onBookmark(entryToDisplay) }
+                        { onBookmark(entry) }
                     } else {
                         null
                     },
                 onDislike =
                     if (onDislike != null) {
-                        { onDislike(entryToDisplay) }
+                        { onDislike(entry) }
                     } else {
                         null
                     },

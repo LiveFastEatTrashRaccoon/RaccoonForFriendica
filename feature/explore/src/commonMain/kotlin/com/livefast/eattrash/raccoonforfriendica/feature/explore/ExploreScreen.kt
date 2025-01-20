@@ -55,6 +55,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDeta
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.HashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.LinkItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
@@ -371,6 +372,13 @@ class ExploreScreen : Screen {
                                                 )
                                             }
                                         },
+                                    onShowOriginal = {
+                                        model.reduce(
+                                            ExploreMviModel.Intent.ToggleTranslation(
+                                                item.entry.original,
+                                            ),
+                                        )
+                                    },
                                     options =
                                         buildList {
                                             val entry = item.entry
@@ -406,6 +414,24 @@ class ExploreScreen : Screen {
                                             }
                                             this += OptionId.ViewDetails.toOption()
                                             this += OptionId.CopyToClipboard.toOption()
+                                            val currentLang = uiState.lang.orEmpty()
+                                            if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
+                                                this +=
+                                                    Option(
+                                                        id = OptionId.Translate,
+                                                        label =
+                                                            buildString {
+                                                                append(
+                                                                    LocalStrings.current.actionTranslateTo(
+                                                                        currentLang,
+                                                                    ),
+                                                                )
+                                                                append(" (")
+                                                                append(LocalStrings.current.experimental)
+                                                                append(")")
+                                                            },
+                                                    )
+                                            }
                                         },
                                     onOptionSelected = { optionId ->
                                         when (optionId) {
@@ -465,6 +491,13 @@ class ExploreScreen : Screen {
                                             OptionId.CopyToClipboard ->
                                                 model.reduce(
                                                     ExploreMviModel.Intent.CopyToClipboard(
+                                                        item.entry.original,
+                                                    ),
+                                                )
+
+                                            OptionId.Translate ->
+                                                model.reduce(
+                                                    ExploreMviModel.Intent.ToggleTranslation(
                                                         item.entry.original,
                                                     ),
                                                 )
