@@ -476,4 +476,9 @@
     <string name="color_picker_dialog_insert_hex">Insérer le code couleur hex</string>
     <string name="item_selected">sélectionné</string>
     <string name="manage_blocks_section_limited">Limités</string>
+    <string name="message_loading_translation">Chargement de la traduction</string>
+    <string name="translated_from">traduit du %1$s</string>
+    <string name="translated_using">par %1$s</string>
+    <string name="action_show_original">voir l\'original</string>
+    <string name="action_translate_to">Traduire au %1$s</string>
 </resources>
