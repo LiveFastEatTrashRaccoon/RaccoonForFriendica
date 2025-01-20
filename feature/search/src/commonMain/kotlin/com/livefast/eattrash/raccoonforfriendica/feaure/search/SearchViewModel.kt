@@ -23,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Searc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.SearchPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -52,6 +53,7 @@ class SearchViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
+    private val getTranslation: GetTranslationUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<SearchMviModel.Intent, SearchMviModel.State, SearchMviModel.Effect>(
         initialState = SearchMviModel.State(),
@@ -68,6 +70,7 @@ class SearchViewModel(
                             hideNavigationBarWhileScrolling =
                                 settings?.hideNavigationBarWhileScrolling ?: true,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
+                            lang = settings?.lang,
                         )
                     }
                 }.launchIn(this)
@@ -167,6 +170,7 @@ class SearchViewModel(
             is SearchMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is SearchMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
             is SearchMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is SearchMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
         }
     }
 
@@ -568,6 +572,38 @@ class SearchViewModel(
                     }
                 emitEffect(SearchMviModel.Effect.TriggerCopy(text))
             }
+        }
+    }
+
+    private fun toggleTranslation(entry: TimelineEntryModel) {
+        val targetLang = uiState.value.lang ?: return
+        if (entry.translationLoading) {
+            return
+        }
+
+        screenModelScope.launch {
+            updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
+            val isBeingTranslated = !entry.isShowingTranslation
+
+            val (translation, provider) =
+                when {
+                    isBeingTranslated && entry.translation == null -> {
+                        val result = getTranslation(entry = entry, targetLang = targetLang)
+                        result?.target to result?.provider
+                    }
+
+                    isBeingTranslated -> entry.translation to entry.translationProvider
+
+                    else -> entry to entry.translationProvider
+                }
+            val newEntry =
+                entry.copy(
+                    isShowingTranslation = isBeingTranslated,
+                    translation = translation,
+                    translationProvider = provider,
+                    translationLoading = false,
+                )
+            updateEntryInState(entry.id) { newEntry }
         }
     }
 }

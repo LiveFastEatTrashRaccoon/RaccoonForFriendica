@@ -57,6 +57,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomCon
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.HashtagItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
@@ -373,6 +374,13 @@ class SearchScreen : Screen {
                                                 )
                                             }
                                         },
+                                    onShowOriginal = {
+                                        model.reduce(
+                                            SearchMviModel.Intent.ToggleTranslation(
+                                                item.entry.original,
+                                            ),
+                                        )
+                                    },
                                     options =
                                         buildList {
                                             val entry = item.entry
@@ -408,6 +416,24 @@ class SearchScreen : Screen {
                                             }
                                             this += OptionId.ViewDetails.toOption()
                                             this += OptionId.CopyToClipboard.toOption()
+                                            val currentLang = uiState.lang.orEmpty()
+                                            if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
+                                                this +=
+                                                    Option(
+                                                        id = OptionId.Translate,
+                                                        label =
+                                                            buildString {
+                                                                append(
+                                                                    LocalStrings.current.actionTranslateTo(
+                                                                        currentLang,
+                                                                    ),
+                                                                )
+                                                                append(" (")
+                                                                append(LocalStrings.current.experimental)
+                                                                append(")")
+                                                            },
+                                                    )
+                                            }
                                         },
                                     onOptionSelected = { optionId ->
                                         when (optionId) {
@@ -467,7 +493,16 @@ class SearchScreen : Screen {
                                             }
                                             OptionId.CopyToClipboard ->
                                                 model.reduce(
-                                                    SearchMviModel.Intent.CopyToClipboard(item.entry.original),
+                                                    SearchMviModel.Intent.CopyToClipboard(
+                                                        item.entry.original,
+                                                    ),
+                                                )
+
+                                            OptionId.Translate ->
+                                                model.reduce(
+                                                    SearchMviModel.Intent.ToggleTranslation(
+                                                        item.entry.original,
+                                                    ),
                                                 )
                                             else -> Unit
                                         }
