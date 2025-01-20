@@ -77,6 +77,10 @@ interface UserDetailMviModel :
         data class SetRateLimit(
             val value: Double,
         ) : Intent
+
+        data class ToggleTranslation(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -96,6 +100,7 @@ interface UserDetailMviModel :
         val hideNavigationBarWhileScrolling: Boolean = true,
         val layout: TimelineLayout = TimelineLayout.Full,
         val rateLimit: UserRateLimitModel? = null,
+        val lang: String? = null,
     )
 
     sealed interface Effect {

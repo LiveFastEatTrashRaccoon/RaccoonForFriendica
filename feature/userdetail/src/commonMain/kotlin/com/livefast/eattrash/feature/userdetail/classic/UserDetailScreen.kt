@@ -649,6 +649,11 @@ class UserDetailScreen(
                                         )
                                     }
                                 },
+                            onShowOriginal = {
+                                model.reduce(
+                                    UserDetailMviModel.Intent.ToggleTranslation(entry.original),
+                                )
+                            },
                             options =
                                 buildList {
                                     if (actionRepository.canShare(entry.original)) {
@@ -663,6 +668,24 @@ class UserDetailScreen(
                                     }
                                     this += OptionId.ViewDetails.toOption()
                                     this += OptionId.CopyToClipboard.toOption()
+                                    val currentLang = uiState.lang.orEmpty()
+                                    if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
+                                        this +=
+                                            Option(
+                                                id = OptionId.Translate,
+                                                label =
+                                                    buildString {
+                                                        append(
+                                                            LocalStrings.current.actionTranslateTo(
+                                                                currentLang,
+                                                            ),
+                                                        )
+                                                        append(" (")
+                                                        append(LocalStrings.current.experimental)
+                                                        append(")")
+                                                    },
+                                            )
+                                    }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -699,6 +722,12 @@ class UserDetailScreen(
                                     }
                                     OptionId.CopyToClipboard ->
                                         model.reduce(UserDetailMviModel.Intent.CopyToClipboard(entry.original))
+
+                                    OptionId.Translate ->
+                                        model.reduce(
+                                            UserDetailMviModel.Intent.ToggleTranslation(entry.original),
+                                        )
+
                                     else -> Unit
                                 }
                             },
