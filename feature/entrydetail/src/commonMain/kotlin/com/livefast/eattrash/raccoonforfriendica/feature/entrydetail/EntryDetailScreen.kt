@@ -59,6 +59,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.get
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
@@ -361,6 +362,11 @@ class EntryDetailScreen(
                                         )
                                     }
                                 },
+                            onShowOriginal = {
+                                model.reduce(
+                                    EntryDetailMviModel.Intent.ToggleTranslation(entry.original),
+                                )
+                            },
                             options =
                                 buildList {
                                     if (actionRepository.canShare(entry.original)) {
@@ -395,6 +401,24 @@ class EntryDetailScreen(
                                     }
                                     this += OptionId.ViewDetails.toOption()
                                     this += OptionId.CopyToClipboard.toOption()
+                                    val currentLang = uiState.lang.orEmpty()
+                                    if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
+                                        this +=
+                                            Option(
+                                                id = OptionId.Translate,
+                                                label =
+                                                    buildString {
+                                                        append(
+                                                            LocalStrings.current.actionTranslateTo(
+                                                                currentLang,
+                                                            ),
+                                                        )
+                                                        append(" (")
+                                                        append(LocalStrings.current.experimental)
+                                                        append(")")
+                                                    },
+                                            )
+                                    }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -449,7 +473,18 @@ class EntryDetailScreen(
                                         }
                                     }
                                     OptionId.CopyToClipboard ->
-                                        model.reduce(EntryDetailMviModel.Intent.CopyToClipboard(entry.original))
+                                        model.reduce(
+                                            EntryDetailMviModel.Intent.CopyToClipboard(
+                                                entry.original,
+                                            ),
+                                        )
+
+                                    OptionId.Translate ->
+                                        model.reduce(
+                                            EntryDetailMviModel.Intent.ToggleTranslation(
+                                                entry.original,
+                                            ),
+                                        )
                                     else -> Unit
                                 }
                             },
