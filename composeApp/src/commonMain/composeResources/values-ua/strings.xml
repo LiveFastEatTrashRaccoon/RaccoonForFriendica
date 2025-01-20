@@ -42,7 +42,7 @@
     <string name="action_logout">Вихід</string>
     <string name="action_move">Перемістити</string>
     <string name="action_mute">Вимкнути звук</string>
-    <string name="action_mute_notifications">Вимкнути сповіщення</string>
+    <string name="action_mute_notifications">Переглянути повідомлення</string>
     <string name="action_open_detail">Відкрити деталь</string>
     <string name="action_open_full_screen">Відкрити на весь екран</string>
     <string name="action_open_link">Відкрити посилання</string>
@@ -95,7 +95,7 @@
     <string name="button_cancel">Скасувати</string>
     <string name="button_close">Закрити</string>
     <string name="button_confirm">Підтвердити</string>
-    <string name="button_load">Завантажити</string>
+    <string name="button_load">Завантаження</string>
     <string name="button_load_more_replies">Завантажити більше відповідей</string>
     <string name="button_login">Логін</string>
     <string name="button_ok">ОК</string>
@@ -117,7 +117,7 @@
     <string name="content_scale_title">Масштаб</string>
     <string name="create_circle_title">Створити коло</string>
     <string name="create_post_attachments_section">Вкладення</string>
-    <string name="create_post_body_placeholder">Ваш новий чудовий пост…</string>
+    <string name="create_post_body_placeholder">Ваше дивовижне повідомлення… 🪄</string>
     <string name="create_post_poll_item_expiration_date">Дата закінчення терміну дії</string>
     <string name="create_post_poll_item_multiple">Дозволити кілька варіантів відповіді</string>
     <string name="create_post_poll_option_label">Варіант</string>
@@ -169,7 +169,7 @@
     <string name="follow_requests_title">Відстежувати запити</string>
     <string name="follow_required_message">Ви повинні слідувати за іншим користувачем, щоб мати можливість відправити пряме повідомлення!</string>
     <string name="followed_hashtags_title">За якими хештегами слідкували</string>
-    <string name="follower_title">Підписники</string>
+    <string name="follower_title">Підписка</string>
     <string name="following_title">Підписники</string>
     <string name="font_scale_larger">Більший</string>
     <string name="font_scale_largest">Найбільший</string>
@@ -203,7 +203,7 @@
     <string name="login_subtitle">Увійдіть в обліковий запис, щоб почати стежити за іншими користувачами, створювати нові дописи або відповіді, а також керувати вибраним або закладками.</string>
     <string name="login_title">🦝 Ласкаво просимо! 🦝</string>
     <string name="manage_blocks_section_blocked">Заблоковано</string>
-    <string name="manage_blocks_section_muted">Вимкнено</string>
+    <string name="manage_blocks_section_muted">Мульті</string>
     <string name="manage_circles_title">Кола</string>
     <string name="markup_mode_bbcode">BBCode</string>
     <string name="markup_mode_html">HTML</string>
@@ -446,4 +446,28 @@
         <item quantity="one">У вашому 🗑️ є елемент %1$d</item>
         <item quantity="other">У вашому 🗑️ є елементи %1$d</item>
     </plurals>
+    <string name="action_change_rate_limit">Обмеження частоти зміни</string>
+    <string name="action_grant_permission">Надати</string>
+    <string name="action_open_settings">Відкрити налаштування</string>
+    <string name="action_play">Увімкнути</string>
+    <string name="action_translate_to">Перевести в %1$s</string>
+    <string name="message_loading_translation">Завантаження перекладів</string>
+    <string name="translated_from">перекладено з %1$s</string>
+    <string name="settings_push_notification_permission_denied_permanently">Push повідомлення дозвіл назавжди відмовлено</string>
+    <string name="action_remove_dislike">Скасувати неприязнь</string>
+    <string name="message_loading_hashtags">Завантаження хештегів</string>
+    <string name="preview_image">Попередній перегляд зображення</string>
+    <string name="settings_about_acknowledgements">Подяки</string>
+    <string name="settings_item_timeline_layout">Макет публікації</string>
+    <string name="timeline_layout_full">Повна</string>
+    <string name="timeline_layout_distraction_free">Безкоштовно</string>
+    <string name="action_dislike">Нелюбов</string>
+    <string name="timeline_layout_card">Карта сайту</string>
+    <string name="timeline_layout_compact">Компактний</string>
+    <string name="action_show_original">показати оригінальне</string>
+    <string name="item_selected">вибрано</string>
+    <string name="settings_push_notification_permission_not_granted">Push повідомлення дозвіл не надається</string>
+    <string name="translated_using">номінальний %1$s</string>
+    <string name="color_picker_dialog_insert_hex">Вставте шістнадцятковий код кольору</string>
+    <string name="manage_blocks_section_limited">Обмежений</string>
 </resources>

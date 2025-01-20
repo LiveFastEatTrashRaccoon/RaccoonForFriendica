@@ -465,4 +465,9 @@
     <string name="color_picker_dialog_insert_hex">Lisää heksavärikoodi</string>
     <string name="item_selected">valittu</string>
     <string name="manage_blocks_section_limited">Rajoitettu</string>
+    <string name="action_show_original">näytä alkuperäinen</string>
+    <string name="translated_from">käännetty osoitteesta %1$s</string>
+    <string name="translated_using">virtalähteenä %1$s</string>
+    <string name="message_loading_translation">Käännösten lataaminen</string>
+    <string name="action_translate_to">Käännä muotoon %1$s</string>
 </resources>

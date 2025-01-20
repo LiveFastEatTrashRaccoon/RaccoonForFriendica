@@ -464,4 +464,9 @@
     <string name="color_picker_dialog_insert_hex">Wstaw kod koloru szesnastkowego</string>
     <string name="item_selected">wybrany</string>
     <string name="manage_blocks_section_limited">Ograniczony</string>
+    <string name="action_translate_to">Przetłumacz na %1$s</string>
+    <string name="action_show_original">pokaż oryginał</string>
+    <string name="translated_from">przetłumaczone z %1$s</string>
+    <string name="translated_using">zasilany przez %1$s</string>
+    <string name="message_loading_translation">Ładowanie tłumaczeń</string>
 </resources>

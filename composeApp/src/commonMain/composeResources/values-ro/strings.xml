@@ -476,4 +476,9 @@
     <string name="notification_type_favorite">a adăugat postarea ta la favorite</string>
     <string name="notification_type_follow_name">Urmăritori noi</string>
     <string name="notification_type_follow_request">ți-am trimis o cerere de urmărire</string>
+    <string name="action_translate_to">Tradu în %1$s</string>
+    <string name="message_loading_translation">Încărcare traduceri</string>
+    <string name="translated_using">de %1$s</string>
+    <string name="action_show_original">arată original</string>
+    <string name="translated_from">tradus din %1$s</string>
 </resources>

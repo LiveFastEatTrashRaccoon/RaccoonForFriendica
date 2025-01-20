@@ -476,4 +476,9 @@
     <string name="manage_blocks_section_limited">Limitados</string>
     <string name="color_picker_dialog_insert_hex">Insertar código color hex</string>
     <string name="message_loading_hashtags">Cargando las etiquetas</string>
+    <string name="action_translate_to">Traducir a %1$s</string>
+    <string name="message_loading_translation">Cargando traducción</string>
+    <string name="translated_from">traducido de %1$s</string>
+    <string name="translated_using">por %1$s</string>
+    <string name="action_show_original">ver original</string>
 </resources>
