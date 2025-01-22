@@ -41,11 +41,6 @@ Here are some options to install the application on your device:
    </div>
 </div>
 
-> [!TIP]
-> To participate in the Google Play test program, you need to join [this group](https://groups.google.com/g/raccoonforfriendica-tester)
-> with the email address you are going to use in the Play Store. This will add you to alpha testers, then you will be able
-> to enroll in the closed test program.
-
 If you use [IzzyOnDroid](https://apt.izzysoft.de/fdroid/) as a source in your FDroid app, you can easily
 install the app, please refer to the link in the badge above to see the app details.
 
