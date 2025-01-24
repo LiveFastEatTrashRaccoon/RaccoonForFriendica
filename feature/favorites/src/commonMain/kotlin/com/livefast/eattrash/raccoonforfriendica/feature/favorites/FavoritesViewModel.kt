@@ -15,8 +15,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
@@ -32,7 +32,7 @@ import kotlin.time.Duration
 
 class FavoritesViewModel(
     private val type: FavoritesType,
-    private val paginationManager: FavoritesPaginationManager,
+    private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
     private val identityRepository: IdentityRepository,
@@ -134,11 +134,11 @@ class FavoritesViewModel(
         paginationManager.reset(
             when (type) {
                 FavoritesType.Bookmarks ->
-                    FavoritesPaginationSpecification.Bookmarks(
+                    TimelinePaginationSpecification.Bookmarks(
                         includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
                     )
                 FavoritesType.Favorites ->
-                    FavoritesPaginationSpecification.Favorites(
+                    TimelinePaginationSpecification.Favorites(
                         includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
                     )
             },
