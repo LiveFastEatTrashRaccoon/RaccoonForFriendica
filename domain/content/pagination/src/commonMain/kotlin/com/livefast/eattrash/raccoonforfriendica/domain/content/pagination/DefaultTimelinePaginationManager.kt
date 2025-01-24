@@ -222,6 +222,24 @@ internal class DefaultTimelinePaginationManager(
         }
     }
 
+    override fun extractState(): TimelinePaginationManagerState =
+        DefaultTimelinePaginationManagerState(
+            specification = specification,
+            pageCursor = pageCursor,
+            history = history,
+            userRateLimits = userRateLimits,
+        )
+
+    override fun restoreState(state: TimelinePaginationManagerState) {
+        (state as? DefaultTimelinePaginationManagerState)?.also {
+            specification = it.specification
+            pageCursor = it.pageCursor
+            history.clear()
+            history.addAll(it.history)
+            userRateLimits.putAll(it.userRateLimits)
+        }
+    }
+
     private fun List<TimelineEntryModel>.toListWithPageCursor(): ListWithPageCursor<TimelineEntryModel> =
         let { list ->
             val cursor = list.lastOrNull()?.id
