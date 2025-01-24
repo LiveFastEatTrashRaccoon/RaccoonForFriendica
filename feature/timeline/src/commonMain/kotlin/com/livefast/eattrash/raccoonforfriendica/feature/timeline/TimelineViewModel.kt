@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashPar
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
@@ -58,6 +59,7 @@ class TimelineViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
         initialState = TimelineMviModel.State(),
@@ -184,6 +186,12 @@ class TimelineViewModel(
             is TimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is TimelineMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
             is TimelineMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is TimelineMviModel.Intent.WillOpenDetail ->
+                screenModelScope.launch {
+                    val state = paginationManager.extractState()
+                    timelineNavigationManager.push(state)
+                    emitEffect(TimelineMviModel.Effect.OpenDetail(intent.entry))
+                }
         }
     }
 
