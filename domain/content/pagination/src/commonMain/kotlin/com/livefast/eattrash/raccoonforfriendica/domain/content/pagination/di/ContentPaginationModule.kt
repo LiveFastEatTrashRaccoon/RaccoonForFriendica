@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultFollowedHashtagsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultNotificationsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultSearchPaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultTimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultTimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultUnpublishedPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultUserPaginationManager
@@ -19,6 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Follo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowedHashtagsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.SearchPaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
@@ -26,6 +28,7 @@ import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.instance
 import org.kodein.di.provider
+import org.kodein.di.singleton
 
 val contentPaginationModule =
     DI.Module("ContentPaginationModule") {
@@ -130,6 +133,13 @@ val contentPaginationModule =
                     userRateLimitRepository = instance(),
                     emojiHelper = instance(),
                     notificationCenter = instance(),
+                )
+            }
+        }
+        bind<TimelineNavigationManager> {
+            singleton {
+                DefaultTimelineNavigationManager(
+                    paginationManager = instance(),
                 )
             }
         }

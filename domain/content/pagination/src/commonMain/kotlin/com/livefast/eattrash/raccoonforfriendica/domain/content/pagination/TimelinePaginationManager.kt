@@ -11,4 +11,8 @@ interface TimelinePaginationManager {
     suspend fun loadNextPage(): List<TimelineEntryModel>
 
     suspend fun restoreHistory(values: List<TimelineEntryModel>)
+
+    fun extractState(): TimelinePaginationManagerState
+
+    fun restoreState(state: TimelinePaginationManagerState)
 }
