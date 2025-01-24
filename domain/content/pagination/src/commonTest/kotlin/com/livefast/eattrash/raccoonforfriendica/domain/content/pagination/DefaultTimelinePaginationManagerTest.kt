@@ -818,6 +818,186 @@ class DefaultTimelinePaginationManagerTest {
         }
     // endregion
 
+    // region Bookmarks
+    @Test
+    fun `given no results when loadNextPage with Bookmarks specification then result is as expected`() =
+        runTest {
+            everySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = any())
+            } returns emptyList()
+
+            sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
+            val res = sut.loadNextPage()
+
+            assertTrue(res.isEmpty())
+            assertFalse(sut.canFetchMore)
+            verifySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = null)
+            }
+        }
+
+    @Test
+    fun `given results when loadNextPage with Bookmarks specification then result is as expected`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                )
+            everySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = any())
+            } returns list
+
+            sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
+            val res = sut.loadNextPage()
+
+            assertEquals(list, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = null)
+            }
+        }
+
+    @Test
+    fun `given sensitive results when loadNextPage with Bookmarks specification and not includeNsfw then result is as expected`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    TimelineEntryModel(
+                        id = "3",
+                        content = "",
+                        creator = UserModel(id = "2"),
+                        sensitive = true,
+                    ),
+                )
+            everySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = any())
+            } returns list
+
+            sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.subList(0, 1), res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = null)
+            }
+        }
+
+    @Test
+    fun `given sensitive results when loadNextPage with Bookmarks specification then result is as expected`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    TimelineEntryModel(
+                        id = "3",
+                        content = "",
+                        creator = UserModel(id = "2"),
+                        sensitive = true,
+                    ),
+                )
+            everySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = any())
+            } returns list
+
+            sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = true))
+            val res = sut.loadNextPage()
+
+            assertEquals(list, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = null)
+            }
+        }
+
+    @Test
+    fun `given no more results when loadNextPage twice with Bookmarks specification then result is as expected`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                )
+            everySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = any())
+            } sequentiallyReturns listOf(list, emptyList())
+
+            sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
+            sut.loadNextPage()
+            val res = sut.loadNextPage()
+
+            assertEquals(list, res)
+            assertFalse(sut.canFetchMore)
+            verifySuspend {
+                timelineEntryRepository.getBookmarks(pageCursor = null)
+                timelineEntryRepository.getBookmarks(pageCursor = "1")
+            }
+        }
+    // endregion
+
+    // region Favorites
+    @Test
+    fun `given no results when loadNextPage with Favorites specification then result is as expected`() =
+        runTest {
+            everySuspend {
+                timelineEntryRepository.getFavorites(pageCursor = any())
+            } returns emptyList()
+
+            sut.reset(TimelinePaginationSpecification.Favorites(includeNsfw = false))
+            val res = sut.loadNextPage()
+
+            assertTrue(res.isEmpty())
+            assertFalse(sut.canFetchMore)
+            verifySuspend {
+                timelineEntryRepository.getFavorites(pageCursor = null)
+            }
+        }
+
+    @Test
+    fun `given results when loadNextPage with Favorites specification then result is as expected`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                )
+            everySuspend {
+                timelineEntryRepository.getFavorites(pageCursor = any())
+            } returns list
+
+            sut.reset(TimelinePaginationSpecification.Favorites(includeNsfw = false))
+            val res = sut.loadNextPage()
+
+            assertEquals(list, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                timelineEntryRepository.getFavorites(pageCursor = null)
+            }
+        }
+
+    @Test
+    fun `given no more results when loadNextPage twice with Favorites specification then result is as expected`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                )
+            everySuspend {
+                timelineEntryRepository.getFavorites(pageCursor = any())
+            } sequentiallyReturns listOf(list, emptyList())
+
+            sut.reset(TimelinePaginationSpecification.Favorites(includeNsfw = false))
+            sut.loadNextPage()
+            val res = sut.loadNextPage()
+
+            assertEquals(list, res)
+            assertFalse(sut.canFetchMore)
+            verifySuspend {
+                timelineEntryRepository.getFavorites(pageCursor = null)
+                timelineEntryRepository.getFavorites(pageCursor = "1")
+            }
+        }
+    // endregion
+
     // region history restoration
     @Test
     fun `given results when restore history with public Feed then result is as expected`() =

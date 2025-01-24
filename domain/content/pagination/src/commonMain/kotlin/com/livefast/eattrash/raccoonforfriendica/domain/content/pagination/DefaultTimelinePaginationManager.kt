@@ -153,10 +153,20 @@ internal class DefaultTimelinePaginationManager(
                             pageCursor = pageCursor,
                             excludeReplies = true,
                         )?.toListWithPageCursor()
+
+                is TimelinePaginationSpecification.Bookmarks ->
+                    timelineEntryRepository
+                        .getBookmarks(pageCursor = pageCursor)
+                        ?.toListWithPageCursor()
+
+                is TimelinePaginationSpecification.Favorites ->
+                    timelineEntryRepository
+                        .getFavorites(pageCursor = pageCursor)
+                        ?.toListWithPageCursor()
             }
         return mutex.withLock {
             when (specification) {
-                is TimelinePaginationSpecification.Feed -> {
+                is TimelinePaginationSpecification.Feed ->
                     results
                         ?.updatePaginationData()
                         ?.filterReplies(included = !specification.excludeReplies)
@@ -165,9 +175,8 @@ internal class DefaultTimelinePaginationManager(
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
-                }
 
-                is TimelinePaginationSpecification.Hashtag -> {
+                is TimelinePaginationSpecification.Hashtag ->
                     results
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
@@ -175,9 +184,8 @@ internal class DefaultTimelinePaginationManager(
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
-                }
 
-                is TimelinePaginationSpecification.User -> {
+                is TimelinePaginationSpecification.User ->
                     results
                         // for users deduplication must be done first due to a backend bug
                         ?.deduplicate()
@@ -185,16 +193,30 @@ internal class DefaultTimelinePaginationManager(
                         ?.filterNsfw(specification.includeNsfw)
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
-                }
 
-                is TimelinePaginationSpecification.Forum -> {
+                is TimelinePaginationSpecification.Forum ->
                     results
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.filter { it.reblog != null && it.reblog?.inReplyTo == null }
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
-                }
+
+                is TimelinePaginationSpecification.Bookmarks ->
+                    results
+                        ?.updatePaginationData()
+                        ?.filterNsfw(specification.includeNsfw)
+                        ?.deduplicate()
+                        ?.fixupCreatorEmojis()
+                        ?.fixupInReplyTo()
+
+                is TimelinePaginationSpecification.Favorites ->
+                    results
+                        ?.updatePaginationData()
+                        ?.filterNsfw(specification.includeNsfw)
+                        ?.deduplicate()
+                        ?.fixupCreatorEmojis()
+                        ?.fixupInReplyTo()
             }.orEmpty().also { history.addAll(it) }
             history.map { it }
         }

@@ -5,7 +5,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultDirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultEventPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultExplorePaginationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultFavoritesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultFollowRequestPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultFollowedHashtagsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DefaultNotificationsPaginationManager
@@ -16,7 +15,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EventPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.ExplorePaginationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FavoritesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowRequestPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowedHashtagsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.NotificationsPaginationManager
@@ -58,16 +56,6 @@ val contentPaginationModule =
                 DefaultExplorePaginationManager(
                     trendingRepository = instance(),
                     userRepository = instance(),
-                    emojiHelper = instance(),
-                    replyHelper = instance(),
-                    notificationCenter = instance(),
-                )
-            }
-        }
-        bind<FavoritesPaginationManager> {
-            provider {
-                DefaultFavoritesPaginationManager(
-                    timelineEntryRepository = instance(),
                     emojiHelper = instance(),
                     replyHelper = instance(),
                     notificationCenter = instance(),
