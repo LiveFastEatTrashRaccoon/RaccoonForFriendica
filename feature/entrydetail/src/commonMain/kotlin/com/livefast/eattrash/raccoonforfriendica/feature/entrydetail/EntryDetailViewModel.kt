@@ -10,12 +10,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
@@ -34,6 +36,7 @@ import kotlin.time.Duration
 
 class EntryDetailViewModel(
     private val id: String,
+    private val swipeNavigationEnabled: Boolean,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
@@ -48,6 +51,7 @@ class EntryDetailViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
         initialState = EntryDetailMviModel.State(),
@@ -92,17 +96,23 @@ class EntryDetailViewModel(
             notificationCenter
                 .subscribe(TimelineEntryCreatedEvent::class)
                 .onEach { event ->
-                    val currentEntries = uiState.value.entries
-                    val idx = currentEntries.indexOfFirst { it.id == event.entry.parentId }
+                    val currentEntries = uiState.value.let { it.entries.getOrNull(it.currentIndex) }
+                    val idx = currentEntries?.indexOfFirst { it.id == event.entry.parentId } ?: -1
                     if (idx >= 0) {
                         updateState {
                             it.copy(
                                 entries =
-                                    currentEntries
-                                        .toMutableList()
-                                        .apply {
-                                            add(idx + 1, event.entry)
-                                        }.toList(),
+                                    it.entries.mapIndexed { idx, entryList ->
+                                        if (idx == it.currentIndex) {
+                                            entryList
+                                                .toMutableList()
+                                                .apply {
+                                                    add(idx + 1, event.entry)
+                                                }.toList()
+                                        } else {
+                                            entryList
+                                        }
+                                    },
                             )
                         }
                     }
@@ -111,6 +121,13 @@ class EntryDetailViewModel(
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
+        }
+    }
+
+    override fun onDispose() {
+        super.onDispose()
+        if (swipeNavigationEnabled) {
+            timelineNavigationManager.pop()
         }
     }
 
@@ -142,25 +159,63 @@ class EntryDetailViewModel(
             is EntryDetailMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
             is EntryDetailMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is EntryDetailMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is EntryDetailMviModel.Intent.ChangeNavigationIndex ->
+                changeNavigationIndex(intent.index)
         }
     }
 
     private suspend fun refresh(initial: Boolean = false) {
-        val currentEntry = entryCache.get(id)
         updateState {
             it.copy(
                 initial = initial,
                 refreshing = !initial,
-                entries =
-                    currentEntry
-                        ?.let { e -> listOf(e) }
-                        ?.distinctBy { e -> e.safeKey }
-                        ?: emptyList(),
             )
         }
 
-        val context = timelineEntryRepository.getContext(id)
-        val entries =
+        if (initial) {
+            val currentEntry = entryCache.get(id)
+            val entries =
+                if (swipeNavigationEnabled) {
+                    timelineNavigationManager.currentList.map { e -> listOf(e) }
+                } else {
+                    currentEntry?.let { listOf(listOf(it)) } ?: listOf(emptyList())
+                }
+            val initialIndex = entries.indexOfFirst { it.first().id == id }
+            updateState {
+                it.copy(
+                    mainEntry = currentEntry,
+                    initialIndex = initialIndex,
+                    currentIndex = initialIndex,
+                    entries =
+                        if (initial) {
+                            entries
+                        } else {
+                            it.entries
+                        },
+                )
+            }
+
+            if (initialIndex.isNearTheEnd(timelineNavigationManager.currentList)) {
+                loadNavigationNextPage()
+            }
+        }
+
+        loadContext()
+
+        if (initial) {
+            val currentEntryList = uiState.value.entries[uiState.value.currentIndex]
+            val index = currentEntryList.indexOf(uiState.value.mainEntry).takeIf { it > 0 } ?: 0
+            emitEffect(EntryDetailMviModel.Effect.ScrollToItem(index))
+        }
+    }
+
+    private suspend fun loadContext() {
+        val mainEntry = uiState.value.mainEntry
+        val context =
+            mainEntry?.let { e ->
+                timelineEntryRepository.getContext(e.id)
+            }
+        val currentEntryList =
             buildList {
                 addAll(
                     context
@@ -172,7 +227,7 @@ class EntryDetailViewModel(
                             with(replyHelper) { it.withInReplyToIfMissing() }
                         },
                 )
-                add(entryCache.get(id))
+                add(mainEntry)
                 addAll(
                     context
                         ?.descendants
@@ -184,20 +239,20 @@ class EntryDetailViewModel(
                         },
                 )
             }.filterNotNull().distinctBy { e -> e.safeKey }
-
-        entries.preloadImages()
+        currentEntryList.preloadImages()
         updateState {
             it.copy(
-                creator = currentEntry?.creator,
-                entries = entries,
+                entries =
+                    it.entries.mapIndexed { idx, entryList ->
+                        if (idx == it.currentIndex) {
+                            currentEntryList
+                        } else {
+                            entryList
+                        }
+                    },
                 refreshing = false,
                 initial = false,
             )
-        }
-
-        if (initial) {
-            val index = entries.indexOf(currentEntry).takeIf { it > 0 } ?: 0
-            emitEffect(EntryDetailMviModel.Effect.ScrollToItem(index))
         }
     }
 
@@ -221,19 +276,25 @@ class EntryDetailViewModel(
         updateState {
             it.copy(
                 entries =
-                    it.entries.map { entry ->
-                        when {
-                            entry.id == entryId -> {
-                                entry.let(block)
-                            }
+                    it.entries.mapIndexed { idx, entryList ->
+                        if (idx == uiState.value.currentIndex) {
+                            entryList.map { entry ->
+                                when {
+                                    entry.id == entryId -> {
+                                        entry.let(block)
+                                    }
 
-                            entry.reblog?.id == entryId -> {
-                                entry.copy(reblog = entry.reblog?.let(block))
-                            }
+                                    entry.reblog?.id == entryId -> {
+                                        entry.copy(reblog = entry.reblog?.let(block))
+                                    }
 
-                            else -> {
-                                entry
+                                    else -> {
+                                        entry
+                                    }
+                                }
                             }
+                        } else {
+                            entryList
                         }
                     },
             )
@@ -243,7 +304,14 @@ class EntryDetailViewModel(
     private suspend fun removeEntryFromState(entryId: String) {
         updateState {
             it.copy(
-                entries = it.entries.filter { e -> e.id != entryId && e.reblog?.id != entryId },
+                entries =
+                    it.entries.mapIndexed { idx, entryList ->
+                        if (idx == it.currentIndex) {
+                            entryList.filter { e -> e.id != entryId && e.reblog?.id != entryId }
+                        } else {
+                            entryList
+                        }
+                    },
             )
         }
     }
@@ -499,6 +567,47 @@ class EntryDetailViewModel(
                     translationLoading = false,
                 )
             updateEntryInState(entry.id) { newEntry }
+        }
+    }
+
+    private fun changeNavigationIndex(newIndex: Int) {
+        if (!swipeNavigationEnabled) {
+            return
+        }
+        screenModelScope.launch {
+            updateState {
+                it.copy(
+                    currentIndex = newIndex,
+                    mainEntry = it.entries.getOrNull(newIndex)?.firstOrNull(),
+                )
+            }
+            val currentState = uiState.value
+            val hasReplies = (currentState.mainEntry?.replyCount ?: 0) > 0
+            if (currentState.entries[newIndex].size == 1 && hasReplies) {
+                loadContext()
+            }
+
+            if (newIndex.isNearTheEnd(timelineNavigationManager.currentList)) {
+                loadNavigationNextPage()
+            }
+        }
+    }
+
+    private suspend fun loadNavigationNextPage() {
+        if (!swipeNavigationEnabled) {
+            return
+        }
+        timelineNavigationManager.loadNextPage()
+        updateState {
+            val currentEntries = it.entries
+            val newEntries =
+                timelineNavigationManager.currentList
+                    .map { e ->
+                        listOf(e)
+                    }.drop(currentEntries.size)
+            it.copy(
+                entries = currentEntries + newEntries,
+            )
         }
     }
 }

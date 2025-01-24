@@ -5,7 +5,6 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlin.time.Duration
 
 @Stable
@@ -63,14 +62,20 @@ interface EntryDetailMviModel :
         data class ToggleTranslation(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class ChangeNavigationIndex(
+            val index: Int,
+        ) : Intent
     }
 
     data class State(
         val currentUserId: String? = null,
         val refreshing: Boolean = false,
         val initial: Boolean = true,
-        val creator: UserModel? = null,
-        val entries: List<TimelineEntryModel> = emptyList(),
+        val initialIndex: Int = 0,
+        val mainEntry: TimelineEntryModel? = null,
+        val entries: List<List<TimelineEntryModel>> = emptyList(),
+        val currentIndex: Int = 0,
         val blurNsfw: Boolean = true,
         val autoloadImages: Boolean = true,
         val hideNavigationBarWhileScrolling: Boolean = true,
