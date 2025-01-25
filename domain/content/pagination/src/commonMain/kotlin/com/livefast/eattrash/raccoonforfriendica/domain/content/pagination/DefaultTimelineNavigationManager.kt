@@ -9,6 +9,9 @@ internal class DefaultTimelineNavigationManager(
     override val canNavigate = MutableStateFlow(false)
     private var states: MutableList<TimelinePaginationManagerState> = mutableListOf()
 
+    override val currentList: List<TimelineEntryModel>
+        get() = paginationManager.history
+
     override fun push(state: TimelinePaginationManagerState) {
         states += state
         canNavigate.value = true
@@ -47,12 +50,15 @@ internal class DefaultTimelineNavigationManager(
         return when {
             index < history.lastIndex -> history[index + 1]
             !paginationManager.canFetchMore -> null
-            else ->
-                run {
-                    val newPosts = paginationManager.loadNextPage()
-                    val newIndex = newPosts.indexOfFirst { it.id == postId }
-                    newPosts.getOrNull(newIndex + 1)
-                }
+            else -> {
+                val newPosts = paginationManager.loadNextPage()
+                val newIndex = newPosts.indexOfFirst { it.id == postId }
+                newPosts.getOrNull(newIndex + 1)
+            }
         }
+    }
+
+    override suspend fun loadNextPage() {
+        paginationManager.loadNextPage()
     }
 }
