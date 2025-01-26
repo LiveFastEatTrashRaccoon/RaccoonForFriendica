@@ -121,6 +121,13 @@ class FavoritesScreen(
                             clipboardManager.setText(AnnotatedString(event.text))
                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                         }
+
+                        is FavoritesMviModel.Effect.OpenDetail -> {
+                            detailOpener.openEntryDetail(
+                                entry = event.entry,
+                                swipeNavigationEnabled = true,
+                            )
+                        }
                     }
                 }.launchIn(this)
         }
@@ -218,7 +225,7 @@ class FavoritesScreen(
                             autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
                             onClick = { e ->
-                                detailOpener.openEntryDetail(e)
+                                model.reduce(FavoritesMviModel.Intent.WillOpenDetail(e))
                             },
                             onOpenUrl = { url, allowOpenInternal ->
                                 if (allowOpenInternal) {
