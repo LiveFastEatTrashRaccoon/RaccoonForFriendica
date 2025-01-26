@@ -19,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
@@ -56,6 +57,7 @@ class UserDetailViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
         initialState = UserDetailMviModel.State(),
@@ -154,6 +156,12 @@ class UserDetailViewModel(
             is UserDetailMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is UserDetailMviModel.Intent.SetRateLimit -> setRateLimit(intent.value)
             is UserDetailMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is UserDetailMviModel.Intent.WillOpenDetail ->
+                screenModelScope.launch {
+                    val state = paginationManager.extractState()
+                    timelineNavigationManager.push(state)
+                    emitEffect(UserDetailMviModel.Effect.OpenDetail(intent.entry))
+                }
         }
     }
 
