@@ -18,6 +18,7 @@ interface DetailOpener {
     fun openEntryDetail(
         entry: TimelineEntryModel,
         replaceTop: Boolean = false,
+        swipeNavigationEnabled: Boolean = false,
     )
 
     fun openSettings()
@@ -67,7 +68,10 @@ interface DetailOpener {
 
     fun openSearch()
 
-    fun openThread(entry: TimelineEntryModel)
+    fun openThread(
+        entry: TimelineEntryModel,
+        swipeNavigationEnabled: Boolean = false,
+    )
 
     fun openImageDetail(url: String)
 
