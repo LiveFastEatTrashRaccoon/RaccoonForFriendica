@@ -40,6 +40,7 @@ val hashtagModule =
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
                     getTranslation = instance(),
+                    timelineNavigationManager = instance(),
                     notificationCenter = instance(),
                 )
             }

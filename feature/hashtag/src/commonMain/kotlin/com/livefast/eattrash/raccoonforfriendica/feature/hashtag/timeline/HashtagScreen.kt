@@ -124,6 +124,13 @@ class HashtagScreen(
                             clipboardManager.setText(AnnotatedString(event.text))
                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                         }
+
+                        is HashtagMviModel.Effect.OpenDetail -> {
+                            detailOpener.openEntryDetail(
+                                entry = event.entry,
+                                swipeNavigationEnabled = true,
+                            )
+                        }
                     }
                 }.launchIn(this)
         }
@@ -239,7 +246,7 @@ class HashtagScreen(
                             autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
                             onClick = { e ->
-                                detailOpener.openEntryDetail(e)
+                                model.reduce(HashtagMviModel.Intent.WillOpenDetail(e))
                             },
                             onOpenUrl = { url, allowOpenInternal ->
                                 if (allowOpenInternal) {
