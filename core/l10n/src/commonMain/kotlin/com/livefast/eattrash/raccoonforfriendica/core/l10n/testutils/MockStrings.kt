@@ -533,6 +533,10 @@ class MockStrings : Strings {
         @Composable get() = retrieve("messageScheduleDateInThePast")
     override val messageSearchInitialEmpty: String
         @Composable get() = retrieve("messageSearchInitialEmpty")
+    override val messageSignUp1: String
+        @Composable get() = retrieve("messageSignUp1")
+    override val messageSignUp2: String
+        @Composable get() = retrieve("messageSignUp2")
     override val messageSuccess: String
         @Composable get() = retrieve("messageSuccess")
     override val messageTextCopiedToClipboard: String

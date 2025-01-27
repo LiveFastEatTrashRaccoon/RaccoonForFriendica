@@ -276,6 +276,8 @@ import raccoonforfriendica.composeapp.generated.resources.message_reply_visibili
 import raccoonforfriendica.composeapp.generated.resources.message_restart_to_apply_changes
 import raccoonforfriendica.composeapp.generated.resources.message_schedule_date_in_the_past
 import raccoonforfriendica.composeapp.generated.resources.message_search_initial_empty
+import raccoonforfriendica.composeapp.generated.resources.message_sign_up_1
+import raccoonforfriendica.composeapp.generated.resources.message_sign_up_2
 import raccoonforfriendica.composeapp.generated.resources.message_success
 import raccoonforfriendica.composeapp.generated.resources.message_user_unlogged
 import raccoonforfriendica.composeapp.generated.resources.message_video_nsfw
@@ -608,6 +610,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_share)
     override val actionShowContentDescription: String
         @Composable get() = stringResource(Res.string.action_show_content_description)
+    override val actionShowOriginal: String
+        @Composable get() = stringResource(Res.string.action_show_original)
     override val actionShowResults: String
         @Composable get() = stringResource(Res.string.action_show_results)
     override val actionSubmit: String
@@ -948,6 +952,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.message_invalid_poll_error)
     override val messageLoadingHashtags: String
         @Composable get() = stringResource(Res.string.message_loading_hashtags)
+    override val messageLoadingTranslation: String
+        @Composable get() = stringResource(Res.string.message_loading_translation)
     override val messageLoadingUsers: String
         @Composable get() = stringResource(Res.string.message_loading_users)
     override val messageMissingField: String
@@ -968,6 +974,10 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.message_schedule_date_in_the_past)
     override val messageSearchInitialEmpty: String
         @Composable get() = stringResource(Res.string.message_search_initial_empty)
+    override val messageSignUp1: String
+        @Composable get() = stringResource(Res.string.message_sign_up_1)
+    override val messageSignUp2: String
+        @Composable get() = stringResource(Res.string.message_sign_up_2)
     override val messageSuccess: String
         @Composable get() = stringResource(Res.string.message_success)
     override val messageTextCopiedToClipboard: String
@@ -1304,10 +1314,6 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.visibility_public)
     override val visibilityUnlisted: String
         @Composable get() = stringResource(Res.string.visibility_unlisted)
-    override val actionShowOriginal: String
-        @Composable get() = stringResource(Res.string.action_show_original)
-    override val messageLoadingTranslation: String
-        @Composable get() = stringResource(Res.string.message_loading_translation)
 
     @Composable
     override fun accountFollower(count: Int): String = pluralStringResource(Res.plurals.account_follower, count, count)
