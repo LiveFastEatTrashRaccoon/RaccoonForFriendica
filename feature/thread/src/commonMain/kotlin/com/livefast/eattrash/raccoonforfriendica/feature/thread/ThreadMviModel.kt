@@ -62,16 +62,20 @@ interface ThreadMviModel :
         data class ToggleTranslation(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class ChangeNavigationIndex(
+            val index: Int,
+        ) : Intent
     }
 
     data class State(
         val currentUserId: String? = null,
         val refreshing: Boolean = false,
-        val loading: Boolean = false,
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
-        val entry: TimelineEntryModel? = null,
-        val replies: List<TimelineEntryModel> = emptyList(),
+        val mainEntries: List<TimelineEntryModel> = emptyList(),
+        val currentIndex: Int = 0,
+        val replies: List<List<TimelineEntryModel>> = emptyList(),
         val blurNsfw: Boolean = true,
         val autoloadImages: Boolean = true,
         val hideNavigationBarWhileScrolling: Boolean = true,

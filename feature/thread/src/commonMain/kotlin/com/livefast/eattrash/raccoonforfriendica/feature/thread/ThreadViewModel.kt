@@ -9,11 +9,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -27,10 +29,12 @@ import com.livefast.eattrash.raccoonforfriendica.feature.thread.usecase.Populate
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 import kotlin.time.Duration
 
 class ThreadViewModel(
     private val entryId: String,
+    private val swipeNavigationEnabled: Boolean,
     private val populateThreadUseCase: PopulateThreadUseCase,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
@@ -44,11 +48,18 @@ class ThreadViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>(
         initialState = ThreadMviModel.State(),
     ),
     ThreadMviModel {
+    private val currentMainEntry: TimelineEntryModel?
+        get() {
+            val currentState = uiState.value
+            return currentState.mainEntries.getOrNull(currentState.currentIndex)
+        }
+
     init {
         screenModelScope.launch {
             identityRepository.currentUser
@@ -122,30 +133,75 @@ class ThreadViewModel(
             is ThreadMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
             is ThreadMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is ThreadMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is ThreadMviModel.Intent.ChangeNavigationIndex ->
+                changeNavigationIndex(intent.index)
         }
     }
 
     private suspend fun refresh(initial: Boolean = false) {
-        val originalEntry = entryCache.get(entryId)
         updateState {
             it.copy(
-                entry = originalEntry,
                 initial = initial,
-                loading = true,
                 refreshing = !initial,
+            )
+        }
+
+        updateState {
+            it.copy(
                 canFetchMore = true,
             )
         }
-        val result = populateThreadUseCase(entryId)
-        val replies = result.filter { it.id != entryId }
-        replies.preloadImages()
+
+        if (initial) {
+            val currentEntry = entryCache.get(entryId)
+            val mainEntries =
+                if (swipeNavigationEnabled) {
+                    timelineNavigationManager.currentList
+                } else {
+                    currentEntry?.let { listOf(it) } ?: emptyList()
+                }
+            val initialIndex = mainEntries.indexOfFirst { it.id == entryId }
+            val replies: List<List<TimelineEntryModel>> = mainEntries.map { emptyList() }
+            check(mainEntries.size == replies.size)
+            updateState {
+                it.copy(
+                    currentIndex = initialIndex,
+                    mainEntries = mainEntries,
+                    replies = replies,
+                )
+            }
+
+            if (initialIndex.isNearTheEnd(timelineNavigationManager.currentList)) {
+                loadNavigationNextPage()
+            }
+        }
+
+        loadReplies()
+
         updateState {
             it.copy(
-                replies = replies,
-                loading = false,
                 initial = false,
                 refreshing = false,
                 canFetchMore = false,
+            )
+        }
+    }
+
+    private suspend fun loadReplies() {
+        val currentEntryId = currentMainEntry?.original?.id ?: return
+        val result = populateThreadUseCase(currentEntryId)
+        val replies = result.filter { it.id != currentEntryId }
+        replies.preloadImages()
+        updateState {
+            it.copy(
+                replies =
+                    it.replies.mapIndexed { idx, list ->
+                        if (idx == it.currentIndex) {
+                            replies
+                        } else {
+                            list
+                        }
+                    },
             )
         }
     }
@@ -158,12 +214,22 @@ class ThreadViewModel(
             updateEntryInState(entry.id) { it.copy(loadMoreButtonVisible = false) }
         } else {
             newReplies.preloadImages()
-            val replies = uiState.value.replies.toMutableList()
+            val currentState = uiState.value
+            val replies = currentState.replies[currentState.currentIndex].toMutableList()
             val insertIndex = replies.indexOfFirst { it.id == entry.id }
             replies[insertIndex] = replies[insertIndex].copy(loadMoreButtonVisible = false)
             replies.addAll(index = insertIndex + 1, newReplies)
             updateState {
-                it.copy(replies = replies)
+                it.copy(
+                    replies =
+                        it.replies.mapIndexed { idx, list ->
+                            if (idx == it.currentIndex) {
+                                replies
+                            } else {
+                                list
+                            }
+                        },
+                )
             }
         }
     }
@@ -185,18 +251,34 @@ class ThreadViewModel(
         entryId: String,
         block: (TimelineEntryModel) -> TimelineEntryModel,
     ) {
-        val currentMainEntry = uiState.value.entry
+        val mainEntry = currentMainEntry ?: return
         when (entryId) {
-            currentMainEntry?.id -> {
+            mainEntry.id -> {
                 updateState {
-                    it.copy(entry = currentMainEntry.let(block))
+                    it.copy(
+                        mainEntries =
+                            it.mainEntries.mapIndexed { idx, entry ->
+                                if (idx == it.currentIndex) {
+                                    mainEntry.let(block)
+                                } else {
+                                    entry
+                                }
+                            },
+                    )
                 }
             }
 
-            currentMainEntry?.reblog?.id -> {
+            mainEntry.reblog?.id -> {
                 updateState {
                     it.copy(
-                        entry = currentMainEntry.copy(reblog = currentMainEntry.reblog?.let(block)),
+                        mainEntries =
+                            it.mainEntries.mapIndexed { idx, entry ->
+                                if (idx == it.currentIndex) {
+                                    mainEntry.copy(reblog = mainEntry.reblog?.let(block))
+                                } else {
+                                    entry
+                                }
+                            },
                     )
                 }
             }
@@ -205,19 +287,19 @@ class ThreadViewModel(
                 updateState {
                     it.copy(
                         replies =
-                            it.replies.map { entry ->
-                                when {
-                                    entry.id == entryId -> {
-                                        entry.let(block)
-                                    }
+                            it.replies.mapIndexed { idx, list ->
+                                if (idx == it.currentIndex) {
+                                    list.map { entry ->
+                                        when {
+                                            entry.id == entryId -> entry.let(block)
+                                            entry.reblog?.id == entryId ->
+                                                entry.copy(reblog = entry.reblog?.let(block))
 
-                                    entry.reblog?.id == entryId -> {
-                                        entry.copy(reblog = entry.reblog?.let(block))
+                                            else -> entry
+                                        }
                                     }
-
-                                    else -> {
-                                        entry
-                                    }
+                                } else {
+                                    list
                                 }
                             },
                     )
@@ -229,7 +311,14 @@ class ThreadViewModel(
     private suspend fun removeEntryFromState(entryId: String) {
         updateState {
             it.copy(
-                replies = it.replies.filter { e -> e.id != entryId && e.reblog?.id != entryId },
+                replies =
+                    it.replies.mapIndexed { idx, list ->
+                        if (idx == it.currentIndex) {
+                            list.filter { e -> e.id != entryId && e.reblog?.id != entryId }
+                        } else {
+                            list
+                        }
+                    },
             )
         }
     }
@@ -467,6 +556,59 @@ class ThreadViewModel(
                     translationLoading = false,
                 )
             updateEntryInState(entry.id) { newEntry }
+        }
+    }
+
+    private fun changeNavigationIndex(newIndex: Int) {
+        if (!swipeNavigationEnabled) {
+            return
+        }
+        screenModelScope.launch {
+            updateState {
+                it.copy(
+                    currentIndex = newIndex,
+                )
+            }
+            val currentState = uiState.value
+            val mainEntry = currentMainEntry
+            val replies = currentState.replies.getOrNull(newIndex).orEmpty()
+            val hasReplies = (mainEntry?.original?.replyCount ?: 0) > 0
+            if (replies.isEmpty() && hasReplies) {
+                updateState { it.copy(initial = true) }
+                loadReplies()
+            }
+            updateState { it.copy(initial = false) }
+
+            if (newIndex.isNearTheEnd(timelineNavigationManager.currentList)) {
+                loadNavigationNextPage()
+            }
+        }
+    }
+
+    private suspend fun loadNavigationNextPage() {
+        if (!swipeNavigationEnabled) {
+            return
+        }
+        timelineNavigationManager.loadNextPage()
+        updateState {
+            val currentEntries = it.mainEntries
+            val newEntries =
+                timelineNavigationManager.currentList.drop(currentEntries.size)
+            val mainEntries = currentEntries + newEntries
+            val replies =
+                buildList<List<TimelineEntryModel>> {
+                    addAll(it.replies)
+                    val sizeDiff = abs(mainEntries.size - it.replies.size)
+                    repeat(sizeDiff) {
+                        add(emptyList())
+                    }
+                }
+
+            check(mainEntries.size == replies.size)
+            it.copy(
+                mainEntries = mainEntries,
+                replies = replies,
+            )
         }
     }
 }

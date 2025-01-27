@@ -10,6 +10,11 @@ import org.kodein.di.factory
 import org.kodein.di.instance
 import org.kodein.di.singleton
 
+data class ThreadMviModelParams(
+    val entryId: String,
+    val swipeNavigationEnabled: Boolean,
+)
+
 val threadModule =
     DI.Module("ThreadModule") {
         bind<PopulateThreadUseCase> {
@@ -21,9 +26,10 @@ val threadModule =
             }
         }
         bind<ThreadMviModel> {
-            factory { entryId: String ->
+            factory { params: ThreadMviModelParams ->
                 ThreadViewModel(
-                    entryId = entryId,
+                    entryId = params.entryId,
+                    swipeNavigationEnabled = params.swipeNavigationEnabled,
                     populateThreadUseCase = instance(),
                     timelineEntryRepository = instance(),
                     identityRepository = instance(),
@@ -37,6 +43,7 @@ val threadModule =
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
                     getTranslation = instance(),
+                    timelineNavigationManager = instance(),
                     notificationCenter = instance(),
                 )
             }
