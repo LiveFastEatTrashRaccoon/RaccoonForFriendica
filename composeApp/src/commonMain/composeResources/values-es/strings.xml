@@ -481,4 +481,6 @@
     <string name="translated_from">traducido de %1$s</string>
     <string name="translated_using">por %1$s</string>
     <string name="action_show_original">ver original</string>
+    <string name="message_sign_up_1">¿Aún no tienes una cuenta?</string>
+    <string name="message_sign_up_2">¡Regístrate ahora!</string>
 </resources>
