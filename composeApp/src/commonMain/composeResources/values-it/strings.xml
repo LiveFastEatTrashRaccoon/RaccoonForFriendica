@@ -481,4 +481,6 @@
     <string name="translated_from">tradotto da %1$s</string>
     <string name="translated_using">grazie a %1$s</string>
     <string name="message_loading_translation">Caricamento traduzione</string>
+    <string name="message_sign_up_1">Non hai ancora un account?</string>
+    <string name="message_sign_up_2">Registrati ora!</string>
 </resources>

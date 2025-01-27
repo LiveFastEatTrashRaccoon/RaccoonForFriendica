@@ -469,4 +469,6 @@
     <string name="translated_from">przetłumaczone z %1$s</string>
     <string name="translated_using">zasilany przez %1$s</string>
     <string name="message_loading_translation">Ładowanie tłumaczeń</string>
+    <string name="message_sign_up_1">Nie masz jeszcze konta?</string>
+    <string name="message_sign_up_2">Zarejestruj się teraz!</string>
 </resources>

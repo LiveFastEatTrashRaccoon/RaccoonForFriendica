@@ -470,4 +470,6 @@
     <string name="translated_using">номінальний %1$s</string>
     <string name="color_picker_dialog_insert_hex">Вставте шістнадцятковий код кольору</string>
     <string name="manage_blocks_section_limited">Обмежений</string>
+    <string name="message_sign_up_1">Ще не маєте облікового запису?</string>
+    <string name="message_sign_up_2">Зареєструйтесь зараз!</string>
 </resources>
