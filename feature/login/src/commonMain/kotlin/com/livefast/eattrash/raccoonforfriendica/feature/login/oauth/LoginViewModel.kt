@@ -51,7 +51,42 @@ class LoginViewModel(
                     updateState { it.copy(nodeName = intent.name) }
                 }
 
+            LoginMviModel.Intent.SignUp -> triggerSignup()
+
             LoginMviModel.Intent.Submit -> submit()
+        }
+    }
+
+    private fun triggerSignup() {
+        screenModelScope.launch {
+            val node = uiState.value.nodeName
+            val nodeNameError =
+                if (node.isBlank()) {
+                    ValidationError.MissingField
+                } else {
+                    val isNodeValid = credentialsRepository.validateNode(node)
+                    if (!isNodeValid) {
+                        ValidationError.InvalidField
+                    } else {
+                        null
+                    }
+                }
+            updateState {
+                it.copy(
+                    nodeNameError = nodeNameError,
+                )
+            }
+            val isValid = nodeNameError == null
+            if (!isValid) {
+                return@launch
+            }
+
+            val url = getSignupUrl(node = node, type = type)
+            if (url.isEmpty()) {
+                emitEffect(LoginMviModel.Effect.Failure())
+            } else {
+                emitEffect(LoginMviModel.Effect.OpenUrl(url))
+            }
         }
     }
 
@@ -109,5 +144,26 @@ class LoginViewModel(
             updateState { it.copy(loading = false) }
             emitEffect(LoginMviModel.Effect.Failure(e.message))
         }
+    }
+}
+
+private fun getSignupUrl(
+    node: String,
+    type: LoginType,
+) = buildString {
+    when (type) {
+        LoginType.Friendica -> {
+            append("https://")
+            append(node)
+            append("/register")
+        }
+
+        LoginType.Mastodon -> {
+            append("https://")
+            append(node)
+            append("/auth/sign_up")
+        }
+
+        else -> Unit
     }
 }

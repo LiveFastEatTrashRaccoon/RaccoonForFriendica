@@ -247,6 +247,8 @@
     <string name="message_restart_to_apply_changes">Please restart the app to apply changes</string>
     <string name="message_schedule_date_in_the_past">Please select a schedule date in the future</string>
     <string name="message_search_initial_empty">Start typing something</string>
+    <string name="message_sign_up_1">Don't have an account yet?</string>
+    <string name="message_sign_up_2">Sign up now!</string>
     <string name="message_success">Operation completed successfully!</string>
     <string name="message_text_copied_to_clipboard">Copied to clipboard! 📋</string>
     <string name="message_user_unlogged">You need to be logged in to access this section 🪵</string>

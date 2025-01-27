@@ -263,6 +263,8 @@ interface Strings {
     val messageRestartToApplyChanges: String @Composable get
     val messageScheduleDateInThePast: String @Composable get
     val messageSearchInitialEmpty: String @Composable get
+    val messageSignUp1: String @Composable get
+    val messageSignUp2: String @Composable get
     val messageSuccess: String @Composable get
     val messageTextCopiedToClipboard: String @Composable get
     val messageUserUnlogged: String @Composable get
