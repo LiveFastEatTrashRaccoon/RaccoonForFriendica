@@ -39,8 +39,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -53,6 +59,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePaddi
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.toLoginType
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -77,14 +84,11 @@ class LoginScreen(
             model.effects
                 .onEach { event ->
                     when (event) {
-                        is LoginMviModel.Effect.OpenUrl -> {
-                            uriHandler.openUri(event.url)
-                        }
-                        is LoginMviModel.Effect.Failure -> {
+                        is LoginMviModel.Effect.OpenUrl -> uriHandler.openUri(event.url)
+                        is LoginMviModel.Effect.Failure ->
                             snackbarHostState.showSnackbar(
                                 message = event.message ?: genericError,
                             )
-                        }
 
                         LoginMviModel.Effect.Success -> {
                             snackbarHostState.showSnackbar(
@@ -92,6 +96,9 @@ class LoginScreen(
                             )
                             navigationCoordinator.popUntilRoot()
                         }
+
+                        is LoginMviModel.Effect.OpenWebRegistration ->
+                            uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -238,6 +245,40 @@ class LoginScreen(
                         },
                     )
                 }
+
+                Text(
+                    modifier =
+                        Modifier
+                            .padding(
+                                top = Spacing.xs,
+                                start = Spacing.xxs,
+                                end = Spacing.xxs,
+                            ).fillMaxWidth(),
+                    text =
+                        buildAnnotatedString {
+                            append(LocalStrings.current.messageSignUp1)
+                            append(" ")
+                            withLink(
+                                LinkAnnotation.Clickable(
+                                    tag = "action-sign-up",
+                                    styles =
+                                        TextLinkStyles(
+                                            style =
+                                                SpanStyle(
+                                                    textDecoration = TextDecoration.Underline,
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                ),
+                                        ),
+                                    linkInteractionListener = {
+                                        model.reduce(LoginMviModel.Intent.SignUp)
+                                    },
+                                ),
+                            ) {
+                                append(LocalStrings.current.messageSignUp2)
+                            }
+                        },
+                    style = MaterialTheme.typography.bodyMedium,
+                )
 
                 Button(
                     modifier = Modifier.padding(top = Spacing.l),
