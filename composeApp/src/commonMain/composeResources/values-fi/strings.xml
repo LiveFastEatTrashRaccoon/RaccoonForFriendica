@@ -470,4 +470,6 @@
     <string name="translated_using">virtalähteenä %1$s</string>
     <string name="message_loading_translation">Käännösten lataaminen</string>
     <string name="action_translate_to">Käännä muotoon %1$s</string>
+    <string name="message_sign_up_1">Eikö sinulla ole vielä tiliä?</string>
+    <string name="message_sign_up_2">Rekisteröidy nyt!</string>
 </resources>
