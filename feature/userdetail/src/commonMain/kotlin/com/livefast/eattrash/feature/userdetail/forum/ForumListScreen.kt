@@ -140,6 +140,13 @@ class ForumListScreen(
                             clipboardManager.setText(AnnotatedString(event.text))
                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                         }
+
+                        is ForumListMviModel.Effect.OpenDetail -> {
+                            detailOpener.openThread(
+                                entry = event.entry,
+                                swipeNavigationEnabled = true,
+                            )
+                        }
                     }
                 }.launchIn(this)
         }
@@ -328,8 +335,8 @@ class ForumListScreen(
                             blurNsfw = uiState.blurNsfw,
                             autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
-                            onClick = { e ->
-                                detailOpener.openThread(e)
+                            onClick = {
+                                model.reduce(ForumListMviModel.Intent.WillOpenDetail(entry))
                             },
                             onOpenUrl = { url, allowOpenInternal ->
                                 if (allowOpenInternal) {
