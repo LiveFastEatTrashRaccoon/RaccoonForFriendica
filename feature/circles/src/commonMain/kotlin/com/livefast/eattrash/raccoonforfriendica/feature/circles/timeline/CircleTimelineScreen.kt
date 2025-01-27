@@ -122,6 +122,13 @@ class CircleTimelineScreen(
                             clipboardManager.setText(AnnotatedString(event.text))
                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                         }
+
+                        is CircleTimelineMviModel.Effect.OpenDetail -> {
+                            detailOpener.openEntryDetail(
+                                entry = event.entry,
+                                swipeNavigationEnabled = true,
+                            )
+                        }
                     }
                 }.launchIn(this)
         }
@@ -232,7 +239,7 @@ class CircleTimelineScreen(
                             autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
                             onClick = { e ->
-                                detailOpener.openEntryDetail(e)
+                                model.reduce(CircleTimelineMviModel.Intent.WillOpenDetail(e))
                             },
                             onOpenUrl = { url, allowOpenInternal ->
                                 if (allowOpenInternal) {

@@ -7,12 +7,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -40,6 +43,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -77,6 +81,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
+import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.EntryDetailMviModelParams
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -84,6 +89,7 @@ import kotlin.time.Duration
 
 class EntryDetailScreen(
     private val id: String,
+    private val swipeNavigationEnabled: Boolean,
 ) : Screen {
     override val key: ScreenKey
         get() = super.key + id
@@ -91,14 +97,20 @@ class EntryDetailScreen(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model: EntryDetailMviModel = rememberScreenModel(arg = id)
+        val model: EntryDetailMviModel =
+            rememberScreenModel(
+                arg =
+                    EntryDetailMviModelParams(
+                        id = id,
+                        swipeNavigationEnabled = swipeNavigationEnabled,
+            )
+        )
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val uriHandler = LocalUriHandler.current
         val detailOpener = remember { getDetailOpener() }
-        val lazyListState = rememberLazyListState()
         val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
         val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
         val scope = rememberCoroutineScope()
@@ -113,6 +125,7 @@ class EntryDetailScreen(
         var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
         var pollErrorDialogOpened by remember { mutableStateOf(false) }
         var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+        var lazyListState = rememberLazyListState()
 
         fun goBackToTop() {
             runCatching {
@@ -152,7 +165,7 @@ class EntryDetailScreen(
                             text =
                                 buildString {
                                     append(LocalStrings.current.postTitle)
-                                    uiState.creator?.username?.also { username ->
+                                    uiState.mainEntry?.creator?.username?.also { username ->
                                         append(" ")
                                         append(LocalStrings.current.postBy)
                                         append(" ")
@@ -195,7 +208,7 @@ class EntryDetailScreen(
                     ) {
                         FloatingActionButton(
                             onClick = {
-                                val entry = uiState.entries.firstOrNull { it.id == id }
+                                val entry = uiState.mainEntry
                                 if (entry != null) {
                                     detailOpener.openComposer(
                                         inReplyTo = entry,
@@ -224,298 +237,332 @@ class EntryDetailScreen(
                 }
             },
         ) { padding ->
-            PullToRefreshBox(
+            val pageCount = uiState.entries.size
+            val pagerState =
+                remember(pageCount) {
+                    PagerState(
+                        currentPage = uiState.currentIndex,
+                        currentPageOffsetFraction = 0f,
+                        pageCount = { pageCount },
+                    )
+                }
+
+            LaunchedEffect(pagerState) {
+                snapshotFlow { pagerState.currentPage }
+                    .onEach {
+                        model.reduce(EntryDetailMviModel.Intent.ChangeNavigationIndex(it))
+                        goBackToTop()
+                    }.launchIn(this)
+            }
+            HorizontalPager(
                 modifier =
                     Modifier
                         .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ).nestedScroll(fabNestedScrollConnection),
-                isRefreshing = uiState.refreshing,
-                onRefresh = {
-                    model.reduce(EntryDetailMviModel.Intent.Refresh)
-                },
-            ) {
-                LazyColumn(
-                    state = lazyListState,
+                        .fillMaxSize(),
+                state = pagerState,
+                beyondViewportPageCount = 1,
+            ) { index ->
+                val currentEntryList = uiState.entries[index]
+                lazyListState = rememberLazyListState()
+
+                PullToRefreshBox(
+                    modifier =
+                        Modifier
+                            .then(
+                                if (uiState.hideNavigationBarWhileScrolling) {
+                                    Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                                } else {
+                                    Modifier
+                                },
+                            ).nestedScroll(fabNestedScrollConnection),
+                    isRefreshing = uiState.refreshing,
+                    onRefresh = {
+                        model.reduce(EntryDetailMviModel.Intent.Refresh)
+                    },
                 ) {
-                    itemsIndexed(
-                        items = uiState.entries,
-                        key = { _, e -> "entry-detail-${e.safeKey}" },
-                    ) { idx, entry ->
-                        val isMainEntry = entry.id == id
-                        TimelineItem(
-                            modifier =
-                                Modifier.then(
-                                    if (isMainEntry && uiState.layout == TimelineLayout.Card) {
-                                        Modifier
-                                            .padding(horizontal = Spacing.xs)
-                                            .shadow(
-                                                elevation = 5.dp,
-                                                shape = RoundedCornerShape(CornerSize.l),
-                                            ).background(
-                                                color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
-                                                shape = RoundedCornerShape(CornerSize.l),
-                                            ).padding(
-                                                vertical = Spacing.s,
-                                                horizontal = Spacing.xxxs,
-                                            )
-                                    } else {
-                                        Modifier
-                                    },
-                                ),
-                            entry = entry,
-                            extendedSocialInfoEnabled = isMainEntry,
-                            layout =
-                                if (isMainEntry) {
-                                    TimelineLayout.Full
-                                } else {
-                                    uiState.layout
-                                },
-                            blurNsfw = uiState.blurNsfw,
-                            autoloadImages = uiState.autoloadImages,
-                            onOpenUrl = { url, allowOpenInternal ->
-                                if (allowOpenInternal) {
-                                    uriHandler.openUri(url)
-                                } else {
-                                    uriHandler.openExternally(url)
-                                }
-                            },
-                            onClick = { e ->
-                                if (e.id != id) {
-                                    detailOpener.openEntryDetail(
-                                        entry = entry,
-                                        replaceTop = true,
-                                    )
-                                }
-                            },
-                            onOpenUser = {
-                                detailOpener.openUserDetail(it)
-                            },
-                            onOpenImage = { urls, imageIdx, videoIndices ->
-                                detailOpener.openImageDetail(
-                                    urls = urls,
-                                    initialIndex = imageIdx,
-                                    videoIndices = videoIndices,
-                                )
-                            },
-                            onReblog =
-                                { e: TimelineEntryModel ->
-                                    val timeSinceCreation =
-                                        e.created?.run {
-                                            getDurationFromDateToNow(this)
-                                        } ?: Duration.ZERO
-                                    when {
-                                        !e.reblogged && timeSinceCreation.isOldEntry ->
-                                            confirmReblogEntry = e
-
-                                        else ->
-                                            model.reduce(
-                                                EntryDetailMviModel.Intent.ToggleReblog(e),
-                                            )
-                                    }
-                                }.takeIf { actionRepository.canReblog(entry.original) },
-                            onBookmark =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e))
-                                }.takeIf { actionRepository.canBookmark(entry.original) },
-                            onFavorite =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
-                                }.takeIf { actionRepository.canFavorite(entry.original) },
-                            onDislike =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(EntryDetailMviModel.Intent.ToggleDislike(e))
-                                }.takeIf { actionRepository.canDislike(entry.original) },
-                            onOpenUsersFavorite = { e ->
-                                detailOpener.openEntryUsersFavorite(
-                                    entryId = e.id,
-                                    count = e.favoriteCount,
-                                )
-                            },
-                            onOpenUsersReblog = { e ->
-                                detailOpener.openEntryUsersReblog(
-                                    entryId = e.id,
-                                    count = e.reblogCount,
-                                )
-                            },
-                            onReply =
-                                { e: TimelineEntryModel ->
-                                    detailOpener.openComposer(
-                                        inReplyTo = e,
-                                        inReplyToUser = e.creator,
-                                    )
-                                }.takeIf { actionRepository.canReply(entry.original) },
-                            onPollVote =
-                                uiState.currentUserId?.let {
-                                    { e, choices ->
-                                        model.reduce(
-                                            EntryDetailMviModel.Intent.SubmitPollVote(
-                                                entry = e,
-                                                choices = choices,
-                                            ),
-                                        )
-                                    }
-                                },
-                            onShowOriginal = {
-                                model.reduce(
-                                    EntryDetailMviModel.Intent.ToggleTranslation(entry.original),
-                                )
-                            },
-                            options =
-                                buildList {
-                                    if (actionRepository.canShare(entry.original)) {
-                                        this += OptionId.Share.toOption()
-                                        this += OptionId.CopyUrl.toOption()
-                                    }
-                                    if (actionRepository.canEdit(entry.original)) {
-                                        this += OptionId.Edit.toOption()
-                                    }
-                                    if (actionRepository.canDelete(entry.original)) {
-                                        this += OptionId.Delete.toOption()
-                                    }
-                                    if (actionRepository.canTogglePin(entry)) {
-                                        if (entry.pinned) {
-                                            this += OptionId.Unpin.toOption()
-                                        } else {
-                                            this += OptionId.Pin.toOption()
-                                        }
-                                    }
-                                    if (actionRepository.canMute(entry)) {
-                                        this += OptionId.Mute.toOption()
-                                    }
-                                    if (actionRepository.canBlock(entry)) {
-                                        this += OptionId.Block.toOption()
-                                    }
-                                    if (actionRepository.canReport(entry.original)) {
-                                        this += OptionId.ReportUser.toOption()
-                                        this += OptionId.ReportEntry.toOption()
-                                    }
-                                    if (actionRepository.canQuote(entry.original)) {
-                                        this += OptionId.Quote.toOption()
-                                    }
-                                    this += OptionId.ViewDetails.toOption()
-                                    this += OptionId.CopyToClipboard.toOption()
-                                    val currentLang = uiState.lang.orEmpty()
-                                    if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
-                                        this +=
-                                            Option(
-                                                id = OptionId.Translate,
-                                                label =
-                                                    buildString {
-                                                        append(
-                                                            LocalStrings.current.actionTranslateTo(
-                                                                currentLang,
-                                                            ),
-                                                        )
-                                                        append(" (")
-                                                        append(LocalStrings.current.experimental)
-                                                        append(")")
-                                                    },
-                                            )
-                                    }
-                                },
-                            onOptionSelected = { optionId ->
-                                when (optionId) {
-                                    OptionId.Share -> {
-                                        val urlString = entry.url.orEmpty()
-                                        shareHelper.share(urlString)
-                                    }
-
-                                    OptionId.CopyUrl -> {
-                                        val urlString = entry.url.orEmpty()
-                                        clipboardManager.setText(AnnotatedString(urlString))
-                                        scope.launch {
-                                            snackbarHostState.showSnackbar(copyToClipboardSuccess)
-                                        }
-                                    }
-
-                                    OptionId.Edit -> {
-                                        entry.original.also { entryToEdit ->
-                                            detailOpener.openComposer(
-                                                inReplyTo = entryToEdit.inReplyTo,
-                                                inReplyToUser = entryToEdit.inReplyTo?.creator,
-                                                editedPostId = entryToEdit.id,
-                                            )
-                                        }
-                                    }
-
-                                    OptionId.Delete -> confirmDeleteEntryId = entry.id
-                                    OptionId.Mute -> confirmMuteEntry = entry
-                                    OptionId.Block -> confirmBlockEntry = entry
-                                    OptionId.Pin, OptionId.Unpin ->
-                                        model.reduce(EntryDetailMviModel.Intent.TogglePin(entry))
-                                    OptionId.ReportUser ->
-                                        entry.original.creator?.also { userToReport ->
-                                            detailOpener.openCreateReport(user = userToReport)
-                                        }
-
-                                    OptionId.ReportEntry ->
-                                        entry.original.also { entryToReport ->
-                                            entryToReport.creator?.also { userToReport ->
-                                                detailOpener.openCreateReport(
-                                                    user = userToReport,
-                                                    entry = entryToReport,
-                                                )
-                                            }
-                                        }
-                                    OptionId.ViewDetails -> seeDetailsEntry = entry.original
-                                    OptionId.Quote -> {
-                                        entry.original.also { entryToShare ->
-                                            detailOpener.openComposer(
-                                                urlToShare = entryToShare.url,
-                                            )
-                                        }
-                                    }
-                                    OptionId.CopyToClipboard ->
-                                        model.reduce(
-                                            EntryDetailMviModel.Intent.CopyToClipboard(
-                                                entry.original,
-                                            ),
-                                        )
-
-                                    OptionId.Translate ->
-                                        model.reduce(
-                                            EntryDetailMviModel.Intent.ToggleTranslation(
-                                                entry.original,
-                                            ),
-                                        )
-                                    else -> Unit
-                                }
-                            },
-                        )
-                        if (idx < uiState.entries.lastIndex) {
-                            TimelineDivider(layout = uiState.layout)
-                        }
-                    }
-
-                    // here to show the initial entry from cache at startup
-                    if (uiState.initial) {
-                        val placeholderCount = 5
-                        items(placeholderCount) { idx ->
-                            TimelineItemPlaceholder(
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = lazyListState,
+                    ) {
+                        itemsIndexed(
+                            items = currentEntryList,
+                            key = { _, e -> "entry-detail-${e.safeKey}" },
+                        ) { idx, entry ->
+                            val isMainEntry = entry.id == uiState.mainEntry?.id
+                            TimelineItem(
                                 modifier =
-                                    Modifier.fillMaxWidth().then(
-                                        if (idx == 0) {
-                                            Modifier.padding(top = Spacing.s)
+                                    Modifier.then(
+                                        if (isMainEntry && uiState.layout == TimelineLayout.Card) {
+                                            Modifier
+                                                .padding(horizontal = Spacing.xs)
+                                                .shadow(
+                                                    elevation = 5.dp,
+                                                    shape = RoundedCornerShape(CornerSize.l),
+                                                ).background(
+                                                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
+                                                    shape = RoundedCornerShape(CornerSize.l),
+                                                ).padding(
+                                                    vertical = Spacing.s,
+                                                    horizontal = Spacing.xxxs,
+                                                )
                                         } else {
                                             Modifier
                                         },
                                     ),
+                                entry = entry,
+                                extendedSocialInfoEnabled = isMainEntry,
+                                layout =
+                                    if (isMainEntry) {
+                                        TimelineLayout.Full
+                                    } else {
+                                        uiState.layout
+                                    },
+                                blurNsfw = uiState.blurNsfw,
+                                autoloadImages = uiState.autoloadImages,
+                                onOpenUrl = { url, allowOpenInternal ->
+                                    if (allowOpenInternal) {
+                                        uriHandler.openUri(url)
+                                    } else {
+                                        uriHandler.openExternally(url)
+                                    }
+                                },
+                                onClick = { e ->
+                                    if (e.id != uiState.mainEntry?.id) {
+                                        detailOpener.openEntryDetail(
+                                            entry = entry,
+                                            replaceTop = true,
+                                        )
+                                    }
+                                },
+                                onOpenUser = {
+                                    detailOpener.openUserDetail(it)
+                                },
+                                onOpenImage = { urls, imageIdx, videoIndices ->
+                                    detailOpener.openImageDetail(
+                                        urls = urls,
+                                        initialIndex = imageIdx,
+                                        videoIndices = videoIndices,
+                                    )
+                                },
+                                onReblog =
+                                    { e: TimelineEntryModel ->
+                                        val timeSinceCreation =
+                                            e.created?.run {
+                                                getDurationFromDateToNow(this)
+                                            } ?: Duration.ZERO
+                                        when {
+                                            !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                confirmReblogEntry = e
+
+                                            else ->
+                                                model.reduce(
+                                                    EntryDetailMviModel.Intent.ToggleReblog(e),
+                                                )
+                                        }
+                                    }.takeIf { actionRepository.canReblog(entry.original) },
+                                onBookmark =
+                                    { e: TimelineEntryModel ->
+                                        model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e))
+                                    }.takeIf { actionRepository.canBookmark(entry.original) },
+                                onFavorite =
+                                    { e: TimelineEntryModel ->
+                                        model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
+                                    }.takeIf { actionRepository.canFavorite(entry.original) },
+                                onDislike =
+                                    { e: TimelineEntryModel ->
+                                        model.reduce(EntryDetailMviModel.Intent.ToggleDislike(e))
+                                    }.takeIf { actionRepository.canDislike(entry.original) },
+                                onOpenUsersFavorite = { e ->
+                                    detailOpener.openEntryUsersFavorite(
+                                        entryId = e.id,
+                                        count = e.favoriteCount,
+                                    )
+                                },
+                                onOpenUsersReblog = { e ->
+                                    detailOpener.openEntryUsersReblog(
+                                        entryId = e.id,
+                                        count = e.reblogCount,
+                                    )
+                                },
+                                onReply =
+                                    { e: TimelineEntryModel ->
+                                        detailOpener.openComposer(
+                                            inReplyTo = e,
+                                            inReplyToUser = e.creator,
+                                        )
+                                    }.takeIf { actionRepository.canReply(entry.original) },
+                                onPollVote =
+                                    uiState.currentUserId?.let {
+                                        { e, choices ->
+                                            model.reduce(
+                                                EntryDetailMviModel.Intent.SubmitPollVote(
+                                                    entry = e,
+                                                    choices = choices,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                onShowOriginal = {
+                                    model.reduce(
+                                        EntryDetailMviModel.Intent.ToggleTranslation(entry.original),
+                                    )
+                                },
+                                options =
+                                    buildList {
+                                        if (actionRepository.canShare(entry.original)) {
+                                            this += OptionId.Share.toOption()
+                                            this += OptionId.CopyUrl.toOption()
+                                        }
+                                        if (actionRepository.canEdit(entry.original)) {
+                                            this += OptionId.Edit.toOption()
+                                        }
+                                        if (actionRepository.canDelete(entry.original)) {
+                                            this += OptionId.Delete.toOption()
+                                        }
+                                        if (actionRepository.canTogglePin(entry)) {
+                                            if (entry.pinned) {
+                                                this += OptionId.Unpin.toOption()
+                                            } else {
+                                                this += OptionId.Pin.toOption()
+                                            }
+                                        }
+                                        if (actionRepository.canMute(entry)) {
+                                            this += OptionId.Mute.toOption()
+                                        }
+                                        if (actionRepository.canBlock(entry)) {
+                                            this += OptionId.Block.toOption()
+                                        }
+                                        if (actionRepository.canReport(entry.original)) {
+                                            this += OptionId.ReportUser.toOption()
+                                            this += OptionId.ReportEntry.toOption()
+                                        }
+                                        if (actionRepository.canQuote(entry.original)) {
+                                            this += OptionId.Quote.toOption()
+                                        }
+                                        this += OptionId.ViewDetails.toOption()
+                                        this += OptionId.CopyToClipboard.toOption()
+                                        val currentLang = uiState.lang.orEmpty()
+                                        if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
+                                            this +=
+                                                Option(
+                                                    id = OptionId.Translate,
+                                                    label =
+                                                        buildString {
+                                                            append(
+                                                                LocalStrings.current.actionTranslateTo(
+                                                                    currentLang,
+                                                                ),
+                                                            )
+                                                            append(" (")
+                                                            append(LocalStrings.current.experimental)
+                                                            append(")")
+                                                        },
+                                                )
+                                        }
+                                    },
+                                onOptionSelected = { optionId ->
+                                    when (optionId) {
+                                        OptionId.Share -> {
+                                            val urlString = entry.url.orEmpty()
+                                            shareHelper.share(urlString)
+                                        }
+
+                                        OptionId.CopyUrl -> {
+                                            val urlString = entry.url.orEmpty()
+                                            clipboardManager.setText(AnnotatedString(urlString))
+                                            scope.launch {
+                                                snackbarHostState.showSnackbar(
+                                                    copyToClipboardSuccess,
+                                                )
+                                            }
+                                        }
+
+                                        OptionId.Edit -> {
+                                            entry.original.also { entryToEdit ->
+                                                detailOpener.openComposer(
+                                                    inReplyTo = entryToEdit.inReplyTo,
+                                                    inReplyToUser = entryToEdit.inReplyTo?.creator,
+                                                    editedPostId = entryToEdit.id,
+                                                )
+                                            }
+                                        }
+
+                                        OptionId.Delete -> confirmDeleteEntryId = entry.id
+                                        OptionId.Mute -> confirmMuteEntry = entry
+                                        OptionId.Block -> confirmBlockEntry = entry
+                                        OptionId.Pin, OptionId.Unpin ->
+                                            model.reduce(EntryDetailMviModel.Intent.TogglePin(entry))
+
+                                        OptionId.ReportUser ->
+                                            entry.original.creator?.also { userToReport ->
+                                                detailOpener.openCreateReport(user = userToReport)
+                                            }
+
+                                        OptionId.ReportEntry ->
+                                            entry.original.also { entryToReport ->
+                                                entryToReport.creator?.also { userToReport ->
+                                                    detailOpener.openCreateReport(
+                                                        user = userToReport,
+                                                        entry = entryToReport,
+                                                    )
+                                                }
+                                            }
+
+                                        OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                        OptionId.Quote -> {
+                                            entry.original.also { entryToShare ->
+                                                detailOpener.openComposer(
+                                                    urlToShare = entryToShare.url,
+                                                )
+                                            }
+                                        }
+
+                                        OptionId.CopyToClipboard ->
+                                            model.reduce(
+                                                EntryDetailMviModel.Intent.CopyToClipboard(
+                                                    entry.original,
+                                                ),
+                                            )
+
+                                        OptionId.Translate ->
+                                            model.reduce(
+                                                EntryDetailMviModel.Intent.ToggleTranslation(
+                                                    entry.original,
+                                                ),
+                                            )
+
+                                        else -> Unit
+                                    }
+                                },
                             )
-                            if (idx < placeholderCount - 1) {
+                            if (idx < uiState.entries.lastIndex) {
                                 TimelineDivider(layout = uiState.layout)
                             }
                         }
-                    }
 
-                    item {
-                        Spacer(modifier = Modifier.height(Spacing.xxxl))
+                        // here to show the initial entry from cache at startup
+                        if (uiState.initial) {
+                            val placeholderCount = 5
+                            items(placeholderCount) { idx ->
+                                TimelineItemPlaceholder(
+                                    modifier =
+                                        Modifier.fillMaxWidth().then(
+                                            if (idx == 0) {
+                                                Modifier.padding(top = Spacing.s)
+                                            } else {
+                                                Modifier
+                                            },
+                                        ),
+                                )
+                                if (idx < placeholderCount - 1) {
+                                    TimelineDivider(layout = uiState.layout)
+                                }
+                            }
+                        }
+
+                        item {
+                            Spacer(modifier = Modifier.height(Spacing.xxxl))
+                        }
                     }
                 }
             }

@@ -31,6 +31,7 @@ val userDetailModule =
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
                     getTranslation = instance(),
+                    timelineNavigationManager = instance(),
                     notificationCenter = instance(),
                 )
             }
@@ -52,6 +53,7 @@ val userDetailModule =
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
                     getTranslation = instance(),
+                    timelineNavigationManager = instance(),
                     notificationCenter = instance(),
                 )
             }

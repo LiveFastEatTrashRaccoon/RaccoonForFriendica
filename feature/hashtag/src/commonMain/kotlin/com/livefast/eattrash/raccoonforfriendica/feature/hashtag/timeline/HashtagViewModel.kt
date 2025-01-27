@@ -15,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
@@ -46,6 +47,7 @@ class HashtagViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>(
         initialState = HashtagMviModel.State(),
@@ -141,6 +143,12 @@ class HashtagViewModel(
             is HashtagMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
             is HashtagMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is HashtagMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is HashtagMviModel.Intent.WillOpenDetail ->
+                screenModelScope.launch {
+                    val state = paginationManager.extractState()
+                    timelineNavigationManager.push(state)
+                    emitEffect(HashtagMviModel.Effect.OpenDetail(intent.entry))
+                }
         }
     }
 

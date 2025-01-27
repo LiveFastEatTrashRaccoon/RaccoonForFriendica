@@ -68,6 +68,10 @@ interface HashtagMviModel :
         data class ToggleTranslation(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class WillOpenDetail(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -92,6 +96,10 @@ interface HashtagMviModel :
 
         data class TriggerCopy(
             val text: String,
+        ) : Effect
+
+        data class OpenDetail(
+            val entry: TimelineEntryModel,
         ) : Effect
     }
 }

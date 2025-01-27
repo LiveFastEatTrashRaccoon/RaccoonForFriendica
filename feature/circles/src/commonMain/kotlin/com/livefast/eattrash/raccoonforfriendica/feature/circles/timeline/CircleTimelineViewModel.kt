@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineTyp
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
@@ -48,6 +49,7 @@ class CircleTimelineViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<CircleTimelineMviModel.Intent, CircleTimelineMviModel.State, CircleTimelineMviModel.Effect>(
         initialState = CircleTimelineMviModel.State(),
@@ -141,6 +143,12 @@ class CircleTimelineViewModel(
 
             is CircleTimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is CircleTimelineMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is CircleTimelineMviModel.Intent.WillOpenDetail ->
+                screenModelScope.launch {
+                    val state = paginationManager.extractState()
+                    timelineNavigationManager.push(state)
+                    emitEffect(CircleTimelineMviModel.Effect.OpenDetail(intent.entry))
+                }
         }
     }
 

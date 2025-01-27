@@ -145,6 +145,12 @@ class TimelineScreen : Screen {
                             clipboardManager.setText(AnnotatedString(event.text))
                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                         }
+
+                        is TimelineMviModel.Effect.OpenDetail ->
+                            detailOpener.openEntryDetail(
+                                entry = event.entry,
+                                swipeNavigationEnabled = true,
+                            )
                     }
                 }.launchIn(this)
         }
@@ -326,7 +332,7 @@ class TimelineScreen : Screen {
                             autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
                             onClick = { e ->
-                                detailOpener.openEntryDetail(e)
+                                model.reduce(TimelineMviModel.Intent.WillOpenDetail(e))
                             },
                             onOpenUrl = { url, allowOpenInternal ->
                                 if (allowOpenInternal) {

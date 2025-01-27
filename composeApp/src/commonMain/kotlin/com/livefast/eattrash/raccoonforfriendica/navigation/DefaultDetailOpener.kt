@@ -97,10 +97,15 @@ class DefaultDetailOpener(
     override fun openEntryDetail(
         entry: TimelineEntryModel,
         replaceTop: Boolean,
+        swipeNavigationEnabled: Boolean,
     ) {
         scope.launch {
             entryCache.put(entry.id, entry)
-            val screen = EntryDetailScreen(entry.id)
+            val screen =
+                EntryDetailScreen(
+                    id = entry.id,
+                    swipeNavigationEnabled = swipeNavigationEnabled,
+                )
             if (replaceTop) {
                 navigationCoordinator.replace(screen)
             } else {
@@ -257,10 +262,17 @@ class DefaultDetailOpener(
         navigationCoordinator.push(screen)
     }
 
-    override fun openThread(entry: TimelineEntryModel) {
+    override fun openThread(
+        entry: TimelineEntryModel,
+        swipeNavigationEnabled: Boolean,
+    ) {
         scope.launch {
             entryCache.put(entry.id, entry)
-            val screen = ThreadScreen(entry.id)
+            val screen =
+                ThreadScreen(
+                    entryId = entry.id,
+                    swipeNavigationEnabled = swipeNavigationEnabled
+            )
             navigationCoordinator.push(screen)
         }
     }

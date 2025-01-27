@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface TimelineNavigationManager {
     val canNavigate: StateFlow<Boolean>
+    val currentList: List<TimelineEntryModel>
 
     fun push(state: TimelinePaginationManagerState)
 
@@ -13,4 +14,6 @@ interface TimelineNavigationManager {
     suspend fun getPrevious(postId: String): TimelineEntryModel?
 
     suspend fun getNext(postId: String): TimelineEntryModel?
+
+    suspend fun loadNextPage()
 }

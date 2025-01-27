@@ -184,6 +184,13 @@ class UserDetailScreen(
                             clipboardManager.setText(AnnotatedString(event.text))
                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                         }
+
+                        is UserDetailMviModel.Effect.OpenDetail -> {
+                            detailOpener.openEntryDetail(
+                                entry = event.entry,
+                                swipeNavigationEnabled = true,
+                            )
+                        }
                     }
                 }.launchIn(this)
         }
@@ -582,7 +589,7 @@ class UserDetailScreen(
                             autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
                             onClick = { e ->
-                                detailOpener.openEntryDetail(e)
+                                model.reduce(UserDetailMviModel.Intent.WillOpenDetail(e))
                             },
                             onOpenUrl = { url, allowOpenInternal ->
                                 if (allowOpenInternal) {

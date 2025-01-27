@@ -7,12 +7,18 @@ import org.kodein.di.bind
 import org.kodein.di.factory
 import org.kodein.di.instance
 
+data class EntryDetailMviModelParams(
+    val id: String,
+    val swipeNavigationEnabled: Boolean,
+)
+
 val entryDetailModule =
     DI.Module("EntryDetailModule") {
         bind<EntryDetailMviModel> {
-            factory { id: String ->
+            factory { params: EntryDetailMviModelParams ->
                 EntryDetailViewModel(
-                    id = id,
+                    id = params.id,
+                    swipeNavigationEnabled = params.swipeNavigationEnabled,
                     timelineEntryRepository = instance(),
                     identityRepository = instance(),
                     settingsRepository = instance(),
@@ -27,6 +33,7 @@ val entryDetailModule =
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
                     getTranslation = instance(),
+                    timelineNavigationManager = instance(),
                     notificationCenter = instance(),
                 )
             }

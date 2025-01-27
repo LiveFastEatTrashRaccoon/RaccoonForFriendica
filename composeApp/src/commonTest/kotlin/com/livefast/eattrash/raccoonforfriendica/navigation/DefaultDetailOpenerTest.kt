@@ -154,6 +154,18 @@ class DefaultDetailOpenerTest {
     }
 
     @Test
+    fun `when openEntryDetail with swipeNavigationEnabled then interactions are as expected`() {
+        sut.openEntryDetail(
+            entry = TimelineEntryModel(id = "0", content = ""),
+            swipeNavigationEnabled = true,
+        )
+
+        verify {
+            navigationCoordinator.push(any<EntryDetailScreen>())
+        }
+    }
+
+    @Test
     fun `when openSettings then interactions are as expected`() {
         sut.openSettings()
 
@@ -286,6 +298,17 @@ class DefaultDetailOpenerTest {
     fun `given reply when openThread then interactions are as expected`() {
         val entry = TimelineEntryModel(id = "0", content = "")
         sut.openThread(entry = entry)
+
+        verifySuspend {
+            entryCache.put(entry.id, entry)
+            navigationCoordinator.push(any<ThreadScreen>())
+        }
+    }
+
+    @Test
+    fun `given reply when openThread with swipeNavigationEnabled then interactions are as expected`() {
+        val entry = TimelineEntryModel(id = "0", content = "")
+        sut.openThread(entry = entry, swipeNavigationEnabled = true)
 
         verifySuspend {
             entryCache.put(entry.id, entry)
