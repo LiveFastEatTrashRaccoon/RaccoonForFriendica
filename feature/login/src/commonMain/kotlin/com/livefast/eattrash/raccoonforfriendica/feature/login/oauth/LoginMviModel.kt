@@ -12,6 +12,8 @@ interface LoginMviModel :
             val name: String,
         ) : Intent
 
+        data object SignUp : Intent
+
         data object Submit : Intent
     }
 
@@ -31,6 +33,10 @@ interface LoginMviModel :
 
         data class Failure(
             val message: String? = null,
+        ) : Effect
+
+        data class OpenWebRegistration(
+            val url: String,
         ) : Effect
     }
 }
