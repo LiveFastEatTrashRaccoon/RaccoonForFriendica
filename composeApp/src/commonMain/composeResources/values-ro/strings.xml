@@ -481,4 +481,6 @@
     <string name="translated_using">prin intermediul %1$s</string>
     <string name="action_show_original">arată original</string>
     <string name="translated_from">tradus din %1$s</string>
+    <string name="message_sign_up_1">Încă nu ai un cont?</string>
+    <string name="message_sign_up_2">Creează-l acum!</string>
 </resources>
