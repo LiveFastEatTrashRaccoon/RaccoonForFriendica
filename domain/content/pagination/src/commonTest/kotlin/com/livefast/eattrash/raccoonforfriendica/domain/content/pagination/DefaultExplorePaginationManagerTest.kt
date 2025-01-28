@@ -11,6 +11,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.answering.sequentiallyReturns
@@ -49,6 +52,11 @@ class DefaultExplorePaginationManagerTest {
         mock<NotificationCenter> {
             every { subscribe(any<KClass<NotificationCenterEvent>>()) } returns MutableSharedFlow()
         }
+    private val accountRepository =
+        mock<AccountRepository> {
+            everySuspend { getActive() } returns null
+        }
+    private val stopWordRepository = mock<StopWordRepository>()
 
     private val sut =
         DefaultExplorePaginationManager(
@@ -56,6 +64,8 @@ class DefaultExplorePaginationManagerTest {
             userRepository = userRepository,
             emojiHelper = emojiHelper,
             replyHelper = replyHelper,
+            accountRepository = accountRepository,
+            stopWordRepository = stopWordRepository,
             notificationCenter = notificationCenter,
             dispatcher = UnconfinedTestDispatcher(),
         )
@@ -150,6 +160,36 @@ class DefaultExplorePaginationManagerTest {
             assertTrue(sut.canFetchMore)
             verifySuspend {
                 trendingRepository.getEntries(offset = 0)
+            }
+        }
+
+    @Test
+    fun `given results and stopwords when loadNextPage with Posts specification then result is as expected`() =
+        runTest {
+            val accountId = 1L
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "foo"),
+                    TimelineEntryModel(
+                        id = "3",
+                        content = "bar",
+                    ),
+                )
+            everySuspend {
+                trendingRepository.getEntries(offset = any())
+            } returns list
+            everySuspend { accountRepository.getActive() } returns AccountModel(id = accountId)
+            everySuspend { stopWordRepository.get(any()) } returns listOf("foo")
+
+            sut.reset(ExplorePaginationSpecification.Posts())
+            val res = sut.loadNextPage()
+
+            assertEquals(list.subList(1, 2).map { ExploreItemModel.Entry(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                trendingRepository.getEntries(offset = 0)
+                accountRepository.getActive()
+                stopWordRepository.get(accountId)
             }
         }
 
