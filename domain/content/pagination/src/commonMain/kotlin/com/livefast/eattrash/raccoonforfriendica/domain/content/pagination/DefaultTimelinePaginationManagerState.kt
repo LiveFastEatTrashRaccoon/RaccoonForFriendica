@@ -7,4 +7,5 @@ internal data class DefaultTimelinePaginationManagerState(
     val pageCursor: String? = null,
     val history: List<TimelineEntryModel> = emptyList(),
     val userRateLimits: Map<String, Double> = emptyMap(),
+    val stopWords: List<String>? = null,
 ) : TimelinePaginationManagerState

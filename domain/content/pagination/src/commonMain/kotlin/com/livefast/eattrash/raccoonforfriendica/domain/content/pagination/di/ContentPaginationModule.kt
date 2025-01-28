@@ -110,6 +110,7 @@ val contentPaginationModule =
                     userRateLimitRepository = instance(),
                     emojiHelper = instance(),
                     replyHelper = instance(),
+                    stopWordRepository = instance(),
                     notificationCenter = instance(),
                 )
             }
