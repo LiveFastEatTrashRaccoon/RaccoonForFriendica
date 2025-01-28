@@ -367,4 +367,108 @@
     <string name="action_reveal_content">உள்ளடக்கத்தை வெளிப்படுத்துங்கள்</string>
     <string name="action_save">சேமி</string>
     <string name="action_save_draft">வரைவை சேமிக்கவும்</string>
+    <string name="settings_theme_light">ஒளி</string>
+    <string name="settings_title">அமைப்புகள்</string>
+    <string name="share_as_file">கோப்பாக பகிரவும்</string>
+    <string name="share_as_url">முகவரி ஆக பகிரவும்</string>
+    <string name="theme_color_yellow">பெருங்களிப்புடைய எட்ச்ஆக்</string>
+    <string name="thread_title">நூல்</string>
+    <string name="visibility_public">பொது</string>
+    <string name="visibility_unlisted">பட்டியலிடப்படாதது</string>
+    <string name="action_show_original">அசல் காட்டு</string>
+    <string name="action_translate_to">%1$s க்கு மொழிபெயர்க்கவும்</string>
+    <string name="message_loading_translation">மொழிபெயர்ப்புகளை ஏற்றுகிறது</string>
+    <string name="translated_using">%1$s ஆல் இயக்கப்படுகிறது</string>
+    <string name="short_unavailable">இதற்கில்லை</string>
+    <string name="sidebar_anonymous_message">ரக்கூனுக்கு வருக!\n\n சுயவிவரத் திரையில் இருந்து எந்த நேரத்திலும் உங்கள் நிகழ்வில் உள்நுழையலாம்.\n\n நண்பரை அனுபவிக்கவும்!</string>
+    <string name="sidebar_anonymous_title">அநாமதேய</string>
+    <string name="system_default">மண்டலம்</string>
+    <string name="theme_color_green">ஃப்ரோலிக்சோம் தவளை</string>
+    <string name="theme_color_blue">விசித்திரமான திமிங்கலம்</string>
+    <string name="theme_color_gray">ரேவனச் ரக்கூன்</string>
+    <string name="theme_color_light_blue">திசைதிருப்பப்பட்ட டால்பின்</string>
+    <string name="theme_color_orange">உமிழும் நரி</string>
+    <string name="theme_color_pink">தனித்துவமான யூனிகார்ன்</string>
+    <string name="theme_color_purple">ஓசியானிக் ஆக்டோபச்</string>
+    <string name="theme_color_red">நொறுங்கிய நண்டு</string>
+    <string name="theme_color_white">கொந்தளிப்பான கரடி</string>
+    <string name="time_hour_short">ம</string>
+    <string name="time_minute_short">மணித்துளி</string>
+    <string name="time_second_short">கள்</string>
+    <string name="timeline_all">அனைத்தும்</string>
+    <string name="timeline_entry_in_reply_to">பதில்</string>
+    <string name="timeline_entry_reblogged_by">மீண்டும் பகிரவும்</string>
+    <string name="timeline_local">உள்ளக</string>
+    <string name="timeline_layout_card">அட்டை</string>
+    <string name="timeline_layout_compact">கச்சிதமான</string>
+    <string name="timeline_layout_distraction_free">கவனச்சிதறல் இல்லாதது</string>
+    <string name="timeline_layout_full">முழு</string>
+    <string name="timeline_subscriptions">சந்தாக்கள்</string>
+    <string name="topic_title">தலைப்பு</string>
+    <string name="unpublished_section_drafts">வரைவுகள்</string>
+    <string name="unpublished_section_scheduled">திட்டமிடப்பட்டுள்ளது</string>
+    <string name="unpublished_title">வெளியிடப்படாத உருப்படிகள்</string>
+    <string name="unread_notification_title">உங்கள் அறிவிப்புகளை சரிபார்க்கவும்!</string>
+    <string name="unsaved_changes_title">சேமிக்கப்படாத மாற்றங்கள்</string>
+    <string name="update_date">புதுப்பிப்பு தேதி</string>
+    <string name="url_opening_mode_custom_tabs">தனிப்பயன் தாவல்கள்</string>
+    <string name="url_opening_mode_external">வெளிப்புற உலாவி</string>
+    <string name="url_opening_mode_internal">உள் வலை பார்வை</string>
+    <string name="user_feedback_comment_placeholder">நீங்கள் சந்தித்த சிக்கலை விவரிக்கவும் அல்லது ஒரு பின்னூட்டத்தை விடவும்</string>
+    <string name="user_feedback_field_email">மின்னஞ்சல் அல்லது பயனர்பெயர் (விரும்பினால்)</string>
+    <string name="user_feedback_field_comment">கருத்து</string>
+    <string name="user_field_personal_note">தனிப்பட்ட குறிப்பு</string>
+    <string name="verified_field">சரிபார்க்கப்பட்டது</string>
+    <string name="visibility_circle">வட்டம்</string>
+    <string name="visibility_direct">மட்டுமே குறிப்பிடுகிறது</string>
+    <string name="visibility_private">பின்தொடர்பவர்கள் மட்டுமே</string>
+    <string name="translated_from">%1$s இலிருந்து மொழிபெயர்க்கப்பட்டுள்ளது</string>
+    <plurals name="account_follower">
+        <item quantity="one">%1$d பின்தொடர்பவர்</item>
+        <item quantity="other">%1$d பின்தொடர்பவர்கள்</item>
+    </plurals>
+    <plurals name="account_following">
+        <item quantity="one">%1$d பின்தொடர்வது</item>
+        <item quantity="other">%1$d பின்தொடர்வது</item>
+    </plurals>
+    <plurals name="create_report_selected_rules">
+        <item quantity="one">%1$d விதி தேர்ந்தெடுக்கப்பட்டது</item>
+        <item quantity="other">%1$d விதிகள் தேர்ந்தெடுக்கப்பட்டன</item>
+    </plurals>
+    <plurals name="extended_social_info_favorites">
+        <item quantity="one">%1$d பிடித்தது</item>
+        <item quantity="other">%1$d பிடித்தவை</item>
+    </plurals>
+    <plurals name="dislikes_count">
+        <item quantity="one">%1$d வெறுப்பு</item>
+        <item quantity="other">%1$d விருப்பு வெறுப்புகள்</item>
+    </plurals>
+    <plurals name="extended_social_info_reblogs">
+        <item quantity="one">%1$d மறு பங்கு</item>
+        <item quantity="other">%1$d மறு-பங்குகள்</item>
+    </plurals>
+    <plurals name="hashtag_people_using">
+        <item quantity="one">%1$d நபர் இதைப் பற்றி பேசுகிறார்</item>
+        <item quantity="other">%1$d மக்கள் இதைப் பற்றி பேசுகிறார்கள்</item>
+    </plurals>
+    <plurals name="items">
+        <item quantity="one">%1$d உருப்படி</item>
+        <item quantity="other">%1$d உருப்படிகள்</item>
+    </plurals>
+    <plurals name="messages">
+        <item quantity="one">%1$d செய்தி</item>
+        <item quantity="other">%1$d செய்திகள்</item>
+    </plurals>
+    <plurals name="poll_vote">
+        <item quantity="one">% 1 $ டி வாக்கு</item>
+        <item quantity="other">% 1 $ டி வாக்குகள்</item>
+    </plurals>
+    <plurals name="unread_messages">
+        <item quantity="one">%1$d படிக்கவில்லை</item>
+        <item quantity="other">%1$d படிக்கவில்லை</item>
+    </plurals>
+    <plurals name="unread_notification_body">
+        <item quantity="one">உங்கள் at இல் %1$d உருப்படி உள்ளது</item>
+        <item quantity="other">உங்கள் at இல் %1$d உருப்படிகள் உள்ளன</item>
+    </plurals>
 </resources>
