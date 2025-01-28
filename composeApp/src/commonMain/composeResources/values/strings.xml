@@ -483,5 +483,6 @@
     <string name="language_pt" translatable="false">Português</string>
     <string name="language_ro" translatable="false">Română</string>
     <string name="language_ru" translatable="false">Русский</string>
+    <string name="language_ta" translatable="false">தமிழ்</string>
     <string name="language_ua" translatable="false">Українська</string>
 </resources>
