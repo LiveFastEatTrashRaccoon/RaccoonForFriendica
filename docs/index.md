@@ -100,7 +100,8 @@ A special thanks goes to all those who contributed so far:
 - [toas-koas](https://github.com/toas-koas)
 - [gnu-ewm](https://hosted.weblate.org/user/gnu-ewm)
 - [ktlinux](https://hosted.weblate.org/user/ktlinux)
-- [Fitik](https://hosted.weblate.org/user/11mancookie11/)
+- [Fitik](https://hosted.weblate.org/user/11mancookie11)
+- [TamilNeram](https://github.com/TamilNeram)
 - all those who reported feedback and ideas through Friendica, Mastodon, GitHub, emails,
   private messages, homing pigeons and every possibly imaginable medium.
 
