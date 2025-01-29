@@ -97,18 +97,14 @@ class EntryDetailViewModel(
                 .subscribe(TimelineEntryCreatedEvent::class)
                 .onEach { event ->
                     val currentEntries = uiState.value.let { it.entries.getOrNull(it.currentIndex) }
-                    val idx = currentEntries?.indexOfFirst { it.id == event.entry.parentId } ?: -1
-                    if (idx >= 0) {
+                    val foundIdx = currentEntries?.indexOfFirst { it.id == event.entry.parentId } ?: -1
+                    if (foundIdx >= 0) {
                         updateState {
                             it.copy(
                                 entries =
                                     it.entries.mapIndexed { idx, entryList ->
                                         if (idx == it.currentIndex) {
-                                            entryList
-                                                .toMutableList()
-                                                .apply {
-                                                    add(idx + 1, event.entry)
-                                                }.toList()
+                                            entryList + event.entry
                                         } else {
                                             entryList
                                         }
@@ -180,7 +176,7 @@ class EntryDetailViewModel(
                 } else {
                     currentEntry?.let { listOf(listOf(it)) } ?: listOf(emptyList())
                 }
-            val initialIndex = entries.indexOfFirst { it.first().id == id }
+            val initialIndex = entries.indexOfFirst { it.first().id == id }.coerceAtLeast(0)
             updateState {
                 it.copy(
                     mainEntry = currentEntry,

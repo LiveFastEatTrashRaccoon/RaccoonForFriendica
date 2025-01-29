@@ -160,7 +160,7 @@ class ThreadViewModel(
                 } else {
                     currentEntry?.let { listOf(it) } ?: emptyList()
                 }
-            val initialIndex = mainEntries.indexOfFirst { it.id == entryId }
+            val initialIndex = mainEntries.indexOfFirst { it.id == entryId }.coerceAtLeast(0)
             val replies: List<List<TimelineEntryModel>> = mainEntries.map { emptyList() }
             check(mainEntries.size == replies.size)
             updateState {
