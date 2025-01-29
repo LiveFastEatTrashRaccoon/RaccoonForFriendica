@@ -519,6 +519,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("messageLoadingTranslation")
     override val messageLoadingUsers: String
         @Composable get() = retrieve("messageLoadingUsers")
+    override val messageNoPublicTimeline: String
+        @Composable get() = retrieve("messageNoPublicTimeline")
     override val messageMissingField: String
         @Composable get() = retrieve("messageMissingField")
     override val messageMissingRules: String
@@ -785,6 +787,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("shareAsFile")
     override val shareAsUrl: String
         @Composable get() = retrieve("shareAsUrl")
+    override val shortcutsTitle: String
+        @Composable get() = retrieve("shortcutsTitle")
     override val shortUnavailable: String
         @Composable get() = retrieve("shortUnavailable")
     override val sidebarAnonymousMessage: String
@@ -880,6 +884,9 @@ class MockStrings : Strings {
 
     @Composable
     override fun accountFollower(count: Int): String = retrieve("accountFollower")
+
+    @Composable
+    override fun actionShortcut(node: String): String = retrieve("actionShortcut")
 
     @Composable
     override fun actionTranslateTo(lang: String): String = retrieve("actionTranslateTo")
