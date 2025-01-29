@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedba
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
@@ -27,9 +28,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTrans
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
 import kotlinx.coroutines.FlowPreview
@@ -54,6 +57,8 @@ class TimelineViewModel(
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
+    private val accountRepository: AccountRepository,
+    private val instanceShortcutRepository: InstanceShortcutRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val announcementsManager: AnnouncementsManager,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
@@ -117,6 +122,11 @@ class TimelineViewModel(
             announcementsManager.unreadCount
                 .onEach { count ->
                     updateState { it.copy(unreadAnnouncements = count) }
+                }.launchIn(this)
+
+            apiConfigurationRepository.node
+                .onEach { node ->
+                    updateState { it.copy(currentNode = node) }
                 }.launchIn(this)
 
             combine(
@@ -192,6 +202,8 @@ class TimelineViewModel(
                     timelineNavigationManager.push(state)
                     emitEffect(TimelineMviModel.Effect.OpenDetail(intent.entry))
                 }
+
+            is TimelineMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
         }
     }
 
@@ -608,6 +620,17 @@ class TimelineViewModel(
                     translationLoading = false,
                 )
             updateEntryInState(entry.id) { newEntry }
+        }
+    }
+
+    private fun addInstanceShortcut(nodeName: String) {
+        screenModelScope.launch {
+            accountRepository.getActive()?.id?.also { accountId ->
+                instanceShortcutRepository.create(
+                    accountId = accountId,
+                    node = nodeName,
+                )
+            }
         }
     }
 }

@@ -73,6 +73,10 @@ interface TimelineMviModel :
         data class WillOpenDetail(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class AddInstanceShortcut(
+            val node: String,
+        ) : Intent
     }
 
     data class State(
@@ -91,6 +95,7 @@ interface TimelineMviModel :
         val unreadAnnouncements: Int = 0,
         val layout: TimelineLayout = TimelineLayout.Full,
         val lang: String? = null,
+        val currentNode: String? = null,
     )
 
     sealed interface Effect {

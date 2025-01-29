@@ -82,6 +82,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
@@ -454,6 +455,13 @@ class TimelineScreen : Screen {
                                                     },
                                             )
                                     }
+                                    val nodeName = entry.nodeName
+                                    if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
+                                        this +=
+                                            OptionId.AddShortcut.toOption(
+                                                LocalStrings.current.actionShortcut(nodeName),
+                                            )
+                                    }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -516,6 +524,10 @@ class TimelineScreen : Screen {
                                     OptionId.Translate ->
                                         model.reduce(
                                             TimelineMviModel.Intent.ToggleTranslation(entry.original),
+                                        )
+                                    OptionId.AddShortcut ->
+                                        model.reduce(
+                                            TimelineMviModel.Intent.AddInstanceShortcut(entry.nodeName),
                                         )
                                     else -> Unit
                                 }
