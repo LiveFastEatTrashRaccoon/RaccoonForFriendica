@@ -447,4 +447,30 @@
         <item quantity="other">Es gibt %1$d Artikel im 🗑️</item>
     </plurals>
     <string name="theme_color_blue">Skurriler Wal</string>
+    <string name="color_picker_dialog_insert_hex">Hexen-Farbcode einfügen</string>
+    <string name="manage_blocks_section_limited">Unternehmen</string>
+    <string name="settings_about_acknowledgements">Anerkennungen</string>
+    <string name="message_sign_up_2">Jetzt anmelden!</string>
+    <string name="action_grant_permission">Beihilfe</string>
+    <string name="manage_blocks_section_stop_words">Wörter</string>
+    <string name="action_change_rate_limit">Veränderungsrate</string>
+    <string name="item_selected">ausgewählt</string>
+    <string name="action_open_settings">Offene Einstellungen</string>
+    <string name="message_sign_up_1">Haben Sie noch kein Konto?</string>
+    <string name="settings_push_notification_permission_denied_permanently">Push-Benachrichtigungsberechtigung dauerhaft verweigert</string>
+    <string name="settings_push_notification_permission_not_granted">Push-Benachrichtigungsberechtigung nicht erteilt</string>
+    <string name="timeline_layout_card">Karte</string>
+    <string name="action_show_original">Vorstellung Original</string>
+    <string name="action_translate_to">Übersetzen auf %1$s</string>
+    <string name="message_loading_translation">Übersetzungen laden</string>
+    <string name="translated_from">übersetzt von %1$s</string>
+    <string name="translated_using">von %1$s</string>
+    <string name="message_loading_hashtags">Hashtags laden</string>
+    <string name="timeline_layout_distraction_free">Ablenkung frei</string>
+    <string name="settings_item_timeline_layout">Anordnung der Stellen</string>
+    <string name="timeline_layout_full">Voll</string>
+    <string name="timeline_layout_compact">Kompakt</string>
+    <string name="action_dislike">Unglaublich</string>
+    <string name="action_remove_dislike">Unglaublich</string>
+    <string name="action_play">Abspielen</string>
 </resources>
