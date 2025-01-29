@@ -472,4 +472,5 @@
     <string name="action_translate_to">Käännä muotoon %1$s</string>
     <string name="message_sign_up_1">Eikö sinulla ole vielä tiliä?</string>
     <string name="message_sign_up_2">Rekisteröidy nyt!</string>
+    <string name="manage_blocks_section_stop_words">Sanat</string>
 </resources>
