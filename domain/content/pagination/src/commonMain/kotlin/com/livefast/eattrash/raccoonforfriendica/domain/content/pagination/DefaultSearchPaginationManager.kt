@@ -14,6 +14,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +32,8 @@ internal class DefaultSearchPaginationManager(
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
+    private val accountRepository: AccountRepository,
+    private val stopWordRepository: StopWordRepository,
     notificationCenter: NotificationCenter = getNotificationCenter(),
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : SearchPaginationManager {
@@ -39,6 +43,7 @@ internal class DefaultSearchPaginationManager(
     private val history = mutableListOf<ExploreItemModel>()
     private val mutex = Mutex()
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
+    private var stopWords: List<String>? = null
 
     init {
         scope.launch {
@@ -90,6 +95,9 @@ internal class DefaultSearchPaginationManager(
         pageCursor = null
         mutex.withLock {
             history.clear()
+            accountRepository.getActive()?.id?.also { accountId ->
+                stopWords = stopWordRepository.get(accountId)
+            }
         }
         canFetchMore = true
     }
@@ -121,7 +129,8 @@ internal class DefaultSearchPaginationManager(
                             pageCursor = pageCursor,
                             type = SearchResultType.Users,
                         )?.determineUserRelationshipStatus()
-            }?.deduplicate()
+            }?.filterByStopWords()
+                ?.deduplicate()
                 ?.updatePaginationData()
                 ?.fixupCreatorEmojis()
                 ?.fixupInReplyTo()
@@ -187,6 +196,23 @@ internal class DefaultSearchPaginationManager(
                     is ExploreItemModel.Entry -> it.copy(entry = it.entry.withInReplyToIfMissing())
                     else -> it
                 }
+            }
+        }
+
+    private fun List<ExploreItemModel>.filterByStopWords(): List<ExploreItemModel> =
+        filter { item ->
+            when (item) {
+                is ExploreItemModel.Entry ->
+                    stopWords?.takeIf { it.isNotEmpty() }?.let { stopWordList ->
+                        stopWordList.none { word ->
+                            item.entry.content.contains(
+                                other = word,
+                                ignoreCase = true,
+                            )
+                        }
+                    } ?: true
+
+                else -> true
             }
         }
 }

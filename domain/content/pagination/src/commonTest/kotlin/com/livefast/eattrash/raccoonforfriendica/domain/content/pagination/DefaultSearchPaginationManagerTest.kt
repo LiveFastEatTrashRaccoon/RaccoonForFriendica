@@ -11,6 +11,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.answering.sequentiallyReturns
@@ -49,6 +52,11 @@ class DefaultSearchPaginationManagerTest {
         mock<NotificationCenter> {
             every { subscribe(any<KClass<NotificationCenterEvent>>()) } returns MutableSharedFlow()
         }
+    private val accountRepository =
+        mock<AccountRepository> {
+            everySuspend { getActive() } returns null
+        }
+    private val stopWordRepository = mock<StopWordRepository>()
 
     private val sut =
         DefaultSearchPaginationManager(
@@ -56,13 +64,15 @@ class DefaultSearchPaginationManagerTest {
             userRepository = userRepository,
             emojiHelper = emojiHelper,
             replyHelper = replyHelper,
+            accountRepository = accountRepository,
+            stopWordRepository = stopWordRepository,
             notificationCenter = notificationCenter,
             dispatcher = UnconfinedTestDispatcher(),
         )
 
     // region Posts
     @Test
-    fun `given no results when loadNextPage with Posts specification then result is as expected`() =
+    fun `given no results when loadNextPage with Entries specification then result is as expected`() =
         runTest {
             everySuspend {
                 searchRepository.search(
@@ -89,7 +99,7 @@ class DefaultSearchPaginationManagerTest {
         }
 
     @Test
-    fun `given results when loadNextPage with Posts specification then result is as expected`() =
+    fun `given results when loadNextPage with Entries specification then result is as expected`() =
         runTest {
             val list =
                 listOf(
@@ -120,7 +130,7 @@ class DefaultSearchPaginationManagerTest {
         }
 
     @Test
-    fun `given sensitive results when loadNextPage with Posts specification and not includeNsfw then result is as expected`() =
+    fun `given sensitive results when loadNextPage with Entries specification and not includeNsfw then result is as expected`() =
         runTest {
             val list =
                 listOf(
@@ -157,7 +167,7 @@ class DefaultSearchPaginationManagerTest {
         }
 
     @Test
-    fun `given sensitive results when loadNextPage with Posts specification then result is as expected`() =
+    fun `given sensitive results when loadNextPage with Entries specification then result is as expected`() =
         runTest {
             val list =
                 listOf(
@@ -194,7 +204,7 @@ class DefaultSearchPaginationManagerTest {
         }
 
     @Test
-    fun `given no more results when loadNextPage twice with Posts specification then result is as expected`() =
+    fun `given no more results when loadNextPage twice with Entries specification then result is as expected`() =
         runTest {
             val list =
                 listOf(
@@ -228,6 +238,46 @@ class DefaultSearchPaginationManagerTest {
                     pageCursor = "1",
                     resolve = false,
                 )
+            }
+        }
+
+    @Test
+    fun `given results and stopwords when loadNextPage with Entries specification then result is as expected`() =
+        runTest {
+            val accountId = 1L
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "foo"),
+                    TimelineEntryModel(
+                        id = "3",
+                        content = "bar",
+                    ),
+                )
+            everySuspend {
+                searchRepository.search(
+                    query = any(),
+                    type = any(),
+                    pageCursor = any(),
+                    resolve = any(),
+                )
+            } returns list.map { ExploreItemModel.Entry(it) }
+            everySuspend { accountRepository.getActive() } returns AccountModel(id = accountId)
+            everySuspend { stopWordRepository.get(any()) } returns listOf("foo")
+
+            sut.reset(SearchPaginationSpecification.Entries(query = "query", includeNsfw = false))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.subList(1, 2).map { ExploreItemModel.Entry(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                searchRepository.search(
+                    query = "query",
+                    type = SearchResultType.Entries,
+                    pageCursor = null,
+                    resolve = false,
+                )
+                accountRepository.getActive()
+                stopWordRepository.get(accountId)
             }
         }
     // endregion

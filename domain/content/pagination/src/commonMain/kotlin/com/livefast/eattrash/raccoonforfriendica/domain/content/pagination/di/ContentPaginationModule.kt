@@ -99,6 +99,8 @@ val contentPaginationModule =
                     userRepository = instance(),
                     emojiHelper = instance(),
                     replyHelper = instance(),
+                    accountRepository = instance(),
+                    stopWordRepository = instance(),
                     notificationCenter = instance(),
                 )
             }
