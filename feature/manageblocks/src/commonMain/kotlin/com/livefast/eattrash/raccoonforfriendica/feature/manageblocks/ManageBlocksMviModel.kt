@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.manageblocks
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksItem
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
 
 interface ManageBlocksMviModel :
@@ -29,6 +29,14 @@ interface ManageBlocksMviModel :
             val handle: String,
             val rate: Double,
         ) : Intent
+
+        data class AddStopWord(
+            val word: String,
+        ) : Intent
+
+        data class RemoveStopWord(
+            val word: String,
+        ) : Intent
     }
 
     data class State(
@@ -37,7 +45,7 @@ interface ManageBlocksMviModel :
         val canFetchMore: Boolean = true,
         val refreshing: Boolean = false,
         val section: ManageBlocksSection = ManageBlocksSection.Muted,
-        val items: List<UserModel> = emptyList(),
+        val items: List<ManageBlocksItem> = emptyList(),
         val autoloadImages: Boolean = true,
         val hideNavigationBarWhileScrolling: Boolean = true,
     )
