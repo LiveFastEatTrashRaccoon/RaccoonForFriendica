@@ -41,6 +41,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfil
 import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback.UserFeedbackScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.timeline.ShortcutTimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
@@ -271,8 +273,8 @@ class DefaultDetailOpener(
             val screen =
                 ThreadScreen(
                     entryId = entry.id,
-                    swipeNavigationEnabled = swipeNavigationEnabled
-            )
+                    swipeNavigationEnabled = swipeNavigationEnabled,
+                )
             navigationCoordinator.push(screen)
         }
     }
@@ -427,6 +429,16 @@ class DefaultDetailOpener(
 
     override fun openAcknowledgements() {
         val screen = AcknowledgementsScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openShortcuts() {
+        val screen = ShortcutListScreen()
+        navigationCoordinator.push(screen)
+    }
+
+    override fun openShortcut(node: String) {
+        val screen = ShortcutTimelineScreen(node)
         navigationCoordinator.push(screen)
     }
 }

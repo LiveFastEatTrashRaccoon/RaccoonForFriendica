@@ -103,6 +103,7 @@ kotlin {
             implementation(projects.feature.report)
             implementation(projects.feature.search)
             implementation(projects.feature.settings)
+            implementation(projects.feature.shortcuts)
             implementation(projects.feature.thread)
             implementation(projects.feature.timeline)
             implementation(projects.feature.unpublished)

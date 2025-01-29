@@ -41,6 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.di.nodeInfoMod
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.di.profileModule
 import com.livefast.eattrash.raccoonforfriendica.feature.report.di.reportModule
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.settingsModule
+import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.di.shortcutsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.di.threadModule
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.di.timelineModule
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.di.unpublishedModule
@@ -103,6 +104,7 @@ internal fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
                 reportModule,
                 searchModule,
                 settingsModule,
+                shortcutsModule,
                 threadModule,
                 timelineModule,
                 unpublishedModule,
