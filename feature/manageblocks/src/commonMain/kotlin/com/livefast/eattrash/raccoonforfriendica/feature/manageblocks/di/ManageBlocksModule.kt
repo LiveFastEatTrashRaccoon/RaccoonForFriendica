@@ -19,6 +19,7 @@ val manageBlocksModule =
                     userRateLimitRepository = instance(),
                     imagePreloadManager = instance(),
                     imageAutoloadObserver = instance(),
+                    stopWordRepository = instance(),
                 )
             }
         }
