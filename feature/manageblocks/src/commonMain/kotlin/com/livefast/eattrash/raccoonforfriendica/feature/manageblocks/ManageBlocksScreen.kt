@@ -59,6 +59,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTe
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericListItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
@@ -68,7 +69,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.components.GenericListItem
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksItem
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.safeKey
