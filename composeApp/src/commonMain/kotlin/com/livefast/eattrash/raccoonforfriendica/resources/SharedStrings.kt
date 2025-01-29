@@ -242,6 +242,7 @@ import raccoonforfriendica.composeapp.generated.resources.login_title
 import raccoonforfriendica.composeapp.generated.resources.manage_blocks_section_blocked
 import raccoonforfriendica.composeapp.generated.resources.manage_blocks_section_limited
 import raccoonforfriendica.composeapp.generated.resources.manage_blocks_section_muted
+import raccoonforfriendica.composeapp.generated.resources.manage_blocks_section_stop_words
 import raccoonforfriendica.composeapp.generated.resources.manage_circles_title
 import raccoonforfriendica.composeapp.generated.resources.markup_mode_bbcode
 import raccoonforfriendica.composeapp.generated.resources.markup_mode_html
@@ -907,6 +908,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.manage_blocks_section_limited)
     override val manageBlocksSectionMuted: String
         @Composable get() = stringResource(Res.string.manage_blocks_section_muted)
+    override val manageBlocksSectionStopWords: String
+        @Composable get() = stringResource(Res.string.manage_blocks_section_stop_words)
     override val manageCirclesTitle: String
         @Composable get() = stringResource(Res.string.manage_circles_title)
     override val markupModeBBCode: String

@@ -465,6 +465,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("manageBlocksSectionLimited")
     override val manageBlocksSectionMuted: String
         @Composable get() = retrieve("manageBlocksSectionMuted")
+    override val manageBlocksSectionStopWords: String
+        @Composable get() = retrieve("manageBlocksSectionStopWords")
     override val manageCirclesTitle: String
         @Composable get() = retrieve("manageCirclesTitle")
     override val markupModeBBCode: String

@@ -229,6 +229,7 @@ interface Strings {
     val manageBlocksSectionBlocked: String @Composable get
     val manageBlocksSectionLimited: String @Composable get
     val manageBlocksSectionMuted: String @Composable get
+    val manageBlocksSectionStopWords: String @Composable get
     val manageCirclesTitle: String @Composable get
     val markupModeBBCode: String @Composable get
     val markupModeHTML: String @Composable get
