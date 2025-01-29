@@ -483,4 +483,5 @@
     <string name="translated_using">por %1$s</string>
     <string name="message_sign_up_1">Ainda não tem uma conta?</string>
     <string name="message_sign_up_2">Registe-se agora!</string>
+    <string name="manage_blocks_section_stop_words">Palavras</string>
 </resources>
