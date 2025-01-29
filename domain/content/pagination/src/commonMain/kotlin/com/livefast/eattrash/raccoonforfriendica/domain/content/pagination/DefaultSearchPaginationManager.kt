@@ -205,10 +205,14 @@ internal class DefaultSearchPaginationManager(
                 is ExploreItemModel.Entry ->
                     stopWords?.takeIf { it.isNotEmpty() }?.let { stopWordList ->
                         stopWordList.none { word ->
-                            item.entry.content.contains(
-                                other = word,
-                                ignoreCase = true,
-                            )
+                            val entryTexts =
+                                listOfNotNull(
+                                    item.entry.content,
+                                    item.entry.title,
+                                    item.entry.reblog?.content,
+                                    item.entry.reblog?.title,
+                                )
+                            entryTexts.any { it.contains(other = word, ignoreCase = true) }
                         }
                     } ?: true
 

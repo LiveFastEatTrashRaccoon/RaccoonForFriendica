@@ -320,10 +320,14 @@ internal class DefaultTimelinePaginationManager(
         filter { entry ->
             stopWords?.takeIf { it.isNotEmpty() }?.let { stopWordList ->
                 stopWordList.none { word ->
-                    entry.content.contains(
-                        other = word,
-                        ignoreCase = true,
-                    )
+                    val entryTexts =
+                        listOfNotNull(
+                            entry.content,
+                            entry.title,
+                            entry.reblog?.content,
+                            entry.reblog?.title,
+                        )
+                    entryTexts.any { it.contains(other = word, ignoreCase = true) }
                 }
             } ?: true
         }
