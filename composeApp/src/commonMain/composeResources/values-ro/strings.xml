@@ -483,4 +483,5 @@
     <string name="translated_from">tradus din %1$s</string>
     <string name="message_sign_up_1">Încă nu ai un cont?</string>
     <string name="message_sign_up_2">Creează-l acum!</string>
+    <string name="manage_blocks_section_stop_words">Cuvinte</string>
 </resources>
