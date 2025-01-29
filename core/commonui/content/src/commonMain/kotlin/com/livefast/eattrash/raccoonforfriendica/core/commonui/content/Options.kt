@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 sealed interface OptionId {
+    data object Add : OptionId
+
     data object Edit : OptionId
 
     data object Delete : OptionId
@@ -42,6 +44,7 @@ sealed interface OptionId {
 @Composable
 private fun OptionId.toReadableName(): String =
     when (this) {
+        OptionId.Add -> LocalStrings.current.actionAddNew
         OptionId.Edit -> LocalStrings.current.actionEdit
         OptionId.Delete -> LocalStrings.current.actionDelete
         OptionId.Share -> LocalStrings.current.actionShare

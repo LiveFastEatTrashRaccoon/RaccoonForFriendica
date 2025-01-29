@@ -36,7 +36,9 @@ internal class DefaultPushNotificationManager : PushNotificationManager {
 
     override suspend fun registerEndpoint(
         account: AccountModel,
-        endpoint: String,
+        endpointUrl: String,
+        pubKey: String,
+        auth: String,
     ) {
         // no-op
     }

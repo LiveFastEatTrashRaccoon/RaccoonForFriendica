@@ -213,6 +213,7 @@
     <string name="manage_blocks_section_blocked">Blocked</string>
     <string name="manage_blocks_section_limited">Limited</string>
     <string name="manage_blocks_section_muted">Muted</string>
+    <string name="manage_blocks_section_stop_words">Words</string>
     <string name="manage_circles_title">Circles</string>
     <string name="markup_mode_bbcode">BBCode</string>
     <string name="markup_mode_html">HTML</string>

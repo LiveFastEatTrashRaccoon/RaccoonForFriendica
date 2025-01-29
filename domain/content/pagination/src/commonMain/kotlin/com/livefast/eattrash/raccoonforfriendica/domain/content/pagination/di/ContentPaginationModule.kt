@@ -61,6 +61,8 @@ val contentPaginationModule =
                     userRepository = instance(),
                     emojiHelper = instance(),
                     replyHelper = instance(),
+                    accountRepository = instance(),
+                    stopWordRepository = instance(),
                     notificationCenter = instance(),
                 )
             }
@@ -97,6 +99,8 @@ val contentPaginationModule =
                     userRepository = instance(),
                     emojiHelper = instance(),
                     replyHelper = instance(),
+                    accountRepository = instance(),
+                    stopWordRepository = instance(),
                     notificationCenter = instance(),
                 )
             }
@@ -110,6 +114,7 @@ val contentPaginationModule =
                     userRateLimitRepository = instance(),
                     emojiHelper = instance(),
                     replyHelper = instance(),
+                    stopWordRepository = instance(),
                     notificationCenter = instance(),
                 )
             }

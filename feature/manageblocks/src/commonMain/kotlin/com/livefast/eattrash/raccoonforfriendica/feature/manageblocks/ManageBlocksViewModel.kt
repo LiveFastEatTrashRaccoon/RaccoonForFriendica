@@ -11,10 +11,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksItem
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class ManageBlocksViewModel(
     private val paginationManager: UserPaginationManager,
@@ -24,10 +28,14 @@ class ManageBlocksViewModel(
     private val userRateLimitRepository: UserRateLimitRepository,
     private val imagePreloadManager: ImagePreloadManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
+    private val stopWordRepository: StopWordRepository,
 ) : DefaultMviModel<ManageBlocksMviModel.Intent, ManageBlocksMviModel.State, ManageBlocksMviModel.Effect>(
         initialState = ManageBlocksMviModel.State(),
     ),
     ManageBlocksMviModel {
+    private var originalStopWords: List<String> = emptyList()
+    private val mutex = Mutex()
+
     init {
         screenModelScope.launch {
             imageAutoloadObserver.enabled
@@ -66,7 +74,12 @@ class ManageBlocksViewModel(
                     emitEffect(ManageBlocksMviModel.Effect.BackToTop)
                     refresh(initial = true)
                 }
-            ManageBlocksMviModel.Intent.LoadNextPage -> screenModelScope.launch { loadNextPage() }
+            ManageBlocksMviModel.Intent.LoadNextPage ->
+                screenModelScope.launch {
+                    if (uiState.value.section != ManageBlocksSection.StopWords) {
+                        loadNextUserPage()
+                    }
+                }
             ManageBlocksMviModel.Intent.Refresh -> screenModelScope.launch { refresh() }
             is ManageBlocksMviModel.Intent.ToggleMute -> unmute(intent.userId)
             is ManageBlocksMviModel.Intent.ToggleBlock -> unblock(intent.userId)
@@ -75,24 +88,55 @@ class ManageBlocksViewModel(
                     handle = intent.handle,
                     value = intent.rate,
                 )
+
+            is ManageBlocksMviModel.Intent.AddStopWord -> addStopWord(intent.word)
+            is ManageBlocksMviModel.Intent.RemoveStopWord -> removeStopWord(intent.word)
         }
     }
 
     private suspend fun refresh(initial: Boolean = false) {
         updateState {
-            it.copy(initial = initial, refreshing = !initial)
+            it.copy(
+                initial = initial,
+                refreshing = !initial,
+            )
         }
-        paginationManager.reset(
-            when (uiState.value.section) {
-                ManageBlocksSection.Muted -> UserPaginationSpecification.Muted
-                ManageBlocksSection.Blocked -> UserPaginationSpecification.Blocked
-                ManageBlocksSection.Limited -> UserPaginationSpecification.Limited
-            },
-        )
-        loadNextPage()
+        mutex.withLock {
+            val accountId = accountRepository.getActive()?.id
+            originalStopWords = stopWordRepository.get(accountId)
+        }
+        val section = uiState.value.section
+        when (section) {
+            ManageBlocksSection.Blocked -> {
+                paginationManager.reset(UserPaginationSpecification.Blocked)
+                loadNextUserPage()
+            }
+
+            ManageBlocksSection.Limited -> {
+                paginationManager.reset(UserPaginationSpecification.Limited)
+                loadNextUserPage()
+            }
+
+            ManageBlocksSection.Muted -> {
+                paginationManager.reset(UserPaginationSpecification.Muted)
+                loadNextUserPage()
+            }
+
+            ManageBlocksSection.StopWords -> {
+                val items = originalStopWords.map { ManageBlocksItem.StopWord(it) }
+                updateState {
+                    it.copy(
+                        items = items,
+                        initial = false,
+                        canFetchMore = false,
+                        refreshing = false,
+                    )
+                }
+            }
+        }
     }
 
-    private suspend fun loadNextPage() {
+    private suspend fun loadNextUserPage() {
         if (uiState.value.loading) {
             return
         }
@@ -102,7 +146,7 @@ class ManageBlocksViewModel(
         users.preloadImages()
         updateState {
             it.copy(
-                items = users,
+                items = users.map { user -> ManageBlocksItem.User(user) },
                 canFetchMore = paginationManager.canFetchMore,
                 loading = false,
                 initial = false,
@@ -122,7 +166,13 @@ class ManageBlocksViewModel(
     private suspend fun removeUserFromState(userId: String) {
         updateState {
             it.copy(
-                items = it.items.filter { e -> e.id != userId },
+                items =
+                    it.items.filter { item ->
+                        when (item) {
+                            is ManageBlocksItem.User -> item.user.id != userId
+                            else -> false
+                        }
+                    },
             )
         }
     }
@@ -162,6 +212,38 @@ class ManageBlocksViewModel(
                 }
             }
 
+            refresh()
+        }
+    }
+
+    private fun addStopWord(word: String) {
+        if (word.isBlank()) {
+            return
+        }
+        screenModelScope.launch {
+            mutex.withLock {
+                val newValues =
+                    if (originalStopWords.contains(word)) {
+                        originalStopWords
+                    } else {
+                        originalStopWords + word
+                    }
+                val accountId = accountRepository.getActive()?.id
+                originalStopWords = newValues
+                stopWordRepository.update(accountId = accountId, items = newValues)
+            }
+            refresh()
+        }
+    }
+
+    private fun removeStopWord(word: String) {
+        screenModelScope.launch {
+            mutex.withLock {
+                val newValues = originalStopWords - word
+                val accountId = accountRepository.getActive()?.id
+                originalStopWords = newValues
+                stopWordRepository.update(accountId = accountId, items = newValues)
+            }
             refresh()
         }
     }

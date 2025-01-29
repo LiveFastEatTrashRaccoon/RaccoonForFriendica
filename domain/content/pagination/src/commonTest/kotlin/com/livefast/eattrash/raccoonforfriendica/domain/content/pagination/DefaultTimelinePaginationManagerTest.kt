@@ -15,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.answering.sequentiallyReturns
@@ -55,6 +56,7 @@ class DefaultTimelinePaginationManagerTest {
             everySuspend { getActive() } returns null
         }
     private val userRateLimitRepository = mock<UserRateLimitRepository>()
+    private val stopWordRepository = mock<StopWordRepository>()
     private val sut =
         DefaultTimelinePaginationManager(
             timelineRepository = timelineRepository,
@@ -63,6 +65,7 @@ class DefaultTimelinePaginationManagerTest {
             userRateLimitRepository = userRateLimitRepository,
             emojiHelper = emojiHelper,
             replyHelper = replyHelper,
+            stopWordRepository = stopWordRepository,
             notificationCenter = notificationCenter,
             dispatcher = UnconfinedTestDispatcher(),
         )
@@ -431,6 +434,7 @@ class DefaultTimelinePaginationManagerTest {
                 listOf(
                     UserRateLimitModel(handle = "user-1", rate = 0.5),
                 )
+            everySuspend { stopWordRepository.get(any()) } returns emptyList()
 
             sut.reset(
                 TimelinePaginationSpecification.Feed(
@@ -451,6 +455,59 @@ class DefaultTimelinePaginationManagerTest {
                 )
                 accountRepository.getActive()
                 userRateLimitRepository.getAll(accountId)
+                stopWordRepository.get(accountId)
+            }
+        }
+
+    @Test
+    fun `given results when loadNextPage with home Feed and stopwords then result is as expected`() =
+        runTest {
+            val accountId = 1L
+            val list =
+                listOf(
+                    TimelineEntryModel(
+                        id = "1",
+                        content = "foo",
+                    ),
+                    TimelineEntryModel(
+                        id = "2",
+                        content = "bar",
+                    ),
+                    TimelineEntryModel(
+                        id = "3",
+                        content = "baz",
+                    ),
+                )
+            everySuspend {
+                timelineRepository.getHome(
+                    pageCursor = any(),
+                    refresh = any(),
+                )
+            } returns list
+            everySuspend { accountRepository.getActive() } returns AccountModel(id = accountId)
+            everySuspend { userRateLimitRepository.getAll(any()) } returns emptyList()
+            everySuspend { stopWordRepository.get(any()) } returns listOf("foo")
+
+            sut.reset(
+                TimelinePaginationSpecification.Feed(
+                    timelineType = TimelineType.Subscriptions,
+                    excludeReplies = false,
+                    includeNsfw = false,
+                    refresh = false,
+                ),
+            )
+            val res = sut.loadNextPage()
+
+            assertEquals(list.subList(1, 3), res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                timelineRepository.getHome(
+                    pageCursor = null,
+                    refresh = false,
+                )
+                accountRepository.getActive()
+                userRateLimitRepository.getAll(accountId)
+                stopWordRepository.get(accountId)
             }
         }
     // endregion
@@ -519,6 +576,56 @@ class DefaultTimelinePaginationManagerTest {
                     hashtag = "tag",
                     pageCursor = "1",
                 )
+            }
+        }
+
+    @Test
+    fun `given results when loadNextPage with Hashtag and stopwords then result is as expected`() =
+        runTest {
+            val accountId = 1L
+            val list =
+                listOf(
+                    TimelineEntryModel(
+                        id = "1",
+                        content = "foo",
+                    ),
+                    TimelineEntryModel(
+                        id = "2",
+                        content = "bar",
+                    ),
+                    TimelineEntryModel(
+                        id = "3",
+                        content = "baz",
+                    ),
+                )
+            everySuspend {
+                timelineRepository.getHashtag(
+                    hashtag = any(),
+                    pageCursor = any(),
+                )
+            } returns ListWithPageCursor(list = list, cursor = "1")
+            everySuspend { accountRepository.getActive() } returns AccountModel(id = accountId)
+            everySuspend { userRateLimitRepository.getAll(any()) } returns emptyList()
+            everySuspend { stopWordRepository.get(any()) } returns listOf("foo")
+
+            sut.reset(
+                TimelinePaginationSpecification.Hashtag(
+                    hashtag = "tag",
+                    includeNsfw = false,
+                ),
+            )
+            val res = sut.loadNextPage()
+
+            assertEquals(list.subList(1, 3), res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                timelineRepository.getHashtag(
+                    hashtag = "tag",
+                    pageCursor = null,
+                )
+                accountRepository.getActive()
+                userRateLimitRepository.getAll(accountId)
+                stopWordRepository.get(accountId)
             }
         }
     // endregion

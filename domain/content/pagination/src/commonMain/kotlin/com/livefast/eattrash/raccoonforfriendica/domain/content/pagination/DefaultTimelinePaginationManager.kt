@@ -15,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +33,7 @@ internal class DefaultTimelinePaginationManager(
     private val userRateLimitRepository: UserRateLimitRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
+    private val stopWordRepository: StopWordRepository,
     notificationCenter: NotificationCenter = getNotificationCenter(),
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : TimelinePaginationManager {
@@ -42,6 +44,7 @@ internal class DefaultTimelinePaginationManager(
     private val mutex = Mutex()
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
     private val userRateLimits = mutableMapOf<String, Double>()
+    private var stopWords: List<String>? = null
 
     init {
         notificationCenter
@@ -75,6 +78,7 @@ internal class DefaultTimelinePaginationManager(
                 userRateLimitRepository.getAll(accountId).forEach { limit ->
                     userRateLimits[limit.handle] = limit.rate
                 }
+                stopWords = stopWordRepository.get(accountId)
             }
             history.clear()
         }
@@ -172,6 +176,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.filterReplies(included = !specification.excludeReplies)
                         ?.filterNsfw(specification.includeNsfw)
                         ?.filterWithRateLimits()
+                        ?.filterByStopWords()
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
@@ -181,6 +186,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.filterWithRateLimits()
+                        ?.filterByStopWords()
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
@@ -191,6 +197,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
+                        ?.filterByStopWords()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
 
@@ -199,6 +206,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.filter { it.reblog != null && it.reblog?.inReplyTo == null }
+                        ?.filterByStopWords()
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
 
@@ -206,6 +214,7 @@ internal class DefaultTimelinePaginationManager(
                     results
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
+                        ?.filterByStopWords()
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
@@ -214,6 +223,7 @@ internal class DefaultTimelinePaginationManager(
                     results
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
+                        ?.filterByStopWords()
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
@@ -228,6 +238,7 @@ internal class DefaultTimelinePaginationManager(
             pageCursor = pageCursor,
             history = history,
             userRateLimits = userRateLimits,
+            stopWords = stopWords,
         )
 
     override fun restoreState(state: TimelinePaginationManagerState) {
@@ -237,6 +248,7 @@ internal class DefaultTimelinePaginationManager(
             history.clear()
             history.addAll(it.history)
             userRateLimits.putAll(it.userRateLimits)
+            stopWords = it.stopWords
         }
     }
 
@@ -302,5 +314,21 @@ internal class DefaultTimelinePaginationManager(
             map {
                 it.withInReplyToIfMissing()
             }
+        }
+
+    private fun List<TimelineEntryModel>.filterByStopWords(): List<TimelineEntryModel> =
+        filter { entry ->
+            stopWords?.takeIf { it.isNotEmpty() }?.let { stopWordList ->
+                stopWordList.none { word ->
+                    val entryTexts =
+                        listOfNotNull(
+                            entry.content,
+                            entry.title,
+                            entry.reblog?.content,
+                            entry.reblog?.title,
+                        )
+                    entryTexts.any { it.contains(other = word, ignoreCase = true) }
+                }
+            } ?: true
         }
 }
