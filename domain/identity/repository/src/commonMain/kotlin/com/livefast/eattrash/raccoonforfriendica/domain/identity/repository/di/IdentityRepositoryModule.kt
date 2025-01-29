@@ -10,10 +10,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Defa
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultCredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultIdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultInstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.DefaultStopWordRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import org.kodein.di.DI
@@ -79,6 +81,13 @@ val identityRepositoryModule =
         bind<StopWordRepository> {
             singleton {
                 DefaultStopWordRepository(
+                    keyStore = instance(),
+                )
+            }
+        }
+        bind<InstanceShortcutRepository> {
+            singleton {
+                DefaultInstanceShortcutRepository(
                     keyStore = instance(),
                 )
             }
