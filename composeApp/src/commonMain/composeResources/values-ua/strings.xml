@@ -472,4 +472,5 @@
     <string name="manage_blocks_section_limited">Обмежений</string>
     <string name="message_sign_up_1">Ще не маєте облікового запису?</string>
     <string name="message_sign_up_2">Зареєструйтесь зараз!</string>
+    <string name="manage_blocks_section_stop_words">Слова</string>
 </resources>
