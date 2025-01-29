@@ -483,4 +483,5 @@
     <string name="action_translate_to">Traduire au %1$s</string>
     <string name="message_sign_up_2">Inscrivez-vous maintenant !</string>
     <string name="message_sign_up_1">Vous n\'avez pas encore une compte ?</string>
+    <string name="manage_blocks_section_stop_words">Mots</string>
 </resources>
