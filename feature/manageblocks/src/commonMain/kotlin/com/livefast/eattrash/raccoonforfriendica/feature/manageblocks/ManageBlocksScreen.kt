@@ -14,7 +14,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,15 +40,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpOffset
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTextualInfoDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
@@ -59,7 +68,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpe
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.components.GenericListItem
+import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksItem
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
+import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.toReadableName
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -81,6 +93,8 @@ class ManageBlocksScreen : Screen {
         var confirmUnmuteUserId by remember { mutableStateOf<String?>(null) }
         var confirmUnblockUserId by remember { mutableStateOf<String?>(null) }
         var changeRateLimitUser by remember { mutableStateOf<UserModel?>(null) }
+        var addStopWordDialogOpen by remember { mutableStateOf(false) }
+        var confirmDeleteStopWord by remember { mutableStateOf<String?>(null) }
 
         fun goBackToTop() {
             runCatching {
@@ -128,6 +142,61 @@ class ManageBlocksScreen : Screen {
                             }
                         }
                     },
+                    actions = {
+                        if (uiState.section == ManageBlocksSection.StopWords) {
+                            val options =
+                                buildList {
+                                    this += OptionId.Add.toOption()
+                                }
+                            Box {
+                                var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+                                var optionsMenuOpen by remember { mutableStateOf(false) }
+                                IconButton(
+                                    modifier =
+                                        Modifier.onGloballyPositioned {
+                                            optionsOffset = it.positionInParent()
+                                        },
+                                    onClick = {
+                                        optionsMenuOpen = true
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.MoreVert,
+                                        contentDescription = LocalStrings.current.actionOpenOptions,
+                                    )
+                                }
+
+                                CustomDropDown(
+                                    expanded = optionsMenuOpen,
+                                    onDismiss = {
+                                        optionsMenuOpen = false
+                                    },
+                                    offset =
+                                        with(LocalDensity.current) {
+                                            DpOffset(
+                                                x = optionsOffset.x.toDp(),
+                                                y = optionsOffset.y.toDp(),
+                                            )
+                                        },
+                                ) {
+                                    for (option in options) {
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(option.label)
+                                            },
+                                            onClick = {
+                                                optionsMenuOpen = false
+                                                when (option.id) {
+                                                    OptionId.Add -> addStopWordDialogOpen = true
+                                                    else -> Unit
+                                                }
+                                            },
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    },
                 )
             },
             snackbarHost = {
@@ -163,11 +232,12 @@ class ManageBlocksScreen : Screen {
                     state = lazyListState,
                 ) {
                     stickyHeader {
-                        val titles =
+                        val sections =
                             listOf(
                                 ManageBlocksSection.Muted,
                                 ManageBlocksSection.Blocked,
                                 ManageBlocksSection.Limited,
+                                ManageBlocksSection.StopWords,
                             )
                         SectionSelector(
                             modifier =
@@ -177,11 +247,11 @@ class ManageBlocksScreen : Screen {
                                         top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
                                         bottom = Spacing.s,
                                     ),
-                            titles = titles.map { it.toReadableName() },
-                            currentSection = titles.indexOf(uiState.section),
+                            titles = sections.map { it.toReadableName() },
+                            currentSection = sections.indexOf(uiState.section),
                             onSectionSelected = {
                                 model.reduce(
-                                    ManageBlocksMviModel.Intent.ChangeSection(titles[it]),
+                                    ManageBlocksMviModel.Intent.ChangeSection(sections[it]),
                                 )
                             },
                         )
@@ -210,40 +280,60 @@ class ManageBlocksScreen : Screen {
 
                     itemsIndexed(
                         items = uiState.items,
-                        key = { _, e -> "manage-blocks-${e.id}" },
+                        key = { _, e -> "manage-blocks-${e.safeKey}" },
                     ) { idx, item ->
-                        UserItem(
-                            user = item,
-                            autoloadImages = uiState.autoloadImages,
-                            withSubtitle = uiState.section != ManageBlocksSection.Limited,
-                            onClick = {
-                                detailOpener.openUserDetail(item)
-                            },
-                            options =
-                                buildList {
-                                    when (uiState.section) {
-                                        ManageBlocksSection.Muted -> {
-                                            this += OptionId.Unmute.toOption()
+                        when (item) {
+                            is ManageBlocksItem.StopWord ->
+                                GenericListItem(
+                                    title = item.word,
+                                    options =
+                                        buildList {
+                                            this += OptionId.Delete.toOption()
+                                        },
+                                    onOptionSelected = { optionId ->
+                                        when (optionId) {
+                                            OptionId.Delete -> confirmDeleteStopWord = item.word
+                                            else -> Unit
                                         }
+                                    },
+                                )
 
-                                        ManageBlocksSection.Blocked -> {
-                                            this += OptionId.Unblock.toOption()
-                                        }
+                            is ManageBlocksItem.User ->
+                                UserItem(
+                                    user = item.user,
+                                    autoloadImages = uiState.autoloadImages,
+                                    withSubtitle = uiState.section != ManageBlocksSection.Limited,
+                                    onClick = {
+                                        detailOpener.openUserDetail(item.user)
+                                    },
+                                    options =
+                                        buildList {
+                                            when (uiState.section) {
+                                                ManageBlocksSection.Muted -> {
+                                                    this += OptionId.Unmute.toOption()
+                                                }
 
-                                        ManageBlocksSection.Limited -> {
-                                            this += OptionId.Edit.toOption()
+                                                ManageBlocksSection.Blocked -> {
+                                                    this += OptionId.Unblock.toOption()
+                                                }
+
+                                                ManageBlocksSection.Limited -> {
+                                                    this += OptionId.Edit.toOption()
+                                                }
+
+                                                else -> Unit
+                                            }
+                                        },
+                                    onOptionSelected = { optionId ->
+                                        when (optionId) {
+                                            OptionId.Unmute -> confirmUnmuteUserId = item.user.id
+                                            OptionId.Unblock -> confirmUnblockUserId = item.user.id
+                                            OptionId.Edit -> changeRateLimitUser = item.user
+                                            else -> Unit
                                         }
-                                    }
-                                },
-                            onOptionSelected = { optionId ->
-                                when (optionId) {
-                                    OptionId.Unmute -> confirmUnmuteUserId = item.id
-                                    OptionId.Unblock -> confirmUnblockUserId = item.id
-                                    OptionId.Edit -> changeRateLimitUser = item
-                                    else -> Unit
-                                }
-                            },
-                        )
+                                    },
+                                )
+                        }
 
                         val canFetchMore =
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
@@ -338,6 +428,36 @@ class ManageBlocksScreen : Screen {
                                 rate = newRate,
                             ),
                         )
+                    }
+                },
+            )
+        }
+
+        if (addStopWordDialogOpen) {
+            EditTextualInfoDialog(
+                title = LocalStrings.current.actionAddNew,
+                label = LocalStrings.current.manageBlocksSectionStopWords,
+                value = "",
+                singleLine = true,
+                onClose = { newValue ->
+                    if (newValue != null) {
+                        model.reduce(
+                            ManageBlocksMviModel.Intent.AddStopWord(newValue),
+                        )
+                    }
+                    addStopWordDialogOpen = false
+                },
+            )
+        }
+
+        if (confirmDeleteStopWord != null) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionDelete,
+                onClose = { confirm ->
+                    val word = confirmDeleteStopWord
+                    confirmDeleteStopWord = null
+                    if (confirm && word != null) {
+                        model.reduce(ManageBlocksMviModel.Intent.RemoveStopWord(word))
                     }
                 },
             )
