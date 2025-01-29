@@ -483,4 +483,5 @@
     <string name="action_show_original">ver original</string>
     <string name="message_sign_up_1">¿Aún no tienes una cuenta?</string>
     <string name="message_sign_up_2">¡Regístrate ahora!</string>
+    <string name="manage_blocks_section_stop_words">Palabras</string>
 </resources>
