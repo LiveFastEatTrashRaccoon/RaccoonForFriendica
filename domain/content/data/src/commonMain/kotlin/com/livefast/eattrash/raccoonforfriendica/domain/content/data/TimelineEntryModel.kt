@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
+import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import kotlin.jvm.Transient
 import kotlin.time.Duration
@@ -139,3 +140,10 @@ val TimelineEntryModel.attachmentsToDisplay: List<AttachmentModel>
 
 val TimelineEntryModel.cardToDisplay: PreviewCardModel?
     get() = translation?.card?.takeIf { isShowingTranslation } ?: card
+
+val TimelineEntryModel.nodeName: String
+    get() =
+        original.creator
+            ?.handle
+            ?.nodeName
+            .orEmpty()
