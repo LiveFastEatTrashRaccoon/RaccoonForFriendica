@@ -14,20 +14,19 @@ calf = "0.7.0"
 coil = "3.0.4"
 compose-colorpicker = "1.1.2"
 compose-plugin = "1.7.3"
-compose-ui-test = "1.7.6"
+compose-ui-test = "1.7.7"
 connectivity = "1.2.0"
 compose-multiplatform-media-player = "1.0.29"
 kodein = "7.25.0"
-kotlin = "2.1.0"
+kotlin = "2.1.10"
 kotlinpoet = "2.0.0"
 kotlinx-coroutines = "1.10.1"
 kotlinx-serialization-json = "1.8.0"
 kover = "0.9.1"
 ksoup = "0.5.0"
-ksp = "2.1.0-1.0.29"
+ksp = "2.1.10-1.0.29"
 ktor = "3.0.3"
 ktorfit = "2.2.0"
-ktorfit-ksp = "2.2.0-1.0.29"
 materialKolor = "2.0.1"
 mokkery = "2.6.1"
 moko = "0.18.1"
@@ -87,7 +86,6 @@ ktor-contentnegotiation = { module = "io.ktor:ktor-client-content-negotiation", 
 ktor-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
-ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "ktorfit-ksp" }
 ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfit" }
 ktorfit-converters-response = { module = "de.jensklingenberg.ktorfit:ktorfit-converters-response", version.ref = "ktorfit" }
 
