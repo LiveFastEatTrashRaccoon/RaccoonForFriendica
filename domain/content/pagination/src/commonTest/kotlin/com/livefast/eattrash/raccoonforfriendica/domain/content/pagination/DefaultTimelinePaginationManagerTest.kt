@@ -366,6 +366,40 @@ class DefaultTimelinePaginationManagerTest {
         }
 
     @Test
+    fun `given results when loadNextPage with foreign Feed then result is as expected`() =
+        runTest {
+            val foreignNode = "node"
+            val list = listOf(TimelineEntryModel(id = "1", content = ""))
+            everySuspend {
+                timelineRepository.getLocal(
+                    pageCursor = any(),
+                    refresh = any(),
+                    otherInstance = any(),
+                )
+            } returns list
+
+            sut.reset(
+                TimelinePaginationSpecification.Feed(
+                    timelineType = TimelineType.Foreign(foreignNode),
+                    excludeReplies = false,
+                    includeNsfw = false,
+                    refresh = true,
+                ),
+            )
+            val res = sut.loadNextPage()
+
+            assertEquals(list, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                timelineRepository.getLocal(
+                    pageCursor = null,
+                    refresh = false,
+                    otherInstance = foreignNode,
+                )
+            }
+        }
+
+    @Test
     fun `given can fetch no more results when loadNextPage with public Feed then result is as expected`() =
         runTest {
             val list = listOf(TimelineEntryModel(id = "1", content = ""))
