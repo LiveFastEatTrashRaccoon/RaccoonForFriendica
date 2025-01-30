@@ -249,6 +249,7 @@ val contentRepositoryModule =
             singleton {
                 DefaultTimelineRepository(
                     provider = instance(tag = "default"),
+                    otherProvider = instance(tag = "other"),
                 )
             }
         }

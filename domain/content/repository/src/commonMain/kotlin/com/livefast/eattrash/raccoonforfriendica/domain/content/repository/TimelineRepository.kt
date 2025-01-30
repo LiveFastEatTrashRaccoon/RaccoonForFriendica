@@ -17,6 +17,7 @@ interface TimelineRepository {
     suspend fun getLocal(
         pageCursor: String? = null,
         refresh: Boolean = false,
+        otherInstance: String? = null,
     ): List<TimelineEntryModel>?
 
     suspend fun getHashtag(
