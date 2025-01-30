@@ -322,7 +322,7 @@
     <string name="action_change_visibility">தெரிவுநிலையை மாற்றவும்</string>
     <string name="action_copy_to_clipboard">இடைநிலைப்பலகைக்கு நகலெடுக்கவும்</string>
     <string name="action_copy_url">இணைப்பை நகலெடுக்கவும்</string>
-    <string name="action_create_thread_in_group">இடுகை</string>
+    <string name="action_create_thread_in_group">இதற்கு இடுகை</string>
     <string name="action_delete">நீக்கு</string>
     <string name="action_delete_account">கணக்கை நீக்கு</string>
     <string name="action_delete_follow_request">கோரிக்கையை ரத்துசெய்</string>
@@ -396,7 +396,7 @@
     <string name="time_minute_short">மணித்துளி</string>
     <string name="time_second_short">கள்</string>
     <string name="timeline_all">அனைத்தும்</string>
-    <string name="timeline_entry_in_reply_to">பதில்</string>
+    <string name="timeline_entry_in_reply_to">இதற்குப் பதிலளிக்கையில்</string>
     <string name="timeline_entry_reblogged_by">மீண்டும் பகிரவும்</string>
     <string name="timeline_local">உள்ளக</string>
     <string name="timeline_layout_card">அட்டை</string>
@@ -460,8 +460,8 @@
         <item quantity="other">%1$d செய்திகள்</item>
     </plurals>
     <plurals name="poll_vote">
-        <item quantity="one">% 1 $ டி வாக்கு</item>
-        <item quantity="other">% 1 $ டி வாக்குகள்</item>
+        <item quantity="one">%1$d வாக்கு</item>
+        <item quantity="other">%1$d வாக்குகள்</item>
     </plurals>
     <plurals name="unread_messages">
         <item quantity="one">%1$d படிக்கவில்லை</item>
@@ -471,4 +471,5 @@
         <item quantity="one">உங்கள் at இல் %1$d உருப்படி உள்ளது</item>
         <item quantity="other">உங்கள் at இல் %1$d உருப்படிகள் உள்ளன</item>
     </plurals>
+    <string name="manage_blocks_section_stop_words">சொற்கள்</string>
 </resources>
