@@ -41,14 +41,13 @@ fun AudioPlayer(
     modifier: Modifier = Modifier,
     autoplay: Boolean = false,
 ) {
-    val resources = remember { getCoreResources() }
-    val config = resources.getAudioPlayerConfig()
     var isInitial by remember { mutableStateOf(true) }
+    val resources = remember { getCoreResources() }
 
     if (!autoplay && isInitial) {
         FakeAudioPlayerComposable(
             modifier = modifier,
-            audioPlayerConfig = config,
+            audioPlayerConfig = resources.audioPlayerConfig,
             onPlay = {
                 isInitial = false
             },
@@ -56,7 +55,7 @@ fun AudioPlayer(
     } else {
         AudioPlayerComposable(
             modifier = modifier,
-            audioPlayerConfig = config,
+            audioPlayerConfig = resources.audioPlayerConfig,
             audios =
                 urls.mapIndexed { idx, url ->
                     AudioFile(

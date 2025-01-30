@@ -2,13 +2,11 @@ package com.livefast.eattrash.raccoonforfriendica.resources
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import chaintech.videoplayer.model.AudioPlayerConfig
-import chaintech.videoplayer.model.PlayerConfig
-import chaintech.videoplayer.model.ScreenResize
+import chaintech.videoplayer.model.VideoPlayerConfig
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import org.jetbrains.compose.resources.Font
@@ -76,23 +74,9 @@ internal class SharedResources : CoreResources {
         @Composable
         get() = painterResource(Res.drawable.ic_alt)
 
-    override fun getPlayerConfig(
-        contentScale: ContentScale,
-        muted: Boolean,
-    ): PlayerConfig =
-        PlayerConfig(
-            isFullScreenEnabled = false,
-            isMute = muted,
-            videoFitMode =
-                if (contentScale == ContentScale.Fit) {
-                    ScreenResize.FIT
-                } else {
-                    ScreenResize.FILL
-                },
-        )
+    override val videoPlayerConfig: VideoPlayerConfig =
+        VideoPlayerConfig(isFullScreenEnabled = false)
 
-    override fun getAudioPlayerConfig(): AudioPlayerConfig =
-        AudioPlayerConfig(
-            controlsBottomPadding = Spacing.s,
-        )
+    override val audioPlayerConfig: AudioPlayerConfig =
+        AudioPlayerConfig(controlsBottomPadding = Spacing.s)
 }
