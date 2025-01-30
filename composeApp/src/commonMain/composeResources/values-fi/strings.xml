@@ -129,7 +129,7 @@
     <string name="create_report_item_category">Kategoria</string>
     <string name="create_report_item_forward">Raportti</string>
     <string name="create_report_item_rules">Rikkoi sääntöjä</string>
-    <string name="create_report_title_entry">Ilmoita viesti</string>
+    <string name="create_report_title_entry">Ilmoita sen viesti</string>
     <string name="create_report_title_user">Ilmoita</string>
     <string name="creation_date">luontipäivämäärä</string>
     <string name="custom_option">Mukautettu</string>
@@ -295,7 +295,7 @@
     <string name="select_user_search_placeholder">käyttäjätunnus tai kahva</string>
     <string name="settings_about">Sovelluksen tiedot</string>
     <string name="settings_about_app_version">Versio</string>
-    <string name="settings_about_changelog">Changelog</string>
+    <string name="settings_about_changelog">Muutosloki</string>
     <string name="settings_about_licences">Lisenssit</string>
     <string name="settings_about_matrix">Liity Matrix-huoneeseen</string>
     <string name="settings_about_report_issue">Ilmoita ongelmasta</string>
@@ -400,10 +400,10 @@
     <string name="visibility_unlisted">Luetteloimaton</string>
     <plurals name="account_follower">
         <item quantity="one">%1$d seuraaja</item>
-        <item quantity="other">%1$d seuraaja</item>
+        <item quantity="other">%1$d seuraajaa</item>
     </plurals>
     <plurals name="account_following">
-        <item quantity="one">%1$d seuraavat</item>
+        <item quantity="one">%1$d seuraava</item>
         <item quantity="other">%1$d seuraavat</item>
     </plurals>
     <plurals name="create_report_selected_rules">
