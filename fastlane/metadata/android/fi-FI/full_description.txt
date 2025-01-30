@@ -1,0 +1,120 @@
+<p>
+ <b>Raccoon</b> on ilmainen ja avoimen lähdekoodin mobiilisovellus Friendicalle ja Mastodonille.
+</p>
+<p>
+ Friendica on erinomainen sosiaalinen alusta, jonka voimakkaat ominaisuudet tekevät
+ siitä ainutlaatuisen liittovaltion maailmassa:
+</p>
+<ul>
+ <li>
+ RTF-muokkaus, pitkät viestit, tuki otsikoille ja spoilereille;
+ </li>
+ <li>
+ natiivi tuki ActivityPub <b>ryhmille</b>;
+ </li>
+ <li>
+ <b>suorat viestit</b>;
+ </li>
+ <li>
+ <b>mediagalleria</b>, jossa voit hallita valokuvia ja albumeita;
+ </li>
+ <li>
+ mahdollisuus järjestää yhteystietosi <b>piireihin</b>;
+ </li>
+ <li>
+ kyky lainata (ristipostittaa) muiden ihmisten viestejä;
+ </li>
+ <li>
+ RSS-syötteen tuonti;
+ </li>
+ <li>
+ integroitu <b>tapahtumakalenteri</b>;
+ </li>
+ <li>
+ tietysti paljon muuta (katso virallinen dokumentaatio)…
+ </li>
+</ul>
+<p>
+ Verkkokäyttöliittymä on loistava kaikkien näiden ominaisuuksien käyttämiseen, mutta
+ mobiililaitteella käytettävyydelle ja luettavuudelle on erilaisia rajoituksia, joten
+ alustan tärkeimpien toimintojen käyttämiseen on hyvä olla sovellus.
+</p>
+<p>
+ <b>Pääominaisuudet:</b>
+</p>
+<ul>
+ <li>
+ aikajananäkymä, jossa on mahdollisuus vaihtaa syötetyyppiä (julkinen, paikallinen, tilaukset, käyttäjän tekemät luettelot);
+ </li>
+ <li>
+ viestien yksityiskohdat, eli keskustelun avaaminen sen kontekstissa ja vastausten,
+ uudelleenjakojen määrän ja sen suosikkeihin lisänneiden henkilöiden näkeminen;
+ </li>
+ <li>
+ käyttäjätiedot ahdollisuudellä nähdä viestejä ja vastauksia, kiinnitettyjä viestejä ja mediaa, tilata
+ käyttäjän ilmoituksia, seurata/lähettää pyyntöä tai lopettaa seuraaminen, katso seuraavat/seuraajat;
+ </li>
+ <li>
+ tuki ActivityPub-ryhmille ja mahdollisuus avata säikeitä foorumitilassa;
+ </li>
+ <li>
+ nähdä trendaavia viestejä, hashtageja, linkkejä ja seuraavia suosituksia;
+ </li>
+ <li>
+ seuraa hashtagia/poista seuraaminen ja katso kaikki tietyn hashtagin sisältävät viestit;
+ </li>
+ <li>
+ lähetä toiminnot (uudelleenjaa, suosikki, kirjanmerkki) ja – omille – muokkaa, poista tai kiinnitä profiiliin;
+ </li>
+ <li>
+ maailmanlaajuisen haun hashtagit, viestit ja käyttäjät, jotka sisältävät tiettyjä termejä;
+ </li>
+ <li>
+ mukauta sovelluksen ulkoasua väriteemoilla, fontin kasvoilla ja koolla jne;
+ </li>
+ <li>
+ kirjaudu sisään OAuth2:n kautta;
+ </li>
+ <li>
+ tarkastella ja muokata omia profiilitietoja;
+ </li>
+ <li>
+ tarkastella saapuvia ilmoituksia ja suodattaa luetteloa;
+ </li>
+ <li>
+ hallita omia seurantapyyntöjä ja hyväksyä/hylätä jokainen niistä;
+ </li>
+ <li>
+ tarkastella luetteloa omista suosikeista, kirjanmerkeistä ja seuratuista hashtageista;
+ </li>
+ <li>
+ luo viesti/vastaus muotoillulla tekstillä, kuvaliitteillä (ja vaihtoehtoisella tekstillä), spoilerin ja otsikon kanssa;
+ </li>
+ <li>
+ ajoita viesti (ja muuta sen aikataulun päivämäärää) tai tallenna se luonnoksiin;
+ </li>
+ <li>
+ raportoida viesteistä/käyttäjistä ylläpitäjille sisällön valvontaa varten;
+ </li>
+ <li>
+ mykistää/poista mykistys, estä/poista käyttäjät ja hallitse mykistettyjen/estettyjen käyttäjien luetteloa;
+ </li>
+ <li>
+ hallita omia piirejä (käyttäjän määrittämiä luetteloita);
+ </li>
+ <li>
+ katso gallupit (vain luku);
+ </li>
+ <li>
+ monitili, jolla on helppo vaihtaa tilien välillä (ja nimettömässä tilassa vaihtaa ilmentymää);
+ </li>
+ <li>
+ lähettää suoria viestejä muille käyttäjille ja nähdä keskusteluja;
+ </li>
+ <li>
+ hallita omaa kuvagalleriaa;
+ </li>
+ <li>
+ tarkastella omaa tapahtumakalenteria (vain luku).
+ </li>
+</ul>
