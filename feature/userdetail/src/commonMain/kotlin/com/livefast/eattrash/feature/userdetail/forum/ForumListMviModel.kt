@@ -66,6 +66,10 @@ interface ForumListMviModel :
         data class WillOpenDetail(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class AddInstanceShortcut(
+            val node: String,
+        ) : Intent
     }
 
     data class State(
@@ -82,6 +86,7 @@ interface ForumListMviModel :
         val hideNavigationBarWhileScrolling: Boolean = true,
         val layout: TimelineLayout = TimelineLayout.Full,
         val lang: String? = null,
+        val currentNode: String? = null,
     )
 
     sealed interface Effect {
