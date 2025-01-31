@@ -77,6 +77,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDuration
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
@@ -103,8 +104,8 @@ class EntryDetailScreen(
                     EntryDetailMviModelParams(
                         id = id,
                         swipeNavigationEnabled = swipeNavigationEnabled,
+                    ),
             )
-        )
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -459,6 +460,13 @@ class EntryDetailScreen(
                                                         },
                                                 )
                                         }
+                                        val nodeName = entry.nodeName
+                                        if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
+                                            this +=
+                                                OptionId.AddShortcut.toOption(
+                                                    LocalStrings.current.actionShortcut(nodeName),
+                                                )
+                                        }
                                     },
                                 onOptionSelected = { optionId ->
                                     when (optionId) {
@@ -531,6 +539,12 @@ class EntryDetailScreen(
                                                 ),
                                             )
 
+                                        OptionId.AddShortcut ->
+                                            model.reduce(
+                                                EntryDetailMviModel.Intent.AddInstanceShortcut(
+                                                    entry.nodeName,
+                                                ),
+                                            )
                                         else -> Unit
                                     }
                                 },

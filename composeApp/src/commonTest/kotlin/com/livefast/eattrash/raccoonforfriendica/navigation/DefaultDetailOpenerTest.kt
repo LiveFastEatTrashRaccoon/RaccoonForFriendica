@@ -38,6 +38,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfil
 import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback.UserFeedbackScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.timeline.ShortcutTimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
@@ -529,6 +531,24 @@ class DefaultDetailOpenerTest {
 
         verify {
             navigationCoordinator.push(any<AcknowledgementsScreen>())
+        }
+    }
+
+    @Test
+    fun `when openShortcuts then interactions are as expected`() {
+        sut.openShortcuts()
+
+        verify {
+            navigationCoordinator.push(any<ShortcutListScreen>())
+        }
+    }
+
+    @Test
+    fun `when openShortcut then interactions are as expected`() {
+        sut.openShortcut("node")
+
+        verify {
+            navigationCoordinator.push(any<ShortcutTimelineScreen>())
         }
     }
 }

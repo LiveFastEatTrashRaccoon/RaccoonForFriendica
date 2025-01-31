@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePrelo
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
@@ -24,8 +25,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -40,6 +44,9 @@ class HashtagViewModel(
     private val settingsRepository: SettingsRepository,
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val accountRepository: AccountRepository,
+    private val instanceShortcutRepository: InstanceShortcutRepository,
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
@@ -97,6 +104,11 @@ class HashtagViewModel(
                     updateEntryInState(event.entry.id) { event.entry }
                 }.launchIn(this)
 
+            apiConfigurationRepository.node
+                .onEach { node ->
+                    updateState { it.copy(currentNode = node) }
+                }.launchIn(this)
+
             if (uiState.value.initial) {
                 val model = tagRepository.getBy(tag)
                 updateState {
@@ -149,6 +161,7 @@ class HashtagViewModel(
                     timelineNavigationManager.push(state)
                     emitEffect(HashtagMviModel.Effect.OpenDetail(intent.entry))
                 }
+            is HashtagMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
         }
     }
 
@@ -499,6 +512,17 @@ class HashtagViewModel(
                     translationLoading = false,
                 )
             updateEntryInState(entry.id) { newEntry }
+        }
+    }
+
+    private fun addInstanceShortcut(nodeName: String) {
+        screenModelScope.launch {
+            accountRepository.getActive()?.id?.also { accountId ->
+                instanceShortcutRepository.create(
+                    accountId = accountId,
+                    node = nodeName,
+                )
+            }
         }
     }
 }

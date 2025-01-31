@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Flaky
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material.icons.filled.TravelExplore
 import androidx.compose.material.icons.filled.Workspaces
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
@@ -216,6 +217,13 @@ class DrawerContent : Screen {
                             },
                         )
                     }
+                    DrawerShortcut(
+                        title = LocalStrings.current.shortcutsTitle,
+                        icon = Icons.Default.TravelExplore,
+                        onSelected = {
+                            handleAction { detailOpener.openShortcuts() }
+                        },
+                    )
                 }
 
                 DrawerShortcut(

@@ -78,8 +78,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDuration
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
+import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
@@ -195,6 +197,13 @@ class ForumListScreen(
                                     CustomOptions.SwitchToClassicMode.toOption(
                                         label = LocalStrings.current.actionSwitchToClassicMode,
                                     )
+                                val nodeName = uiState.user?.handle.nodeName
+                                if (nodeName != null && nodeName != uiState.currentNode) {
+                                    this +=
+                                        OptionId.AddShortcut.toOption(
+                                            LocalStrings.current.actionShortcut(nodeName),
+                                        )
+                                }
                             }
                         Box {
                             var optionsOffset by remember { mutableStateOf(Offset.Zero) }
@@ -242,6 +251,15 @@ class ForumListScreen(
                                                         )
                                                     }
                                                 }
+
+                                                OptionId.AddShortcut ->
+                                                    model.reduce(
+                                                        ForumListMviModel.Intent.AddInstanceShortcut(
+                                                            uiState.user
+                                                                ?.handle.nodeName
+                                                                .orEmpty(),
+                                                        ),
+                                                    )
 
                                                 else -> Unit
                                             }
@@ -451,6 +469,13 @@ class ForumListScreen(
                                                     },
                                             )
                                     }
+                                    val nodeName = entry.nodeName
+                                    if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
+                                        this +=
+                                            OptionId.AddShortcut.toOption(
+                                                LocalStrings.current.actionShortcut(nodeName),
+                                            )
+                                    }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -508,6 +533,10 @@ class ForumListScreen(
                                             ForumListMviModel.Intent.ToggleTranslation(entry.original),
                                         )
 
+                                    OptionId.AddShortcut ->
+                                        model.reduce(
+                                            ForumListMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                        )
                                     else -> Unit
                                 }
                             },

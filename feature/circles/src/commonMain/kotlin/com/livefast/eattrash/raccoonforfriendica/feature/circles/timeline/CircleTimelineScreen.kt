@@ -64,6 +64,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
@@ -361,6 +362,13 @@ class CircleTimelineScreen(
                                                     },
                                             )
                                     }
+                                    val nodeName = entry.nodeName
+                                    if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
+                                        this +=
+                                            OptionId.AddShortcut.toOption(
+                                                LocalStrings.current.actionShortcut(nodeName),
+                                            )
+                                    }
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -431,6 +439,12 @@ class CircleTimelineScreen(
                                             ),
                                         )
 
+                                    OptionId.AddShortcut ->
+                                        model.reduce(
+                                            CircleTimelineMviModel.Intent.AddInstanceShortcut(
+                                                entry.nodeName,
+                                            ),
+                                        )
                                     else -> Unit
                                 }
                             },

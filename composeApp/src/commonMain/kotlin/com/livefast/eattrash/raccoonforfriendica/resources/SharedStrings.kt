@@ -86,6 +86,7 @@ import raccoonforfriendica.composeapp.generated.resources.action_select
 import raccoonforfriendica.composeapp.generated.resources.action_send_follow_request
 import raccoonforfriendica.composeapp.generated.resources.action_set_schedule_date
 import raccoonforfriendica.composeapp.generated.resources.action_share
+import raccoonforfriendica.composeapp.generated.resources.action_shortcut
 import raccoonforfriendica.composeapp.generated.resources.action_show_content_description
 import raccoonforfriendica.composeapp.generated.resources.action_show_original
 import raccoonforfriendica.composeapp.generated.resources.action_show_results
@@ -271,6 +272,7 @@ import raccoonforfriendica.composeapp.generated.resources.message_loading_transl
 import raccoonforfriendica.composeapp.generated.resources.message_loading_users
 import raccoonforfriendica.composeapp.generated.resources.message_missing_field
 import raccoonforfriendica.composeapp.generated.resources.message_missing_rules
+import raccoonforfriendica.composeapp.generated.resources.message_no_public_timeline
 import raccoonforfriendica.composeapp.generated.resources.message_poll_vote_error_body
 import raccoonforfriendica.composeapp.generated.resources.message_post_empty_text
 import raccoonforfriendica.composeapp.generated.resources.message_post_invalid_visibility
@@ -404,6 +406,7 @@ import raccoonforfriendica.composeapp.generated.resources.settings_title
 import raccoonforfriendica.composeapp.generated.resources.share_as_file
 import raccoonforfriendica.composeapp.generated.resources.share_as_url
 import raccoonforfriendica.composeapp.generated.resources.short_unavailable
+import raccoonforfriendica.composeapp.generated.resources.shortcuts_title
 import raccoonforfriendica.composeapp.generated.resources.sidebar_anonymous_message
 import raccoonforfriendica.composeapp.generated.resources.sidebar_anonymous_title
 import raccoonforfriendica.composeapp.generated.resources.system_default
@@ -964,6 +967,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.message_loading_users)
     override val messageMissingField: String
         @Composable get() = stringResource(Res.string.message_missing_field)
+    override val messageNoPublicTimeline: String
+        @Composable get() = stringResource(Res.string.message_no_public_timeline)
     override val messageMissingRules: String
         @Composable get() = stringResource(Res.string.message_missing_rules)
     override val messagePollVoteErrorBody: String
@@ -1228,6 +1233,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.share_as_file)
     override val shareAsUrl: String
         @Composable get() = stringResource(Res.string.share_as_url)
+    override val shortcutsTitle: String
+        @Composable get() = stringResource(Res.string.shortcuts_title)
     override val shortUnavailable: String
         @Composable get() = stringResource(Res.string.short_unavailable)
     override val sidebarAnonymousMessage: String
@@ -1323,6 +1330,9 @@ class SharedStrings : Strings {
 
     @Composable
     override fun accountFollower(count: Int): String = pluralStringResource(Res.plurals.account_follower, count, count)
+
+    @Composable
+    override fun actionShortcut(node: String): String = stringResource(Res.string.action_shortcut, node)
 
     @Composable
     override fun actionTranslateTo(lang: String): String = stringResource(Res.string.action_translate_to, lang)

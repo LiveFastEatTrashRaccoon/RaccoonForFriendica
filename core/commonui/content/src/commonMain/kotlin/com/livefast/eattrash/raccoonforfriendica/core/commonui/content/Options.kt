@@ -38,6 +38,8 @@ sealed interface OptionId {
 
     data object Translate : OptionId
 
+    data object AddShortcut : OptionId
+
     interface Custom : OptionId
 }
 
@@ -66,7 +68,7 @@ private fun OptionId.toReadableName(): String =
 @Composable
 fun OptionId.toOption() = Option(id = this, label = toReadableName())
 
-fun OptionId.Custom.toOption(label: String) = Option(id = this, label = label)
+fun OptionId.toOption(label: String) = Option(id = this, label = label)
 
 data class Option(
     val id: OptionId,

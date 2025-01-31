@@ -14,6 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
@@ -26,8 +27,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTrans
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -41,6 +45,9 @@ class CircleTimelineViewModel(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val accountRepository: AccountRepository,
+    private val instanceShortcutRepository: InstanceShortcutRepository,
     private val circleCache: LocalItemCache<CircleModel>,
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
@@ -92,6 +99,11 @@ class CircleTimelineViewModel(
                 .subscribe(TimelineEntryUpdatedEvent::class)
                 .onEach { event ->
                     updateEntryInState(event.entry.id) { event.entry }
+                }.launchIn(this)
+
+            apiConfigurationRepository.node
+                .onEach { node ->
+                    updateState { it.copy(currentNode = node) }
                 }.launchIn(this)
 
             if (uiState.value.initial) {
@@ -149,6 +161,7 @@ class CircleTimelineViewModel(
                     timelineNavigationManager.push(state)
                     emitEffect(CircleTimelineMviModel.Effect.OpenDetail(intent.entry))
                 }
+            is CircleTimelineMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
         }
     }
 
@@ -493,6 +506,17 @@ class CircleTimelineViewModel(
                     translationLoading = false,
                 )
             updateEntryInState(entry.id) { newEntry }
+        }
+    }
+
+    private fun addInstanceShortcut(nodeName: String) {
+        screenModelScope.launch {
+            accountRepository.getActive()?.id?.also { accountId ->
+                instanceShortcutRepository.create(
+                    accountId = accountId,
+                    node = nodeName,
+                )
+            }
         }
     }
 }

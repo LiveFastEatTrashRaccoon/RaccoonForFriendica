@@ -424,6 +424,9 @@
     <string name="message_loading_translation">Loading translations</string>
     <string name="translated_from">translated from %1$s</string>
     <string name="translated_using">powered by %1$s</string>
+    <string name="action_shortcut">Shortcut to %1$s</string>
+    <string name="shortcuts_title">Shortcuts</string>
+    <string name="message_no_public_timeline">Maybe this instance does not expose its public timeline.</string>
 
     <plurals name="account_follower">
         <item quantity="one">%1$d follower</item>

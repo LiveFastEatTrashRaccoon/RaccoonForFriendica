@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 
 internal class DefaultTimelineRepository(
     private val provider: ServiceProvider,
+    private val otherProvider: ServiceProvider,
 ) : TimelineRepository {
     private val mutex = Mutex()
     private val cachedValues: MutableList<TimelineEntryModel> = mutableListOf()
@@ -82,33 +83,55 @@ internal class DefaultTimelineRepository(
     override suspend fun getLocal(
         pageCursor: String?,
         refresh: Boolean,
+        otherInstance: String?,
     ): List<TimelineEntryModel>? =
         withContext(Dispatchers.IO) {
-            if (refresh) {
-                mutex.withLock {
-                    cachedValues.clear()
+            if (otherInstance.isNullOrEmpty()) {
+                if (refresh) {
+                    mutex.withLock {
+                        cachedValues.clear()
+                    }
                 }
-            }
-            if (pageCursor == null && cachedValues.isNotEmpty()) {
-                return@withContext cachedValues
-            }
-            runCatching {
-                val response =
-                    provider.timeline.getPublic(
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                        local = true,
-                    )
-                response
-                    .map { it.toModelWithReply() }
-                    .also {
-                        if (pageCursor == null) {
-                            mutex.withLock {
-                                cachedValues.addAll(it)
+                if (pageCursor == null && cachedValues.isNotEmpty()) {
+                    return@withContext cachedValues
+                }
+                runCatching {
+                    val response =
+                        provider.timeline.getPublic(
+                            maxId = pageCursor,
+                            limit = DEFAULT_PAGE_SIZE,
+                            local = true,
+                        )
+                    response
+                        .map { it.toModelWithReply() }
+                        .also {
+                            if (pageCursor == null) {
+                                mutex.withLock {
+                                    cachedValues.addAll(it)
+                                }
                             }
                         }
-                    }
-            }.getOrNull()
+                }.getOrNull()
+            } else {
+                runCatching {
+                    otherProvider.changeNode(otherInstance)
+                    val response =
+                        otherProvider.timeline.getPublic(
+                            maxId = pageCursor,
+                            limit = DEFAULT_PAGE_SIZE,
+                            local = true,
+                        )
+                    response
+                        .map { it.toModelWithReply().copy(foreign = true) }
+                        .also {
+                            if (pageCursor == null) {
+                                mutex.withLock {
+                                    cachedValues.addAll(it)
+                                }
+                            }
+                        }
+                }.getOrNull()
+            }
         }
 
     override suspend fun getHashtag(

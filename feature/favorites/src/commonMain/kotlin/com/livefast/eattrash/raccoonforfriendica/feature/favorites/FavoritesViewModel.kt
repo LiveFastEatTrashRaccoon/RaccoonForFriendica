@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedba
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
@@ -23,8 +24,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -38,9 +42,12 @@ class FavoritesViewModel(
     private val settingsRepository: SettingsRepository,
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val accountRepository: AccountRepository,
+    private val instanceShortcutRepository: InstanceShortcutRepository,
+    private val blurHashRepository: BlurHashRepository,
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
-    private val blurHashRepository: BlurHashRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
@@ -85,6 +92,11 @@ class FavoritesViewModel(
                 .subscribe(TimelineEntryUpdatedEvent::class)
                 .onEach { event ->
                     updateEntryInState(event.entry.id) { event.entry }
+                }.launchIn(this)
+
+            apiConfigurationRepository.node
+                .onEach { node ->
+                    updateState { it.copy(currentNode = node) }
                 }.launchIn(this)
 
             if (uiState.value.initial) {
@@ -132,6 +144,7 @@ class FavoritesViewModel(
                     timelineNavigationManager.push(state)
                     emitEffect(FavoritesMviModel.Effect.OpenDetail(intent.entry))
                 }
+            is FavoritesMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
         }
     }
 
@@ -479,6 +492,17 @@ class FavoritesViewModel(
                     translationLoading = false,
                 )
             updateEntryInState(entry.id) { newEntry }
+        }
+    }
+
+    private fun addInstanceShortcut(nodeName: String) {
+        screenModelScope.launch {
+            accountRepository.getActive()?.id?.also { accountId ->
+                instanceShortcutRepository.create(
+                    accountId = accountId,
+                    node = nodeName,
+                )
+            }
         }
     }
 }

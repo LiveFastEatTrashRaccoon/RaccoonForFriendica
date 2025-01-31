@@ -258,6 +258,7 @@ interface Strings {
     val messageLoadingUsers: String @Composable get
     val messageMissingField: String @Composable get
     val messageMissingRules: String @Composable get
+    val messageNoPublicTimeline: String @Composable get
     val messagePollVoteErrorBody: String @Composable get
     val messagePostEmptyText: String @Composable get
     val messagePostInvalidVisibility: String @Composable get
@@ -389,6 +390,7 @@ interface Strings {
     val settingsTitle: String @Composable get
     val shareAsFile: String @Composable get
     val shareAsUrl: String @Composable get
+    val shortcutsTitle: String @Composable get
     val shortUnavailable: String @Composable get
     val sidebarAnonymousMessage: String @Composable get
     val sidebarAnonymousTitle: String @Composable get
@@ -437,6 +439,8 @@ interface Strings {
     val visibilityUnlisted: String @Composable get
 
     @Composable fun accountFollower(count: Int): String
+
+    @Composable fun actionShortcut(node: String): String
 
     @Composable fun actionTranslateTo(lang: String): String
 

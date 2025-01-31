@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.components
+package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,12 +30,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @Composable
-internal fun GenericListItem(
+fun GenericListItem(
     title: String,
     subtitle: String? = null,
     modifier: Modifier = Modifier,

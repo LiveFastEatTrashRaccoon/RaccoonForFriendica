@@ -15,6 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
@@ -31,8 +32,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTrans
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -52,6 +55,8 @@ class UserDetailViewModel(
     private val blurHashRepository: BlurHashRepository,
     private val accountRepository: AccountRepository,
     private val userRateLimitRepository: UserRateLimitRepository,
+    private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val instanceShortcutRepository: InstanceShortcutRepository,
     private val emojiHelper: EmojiHelper,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
@@ -98,6 +103,11 @@ class UserDetailViewModel(
                 .subscribe(TimelineEntryUpdatedEvent::class)
                 .onEach { event ->
                     updateEntryInState(event.entry.id) { event.entry }
+                }.launchIn(this)
+
+            apiConfigurationRepository.node
+                .onEach { node ->
+                    updateState { it.copy(currentNode = node) }
                 }.launchIn(this)
 
             if (uiState.value.initial) {
@@ -162,6 +172,7 @@ class UserDetailViewModel(
                     timelineNavigationManager.push(state)
                     emitEffect(UserDetailMviModel.Effect.OpenDetail(intent.entry))
                 }
+            is UserDetailMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
         }
     }
 
@@ -664,6 +675,17 @@ class UserDetailViewModel(
                     translationLoading = false,
                 )
             updateEntryInState(entry.id) { newEntry }
+        }
+    }
+
+    private fun addInstanceShortcut(nodeName: String) {
+        screenModelScope.launch {
+            accountRepository.getActive()?.id?.also { accountId ->
+                instanceShortcutRepository.create(
+                    accountId = accountId,
+                    node = nodeName,
+                )
+            }
         }
     }
 }

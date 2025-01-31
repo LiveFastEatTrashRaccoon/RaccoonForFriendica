@@ -126,4 +126,8 @@ interface DetailOpener {
     fun openAnnouncements()
 
     fun openAcknowledgements()
+
+    fun openShortcuts()
+
+    fun openShortcut(node: String)
 }
