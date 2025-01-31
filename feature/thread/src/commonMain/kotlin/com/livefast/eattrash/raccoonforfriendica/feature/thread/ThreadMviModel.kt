@@ -66,6 +66,10 @@ interface ThreadMviModel :
         data class ChangeNavigationIndex(
             val index: Int,
         ) : Intent
+
+        data class AddInstanceShortcut(
+            val node: String,
+        ) : Intent
     }
 
     data class State(
@@ -81,6 +85,7 @@ interface ThreadMviModel :
         val hideNavigationBarWhileScrolling: Boolean = true,
         val layout: TimelineLayout = TimelineLayout.Full,
         val lang: String? = null,
+        val currentNode: String? = null,
     )
 
     sealed interface Effect {
