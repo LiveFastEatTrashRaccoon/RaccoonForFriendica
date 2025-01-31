@@ -484,4 +484,7 @@
     <string name="message_sign_up_1">Non hai ancora un account?</string>
     <string name="message_sign_up_2">Registrati ora!</string>
     <string name="manage_blocks_section_stop_words">Parole</string>
+    <string name="action_shortcut">Scorciatoia a %1$s</string>
+    <string name="message_no_public_timeline">Forse l\'istanza non espone la timeline pubblica.</string>
+    <string name="shortcuts_title">Scorciatoie</string>
 </resources>
