@@ -711,7 +711,7 @@ class ThreadScreen(
                                     }
                                 }
                             }
-                            if (idx < uiState.replies.lastIndex) {
+                            if (idx < replies.lastIndex) {
                                 TimelineDivider(layout = uiState.layout)
                             }
                         }
