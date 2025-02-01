@@ -102,6 +102,7 @@ A special thanks goes to all those who contributed so far:
 - [ktlinux](https://hosted.weblate.org/user/ktlinux)
 - [Fitik](https://hosted.weblate.org/user/11mancookie11)
 - [TamilNeram](https://github.com/TamilNeram)
+- [Ricky Tigg](https://hosted.weblate.org/user/tigg)
 - all those who reported feedback and ideas through Friendica, Mastodon, GitHub, emails,
   private messages, homing pigeons and every possibly imaginable medium.
 
