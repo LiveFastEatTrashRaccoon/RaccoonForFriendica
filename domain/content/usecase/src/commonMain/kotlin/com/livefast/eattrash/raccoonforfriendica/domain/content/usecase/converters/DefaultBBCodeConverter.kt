@@ -120,7 +120,28 @@ internal class DefaultBBCodeConverter : BBCodeConverter {
             end()
         }
 
-        return builder.toString()
+        // fix hashtags, mentions and group references removing links
+        val result =
+            builder
+                .toString()
+                .let { stepResult ->
+                    Regex("!" + ContentRegexes.BBCODE_URL.pattern).substituteAllOccurrences(stepResult) { match ->
+                        val anchor = match.groups["anchor"]?.value.orEmpty()
+                        append("!$anchor")
+                    }
+                }.let { stepResult ->
+                    Regex("@" + ContentRegexes.BBCODE_URL.pattern).substituteAllOccurrences(stepResult) { match ->
+                        val anchor = match.groups["anchor"]?.value.orEmpty()
+                        append("@$anchor")
+                    }
+                }.let { stepResult ->
+                    Regex("#" + ContentRegexes.BBCODE_URL.pattern).substituteAllOccurrences(stepResult) { match ->
+                        val anchor = match.groups["anchor"]?.value.orEmpty()
+                append("#$anchor")
+            }
+        }
+
+        return result
     }
 }
 
