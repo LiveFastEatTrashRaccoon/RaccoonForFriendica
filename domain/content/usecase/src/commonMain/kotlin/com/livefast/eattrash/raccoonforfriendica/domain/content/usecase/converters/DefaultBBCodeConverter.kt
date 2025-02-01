@@ -71,7 +71,6 @@ internal class DefaultBBCodeConverter : BBCodeConverter {
                         "ul" -> builder.append("[ul]")
                         "ol" -> builder.append("[ol]")
                         "li" -> builder.append("[li]")
-                        "p" -> builder.append("[p]")
                         "code" -> builder.append("[code]")
                         "blockquote" -> builder.append("[quote]")
                         "q" -> builder.append("[quote]")
@@ -102,7 +101,7 @@ internal class DefaultBBCodeConverter : BBCodeConverter {
                         "u" -> builder.append("[/u]")
                         "i", "em" -> builder.append("[/i]")
                         "s" -> builder.append("[/s]")
-                        "p" -> builder.append("[/p]")
+                        "p" -> builder.append("\n\n")
                         "code" -> builder.append("[/code]")
                         "a" -> builder.append("[/url]")
                         "ul" -> builder.append("[/ul]")
@@ -121,7 +120,28 @@ internal class DefaultBBCodeConverter : BBCodeConverter {
             end()
         }
 
-        return builder.toString()
+        // fix hashtags, mentions and group references removing links
+        val result =
+            builder
+                .toString()
+                .let { stepResult ->
+                    Regex("!" + ContentRegexes.BBCODE_URL.pattern).substituteAllOccurrences(stepResult) { match ->
+                        val anchor = match.groups["anchor"]?.value.orEmpty()
+                        append("!$anchor")
+                    }
+                }.let { stepResult ->
+                    Regex("@" + ContentRegexes.BBCODE_URL.pattern).substituteAllOccurrences(stepResult) { match ->
+                        val anchor = match.groups["anchor"]?.value.orEmpty()
+                        append("@$anchor")
+                    }
+                }.let { stepResult ->
+                    Regex("#" + ContentRegexes.BBCODE_URL.pattern).substituteAllOccurrences(stepResult) { match ->
+                        val anchor = match.groups["anchor"]?.value.orEmpty()
+                append("#$anchor")
+            }
+        }
+
+        return result
     }
 }
 
