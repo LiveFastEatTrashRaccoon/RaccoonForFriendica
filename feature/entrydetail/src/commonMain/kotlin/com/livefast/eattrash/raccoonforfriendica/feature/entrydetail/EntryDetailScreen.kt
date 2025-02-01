@@ -282,6 +282,7 @@ class EntryDetailScreen(
                     },
                 ) {
                     LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
                         state = lazyListState,
                     ) {
                         itemsIndexed(

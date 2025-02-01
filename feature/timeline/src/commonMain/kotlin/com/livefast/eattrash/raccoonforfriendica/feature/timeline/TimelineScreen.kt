@@ -564,10 +564,11 @@ class TimelineScreen : Screen {
         }
 
         if (timelineTypeSelectorOpen) {
+            val items = uiState.availableTimelineTypes
             CustomModalBottomSheet(
                 title = LocalStrings.current.feedTypeTitle,
                 items =
-                    uiState.availableTimelineTypes.map {
+                    items.map {
                         CustomModalBottomSheetItem(
                             label = it.toReadableName(),
                             trailingContent = {
@@ -583,7 +584,7 @@ class TimelineScreen : Screen {
                 onSelected = { index ->
                     timelineTypeSelectorOpen = false
                     if (index != null) {
-                        val type = uiState.availableTimelineTypes[index]
+                        val type = items[index]
                         model.reduce(TimelineMviModel.Intent.ChangeType(type))
                     }
                 },
