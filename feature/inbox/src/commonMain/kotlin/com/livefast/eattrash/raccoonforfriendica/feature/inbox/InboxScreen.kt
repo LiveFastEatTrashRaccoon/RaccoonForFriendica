@@ -196,7 +196,7 @@ class InboxScreen : Screen {
                 ) {
                     if (uiState.initial) {
                         val placeholderCount = 5
-                        items(placeholderCount) { idx ->
+                        items(placeholderCount) {
                             NotificationItemPlaceholder(modifier = Modifier.fillMaxWidth())
                         }
                     }
