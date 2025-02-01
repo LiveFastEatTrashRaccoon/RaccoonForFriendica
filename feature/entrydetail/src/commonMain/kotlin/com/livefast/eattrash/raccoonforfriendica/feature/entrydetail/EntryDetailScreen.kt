@@ -282,7 +282,6 @@ class EntryDetailScreen(
                     },
                 ) {
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
                         state = lazyListState,
                     ) {
                         itemsIndexed(
@@ -294,6 +293,7 @@ class EntryDetailScreen(
                                 modifier =
                                     Modifier.then(
                                         if (isMainEntry && uiState.layout == TimelineLayout.Card) {
+                                            // since the main entry is forced to "full", recreates card appearance
                                             Modifier
                                                 .padding(horizontal = Spacing.xs)
                                                 .shadow(
@@ -549,7 +549,7 @@ class EntryDetailScreen(
                                     }
                                 },
                             )
-                            if (idx < uiState.entries.lastIndex) {
+                            if (idx < currentEntryList.lastIndex) {
                                 TimelineDivider(layout = uiState.layout)
                             }
                         }
