@@ -57,6 +57,7 @@ can't) do from the app.
 - [Unpublished items](#unpublished-items)
 - [Calendar](#calendar-friendica-only)
 - [Announcements](#announcements-mastodon-only)
+- [Shortcuts](#shortcuts)
 
 ## Introduction
 
@@ -161,13 +162,20 @@ Every item in the timeline has the following structure:
 - spoiler text (optional);
 - textual content (visible if no spoiler or spoiler expanded);
 - attachments (videos or images);
-- card (additional preview content or external URL).
+- preview card (additional preview content or external URL).
 
 If the content of a post contains a hashtag you will be able to open the
 corresponding [screen](#hashtag-feed) and if it contains a mention you will be able to open the
 corresponding [profile](#user-profile).
 
-Each post can be re-shared, added to favorites or bookmarked; you can create a reply to each of them
+Using the footer buttons, you will be able to perform the following post interactions:
+
+- reply;
+- re-share (boost);
+- add to favorites;
+- dislike (only on Friendica);
+- add to bookmarks.
+
 and see the number of replies, re-shares favorites and whether it is in your bookmarks or not.
 
 Moreover, from each single post it is possible to:
@@ -183,7 +191,10 @@ Moreover, from each single post it is possible to:
   - report it or its author to administrators;
   - quote it (i.e. cross-posting it, Friendica-only);
   - open a "Details" screen with the raw source and additional information;
-  - edit or delete it (only if you are the author).
+  - edit or delete it (only if you are the author);
+  - translate the post content if its language is different from the current one (experimental);
+  - add a [shortcut](#shortcuts) to the instance where the posts belongs (if it is different from
+    the current one).
 
 <div align="center">
   <img width="310" alt="timeline screen" src="images/timeline.png" />
@@ -201,6 +212,10 @@ Moreover you can the list of users who re-shared it or added it to their favorit
 
 Apart from that, this screen is very similar to a regular [timeline](#timeline), and allows to
 perform the same actions and open user profiles or other post details.
+
+If you open a post detail from a timeline-like screen (Home, Explore, Search, Favorites, Bookmarks,
+list content, hashtag timeline, user detail) you will be able to navigate to the previous or next
+post in the sequence with horizontal swipe gestures.
 
 <div align="center">
   <img width="310" alt="post detail screen" src="images/post_detail.png" />
@@ -526,8 +541,12 @@ This dialog contains more information about the app:
 - a button to open a feedback form;
 - a link to the GitHub main page of the app;
 - a shortcut to the Friendica discussion group for the app;
-- a link to the project's Matrix room;
-- the entry point for the list of licences for the libraries and resources used in the app.
+- a link to the project's Matrix room.
+
+Moreover, this dialog is the entry point for two informative screens:
+
+- the list of licences for the libraries and resources used in the app;
+- an acknowledgements page where all app contributors are listed.
 
 <div align="center">
   <img width="310" alt="app information dialog" src="images/app_info.png" />
@@ -604,6 +623,8 @@ sections:
   - **Check for notifications in background** (if "Pull" strategy selected) configures the time
     interval between background checks for incoming notifications;
 - **Look & Feel**
+  - **Post layout** choose the layout used for posts in timelines (full, compact, distraction-free,
+    card)
   - **UI theme** configures the color theme (light, dark or dark optimized for AMOLED screens);
   - **Font family** configures the font used in the UI;
   - **Font size** configures the scale factor applied to fonts in the UI
@@ -654,11 +675,13 @@ so please make sure the battery saving restrictions for Raccoon in your system s
 
 ## Filter management
 
-This screen allows to revoke current restrictions on other accounts. It is divided into two
-sections:
+This screen allows to revoke current restrictions on other accounts. It is divided into the
+following sections:
 
 - **Muted** for muted accounts;
-- **Bans** for banned ones.
+- **Bans** for banned ones;
+- **Limited** for user with a rate-limit;
+- **Words** for specific filters based on words you choose to exclude from your timeline.
 
 <div align="center">
   <img width="310" alt="manage bans screen" src="images/manage_bans.png" />
@@ -910,3 +933,21 @@ counter will therefore be decremented by 1.
 </div>
 
 [Back to top](#table-of-contents)
+
+## Shortcuts
+
+This screen contains a list of the shortcuts to foreign instance you added from the post drop-down
+menu. By using the "⋮" button, each item can be removed from the list.
+
+If you tap on an item, the corresponding local timeline will be displayed. This screen looks very
+similar to a regular [timeline](#timeline) but, whenever you perform an interaction (e.g. like or
+add to bookmarks) the post is "translated" to a reference on your current instance and the action
+takes effect on that (this is why operations may take longer).
+
+<div align="center">
+  <img width="310" alt="calendar event list screen" src="images/shortcut_list.png" />
+  <img width="310" alt="event detail screen" src="images/shortcut_detail.png" />
+</div>
+
+[Back to top](#table-of-contents)
+
