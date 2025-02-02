@@ -57,6 +57,7 @@ ciò che puoi (o non puoi) fare dall'app.
 - [Elementi da pubblicare](#elementi-non-pubblicati)
 - [Calendario](#calendario-solo-friendica)
 - [Annunci](#annunci-solo-mastodon)
+- [Scorciatoie](#scorciatoie)
 
 ## Introduzione
 
@@ -174,8 +175,16 @@ Se un post contiene degli hashtag sarà possibile aprire per ognuno di essi
 l'[elenco dei post che lo contengono](#elenco-post-contenenti-un-hashtag), se invece
 contiene delle menzioni sarà possibile aprire la schermata [profilo](#profilo-utente) corrispondente.
 
-Ogni post può essere ricondiviso, aggiunto ai preferiti ai segnalibri; puoi creare una
-risposta e visualizzare il numero di risposte/ricondivisioni e vedere se esso è presente nei tuoi
+Utilizzando i pulsanti presenti nella parte inferiore è possibile effettuare le seguenti
+interazioni sul post:
+
+- creare un post di risposta;
+- ricondividerlo (boost);
+- aggiungerlo ai preferiti;
+- mettere "non mi piace" (solo su Friendica)
+- aggiungerlo ai segnalibri.
+
+e visualizzare il numero di risposte/ricondivisioni o se il post è presente nei tuoi
 segnalibri o meno.
 
 Infine, a partire da ogni post è possibile:
@@ -192,7 +201,10 @@ Infine, a partire da ogni post è possibile:
   - segnalare il post o il suo autore agli amministratori per la moderazione;
   - citarlo (ovvero effettuare il cross-post, solo su Friendica);
   - aprire una schermata "Dettagli" con il codice sorgente e una serie informazioni aggiuntive;
-  - modificalo o cancellalo (solo se l'autore sei tu).
+  - modificarlo o cancellarlo (solo se l'autore sei tu);
+  - tradurre il contenuto del post se è in una lingua diversa da quella attuale (sperimentale);
+  - aggiungere una [scorciatoia](#scorciatoie) all'istanza cui appartiene (se diversa da quella
+    attuale).
 
 <div align="center">
   <img width="310" alt="timeline screen" src="../images/timeline.png" />
@@ -213,6 +225,10 @@ preferiti.
 Comunque, questa schermata è molto simile ad una normale [timeline](#timeline) e consente di
 eseguire le stesse azioni su post (reazioni e menu opzioni a scomparsa), nonché aprire i profili
 utente o il dettaglio di altri post della conversazione.
+
+Se il dettaglio post viene aperto da una timeline (Home, Esplora, Preferiti, Segnalibri, contenuto
+lista, lista post contenenti hashtag, dettaglio utente) sarà possibile navigare al post precedente o
+al successivo con gesti di scorrimento orizzontale.
 
 <div align="center">
   <img width="310" alt="post detail screen" src="../images/post_detail.png" />
@@ -565,8 +581,12 @@ Questa finestra di dialogo contiene alcune informazioni aggiuntive a proposito d
 - un pulsante per aprire un form di inserimento commenti;
 - il link alla pagina principale dell'app su GitHub;
 - una scorciatoia di accesso al gruppo Friendica dedicato all'app;
-- un link alla room Matrix dedicata al progetto;
-- l'accesso alla lista delle licenze relative alle librerie e alle risorse usate nell'app.
+- un link alla room Matrix dedicata al progetto.
+
+Inoltre, questa finestra di dialogo contiene il punto accesso a due schermate informative:
+
+- lista delle licenze relative alle librerie e alle risorse usate nell'app;
+- una pagina di Riconoscimenti che elenca tutti coloro i quali hanno contribuito all'app.
 
 <div align="center">
   <img width="310" alt="app information dialog" src="../images/app_info.png" />
@@ -648,7 +668,9 @@ costituita dalle seguenti sezioni:
   - **Controlla notifiche in background** (se la strategia selezionata è "Pull") configura
     l'intervallo di tempo tra le verifiche periodiche delle notifiche in arrivo;
 - **Aspetto**
-  - **Tema UI** configura il tema di colori(chiaro, scuro o scuro ottimizzato per display AMOLED);
+  - **Layout post** configura l'aspetto dei post nelle timeline (Completo, Compatto, Senza
+    distrazioni, Scheda)
+  - **Tema UI** configura il tema di colori (chiaro, scuro o scuro ottimizzato per display AMOLED);
   - **Tipo di carattere** configura il tipo di carattere usato nell'interfaccia utente;
   - **Dimensione testo** configura il fattore di scala che sarà applicato ai font nell'interfaccia
     utente;
@@ -708,7 +730,9 @@ Questa schermata consente di revocare le restrizioni (silenziare o bloccare) att
 ad altri account. È suddivisa in due sezioni:
 
 - **Silenziati** dedicata agli utenti che sono stati silenziati;
-- **Bloccati** dedicata agli utenti bloccati.
+- **Bloccati** dedicata agli utenti bloccati;
+- **Limitati** dedicata agli utenti con una quota di pubblicazione;
+- **Parole** per filtri specifici basati su parole da escludere dalle timeline.
 
 <div align="center">
   <img width="310" alt="manage bans screen" src="../images/manage_bans.png" />
@@ -976,6 +1000,25 @@ tua reazione, questa verrà rimossa e di conseguenza il contatore verrà decreme
 
 <div align="center">
   <img width="310" alt="calendar event list screen" src="../images/announcements.png" />
+</div>
+
+[Torna su](#indice)
+
+## Scorciatoie
+
+Questa schermata presenta una lista delle scorciatoie verso istanze esterne che sono state aggiunte
+dal menu a tendina dei post. Utilizzando il pulsante "⋮" è possibile rimuovere gli elementi dalla
+lista.
+
+Facendo tap su ognuno di essi, verrà invece visualizzata la timeline dell'istanza corrispondente. La
+schermata è in tutto e per tutto simile a una normale [timeline](#timeline) ma, ogni qualvolta
+si effettua un'interazione (ad es. aggiungere ai preferiti o ai segnalibri), il post viene
+"convertito" nel riferimento corrispondente sull'istanza attuale e l'azione ha effetto su
+quest'ultimo (ragion per cui le operazioni potrebbero richiere un po' più di tempo).
+
+<div align="center">
+  <img width="310" alt="calendar event list screen" src="../images/shortcut_list.png" />
+  <img width="310" alt="event detail screen" src="../images/shortcut_detail.png" />
 </div>
 
 [Torna su](#indice)
