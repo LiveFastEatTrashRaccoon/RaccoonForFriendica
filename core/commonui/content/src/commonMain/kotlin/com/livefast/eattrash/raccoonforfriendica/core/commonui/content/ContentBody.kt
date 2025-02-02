@@ -17,7 +17,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
-internal val IMAGE_REGEX = Regex("<img.*?/>")
+// lazy wildcard matcher after element name, optional closing "/"
+internal val IMAGE_REGEX = Regex("<img.*?/?>")
 
 @Composable
 fun ContentBody(
