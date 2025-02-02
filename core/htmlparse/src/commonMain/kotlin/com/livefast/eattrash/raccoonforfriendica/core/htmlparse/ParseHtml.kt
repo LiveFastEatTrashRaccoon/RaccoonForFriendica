@@ -84,13 +84,11 @@ fun String.parseHtml(
                     "img" -> {
                         val url = attributes["src"]
                         val alt = attributes["alt"]
-                        builder.appendLine()
                         builder.append("<img src=\"$url\"")
                         if (!alt.isNullOrBlank()) {
                             builder.append(" alt=\"$alt\"")
                         }
                         builder.append(" />")
-                        builder.appendLine()
                     }
                     else -> println("onOpenTag: Unhandled tag $name")
                 }
