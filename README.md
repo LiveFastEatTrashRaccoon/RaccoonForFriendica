@@ -180,37 +180,39 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] view all the posts containing a given hashtag
 - [x] view followers and following of a given user
 - [x] follow/unfollow other users
-- [x] post actions (re-share, favorite, bookmark)
+- [x] post actions (re-share, favorite, bookmark, dislike only on Friendica)
 - [x] follow/unfollow hashtags
-- [x] view list of one's own favorites
-- [x] view list of one's own bookmarks
+- [x] view list of one's own favorites/bookmarks
 - [x] view list of one's own followed hashtags
 - [x] view people who added as favorite/re-shared a given post
 - [x] enable/disable notifications for other users
 - [x] create a post/reply with image attachments and alt text
-- [x] global search
-- [x] open groups in "forum mode" (Friendica-specific)
-- [x] delete one's own posts
-- [x] edit one's own posts
+- [x] global search for users/posts/hashtags
+- [x] open groups in "forum mode" (Friendica only) and see conversation as threads
+- [x] edit/delete one's own posts
 - [x] mute/unmute user and see list of muted users
 - [x] block/unblock user and see list of blocked users
-- [x] OAuth and HTTP Basic authentication modes
-- [x] pin/unpin status to profile
-- [x] manage one's own circles/following lists
-- [x] polls (read-only, voting is not supported yet by the back-end)
-- [x] manage follow requests
-- [x] support for post addons (spoilers and titles)
-- [x] multi-account
-- [x] edit one's own profile (custom fields and images not supported yet by the back-end)
-- [x] direct messages (Friendica-specific)
-- [x] photo gallery (Friendica-specific)
-- [x] advanced media visualization (videos, GIFs, multiple images)
+- [x] OAuth authentication (and HTTP Basic only on Friendica)
+- [x] pin/unpin posts to one's own profile
+- [x] manage one's own circles/lists
+- [x] see polls (everywhere) and submit vote (Mastodon only)
+- [x] manage one's own follow requests
+- [x] support for post addons (spoilers everywhere, titles only on Friendica)
+- [x] multi-account: add multiple accounts and switch between them
+- [x] edit one's own profile (custom fields and images may not supported by the back-end)
+- [x] direct messages (Friendica only)
+- [x] photo gallery (Friendica only)
+- [x] advanced media visualization (videos, GIFs, multiple images, audio)
 - [x] scheduled posts and local drafts
-- [x] create reports for posts and users 
-- [x] custom emojis
-- [x] event calendar (Friendica-specific, creating events is not supported yet by the back-end)
+- [x] create reports for posts/users 
+- [x] support custom emojis
+- [x] event calendar (Friendica only, creating events is not supported via API)
 - [x] pull notifications with background checks
-- [x] (experimental) push notifications using UnifiedPush
+- [x] (experimental) push notifications with UnifiedPush
+- [x] instance announcements (Mastodon only)
+- [x] customize application appearance and timeline layout (card, full, compact, distraction-free)
+- [x] filter timeline content with stopwords or setting user-specific rate limits
+- [x] add shortcuts to foreign instances to explore them in "guest mode"
 
 ## Technologies used
 
