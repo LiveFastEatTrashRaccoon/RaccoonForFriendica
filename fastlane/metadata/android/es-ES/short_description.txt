@@ -1,1 +1,1 @@
-Cliente móvil para Friendica, Mastodon y redes sociales federadas compatibles.
+Social sin límites: escribe todo lo que quieras y enriquece el texto con formato
