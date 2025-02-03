@@ -1,126 +1,41 @@
-<p>
-    <b>Raccoon</b> è un client per Friendica e Mastodon libero ed open source pensato
-    principalmente per dispositivi mobile.
-</p>
-<p>
-    Friendica è una piattaforma social straordinaria e vanta una serie di caratteristiche
-    che la rendono unica nel panorama della federazione:
-</p>
-<ul>
-    <li>
-        supporto a post di grandi dimenzioni, formattati, con titolo e spoiler;
-    </li>
-    <li>
-        supporto nativo ai <b>gruppi</b> ActivityPub;
-    </li>
-    <li>
-        <b>messaggi diretti</b>;
-    </li>
-    <li>
-        <b>galleria multimediale</b> dove è possibile gestire foto album;
-    </li>
-    <li>
-        possibilità di organizzare i contatti in <b>cerchie</b>;
-    </li>
-    <li>
-        possibilità di citare (cross-post) post altrui;
-    </li>
-    <li>
-        importazione di feed RSS;
-    </li>
-    <li>
-        <b>calendario eventi</b> integrato;
-    </li>
-    <li>
-        ovviamente molto altro (fare riferimento alla documentazione ufficiale)
-    </li>
-</ul>
-<p>
-    L'interfaccia web è ottima per accedere a tutte queste funzionalità, ma su un dispositivo mobile
-    ci sono vincoli diversi per usabilità e leggibilità, quindi è utile avere un'app per utilizzare
-    le più importanti tra le funzioni offerte dalla piattaforma.
-</p>
-<p>
-    <b>Funzionalità principali:</b>
-</p>
-<ul>
-    <li>
-        visualizzazione timeline con la possibilità di cambiare tipo di feed (pubblica, locale,
-        iscrizioni e liste personalizzate);
-    </li>
-    <li>
-        dettaglio post, visualizzare le risposte, le ricondivisioni e gli utenti che l'hanno
-        aggiunto ai preferiti;
-    </li>
-    <li>
-        dettaglio utente con visualizzazione post, post e risposte, post fissati e
-        multimediali, e possibilità di registrarsi per le notifiche, seguirlo, visualizzare elenchi di
-        seguaci e seguiti;
-     </li>
-    <li>
-        supporto ai gruppi ActivityPub, con possibilità di aprire i thread in modalità forum;
-    </li>
-    <li>
-        visualizzare i post di tendenza, gli hashtag e i link in tendenza e i suggerimenti su
-        chi seguire;
-    </li>
-    <li>
-        seguire/smettere di seguire un hashtag e visualizzare tutti i post che lo contengono;
-    </li>
-    <li>
-        interagire con i post (ricondividere, aggiungere ai preferiti o segnalibri) e – nel caso dei
-        propri post – modificarli, cancellarli o fissarli sul profilo;
-    </li>
-    <li>
-        ricerca globale di hashtag, post e utenti in base a termini di ricerca;
-    </li>
-    <li>
-        personalizzare l'aspetto dell'app cambiando i colori, font o dimensione del testo, ecc.
-    </li>
-    <li>
-        effettuare l'accesso tramite il protocollo OAuth2;
-    </li>
-    <li>
-        visualizzare e modificare i dati del proprio profilo;
-    </li>
-    <li>
-        visualizzare e filtrare l'elenco notifiche;
-    </li>
-    <li>
-       gestire le richieste di essere seguito;
-    </li>
-    <li>
-        visualizzare la lista dei preferiti, segnalibri o hashtag seguiti;
-    </li>
-    <li>
-        creare post e risposte formattati, con allegati (e testo alternativo), spoiler e titolo
-    </li>
-    <li>
-        schedulare post (e cambiare la data di schedulazione) o salvarlo nelle bozze;
-    </li>
-    <li>
-        segnalare post e utenti agli amministratori per la moderazione dei contenuti;
-    </li>
-    <li>
-        silenziare/bloccare utenti e gestire la lista dei propri utenti silenziati o bloccati;
-    </li>
-    <li>
-        gestire le proprie cerchie (liste personalizzate);
-    </li>
-    <li>
-        visualizzare i sondaggi (sola lettura);
-    </li>
-    <li>
-        supporto multi-account con possibilità di cambiare account (e, in modalità anonima, di
-        cambiare istanza);
-    </li>
-    <li>
-        inviare messaggi diretti ad altri utenti e visualizzare le conversazioni;
-    </li>
-    <li>
-        gestire la galleria foto;
-    </li>
-    <li>
-        visualizzare il calendario eventi (sola lettura).
-    </li>
-</ul>
+Raccoon è un'app social nata per utilizzare Friendica e Mastodon in modo del tutto nuovo.
+
+Funzionalità principali:
+• modalità "tour": esplora il Fediverso senza avere un account
+• visualizzazione di timeline multiple (locale, federata, utenti seguiti, liste personalizzate)
+• navigazione tradizionale (scorri in verticale le timeline di messaggi)
+• navigazione semplificata (sfoglia i messaggi con scorrimento laterale)
+• supporto ai post lunghi, formattati, con titolo e spoiler
+• barra di formattazione e anteprima messaggi
+• inserimento facilitato del testo alternativo per gli allegati
+• visualizzazione intuitiva per "topic" sui gruppi ActivityPub (Friendica, Lemmy e Gup.pe)
+• visualizzazione dei dettagli dei post
+• messaggi diretti
+• galleria multimediale
+• gestione delle cerchie/liste
+• visualizzazione social dei feed RSS dei blog
+• calendario eventi integrato
+• personalizzazione dell'interfaccia (colori, dimensione carattere, visualizzazione lunghezza dei
+  messaggi, modalità "senza distrazioni", ecc)
+• salvataggio in bozza e programmazione dei messaggi
+• supporto alla gestione di più account
+• esplorazione "in modalità ospite": guarda la timeline pubblica di un server diverso dal tuo
+• esportazione/importazione delle impostazioni dell'app
+• piena compatibilità con Mastodon e con la versione Mastodon Glitch-Soc (post lunghi e formattati)
+
+Friendica è un ambiente social integrato nel Fediverso come Mastodon e Pixelfed ed è compatibile con
+Bluesky e Tumblr.
+
+Raccoon cerca di semplificare l'esperienza d'uso di Friendica e integra le funzionalità
+dell'interfaccia web in una visualizzazione agile e intuitiva.
+
+Ulteriori funzionalità:
+• visualizzazione post, hashtag e link in tendenza e i suggerimenti su chi seguire
+• gestione richieste di essere seguito
+• creazione segnalazioni di post e utenti per la moderazione
+• silenziare/bloccare utenti, impostare limiti di utilizzo ed escludere termini dalle timeline
+• sondaggi (in sola lettura su Friendica)
+• modifica dai del profilo
+• modifica e cancellazione dei tuoi post
+• traduci i post in altre lingue
+• e, ovviamente, molto altro ancora!
