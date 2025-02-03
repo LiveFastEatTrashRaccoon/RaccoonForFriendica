@@ -1,121 +1,40 @@
-<p>
-    <b>Raccoon</b> is a free and open source mobile-first client for Friendica and Mastodon.
-</p>
-<p>
-    Friendica is an outstanding social plaftorm, featuring powerful characteristics which make
-    it unique in the federated world:
-</p>
-<ul>
-    <li>
-        rich text editing, long posts, support for titles and spoilers;
-    </li>
-    <li>
-        native support for ActivityPub <b>groups</b>;
-    </li>
-    <li>
-        <b>direct messages</b>;
-    </li>
-    <li>
-        <b>media gallery</b> where you can manage photos and albums;
-    </li>
-    <li>
-        possibility to organize your contacts in <b>circles</b>;
-    </li>
-    <li>
-        ability to quote (cross-post) other people's posts;
-    </li>
-    <li>
-        RSS feed import;
-    </li>
-    <li>
-        integrated <b>event calendar</b>;
-    </li>
-    <li>
-        of course, much more (see the official documentation)…
-    </li>
-</ul>
-<p>
-    The web interface is great to access all of these features but on a mobile device there are
-    different constraints for usability and readability, so it comes in handy to have an app to
-    use the most important functions of the platform.
-</p>
-<p>
-    <b>Main features:</b>
-</p>
-<ul>
-    <li>
-        timeline view with ability to switch feed type (public, local, subscriptions, user-made lists);
-    </li>
-    <li>
-        post detail, i.e. opening a conversation in its context and see the replies, number of re-shares
-        and people who added it to favorites;
-    </li>
-    <li>
-        user detail with ability to see posts, post and replies, pinned posts and media, subscribe for
-        notifications from a user, follow/send a request or unfollow them, see following/followers;
-     </li>
-    <li>
-        support for ActivityPub groups, with the ability to open threads in forum mode;
-    </li>
-    <li>
-        see trending posts, hashtags, links and following recommendations;
-    </li>
-    <li>
-        follow/unfollow an hashtag and view all the posts containing a given hashtag;
-    </li>
-    <li>
-        post actions (re-share, favorite, bookmark) and – for own ones – edit, delete or pin to profile;
-    </li>
-    <li>
-        global search hashtags, post and users containing some specific terms;
-    </li>
-    <li>
-        customize the application appearance with color themes, font face and size, etc;
-    </li>
-    <li>
-        login via OAuth2;
-    </li>
-    <li>
-        view and edit one's own profile data;
-    </li>
-    <li>
-        view incoming notifications and filter the list;
-    </li>
-    <li>
-        manage one's own follow requests and accept/reject each one of them;
-    </li>
-    <li>
-        view the list of one's own favorites, bookmarks and followed hashtags;
-    </li>
-    <li>
-        create a post/reply with formatted text, image attachments (and alt text), spoiler and title;
-    </li>
-    <li>
-        schedule a post (and change its schedule date) or save it to drafts;
-    </li>
-    <li>
-        report posts/users to administrators for content moderation;
-    </li>
-    <li>
-        mute/unmute, block/unblock users and manage the list of muted/blocked users;
-    </li>
-    <li>
-        manage one's own circles (user-defined lists);
-    </li>
-    <li>
-        see polls (read only);
-    </li>
-    <li>
-        multi-account with easy ability to switch between accounts (and, in anonymous mode, switch
-        instance);
-    </li>
-    <li>
-        send direct messages to other users and see conversations;
-    </li>
-    <li>
-        manage one's own photo gallery;
-    </li>
-    <li>
-        view one's own event calendar (read only).
-    </li>
-</ul>
+Raccoon is a social app designed to bring Friendica and Mastodon to you in a completely new way.
+
+Main features:
+• "tour" mode: explore the Fediverse without creating an account
+• view multiple timelines (local, federated, followed, custom lists)
+• traditional navigation (vertically scroll the message timeline)
+• simplified navigation (horizontally swipe between posts)
+• support for long posts, formatting, titles and spoilers
+• formatting toolbar and message preview
+• smart insertion of alt-text for attachments
+• intuitive topic view for ActivityPub groups (Friendica, Lemmy, Gup.pe)
+• view post details
+• direct messages
+• multimedia gallery
+• circle and list management
+• social view of blog RSS feeds
+• integrated event calendar
+• UI customization (colors, font size, post length, "distraction-free" mode, etc.)
+• save drafts or schedule message publishing
+• multi-account
+• explore in "guest mode": view public timelines of other servers
+• settings import/export
+• 100% compatible with Mastodon and Mastodon Glitch-Soc version (long and formatted posts)
+
+Friendica is a social environment integrated in the Fediverse, just like Mastodon and Pixelfed,
+which is also compatible with Bluesky and Tumblr.
+
+Raccoon intends to make it easier to use Friendica and integrates the features of its web interface
+in an intuitive and lean view.
+
+Additional features:
+• view trending posts, hashtags and follow suggestions
+• manage follow requests
+• create post and user reports to moderators
+• mute/block users, set custom rate limits and exclude terms from your timelines
+• polls (read-only on Friendica)
+• profile editing
+• edit and delete your posts
+• translate posts to your language
+• and, of course, much more!
