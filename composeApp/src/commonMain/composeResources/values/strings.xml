@@ -40,6 +40,7 @@
     <string name="action_grant_permission">Grant</string>
     <string name="action_hide_content">Hide content</string>
     <string name="action_hide_results">Show results</string>
+    <string name="action_insert_inline_image">Insert inline imagee</string>
     <string name="action_insert_link">Insert link</string>
     <string name="action_insert_list">Insert list</string>
     <string name="action_logout">Logout</string>
@@ -192,6 +193,7 @@
     <string name="gallery_title">Gallery</string>
     <string name="help_me_choose_an_instance">Help me choose an instance</string>
     <string name="highest_score">highest score</string>
+    <string name="image_field_alt_text">Alternate text</string>
     <string name="image_loading_mode_always">Always</string>
     <string name="image_loading_mode_on_demand">On demand</string>
     <string name="image_loading_mode_on_wi_fi">In WiFi</string>

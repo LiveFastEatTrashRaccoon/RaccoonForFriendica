@@ -49,6 +49,7 @@ import raccoonforfriendica.composeapp.generated.resources.action_go_back
 import raccoonforfriendica.composeapp.generated.resources.action_grant_permission
 import raccoonforfriendica.composeapp.generated.resources.action_hide_content
 import raccoonforfriendica.composeapp.generated.resources.action_hide_results
+import raccoonforfriendica.composeapp.generated.resources.action_insert_inline_image
 import raccoonforfriendica.composeapp.generated.resources.action_insert_link
 import raccoonforfriendica.composeapp.generated.resources.action_insert_list
 import raccoonforfriendica.composeapp.generated.resources.action_logout
@@ -209,6 +210,7 @@ import raccoonforfriendica.composeapp.generated.resources.gallery_title
 import raccoonforfriendica.composeapp.generated.resources.hashtag_people_using
 import raccoonforfriendica.composeapp.generated.resources.help_me_choose_an_instance
 import raccoonforfriendica.composeapp.generated.resources.highest_score
+import raccoonforfriendica.composeapp.generated.resources.image_field_alt_text
 import raccoonforfriendica.composeapp.generated.resources.image_loading_mode_always
 import raccoonforfriendica.composeapp.generated.resources.image_loading_mode_on_demand
 import raccoonforfriendica.composeapp.generated.resources.image_loading_mode_on_wi_fi
@@ -539,6 +541,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_hide_content)
     override val actionHideResults: String
         @Composable get() = stringResource(Res.string.action_hide_results)
+    override val actionInsertInlineImage: String
+        @Composable get() = stringResource(Res.string.action_insert_inline_image)
     override val actionInsertLink: String
         @Composable get() = stringResource(Res.string.action_insert_link)
     override val actionInsertList: String
@@ -845,6 +849,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.help_me_choose_an_instance)
     override val highestScore: String
         @Composable get() = stringResource(Res.string.highest_score)
+    override val imageFieldAltText: String
+        @Composable get() = stringResource(Res.string.image_field_alt_text)
     override val imageLoadingModeAlways: String
         @Composable get() = stringResource(Res.string.image_loading_mode_always)
     override val imageLoadingModeOnDemand: String
