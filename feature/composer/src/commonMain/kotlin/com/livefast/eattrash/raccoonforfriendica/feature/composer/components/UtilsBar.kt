@@ -8,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ScheduleSend
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.FormatBold
 import androidx.compose.material.icons.filled.FormatItalic
@@ -31,6 +32,7 @@ internal fun UtilsBar(
     modifier: Modifier = Modifier,
     hasPoll: Boolean = false,
     supportsRichEditing: Boolean = true,
+    supportsInlineImages: Boolean = false,
     publicationType: PublicationType,
     onLinkClicked: (() -> Unit)? = null,
     onAttachmentClicked: (() -> Unit)? = null,
@@ -40,6 +42,7 @@ internal fun UtilsBar(
     onStrikethroughClicked: (() -> Unit)? = null,
     onCodeClicked: (() -> Unit)? = null,
     onSubmitClicked: (() -> Unit)? = null,
+    onInlineImageClicked: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier.padding(horizontal = Spacing.xxs),
@@ -61,6 +64,20 @@ internal fun UtilsBar(
                     contentDescription = LocalStrings.current.pickFromGalleryDialogTitle,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+            }
+
+            if (supportsInlineImages) {
+                IconButton(
+                    onClick = {
+                        onInlineImageClicked?.invoke()
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AddPhotoAlternate,
+                        contentDescription = LocalStrings.current.actionInsertInlineImage,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
 
             if (supportsRichEditing) {
