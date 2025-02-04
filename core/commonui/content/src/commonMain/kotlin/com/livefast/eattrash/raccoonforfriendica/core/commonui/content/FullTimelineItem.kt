@@ -36,7 +36,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.attachmentsToDisplay
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.cardToDisplay
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.contentToDisplay
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.pollToDisplay
@@ -232,8 +231,7 @@ internal fun FullTimelineItem(
                 }
 
                 // attachments
-                val attachments =
-                    entry.attachmentsToDisplay.filter { it.url !in entry.embeddedImageUrls }
+                val attachments = entry.attachmentsToDisplayWithoutInlineImages
                 val visualAttachments =
                     attachments.filter { it.type == MediaType.Image || it.type == MediaType.Video }
                 val audioAttachments = attachments.filter { it.type == MediaType.Audio }

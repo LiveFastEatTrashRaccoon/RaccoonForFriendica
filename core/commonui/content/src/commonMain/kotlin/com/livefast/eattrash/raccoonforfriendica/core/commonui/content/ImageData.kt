@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.attachmentsToDisplay
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
 
@@ -33,11 +35,12 @@ internal fun extractImageData(html: String): ImageData? {
     return url?.let { ImageData(url = it, description = description) }
 }
 
-internal val TimelineEntryModel.embeddedImageUrls: List<String>
-    get() {
-        val data = extractImagesData(content)
-        return data.map { it.url }
-    }
+internal val TimelineEntryModel.attachmentsToDisplayWithoutInlineImages: List<AttachmentModel>
+    get() =
+        run {
+            val inlineImagesData = extractImagesData(content)
+            attachmentsToDisplay.filter { attachment -> inlineImagesData.none { it.description == attachment.description } }
+        }
 
 private fun extractImagesData(html: String): List<ImageData> {
     var url: String? = null
