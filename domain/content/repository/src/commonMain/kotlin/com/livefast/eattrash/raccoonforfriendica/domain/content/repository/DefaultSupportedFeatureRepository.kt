@@ -27,6 +27,7 @@ internal class DefaultSupportedFeatureRepository(
                 supportsAnnouncements = info.isMastodon,
                 supportsDislike = info.isFriendica,
                 supportsTranslation = info.isMastodon,
+                supportsInlineImages = info.isFriendica,
             )
         }
     }
