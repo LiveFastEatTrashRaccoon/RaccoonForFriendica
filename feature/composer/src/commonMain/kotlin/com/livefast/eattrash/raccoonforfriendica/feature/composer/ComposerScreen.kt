@@ -65,9 +65,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTextualInfoDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EditAttachmentDescriptionDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.InsertEmojiBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
@@ -130,19 +130,29 @@ class ComposerScreen(
         val pastScheduleDateError = LocalStrings.current.messageScheduleDateInThePast
         val invalidPollError = LocalStrings.current.messageInvalidPollError
         val genericError = LocalStrings.current.messageGenericError
-        var openImagePicker by remember { mutableStateOf(false) }
-        if (openImagePicker) {
+        var imagePickerRequest by remember { mutableStateOf<ImagePickerRequest?>(null) }
+        if (imagePickerRequest != null) {
             galleryHelper.getImageFromGallery { bytes ->
-                openImagePicker = false
+                val originalRequest = imagePickerRequest
+                imagePickerRequest = null
                 if (bytes.isNotEmpty()) {
-                    model.reduce(ComposerMviModel.Intent.AddAttachment(bytes))
+                    when (originalRequest) {
+                        ImagePickerRequest.Attachment ->
+                            model.reduce(ComposerMviModel.Intent.AddAttachment(bytes))
+
+                        ImagePickerRequest.InlineImage ->
+                            model.reduce(ComposerMviModel.Intent.AddInlineImageStep1(bytes))
+
+                        else -> Unit
+                    }
                 }
             }
         }
         var photoGalleryPickerOpen by remember { mutableStateOf(false) }
         var linkDialogOpen by remember { mutableStateOf(false) }
         var selectCircleDialogOpen by remember { mutableStateOf(false) }
-        var attachmentWithDescriptionBeingEdited by remember { mutableStateOf<AttachmentModel?>(null) }
+        var attachmentBeingEdited by remember { mutableStateOf<AttachmentModel?>(null) }
+        var inlineImageBeingEdited by remember { mutableStateOf<AttachmentModel?>(null) }
         var hasSpoilerFieldFocus by remember { mutableStateOf(false) }
         var hasTitleFocus by remember { mutableStateOf(false) }
         val isBeingEdited = remember { scheduledPostId != null || editedPostId != null }
@@ -236,6 +246,11 @@ class ComposerScreen(
                         ComposerMviModel.Effect.Success -> navigationCoordinator.pop()
 
                         is ComposerMviModel.Effect.OpenPreview -> previewEntry = event.entry
+                        is ComposerMviModel.Effect.TriggerAttachmentEdit ->
+                            attachmentBeingEdited = event.attachment
+
+                        is ComposerMviModel.Effect.TriggerInlineImageEdit ->
+                            inlineImageBeingEdited = event.attachment
                     }
                 }.launchIn(this)
         }
@@ -366,13 +381,6 @@ class ComposerScreen(
                                         )
                                 }
 
-                                if (uiState.galleryFeatureSupported && uiState.poll == null) {
-                                    this +=
-                                        CustomOptions.SelectFromGallery.toOption(
-                                            label = LocalStrings.current.actionAddImageFromGallery,
-                                        )
-                                }
-
                                 if (uiState.pollFeatureSupported && uiState.attachments.isEmpty()) {
                                     this +=
                                         CustomOptions.TogglePoll.toOption(
@@ -463,22 +471,6 @@ class ComposerScreen(
                                                         ),
                                                     )
 
-                                                CustomOptions.SelectAttachment -> {
-                                                    val limit =
-                                                        uiState.attachmentLimit ?: Int.MAX_VALUE
-                                                    if (uiState.attachments.size < limit) {
-                                                        openImagePicker = true
-                                                    }
-                                                }
-
-                                                CustomOptions.SelectFromGallery -> {
-                                                    val limit =
-                                                        uiState.attachmentLimit ?: Int.MAX_VALUE
-                                                    if (uiState.attachments.size < limit) {
-                                                        photoGalleryPickerOpen = true
-                                                    }
-                                                }
-
                                                 CustomOptions.TogglePoll ->
                                                     if (uiState.poll == null) {
                                                         model.reduce(ComposerMviModel.Intent.AddPoll)
@@ -559,17 +551,21 @@ class ComposerScreen(
                     }
                     UtilsBar(
                         modifier = Modifier.fillMaxWidth(),
-                        onAttachmentClicked = {
-                            val limit = uiState.attachmentLimit ?: Int.MAX_VALUE
-                            if (uiState.attachments.size < limit) {
-                                openImagePicker = true
-                            }
-                        },
                         supportsRichEditing = uiState.supportsRichEditing,
+                        supportsInlineImages = uiState.inlineImagesSupported,
                         hasPoll = uiState.poll != null,
                         publicationType = uiState.publicationType,
                         onLinkClicked = {
                             linkDialogOpen = true
+                        },
+                        onAttachmentClicked = {
+                            val limit = uiState.attachmentLimit ?: Int.MAX_VALUE
+                            if (uiState.attachments.size < limit) {
+                                imagePickerRequest = ImagePickerRequest.Attachment
+                            }
+                        },
+                        onInlineImageClicked = {
+                            imagePickerRequest = ImagePickerRequest.InlineImage
                         },
                         onBoldClicked = {
                             model.reduce(
@@ -827,7 +823,7 @@ class ComposerScreen(
                                 model.reduce(ComposerMviModel.Intent.RemoveAttachment(attachment))
                             },
                             onEditDescription = { attachment ->
-                                attachmentWithDescriptionBeingEdited = attachment
+                                attachmentBeingEdited = attachment
                             },
                         )
                     }
@@ -883,22 +879,36 @@ class ComposerScreen(
             )
         }
 
-        if (attachmentWithDescriptionBeingEdited != null) {
-            EditTextualInfoDialog(
-                label = LocalStrings.current.pictureDescriptionPlaceholder,
-                value = attachmentWithDescriptionBeingEdited?.description.orEmpty(),
-                minLines = 3,
+        val editedAttachment = attachmentBeingEdited
+        val editedInlineImage = inlineImageBeingEdited
+        if (editedAttachment != null) {
+            EditAttachmentDescriptionDialog(
+                attachment = editedAttachment,
                 onClose = { newValue ->
-                    val attachment = attachmentWithDescriptionBeingEdited
-                    if (attachment != null && newValue != null) {
+                    if (newValue != null) {
                         model.reduce(
                             ComposerMviModel.Intent.EditAttachmentDescription(
-                                attachment = attachment,
+                                attachment = editedAttachment,
                                 description = newValue,
                             ),
                         )
                     }
-                    attachmentWithDescriptionBeingEdited = null
+                    attachmentBeingEdited = null
+                },
+            )
+        } else if (editedInlineImage != null) {
+            EditAttachmentDescriptionDialog(
+                attachment = editedInlineImage,
+                onClose = { newValue ->
+                    if (newValue != null) {
+                        model.reduce(
+                            ComposerMviModel.Intent.AddInlineImageStep2(
+                                attachment = editedInlineImage,
+                                description = newValue,
+                            ),
+                        )
+                    }
+                    inlineImageBeingEdited = null
                 },
             )
         }
@@ -1104,10 +1114,6 @@ class ComposerScreen(
 }
 
 private sealed interface CustomOptions : OptionId.Custom {
-    data object SelectAttachment : CustomOptions
-
-    data object SelectFromGallery : CustomOptions
-
     data object TogglePoll : CustomOptions
 
     data object ToggleTitle : CustomOptions
@@ -1129,4 +1135,10 @@ private sealed interface CustomOptions : OptionId.Custom {
     data object InsertList : CustomOptions
 
     data object ChangeMarkupMode : CustomOptions
+}
+
+private sealed interface ImagePickerRequest {
+    data object Attachment : ImagePickerRequest
+
+    data object InlineImage : ImagePickerRequest
 }
