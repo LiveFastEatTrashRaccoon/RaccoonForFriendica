@@ -1,0 +1,38 @@
+Raccoon este o aplicație socială desenată pentru a utiliza Friendica și Mastodon într-un mod cu totul inovator.
+
+Caracteristici principale:
+• mod „tour”: explorează Fediverse fără necesitatea să ai un cont
+• vizualizare mai multor cronologii (local, federată, urmăriți, liste personalizate)
+• navigare tradițională (derulează vertical cronologia postărilor)
+• navigare simplificată (glisează orizontal între postările)
+• suport pentru postări lungi, formatare, titluri și spoilere
+• bară de instrumente de formatare și previzualizare mesajelor
+• inserare inteligentă textului alternativ pentru atașamente
+• vizualizare intuitivă subiectelor pentru grupurile ActivityPub (Friendica, Lemmy, Gup.pe)
+• vizualizare detaliilor fiecărui post
+• mesaje directe
+• galerie multimedia
+• gestionare cercurilor și listelor
+• vizualizare fluxurilor RSS ale blogurilor
+• calendar de evenimente integrat
+• personalizare interfeței de utilizator (culori, dimensiunea fontului, lungimea postărilor, modul „fără distrageri” ș.a.m.d.)
+• salvare ciornelor și publicare programată mesajelor
+• suport pentru mai multe conturi
+• explorare în „modul oaspete”: vizualizează cronologiile publice ale altor servere
+• import/export setărilor
+• 100% compatibil cu Mastodon și versiunea Glitch-Soc lui Mastodon (pentru postări lungi și formatate)
+
+Friendica este un mediu social integrat în Fediverse, la fel ca Mastodon și Pixelfed, care este de asemenea compatibil cu Bluesky și Tumblr.
+
+Raccoon intenționează să faciliteze utilizarea lui Friendica și integrează caracteristicile interfeței web sale într-o vizualizare intuitivă și simplificată.
+
+Caracteristici suplimentare:
+• vizualizare postărilor la modă, hashtag-urilor și sugestiilor despre cine să urmărești
+• gestionare cererilor de urmărire
+• creare rapoartelor privind postări și utilizatori pentru moderatorii
+• mutare/blocare utilizatorilor, limite de frecvență personalizate și excludere termenilor din cronologii
+• sondaje (numai pentru citire pe Friendica)
+• editare profilului
+• editare și ștergere mesajelelor tale
+• traducere postărilor în limba ta
+• și, desigur, multe altele!
