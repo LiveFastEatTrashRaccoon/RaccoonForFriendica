@@ -80,11 +80,31 @@ interface ComposerMviModel :
             override fun hashCode(): Int = byteArray.contentHashCode()
         }
 
+        data class AddInlineImageStep1(
+            val byteArray: ByteArray,
+        ) : Intent {
+            override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (other == null || this::class != other::class) return false
+
+                other as AddAttachment
+
+                return byteArray.contentEquals(other.byteArray)
+            }
+
+            override fun hashCode(): Int = byteArray.contentHashCode()
+        }
+
         data class AddAttachmentsFromGallery(
             val attachments: List<AttachmentModel>,
         ) : Intent
 
         data class EditAttachmentDescription(
+            val attachment: AttachmentModel,
+            val description: String,
+        ) : Intent
+
+        data class AddInlineImageStep2(
             val attachment: AttachmentModel,
             val description: String,
         ) : Intent
@@ -246,6 +266,7 @@ interface ComposerMviModel :
         val shouldShowHashtagSuggestions: Boolean = false,
         val hashtagSuggestionsLoading: Boolean = false,
         val hashtagSuggestions: List<TagModel> = emptyList(),
+        val inlineImagesSupported: Boolean = false,
     )
 
     sealed interface Effect {
@@ -273,7 +294,15 @@ interface ComposerMviModel :
 
         data class OpenPreview(
             val entry: TimelineEntryModel,
-        ) : ValidationError
+        ) : Effect
+
+        data class TriggerAttachmentEdit(
+            val attachment: AttachmentModel,
+        ) : Effect
+
+        data class TriggerInlineImageEdit(
+            val attachment: AttachmentModel,
+        ) : Effect
     }
 }
 

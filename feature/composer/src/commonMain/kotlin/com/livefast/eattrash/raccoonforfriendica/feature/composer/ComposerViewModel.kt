@@ -128,6 +128,7 @@ class ComposerViewModel(
                             titleFeatureSupported = features.supportsEntryTitles,
                             galleryFeatureSupported = features.supportsPhotoGallery,
                             pollFeatureSupported = features.supportsPolls,
+                            inlineImagesSupported = features.supportsInlineImages,
                             availableVisibilities =
                                 buildList {
                                     this += Visibility.Public
@@ -275,7 +276,11 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.AddAttachment -> uploadAttachment(intent.byteArray)
+            is ComposerMviModel.Intent.AddAttachment ->
+                uploadAttachment(
+                    byteArray = intent.byteArray,
+                    isInlineImage = false,
+                )
             is ComposerMviModel.Intent.EditAttachmentDescription ->
                 updateAttachmentDescription(intent.attachment, intent.description)
 
@@ -509,6 +514,17 @@ class ComposerViewModel(
                 )
 
             is ComposerMviModel.Intent.ChangeMarkupMode -> changeMarkupMode(intent.mode)
+            is ComposerMviModel.Intent.AddInlineImageStep1 ->
+                uploadAttachment(
+                    byteArray = intent.byteArray,
+                    isInlineImage = true,
+                )
+
+            is ComposerMviModel.Intent.AddInlineImageStep2 ->
+                insertInlineImage(
+                    intent.attachment,
+                    intent.description,
+                )
         }
     }
 
@@ -1209,18 +1225,25 @@ class ComposerViewModel(
         }
     }
 
-    private fun uploadAttachment(byteArray: ByteArray) {
+    private fun uploadAttachment(
+        byteArray: ByteArray,
+        isInlineImage: Boolean,
+    ) {
         screenModelScope.launch {
-            updateState {
-                it.copy(
-                    attachments =
-                        it.attachments +
-                            AttachmentModel(
-                                id = PLACEHOLDER_ID,
-                                url = "",
-                                loading = true,
-                            ),
-                )
+            if (isInlineImage) {
+                updateState { it.copy(loading = true) }
+            } else {
+                updateState {
+                    it.copy(
+                        attachments =
+                            it.attachments +
+                                AttachmentModel(
+                                    id = PLACEHOLDER_ID,
+                                    url = "",
+                                    loading = true,
+                                ),
+                    )
+                }
             }
             val attachment =
                 if (shouldUserPhotoRepository) {
@@ -1229,12 +1252,18 @@ class ComposerViewModel(
                     mediaRepository.create(byteArray)
                 }
             if (attachment != null) {
-                newAttachmentIds += attachment.id
-                updateState {
-                    it.copy(
-                        attachments = it.attachments.filter { a -> a.id != PLACEHOLDER_ID } + attachment,
-                        hasUnsavedChanges = true,
-                    )
+                if (isInlineImage) {
+                    updateState { it.copy(loading = false) }
+                    emitEffect(ComposerMviModel.Effect.TriggerInlineImageEdit(attachment))
+                } else {
+                    newAttachmentIds += attachment.id
+                    updateState {
+                        it.copy(
+                            attachments = it.attachments.filter { a -> a.id != PLACEHOLDER_ID } + attachment,
+                            hasUnsavedChanges = true,
+                        )
+                    }
+                    emitEffect(ComposerMviModel.Effect.TriggerAttachmentEdit(attachment))
                 }
             } else {
                 emitEffect(ComposerMviModel.Effect.Failure())
@@ -1579,6 +1608,38 @@ class ComposerViewModel(
                     spoilerValue = TextFieldValue(newSpoiler),
                     bodyValue = TextFieldValue(newBody),
                     markupMode = mode,
+                )
+            }
+        }
+    }
+
+    private fun insertInlineImage(
+        attachment: AttachmentModel,
+        description: String,
+    ) {
+        screenModelScope.launch {
+            val primaryUrl = attachment.url
+            val secondaryUrl = attachment.thumbnail ?: attachment.previewUrl ?: primaryUrl
+            val additionalPart =
+                buildString {
+                    append("\n")
+                    append("[url=$primaryUrl]")
+                    append("[img=$secondaryUrl]")
+                    append(description)
+                    append("[/img]")
+                    append("[/url]")
+                    append("\n")
+                }
+            val newValue =
+                getNewTextFieldValue(
+                    value = uiState.value.bodyValue,
+                    additionalPart = additionalPart,
+                    offsetAfter = additionalPart.length,
+                )
+            updateState {
+                it.copy(
+                    bodyValue = newValue,
+                    hasUnsavedChanges = true,
                 )
             }
         }

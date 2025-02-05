@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -12,13 +13,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
 // lazy wildcard matcher after element name, optional closing "/"
-internal val IMAGE_REGEX = Regex("<img.*?/?>")
+internal val IMAGE_REGEX = Regex("(img.*?/?)|(<a href=\".*?\"><img.*?/?></a>)")
 
 @Composable
 fun ContentBody(
@@ -42,6 +44,7 @@ fun ContentBody(
                             modifier =
                                 Modifier
                                     .fillMaxSize()
+                                    .padding(vertical = Spacing.s)
                                     .clip(RoundedCornerShape(CornerSize.xl))
                                     .clickable {
                                         onOpenImage?.invoke(data.url)
@@ -92,7 +95,13 @@ private fun String.splitTextAndImages(): List<String> =
         var index = 0
         for (match in matches) {
             val range = match.range
-            add(original.substring(index, range.first).trim())
+            val chunkBefore =
+                original
+                    .substring(index, range.first)
+                    .trim()
+                    // remove empty paragraph at the end
+                    .replace(Regex("<p( /)?>\$"), "")
+            add(chunkBefore)
             val htmlImage = original.substring(range)
             val data = extractImageData(htmlImage)
             if (data != null && data.description?.looksLikeAnEmoji != true) {
@@ -101,6 +110,7 @@ private fun String.splitTextAndImages(): List<String> =
             index = range.last + 1
         }
         if (index < original.length) {
-            add(original.substring(index, original.length).trim())
+            val chunkAfter = original.substring(index, original.length).trim()
+            add(chunkAfter)
         }
     }

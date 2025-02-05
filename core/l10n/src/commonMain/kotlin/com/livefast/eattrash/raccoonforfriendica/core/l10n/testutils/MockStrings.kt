@@ -93,6 +93,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionHideContent")
     override val actionHideResults: String
         @Composable get() = retrieve("actionHideResults")
+    override val actionInsertInlineImage: String
+        @Composable get() = retrieve("actionInsertInlineImage")
     override val actionInsertLink: String
         @Composable get() = retrieve("actionInsertLink")
     override val actionInsertList: String
@@ -399,6 +401,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("helpMeChooseAnInstance")
     override val highestScore: String
         @Composable get() = retrieve("highestScore")
+    override val imageFieldAltText: String
+        @Composable get() = retrieve("imageFieldAltText")
     override val imageLoadingModeAlways: String
         @Composable get() = retrieve("imageLoadingModeAlways")
     override val imageLoadingModeOnDemand: String

@@ -43,6 +43,7 @@ interface Strings {
     val actionGrantPermission: String @Composable get
     val actionHideContent: String @Composable get
     val actionHideResults: String @Composable get
+    val actionInsertInlineImage: String @Composable get
     val actionInsertLink: String @Composable get
     val actionInsertList: String @Composable get
     val actionLogout: String @Composable get
@@ -196,6 +197,7 @@ interface Strings {
     val galleryTitle: String @Composable get
     val helpMeChooseAnInstance: String @Composable get
     val highestScore: String @Composable get
+    val imageFieldAltText: String @Composable get
     val imageLoadingModeAlways: String @Composable get
     val imageLoadingModeOnDemand: String @Composable get
     val imageLoadingModeOnWiFi: String @Composable get
