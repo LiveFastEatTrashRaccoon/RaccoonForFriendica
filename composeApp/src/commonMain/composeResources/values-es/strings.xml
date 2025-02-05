@@ -487,4 +487,6 @@
     <string name="action_shortcut">Acceso rápido a %1$s</string>
     <string name="shortcuts_title">Accesos rápidos</string>
     <string name="message_no_public_timeline">A lo mejor la instancia no expone su cronología pública.</string>
+    <string name="image_field_alt_text">Texto alternativo</string>
+    <string name="action_insert_inline_image">Insertar imagen en el texto</string>
 </resources>
