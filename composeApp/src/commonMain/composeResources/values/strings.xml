@@ -40,7 +40,7 @@
     <string name="action_grant_permission">Grant</string>
     <string name="action_hide_content">Hide content</string>
     <string name="action_hide_results">Show results</string>
-    <string name="action_insert_inline_image">Insert inline imagee</string>
+    <string name="action_insert_inline_image">Insert embedded image</string>
     <string name="action_insert_link">Insert link</string>
     <string name="action_insert_list">Insert list</string>
     <string name="action_logout">Logout</string>
