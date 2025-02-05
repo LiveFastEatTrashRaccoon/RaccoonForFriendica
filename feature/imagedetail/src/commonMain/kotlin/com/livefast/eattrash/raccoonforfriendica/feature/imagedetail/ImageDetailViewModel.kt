@@ -58,17 +58,16 @@ class ImageDetailViewModel(
     }
 
     private fun downloadAndSave() {
+        if (uiState.value.loading) {
+            return
+        }
         screenModelScope.launch {
+            updateState { it.copy(loading = true) }
             val currentState = uiState.value
             val url = urls[currentState.currentIndex]
-            updateState { it.copy(loading = true) }
             try {
                 val bytes = galleryHelper.download(url)
-                val extension =
-                    url.let { s ->
-                        val idx = s.lastIndexOf(".").takeIf { it >= 0 } ?: s.length
-                        s.substring(idx).takeIf { it.isNotEmpty() } ?: ".jpeg"
-                    }
+                val extension = url.extractExtension()
                 withContext(Dispatchers.IO) {
                     galleryHelper.saveToGallery(
                         bytes = bytes,
@@ -94,33 +93,29 @@ class ImageDetailViewModel(
     }
 
     private fun shareAsFile() {
+        if (uiState.value.loading) {
+            return
+        }
         screenModelScope.launch {
+            updateState { it.copy(loading = true) }
             val currentState = uiState.value
             val url = urls[currentState.currentIndex]
-            updateState { it.copy(loading = true) }
             try {
                 val bytes = galleryHelper.download(url)
-                val extension =
-                    url.let { s ->
-                        val idx = s.lastIndexOf(".").takeIf { it >= 0 } ?: s.length
-                        s.substring(idx).takeIf { it.isNotEmpty() } ?: ".jpeg"
-                    }
-                withContext(Dispatchers.IO) {
-                    val path =
+                val extension = url.extractExtension()
+                val path =
+                    withContext(Dispatchers.IO) {
                         galleryHelper.saveToGallery(
                             bytes = bytes,
                             name = "${epochMillis()}$extension",
                         )
-
-                    withContext(Dispatchers.Main) {
-                        updateState { it.copy(loading = false) }
-
-                        if (path != null) {
-                            shareHelper.shareImage(path)
-                        } else {
-                            emitEffect(ImageDetailMviModel.Effect.ShareFailure)
-                        }
                     }
+                updateState { it.copy(loading = false) }
+
+                if (path != null) {
+                    shareHelper.shareImage(path)
+                } else {
+                    emitEffect(ImageDetailMviModel.Effect.ShareFailure)
                 }
             } catch (e: Throwable) {
                 e.printStackTrace()
@@ -130,3 +125,9 @@ class ImageDetailViewModel(
         }
     }
 }
+
+private fun String.extractExtension(): String =
+    let { s ->
+        val idx = s.lastIndexOf(".").takeIf { it >= 0 } ?: s.length
+        s.substring(idx).takeIf { it.isNotEmpty() } ?: ".jpeg"
+    }
