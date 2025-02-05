@@ -15,19 +15,16 @@ Funzionalità principali:
 • gestione delle cerchie/liste
 • visualizzazione social dei feed RSS dei blog
 • calendario eventi integrato
-• personalizzazione dell'interfaccia (colori, dimensione carattere, visualizzazione lunghezza dei
-  messaggi, modalità "senza distrazioni", ecc)
+• personalizzazione dell'interfaccia (colori, dimensione carattere, visualizzazione lunghezza dei messaggi, modalità "senza distrazioni", ecc.)
 • salvataggio in bozza e programmazione dei messaggi
 • supporto alla gestione di più account
 • esplorazione "in modalità ospite": guarda la timeline pubblica di un server diverso dal tuo
 • esportazione/importazione delle impostazioni dell'app
 • piena compatibilità con Mastodon e con la versione Mastodon Glitch-Soc (post lunghi e formattati)
 
-Friendica è un ambiente social integrato nel Fediverso come Mastodon e Pixelfed ed è compatibile con
-Bluesky e Tumblr.
+Friendica è un ambiente social integrato nel Fediverso come Mastodon e Pixelfed ed è compatibile con Bluesky e Tumblr.
 
-Raccoon cerca di semplificare l'esperienza d'uso di Friendica e integra le funzionalità
-dell'interfaccia web in una visualizzazione agile e intuitiva.
+Raccoon cerca di semplificare l'esperienza d'uso di Friendica e integra le funzionalità dell'interfaccia web in una visualizzazione agile e intuitiva.
 
 Ulteriori funzionalità:
 • visualizzazione post, hashtag e link in tendenza e i suggerimenti su chi seguire
