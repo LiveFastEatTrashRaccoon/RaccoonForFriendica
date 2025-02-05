@@ -36,7 +36,7 @@ room = "2.7.0-alpha12"
 sentry = "0.10.0"
 stately = "2.1.0"
 turbine = "1.2.0"
-unifiedpush = "3.0.3"
+unifiedpush = "3.0.4"
 voyager = "1.0.1"
 
 [libraries]
