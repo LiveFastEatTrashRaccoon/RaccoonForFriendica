@@ -1,0 +1,38 @@
+Raccoon to aplikacja społecznościowa zaprojektowana w celu udostępnienia Friendica i Mastodon w zupełnie nowy sposób.
+
+Główne cechy:
+- tryb „zwiedzania”: eksploruj Fediverse bez tworzenia konta
+- przeglądanie wielu osi czasu (lokalnych, federacyjnych, śledzonych, list niestandardowych)
+- tradycyjna nawigacja (przewijanie osi czasu wiadomości w pionie)
+- uproszczona nawigacja (poziome przesuwanie między postami)
+- obsługa długich postów, formatowania, tytułów i spoilerów
+- pasek narzędzi formatowania i podgląd wiadomości
+- inteligentne wstawianie alternatywnego tekstu dla załączników
+- intuicyjny widok tematów dla grup ActivityPub (Friendica, Lemmy, Gup.pe)
+- przeglądanie szczegółów postów
+- bezpośrednie wiadomości
+- galeria multimediów
+- zarządzanie kręgami i listami
+- społecznościowy widok kanałów RSS blogów
+- zintegrowany kalendarz wydarzeń
+- dostosowywanie interfejsu użytkownika (kolory, rozmiar czcionki, długość postów, tryb „bez rozpraszania uwagi” itp.)
+- zapisywanie wersji roboczych lub planowanie publikacji wiadomości
+- wiele kont
+- eksploracja w „trybie gościa”: przeglądanie publicznych osi czasu innych serwerów
+- import/eksport ustawień
+- 100% kompatybilność z wersją Mastodon i Mastodon Glitch-Soc (długie i sformatowane posty)
+
+Friendica to środowisko społecznościowe zintegrowane z Fediverse, podobnie jak Mastodon i Pixelfed, które jest również kompatybilne z Bluesky i Tumblr.
+
+Raccoon zamierza ułatwić korzystanie z Friendica i integruje funkcje swojego interfejsu internetowego w intuicyjnym i przejrzystym widoku.
+
+Dodatkowe funkcje:
+- przeglądanie popularnych postów, hashtagów i sugestii śledzenia
+- zarządzanie prośbami o obserwowanie
+- tworzenie raportów postów i użytkowników dla moderatorów
+- wyciszanie / blokowanie użytkowników, ustawianie niestandardowych limitów stawek i wykluczanie terminów z osi czasu
+- ankiety (tylko do odczytu na Friendica)
+- edycja profilu
+- edytować i usuwać swoje posty
+- tłumaczenie postów na swój język
+- i oczywiście wiele więcej!
