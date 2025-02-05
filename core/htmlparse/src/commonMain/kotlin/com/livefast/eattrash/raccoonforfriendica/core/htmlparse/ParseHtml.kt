@@ -30,8 +30,7 @@ fun String.parseHtml(
                     "p" ->
                         if (builder.length != 0) {
                             // separate paragraphs with a blank line
-                            builder.appendLine()
-                            builder.appendLine()
+                            builder.appendLine().appendLine()
                         }
 
                     "span" -> Unit
