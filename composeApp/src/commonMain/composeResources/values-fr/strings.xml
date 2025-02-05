@@ -484,4 +484,9 @@
     <string name="message_sign_up_2">Inscrivez-vous maintenant !</string>
     <string name="message_sign_up_1">Vous n\'avez pas encore une compte ?</string>
     <string name="manage_blocks_section_stop_words">Mots</string>
+    <string name="image_field_alt_text">Texte alternatif</string>
+    <string name="shortcuts_title">Courtcuts</string>
+    <string name="action_shortcut">Courtcut to %1$s</string>
+    <string name="action_insert_inline_image">Insérer une image intégrée</string>
+    <string name="message_no_public_timeline">Peut-être que cette instance n\'expose pas sa chronologie publique.</string>
 </resources>

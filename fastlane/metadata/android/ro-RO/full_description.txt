@@ -33,6 +33,6 @@ Caracteristici suplimentare:
 • mutare/blocare utilizatorilor, limite de frecvență personalizate și excludere termenilor din cronologii
 • sondaje (numai pentru citire pe Friendica)
 • editare profilului
-• editare și ștergere mesajelelor tale
+• editare și ștergere mesajelor tale
 • traducere postărilor în limba ta
 • și, desigur, multe altele!
