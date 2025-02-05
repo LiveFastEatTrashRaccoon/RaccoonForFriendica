@@ -716,7 +716,8 @@ Below the header you can find the main text field for the post body. In the bott
 screen, only if "Markup for compositing" option in Settings is _not_ plain text, you will find a
 formatting toolbar with the following buttons:
 
-- **Add image** to add an image from the device gallery;
+- **Add image** to add an image from the device gallery as an attachment;
+- **Embed image** add an image from the device gallery in the post body (Friendica only);
 - **Add link** to add a hyperlink;
 - **Bold** to insert some text in bold;
 - **Italic** to insert some text in italic;

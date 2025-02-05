@@ -774,7 +774,9 @@ parte inferiore della schermata, solo se l'opzione "Markup per la composizione" 
 _non_ è"Testo semplice", viene mostrata una barra degli strumenti di formattazione con i seguenti
 pulsanti:
 
-- **Aggiungi immagine** per aggiungere un'immagine dal rullino foto del dispositivo;
+- **Aggiungi immagine** per aggiungere un'immagine dal rullino foto del dispositivo come allegato;
+- **Inserisci immagine nel testo** per aggiungere un'immagine dal rullino foto del dispositivo
+  all'interno del testo del post (solo su Friendica);
 - **Aggiungi link** per aggiungere un collegamento ipertestuale;
 - **Grassetto** per inserire del testo in grassetto;
 - **Corsivo** per inserire del testo in corsivo;
