@@ -26,6 +26,7 @@ data class TimelineEntryModel(
     val inReplyTo: TimelineEntryModel? = null,
     val lang: String? = null,
     @Transient val loadMoreButtonVisible: Boolean = false,
+    @Transient val loadMoreButtonLoading: Boolean = false,
     val mentions: List<UserModel> = emptyList(),
     val parentId: String? = null,
     val pinned: Boolean = false,
