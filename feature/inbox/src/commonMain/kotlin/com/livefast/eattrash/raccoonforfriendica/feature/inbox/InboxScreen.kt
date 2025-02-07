@@ -272,7 +272,12 @@ class InboxScreen : Screen {
                     if (!uiState.initial && !uiState.loading && !uiState.refreshing && uiState.notifications.isEmpty()) {
                         item {
                             Text(
-                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                                modifier =
+                                    Modifier.fillMaxWidth().padding(
+                                        top = Spacing.m,
+                                        start = Spacing.m,
+                                        end = Spacing.m,
+                                    ),
                                 text =
                                     if (uiState.currentUserId != null) {
                                         LocalStrings.current.messageEmptyInbox
