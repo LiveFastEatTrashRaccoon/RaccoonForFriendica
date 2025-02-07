@@ -695,6 +695,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("settingsItemBlockedAndMuted")
     override val settingsItemBlurNsfw: String
         @Composable get() = retrieve("settingsItemBlurNsfw")
+    override val settingsItemConversationReplyDepth: String
+        @Composable get() = retrieve("settingsItemConversationReplyDepth")
     override val settingsItemCrashReportEnabled: String
         @Composable get() = retrieve("settingsItemCrashReportEnabled")
     override val settingsItemDefaultPostVisibility: String
