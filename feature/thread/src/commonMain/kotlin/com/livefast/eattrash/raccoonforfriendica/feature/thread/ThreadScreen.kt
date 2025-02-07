@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -47,17 +49,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
@@ -276,6 +281,7 @@ class ThreadScreen(
                                 TimelineItem(
                                     modifier =
                                         Modifier
+                                            // since the main entry is forced to "full", recreates card appearance
                                             .padding(horizontal = Spacing.xs)
                                             .shadow(
                                                 elevation = 5.dp,
@@ -694,20 +700,32 @@ class ThreadScreen(
                                             )
                                         },
                                     ) {
-                                        Text(
-                                            text =
-                                                buildString {
-                                                    append(LocalStrings.current.buttonLoadMoreReplies)
-                                                    entry.replyCount
-                                                        .takeIf { it > 0 }
-                                                        ?.also { count ->
-                                                            append(" (")
-                                                            append(count)
-                                                            append(")")
-                                                        }
-                                                },
-                                            style = MaterialTheme.typography.labelMedium,
-                                        )
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            if (entry.loadMoreButtonLoading) {
+                                                CircularProgressIndicator(
+                                                    modifier = Modifier.size(IconSize.s),
+                                                    color = MaterialTheme.colorScheme.onPrimary,
+                                                )
+                                            }
+                                            Text(
+                                                text =
+                                                    buildString {
+                                                        append(LocalStrings.current.buttonLoadMoreReplies)
+                                                        entry.replyCount
+                                                            .takeIf { it > 0 }
+                                                            ?.also { count ->
+                                                                append(" (")
+                                                                append(count)
+                                                                append(")")
+                                                            }
+                                                    },
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                        }
                                     }
                                 }
                             }

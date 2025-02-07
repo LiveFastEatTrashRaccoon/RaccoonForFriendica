@@ -13,7 +13,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
@@ -21,6 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Local
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.PopulateThreadUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
@@ -29,7 +29,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.thread.usecase.PopulateThreadUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -39,7 +38,6 @@ import kotlin.time.Duration
 class ThreadViewModel(
     private val entryId: String,
     private val swipeNavigationEnabled: Boolean,
-    private val populateThreadUseCase: PopulateThreadUseCase,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
@@ -52,6 +50,7 @@ class ThreadViewModel(
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
+    private val populateThread: PopulateThreadUseCase,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
@@ -201,9 +200,9 @@ class ThreadViewModel(
     }
 
     private suspend fun loadReplies() {
-        val currentEntryId = currentMainEntry?.original?.id ?: return
-        val result = populateThreadUseCase(currentEntryId)
-        val replies = result.filter { it.id != currentEntryId }
+        val mainEntry = currentMainEntry?.original ?: return
+        val result = populateThread(entry = mainEntry)
+        val replies = result.filter { it.id != mainEntry.id }
         replies.preloadImages()
         updateState {
             it.copy(
@@ -220,17 +219,31 @@ class ThreadViewModel(
     }
 
     private suspend fun loadMoreReplies(entry: TimelineEntryModel) {
-        val result = populateThreadUseCase(entry.id)
-        val newReplies = result.filter { it.id != entry.id }
+        if (entry.loadMoreButtonLoading) {
+            return
+        }
+        val currentState = uiState.value
+        val currentReplies = currentState.replies[currentState.currentIndex]
+        updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
+        val result = populateThread(entry = entry)
+        val newReplies = result.filter { e1 -> currentReplies.none { e2 -> e1.id == e2.id } }
         if (newReplies.isEmpty()) {
             // abort and disable load more button
-            updateEntryInState(entry.id) { it.copy(loadMoreButtonVisible = false) }
+            updateEntryInState(entry.id) {
+                it.copy(
+                    loadMoreButtonVisible = false,
+                    loadMoreButtonLoading = false,
+                )
+            }
         } else {
+            val replies = currentReplies.toMutableList()
             newReplies.preloadImages()
-            val currentState = uiState.value
-            val replies = currentState.replies[currentState.currentIndex].toMutableList()
             val insertIndex = replies.indexOfFirst { it.id == entry.id }
-            replies[insertIndex] = replies[insertIndex].copy(loadMoreButtonVisible = false)
+            replies[insertIndex] =
+                replies[insertIndex].copy(
+                    loadMoreButtonVisible = false,
+                    loadMoreButtonLoading = false,
+                )
             replies.addAll(index = insertIndex + 1, newReplies)
             updateState {
                 it.copy(

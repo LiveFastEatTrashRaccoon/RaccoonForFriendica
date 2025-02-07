@@ -19,7 +19,6 @@ val threadModule =
                 ThreadViewModel(
                     entryId = params.entryId,
                     swipeNavigationEnabled = params.swipeNavigationEnabled,
-                    populateThreadUseCase = instance(),
                     timelineEntryRepository = instance(),
                     identityRepository = instance(),
                     settingsRepository = instance(),
@@ -32,6 +31,7 @@ val threadModule =
                     imagePreloadManager = instance(),
                     blurHashRepository = instance(),
                     imageAutoloadObserver = instance(),
+                    populateThread = instance(),
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
                     getTranslation = instance(),
