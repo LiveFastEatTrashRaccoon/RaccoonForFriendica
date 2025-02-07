@@ -36,6 +36,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.contentToDisplay
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.pollToDisplay
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.spoilerToDisplay
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.titleToDisplay
 
@@ -45,12 +46,14 @@ internal fun DistractionFreeTimelineItem(
     modifier: Modifier = Modifier,
     actionsEnabled: Boolean = true,
     autoloadImages: Boolean = true,
+    extendedSocialInfoEnabled: Boolean = false,
     maxBodyLines: Int = Int.MAX_VALUE,
     maxTitleLines: Int = Int.MAX_VALUE,
     options: List<Option> = emptyList(),
     optionsMenuOpen: Boolean = false,
     originalCreator: UserModel? = null,
     originalInReplyTo: TimelineEntryModel? = null,
+    pollEnabled: Boolean = true,
     reshareAndReplyVisible: Boolean = true,
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
     onClick: ((TimelineEntryModel) -> Unit)? = null,
@@ -58,8 +61,11 @@ internal fun DistractionFreeTimelineItem(
     onDislike: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
+    onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
+    onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
     onOptionsMenuToggled: ((Boolean) -> Unit)? = null,
+    onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
     onReblog: ((TimelineEntryModel) -> Unit)? = null,
     onReply: ((TimelineEntryModel) -> Unit)? = null,
     onShowOriginal: (() -> Unit)? = null,
@@ -219,7 +225,39 @@ internal fun DistractionFreeTimelineItem(
                         onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     )
                 }
+
+                // poll
+                entry.pollToDisplay?.also { poll ->
+                    PollCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        poll = poll,
+                        emojis = entry.emojis,
+                        enabled = pollEnabled,
+                        onVote = { choices ->
+                            onPollVote?.invoke(entry, choices)
+                        },
+                    )
+                }
             }
+        }
+
+        // reblog and favorite info
+        if (extendedSocialInfoEnabled) {
+            ContentExtendedSocialInfo(
+                modifier =
+                    Modifier.padding(
+                        vertical = Spacing.xs,
+                        horizontal = contentHorizontalPadding,
+                    ),
+                reblogCount = entry.reblogCount,
+                favoriteCount = entry.favoriteCount,
+                onOpenUsersReblog = {
+                    onOpenUsersReblog?.invoke(entry)
+                },
+                onOpenUsersFavorite = {
+                    onOpenUsersFavorite?.invoke(entry)
+                },
+            )
         }
 
         TranslationFooter(

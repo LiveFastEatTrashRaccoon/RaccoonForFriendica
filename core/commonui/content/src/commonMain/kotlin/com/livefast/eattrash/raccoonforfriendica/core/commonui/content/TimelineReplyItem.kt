@@ -36,6 +36,8 @@ fun TimelineReplyItem(
     entry: TimelineEntryModel,
     modifier: Modifier = Modifier,
     actionsEnabled: Boolean = true,
+    pollEnabled: Boolean = true,
+    extendedSocialInfoEnabled: Boolean = false,
     blurNsfw: Boolean = true,
     autoloadImages: Boolean = true,
     layout: TimelineLayout = TimelineLayout.Full,
@@ -48,12 +50,15 @@ fun TimelineReplyItem(
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onDislike: ((TimelineEntryModel) -> Unit)? = null,
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
+    onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
+    onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
     onOptionSelected: ((OptionId) -> Unit)? = null,
+    onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
     onShowOriginal: (() -> Unit)? = null,
 ) {
     val entryToDisplay = entry.original
-    val depthZeroBased = entry.depth - 1
+    val depthZeroBased = (entry.depth - 1).coerceAtLeast(0)
     val themeRepository = remember { getThemeRepository() }
     val barWidth = 3.dp
     val barColor = themeRepository.getCommentBarColor(depthZeroBased)
@@ -250,8 +255,10 @@ fun TimelineReplyItem(
                         autoloadImages = autoloadImages,
                         blurNsfw = blurNsfw,
                         entry = entryToDisplay,
+                        extendedSocialInfoEnabled = extendedSocialInfoEnabled,
                         options = options,
                         optionsMenuOpen = optionsMenuOpen,
+                        pollEnabled = pollEnabled,
                         onBookmark = onBookmark,
                         onClick = onClick,
                         onFavorite = onFavorite,
@@ -259,10 +266,13 @@ fun TimelineReplyItem(
                         onOpenImage = onOpenImage,
                         onOpenUrl = onOpenUrl,
                         onOpenUser = onOpenUser,
+                        onOpenUsersFavorite = onOpenUsersFavorite,
+                        onOpenUsersReblog = onOpenUsersReblog,
                         onOptionSelected = onOptionSelected,
                         onOptionsMenuToggled = {
                             optionsMenuOpen = it
                         },
+                        onPollVote = onPollVote,
                         onReblog = onReblog,
                         onReply = onReply,
                         onShowOriginal = onShowOriginal,
@@ -274,6 +284,7 @@ fun TimelineReplyItem(
                         actionsEnabled = actionsEnabled,
                         autoloadImages = autoloadImages,
                         entry = entryToDisplay,
+                        extendedSocialInfoEnabled = extendedSocialInfoEnabled,
                         options = options,
                         optionsMenuOpen = optionsMenuOpen,
                         onBookmark = onBookmark,
@@ -282,10 +293,13 @@ fun TimelineReplyItem(
                         onDislike = onDislike,
                         onOpenUrl = onOpenUrl,
                         onOpenUser = onOpenUser,
+                        onOpenUsersFavorite = onOpenUsersFavorite,
+                        onOpenUsersReblog = onOpenUsersReblog,
                         onOptionSelected = onOptionSelected,
                         onOptionsMenuToggled = {
                             optionsMenuOpen = it
                         },
+                        onPollVote = onPollVote,
                         onReblog = onReblog,
                         onReply = onReply,
                         onShowOriginal = onShowOriginal,
@@ -298,6 +312,7 @@ fun TimelineReplyItem(
                         autoloadImages = autoloadImages,
                         blurNsfw = blurNsfw,
                         entry = entryToDisplay,
+                        extendedSocialInfoEnabled = extendedSocialInfoEnabled,
                         options = options,
                         optionsMenuOpen = optionsMenuOpen,
                         onBookmark = onBookmark,
@@ -307,10 +322,13 @@ fun TimelineReplyItem(
                         onOpenImage = onOpenImage,
                         onOpenUrl = onOpenUrl,
                         onOpenUser = onOpenUser,
+                        onOpenUsersFavorite = onOpenUsersFavorite,
+                        onOpenUsersReblog = onOpenUsersReblog,
                         onOptionSelected = onOptionSelected,
                         onOptionsMenuToggled = {
                             optionsMenuOpen = it
                         },
+                        onPollVote = onPollVote,
                         onReblog = onReblog,
                         onReply = onReply,
                         onShowOriginal = onShowOriginal,
