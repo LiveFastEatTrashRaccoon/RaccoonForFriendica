@@ -71,6 +71,7 @@ private fun SettingsEntity.toModel() =
         hideNavigationBarWhileScrolling = hideNavigationBarWhileScrolling,
         barTheme = barTheme.toUIBarTheme(),
         timelineLayout = timelineLayout.toTimelineLayout(),
+        replyDepth = replyDepth,
     )
 
 private fun SettingsModel.toEntity() =
@@ -100,4 +101,5 @@ private fun SettingsModel.toEntity() =
         hideNavigationBarWhileScrolling = hideNavigationBarWhileScrolling,
         barTheme = barTheme.toInt(),
         timelineLayout = timelineLayout.toInt(),
+        replyDepth = replyDepth,
     )
