@@ -138,6 +138,7 @@ class SettingsScreen : Screen {
         var fileInputOpened by remember { mutableStateOf(false) }
         var settingsContent by remember { mutableStateOf<String?>(null) }
         var timelineLayoutBottomSheetOpened by remember { mutableStateOf(false) }
+        var replyDepthBottoSheepOpened by remember { mutableStateOf(false) }
 
         BindEffect(permissionsController = controller)
         LaunchedEffect(model) {
@@ -357,6 +358,13 @@ class SettingsScreen : Screen {
                                 )
                             }
                         }
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemConversationReplyDepth,
+                            value = uiState.replyDepth.toString(),
+                            onTap = {
+                                replyDepthBottoSheepOpened = true
+                            },
+                        )
 
                         // Look & feel section
                         SettingsHeader(
@@ -1063,6 +1071,20 @@ class SettingsScreen : Screen {
                 settingsContent = null
             }
         }
+
+        if (replyDepthBottoSheepOpened) {
+            CustomModalBottomSheet(
+                title = LocalStrings.current.settingsItemConversationReplyDepth,
+                items = REPLY_DEPTH_VALUES.map { CustomModalBottomSheetItem(label = it.toString()) },
+                onSelected = { index ->
+                    replyDepthBottoSheepOpened = false
+                    if (index != null) {
+                        val value = REPLY_DEPTH_VALUES[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeReplyDepth(value))
+                    }
+                },
+            )
+        }
     }
 }
 
@@ -1082,6 +1104,15 @@ private val BACKGROUND_NOTIFICATION_CHECK_INTERVALS =
         30.minutes,
         1.hours,
         4.hours,
+    )
+
+private val REPLY_DEPTH_VALUES =
+    listOf(
+        1,
+        2,
+        3,
+        4,
+        5,
     )
 
 @Composable

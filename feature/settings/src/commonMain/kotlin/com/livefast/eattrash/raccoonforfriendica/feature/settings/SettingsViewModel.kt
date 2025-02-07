@@ -207,6 +207,7 @@ class SettingsViewModel(
                                 hideNavigationBarWhileScrolling = settings.hideNavigationBarWhileScrolling,
                                 barTheme = settings.barTheme,
                                 timelineLayout = settings.timelineLayout,
+                                replyDepth = settings.replyDepth,
                             )
                         }
                     }
@@ -376,6 +377,10 @@ class SettingsViewModel(
 
             is SettingsMviModel.Intent.ExportSettings -> handleExportSettings()
             is SettingsMviModel.Intent.ImportSettings -> handleImportSettings(intent.content)
+            is SettingsMviModel.Intent.ChangeReplyDepth ->
+                screenModelScope.launch {
+                    changeReplyDepth(intent.depth)
+                }
         }
     }
 
@@ -552,6 +557,12 @@ class SettingsViewModel(
     private suspend fun changeTimelineLayout(value: TimelineLayout) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(timelineLayout = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeReplyDepth(value: Int) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(replyDepth = value)
         saveSettings(newSettings)
     }
 

@@ -133,6 +133,10 @@ interface SettingsMviModel :
         data class ImportSettings(
             val content: String,
         ) : Intent
+
+        data class ChangeReplyDepth(
+            val depth: Int,
+        ) : Intent
     }
 
     data class State(
@@ -178,6 +182,7 @@ interface SettingsMviModel :
         val timelineLayout: TimelineLayout = TimelineLayout.Full,
         val pushNotificationPermissionState: PermissionState = PermissionState.NotDetermined,
         val isBarThemeSupported: Boolean = false,
+        val replyDepth: Int = 1,
     )
 
     sealed interface Effect {
