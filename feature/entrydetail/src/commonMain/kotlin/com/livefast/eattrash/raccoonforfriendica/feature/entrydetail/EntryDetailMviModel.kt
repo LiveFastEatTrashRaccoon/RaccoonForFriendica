@@ -70,12 +70,17 @@ interface EntryDetailMviModel :
         data class AddInstanceShortcut(
             val node: String,
         ) : Intent
+
+        data class LoadMoreReplies(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
         val currentUserId: String? = null,
         val refreshing: Boolean = false,
         val initial: Boolean = true,
+        val loading: Boolean = false,
         val initialIndex: Int = 0,
         val mainEntry: TimelineEntryModel? = null,
         val entries: List<List<TimelineEntryModel>> = emptyList(),
