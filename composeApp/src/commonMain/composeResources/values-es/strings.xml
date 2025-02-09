@@ -54,7 +54,7 @@
     <string name="action_quote">Citar</string>
     <string name="action_reblog">Redistribuir</string>
     <string name="action_reject">Rechazar</string>
-    <string name="action_remove_from_bookmarks">Eliminar de favoritos</string>
+    <string name="action_remove_from_bookmarks">Eliminar de marcadores</string>
     <string name="action_remove_from_favorites">Eliminar de favoritos</string>
     <string name="action_remove_poll">Eliminar encuesta</string>
     <string name="action_remove_spoiler">Eliminar spoiler</string>
@@ -263,7 +263,7 @@
     <string name="notification_type_poll">se ha cerrado una encuesta en la que has participado</string>
     <string name="notification_type_poll_name">Encuestas</string>
     <string name="notification_type_reblog">ha redistribuido tu mensaje</string>
-    <string name="notification_type_reblog_name">Redistribuir</string>
+    <string name="notification_type_reblog_name">Redistribuciones</string>
     <string name="notification_type_update">ha actualizado una publicación que has redistribuido</string>
     <string name="notification_type_update_name">Publicar actualizaciones</string>
     <string name="pick_from_gallery_dialog_title">Seleccionar de la galería</string>
@@ -489,4 +489,5 @@
     <string name="message_no_public_timeline">A lo mejor la instancia no expone su cronología pública.</string>
     <string name="image_field_alt_text">Texto alternativo</string>
     <string name="action_insert_inline_image">Insertar imagen en el texto</string>
+    <string name="settings_item_conversation_reply_depth">Profundidad de las respuestas en conversación</string>
 </resources>
