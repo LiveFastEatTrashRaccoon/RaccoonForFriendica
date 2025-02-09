@@ -326,6 +326,7 @@
     <string name="settings_item_bar_theme">Status and navigation bar theme</string>
     <string name="settings_item_blocked_and_muted">Manage filters</string>
     <string name="settings_item_blur_nsfw">Blur NSFW media</string>
+    <string name="settings_item_conversation_reply_depth">Conversation reply depth</string>
     <string name="settings_item_crash_report_enabled">Enable anonymous crash reports</string>
     <string name="settings_item_default_post_visibility">Default visibility for posts</string>
     <string name="settings_item_default_reply_visibility">Default visibility for replies</string>

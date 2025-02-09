@@ -14,7 +14,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
@@ -25,6 +24,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Reply
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.PopulateThreadUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
@@ -58,6 +58,7 @@ class EntryDetailViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val populateThread: PopulateThreadUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
@@ -146,6 +147,11 @@ class EntryDetailViewModel(
                     refresh()
                 }
 
+            is EntryDetailMviModel.Intent.LoadMoreReplies ->
+                screenModelScope.launch {
+                    loadMoreReplies(intent.entry)
+                }
+
             is EntryDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
             is EntryDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
             is EntryDetailMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
@@ -212,42 +218,32 @@ class EntryDetailViewModel(
         loadContext()
 
         if (initial) {
-            val currentEntryList = uiState.value.entries[uiState.value.currentIndex]
-            val index = currentEntryList.indexOf(uiState.value.mainEntry).takeIf { it > 0 } ?: 0
+            val currentState = uiState.value
+            val currentEntryList = currentState.entries.getOrNull(currentState.currentIndex).orEmpty()
+            val index = currentEntryList.indexOf(currentState.mainEntry).takeIf { it > 0 } ?: 0
             emitEffect(EntryDetailMviModel.Effect.ScrollToItem(index))
         }
     }
 
     private suspend fun loadContext() {
+        if (uiState.value.loading) {
+            return
+        }
+        updateState { it.copy(loading = true) }
         val mainEntry = uiState.value.mainEntry
+        val maxDepth = settingsRepository.current.value?.replyDepth ?: 1
         val context =
             mainEntry?.let { e ->
                 timelineEntryRepository.getContext(e.id)
             }
+        val root = context?.ancestors?.firstOrNull() ?: mainEntry ?: return
         val currentEntryList =
-            buildList {
-                addAll(
-                    context
-                        ?.ancestors
-                        .orEmpty()
-                        .map {
-                            with(emojiHelper) { it.withEmojisIfMissing() }
-                        }.map {
-                            with(replyHelper) { it.withInReplyToIfMissing() }
-                        },
-                )
-                add(mainEntry)
-                addAll(
-                    context
-                        ?.descendants
-                        .orEmpty()
-                        .map {
-                            with(emojiHelper) { it.withEmojisIfMissing() }
-                        }.map {
-                            with(replyHelper) { it.withInReplyToIfMissing() }
-                        },
-                )
-            }.filterNotNull().distinctBy { e -> e.safeKey }
+            populateThread(entry = root, maxDepth = maxDepth)
+                .map {
+                    with(emojiHelper) { it.withEmojisIfMissing() }
+                }.map {
+                    with(replyHelper) { it.withInReplyToIfMissing() }
+                }.distinctBy { e -> e.safeKey }
         currentEntryList.preloadImages()
         updateState {
             it.copy(
@@ -261,7 +257,50 @@ class EntryDetailViewModel(
                     },
                 refreshing = false,
                 initial = false,
+                loading = false,
             )
+        }
+    }
+
+    private suspend fun loadMoreReplies(entry: TimelineEntryModel) {
+        if (entry.loadMoreButtonLoading) {
+            return
+        }
+        val currentState = uiState.value
+        val currentReplies = currentState.entries.getOrNull(currentState.currentIndex).orEmpty()
+        updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
+        val result = populateThread(entry = entry)
+        val newReplies = result.filter { e1 -> currentReplies.none { e2 -> e1.id == e2.id } }
+        if (newReplies.isEmpty()) {
+            // abort and disable load more button
+            updateEntryInState(entry.id) {
+                it.copy(
+                    loadMoreButtonVisible = false,
+                    loadMoreButtonLoading = false,
+                )
+            }
+        } else {
+            val replies = currentReplies.toMutableList()
+            newReplies.preloadImages()
+            val insertIndex = replies.indexOfFirst { it.id == entry.id }
+            replies[insertIndex] =
+                replies[insertIndex].copy(
+                    loadMoreButtonVisible = false,
+                    loadMoreButtonLoading = false,
+                )
+            replies.addAll(index = insertIndex + 1, newReplies)
+            updateState {
+                it.copy(
+                    entries =
+                        it.entries.mapIndexed { idx, list ->
+                            if (idx == it.currentIndex) {
+                                replies
+                            } else {
+                                list
+                            }
+                        },
+                )
+            }
         }
     }
 
@@ -592,7 +631,8 @@ class EntryDetailViewModel(
             }
             val currentState = uiState.value
             val hasReplies = (currentState.mainEntry?.replyCount ?: 0) > 0
-            if (currentState.entries[newIndex].size == 1 && hasReplies) {
+            val currentEntries = currentState.entries.getOrNull(newIndex) ?: emptyList()
+            if (currentEntries.isEmpty() || (currentEntries.size == 1 && hasReplies)) {
                 loadContext()
             }
 

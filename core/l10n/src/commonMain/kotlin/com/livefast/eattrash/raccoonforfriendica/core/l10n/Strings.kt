@@ -344,6 +344,7 @@ interface Strings {
     val settingsItemBarTheme: String @Composable get
     val settingsItemBlockedAndMuted: String @Composable get
     val settingsItemBlurNsfw: String @Composable get
+    val settingsItemConversationReplyDepth: String @Composable get
     val settingsItemCrashReportEnabled: String @Composable get
     val settingsItemDefaultPostVisibility: String @Composable get
     val settingsItemDefaultReplyVisibility: String @Composable get

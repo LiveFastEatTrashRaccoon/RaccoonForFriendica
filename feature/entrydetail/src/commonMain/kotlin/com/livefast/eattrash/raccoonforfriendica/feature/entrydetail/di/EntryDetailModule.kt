@@ -33,6 +33,7 @@ val entryDetailModule =
                     emojiHelper = instance(),
                     replyHelper = instance(),
                     imageAutoloadObserver = instance(),
+                    populateThread = instance(),
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
                     getTranslation = instance(),

@@ -33,6 +33,7 @@ data class SettingsModel(
     val hideNavigationBarWhileScrolling: Boolean = true,
     val barTheme: UiBarTheme = UiBarTheme.Transparent,
     val timelineLayout: TimelineLayout = TimelineLayout.Full,
+    val replyDepth: Int = 1,
 )
 
 fun Int.toDomainMaxLines(): Int =

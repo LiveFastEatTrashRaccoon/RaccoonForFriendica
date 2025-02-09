@@ -1,37 +1,46 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.thread.usecase
+package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.thread.data.ConversationNode
 import kotlinx.coroutines.coroutineScope
+
+private data class ConversationNode(
+    val entry: TimelineEntryModel,
+    val children: MutableList<ConversationNode> = mutableListOf(),
+)
 
 internal class DefaultPopulateThreadUseCase(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val emojiHelper: EmojiHelper,
 ) : PopulateThreadUseCase {
-    override suspend fun invoke(entryId: String): List<TimelineEntryModel> {
-        val entry =
-            timelineEntryRepository.getById(entryId)?.let {
-                with(emojiHelper) {
-                    it.withEmojisIfMissing()
-                }
-            } ?: return emptyList()
+    override suspend fun invoke(
+        entry: TimelineEntryModel,
+        maxDepth: Int,
+    ): List<TimelineEntryModel> {
         val root = ConversationNode(entry)
-        populateTree(root)
-        return mutableListOf<TimelineEntryModel>()
-            .apply {
-                linearize(root)
-            }.deduplicate()
-            .populateLoadMore()
-            .toList()
+        populateTree(
+            node = root,
+            maxDepth = maxDepth,
+            depthOffset = entry.depth,
+            depth = 0,
+        )
+        val res =
+            mutableListOf<TimelineEntryModel>()
+                .apply {
+                    linearize(root)
+                }.deduplicate()
+                .populateLoadMore()
+        return res.toList()
     }
 
     private suspend fun populateTree(
         node: ConversationNode,
-        depth: Int = 0,
+        depth: Int,
+        depthOffset: Int = 0,
+        maxDepth: Int,
     ): Unit =
         coroutineScope {
             val entry = node.entry
@@ -39,7 +48,7 @@ internal class DefaultPopulateThreadUseCase(
                 // base case 0: entry has no children
                 return@coroutineScope
             }
-            if (depth >= MAX_DEPTH) {
+            if (depth >= maxDepth) {
                 // base case 1: max depth level reached
                 return@coroutineScope
             }
@@ -59,13 +68,23 @@ internal class DefaultPopulateThreadUseCase(
                         // needed because otherwise replies of different depths are included
                         val referenceChild = child.original
                         if (referenceChild.inReplyTo?.id == entry.id || referenceChild.inReplyTo?.id == entry.reblog?.id) {
-                            ConversationNode(entry = referenceChild.copy(depth = depth + 1))
+                            ConversationNode(
+                                entry =
+                                    referenceChild.copy(
+                                        depth = depthOffset + depth + 1,
+                                    ),
+                            )
                         } else {
                             null
                         }
                     }
             for (child in childNodes) {
-                populateTree(node = child, depth = depth + 1)
+                populateTree(
+                    node = child,
+                    depth = depth + 1,
+                    depthOffset = depthOffset,
+                    maxDepth = maxDepth,
+                )
             }
             node.children.addAll(childNodes)
         }
@@ -86,8 +105,4 @@ internal class DefaultPopulateThreadUseCase(
                 (idx < lastIndex && this[idx + 1].depth <= entry.depth) || idx == lastIndex
             entry.copy(loadMoreButtonVisible = hasMoreReplies && isNextCommentNotChild)
         }
-
-    companion object {
-        private const val MAX_DEPTH = 5
-    }
 }

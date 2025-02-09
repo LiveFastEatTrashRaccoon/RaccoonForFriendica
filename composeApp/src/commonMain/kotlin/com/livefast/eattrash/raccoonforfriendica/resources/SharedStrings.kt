@@ -359,6 +359,7 @@ import raccoonforfriendica.composeapp.generated.resources.settings_item_app_icon
 import raccoonforfriendica.composeapp.generated.resources.settings_item_bar_theme
 import raccoonforfriendica.composeapp.generated.resources.settings_item_blocked_and_muted
 import raccoonforfriendica.composeapp.generated.resources.settings_item_blur_nsfw
+import raccoonforfriendica.composeapp.generated.resources.settings_item_conversation_reply_depth
 import raccoonforfriendica.composeapp.generated.resources.settings_item_crash_report_enabled
 import raccoonforfriendica.composeapp.generated.resources.settings_item_default_post_visibility
 import raccoonforfriendica.composeapp.generated.resources.settings_item_default_reply_visibility
@@ -1143,6 +1144,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.settings_item_blocked_and_muted)
     override val settingsItemBlurNsfw: String
         @Composable get() = stringResource(Res.string.settings_item_blur_nsfw)
+    override val settingsItemConversationReplyDepth: String
+        @Composable get() = stringResource(Res.string.settings_item_conversation_reply_depth)
     override val settingsItemCrashReportEnabled: String
         @Composable get() = stringResource(Res.string.settings_item_crash_report_enabled)
     override val settingsItemDefaultPostVisibility: String
