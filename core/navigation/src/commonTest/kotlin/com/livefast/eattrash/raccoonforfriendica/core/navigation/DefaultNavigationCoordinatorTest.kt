@@ -119,6 +119,21 @@ class DefaultNavigationCoordinatorTest {
         }
 
     @Test
+    fun `when showGlobalMessage then value is as expected`() =
+        runTest {
+            val text = "Global message"
+
+            launch {
+                sut.showGlobalMessage(text)
+            }
+
+            sut.globalMessage.test {
+                val item = awaitItem()
+                assertEquals(text, item)
+            }
+        }
+
+    @Test
     fun `when push then interactions are as expected`() =
         runTest {
             val screen =
