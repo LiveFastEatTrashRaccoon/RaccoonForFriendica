@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 internal class DefaultNavigationCoordinator(
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
@@ -21,6 +22,7 @@ internal class DefaultNavigationCoordinator(
     override val canPop = MutableStateFlow(false)
     override val exitMessageVisible = MutableStateFlow(false)
     override val deepLinkUrl = MutableSharedFlow<String>()
+    override val globalMessage = MutableSharedFlow<String>()
 
     private var rootNavigator: NavigatorAdapter? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
@@ -84,5 +86,15 @@ internal class DefaultNavigationCoordinator(
     override suspend fun submitDeeplink(url: String) {
         delay(750)
         deepLinkUrl.emit(url)
+    }
+
+    override fun showGlobalMessage(
+        message: String,
+        delay: Duration,
+    ) {
+        scope.launch {
+            delay(delay)
+            globalMessage.emit(message)
+        }
     }
 }

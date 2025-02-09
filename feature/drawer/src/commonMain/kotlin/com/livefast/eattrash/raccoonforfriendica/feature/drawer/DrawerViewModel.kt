@@ -95,6 +95,7 @@ class DrawerViewModel(
         }
         screenModelScope.launch {
             switchAccountUseCase(account)
+            emitEffect(DrawerMviModel.Effect.AccountChangeSuccess)
         }
     }
 

@@ -24,6 +24,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,9 +48,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Progre
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountScreen
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class ProfileScreen : Screen {
@@ -62,9 +66,21 @@ class ProfileScreen : Screen {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
         val scope = rememberCoroutineScope()
         val drawerCoordinator = remember { getDrawerCoordinator() }
+        val navigationCoordinator = remember { getNavigationCoordinator() }
+        val successMessage = LocalStrings.current.messageSuccess
         var confirmLogoutDialogOpened by remember { mutableStateOf(false) }
         var manageAccountsDialogOpened by remember { mutableStateOf(false) }
         var confirmDeleteAccount by remember { mutableStateOf<AccountModel?>(null) }
+
+        LaunchedEffect(model) {
+            model.effects
+                .onEach { event ->
+                    when (event) {
+                        ProfileMviModel.Effect.AccountChangeSuccess ->
+                            navigationCoordinator.showGlobalMessage(successMessage)
+                    }
+                }.launchIn(this)
+        }
 
         CompositionLocalProvider(
             LocalProfileTopAppBarStateWrapper provides

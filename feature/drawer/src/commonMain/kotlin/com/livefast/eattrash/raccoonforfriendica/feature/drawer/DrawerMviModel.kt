@@ -39,5 +39,7 @@ interface DrawerMviModel :
 
     sealed interface Effect {
         data object AnonymousChangeNodeSuccess : Effect
+
+        data object AccountChangeSuccess : Effect
     }
 }

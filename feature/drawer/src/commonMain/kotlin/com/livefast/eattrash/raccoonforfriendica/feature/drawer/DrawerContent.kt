@@ -91,6 +91,7 @@ class DrawerContent : Screen {
         var manageAccountsDialogOpened by remember { mutableStateOf(false) }
         var changeInstanceDialogOpened by remember { mutableStateOf(false) }
         var aboutDialogOpened by remember { mutableStateOf(false) }
+        val successMessage = LocalStrings.current.messageSuccess
 
         fun handleAction(action: suspend () -> Unit) {
             scope.launch {
@@ -108,6 +109,12 @@ class DrawerContent : Screen {
                         DrawerMviModel.Effect.AnonymousChangeNodeSuccess -> {
                             changeInstanceDialogOpened = false
                             drawerCoordinator.closeDrawer()
+                            navigationCoordinator.showGlobalMessage(successMessage)
+                        }
+
+                        DrawerMviModel.Effect.AccountChangeSuccess -> {
+                            drawerCoordinator.closeDrawer()
+                            navigationCoordinator.showGlobalMessage(successMessage)
                         }
                     }
                 }.launchIn(this)

@@ -92,6 +92,7 @@ class ProfileViewModel(
                 it.copy(loading = true)
             }
             switchAccountUseCase(account)
+            emitEffect(ProfileMviModel.Effect.AccountChangeSuccess)
         }
     }
 
