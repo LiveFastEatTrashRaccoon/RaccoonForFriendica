@@ -195,11 +195,10 @@ class EntryDetailViewModel(
                 } else {
                     currentEntry?.let { listOf(listOf(it)) } ?: listOf(emptyList())
                 }
-            val initialIndex = entries.indexOfFirst { it.first().id == id }.coerceAtLeast(0)
+            val initialIndex = entries.indexOfFirst { it.first().original.id == id }
             updateState {
                 it.copy(
                     mainEntry = currentEntry,
-                    initialIndex = initialIndex,
                     currentIndex = initialIndex,
                     entries =
                         if (initial) {
@@ -243,6 +242,19 @@ class EntryDetailViewModel(
                     with(emojiHelper) { it.withEmojisIfMissing() }
                 }.map {
                     with(replyHelper) { it.withInReplyToIfMissing() }
+                }.let { list ->
+                    when {
+                        mainEntry != null && list.none { e -> e.id == mainEntry.id } -> {
+                            val additionalList =
+                                reconstructAncestors(
+                                    entry = mainEntry,
+                                    rootId = root.id,
+                                )
+                            list + additionalList
+                        }
+
+                        else -> list
+                    }
                 }.distinctBy { e -> e.safeKey }
         currentEntryList.preloadImages()
         updateState {
@@ -260,6 +272,37 @@ class EntryDetailViewModel(
                 loading = false,
             )
         }
+    }
+
+    private suspend fun reconstructAncestors(
+        entry: TimelineEntryModel,
+        rootId: String,
+    ): List<TimelineEntryModel> {
+        suspend fun buildAncestorsRec(
+            entry: TimelineEntryModel,
+            list: List<TimelineEntryModel>,
+        ): List<TimelineEntryModel> {
+            val parentId = entry.parentId
+            if (parentId.isNullOrEmpty() || entry.id == rootId) {
+                return list
+            }
+            val parent = timelineEntryRepository.getById(parentId) ?: return list
+            return buildAncestorsRec(parent, listOf(parent) + list)
+        }
+
+        val res = buildAncestorsRec(entry, listOf(entry))
+        return res
+            .mapIndexed { idx, e ->
+                val hasMoreReplies =
+                    when {
+                        idx == res.lastIndex -> e.replyCount > 0
+                        else -> e.replyCount > 1
+                    }
+                e.copy(
+                    depth = idx,
+                    loadMoreButtonVisible = hasMoreReplies,
+                )
+            }
     }
 
     private suspend fun loadMoreReplies(entry: TimelineEntryModel) {

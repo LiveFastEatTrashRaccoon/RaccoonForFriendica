@@ -246,511 +246,536 @@ class EntryDetailScreen(
                 }
             },
         ) { padding ->
-            val pageCount = uiState.entries.size
-            val pagerState =
-                remember(pageCount) {
-                    PagerState(
-                        currentPage = uiState.currentIndex,
-                        currentPageOffsetFraction = 0f,
-                        pageCount = { pageCount },
-                    )
+            // wait until the current index is determined
+            if (uiState.currentIndex >= 0) {
+                val pageCount = uiState.entries.size
+                val pagerState =
+                    remember(pageCount) {
+                        PagerState(
+                            currentPage = uiState.currentIndex,
+                            currentPageOffsetFraction = 0f,
+                            pageCount = { pageCount },
+                        )
+                    }
+
+                LaunchedEffect(pagerState) {
+                    snapshotFlow { pagerState.currentPage }
+                        .onEach {
+                            model.reduce(EntryDetailMviModel.Intent.ChangeNavigationIndex(it))
+                            goBackToTop()
+                        }.launchIn(this)
                 }
-
-            LaunchedEffect(pagerState) {
-                snapshotFlow { pagerState.currentPage }
-                    .onEach {
-                        model.reduce(EntryDetailMviModel.Intent.ChangeNavigationIndex(it))
-                        goBackToTop()
-                    }.launchIn(this)
-            }
-            HorizontalPager(
-                modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxSize(),
-                state = pagerState,
-                beyondViewportPageCount = 1,
-            ) { index ->
-                val currentEntryList = uiState.entries[index]
-                lazyListState = rememberLazyListState()
-
-                PullToRefreshBox(
+                HorizontalPager(
                     modifier =
                         Modifier
-                            .then(
-                                if (uiState.hideNavigationBarWhileScrolling) {
-                                    Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                                } else {
-                                    Modifier
-                                },
-                            ).nestedScroll(fabNestedScrollConnection),
-                    isRefreshing = uiState.refreshing,
-                    onRefresh = {
-                        model.reduce(EntryDetailMviModel.Intent.Refresh)
-                    },
-                ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = lazyListState,
+                            .padding(padding)
+                            .fillMaxSize(),
+                    state = pagerState,
+                    beyondViewportPageCount = 1,
+                ) { index ->
+                    val currentEntryList = uiState.entries[index]
+                    lazyListState = rememberLazyListState()
+
+                    PullToRefreshBox(
+                        modifier =
+                            Modifier
+                                .then(
+                                    if (uiState.hideNavigationBarWhileScrolling) {
+                                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                                    } else {
+                                        Modifier
+                                    },
+                                ).nestedScroll(fabNestedScrollConnection),
+                        isRefreshing = uiState.refreshing,
+                        onRefresh = {
+                            model.reduce(EntryDetailMviModel.Intent.Refresh)
+                        },
                     ) {
-                        itemsIndexed(
-                            items = currentEntryList,
-                            key = { _, e -> "entry-detail-${e.safeKey}" },
-                        ) { idx, entry ->
-                            val isFirst = idx == 0
-                            val isMainEntry = entry.id == uiState.mainEntry?.id
-                            val options =
-                                buildList {
-                                    if (actionRepository.canShare(entry.original)) {
-                                        this += OptionId.Share.toOption()
-                                        this += OptionId.CopyUrl.toOption()
-                                    }
-                                    if (actionRepository.canEdit(entry.original)) {
-                                        this += OptionId.Edit.toOption()
-                                    }
-                                    if (actionRepository.canDelete(entry.original)) {
-                                        this += OptionId.Delete.toOption()
-                                    }
-                                    if (actionRepository.canTogglePin(entry)) {
-                                        if (entry.pinned) {
-                                            this += OptionId.Unpin.toOption()
-                                        } else {
-                                            this += OptionId.Pin.toOption()
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            state = lazyListState,
+                        ) {
+                            itemsIndexed(
+                                items = currentEntryList,
+                                key = { _, e -> "entry-detail-${e.safeKey}" },
+                            ) { idx, entry ->
+                                val isFirst = idx == 0
+                                val isMainEntry = entry.id == uiState.mainEntry?.id
+                                val options =
+                                    buildList {
+                                        if (actionRepository.canShare(entry.original)) {
+                                            this += OptionId.Share.toOption()
+                                            this += OptionId.CopyUrl.toOption()
                                         }
-                                    }
-                                    if (actionRepository.canMute(entry)) {
-                                        this += OptionId.Mute.toOption()
-                                    }
-                                    if (actionRepository.canBlock(entry)) {
-                                        this += OptionId.Block.toOption()
-                                    }
-                                    if (actionRepository.canReport(entry.original)) {
-                                        this += OptionId.ReportUser.toOption()
-                                        this += OptionId.ReportEntry.toOption()
-                                    }
-                                    if (actionRepository.canQuote(entry.original)) {
-                                        this += OptionId.Quote.toOption()
-                                    }
-                                    this += OptionId.ViewDetails.toOption()
-                                    this += OptionId.CopyToClipboard.toOption()
-                                    val currentLang = uiState.lang.orEmpty()
-                                    if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
-                                        this +=
-                                            Option(
-                                                id = OptionId.Translate,
-                                                label =
-                                                    buildString {
-                                                        append(
-                                                            LocalStrings.current.actionTranslateTo(
-                                                                currentLang,
-                                                            ),
-                                                        )
-                                                        append(" (")
-                                                        append(LocalStrings.current.experimental)
-                                                        append(")")
-                                                    },
-                                            )
-                                    }
-                                    val nodeName = entry.nodeName
-                                    if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
-                                        this +=
-                                            OptionId.AddShortcut.toOption(
-                                                LocalStrings.current.actionShortcut(nodeName),
-                                            )
-                                    }
-                                }
-
-                            fun onOptionSelected(optionId: OptionId) {
-                                when (optionId) {
-                                    OptionId.Share -> {
-                                        val urlString = entry.url.orEmpty()
-                                        shareHelper.share(urlString)
-                                    }
-
-                                    OptionId.CopyUrl -> {
-                                        val urlString = entry.url.orEmpty()
-                                        clipboardManager.setText(AnnotatedString(urlString))
-                                        scope.launch {
-                                            snackbarHostState.showSnackbar(
-                                                copyToClipboardSuccess,
-                                            )
+                                        if (actionRepository.canEdit(entry.original)) {
+                                            this += OptionId.Edit.toOption()
                                         }
-                                    }
-
-                                    OptionId.Edit -> {
-                                        entry.original.also { entryToEdit ->
-                                            detailOpener.openComposer(
-                                                inReplyTo = entryToEdit.inReplyTo,
-                                                inReplyToUser = entryToEdit.inReplyTo?.creator,
-                                                editedPostId = entryToEdit.id,
-                                            )
+                                        if (actionRepository.canDelete(entry.original)) {
+                                            this += OptionId.Delete.toOption()
                                         }
-                                    }
-
-                                    OptionId.Delete -> confirmDeleteEntryId = entry.id
-                                    OptionId.Mute -> confirmMuteEntry = entry
-                                    OptionId.Block -> confirmBlockEntry = entry
-                                    OptionId.Pin, OptionId.Unpin ->
-                                        model.reduce(
-                                            EntryDetailMviModel.Intent.TogglePin(
-                                                entry,
-                                            ),
-                                        )
-
-                                    OptionId.ReportUser ->
-                                        entry.original.creator?.also { userToReport ->
-                                            detailOpener.openCreateReport(user = userToReport)
-                                        }
-
-                                    OptionId.ReportEntry ->
-                                        entry.original.also { entryToReport ->
-                                            entryToReport.creator?.also { userToReport ->
-                                                detailOpener.openCreateReport(
-                                                    user = userToReport,
-                                                    entry = entryToReport,
-                                                )
-                                            }
-                                        }
-
-                                    OptionId.ViewDetails -> seeDetailsEntry = entry.original
-                                    OptionId.Quote -> {
-                                        entry.original.also { entryToShare ->
-                                            detailOpener.openComposer(
-                                                urlToShare = entryToShare.url,
-                                            )
-                                        }
-                                    }
-
-                                    OptionId.CopyToClipboard ->
-                                        model.reduce(
-                                            EntryDetailMviModel.Intent.CopyToClipboard(
-                                                entry.original,
-                                            ),
-                                        )
-
-                                    OptionId.Translate ->
-                                        model.reduce(
-                                            EntryDetailMviModel.Intent.ToggleTranslation(
-                                                entry.original,
-                                            ),
-                                        )
-
-                                    OptionId.AddShortcut ->
-                                        model.reduce(
-                                            EntryDetailMviModel.Intent.AddInstanceShortcut(
-                                                entry.nodeName,
-                                            ),
-                                        )
-
-                                    else -> Unit
-                                }
-                            }
-
-                            if (isFirst) {
-                                TimelineItem(
-                                    modifier =
-                                        Modifier.then(
-                                            if (uiState.layout == TimelineLayout.Card) {
-                                                Modifier
-                                                    // since the main entry is forced to "full", recreates card appearance
-                                                    .padding(horizontal = Spacing.xs)
-                                                    .shadow(
-                                                        elevation = 5.dp,
-                                                        shape = RoundedCornerShape(CornerSize.l),
-                                                    ).background(
-                                                        color =
-                                                            MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                                                5.dp,
-                                                            ),
-                                                        shape = RoundedCornerShape(CornerSize.l),
-                                                    ).padding(
-                                                        vertical = Spacing.s,
-                                                        horizontal = Spacing.xxxs,
-                                                    )
+                                        if (actionRepository.canTogglePin(entry)) {
+                                            if (entry.pinned) {
+                                                this += OptionId.Unpin.toOption()
                                             } else {
-                                                Modifier
-                                            },
-                                        ),
-                                    entry = entry,
-                                    extendedSocialInfoEnabled = isMainEntry,
-                                    layout = TimelineLayout.Full,
-                                    blurNsfw = uiState.blurNsfw,
-                                    autoloadImages = uiState.autoloadImages,
-                                    onOpenUrl = { url, allowOpenInternal ->
-                                        if (allowOpenInternal) {
-                                            uriHandler.openUri(url)
-                                        } else {
-                                            uriHandler.openExternally(url)
+                                                this += OptionId.Pin.toOption()
+                                            }
                                         }
-                                    },
-                                    onClick = { e ->
-                                        if (e.id != uiState.mainEntry?.id) {
-                                            detailOpener.openEntryDetail(
-                                                entry = entry,
-                                                replaceTop = true,
-                                            )
+                                        if (actionRepository.canMute(entry)) {
+                                            this += OptionId.Mute.toOption()
                                         }
-                                    },
-                                    onOpenUser = {
-                                        detailOpener.openUserDetail(it)
-                                    },
-                                    onOpenImage = { urls, imageIdx, videoIndices ->
-                                        detailOpener.openImageDetail(
-                                            urls = urls,
-                                            initialIndex = imageIdx,
-                                            videoIndices = videoIndices,
-                                        )
-                                    },
-                                    onReblog =
-                                        { e: TimelineEntryModel ->
-                                            val timeSinceCreation =
-                                                e.created?.run {
-                                                    getDurationFromDateToNow(this)
-                                                } ?: Duration.ZERO
-                                            when {
-                                                !e.reblogged && timeSinceCreation.isOldEntry ->
-                                                    confirmReblogEntry = e
+                                        if (actionRepository.canBlock(entry)) {
+                                            this += OptionId.Block.toOption()
+                                        }
+                                        if (actionRepository.canReport(entry.original)) {
+                                            this += OptionId.ReportUser.toOption()
+                                            this += OptionId.ReportEntry.toOption()
+                                        }
+                                        if (actionRepository.canQuote(entry.original)) {
+                                            this += OptionId.Quote.toOption()
+                                        }
+                                        this += OptionId.ViewDetails.toOption()
+                                        this += OptionId.CopyToClipboard.toOption()
+                                        val currentLang = uiState.lang.orEmpty()
+                                        if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
+                                            this +=
+                                                Option(
+                                                    id = OptionId.Translate,
+                                                    label =
+                                                        buildString {
+                                                            append(
+                                                                LocalStrings.current.actionTranslateTo(
+                                                                    currentLang,
+                                                                ),
+                                                            )
+                                                            append(" (")
+                                                            append(LocalStrings.current.experimental)
+                                                            append(")")
+                                                        },
+                                                )
+                                        }
+                                        val nodeName = entry.nodeName
+                                        if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
+                                            this +=
+                                                OptionId.AddShortcut.toOption(
+                                                    LocalStrings.current.actionShortcut(nodeName),
+                                                )
+                                        }
+                                    }
 
-                                                else ->
-                                                    model.reduce(
-                                                        EntryDetailMviModel.Intent.ToggleReblog(e),
-                                                    )
-                                            }
-                                        }.takeIf { actionRepository.canReblog(entry.original) },
-                                    onBookmark =
-                                        { e: TimelineEntryModel ->
-                                            model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e))
-                                        }.takeIf { actionRepository.canBookmark(entry.original) },
-                                    onFavorite =
-                                        { e: TimelineEntryModel ->
-                                            model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
-                                        }.takeIf { actionRepository.canFavorite(entry.original) },
-                                    onDislike =
-                                        { e: TimelineEntryModel ->
-                                            model.reduce(EntryDetailMviModel.Intent.ToggleDislike(e))
-                                        }.takeIf { actionRepository.canDislike(entry.original) },
-                                    onOpenUsersFavorite = { e ->
-                                        detailOpener.openEntryUsersFavorite(
-                                            entryId = e.id,
-                                            count = e.favoriteCount,
-                                        )
-                                    },
-                                    onOpenUsersReblog = { e ->
-                                        detailOpener.openEntryUsersReblog(
-                                            entryId = e.id,
-                                            count = e.reblogCount,
-                                        )
-                                    },
-                                    onReply =
-                                        { e: TimelineEntryModel ->
-                                            detailOpener.openComposer(
-                                                inReplyTo = e,
-                                                inReplyToUser = e.creator,
-                                            )
-                                        }.takeIf { actionRepository.canReply(entry.original) },
-                                    onPollVote =
-                                        uiState.currentUserId?.let {
-                                            { e, choices ->
-                                                model.reduce(
-                                                    EntryDetailMviModel.Intent.SubmitPollVote(
-                                                        entry = e,
-                                                        choices = choices,
-                                                    ),
-                                                )
-                                            }
-                                        },
-                                    onShowOriginal = {
-                                        model.reduce(
-                                            EntryDetailMviModel.Intent.ToggleTranslation(entry.original),
-                                        )
-                                    },
-                                    options = options,
-                                    onOptionSelected = ::onOptionSelected,
-                                )
-                            } else {
-                                TimelineReplyItem(
-                                    modifier =
-                                        Modifier.then(
-                                            if (isMainEntry) {
-                                                Modifier.background(
-                                                    color =
-                                                        MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                                            1.dp,
-                                                        ),
-                                                )
-                                            } else {
-                                                Modifier
-                                            },
-                                        ),
-                                    entry = entry,
-                                    extendedSocialInfoEnabled = isMainEntry,
-                                    layout = uiState.layout,
-                                    blurNsfw = uiState.blurNsfw,
-                                    autoloadImages = uiState.autoloadImages,
-                                    onOpenUrl = { url, allowOpenInternal ->
-                                        if (allowOpenInternal) {
-                                            uriHandler.openUri(url)
-                                        } else {
-                                            uriHandler.openExternally(url)
+                                fun onOptionSelected(optionId: OptionId) {
+                                    when (optionId) {
+                                        OptionId.Share -> {
+                                            val urlString = entry.url.orEmpty()
+                                            shareHelper.share(urlString)
                                         }
-                                    },
-                                    onClick = { e ->
-                                        if (e.id != uiState.mainEntry?.id) {
-                                            detailOpener.openEntryDetail(
-                                                entry = entry,
-                                                replaceTop = true,
-                                            )
+
+                                        OptionId.CopyUrl -> {
+                                            val urlString = entry.url.orEmpty()
+                                            clipboardManager.setText(AnnotatedString(urlString))
+                                            scope.launch {
+                                                snackbarHostState.showSnackbar(
+                                                    copyToClipboardSuccess,
+                                                )
+                                            }
                                         }
-                                    },
-                                    onOpenUser = {
-                                        detailOpener.openUserDetail(it)
-                                    },
-                                    onOpenImage = { urls, imageIdx, videoIndices ->
-                                        detailOpener.openImageDetail(
-                                            urls = urls,
-                                            initialIndex = imageIdx,
-                                            videoIndices = videoIndices,
-                                        )
-                                    },
-                                    onReblog =
-                                        { e: TimelineEntryModel ->
-                                            val timeSinceCreation =
-                                                e.created?.run {
-                                                    getDurationFromDateToNow(this)
-                                                } ?: Duration.ZERO
-                                            when {
-                                                !e.reblogged && timeSinceCreation.isOldEntry ->
-                                                    confirmReblogEntry = e
 
-                                                else ->
-                                                    model.reduce(
-                                                        EntryDetailMviModel.Intent.ToggleReblog(e),
-                                                    )
+                                        OptionId.Edit -> {
+                                            entry.original.also { entryToEdit ->
+                                                detailOpener.openComposer(
+                                                    inReplyTo = entryToEdit.inReplyTo,
+                                                    inReplyToUser = entryToEdit.inReplyTo?.creator,
+                                                    editedPostId = entryToEdit.id,
+                                                )
                                             }
-                                        }.takeIf { actionRepository.canReblog(entry.original) },
-                                    onBookmark =
-                                        { e: TimelineEntryModel ->
-                                            model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e))
-                                        }.takeIf { actionRepository.canBookmark(entry.original) },
-                                    onFavorite =
-                                        { e: TimelineEntryModel ->
-                                            model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
-                                        }.takeIf { actionRepository.canFavorite(entry.original) },
-                                    onDislike =
-                                        { e: TimelineEntryModel ->
-                                            model.reduce(EntryDetailMviModel.Intent.ToggleDislike(e))
-                                        }.takeIf { actionRepository.canDislike(entry.original) },
-                                    onOpenUsersFavorite = { e ->
-                                        detailOpener.openEntryUsersFavorite(
-                                            entryId = e.id,
-                                            count = e.favoriteCount,
-                                        )
-                                    },
-                                    onOpenUsersReblog = { e ->
-                                        detailOpener.openEntryUsersReblog(
-                                            entryId = e.id,
-                                            count = e.reblogCount,
-                                        )
-                                    },
-                                    onReply =
-                                        { e: TimelineEntryModel ->
-                                            detailOpener.openComposer(
-                                                inReplyTo = e,
-                                                inReplyToUser = e.creator,
+                                        }
+
+                                        OptionId.Delete -> confirmDeleteEntryId = entry.id
+                                        OptionId.Mute -> confirmMuteEntry = entry
+                                        OptionId.Block -> confirmBlockEntry = entry
+                                        OptionId.Pin, OptionId.Unpin ->
+                                            model.reduce(
+                                                EntryDetailMviModel.Intent.TogglePin(
+                                                    entry,
+                                                ),
                                             )
-                                        }.takeIf { actionRepository.canReply(entry.original) },
-                                    onPollVote =
-                                        uiState.currentUserId?.let {
-                                            { e, choices ->
-                                                model.reduce(
-                                                    EntryDetailMviModel.Intent.SubmitPollVote(
-                                                        entry = e,
-                                                        choices = choices,
-                                                    ),
-                                                )
-                                            }
-                                        },
-                                    onShowOriginal = {
-                                        model.reduce(
-                                            EntryDetailMviModel.Intent.ToggleTranslation(entry.original),
-                                        )
-                                    },
-                                    options = options,
-                                    onOptionSelected = ::onOptionSelected,
-                                )
 
-                                // load more button
-                                if (entry.loadMoreButtonVisible) {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.Center,
-                                    ) {
-                                        Button(
-                                            onClick = {
-                                                model.reduce(
-                                                    EntryDetailMviModel.Intent.LoadMoreReplies(
-                                                        entry,
-                                                    ),
-                                                )
-                                            },
-                                        ) {
-                                            Row(
-                                                horizontalArrangement = Arrangement.spacedBy(Spacing.s),
-                                                verticalAlignment = Alignment.CenterVertically,
-                                            ) {
-                                                if (entry.loadMoreButtonLoading) {
-                                                    CircularProgressIndicator(
-                                                        modifier = Modifier.size(IconSize.s),
-                                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        OptionId.ReportUser ->
+                                            entry.original.creator?.also { userToReport ->
+                                                detailOpener.openCreateReport(user = userToReport)
+                                            }
+
+                                        OptionId.ReportEntry ->
+                                            entry.original.also { entryToReport ->
+                                                entryToReport.creator?.also { userToReport ->
+                                                    detailOpener.openCreateReport(
+                                                        user = userToReport,
+                                                        entry = entryToReport,
                                                     )
                                                 }
-                                                Text(
-                                                    text =
-                                                        buildString {
-                                                            append(LocalStrings.current.buttonLoadMoreReplies)
-                                                            entry.replyCount
-                                                                .takeIf { it > 0 }
-                                                                ?.also { count ->
-                                                                    append(" (")
-                                                                    append(count)
-                                                                    append(")")
-                                                                }
-                                                        },
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
+                                            }
+
+                                        OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                        OptionId.Quote -> {
+                                            entry.original.also { entryToShare ->
+                                                detailOpener.openComposer(
+                                                    urlToShare = entryToShare.url,
                                                 )
+                                            }
+                                        }
+
+                                        OptionId.CopyToClipboard ->
+                                            model.reduce(
+                                                EntryDetailMviModel.Intent.CopyToClipboard(
+                                                    entry.original,
+                                                ),
+                                            )
+
+                                        OptionId.Translate ->
+                                            model.reduce(
+                                                EntryDetailMviModel.Intent.ToggleTranslation(
+                                                    entry.original,
+                                                ),
+                                            )
+
+                                        OptionId.AddShortcut ->
+                                            model.reduce(
+                                                EntryDetailMviModel.Intent.AddInstanceShortcut(
+                                                    entry.nodeName,
+                                                ),
+                                            )
+
+                                        else -> Unit
+                                    }
+                                }
+
+                                if (isFirst) {
+                                    // show the first entry only if it is the root of the thread
+                                    if (entry.parentId.isNullOrEmpty()) {
+                                        TimelineItem(
+                                            modifier =
+                                                Modifier.then(
+                                                    if (uiState.layout == TimelineLayout.Card) {
+                                                        Modifier
+                                                            // since the main entry is forced to "full", recreates card appearance
+                                                            .padding(horizontal = Spacing.xs)
+                                                            .shadow(
+                                                                elevation = 5.dp,
+                                                                shape = RoundedCornerShape(CornerSize.l),
+                                                            ).background(
+                                                                color =
+                                                                    MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                                                        5.dp,
+                                                                    ),
+                                                                shape = RoundedCornerShape(CornerSize.l),
+                                                            ).padding(
+                                                                vertical = Spacing.s,
+                                                                horizontal = Spacing.xxxs,
+                                                            )
+                                                    } else {
+                                                        Modifier
+                                                    },
+                                                ),
+                                            entry = entry,
+                                            extendedSocialInfoEnabled = isMainEntry,
+                                            layout = TimelineLayout.Full,
+                                            blurNsfw = uiState.blurNsfw,
+                                            autoloadImages = uiState.autoloadImages,
+                                            onOpenUrl = { url, allowOpenInternal ->
+                                                if (allowOpenInternal) {
+                                                    uriHandler.openUri(url)
+                                                } else {
+                                                    uriHandler.openExternally(url)
+                                                }
+                                            },
+                                            onClick = { e ->
+                                                if (e.id != uiState.mainEntry?.id) {
+                                                    detailOpener.openEntryDetail(
+                                                        entry = entry,
+                                                        replaceTop = true,
+                                                    )
+                                                }
+                                            },
+                                            onOpenUser = {
+                                                detailOpener.openUserDetail(it)
+                                            },
+                                            onOpenImage = { urls, imageIdx, videoIndices ->
+                                                detailOpener.openImageDetail(
+                                                    urls = urls,
+                                                    initialIndex = imageIdx,
+                                                    videoIndices = videoIndices,
+                                                )
+                                            },
+                                            onReblog =
+                                                { e: TimelineEntryModel ->
+                                                    val timeSinceCreation =
+                                                        e.created?.run {
+                                                            getDurationFromDateToNow(this)
+                                                        } ?: Duration.ZERO
+                                                    when {
+                                                        !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                            confirmReblogEntry = e
+
+                                                        else ->
+                                                            model.reduce(
+                                                                EntryDetailMviModel.Intent.ToggleReblog(
+                                                                    e,
+                                                                ),
+                                                            )
+                                                    }
+                                                }.takeIf { actionRepository.canReblog(entry.original) },
+                                            onBookmark =
+                                                { e: TimelineEntryModel ->
+                                                    model.reduce(
+                                                        EntryDetailMviModel.Intent.ToggleBookmark(
+                                                            e,
+                                                        ),
+                                                    )
+                                                }.takeIf { actionRepository.canBookmark(entry.original) },
+                                            onFavorite =
+                                                { e: TimelineEntryModel ->
+                                                    model.reduce(
+                                                        EntryDetailMviModel.Intent.ToggleFavorite(
+                                                            e,
+                                                        ),
+                                                    )
+                                                }.takeIf { actionRepository.canFavorite(entry.original) },
+                                            onDislike =
+                                                { e: TimelineEntryModel ->
+                                                    model.reduce(
+                                                        EntryDetailMviModel.Intent.ToggleDislike(
+                                                            e,
+                                                        ),
+                                                    )
+                                                }.takeIf { actionRepository.canDislike(entry.original) },
+                                            onOpenUsersFavorite = { e ->
+                                                detailOpener.openEntryUsersFavorite(
+                                                    entryId = e.id,
+                                                    count = e.favoriteCount,
+                                                )
+                                            },
+                                            onOpenUsersReblog = { e ->
+                                                detailOpener.openEntryUsersReblog(
+                                                    entryId = e.id,
+                                                    count = e.reblogCount,
+                                                )
+                                            },
+                                            onReply =
+                                                { e: TimelineEntryModel ->
+                                                    detailOpener.openComposer(
+                                                        inReplyTo = e,
+                                                        inReplyToUser = e.creator,
+                                                    )
+                                                }.takeIf { actionRepository.canReply(entry.original) },
+                                            onPollVote =
+                                                uiState.currentUserId?.let {
+                                                    { e, choices ->
+                                                        model.reduce(
+                                                            EntryDetailMviModel.Intent.SubmitPollVote(
+                                                                entry = e,
+                                                                choices = choices,
+                                                            ),
+                                                        )
+                                                    }
+                                                },
+                                            onShowOriginal = {
+                                                model.reduce(
+                                                    EntryDetailMviModel.Intent.ToggleTranslation(
+                                                        entry.original,
+                                                    ),
+                                                )
+                                            },
+                                            options = options,
+                                            onOptionSelected = ::onOptionSelected,
+                                        )
+                                    }
+                                } else {
+                                    TimelineReplyItem(
+                                        modifier =
+                                            Modifier.then(
+                                                if (isMainEntry) {
+                                                    Modifier.background(
+                                                        color =
+                                                            MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                                                1.dp,
+                                                            ),
+                                                    )
+                                                } else {
+                                                    Modifier
+                                                },
+                                            ),
+                                        entry = entry,
+                                        extendedSocialInfoEnabled = isMainEntry,
+                                        layout = uiState.layout,
+                                        blurNsfw = uiState.blurNsfw,
+                                        autoloadImages = uiState.autoloadImages,
+                                        onOpenUrl = { url, allowOpenInternal ->
+                                            if (allowOpenInternal) {
+                                                uriHandler.openUri(url)
+                                            } else {
+                                                uriHandler.openExternally(url)
+                                            }
+                                        },
+                                        onClick = { e ->
+                                            if (e.id != uiState.mainEntry?.id) {
+                                                detailOpener.openEntryDetail(
+                                                    entry = entry,
+                                                    replaceTop = true,
+                                                )
+                                            }
+                                        },
+                                        onOpenUser = {
+                                            detailOpener.openUserDetail(it)
+                                        },
+                                        onOpenImage = { urls, imageIdx, videoIndices ->
+                                            detailOpener.openImageDetail(
+                                                urls = urls,
+                                                initialIndex = imageIdx,
+                                                videoIndices = videoIndices,
+                                            )
+                                        },
+                                        onReblog =
+                                            { e: TimelineEntryModel ->
+                                                val timeSinceCreation =
+                                                    e.created?.run {
+                                                        getDurationFromDateToNow(this)
+                                                    } ?: Duration.ZERO
+                                                when {
+                                                    !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                        confirmReblogEntry = e
+
+                                                    else ->
+                                                        model.reduce(
+                                                            EntryDetailMviModel.Intent.ToggleReblog(e),
+                                                        )
+                                                }
+                                            }.takeIf { actionRepository.canReblog(entry.original) },
+                                        onBookmark =
+                                            { e: TimelineEntryModel ->
+                                                model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e))
+                                            }.takeIf { actionRepository.canBookmark(entry.original) },
+                                        onFavorite =
+                                            { e: TimelineEntryModel ->
+                                                model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
+                                            }.takeIf { actionRepository.canFavorite(entry.original) },
+                                        onDislike =
+                                            { e: TimelineEntryModel ->
+                                                model.reduce(EntryDetailMviModel.Intent.ToggleDislike(e))
+                                            }.takeIf { actionRepository.canDislike(entry.original) },
+                                        onOpenUsersFavorite = { e ->
+                                            detailOpener.openEntryUsersFavorite(
+                                                entryId = e.id,
+                                                count = e.favoriteCount,
+                                            )
+                                        },
+                                        onOpenUsersReblog = { e ->
+                                            detailOpener.openEntryUsersReblog(
+                                                entryId = e.id,
+                                                count = e.reblogCount,
+                                            )
+                                        },
+                                        onReply =
+                                            { e: TimelineEntryModel ->
+                                                detailOpener.openComposer(
+                                                    inReplyTo = e,
+                                                    inReplyToUser = e.creator,
+                                                )
+                                            }.takeIf { actionRepository.canReply(entry.original) },
+                                        onPollVote =
+                                            uiState.currentUserId?.let {
+                                                { e, choices ->
+                                                    model.reduce(
+                                                        EntryDetailMviModel.Intent.SubmitPollVote(
+                                                            entry = e,
+                                                            choices = choices,
+                                                        ),
+                                                    )
+                                                }
+                                            },
+                                        onShowOriginal = {
+                                            model.reduce(
+                                                EntryDetailMviModel.Intent.ToggleTranslation(entry.original),
+                                            )
+                                        },
+                                        options = options,
+                                        onOptionSelected = ::onOptionSelected,
+                                    )
+
+                                    // load more button
+                                    if (entry.loadMoreButtonVisible) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.Center,
+                                        ) {
+                                            Button(
+                                                onClick = {
+                                                    model.reduce(
+                                                        EntryDetailMviModel.Intent.LoadMoreReplies(
+                                                            entry,
+                                                        ),
+                                                    )
+                                                },
+                                            ) {
+                                                Row(
+                                                    horizontalArrangement =
+                                                        Arrangement.spacedBy(
+                                                            Spacing.s,
+                                                        ),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                ) {
+                                                    if (entry.loadMoreButtonLoading) {
+                                                        CircularProgressIndicator(
+                                                            modifier = Modifier.size(IconSize.s),
+                                                            color = MaterialTheme.colorScheme.onPrimary,
+                                                        )
+                                                    }
+                                                    Text(
+                                                        text =
+                                                            buildString {
+                                                                append(LocalStrings.current.buttonLoadMoreReplies)
+                                                                entry.replyCount
+                                                                    .takeIf { it > 0 }
+                                                                    ?.also { count ->
+                                                                        append(" (")
+                                                                        append(count)
+                                                                        append(")")
+                                                                    }
+                                                            },
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                    )
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            if (idx < currentEntryList.lastIndex) {
-                                TimelineDivider(layout = uiState.layout)
-                            }
-                        }
-
-                        // here to show the initial entry from cache at startup
-                        if (uiState.initial) {
-                            val placeholderCount = 5
-                            items(placeholderCount) { idx ->
-                                TimelineItemPlaceholder(
-                                    modifier =
-                                        Modifier.fillMaxWidth().then(
-                                            if (idx == 0) {
-                                                Modifier.padding(top = Spacing.s)
-                                            } else {
-                                                Modifier
-                                            },
-                                        ),
-                                )
-                                if (idx < placeholderCount - 1) {
+                                if (idx < currentEntryList.lastIndex) {
                                     TimelineDivider(layout = uiState.layout)
                                 }
                             }
-                        }
 
-                        item {
-                            Spacer(modifier = Modifier.height(Spacing.xxxl))
+                            // here to show the initial entry from cache at startup
+                            if (uiState.initial) {
+                                val placeholderCount = 5
+                                items(placeholderCount) { idx ->
+                                    TimelineItemPlaceholder(
+                                        modifier =
+                                            Modifier.fillMaxWidth().then(
+                                                if (idx == 0) {
+                                                    Modifier.padding(top = Spacing.s)
+                                                } else {
+                                                    Modifier
+                                                },
+                                            ),
+                                    )
+                                    if (idx < placeholderCount - 1) {
+                                        TimelineDivider(layout = uiState.layout)
+                                    }
+                                }
+                            }
+
+                            item {
+                                Spacer(modifier = Modifier.height(Spacing.xxxl))
+                            }
                         }
                     }
                 }
