@@ -31,5 +31,7 @@ interface ProfileMviModel :
         val hideNavigationBarWhileScrolling: Boolean = true,
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object AccountChangeSuccess : Effect
+    }
 }
