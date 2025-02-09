@@ -54,7 +54,7 @@
     <string name="action_quote">Citação</string>
     <string name="action_reblog">Partilhar de novo</string>
     <string name="action_reject">Rejeitar</string>
-    <string name="action_remove_from_bookmarks">Remover dos favoritos</string>
+    <string name="action_remove_from_bookmarks">Remover dos marcadores</string>
     <string name="action_remove_from_favorites">Remover dos favoritos</string>
     <string name="action_remove_poll">Remover sondagem</string>
     <string name="action_remove_spoiler">Remover spoiler</string>
@@ -484,4 +484,10 @@
     <string name="message_sign_up_1">Ainda não tem uma conta?</string>
     <string name="message_sign_up_2">Registe-se agora!</string>
     <string name="manage_blocks_section_stop_words">Palavras</string>
+    <string name="settings_item_conversation_reply_depth">Profundidade das respostas en conversação</string>
+    <string name="message_no_public_timeline">Talvez esta instância não exponha sua linha de tempo pública.</string>
+    <string name="shortcuts_title">Atalhos</string>
+    <string name="action_shortcut">Atalho para %1$s</string>
+    <string name="action_insert_inline_image">Inserir imagem embutida</string>
+    <string name="image_field_alt_text">Texto alternativo</string>
 </resources>
