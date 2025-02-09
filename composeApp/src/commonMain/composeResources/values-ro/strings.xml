@@ -489,4 +489,5 @@
     <string name="shortcuts_title">Scurtături</string>
     <string name="message_no_public_timeline">Poate că această instanță nu își expune linia de timp publică.</string>
     <string name="action_insert_inline_image">Inserează imagine încorporată</string>
+    <string name="settings_item_conversation_reply_depth">Adâncime răspunsurilor în conversație</string>
 </resources>
