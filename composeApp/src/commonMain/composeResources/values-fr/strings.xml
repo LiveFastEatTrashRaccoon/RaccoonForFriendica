@@ -489,4 +489,5 @@
     <string name="action_shortcut">Courtcut to %1$s</string>
     <string name="action_insert_inline_image">Insérer une image intégrée</string>
     <string name="message_no_public_timeline">Peut-être que cette instance n\'expose pas sa chronologie publique.</string>
+    <string name="settings_item_conversation_reply_depth">Profondeur des réponses en conversation</string>
 </resources>
