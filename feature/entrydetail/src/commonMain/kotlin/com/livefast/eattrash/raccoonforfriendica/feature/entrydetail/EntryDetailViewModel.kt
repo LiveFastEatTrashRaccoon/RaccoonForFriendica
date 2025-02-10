@@ -195,7 +195,10 @@ class EntryDetailViewModel(
                 } else {
                     currentEntry?.let { listOf(listOf(it)) } ?: listOf(emptyList())
                 }
-            val initialIndex = entries.indexOfFirst { it.first().original.id == id }
+            val initialIndex =
+                entries.indexOfFirst { list ->
+                    list.any { e -> e.original.id == currentEntry?.original?.id }
+                }
             updateState {
                 it.copy(
                     mainEntry = currentEntry,

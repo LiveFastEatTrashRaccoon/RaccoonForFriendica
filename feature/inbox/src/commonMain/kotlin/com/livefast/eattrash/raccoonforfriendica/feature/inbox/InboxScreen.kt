@@ -54,6 +54,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.ConfigureNotificationTypeDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.NotificationItem
@@ -211,7 +212,7 @@ class InboxScreen : Screen {
                             autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,
                             onOpenEntry = { entry ->
-                                detailOpener.openEntryDetail(entry)
+                                detailOpener.openEntryDetail(entry.original)
                                 model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
                             },
                             onOpenUrl = { url, allowOpenInternal ->
