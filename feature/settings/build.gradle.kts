@@ -10,6 +10,7 @@ kotlin {
                 implementation(libs.kodein)
                 implementation(libs.moko.permissions)
                 implementation(libs.moko.permissions.compose)
+                implementation(libs.moko.permissions.notifications)
                 implementation(libs.voyager.screenmodel)
                 implementation(libs.voyager.kodein)
 
