@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.icons.filled.Bookmark
@@ -29,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
@@ -57,17 +55,18 @@ fun ContentFooter(
     onBookmark: (() -> Unit)? = null,
 ) {
     val canLikeAndDislike = onFavorite != null && onDislike != null
-    val baseItemWidth = 70.dp
+    val itemModifier = Modifier.clearAndSetSemantics { }.padding(horizontal = Spacing.s)
     Row(
-        modifier = modifier.padding(vertical = Spacing.xs),
+        modifier =
+            modifier.padding(
+                vertical = Spacing.xs,
+                horizontal = Spacing.xxs,
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         if (onReply != null) {
             FooterItem(
-                modifier =
-                    Modifier
-                        .clearAndSetSemantics { }
-                        .width(baseItemWidth),
+                modifier = itemModifier,
                 icon = Icons.AutoMirrored.Default.Reply,
                 contentDescription = null,
                 value = replyCount,
@@ -76,10 +75,7 @@ fun ContentFooter(
         }
         if (onReblog != null) {
             FooterItem(
-                modifier =
-                    Modifier
-                        .clearAndSetSemantics { }
-                        .width(baseItemWidth),
+                modifier = itemModifier,
                 icon = Icons.Outlined.RocketLaunch,
                 toggledIcon = Icons.Filled.RocketLaunch,
                 contentDescription = null,
@@ -91,10 +87,7 @@ fun ContentFooter(
         }
         if (onFavorite != null) {
             FooterItem(
-                modifier =
-                    Modifier
-                        .clearAndSetSemantics { }
-                        .width(baseItemWidth),
+                modifier = itemModifier,
                 icon =
                     if (canLikeAndDislike) {
                         Icons.Outlined.ThumbUp
@@ -116,10 +109,7 @@ fun ContentFooter(
         }
         if (onDislike != null) {
             FooterItem(
-                modifier =
-                    Modifier
-                        .clearAndSetSemantics { }
-                        .width(baseItemWidth),
+                modifier = itemModifier,
                 icon = Icons.Outlined.ThumbDown,
                 toggledIcon = Icons.Default.ThumbDown,
                 contentDescription = null,
@@ -131,10 +121,7 @@ fun ContentFooter(
         }
         if (onBookmark != null) {
             FooterItem(
-                modifier =
-                    Modifier
-                        .clearAndSetSemantics { }
-                        .width(baseItemWidth),
+                modifier = itemModifier,
                 icon = Icons.Default.BookmarkBorder,
                 toggledIcon = Icons.Default.Bookmark,
                 contentDescription = null,
