@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TagUp
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowedHashtagsPaginationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.flow.launchIn
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class FollowedHashtagsViewModel(
+    private val cache: FollowedHashtagCache,
     private val paginationManager: FollowedHashtagsPaginationManager,
     private val tagRepository: TagRepository,
     private val settingsRepository: SettingsRepository,
@@ -43,7 +45,17 @@ class FollowedHashtagsViewModel(
                 }.launchIn(this)
 
             if (uiState.value.initial) {
-                refresh(initial = true)
+                val items = cache.getAll()
+                if (items.isNotEmpty()) {
+                    refresh(initial = true)
+                } else {
+                    updateState {
+                        it.copy(
+                            items = items,
+                            initial = false,
+                        )
+                    }
+                }
             }
         }
     }

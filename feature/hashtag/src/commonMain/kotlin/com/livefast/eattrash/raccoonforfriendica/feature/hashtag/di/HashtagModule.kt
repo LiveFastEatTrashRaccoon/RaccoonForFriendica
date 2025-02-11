@@ -15,6 +15,7 @@ val hashtagModule =
         bind<FollowedHashtagsMviModel> {
             provider {
                 FollowedHashtagsViewModel(
+                    cache = instance(),
                     paginationManager = instance(),
                     tagRepository = instance(),
                     settingsRepository = instance(),
