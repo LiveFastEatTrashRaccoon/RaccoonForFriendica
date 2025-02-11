@@ -115,6 +115,7 @@ val contentPaginationModule =
                     emojiHelper = instance(),
                     replyHelper = instance(),
                     stopWordRepository = instance(),
+                    followedHashtagCache = instance(),
                     notificationCenter = instance(),
                 )
             }
