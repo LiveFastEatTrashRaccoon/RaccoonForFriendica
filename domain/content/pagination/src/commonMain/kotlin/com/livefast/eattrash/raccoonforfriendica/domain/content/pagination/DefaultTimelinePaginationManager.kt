@@ -199,7 +199,7 @@ internal class DefaultTimelinePaginationManager(
 
                 is TimelinePaginationSpecification.User ->
                     results
-                        // for users deduplication must be done first due to a backend bug
+                        // deduplication must be done first (due to a backend bug)
                         ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
@@ -218,19 +218,21 @@ internal class DefaultTimelinePaginationManager(
 
                 is TimelinePaginationSpecification.Bookmarks ->
                     results
+                        // deduplication must be done first (due to a backend bug)
+                        ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.filterByStopWords()
-                        ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
 
                 is TimelinePaginationSpecification.Favorites ->
                     results
+                        // deduplication must be done first (due to a backend bug)
+                        ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.filterByStopWords()
-                        ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
             }.orEmpty().also { history.addAll(it) }
