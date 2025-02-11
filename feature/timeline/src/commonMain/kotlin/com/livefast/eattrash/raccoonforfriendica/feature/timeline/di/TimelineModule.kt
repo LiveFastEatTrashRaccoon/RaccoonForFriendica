@@ -31,6 +31,7 @@ val timelineModule =
                     toggleEntryDislike = instance(),
                     getTranslation = instance(),
                     timelineNavigationManager = instance(),
+                    followedHashtagCache = instance(),
                     notificationCenter = instance(),
                 )
             }
