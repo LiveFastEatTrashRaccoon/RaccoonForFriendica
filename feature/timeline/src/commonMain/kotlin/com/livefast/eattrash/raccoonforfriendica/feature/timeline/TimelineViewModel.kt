@@ -21,6 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
@@ -64,6 +65,7 @@ class TimelineViewModel(
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
+    private val followedHashtagCache: FollowedHashtagCache,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
         initialState = TimelineMviModel.State(),
@@ -283,6 +285,9 @@ class TimelineViewModel(
             it.copy(initial = initial, refreshing = !initial)
         }
         val settings = settingsRepository.current.value ?: SettingsModel()
+        if (!initial) {
+            followedHashtagCache.refresh()
+        }
         paginationManager.reset(
             TimelinePaginationSpecification.Feed(
                 timelineType = timelineType,

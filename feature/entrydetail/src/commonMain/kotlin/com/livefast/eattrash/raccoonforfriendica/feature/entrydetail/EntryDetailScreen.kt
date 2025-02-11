@@ -476,6 +476,8 @@ class EntryDetailScreen(
                                                     },
                                                 ),
                                             entry = entry,
+                                            reshareAndReplyVisible = false,
+                                            followedHashtagsVisible = false,
                                             extendedSocialInfoEnabled = isMainEntry,
                                             layout = TimelineLayout.Full,
                                             blurNsfw = uiState.blurNsfw,

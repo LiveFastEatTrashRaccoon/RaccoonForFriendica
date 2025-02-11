@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineTyp
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
@@ -55,6 +56,10 @@ class DefaultTimelinePaginationManagerTest {
         mock<AccountRepository> {
             everySuspend { getActive() } returns null
         }
+    private val followedHashtagCache =
+        mock<FollowedHashtagCache> {
+            everySuspend { isFollowed(any()) } returns false
+        }
     private val userRateLimitRepository = mock<UserRateLimitRepository>()
     private val stopWordRepository = mock<StopWordRepository>()
     private val sut =
@@ -67,6 +72,7 @@ class DefaultTimelinePaginationManagerTest {
             replyHelper = replyHelper,
             stopWordRepository = stopWordRepository,
             notificationCenter = notificationCenter,
+            followedHashtagCache = followedHashtagCache,
             dispatcher = UnconfinedTestDispatcher(),
         )
 

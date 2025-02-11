@@ -63,6 +63,7 @@ internal fun CardTimelineItem(
     originalInReplyTo: TimelineEntryModel? = null,
     pollEnabled: Boolean = true,
     reshareAndReplyVisible: Boolean = true,
+    followedHashtagsVisible: Boolean = false,
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
     onClick: ((TimelineEntryModel) -> Unit)? = null,
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
@@ -116,6 +117,18 @@ internal fun CardTimelineItem(
                         user = it,
                         autoloadImages = autoloadImages,
                         onOpenUser = onOpenUser,
+                    )
+                }
+            }
+            if (followedHashtagsVisible) {
+                val followedHashtags = entry.tags.filter { it.following == true }
+                if (followedHashtags.isNotEmpty()) {
+                    FollowedHashtagsInfo(
+                        modifier = Modifier.padding(horizontal = contentHorizontalPadding),
+                        tags = followedHashtags,
+                        onOpenTag = { tag ->
+                            tag.url?.also { onOpenUrl?.invoke(it, true) }
+                        },
                     )
                 }
             }

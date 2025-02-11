@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineTyp
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
@@ -34,6 +35,7 @@ internal class DefaultTimelinePaginationManager(
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
     private val stopWordRepository: StopWordRepository,
+    private val followedHashtagCache: FollowedHashtagCache,
     notificationCenter: NotificationCenter = getNotificationCenter(),
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : TimelinePaginationManager {
@@ -186,6 +188,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
+                        ?.fixumFollowedHashtags()
 
                 is TimelinePaginationSpecification.Hashtag ->
                     results
@@ -338,5 +341,14 @@ internal class DefaultTimelinePaginationManager(
                     entryTexts.any { it.contains(other = word, ignoreCase = true) }
                 }
             } ?: true
+        }
+
+    private suspend fun List<TimelineEntryModel>.fixumFollowedHashtags(): List<TimelineEntryModel> =
+        this.map { entry ->
+            val tags =
+                entry.tags.map { tag ->
+                    tag.copy(following = followedHashtagCache.isFollowed(tag))
+                }
+            entry.copy(tags = tags)
         }
 }

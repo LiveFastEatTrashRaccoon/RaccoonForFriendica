@@ -127,7 +127,11 @@ fun String.parseHtml(
         end()
     }
 
-    return builder.toAnnotatedString()
+    return runCatching {
+        builder.toAnnotatedString()
+    }.getOrElse {
+        AnnotatedString(text = "")
+    }
 }
 
 private fun String.sanitize(requiresHtmlDecode: Boolean): String =

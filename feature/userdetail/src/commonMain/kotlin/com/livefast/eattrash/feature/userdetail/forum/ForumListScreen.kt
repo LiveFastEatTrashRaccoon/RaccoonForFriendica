@@ -350,6 +350,7 @@ class ForumListScreen(
                             entry = entry,
                             layout = uiState.layout,
                             reshareAndReplyVisible = false,
+                            followedHashtagsVisible = false,
                             blurNsfw = uiState.blurNsfw,
                             autoloadImages = uiState.autoloadImages,
                             maxBodyLines = uiState.maxBodyLines,

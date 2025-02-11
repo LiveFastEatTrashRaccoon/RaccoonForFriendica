@@ -40,6 +40,7 @@ val identityUseCaseModule =
                     markerRepository = instance(),
                     notificationCoordinator = instance(),
                     announcementsManager = instance(),
+                    followedHashtagCache = instance(),
                 )
             }
         }

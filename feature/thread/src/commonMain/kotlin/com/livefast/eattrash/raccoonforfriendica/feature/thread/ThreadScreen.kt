@@ -299,6 +299,7 @@ class ThreadScreen(
                                     entry = entry,
                                     layout = TimelineLayout.Full,
                                     reshareAndReplyVisible = false,
+                                    followedHashtagsVisible = false,
                                     extendedSocialInfoEnabled = true,
                                     blurNsfw = uiState.blurNsfw,
                                     autoloadImages = uiState.autoloadImages,

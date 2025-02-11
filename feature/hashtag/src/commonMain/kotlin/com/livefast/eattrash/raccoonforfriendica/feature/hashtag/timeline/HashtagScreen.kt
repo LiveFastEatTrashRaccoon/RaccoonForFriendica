@@ -242,6 +242,7 @@ class HashtagScreen(
                     ) { idx, entry ->
                         TimelineItem(
                             entry = entry,
+                            followedHashtagsVisible = false,
                             layout = uiState.layout,
                             blurNsfw = uiState.blurNsfw,
                             autoloadImages = uiState.autoloadImages,
