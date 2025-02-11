@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeFeatures
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
@@ -49,6 +50,7 @@ class DefaultActiveAccountMonitorTest {
             everySuspend { get(any(), any()) } returns null
         }
     private val announcementsManager = mock<AnnouncementsManager>(MockMode.autoUnit)
+    private val followedHashtagCache = mock<FollowedHashtagCache>(MockMode.autoUnit)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val sut =
@@ -63,6 +65,7 @@ class DefaultActiveAccountMonitorTest {
             markerRepository = markerRepository,
             notificationCoordinator = notificationCoordinator,
             announcementsManager = announcementsManager,
+            followedHashtagCache = followedHashtagCache,
             coroutineDispatcher = UnconfinedTestDispatcher(),
         )
 
@@ -91,6 +94,7 @@ class DefaultActiveAccountMonitorTest {
                 settingsRepository.changeCurrent(settings)
                 notificationCoordinator.setupAnonymousUser()
                 announcementsManager.clearUnreadCount()
+                followedHashtagCache.clear()
             }
         }
 
@@ -120,6 +124,7 @@ class DefaultActiveAccountMonitorTest {
                 settingsRepository.changeCurrent(settings)
                 notificationCoordinator.setupLoggedUser()
                 announcementsManager.refreshUnreadCount()
+                followedHashtagCache.refresh()
             }
         }
 }
