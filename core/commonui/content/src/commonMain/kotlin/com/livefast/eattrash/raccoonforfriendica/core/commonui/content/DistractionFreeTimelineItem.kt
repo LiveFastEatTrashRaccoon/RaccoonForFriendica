@@ -55,6 +55,7 @@ internal fun DistractionFreeTimelineItem(
     originalInReplyTo: TimelineEntryModel? = null,
     pollEnabled: Boolean = true,
     reshareAndReplyVisible: Boolean = true,
+    followedHashtagsVisible: Boolean = true,
     onBookmark: ((TimelineEntryModel) -> Unit)? = null,
     onClick: ((TimelineEntryModel) -> Unit)? = null,
     onFavorite: ((TimelineEntryModel) -> Unit)? = null,
@@ -95,6 +96,18 @@ internal fun DistractionFreeTimelineItem(
                         user = it,
                         autoloadImages = autoloadImages,
                         onOpenUser = onOpenUser,
+                    )
+                }
+            }
+            if (followedHashtagsVisible) {
+                val followedHashtags = entry.tags.filter { it.following == true }
+                if (followedHashtags.isNotEmpty()) {
+                    FollowedHashtagsInfo(
+                        modifier = Modifier.padding(horizontal = contentHorizontalPadding),
+                        tags = followedHashtags,
+                        onOpenTag = { tag ->
+                            tag.url?.also { onOpenUrl?.invoke(it, true) }
+                        },
                     )
                 }
             }
