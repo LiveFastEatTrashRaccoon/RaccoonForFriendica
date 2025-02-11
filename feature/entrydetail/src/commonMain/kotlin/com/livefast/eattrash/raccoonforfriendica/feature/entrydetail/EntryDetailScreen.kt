@@ -490,7 +490,7 @@ class EntryDetailScreen(
                                             onClick = { e ->
                                                 if (e.id != uiState.mainEntry?.id) {
                                                     detailOpener.openEntryDetail(
-                                                        entry = entry,
+                                                        entry = e,
                                                         replaceTop = true,
                                                     )
                                                 }

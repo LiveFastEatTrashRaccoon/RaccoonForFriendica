@@ -225,7 +225,7 @@ class ThreadViewModel(
         val currentState = uiState.value
         val currentReplies = currentState.replies[currentState.currentIndex]
         updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
-        val result = populateThread(entry = entry)
+        val result = populateThread(entry = entry.original)
         val newReplies = result.filter { e1 -> currentReplies.none { e2 -> e1.id == e2.id } }
         if (newReplies.isEmpty()) {
             // abort and disable load more button
@@ -236,15 +236,29 @@ class ThreadViewModel(
                 )
             }
         } else {
-            val replies = currentReplies.toMutableList()
             newReplies.preloadImages()
-            val insertIndex = replies.indexOfFirst { it.id == entry.id }
-            replies[insertIndex] =
-                replies[insertIndex].copy(
-                    loadMoreButtonVisible = false,
-                    loadMoreButtonLoading = false,
-                )
-            replies.addAll(index = insertIndex + 1, newReplies)
+            val index = currentReplies.indexOfFirst { e -> e.id == entry.id }
+            val replies =
+                buildList {
+                    if (index > 0) {
+                        addAll(currentReplies.subList(fromIndex = 0, toIndex = index))
+                    }
+                    add(
+                        entry.copy(
+                            loadMoreButtonVisible = false,
+                            loadMoreButtonLoading = false,
+                        ),
+                    )
+                    addAll(newReplies)
+                    if (index < currentReplies.size) {
+                        addAll(
+                            currentReplies.subList(
+                                fromIndex = index + 1,
+                                toIndex = currentReplies.size,
+                            ),
+                        )
+                    }
+                }
             updateState {
                 it.copy(
                     replies =

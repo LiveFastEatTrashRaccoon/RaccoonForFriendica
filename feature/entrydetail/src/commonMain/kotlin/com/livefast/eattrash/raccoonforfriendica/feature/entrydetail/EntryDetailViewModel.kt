@@ -104,22 +104,7 @@ class EntryDetailViewModel(
             notificationCenter
                 .subscribe(TimelineEntryCreatedEvent::class)
                 .onEach { event ->
-                    val currentEntries = uiState.value.let { it.entries.getOrNull(it.currentIndex) }
-                    val foundIdx = currentEntries?.indexOfFirst { it.id == event.entry.parentId } ?: -1
-                    if (foundIdx >= 0) {
-                        updateState {
-                            it.copy(
-                                entries =
-                                    it.entries.mapIndexed { idx, entryList ->
-                                        if (idx == it.currentIndex) {
-                                            entryList + event.entry
-                                        } else {
-                                            entryList
-                                        }
-                                    },
-                            )
-                        }
-                    }
+                    addEntryInState(event.entry)
                 }.launchIn(this)
 
             apiConfigurationRepository.node
@@ -195,7 +180,10 @@ class EntryDetailViewModel(
                 } else {
                     currentEntry?.let { listOf(listOf(it)) } ?: listOf(emptyList())
                 }
-            val initialIndex = entries.indexOfFirst { it.first().original.id == id }
+            val initialIndex =
+                entries.indexOfFirst { list ->
+                    list.any { e -> e.original.id == currentEntry?.original?.id }
+                }
             updateState {
                 it.copy(
                     mainEntry = currentEntry,
@@ -250,7 +238,7 @@ class EntryDetailViewModel(
                                     entry = mainEntry,
                                     rootId = root.id,
                                 )
-                            list + additionalList
+                            list + additionalList.drop(1)
                         }
 
                         else -> list
@@ -312,7 +300,7 @@ class EntryDetailViewModel(
         val currentState = uiState.value
         val currentReplies = currentState.entries.getOrNull(currentState.currentIndex).orEmpty()
         updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
-        val result = populateThread(entry = entry)
+        val result = populateThread(entry = entry.original)
         val newReplies = result.filter { e1 -> currentReplies.none { e2 -> e1.id == e2.id } }
         if (newReplies.isEmpty()) {
             // abort and disable load more button
@@ -323,15 +311,29 @@ class EntryDetailViewModel(
                 )
             }
         } else {
-            val replies = currentReplies.toMutableList()
             newReplies.preloadImages()
-            val insertIndex = replies.indexOfFirst { it.id == entry.id }
-            replies[insertIndex] =
-                replies[insertIndex].copy(
-                    loadMoreButtonVisible = false,
-                    loadMoreButtonLoading = false,
-                )
-            replies.addAll(index = insertIndex + 1, newReplies)
+            val index = currentReplies.indexOfFirst { e -> e.id == entry.id }
+            val replies =
+                buildList {
+                    if (index > 0) {
+                        addAll(currentReplies.subList(fromIndex = 0, toIndex = index))
+                    }
+                    add(
+                        entry.copy(
+                            loadMoreButtonVisible = false,
+                            loadMoreButtonLoading = false,
+                        ),
+                    )
+                    addAll(newReplies)
+                    if (index < currentReplies.size) {
+                        addAll(
+                            currentReplies.subList(
+                                fromIndex = index + 1,
+                                toIndex = currentReplies.size,
+                            ),
+                        )
+                    }
+                }
             updateState {
                 it.copy(
                     entries =
@@ -711,6 +713,51 @@ class EntryDetailViewModel(
                     node = nodeName,
                 )
             }
+        }
+    }
+
+    private suspend fun addEntryInState(entry: TimelineEntryModel) {
+        val currentEntries = uiState.value.let { it.entries.getOrNull(it.currentIndex) }.orEmpty()
+        val parentIndex =
+            currentEntries
+                .indexOfFirst { e ->
+                    e.id == entry.parentId || e.original.id == entry.parentId
+                }.takeIf { it >= 0 } ?: return
+        val newEntries =
+            buildList {
+                // insert everything included the parent
+                addAll(currentEntries.subList(0, parentIndex + 1))
+                var indexOfFirstNotDescendant = -1
+                val familyMembers = mutableListOf(currentEntries[parentIndex].id)
+                for (i in parentIndex + 1 until currentEntries.size) {
+                    val e = currentEntries[i]
+                    if (e.original.parentId in familyMembers) {
+                        familyMembers += e.original.id
+                        add(e)
+                    } else {
+                        indexOfFirstNotDescendant = i
+                        break
+                    }
+                }
+                // insert the new entry with its depth
+                val depth = currentEntries[parentIndex].depth + 1
+                add(entry.copy(depth = depth))
+                // add all the rest
+                if (indexOfFirstNotDescendant >= 0 && indexOfFirstNotDescendant < currentEntries.size) {
+                    addAll(currentEntries.subList(indexOfFirstNotDescendant, currentEntries.size))
+                }
+            }
+        updateState {
+            it.copy(
+                entries =
+                    it.entries.mapIndexed { idx, entryList ->
+                        if (idx == it.currentIndex) {
+                            newEntries
+                        } else {
+                            entryList
+                        }
+                    },
+            )
         }
     }
 }
