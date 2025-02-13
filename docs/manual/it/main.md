@@ -110,9 +110,32 @@ sono disponibili (per molte di queste) anche una serie di API pubbliche che poss
 richiamate da app di terze parti.
 
 Questo è esattamente quello che fa Raccoon: utilizza le API per creare un client pensato per
-i dispositivi mobile. Dal momento che utilizza le API Mastodon-like esposte dal backend, l'app è
-compatible anche con le istanze Mastodon (e le funzionalità specifiche di Friendica non verranno
-visualizzate).
+i dispositivi mobile. Dal momento che utilizza (principalmente) le API Mastodon esposte dal
+backend, l'app è compatible anche con le istanze Mastodon (e le funzionalità specifiche di Friendica
+non verranno visualizzate).
+
+### Disclaimer: funzionalità non implementate
+
+Le seguenti funzionalità sono implementate parzialmente o non sono implementate a causa della
+mancanza di supporto a client di terze parti:
+
+- creazione eventi nel calendario;
+- partecipazione ai sondaggi;
+- creazione account / cancellazione account;
+- delega gestione ad altri utenti o accesso ad account delegati;
+- ricondivisione dei post importati da feed RSS;
+- ricondivisione automatica dei post degli utenti seguiti;
+- strumenti di moderazione per amministratori (accesso a segnalazioni ricevute, eliminazione
+  contenuti, ban utenti, ecc.).
+
+Per accedere a tali funzionalità sarà necessario utilizzare l'interfaccia web, ad eccezione dei
+sondaggi che non sono ancora supportati (si tratta di
+un [problema](https://github.com/friendica/friendica/issues/11093) ben noto).
+
+Questo avviso non significa in assoluto che queste funzioni non saranno mai supportate. Ad esempio,
+all'inizio l'app non era in grado di mostrare le immagini inserite all'interno del corpo dei post,
+ma gli sviluppatori del backend hanno fatto un lavoro straordinario e hanno modificato la risposta
+dell'API in modo da permettere a qualsiasi app (non solo Racccoon!) di visualizzarle correttamente.
 
 [Torna su](#indice)
 

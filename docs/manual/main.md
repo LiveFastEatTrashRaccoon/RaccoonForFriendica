@@ -105,8 +105,31 @@ All these features can be accessed using the official web application, but a lot
 open to third-party apps using their public APIs.
 
 Raccoon intends to do just that: use the APIs to create a client specifically designed for mobile
-devices. Since it uses the Mastodon-like APIs exposed by the backend, the app is also compatible
-with Mastodon instances (Friendica-specific features will just not be displayed).
+devices. Since it uses (mostly) the Mastodon-like APIs exposed by the backend, the app is also
+compatible with Mastodon instances (Friendica-specific features like the calendar or direct messages
+will not be displayed).
+
+### Disclaimer: unimplemented features
+
+The following features are either not implemented or partially implemented due to some lack of
+support for third-party clients:
+
+- creating events in the calendar;
+- voting in polls;
+- create an account / delete your account;
+- delegating users or access a delegated account;
+- re-share posts from imported RSS feeds;
+- automatically re-share posts from followed users;
+- admin moderation tools (access incoming reports, purge contents, ban users, etc.).
+
+If you want to access those features you will have to use the web interface, except for polls which
+are not yet supported (it is a well
+known [issue](https://github.com/friendica/friendica/issues/11093)).
+
+This disclaimer does not mean at all these features will never be supported. For example, in the
+beginning the app could not support embedded images withing post bodies, but the backend devs made a
+great job and changed the API response in order to make it possible to any app (not just Raccoon!)
+to display them properly.
 
 [Back to top](#table-of-contents)
 
