@@ -180,29 +180,28 @@ internal class DefaultTimelinePaginationManager(
             when (specification) {
                 is TimelinePaginationSpecification.Feed ->
                     results
+                        ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterReplies(included = !specification.excludeReplies)
                         ?.filterNsfw(specification.includeNsfw)
                         ?.filterWithRateLimits()
                         ?.filterByStopWords()
-                        ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
                         ?.fixumFollowedHashtags()
 
                 is TimelinePaginationSpecification.Hashtag ->
                     results
+                        ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.filterWithRateLimits()
                         ?.filterByStopWords()
-                        ?.deduplicate()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
 
                 is TimelinePaginationSpecification.User ->
                     results
-                        // deduplication must be done first (due to a backend bug)
                         ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
@@ -212,16 +211,15 @@ internal class DefaultTimelinePaginationManager(
 
                 is TimelinePaginationSpecification.Forum ->
                     results
+                        ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
                         ?.filter { it.reblog != null && it.reblog?.inReplyTo == null }
                         ?.filterByStopWords()
-                        ?.deduplicate()
                         ?.fixupCreatorEmojis()
 
                 is TimelinePaginationSpecification.Bookmarks ->
                     results
-                        // deduplication must be done first (due to a backend bug)
                         ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)
@@ -231,7 +229,6 @@ internal class DefaultTimelinePaginationManager(
 
                 is TimelinePaginationSpecification.Favorites ->
                     results
-                        // deduplication must be done first (due to a backend bug)
                         ?.deduplicate()
                         ?.updatePaginationData()
                         ?.filterNsfw(specification.includeNsfw)

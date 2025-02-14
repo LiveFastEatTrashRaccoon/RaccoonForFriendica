@@ -78,8 +78,8 @@ internal class DefaultUnpublishedPaginationManager(
 
         return mutex.withLock {
             results
-                .updatePaginationData()
                 .deduplicate()
+                .updatePaginationData()
                 .also { history.addAll(it) }
             // return a copy
             history.map { it }

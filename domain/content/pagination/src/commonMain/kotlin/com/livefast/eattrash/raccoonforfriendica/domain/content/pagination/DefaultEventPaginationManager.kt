@@ -35,8 +35,8 @@ internal class DefaultEventPaginationManager(
 
         return mutex.withLock {
             results
-                ?.updatePaginationData()
                 ?.deduplicate()
+                ?.updatePaginationData()
                 ?.also {
                     history.addAll(it)
                 }
