@@ -135,7 +135,7 @@ un [problema](https://github.com/friendica/friendica/issues/11093) ben noto).
 Questo avviso non significa in assoluto che queste funzioni non saranno mai supportate. Ad esempio,
 all'inizio l'app non era in grado di mostrare le immagini inserite all'interno del corpo dei post,
 ma gli sviluppatori del backend hanno fatto un lavoro straordinario e hanno modificato la risposta
-dell'API in modo da permettere a qualsiasi app (non solo Racccoon!) di visualizzarle correttamente.
+dell'API in modo da permettere a qualsiasi app (non solo Raccoon!) di visualizzarle correttamente.
 
 [Torna su](#indice)
 
