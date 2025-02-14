@@ -29,8 +29,8 @@ internal class DefaultFollowRequestPaginationManager(
 
         return mutex.withLock {
             results
-                ?.updatePaginationData()
                 ?.deduplicate()
+                ?.updatePaginationData()
                 ?.fixupCreatorEmojis()
                 ?.also { history.addAll(it) }
             // return a copy
@@ -49,6 +49,15 @@ internal class DefaultFollowRequestPaginationManager(
         filter { e1 ->
             history.none { e2 -> e1.id == e2.id }
         }.distinctBy { it.id }
+
+    private fun ListWithPageCursor<UserModel>.deduplicate(): ListWithPageCursor<UserModel> =
+        run {
+            val newList = list.deduplicate()
+            ListWithPageCursor(
+                list = newList,
+                cursor = newList.lastOrNull()?.id,
+            )
+        }
 
     private suspend fun List<UserModel>.fixupCreatorEmojis(): List<UserModel> =
         with(emojiHelper) {

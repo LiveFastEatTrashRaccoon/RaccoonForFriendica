@@ -49,9 +49,9 @@ internal class DefaultNotificationsPaginationManager(
         return mutex.withLock {
             results
                 .determineRelationshipStatus()
+                .deduplicate()
                 .updatePaginationData()
                 .filterNsfw(specification.includeNsfw)
-                .deduplicate()
                 .fixupCreatorEmojis()
                 .fixupInReplyTo()
                 .also { history.addAll(it) }
