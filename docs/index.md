@@ -104,6 +104,7 @@ A special thanks goes to all those who contributed so far:
 - [TamilNeram](https://github.com/TamilNeram)
 - [Ricky Tigg](https://hosted.weblate.org/user/tigg)
 - [gregscoor](https://github.com/gregscoor)
+- [guland2000](https://hosted.weblate.org/user/guland2000)
 - all those who reported feedback and ideas through Friendica, Mastodon, GitHub, emails,
   private messages, homing pigeons and every possibly imaginable medium.
 
