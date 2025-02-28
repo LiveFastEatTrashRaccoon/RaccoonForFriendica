@@ -1,0 +1,12 @@
+- feat: add per-user rate limits
+- feat: suggest hashtags while typing
+- feat: swipe navigation between posts
+- feat: exclude stop words from timelines
+- feat: add shortcuts to other instances
+- feat: open post detail as thread
+- feat: post translation
+- feat: followed hashtag indication
+- feat: show source protocol for posts
+- enhancement: support for embedded images
+- fix: several bug fixes and stability improvements
+- chore: update a11y, l10n and dependencies

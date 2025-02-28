@@ -1,19 +1,27 @@
 ## What's Changed
 
-- feat: implement dislike by @AkesiSeli in #675, #679, #698
-- feat: add new post layouts (Compact, Distraction-free, Card) by @AkesiSeli in #672, #673, #680, #700
-- feat: add support for audio attachments by @AkesiSeli in #686, #690, #691
-- fix: post editing with markup by @AkesiSeli in #671, #683
-- fix: search text field horizontal scrolling by @AkesiSeli in #684
-- fix: avoid crash while parsing HTML by @AkesiSeli in #693
-- fix: plural messages for people using hashtags and unread items by @AkesiSeli in #705
-- fix: status bar color and top bar insets by @AkesiSeli in #710
-- fix: create and edit posts with attachments on Friendica by @AkesiSeli in #711
-- fix: handle runtime permissions (push notifications, vibrate) by @AkesiSeli in #712
-- enhancement: improve support for embedded images by @AkesiSeli in #692
-- chore: update l10n by @Weblate, @diegoberaldin and @ktlinux in #674, #677, #678, #682, #685, #694, #699, #701, #703, #706, #708, #713
-- chore: update acknowledgements by @AkesiSeli in #709
-- chore: update dependencies by @dependabot and @AkesiSeli in #667, #668, #669, #670, #676, #696, #697
-- chore: add more unit tests by @AkesiSeli in #702
+- feat: add per-user rate limits by @AkesiSeli in #717
+- feat: suggest hashtags while typing by @AkesiSeli in #735
+- feat: swipe navigation between posts by @AkesiSeli in #753, #754, #772, #781, #801
+- feat: exclude stop words from timelines by @AkesiSeli in #770
+- feat: add shortcuts to other instances by @AkesiSeli in #774
+- feat: open post detail as thread by @AkesiSeli in #797, #805
+- feat: post translation by @AkesiSeli in #746
+- feat: followed hashtag indication by @AkesiSeli in #808
+- feat: show source protocol for posts by @AkesiSeli in #806, #833
+- enhancement: possibility to insert colors as hex by @AkesiSeli in #722
+- enhancement: open browser to create/delete account by @AkesiSeli in #726, #762
+- enhancement: improve app startup and link processing time by @AkesiSeli in #731, #737
+- enhancement: improve support for embedded images by @AkesiSeli in #784, #792
+- enhancement: account switch by @AkesiSeli in #800
+- refactor: improve pagination by @AkesiSeli in #752, #807, #814
+- fix: date formatting by @AkesiSeli in #729, #732
+- fix: UI bar theme by @AkesiSeli in #745
+- fix: change timeline type in homepage by @AkesiSeli in #782
+- fix: post editing in BBCode by @AkesiSeli in #783
+- fix: image download and share by @AkesiSeli in #796
+- chore: improve accessibility by @AkesiSeli in #714
+- chore: update l10n by @Weblate, @ktlinux, @TamilNeram, @Ricky-Tigg, @gregscoor and @AkesiSeli in #716, #719, #723, #730, #734, #738, #739, #740, #741, #743, #748, #755, #763, #764, #767, #768, #771, #777, #778, #780, #788, #791, #794, #803, #812, #816
+- chore: update dependencies by @dependabot in #718, #720, #724, #725, #733, #742, #747, #761, #769, #775, #776, #779, #789, #790, #802, #809, #810, #819, #820, #821, #823, #827, #828, #831, #832, #834, #835
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.3.4...0.4.0
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.4.0...0.4.1
