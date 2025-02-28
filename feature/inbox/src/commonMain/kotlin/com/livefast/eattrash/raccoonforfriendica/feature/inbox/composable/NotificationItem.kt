@@ -134,7 +134,14 @@ internal fun NotificationItem(
                             top = Spacing.s,
                             bottom = Spacing.s,
                         ),
-                    entry = entry,
+                    entry =
+                        entry.let { e ->
+                            // removes source platform indication from inbox
+                            e.copy(
+                                sourcePlatform = null,
+                                reblog = e.reblog?.copy(sourcePlatform = null),
+                            )
+                        },
                     layout = TimelineLayout.DistractionFree,
                     blurNsfw = blurNsfw,
                     maxBodyLines = maxBodyLines,

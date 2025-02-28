@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
@@ -38,6 +40,7 @@ fun ContentHeader(
     user: UserModel? = null,
     date: String? = null,
     scheduleDate: String? = null,
+    platform: String? = null,
     isEdited: Boolean = false,
     autoloadImages: Boolean = true,
     iconSize: Dp = IconSize.l,
@@ -144,5 +147,20 @@ fun ContentHeader(
                 color = ancillaryColor,
             )
         }
+
+        if (!platform.isNullOrBlank()) {
+            val icon = platform.toPlatformIcon()
+            Icon(
+                modifier =
+                    Modifier
+                        .padding(end = Spacing.xs)
+                        .size(SOURCE_PLATFORM_SIZE),
+                painter = icon,
+                contentDescription = platform,
+                tint = MaterialTheme.colorScheme.onBackground,
+            )
+        }
     }
 }
+
+private val SOURCE_PLATFORM_SIZE = 14.dp

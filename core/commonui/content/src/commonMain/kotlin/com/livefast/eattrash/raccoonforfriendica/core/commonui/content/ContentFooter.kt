@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.RocketLaunch
 import androidx.compose.material.icons.filled.ThumbDown
 import androidx.compose.material.icons.filled.ThumbUp
@@ -20,17 +21,30 @@ import androidx.compose.material.icons.outlined.RocketLaunch
 import androidx.compose.material.icons.outlined.ThumbDown
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FeedbackButton
 
 @Composable
@@ -48,6 +62,10 @@ fun ContentFooter(
     disliked: Boolean = false,
     dislikeCount: Int = 0,
     dislikeLoading: Boolean = false,
+    options: List<Option> = emptyList(),
+    optionsMenuOpen: Boolean = false,
+    onOptionSelected: ((OptionId) -> Unit)? = null,
+    onOptionsMenuToggled: ((Boolean) -> Unit)? = null,
     onReply: (() -> Unit)? = null,
     onReblog: (() -> Unit)? = null,
     onFavorite: (() -> Unit)? = null,
@@ -56,6 +74,8 @@ fun ContentFooter(
 ) {
     val canLikeAndDislike = onFavorite != null && onDislike != null
     val itemModifier = Modifier.clearAndSetSemantics { }.padding(horizontal = Spacing.s)
+    var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+
     Row(
         modifier =
             modifier.padding(
@@ -129,6 +149,56 @@ fun ContentFooter(
                 loading = bookmarkLoading,
                 onClick = onBookmark,
             )
+        }
+
+        if (options.isNotEmpty()) {
+            Box {
+                IconButton(
+                    modifier =
+                        Modifier
+                            .padding(bottom = Spacing.xs, end = Spacing.s)
+                            .size(height = IconSize.m, width = IconSize.l)
+                            .onGloballyPositioned {
+                                optionsOffset = it.positionInParent()
+                            }.clearAndSetSemantics { },
+                    onClick = {
+                        onOptionsMenuToggled?.invoke(true)
+                    },
+                ) {
+                    Icon(
+                        modifier = Modifier.size(IconSize.s),
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+
+                CustomDropDown(
+                    expanded = optionsMenuOpen,
+                    onDismiss = {
+                        onOptionsMenuToggled?.invoke(false)
+                    },
+                    offset =
+                        with(LocalDensity.current) {
+                            DpOffset(
+                                x = optionsOffset.x.toDp(),
+                                y = optionsOffset.y.toDp(),
+                            )
+                        },
+                ) {
+                    options.forEach { option ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(option.label)
+                            },
+                            onClick = {
+                                onOptionsMenuToggled?.invoke(false)
+                                onOptionSelected?.invoke(option.id)
+                            },
+                        )
+                    }
+                }
+            }
         }
     }
 }

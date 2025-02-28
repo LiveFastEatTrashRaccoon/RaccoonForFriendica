@@ -2,19 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,17 +13,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.DpOffset
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -76,7 +59,6 @@ internal fun FullTimelineItem(
     onShowOriginal: (() -> Unit)? = null,
 ) {
     val contentHorizontalPadding = Spacing.s
-    var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     val spoiler = entry.spoilerToDisplay.orEmpty()
 
     Column(
@@ -117,7 +99,7 @@ internal fun FullTimelineItem(
             }
         }
 
-        // header and options
+        // header
         Row(
             modifier = Modifier.padding(horizontal = contentHorizontalPadding),
             verticalAlignment = Alignment.CenterVertically,
@@ -128,56 +110,10 @@ internal fun FullTimelineItem(
                 autoloadImages = autoloadImages,
                 date = entry.updated ?: entry.created,
                 scheduleDate = entry.scheduled,
+                platform = entry.sourcePlatform,
                 isEdited = entry.updated != null,
                 onOpenUser = onOpenUser,
             )
-            if (options.isNotEmpty()) {
-                Box {
-                    IconButton(
-                        modifier =
-                            Modifier
-                                .onGloballyPositioned {
-                                    optionsOffset = it.positionInParent()
-                                }.clearAndSetSemantics { },
-                        onClick = {
-                            onOptionsMenuToggled?.invoke(true)
-                        },
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(IconSize.s),
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                        )
-                    }
-
-                    CustomDropDown(
-                        expanded = optionsMenuOpen,
-                        onDismiss = {
-                            onOptionsMenuToggled?.invoke(false)
-                        },
-                        offset =
-                            with(LocalDensity.current) {
-                                DpOffset(
-                                    x = optionsOffset.x.toDp(),
-                                    y = optionsOffset.y.toDp(),
-                                )
-                            },
-                    ) {
-                        options.forEach { option ->
-                            DropdownMenuItem(
-                                text = {
-                                    Text(option.label)
-                                },
-                                onClick = {
-                                    onOptionsMenuToggled?.invoke(false)
-                                    onOptionSelected?.invoke(option.id)
-                                },
-                            )
-                        }
-                    }
-                }
-            }
         }
 
         // post spoiler
@@ -363,6 +299,10 @@ internal fun FullTimelineItem(
                 disliked = entry.disliked,
                 dislikeCount = entry.dislikesCount,
                 dislikeLoading = entry.dislikeLoading,
+                options = options,
+                optionsMenuOpen = optionsMenuOpen,
+                onOptionSelected = onOptionSelected,
+                onOptionsMenuToggled = onOptionsMenuToggled,
                 onReply =
                     if (onReply != null) {
                         { onReply(entry) }
