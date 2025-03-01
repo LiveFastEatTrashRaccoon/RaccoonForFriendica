@@ -254,6 +254,12 @@ internal class DefaultTimelineEntryRepository(
                         spoilerText = spoilerText,
                         scheduledAt = scheduled,
                         poll = pollData,
+                        localOnly =
+                            when (visibility) {
+                                Visibility.LocalPublic -> true
+                                Visibility.LocalUnlisted -> true
+                                else -> null
+                            },
                     )
                 provider.statuses
                     .create(
@@ -304,6 +310,12 @@ internal class DefaultTimelineEntryRepository(
                         lang = lang,
                         spoilerText = spoilerText,
                         poll = pollData,
+                        localOnly =
+                            when (visibility) {
+                                Visibility.LocalPublic -> true
+                                Visibility.LocalUnlisted -> true
+                                else -> null
+                            },
                     )
                 provider.statuses
                     .update(

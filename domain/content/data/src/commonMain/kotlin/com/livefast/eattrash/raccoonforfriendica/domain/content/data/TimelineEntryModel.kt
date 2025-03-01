@@ -46,6 +46,7 @@ data class TimelineEntryModel(
     val updated: String? = null,
     val url: String? = null,
     val visibility: Visibility = Visibility.Public,
+    val localOnly: Boolean = false,
     @Transient val isShowingTranslation: Boolean = false,
     @Transient val translation: TimelineEntryModel? = null,
     @Transient val translationLoading: Boolean = false,
