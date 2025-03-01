@@ -18,26 +18,27 @@ internal class DefaultSupportedFeatureRepository(
                 supportsDirectMessages = info.isFriendica,
                 supportsEntryTitles = info.isFriendica,
                 supportsCustomCircles = info.isFriendica,
-                supportReportCategoryRuleViolation = info.isMastodon,
-                supportsPolls = info.isMastodon,
+                supportReportCategoryRuleViolation = !info.isFriendica,
+                supportsPolls = !info.isFriendica,
                 supportsBBCode = info.isFriendica,
                 supportsMarkdown = true,
                 supportsEntryShare = info.isFriendica,
                 supportsCalendar = info.isFriendica,
-                supportsAnnouncements = info.isMastodon,
+                supportsAnnouncements = !info.isFriendica,
                 supportsDislike = info.isFriendica,
-                supportsTranslation = info.isMastodon,
+                supportsTranslation = !info.isFriendica,
                 supportsInlineImages = info.isFriendica,
+                supportsLocalVisibility = info.isGoToSocial || info.isHomeTown,
             )
         }
     }
 }
 
-private val FRIENDICA_REGEX =
-    Regex("\\(compatible; Friendica (?<version>[a-zA-Z0-9.\\-_]*)\\)")
-
 private val NodeInfoModel?.isFriendica: Boolean
-    get() = this?.version?.contains(FRIENDICA_REGEX) ?: false
+    get() = this?.software?.lowercase() == "friendica"
 
-private val NodeInfoModel?.isMastodon: Boolean
-    get() = !isFriendica
+private val NodeInfoModel?.isGoToSocial: Boolean
+    get() = this?.software?.lowercase() == "gotosocial"
+
+private val NodeInfoModel?.isHomeTown: Boolean
+    get() = this?.software?.lowercase() == "hometown"
