@@ -127,7 +127,15 @@ internal fun Status.toModel() =
         reblogged = reblogged,
         replyCount = repliesCount,
         sensitive = sensitive,
-        sourcePlatform = addons?.platform,
+        sourcePlatform =
+            addons?.platform?.let { platform ->
+                // workaround to detect BlueSky posts from Bridgy Fed
+                if (url?.contains("bsky.brid.gy") == true) {
+                    "Bluesky"
+                } else {
+                    platform
+                }
+        },
         sourceProtocol = addons?.network,
         // needed because, for compatibility, Friendica titles are replicated as spoilers on Mastodon
         spoiler = spoiler.takeIf { it != addons?.title },
