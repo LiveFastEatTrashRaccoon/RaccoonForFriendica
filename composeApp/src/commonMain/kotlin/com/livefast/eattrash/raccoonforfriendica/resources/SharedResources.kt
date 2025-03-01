@@ -16,6 +16,7 @@ import raccoonforfriendica.composeapp.generated.resources.activitypub_small
 import raccoonforfriendica.composeapp.generated.resources.atkinsonhyperlegible_bold
 import raccoonforfriendica.composeapp.generated.resources.atkinsonhyperlegible_italic
 import raccoonforfriendica.composeapp.generated.resources.atkinsonhyperlegible_regular
+import raccoonforfriendica.composeapp.generated.resources.bluesky_small
 import raccoonforfriendica.composeapp.generated.resources.diaspora_small
 import raccoonforfriendica.composeapp.generated.resources.exo_bold
 import raccoonforfriendica.composeapp.generated.resources.exo_italic
@@ -90,6 +91,9 @@ internal class SharedResources : CoreResources {
     // region Platform logos
     override val activityPubSmallLogo: Painter
         @Composable get() = painterResource(Res.drawable.activitypub_small)
+
+    override val blueskySmallLogo: Painter
+        @Composable get() = painterResource(Res.drawable.bluesky_small)
 
     override val diasporaSmallLogo: Painter
         @Composable get() = painterResource(Res.drawable.diaspora_small)
