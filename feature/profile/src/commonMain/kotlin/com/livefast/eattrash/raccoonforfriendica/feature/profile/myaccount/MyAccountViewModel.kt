@@ -25,7 +25,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -43,7 +42,6 @@ class MyAccountViewModel(
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
-    private val apiConfigurationRepository: ApiConfigurationRepository,
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
@@ -68,14 +66,7 @@ class MyAccountViewModel(
                         user?.let {
                             with(emojiHelper) { it.withEmojisIfMissing() }
                         }
-                    if (uiState.value.initial) {
-                        loadData(currentUser)
-                    } else {
-                        updateState {
-                            it.copy(user = currentUser)
-                        }
-                        refresh(initial = true)
-                    }
+                    loadData(currentUser)
                 }.launchIn(this)
 
             settingsRepository.current
@@ -114,47 +105,41 @@ class MyAccountViewModel(
     }
 
     private suspend fun loadData(currentUser: UserModel?) {
-        when {
-            currentUser != null && apiConfigurationRepository.hasCachedAuthCredentials() -> {
-                updateState { it.copy(user = currentUser) }
-                val initialValues =
-                    timelineEntryRepository
-                        .getCachedByUser()
-                        .map {
-                            with(emojiHelper) { it.withEmojisIfMissing() }
-                        }.map {
-                            with(replyHelper) { it.withInReplyToIfMissing() }
-                        }
-                paginationManager.restoreHistory(initialValues)
-                if (initialValues.isNotEmpty()) {
-                    updateState {
-                        it.copy(
-                            initial = false,
-                            entries = initialValues,
-                        )
+        if (currentUser != null) {
+            updateState { it.copy(user = currentUser) }
+            val initialValues =
+                timelineEntryRepository
+                    .getCachedByUser()
+                    .map {
+                        with(emojiHelper) { it.withEmojisIfMissing() }
+                    }.map {
+                        with(replyHelper) { it.withInReplyToIfMissing() }
                     }
-                    paginationManager.reset(
-                        TimelinePaginationSpecification.User(
-                            userId = currentUser.id,
-                            excludeReplies = true,
-                            includeNsfw =
-                                settingsRepository.current.value?.includeNsfw
-                                    ?: false,
-                            enableCache = true,
-                        ),
-                    )
-                } else {
-                    refresh(initial = true)
-                }
-            }
-
-            else -> {
-                // user == null && !initial -> recover screen
+            paginationManager.restoreHistory(initialValues)
+            if (initialValues.isNotEmpty()) {
                 updateState {
                     it.copy(
                         initial = false,
+                        entries = initialValues,
                     )
                 }
+                paginationManager.reset(
+                    TimelinePaginationSpecification.User(
+                        userId = currentUser.id,
+                        excludeReplies = true,
+                        includeNsfw =
+                            settingsRepository.current.value?.includeNsfw
+                                ?: false,
+                        enableCache = true,
+                    ),
+                )
+            } else {
+                refresh(initial = true)
+            }
+        } else {
+            // recover screen
+            updateState {
+                it.copy(initial = false)
             }
         }
     }

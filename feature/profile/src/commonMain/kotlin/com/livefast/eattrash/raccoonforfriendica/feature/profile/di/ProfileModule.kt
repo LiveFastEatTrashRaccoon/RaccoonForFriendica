@@ -41,7 +41,6 @@ val profileModule =
                     paginationManager = instance(),
                     timelineEntryRepository = instance(),
                     settingsRepository = instance(),
-                    apiConfigurationRepository = instance(),
                     hapticFeedback = instance(),
                     imagePreloadManager = instance(),
                     blurHashRepository = instance(),
