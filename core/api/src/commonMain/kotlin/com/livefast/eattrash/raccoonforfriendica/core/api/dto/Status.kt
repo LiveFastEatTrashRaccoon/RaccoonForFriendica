@@ -34,4 +34,5 @@ data class Status(
     @SerialName("tags") val tags: List<Tag> = emptyList(),
     @SerialName("url") val url: String? = null,
     @SerialName("visibility") val visibility: String = ContentVisibility.PUBLIC,
+    @SerialName("local_only") val localOnly: Boolean = false,
 )

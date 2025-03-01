@@ -15,4 +15,5 @@ data class NodeFeatures(
     val supportsDislike: Boolean = false,
     val supportsTranslation: Boolean = false,
     val supportsInlineImages: Boolean = false,
+    val supportsLocalVisibility: Boolean = false,
 )

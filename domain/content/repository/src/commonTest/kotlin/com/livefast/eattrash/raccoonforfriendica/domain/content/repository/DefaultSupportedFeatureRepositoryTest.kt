@@ -49,6 +49,7 @@ class DefaultSupportedFeatureRepositoryTest {
             assertTrue(res.supportsAnnouncements)
             assertFalse(res.supportsDislike)
             assertTrue(res.supportsTranslation)
+            assertFalse(res.supportsLocalVisibility)
             verifySuspend {
                 nodeInfoRepository.getInfo()
             }
@@ -57,7 +58,11 @@ class DefaultSupportedFeatureRepositoryTest {
     @Test
     fun `given Friendica when refresh then result is as expected`() =
         runTest {
-            everySuspend { nodeInfoRepository.getInfo() } returns NodeInfoModel(version = "2.8.0 (compatible; Friendica 2024.09)")
+            everySuspend { nodeInfoRepository.getInfo() } returns
+                NodeInfoModel(
+                    version = "2.8.0 (compatible; Friendica 2024.09)",
+                    software = "friendica",
+                )
             sut.refresh()
             val res = sut.features.value
 
@@ -74,6 +79,7 @@ class DefaultSupportedFeatureRepositoryTest {
             assertFalse(res.supportsAnnouncements)
             assertTrue(res.supportsDislike)
             assertFalse(res.supportsTranslation)
+            assertFalse(res.supportsLocalVisibility)
             verifySuspend {
                 nodeInfoRepository.getInfo()
             }
@@ -82,7 +88,11 @@ class DefaultSupportedFeatureRepositoryTest {
     @Test
     fun `given Friendica RC when refresh then result is as expected`() =
         runTest {
-            everySuspend { nodeInfoRepository.getInfo() } returns NodeInfoModel(version = "2.8.0 (compatible; Friendica 2024.09-rc)")
+            everySuspend { nodeInfoRepository.getInfo() } returns
+                NodeInfoModel(
+                    version = "2.8.0 (compatible; Friendica 2024.09-rc)",
+                    software = "friendica",
+                )
             sut.refresh()
             val res = sut.features.value
 
@@ -99,6 +109,37 @@ class DefaultSupportedFeatureRepositoryTest {
             assertFalse(res.supportsAnnouncements)
             assertTrue(res.supportsDislike)
             assertFalse(res.supportsTranslation)
+            assertFalse(res.supportsLocalVisibility)
+            verifySuspend {
+                nodeInfoRepository.getInfo()
+            }
+        }
+
+    @Test
+    fun `given GoToSocial when refresh then result is as expected`() =
+        runTest {
+            everySuspend { nodeInfoRepository.getInfo() } returns
+                NodeInfoModel(
+                    version = "0.18.2-SNAPSHOT+git-4686217",
+                    software = "gotosocial",
+                )
+            sut.refresh()
+            val res = sut.features.value
+
+            assertFalse(res.supportsPhotoGallery)
+            assertFalse(res.supportsDirectMessages)
+            assertFalse(res.supportsEntryTitles)
+            assertFalse(res.supportsCustomCircles)
+            assertTrue(res.supportReportCategoryRuleViolation)
+            assertTrue(res.supportsPolls)
+            assertFalse(res.supportsBBCode)
+            assertTrue(res.supportsMarkdown)
+            assertFalse(res.supportsEntryShare)
+            assertFalse(res.supportsCalendar)
+            assertTrue(res.supportsAnnouncements)
+            assertFalse(res.supportsDislike)
+            assertTrue(res.supportsTranslation)
+            assertTrue(res.supportsLocalVisibility)
             verifySuspend {
                 nodeInfoRepository.getInfo()
             }

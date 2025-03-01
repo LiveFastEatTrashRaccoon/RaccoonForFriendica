@@ -10,6 +10,7 @@ class CreateStatusForm(
     @SerialName("in_reply_to_id") val inReplyTo: String? = null,
     @SerialName("language") val lang: String? = null,
     @SerialName("media_ids") val mediaIds: List<String>? = null,
+    @SerialName("local_only") val localOnly: Boolean? = null,
     @SerialName("scheduled_at") val scheduledAt: String? = null,
     @SerialName("sensitive") val sensitive: Boolean = false,
     @SerialName("spoiler_text") val spoilerText: String? = null,

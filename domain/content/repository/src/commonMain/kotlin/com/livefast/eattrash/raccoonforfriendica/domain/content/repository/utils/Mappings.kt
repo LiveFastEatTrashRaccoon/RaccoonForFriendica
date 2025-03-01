@@ -119,6 +119,7 @@ internal fun Status.toModel() =
         favoriteCount = favoritesCount,
         id = id,
         lang = lang,
+        localOnly = localOnly,
         mentions = mentions.map { it.toModel() },
         parentId = inReplyToId,
         pinned = pinned,
@@ -144,7 +145,17 @@ internal fun Status.toModel() =
         title = addons?.title.takeIf { !it.isNullOrBlank() },
         updated = editedAt,
         url = url,
-        visibility = visibility.toVisibility(),
+        visibility =
+            visibility.toVisibility().let { visibility ->
+                when {
+                    visibility == Visibility.Unlisted && localOnly -> Visibility.LocalUnlisted
+                    visibility == Visibility.Public && localOnly -> Visibility.LocalPublic
+
+                    else -> {
+                        visibility
+                    }
+                }
+            },
     )
 
 private fun StatusMention.toModel() =
@@ -219,7 +230,9 @@ internal fun Visibility.toDto(): String =
         Visibility.Direct -> ContentVisibility.DIRECT
         Visibility.Private -> ContentVisibility.PRIVATE
         Visibility.Public -> ContentVisibility.PUBLIC
+        Visibility.LocalPublic -> ContentVisibility.PUBLIC
         Visibility.Unlisted -> ContentVisibility.UNLISTED
+        Visibility.LocalUnlisted -> ContentVisibility.UNLISTED
         is Visibility.Circle -> id.orEmpty()
     }
 

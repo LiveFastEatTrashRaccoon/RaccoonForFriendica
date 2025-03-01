@@ -23,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 
 interface ServiceProvider {
+    val currentNode: String
     val announcements: AnnouncementService
     val apps: AppService
     val directMessage: DirectMessageService

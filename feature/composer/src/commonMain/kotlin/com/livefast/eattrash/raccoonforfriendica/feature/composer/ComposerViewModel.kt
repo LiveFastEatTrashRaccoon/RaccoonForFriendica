@@ -132,7 +132,13 @@ class ComposerViewModel(
                             availableVisibilities =
                                 buildList {
                                     this += Visibility.Public
+                                    if (features.supportsLocalVisibility) {
+                                        this += Visibility.LocalPublic
+                                    }
                                     this += Visibility.Unlisted
+                                    if (features.supportsLocalVisibility) {
+                                        this += Visibility.LocalUnlisted
+                                    }
                                     this += Visibility.Private
                                     this += Visibility.Direct
                                     if (features.supportsCustomCircles && circles.isNotEmpty()) {
@@ -156,15 +162,18 @@ class ComposerViewModel(
             val parentId = inReplyToId.takeIf { it.isNotEmpty() }
             val parent = parentId?.let { e -> entryCache.get(e) }
             val initialVisibility =
-                if (parentId != null) {
-                    currentSettings
-                        ?.defaultReplyVisibility
-                        ?.toVisibility()
-                        // make sure to have a visibility less than or equal to the parent
-                        ?.takeIf { it <= (parent?.visibility ?: Visibility.Unlisted) }
-                        ?: parent?.visibility
-                } else {
-                    currentSettings?.defaultPostVisibility?.toVisibility()
+                when {
+                    editedPostId != null -> uiState.value.visibility
+
+                    parentId != null ->
+                        currentSettings
+                            ?.defaultReplyVisibility
+                            ?.toVisibility()
+                            // make sure to have a visibility less than or equal to the parent
+                            ?.takeIf { it <= (parent?.visibility ?: Visibility.Unlisted) }
+                            ?: parent?.visibility
+
+                    else -> currentSettings?.defaultPostVisibility?.toVisibility()
                 } ?: Visibility.Unlisted
 
             updateState {

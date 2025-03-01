@@ -102,6 +102,11 @@ fun EntryDetailDialog(
                                 )
                             }
                             Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                style = MaterialTheme.typography.labelMedium,
+                                text = entry.visibility.toReadableName(),
+                                color = fullColor,
+                            )
                             Icon(
                                 modifier = Modifier.size(IconSize.s),
                                 imageVector = entry.visibility.toIcon(),
