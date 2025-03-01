@@ -14,4 +14,5 @@ data class NodeInfoModel(
     val title: String? = null,
     val uri: String? = null,
     val version: String? = null,
+    val software: String? = null,
 )

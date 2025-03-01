@@ -70,7 +70,7 @@ internal class DefaultServiceProvider(
         private const val REAM_NAME = "Friendica"
     }
 
-    private var currentNode: String = ""
+    override var currentNode: String = ""
 
     override lateinit var announcements: AnnouncementService
     override lateinit var apps: AppService
