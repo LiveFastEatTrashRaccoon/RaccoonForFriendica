@@ -25,6 +25,7 @@ interface CoreResources {
 
     // region Platform logos
     val activityPubSmallLogo: Painter @Composable get
+    val blueskySmallLogo: Painter @Composable get
     val diasporaSmallLogo: Painter @Composable get
     val flipboardSmallLogo: Painter @Composable get
     val friendicaLogo: Painter @Composable get

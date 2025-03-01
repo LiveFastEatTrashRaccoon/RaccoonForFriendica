@@ -10,6 +10,7 @@ fun String.toPlatformIcon(): Painter {
     val resources = remember { getCoreResources() }
     val platformName = lowercase()
     return when (platformName) {
+        "bluesky" -> resources.blueskySmallLogo
         "diaspora" -> resources.diasporaSmallLogo
         "flipboard" -> resources.flipboardSmallLogo
         "friendica" -> resources.friendicaSmallLogo
