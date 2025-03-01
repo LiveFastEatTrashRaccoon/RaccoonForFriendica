@@ -19,11 +19,19 @@ import java.time.Duration as JavaDuration
 
 actual fun epochMillis(): Long = System.currentTimeMillis()
 
-private fun getDateTimeFormatter(pattern: String) =
-    DateTimeFormatter
-        .ofPattern(pattern)
-        .withLocale(Locale.US)
-        .withZone(TimeZone.getTimeZone("UTC").toZoneId())
+private fun getDateTimeFormatter(
+    pattern: String,
+    withLocalTimezone: Boolean = false,
+) = DateTimeFormatter
+    .ofPattern(pattern)
+    .withLocale(Locale.US)
+    .run {
+        if (withLocalTimezone) {
+            withZone(TimeZone.getDefault().toZoneId())
+        } else {
+            withZone(TimeZone.getTimeZone("UTC").toZoneId())
+        }
+    }
 
 private val defaultFormatter = getDateTimeFormatter("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
 private val backupFormatter = getDateTimeFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -107,11 +115,14 @@ actual fun getFormattedDate(
 actual fun parseDate(
     value: String,
     format: String,
+    withLocalTimezone: Boolean,
 ): String =
-    getDateTimeFormatter(format)
-        .runCatching {
-            parse(value)
-        }.getOrNull()
+    getDateTimeFormatter(
+        pattern = format,
+        withLocalTimezone = withLocalTimezone,
+    ).runCatching {
+        parse(value)
+    }.getOrNull()
         ?.let { defaultFormatter.format(it) }
         .orEmpty()
 

@@ -14,6 +14,7 @@ import platform.Foundation.NSISO8601DateFormatter
 import platform.Foundation.NSLocale
 import platform.Foundation.NSTimeZone
 import platform.Foundation.autoupdatingCurrentLocale
+import platform.Foundation.defaultTimeZone
 import platform.Foundation.localTimeZone
 import platform.Foundation.timeIntervalSince1970
 import platform.Foundation.timeIntervalSinceDate
@@ -23,12 +24,20 @@ import kotlin.time.toDuration
 
 actual fun epochMillis(): Long = (NSDate().timeIntervalSince1970 * 1000).toLong()
 
-private fun getDateFormatter(format: String) =
-    NSDateFormatter().apply {
-        locale = NSLocale.autoupdatingCurrentLocale
-        dateFormat = format
-        calendar = NSCalendar(calendarIdentifier = NSCalendarIdentifierGregorian)
-    }
+private fun getDateFormatter(
+    format: String,
+    withLocalTimezone: Boolean = false,
+) = NSDateFormatter().apply {
+    locale = NSLocale.autoupdatingCurrentLocale
+    timeZone =
+        if (withLocalTimezone) {
+            NSTimeZone.localTimeZone
+        } else {
+            NSTimeZone.defaultTimeZone
+        }
+    dateFormat = format
+    calendar = NSCalendar(calendarIdentifier = NSCalendarIdentifierGregorian)
+}
 
 private val defaultFormatter = getDateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
 private val backupFormatter = getDateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -135,8 +144,13 @@ actual fun getFormattedDate(
 actual fun parseDate(
     value: String,
     format: String,
+    withLocalTimezone: Boolean,
 ): String {
-    val dateFormatter = getDateFormatter(format)
+    val dateFormatter =
+        getDateFormatter(
+            format = format,
+            withLocalTimezone = withLocalTimezone
+    )
     val date =
         runCatching {
             dateFormatter.dateFromString(value)
