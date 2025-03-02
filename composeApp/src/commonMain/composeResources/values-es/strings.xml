@@ -64,7 +64,7 @@
     <string name="action_report_user">Denunciar usuario</string>
     <string name="action_reveal_content">Mostrar contenido</string>
     <string name="action_save">Guardar</string>
-    <string name="action_save_draft">Guardar borrador</string>
+    <string name="action_save_draft">Modo borrador</string>
     <string name="action_save_to_calendar">Guardar en el calendario</string>
     <string name="action_search">Buscar en</string>
     <string name="action_select">Seleccionar valor</string>

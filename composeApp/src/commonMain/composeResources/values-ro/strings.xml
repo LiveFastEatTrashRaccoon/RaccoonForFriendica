@@ -147,7 +147,7 @@
     <string name="action_reject">Respinge</string>
     <string name="action_reveal_content">Arată conținutul</string>
     <string name="action_save">Salvează</string>
-    <string name="action_save_draft">Salvează schiță</string>
+    <string name="action_save_draft">Mod schiță</string>
     <string name="action_search">Caută</string>
     <string name="action_select">Selectează valoare</string>
     <string name="action_switch_account">Schimbă contul</string>

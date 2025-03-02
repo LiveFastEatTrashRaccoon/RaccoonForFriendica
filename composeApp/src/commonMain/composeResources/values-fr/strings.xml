@@ -64,7 +64,7 @@
     <string name="action_report_user">Signaler utilisateur</string>
     <string name="action_reveal_content">Révéler le contenu</string>
     <string name="action_save">Sauvegarder</string>
-    <string name="action_save_draft">Enregistrer le brouillon</string>
+    <string name="action_save_draft">Mode brouillon</string>
     <string name="action_save_to_calendar">Enregistrer dans le calendrier</string>
     <string name="action_search">Rechercher</string>
     <string name="action_select">Sélectionner la valeur</string>

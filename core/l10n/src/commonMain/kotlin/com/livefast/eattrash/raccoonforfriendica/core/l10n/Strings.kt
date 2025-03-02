@@ -106,6 +106,7 @@ interface Strings {
     val buttonCancel: String @Composable get
     val buttonClose: String @Composable get
     val buttonConfirm: String @Composable get
+    val buttonDiscard: String @Composable get
     val buttonLoad: String @Composable get
     val buttonLoadMoreReplies: String @Composable get
     val buttonLogin: String @Composable get
@@ -426,6 +427,7 @@ interface Strings {
     val unpublishedSectionScheduled: String @Composable get
     val unpublishedTitle: String @Composable get
     val unsavedChangesTitle: String @Composable get
+    val unsavedDraftTitle: String @Composable get
     val updateDate: String @Composable get
     val urlOpeningModeCustomTabs: String @Composable get
     val urlOpeningModeExternal: String @Composable get
