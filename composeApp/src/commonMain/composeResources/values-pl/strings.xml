@@ -472,4 +472,13 @@
     <string name="message_sign_up_1">Nie masz jeszcze konta?</string>
     <string name="message_sign_up_2">Zarejestruj się teraz!</string>
     <string name="manage_blocks_section_stop_words">Słowa</string>
+    <string name="action_open_in_browser">Otwórz w przeglądarce</string>
+    <string name="settings_item_conversation_reply_depth">Głębokość odpowiedzi konwersacji</string>
+    <string name="image_field_alt_text">Tekst alternatywny</string>
+    <string name="button_discard">Odrzuć</string>
+    <string name="unsaved_draft_title">Niezapisana wersja robocza</string>
+    <string name="shortcuts_title">Skróty</string>
+    <string name="message_no_public_timeline">Być może ta instancja nie ujawnia swojej publicznej osi czasu.</string>
+    <string name="action_shortcut">Skrót do %1$s</string>
+    <string name="action_insert_inline_image">Wstawianie osadzonego obrazu</string>
 </resources>
