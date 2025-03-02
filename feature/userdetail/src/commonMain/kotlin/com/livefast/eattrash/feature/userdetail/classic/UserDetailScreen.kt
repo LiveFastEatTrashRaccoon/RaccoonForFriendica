@@ -193,6 +193,8 @@ class UserDetailScreen(
                                 swipeNavigationEnabled = true,
                             )
                         }
+
+                        is UserDetailMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -719,6 +721,7 @@ class UserDetailScreen(
                                                 LocalStrings.current.actionShortcut(nodeName),
                                             )
                                     }
+                                    this += OptionId.OpenInBrowser.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -764,6 +767,11 @@ class UserDetailScreen(
                                     OptionId.AddShortcut ->
                                         model.reduce(
                                             UserDetailMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                        )
+
+                                    OptionId.OpenInBrowser ->
+                                        model.reduce(
+                                            UserDetailMviModel.Intent.OpenInBrowser(entry),
                                         )
                                     else -> Unit
                                 }
