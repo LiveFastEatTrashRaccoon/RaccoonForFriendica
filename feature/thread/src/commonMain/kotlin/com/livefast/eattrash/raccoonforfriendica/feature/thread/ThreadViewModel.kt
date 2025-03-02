@@ -19,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.PopulateThreadUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
@@ -54,6 +55,7 @@ class ThreadViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>(
@@ -147,6 +149,7 @@ class ThreadViewModel(
             is ThreadMviModel.Intent.ChangeNavigationIndex ->
                 changeNavigationIndex(intent.index)
             is ThreadMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is ThreadMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -443,7 +446,7 @@ class ThreadViewModel(
             } else {
                 updateEntryInState(entry.id) {
                     it.copy(
-                        favoriteLoading = false,
+                        dislikeLoading = false,
                     )
                 }
             }
@@ -659,6 +662,15 @@ class ThreadViewModel(
                     accountId = accountId,
                     node = nodeName,
                 )
+            }
+        }
+    }
+
+    private fun openInBrowser(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val url = getInnerUrl(entry)
+            if (url != null) {
+                emitEffect(ThreadMviModel.Effect.OpenUrl(url))
             }
         }
     }
