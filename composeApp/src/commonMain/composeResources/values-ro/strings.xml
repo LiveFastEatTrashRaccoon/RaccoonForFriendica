@@ -492,4 +492,5 @@
     <string name="settings_item_conversation_reply_depth">Adâncime răspunsurilor în conversație</string>
     <string name="button_discard">Aruncă</string>
     <string name="unsaved_draft_title">Schiță nesalvată</string>
+    <string name="action_open_in_browser">Deschide în browser</string>
 </resources>
