@@ -147,6 +147,8 @@ object MyAccountScreen : Tab {
                             clipboardManager.setText(AnnotatedString(event.text))
                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                         }
+
+                        is MyAccountMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -445,6 +447,7 @@ object MyAccountScreen : Tab {
                                 }
                                 this += OptionId.ViewDetails.toOption()
                                 this += OptionId.CopyToClipboard.toOption()
+                                this += OptionId.OpenInBrowser.toOption()
                             },
                         onOptionSelected = { optionId ->
                             when (optionId) {
@@ -491,7 +494,15 @@ object MyAccountScreen : Tab {
                                     }
                                 }
                                 OptionId.CopyToClipboard ->
-                                    model.reduce(MyAccountMviModel.Intent.CopyToClipboard(entry.original))
+                                    model.reduce(
+                                        MyAccountMviModel.Intent.CopyToClipboard(entry.original),
+                                    )
+
+                                OptionId.OpenInBrowser ->
+                                    model.reduce(
+                                        MyAccountMviModel.Intent.OpenInBrowser(entry),
+                                    )
+
                                 else -> Unit
                             }
                         },
