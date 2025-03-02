@@ -46,6 +46,10 @@ interface ShortcutTimelineMviModel :
         data class WillOpenDetail(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class OpenInBrowser(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -78,6 +82,10 @@ interface ShortcutTimelineMviModel :
 
         data class OpenDetail(
             val entry: TimelineEntryModel,
+        ) : Effect
+
+        data class OpenUrl(
+            val url: String,
         ) : Effect
     }
 }

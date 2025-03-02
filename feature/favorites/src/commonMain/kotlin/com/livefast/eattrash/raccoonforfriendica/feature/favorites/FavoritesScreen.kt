@@ -129,6 +129,8 @@ class FavoritesScreen(
                                 swipeNavigationEnabled = true,
                             )
                         }
+
+                        is FavoritesMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -355,6 +357,7 @@ class FavoritesScreen(
                                                 LocalStrings.current.actionShortcut(nodeName),
                                             )
                                     }
+                                    this += OptionId.OpenInBrowser.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -424,6 +427,12 @@ class FavoritesScreen(
                                         model.reduce(
                                             FavoritesMviModel.Intent.AddInstanceShortcut(entry.nodeName),
                                         )
+
+                                    OptionId.OpenInBrowser ->
+                                        model.reduce(
+                                            FavoritesMviModel.Intent.OpenInBrowser(entry),
+                                        )
+
                                     else -> Unit
                                 }
                             },

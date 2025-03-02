@@ -15,7 +15,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
@@ -28,6 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Local
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
@@ -62,6 +62,7 @@ class UserDetailViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
@@ -173,6 +174,7 @@ class UserDetailViewModel(
                     emitEffect(UserDetailMviModel.Effect.OpenDetail(intent.entry))
                 }
             is UserDetailMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is UserDetailMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -413,7 +415,7 @@ class UserDetailViewModel(
             } else {
                 updateEntryInState(entry.id) {
                     it.copy(
-                        favoriteLoading = false,
+                        dislikeLoading = false,
                     )
                 }
             }
@@ -685,6 +687,15 @@ class UserDetailViewModel(
                     accountId = accountId,
                     node = nodeName,
                 )
+            }
+        }
+    }
+
+    private fun openInBrowser(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val url = getInnerUrl(entry)
+            if (url != null) {
+                emitEffect(UserDetailMviModel.Effect.OpenUrl(url))
             }
         }
     }

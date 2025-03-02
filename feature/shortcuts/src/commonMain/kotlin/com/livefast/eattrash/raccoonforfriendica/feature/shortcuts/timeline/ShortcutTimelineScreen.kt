@@ -128,6 +128,9 @@ class ShortcutTimelineScreen(
                                 swipeNavigationEnabled = true,
                             )
                         }
+
+                        is ShortcutTimelineMviModel.Effect.OpenUrl ->
+                            uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -342,6 +345,7 @@ class ShortcutTimelineScreen(
                                                     },
                                             )
                                     }
+                                    this += OptionId.OpenInBrowser.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -379,6 +383,11 @@ class ShortcutTimelineScreen(
                                             ShortcutTimelineMviModel.Intent.ToggleTranslation(
                                                 entry.original,
                                             ),
+                                        )
+
+                                    OptionId.OpenInBrowser ->
+                                        model.reduce(
+                                            ShortcutTimelineMviModel.Intent.OpenInBrowser(entry),
                                         )
 
                                     else -> Unit

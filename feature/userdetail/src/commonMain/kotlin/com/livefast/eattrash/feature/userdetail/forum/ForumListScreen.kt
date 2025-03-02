@@ -149,6 +149,8 @@ class ForumListScreen(
                                 swipeNavigationEnabled = true,
                             )
                         }
+
+                        is ForumListMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -477,6 +479,7 @@ class ForumListScreen(
                                                 LocalStrings.current.actionShortcut(nodeName),
                                             )
                                     }
+                                    this += OptionId.OpenInBrowser.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -537,6 +540,11 @@ class ForumListScreen(
                                     OptionId.AddShortcut ->
                                         model.reduce(
                                             ForumListMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                        )
+
+                                    OptionId.OpenInBrowser ->
+                                        model.reduce(
+                                            ForumListMviModel.Intent.OpenInBrowser(entry),
                                         )
                                     else -> Unit
                                 }

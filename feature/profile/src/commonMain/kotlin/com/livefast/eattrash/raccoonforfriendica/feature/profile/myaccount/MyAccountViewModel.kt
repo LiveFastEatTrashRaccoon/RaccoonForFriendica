@@ -23,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -51,6 +52,7 @@ class MyAccountViewModel(
     private val logout: LogoutUseCase,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
+    private val getInnerUrl: GetInnerUrlUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
         initialState = MyAccountMviModel.State(),
@@ -179,6 +181,7 @@ class MyAccountViewModel(
             is MyAccountMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             is MyAccountMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is MyAccountMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is MyAccountMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
             MyAccountMviModel.Intent.Logout ->
                 screenModelScope.launch {
                     logout()
@@ -356,7 +359,7 @@ class MyAccountViewModel(
             } else {
                 updateEntryInState(entry.id) {
                     it.copy(
-                        favoriteLoading = false,
+                        dislikeLoading = false,
                     )
                 }
             }
@@ -444,6 +447,15 @@ class MyAccountViewModel(
                         append(source.content)
                     }
                 emitEffect(MyAccountMviModel.Effect.TriggerCopy(text))
+            }
+        }
+    }
+
+    private fun openInBrowser(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val url = getInnerUrl(entry)
+            if (url != null) {
+                emitEffect(MyAccountMviModel.Effect.OpenUrl(url))
             }
         }
     }

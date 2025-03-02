@@ -56,6 +56,7 @@ val circlesModule =
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
                     getTranslation = instance(),
+                    getInnerUrl = instance(),
                     timelineNavigationManager = instance(),
                     notificationCenter = instance(),
                 )

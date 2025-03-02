@@ -152,6 +152,8 @@ class TimelineScreen : Screen {
                                 entry = event.entry,
                                 swipeNavigationEnabled = true,
                             )
+
+                        is TimelineMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -462,6 +464,7 @@ class TimelineScreen : Screen {
                                                 LocalStrings.current.actionShortcut(nodeName),
                                             )
                                     }
+                                    this += OptionId.OpenInBrowser.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -529,6 +532,12 @@ class TimelineScreen : Screen {
                                         model.reduce(
                                             TimelineMviModel.Intent.AddInstanceShortcut(entry.nodeName),
                                         )
+
+                                    OptionId.OpenInBrowser ->
+                                        model.reduce(
+                                            TimelineMviModel.Intent.OpenInBrowser(entry),
+                                        )
+
                                     else -> Unit
                                 }
                             },

@@ -27,6 +27,7 @@ val exploreModule =
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
                     getTranslation = instance(),
+                    getInnerUrl = instance(),
                     notificationCenter = instance(),
                 )
             }

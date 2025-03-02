@@ -50,6 +50,7 @@ val profileModule =
                     logout = instance(),
                     toggleEntryFavorite = instance(),
                     toggleEntryDislike = instance(),
+                    getInnerUrl = instance(),
                     notificationCenter = instance(),
                 )
             }

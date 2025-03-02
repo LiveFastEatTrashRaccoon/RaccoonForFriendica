@@ -24,6 +24,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Searc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.SearchPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
@@ -61,6 +62,7 @@ class SearchViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val getInnerUrl: GetInnerUrlUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<SearchMviModel.Intent, SearchMviModel.State, SearchMviModel.Effect>(
         initialState = SearchMviModel.State(),
@@ -183,6 +185,7 @@ class SearchViewModel(
             is SearchMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is SearchMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
             is SearchMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is SearchMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -445,7 +448,7 @@ class SearchViewModel(
             } else {
                 updateEntryInState(entry.id) {
                     it.copy(
-                        favoriteLoading = false,
+                        dislikeLoading = false,
                     )
                 }
             }
@@ -626,6 +629,15 @@ class SearchViewModel(
                     accountId = accountId,
                     node = nodeName,
                 )
+            }
+        }
+    }
+
+    private fun openInBrowser(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val url = getInnerUrl(entry)
+            if (url != null) {
+                emitEffect(SearchMviModel.Effect.OpenUrl(url))
             }
         }
     }

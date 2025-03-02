@@ -82,6 +82,10 @@ interface ExploreMviModel :
         data class AddInstanceShortcut(
             val node: String,
         ) : Intent
+
+        data class OpenInBrowser(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -109,6 +113,10 @@ interface ExploreMviModel :
 
         data class TriggerCopy(
             val text: String,
+        ) : Effect
+
+        data class OpenUrl(
+            val url: String,
         ) : Effect
     }
 }

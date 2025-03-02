@@ -132,6 +132,8 @@ class HashtagScreen(
                                 swipeNavigationEnabled = true,
                             )
                         }
+
+                        is HashtagMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -377,6 +379,7 @@ class HashtagScreen(
                                                 LocalStrings.current.actionShortcut(nodeName),
                                             )
                                     }
+                                    this += OptionId.OpenInBrowser.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -444,6 +447,12 @@ class HashtagScreen(
                                         model.reduce(
                                             HashtagMviModel.Intent.AddInstanceShortcut(entry.nodeName),
                                         )
+
+                                    OptionId.OpenInBrowser ->
+                                        model.reduce(
+                                            HashtagMviModel.Intent.OpenInBrowser(entry),
+                                        )
+
                                     else -> Unit
                                 }
                             },

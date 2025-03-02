@@ -151,6 +151,8 @@ class ThreadScreen(
                             clipboardManager.setText(AnnotatedString(event.text))
                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                         }
+
+                        is ThreadMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -429,6 +431,7 @@ class ThreadScreen(
                                                         LocalStrings.current.actionShortcut(nodeName),
                                                     )
                                             }
+                                            this += OptionId.OpenInBrowser.toOption()
                                         },
                                     onOptionSelected = { optionId ->
                                         when (optionId) {
@@ -480,6 +483,11 @@ class ThreadScreen(
                                             OptionId.AddShortcut ->
                                                 model.reduce(
                                                     ThreadMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                                )
+
+                                            OptionId.OpenInBrowser ->
+                                                model.reduce(
+                                                    ThreadMviModel.Intent.OpenInBrowser(entry),
                                                 )
                                             else -> Unit
                                         }
@@ -618,6 +626,7 @@ class ThreadScreen(
                                                     LocalStrings.current.actionShortcut(nodeName),
                                                 )
                                         }
+                                        this += OptionId.OpenInBrowser.toOption()
                                     },
                                 onOptionSelected = { optionId ->
                                     when (optionId) {
@@ -683,6 +692,12 @@ class ThreadScreen(
                                             model.reduce(
                                                 ThreadMviModel.Intent.AddInstanceShortcut(entry.nodeName),
                                             )
+
+                                        OptionId.OpenInBrowser ->
+                                            model.reduce(
+                                                ThreadMviModel.Intent.OpenInBrowser(entry),
+                                            )
+
                                         else -> Unit
                                     }
                                 },

@@ -135,6 +135,8 @@ class ExploreScreen : Screen {
                             clipboardManager.setText(AnnotatedString(event.text))
                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                         }
+
+                        is ExploreMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -440,6 +442,7 @@ class ExploreScreen : Screen {
                                                         LocalStrings.current.actionShortcut(nodeName),
                                                     )
                                             }
+                                            this += OptionId.OpenInBrowser.toOption()
                                         },
                                     onOptionSelected = { optionId ->
                                         when (optionId) {
@@ -509,12 +512,19 @@ class ExploreScreen : Screen {
                                                         item.entry.original,
                                                     ),
                                                 )
+
                                             OptionId.AddShortcut ->
                                                 model.reduce(
                                                     ExploreMviModel.Intent.AddInstanceShortcut(
                                                         item.entry.nodeName,
                                                     ),
                                                 )
+
+                                            OptionId.OpenInBrowser ->
+                                                model.reduce(
+                                                    ExploreMviModel.Intent.OpenInBrowser(item.entry),
+                                                )
+
                                             else -> Unit
                                         }
                                     },

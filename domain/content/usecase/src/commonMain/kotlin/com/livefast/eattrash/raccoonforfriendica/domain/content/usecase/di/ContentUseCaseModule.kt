@@ -1,12 +1,14 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultExportUserListUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultGetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultGetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultPopulateThreadUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultStripMarkupUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.DefaultToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ExportUserListUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.PopulateThreadUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.StripMarkupUseCase
@@ -73,6 +75,13 @@ val contentUseCaseModule =
                 DefaultPopulateThreadUseCase(
                     timelineEntryRepository = instance(),
                     emojiHelper = instance(),
+                )
+            }
+        }
+        bind<GetInnerUrlUseCase> {
+            singleton {
+                DefaultGetInnerUrlUseCase(
+                    apiConfigurationRepository = instance(),
                 )
             }
         }

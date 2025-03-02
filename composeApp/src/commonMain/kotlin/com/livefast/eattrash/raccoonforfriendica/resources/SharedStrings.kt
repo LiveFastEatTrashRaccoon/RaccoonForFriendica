@@ -58,6 +58,7 @@ import raccoonforfriendica.composeapp.generated.resources.action_mute
 import raccoonforfriendica.composeapp.generated.resources.action_mute_notifications
 import raccoonforfriendica.composeapp.generated.resources.action_open_detail
 import raccoonforfriendica.composeapp.generated.resources.action_open_full_screen
+import raccoonforfriendica.composeapp.generated.resources.action_open_in_browser
 import raccoonforfriendica.composeapp.generated.resources.action_open_link
 import raccoonforfriendica.composeapp.generated.resources.action_open_options
 import raccoonforfriendica.composeapp.generated.resources.action_open_preview
@@ -564,6 +565,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_open_full_screen)
     override val actionOpenLink: String
         @Composable get() = stringResource(Res.string.action_open_link)
+    override val actionOpenInBrowser: String
+        @Composable get() = stringResource(Res.string.action_open_in_browser)
     override val actionOpenOptions: String
         @Composable get() = stringResource(Res.string.action_open_options)
     override val actionOpenPreview: String

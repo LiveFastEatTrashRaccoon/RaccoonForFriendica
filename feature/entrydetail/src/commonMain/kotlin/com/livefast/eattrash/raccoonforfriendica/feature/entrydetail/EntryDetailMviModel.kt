@@ -74,6 +74,10 @@ interface EntryDetailMviModel :
         data class LoadMoreReplies(
             val entry: TimelineEntryModel,
         ) : Intent
+
+        data class OpenInBrowser(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -101,6 +105,10 @@ interface EntryDetailMviModel :
 
         data class TriggerCopy(
             val text: String,
+        ) : Effect
+
+        data class OpenUrl(
+            val url: String,
         ) : Effect
     }
 }

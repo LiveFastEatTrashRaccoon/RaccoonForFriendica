@@ -53,6 +53,7 @@ interface Strings {
     val actionOpenDetail: String @Composable get
     val actionOpenFullScreen: String @Composable get
     val actionOpenLink: String @Composable get
+    val actionOpenInBrowser: String @Composable get
     val actionOpenOptions: String @Composable get
     val actionOpenPreview: String @Composable get
     val actionOpenSettings: String @Composable get
