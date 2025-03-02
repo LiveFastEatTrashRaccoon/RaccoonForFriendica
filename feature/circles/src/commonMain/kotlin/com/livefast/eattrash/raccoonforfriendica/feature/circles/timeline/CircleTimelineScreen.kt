@@ -130,6 +130,9 @@ class CircleTimelineScreen(
                                 swipeNavigationEnabled = true,
                             )
                         }
+
+                        is CircleTimelineMviModel.Effect.OpenUrl ->
+                            uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -369,6 +372,7 @@ class CircleTimelineScreen(
                                                 LocalStrings.current.actionShortcut(nodeName),
                                             )
                                     }
+                                    this += OptionId.OpenInBrowser.toOption()
                                 },
                             onOptionSelected = { optionId ->
                                 when (optionId) {
@@ -445,6 +449,12 @@ class CircleTimelineScreen(
                                                 entry.nodeName,
                                             ),
                                         )
+
+                                    OptionId.OpenInBrowser ->
+                                        model.reduce(
+                                            CircleTimelineMviModel.Intent.OpenInBrowser(entry),
+                                        )
+
                                     else -> Unit
                                 }
                             },
