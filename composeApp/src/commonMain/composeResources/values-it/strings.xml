@@ -64,7 +64,7 @@
     <string name="action_report_user">Segnala utente</string>
     <string name="action_reveal_content">Rivela contenuto</string>
     <string name="action_save">Salva</string>
-    <string name="action_save_draft">Salva bozza</string>
+    <string name="action_save_draft">Modalità bozza</string>
     <string name="action_save_to_calendar">Salva su calendario</string>
     <string name="action_search">Cerca</string>
     <string name="action_select">Seleziona valore</string>
@@ -95,6 +95,7 @@
     <string name="button_cancel">Annulla</string>
     <string name="button_close">Chiudi</string>
     <string name="button_confirm">Conferma</string>
+    <string name="button_discard">Scarta</string>
     <string name="button_load">Carica</string>
     <string name="button_load_more_replies">Carica altre risposte</string>
     <string name="button_login">Login</string>
@@ -384,6 +385,7 @@
     <string name="unpublished_title">Non pubblicati</string>
     <string name="unread_notification_title">Controlla le notifiche!</string>
     <string name="unsaved_changes_title">Modifiche non salvate</string>
+    <string name="unsaved_draft_title">Bozza non salvata</string>
     <string name="update_date">data aggiornamento</string>
     <string name="url_opening_mode_custom_tabs">Schede personalizzate</string>
     <string name="url_opening_mode_external">Browser esterno</string>

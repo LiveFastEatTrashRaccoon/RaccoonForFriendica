@@ -219,6 +219,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("buttonClose")
     override val buttonConfirm: String
         @Composable get() = retrieve("buttonConfirm")
+    override val buttonDiscard: String
+        @Composable get() = retrieve("buttonDiscard")
     override val buttonLoad: String
         @Composable get() = retrieve("buttonLoad")
     override val buttonLoadMoreReplies: String
@@ -859,6 +861,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("unpublishedTitle")
     override val unsavedChangesTitle: String
         @Composable get() = retrieve("unsavedChangesTitle")
+    override val unsavedDraftTitle: String
+        @Composable get() = retrieve("unsavedDraftTitle")
     override val updateDate: String
         @Composable get() = retrieve("updateDate")
     override val urlOpeningModeCustomTabs: String

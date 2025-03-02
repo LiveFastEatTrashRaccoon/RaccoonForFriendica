@@ -71,7 +71,7 @@
     <string name="action_report_user">Report user</string>
     <string name="action_reveal_content">Reveal content</string>
     <string name="action_save">Save</string>
-    <string name="action_save_draft">Save draft</string>
+    <string name="action_save_draft">Draft mode</string>
     <string name="action_save_to_calendar">Save to calendar</string>
     <string name="action_search">Search</string>
     <string name="action_select">Select value</string>
@@ -102,6 +102,7 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_close">Close</string>
     <string name="button_confirm">Confirm</string>
+    <string name="button_discard">Discard</string>
     <string name="button_load">Load</string>
     <string name="button_load_more_replies">Load more replies</string>
     <string name="button_login">Login</string>
@@ -408,6 +409,7 @@
     <string name="unpublished_title">Unpublished items</string>
     <string name="unread_notification_title">Check your notifications!</string>
     <string name="unsaved_changes_title">Unsaved changes</string>
+    <string name="unsaved_draft_title">Unsaved draft</string>
     <string name="update_date">update date</string>
     <string name="url_opening_mode_custom_tabs">Custom tabs</string>
     <string name="url_opening_mode_external">External browser</string>

@@ -114,6 +114,7 @@ import raccoonforfriendica.composeapp.generated.resources.bookmarks_title
 import raccoonforfriendica.composeapp.generated.resources.button_cancel
 import raccoonforfriendica.composeapp.generated.resources.button_close
 import raccoonforfriendica.composeapp.generated.resources.button_confirm
+import raccoonforfriendica.composeapp.generated.resources.button_discard
 import raccoonforfriendica.composeapp.generated.resources.button_load
 import raccoonforfriendica.composeapp.generated.resources.button_load_more_replies
 import raccoonforfriendica.composeapp.generated.resources.button_login
@@ -446,6 +447,7 @@ import raccoonforfriendica.composeapp.generated.resources.unread_messages
 import raccoonforfriendica.composeapp.generated.resources.unread_notification_body
 import raccoonforfriendica.composeapp.generated.resources.unread_notification_title
 import raccoonforfriendica.composeapp.generated.resources.unsaved_changes_title
+import raccoonforfriendica.composeapp.generated.resources.unsaved_draft_title
 import raccoonforfriendica.composeapp.generated.resources.update_date
 import raccoonforfriendica.composeapp.generated.resources.url_opening_mode_custom_tabs
 import raccoonforfriendica.composeapp.generated.resources.url_opening_mode_external
@@ -668,6 +670,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.button_close)
     override val buttonConfirm: String
         @Composable get() = stringResource(Res.string.button_confirm)
+    override val buttonDiscard: String
+        @Composable get() = stringResource(Res.string.button_discard)
     override val buttonLoad: String
         @Composable get() = stringResource(Res.string.button_load)
     override val buttonLoadMoreReplies: String
@@ -1308,6 +1312,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.unpublished_title)
     override val unsavedChangesTitle: String
         @Composable get() = stringResource(Res.string.unsaved_changes_title)
+    override val unsavedDraftTitle: String
+        @Composable get() = stringResource(Res.string.unsaved_draft_title)
     override val updateDate: String
         @Composable get() = stringResource(Res.string.update_date)
     override val urlOpeningModeCustomTabs: String
