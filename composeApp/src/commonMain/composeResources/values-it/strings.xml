@@ -492,4 +492,5 @@
     <string name="action_insert_inline_image">Inserisci immagine nel testo</string>
     <string name="image_field_alt_text">Testo alternativo</string>
     <string name="settings_item_conversation_reply_depth">Profondità risposte in conversazione</string>
+    <string name="action_open_in_browser">Apri nel browser</string>
 </resources>
