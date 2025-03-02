@@ -188,7 +188,7 @@
     <string name="image_loading_mode_always">Immer</string>
     <string name="image_loading_mode_on_demand">Bei Bedarf</string>
     <string name="image_loading_mode_on_wi_fi">Im WLAN</string>
-    <string name="inbox_configure_filter_dialog_subtitle">Wenn ein Wert abgewählt ist, gibt der Filter nur ungelesene Elemente zurück.</string>
+    <string name="inbox_configure_filter_dialog_subtitle">Wenn ein Wert abgewählt ist, gibt der Filter nur ungelesene Elemente zurück</string>
     <string name="inbox_configure_filter_dialog_title">Filter konfigurieren</string>
     <string name="info_edited">bearbeitet</string>
     <string name="insert_emoji_title">Emoji einfügen</string>
@@ -209,7 +209,7 @@
     <string name="markup_mode_html">HTML</string>
     <string name="markup_mode_markdown">Markdown</string>
     <string name="markup_mode_plain_text">Einfacher Text</string>
-    <string name="message_alt_text_missing_error">Einige Anhänge haben keinen alternativen Text, füge ihn aus Gründen der Zugänglichkeit ein.</string>
+    <string name="message_alt_text_missing_error">Einige Anhänge haben keinen alternativen Text, füge ihn aus Gründen der Zugänglichkeit ein</string>
     <string name="message_are_you_sure">Bist Du sicher, dass Du weitermachen willst?</string>
     <string name="message_are_you_sure_exit">Bist Du sicher, dass Du verlassen möchtest?</string>
     <string name="message_are_you_sure_reblog">Dieser Beitrag ist mehr als einen Monat alt. Bist Du sicher, dass Du ihn erneut teilen möchtest?</string>
@@ -222,7 +222,7 @@
     <string name="message_confirm_exit">Tippe zum Beenden erneut auf 🔙</string>
     <string name="message_empty_album">Es sieht so aus, als ob dieses Album noch leer ist… ✨</string>
     <string name="message_empty_conversation">Dies ist der Beginn deines epischen Gesprächs mit</string>
-    <string name="message_empty_inbox">🎉 Du hast alles aufgeholt! 🎉\n\nNeue Benachrichtigungen werden auf dieser Seite angezeigt, sobald sie eintreffen.</string>
+    <string name="message_empty_inbox">🎉 Du hast alles aufgeholt! 🎉\n\nNeue Benachrichtigungen werden auf dieser Seite angezeigt, sobald sie eintreffen</string>
     <string name="message_empty_list">Hier gibt es nichts zu sehen 🗑️️</string>
     <string name="message_generic_error">Ein unerwarteter Fehler ist aufgetreten</string>
     <string name="message_invalid_field">Ungültiges Feld</string>
@@ -473,4 +473,13 @@
     <string name="action_dislike">Unglaublich</string>
     <string name="action_remove_dislike">Unglaublich</string>
     <string name="action_play">Abspielen</string>
+    <string name="settings_item_conversation_reply_depth">Gesprächsantworttiefe</string>
+    <string name="button_discard">Verwerfen</string>
+    <string name="image_field_alt_text">Alternativer Text</string>
+    <string name="shortcuts_title">Abkürzungen</string>
+    <string name="action_open_in_browser">Im Browser öffnen</string>
+    <string name="message_no_public_timeline">Vielleicht gibt diese Instanz ihre öffentliche Zeitleiste nicht preis.</string>
+    <string name="action_insert_inline_image">Eingebettetes Bild einfügen</string>
+    <string name="action_shortcut">Abkürzung zu %1$s</string>
+    <string name="unsaved_draft_title">Nicht gespeicherter Entwurf</string>
 </resources>
