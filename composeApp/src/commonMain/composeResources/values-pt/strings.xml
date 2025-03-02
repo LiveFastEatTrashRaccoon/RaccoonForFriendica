@@ -490,4 +490,7 @@
     <string name="action_shortcut">Atalho para %1$s</string>
     <string name="action_insert_inline_image">Inserir imagem embutida</string>
     <string name="image_field_alt_text">Texto alternativo</string>
+    <string name="button_discard">Descartar</string>
+    <string name="unsaved_draft_title">Rascunho não guardado</string>
+    <string name="action_open_in_browser">Abrir no browser</string>
 </resources>
