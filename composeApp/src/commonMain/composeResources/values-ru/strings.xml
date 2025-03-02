@@ -502,4 +502,7 @@
         <item quantity="many">%1$d записей в вашей 🗑️</item>
         <item quantity="other">%1$d записей в вашей 🗑️</item>
     </plurals>
+    <string name="button_discard">Отбросить</string>
+    <string name="unsaved_draft_title">Несохраненный черновик</string>
+    <string name="action_open_in_browser">Открыть в браузере</string>
 </resources>
