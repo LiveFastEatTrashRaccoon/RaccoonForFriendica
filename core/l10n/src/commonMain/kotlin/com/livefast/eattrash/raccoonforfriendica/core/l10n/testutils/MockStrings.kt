@@ -113,6 +113,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionOpenFullScreen")
     override val actionOpenLink: String
         @Composable get() = retrieve("actionOpenLink")
+    override val actionOpenInBrowser: String
+        @Composable get() = retrieve("actionOpenInBrowser")
     override val actionOpenOptions: String
         @Composable get() = retrieve("actionOpenOptions")
     override val actionOpenPreview: String

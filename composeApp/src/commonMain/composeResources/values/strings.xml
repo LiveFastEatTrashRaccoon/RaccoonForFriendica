@@ -50,6 +50,7 @@
     <string name="action_open_detail">Open detail</string>
     <string name="action_open_full_screen">Open full screen</string>
     <string name="action_open_link">Open link</string>
+    <string name="action_open_in_browser">Open in browser</string>
     <string name="action_open_options">Options</string>
     <string name="action_open_preview">Open preview</string>
     <string name="action_open_settings">Open settings</string>
