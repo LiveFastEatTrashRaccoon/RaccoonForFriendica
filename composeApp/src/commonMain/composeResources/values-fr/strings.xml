@@ -490,4 +490,7 @@
     <string name="action_insert_inline_image">Insérer une image intégrée</string>
     <string name="message_no_public_timeline">Peut-être que cette instance n\'expose pas sa chronologie publique.</string>
     <string name="settings_item_conversation_reply_depth">Profondeur des réponses en conversation</string>
+    <string name="unsaved_draft_title">Brouillon non sauvegardé</string>
+    <string name="button_discard">Rejeter</string>
+    <string name="action_open_in_browser">Ouvrir dans le navigateur</string>
 </resources>
