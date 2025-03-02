@@ -40,6 +40,8 @@ sealed interface OptionId {
 
     data object AddShortcut : OptionId
 
+    data object OpenInBrowser : OptionId
+
     interface Custom : OptionId
 }
 
@@ -62,6 +64,7 @@ private fun OptionId.toReadableName(): String =
         OptionId.ViewDetails -> LocalStrings.current.actionViewDetails
         OptionId.Quote -> LocalStrings.current.actionQuote
         OptionId.CopyToClipboard -> LocalStrings.current.actionCopyToClipboard
+        OptionId.OpenInBrowser -> LocalStrings.current.actionOpenInBrowser
         else -> ""
     }
 
