@@ -135,6 +135,7 @@ class SearchScreen : Screen {
                             clipboardManager.setText(AnnotatedString(event.text))
                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                         }
+                        is SearchMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -442,6 +443,7 @@ class SearchScreen : Screen {
                                                         LocalStrings.current.actionShortcut(nodeName),
                                                     )
                                             }
+                                            this += OptionId.OpenInBrowser.toOption()
                                         },
                                     onOptionSelected = { optionId ->
                                         when (optionId) {
@@ -499,6 +501,7 @@ class SearchScreen : Screen {
                                                     )
                                                 }
                                             }
+
                                             OptionId.CopyToClipboard ->
                                                 model.reduce(
                                                     SearchMviModel.Intent.CopyToClipboard(
@@ -512,12 +515,19 @@ class SearchScreen : Screen {
                                                         item.entry.original,
                                                     ),
                                                 )
+
                                             OptionId.AddShortcut ->
                                                 model.reduce(
                                                     SearchMviModel.Intent.AddInstanceShortcut(
                                                         item.entry.nodeName,
                                                     ),
                                                 )
+
+                                            OptionId.OpenInBrowser ->
+                                                model.reduce(
+                                                    SearchMviModel.Intent.OpenInBrowser(item.entry),
+                                                )
+
                                             else -> Unit
                                         }
                                     },
