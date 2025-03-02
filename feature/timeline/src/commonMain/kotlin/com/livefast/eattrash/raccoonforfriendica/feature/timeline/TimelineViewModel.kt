@@ -24,6 +24,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Circl
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
@@ -64,6 +65,7 @@ class TimelineViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val followedHashtagCache: FollowedHashtagCache,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
@@ -205,6 +207,7 @@ class TimelineViewModel(
                 }
 
             is TimelineMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is TimelineMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -449,7 +452,7 @@ class TimelineViewModel(
             } else {
                 updateEntryInState(entry.id) {
                     it.copy(
-                        favoriteLoading = false,
+                        dislikeLoading = false,
                     )
                 }
             }
@@ -630,6 +633,15 @@ class TimelineViewModel(
                     accountId = accountId,
                     node = nodeName,
                 )
+            }
+        }
+    }
+
+    private fun openInBrowser(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val url = getInnerUrl(entry)
+            if (url != null) {
+                emitEffect(TimelineMviModel.Effect.OpenUrl(url))
             }
         }
     }

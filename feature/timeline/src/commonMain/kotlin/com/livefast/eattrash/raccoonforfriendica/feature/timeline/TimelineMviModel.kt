@@ -77,6 +77,10 @@ interface TimelineMviModel :
         data class AddInstanceShortcut(
             val node: String,
         ) : Intent
+
+        data class OpenInBrowser(
+            val entry: TimelineEntryModel,
+        ) : Intent
     }
 
     data class State(
@@ -109,6 +113,10 @@ interface TimelineMviModel :
 
         data class OpenDetail(
             val entry: TimelineEntryModel,
+        ) : Effect
+
+        data class OpenUrl(
+            val url: String,
         ) : Effect
     }
 }
