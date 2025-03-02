@@ -473,4 +473,13 @@
     <string name="message_sign_up_1">Ще не маєте облікового запису?</string>
     <string name="message_sign_up_2">Зареєструйтесь зараз!</string>
     <string name="manage_blocks_section_stop_words">Слова</string>
+    <string name="button_discard">Видалити</string>
+    <string name="action_open_in_browser">Відкрити в браузері</string>
+    <string name="unsaved_draft_title">Незбережений чернетка</string>
+    <string name="settings_item_conversation_reply_depth">Глибина відповіді в розмові</string>
+    <string name="action_insert_inline_image">Вставити вбудоване зображення</string>
+    <string name="action_shortcut">Швидкий доступ до %1$s</string>
+    <string name="shortcuts_title">Ярлики</string>
+    <string name="message_no_public_timeline">Можливо, цей екземпляр не показує свою публічну шкалу часу.</string>
+    <string name="image_field_alt_text">Альтернативний текст</string>
 </resources>

@@ -490,4 +490,7 @@
     <string name="image_field_alt_text">Texto alternativo</string>
     <string name="action_insert_inline_image">Insertar imagen en el texto</string>
     <string name="settings_item_conversation_reply_depth">Profundidad de las respuestas en conversación</string>
+    <string name="unsaved_draft_title">Borrador sin guardar</string>
+    <string name="button_discard">Descartar</string>
+    <string name="action_open_in_browser">Abrir en navegador</string>
 </resources>

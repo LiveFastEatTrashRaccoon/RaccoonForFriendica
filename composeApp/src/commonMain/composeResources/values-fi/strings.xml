@@ -473,4 +473,13 @@
     <string name="message_sign_up_1">Eikö sinulla ole vielä tiliä?</string>
     <string name="message_sign_up_2">Rekisteröidy nyt!</string>
     <string name="manage_blocks_section_stop_words">Sanat</string>
+    <string name="unsaved_draft_title">Tallentamaton luonnos</string>
+    <string name="action_open_in_browser">Avaa selaimessa</string>
+    <string name="button_discard">Hävitä</string>
+    <string name="action_insert_inline_image">Lisää upotettu kuva</string>
+    <string name="image_field_alt_text">Vaihtoehtoinen teksti</string>
+    <string name="message_no_public_timeline">Ehkä tämä instanssi ei paljasta julkista aikajanaansa.</string>
+    <string name="action_shortcut">Pikakuvake %1$s</string>
+    <string name="shortcuts_title">Pikanäppäimet</string>
+    <string name="settings_item_conversation_reply_depth">Keskustelun vastauksen syvyys</string>
 </resources>
