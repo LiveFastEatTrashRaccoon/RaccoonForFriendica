@@ -158,6 +158,8 @@ class EntryDetailScreen(
                             clipboardManager.setText(AnnotatedString(event.text))
                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
                         }
+
+                        is EntryDetailMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                     }
                 }.launchIn(this)
         }
@@ -360,6 +362,7 @@ class EntryDetailScreen(
                                                     LocalStrings.current.actionShortcut(nodeName),
                                                 )
                                         }
+                                        this += OptionId.OpenInBrowser.toOption()
                                     }
 
                                 fun onOptionSelected(optionId: OptionId) {
@@ -442,6 +445,11 @@ class EntryDetailScreen(
                                                 EntryDetailMviModel.Intent.AddInstanceShortcut(
                                                     entry.nodeName,
                                                 ),
+                                            )
+
+                                        OptionId.OpenInBrowser ->
+                                            model.reduce(
+                                                EntryDetailMviModel.Intent.OpenInBrowser(entry),
                                             )
 
                                         else -> Unit
