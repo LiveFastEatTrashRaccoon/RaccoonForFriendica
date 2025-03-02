@@ -1031,8 +1031,19 @@ class ComposerScreen(
 
         if (confirmBackWithUnsavedChangesDialogOpen) {
             CustomConfirmDialog(
-                title = LocalStrings.current.unsavedChangesTitle,
+                title =
+                    if (uiState.publicationType == PublicationType.Draft) {
+                        LocalStrings.current.unsavedDraftTitle
+                    } else {
+                        LocalStrings.current.unsavedChangesTitle
+                    },
                 body = LocalStrings.current.messageAreYouSureExit,
+                confirmButtonLabel =
+                    if (uiState.publicationType == PublicationType.Draft) {
+                        LocalStrings.current.buttonDiscard
+                    } else {
+                        LocalStrings.current.buttonConfirm
+                    },
                 onClose = { confirm ->
                     confirmBackWithUnsavedChangesDialogOpen = false
                     if (confirm) {
