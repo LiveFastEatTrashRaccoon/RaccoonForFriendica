@@ -19,4 +19,5 @@ data class DraftEntity(
     @ColumnInfo val pollExpiresAt: String? = null,
     @ColumnInfo val pollMultiple: Boolean? = null,
     @ColumnInfo val pollOptions: String? = null,
+    @ColumnInfo(defaultValue = "0") val localOnly: Boolean = false,
 )
