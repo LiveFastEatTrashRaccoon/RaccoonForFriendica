@@ -21,6 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
@@ -46,6 +47,7 @@ class ShortcutTimelineViewModel(
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<ShortcutTimelineMviModel.Intent, ShortcutTimelineMviModel.State, ShortcutTimelineMviModel.Effect>(
@@ -127,6 +129,7 @@ class ShortcutTimelineViewModel(
                     timelineNavigationManager.push(state)
                     emitEffect(ShortcutTimelineMviModel.Effect.OpenDetail(intent.entry))
                 }
+            is ShortcutTimelineMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -293,28 +296,20 @@ class ShortcutTimelineViewModel(
             updateEntryInState(entry.id) {
                 it.copy(dislikeLoading = true)
             }
-            val localEntry =
-                resolveToLocal(entry)
-                    ?.let { le ->
-                        toggleEntryFavorite(le)
-                    }?.also { le ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = le))
-                    }
-            if (localEntry != null) {
+            val newEntry =
+                toggleEntryDislike(entry)?.also { e ->
+                    notificationCenter.send(TimelineEntryUpdatedEvent(entry = e))
+                }
+            if (newEntry != null) {
                 updateEntryInState(entry.id) {
-                    it.copy(
-                        favorite = localEntry.favorite,
-                        favoriteCount = localEntry.favoriteCount,
-                        disliked = localEntry.disliked,
-                        dislikesCount = localEntry.dislikesCount,
-                        dislikeLoading = false,
-                    )
+                    newEntry
                 }
             } else {
                 updateEntryInState(entry.id) {
-                    it.copy(dislikeLoading = false)
+                    it.copy(
+                        dislikeLoading = false,
+                    )
                 }
-                emitEffect(ShortcutTimelineMviModel.Effect.Failure)
             }
         }
     }
@@ -425,6 +420,15 @@ class ShortcutTimelineViewModel(
                     translationLoading = false,
                 )
             updateEntryInState(entry.id) { newEntry }
+        }
+    }
+
+    private fun openInBrowser(entry: TimelineEntryModel) {
+        screenModelScope.launch {
+            val url = getInnerUrl(entry)
+            if (url != null) {
+                emitEffect(ShortcutTimelineMviModel.Effect.OpenUrl(url))
+            }
         }
     }
 }
