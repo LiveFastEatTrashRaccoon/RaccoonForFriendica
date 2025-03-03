@@ -316,7 +316,7 @@ class InboxScreen : Screen {
                 title = LocalStrings.current.actionDeleteFollowRequest,
                 onClose = { confirm ->
                     val userId = confirmUnfollowDialogUserId ?: ""
-                    confirmUnfollowDialogUserId = null
+                    confirmDeleteFollowRequestDialogUserId = null
                     if (confirm && userId.isNotEmpty()) {
                         model.reduce(InboxMviModel.Intent.Unfollow(userId))
                     }
