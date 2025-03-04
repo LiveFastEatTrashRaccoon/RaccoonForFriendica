@@ -76,7 +76,7 @@ fun UserFields(
                                     .firstOrNull()
                                     ?.item
                             if (!url.isNullOrBlank()) {
-                                onOpenUrl?.invoke(url, true)
+                                onOpenUrl?.invoke(url, false)
                             }
                         },
                     )
