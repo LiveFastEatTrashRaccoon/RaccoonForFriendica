@@ -334,7 +334,7 @@ object MyAccountScreen : Tab {
                     }
                 }
 
-                if (uiState.initial || uiState.entries.isNotEmpty()) {
+                if (uiState.initial) {
                     stickyHeader {
                         val titles =
                             listOf(
