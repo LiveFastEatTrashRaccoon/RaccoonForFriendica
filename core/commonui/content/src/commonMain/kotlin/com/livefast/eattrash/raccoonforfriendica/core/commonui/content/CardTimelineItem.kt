@@ -3,8 +3,10 @@ package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -87,6 +89,7 @@ internal fun CardTimelineItem(
         modifier =
             modifier
                 .padding(horizontal = Spacing.xs)
+                .padding(bottom = Spacing.xs)
                 .shadow(
                     elevation = 5.dp,
                     shape = RoundedCornerShape(CornerSize.l),
@@ -94,7 +97,7 @@ internal fun CardTimelineItem(
                     color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
                     shape = RoundedCornerShape(CornerSize.l),
                 ).padding(
-                    vertical = Spacing.s,
+                    vertical = Spacing.xs,
                     horizontal = Spacing.xxxs,
                 ),
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
@@ -400,6 +403,8 @@ internal fun CardTimelineItem(
                         null
                     },
             )
+        } else {
+            Spacer(Modifier.height(Spacing.xxs))
         }
     }
 }

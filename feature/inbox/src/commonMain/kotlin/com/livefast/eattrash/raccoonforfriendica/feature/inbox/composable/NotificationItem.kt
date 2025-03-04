@@ -114,6 +114,7 @@ internal fun NotificationItem(
             modifier =
                 Modifier
                     .padding(horizontal = contentHorizontalPadding)
+                    .padding(bottom = Spacing.xs)
                     .shadow(
                         elevation = 5.dp,
                         shape = RoundedCornerShape(CornerSize.l),
@@ -124,6 +125,7 @@ internal fun NotificationItem(
                     .padding(
                         start = Spacing.xxs,
                         end = Spacing.xxs,
+                        top = Spacing.xs,
                         bottom = Spacing.xs,
                     ),
         ) {

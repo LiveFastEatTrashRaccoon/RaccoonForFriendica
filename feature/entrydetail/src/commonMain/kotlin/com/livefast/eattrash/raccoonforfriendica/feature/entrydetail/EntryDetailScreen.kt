@@ -466,6 +466,7 @@ class EntryDetailScreen(
                                                         Modifier
                                                             // since the main entry is forced to "full", recreates card appearance
                                                             .padding(horizontal = Spacing.xs)
+                                                            .padding(bottom = Spacing.xs)
                                                             .shadow(
                                                                 elevation = 5.dp,
                                                                 shape = RoundedCornerShape(CornerSize.l),
@@ -476,7 +477,7 @@ class EntryDetailScreen(
                                                                     ),
                                                                 shape = RoundedCornerShape(CornerSize.l),
                                                             ).padding(
-                                                                vertical = Spacing.s,
+                                                                vertical = Spacing.xs,
                                                                 horizontal = Spacing.xxxs,
                                                             )
                                                     } else {
