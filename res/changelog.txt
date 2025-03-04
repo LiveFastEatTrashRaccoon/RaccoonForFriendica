@@ -1,27 +1,15 @@
 ## What's Changed
 
-- feat: add per-user rate limits by @AkesiSeli in #717
-- feat: suggest hashtags while typing by @AkesiSeli in #735
-- feat: swipe navigation between posts by @AkesiSeli in #753, #754, #772, #781, #801
-- feat: exclude stop words from timelines by @AkesiSeli in #770
-- feat: add shortcuts to other instances by @AkesiSeli in #774
-- feat: open post detail as thread by @AkesiSeli in #797, #805
-- feat: post translation by @AkesiSeli in #746
-- feat: followed hashtag indication by @AkesiSeli in #808
-- feat: show source protocol for posts by @AkesiSeli in #806, #833
-- enhancement: possibility to insert colors as hex by @AkesiSeli in #722
-- enhancement: open browser to create/delete account by @AkesiSeli in #726, #762
-- enhancement: improve app startup and link processing time by @AkesiSeli in #731, #737
-- enhancement: improve support for embedded images by @AkesiSeli in #784, #792
-- enhancement: account switch by @AkesiSeli in #800
-- refactor: improve pagination by @AkesiSeli in #752, #807, #814
-- fix: date formatting by @AkesiSeli in #729, #732
-- fix: UI bar theme by @AkesiSeli in #745
-- fix: change timeline type in homepage by @AkesiSeli in #782
-- fix: post editing in BBCode by @AkesiSeli in #783
-- fix: image download and share by @AkesiSeli in #796
-- chore: improve accessibility by @AkesiSeli in #714
-- chore: update l10n by @Weblate, @ktlinux, @TamilNeram, @Ricky-Tigg, @gregscoor and @AkesiSeli in #716, #719, #723, #730, #734, #738, #739, #740, #741, #743, #748, #755, #763, #764, #767, #768, #771, #777, #778, #780, #788, #791, #794, #803, #812, #816
-- chore: update dependencies by @dependabot in #718, #720, #724, #725, #733, #742, #747, #761, #769, #775, #776, #779, #789, #790, #802, #809, #810, #819, #820, #821, #823, #827, #828, #831, #832, #834, #835
+- feat: feat: add possibility to open posts in browser by @AkesiSeli in #838, #842
+- feat: add support local visibility options by @AkesiSeli in #838, #840
+- fix: avoid displaying recover page in profile by @AkesiSeli in #839
+- fix: calendar event time zones by @AkesiSeli in #837
+- fix: close unfollow request delete confirmation dialog by @AkesiSeli in #848
+- fix: profile section selector and links by @AkesiSeli in #850
+- fix: restore draft options menu by @AkesiSeli in #851
+- enhancement: add support for Bluesky source by @AkesiSeli in #836
+- enhancement: phrasing for draft mode and confirm exit dialog by @AkesiSeli in #841
+- chore: update l10n by @Weblate in #843
+- chore: update dependencies by @dependabot in #845, #846, #847
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.4.0...0.4.1
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.4.1...0.4.2

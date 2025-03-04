@@ -1,0 +1,11 @@
+- feat: feat: add possibility to open posts in browser
+- feat: add support local visibility options
+- fix: avoid displaying recover page in profile
+- fix: calendar event time zones
+- fix: close unfollow request delete confirmation dialog
+- fix: profile section selector and links
+- fix: restore draft options menu
+- enhancement: add support for Bluesky source
+- enhancement: phrasing for draft mode and confirm exit dialog
+- chore: update l10n
+- chore: update dependencies
