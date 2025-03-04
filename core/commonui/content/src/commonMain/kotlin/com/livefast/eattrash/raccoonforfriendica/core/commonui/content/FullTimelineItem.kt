@@ -2,10 +2,21 @@ package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,9 +24,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.DpOffset
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -114,6 +133,60 @@ internal fun FullTimelineItem(
                 isEdited = entry.updated != null,
                 onOpenUser = onOpenUser,
             )
+            if (options.isNotEmpty() && !actionsEnabled) {
+                var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box {
+                        IconButton(
+                            modifier =
+                                Modifier
+                                    .padding(bottom = Spacing.xs, end = Spacing.s)
+                                    .size(height = IconSize.m, width = IconSize.l)
+                                    .onGloballyPositioned {
+                                        optionsOffset = it.positionInParent()
+                                    }.clearAndSetSemantics { },
+                            onClick = {
+                                onOptionsMenuToggled?.invoke(true)
+                            },
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(IconSize.s),
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+
+                        CustomDropDown(
+                            expanded = optionsMenuOpen,
+                            onDismiss = {
+                                onOptionsMenuToggled?.invoke(false)
+                            },
+                            offset =
+                                with(LocalDensity.current) {
+                                    DpOffset(
+                                        x = optionsOffset.x.toDp(),
+                                        y = optionsOffset.y.toDp(),
+                                    )
+                                },
+                        ) {
+                            options.forEach { option ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(option.label)
+                                    },
+                                    onClick = {
+                                        onOptionsMenuToggled?.invoke(false)
+                                        onOptionSelected?.invoke(option.id)
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         // post spoiler
@@ -334,6 +407,8 @@ internal fun FullTimelineItem(
                         null
                     },
             )
+        } else {
+            Spacer(Modifier.height(Spacing.xxs))
         }
     }
 }
