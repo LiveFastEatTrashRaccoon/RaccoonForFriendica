@@ -8,7 +8,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kodein)
-            implementation(libs.stately.common)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.tab)
             implementation(libs.voyager.screenmodel)
