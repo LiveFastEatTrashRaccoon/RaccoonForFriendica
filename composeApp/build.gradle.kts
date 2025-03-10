@@ -192,12 +192,10 @@ android {
     dependenciesInfo {
         includeInApk = false
     }
-    dependencies {
-        debugImplementation(compose.uiTooling)
-    }
 }
 
 dependencies {
+    debugImplementation(compose.uiTooling)
     kover(projects.core.appearance)
     kover(projects.core.navigation)
     kover(projects.core.notifications)
