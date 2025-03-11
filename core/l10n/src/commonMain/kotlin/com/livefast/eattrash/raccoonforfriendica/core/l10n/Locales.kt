@@ -9,6 +9,7 @@ object Locales {
     const val IT = "it"
     const val PL = "pl"
     const val PT = "pt"
+    const val PT_BR = "pt_BR"
     const val RO = "ro"
     const val RU = "ru"
     const val TA = "ta"
@@ -24,6 +25,7 @@ object Locales {
             IT,
             PL,
             PT,
+            PT_BR,
             RO,
             RU,
             TA,
