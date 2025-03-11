@@ -81,7 +81,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadingMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.toReadableName
@@ -753,12 +752,7 @@ class SettingsScreen : Screen {
         }
 
         if (urlOpeningModeBottomSheetOpened) {
-            val types =
-                listOf(
-                    UrlOpeningMode.External,
-                    UrlOpeningMode.CustomTabs,
-                    UrlOpeningMode.Internal,
-                )
+            val types = uiState.availableUrlOpeningModes
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemUrlOpeningMode,
                 items = types.map { CustomModalBottomSheetItem(label = it.toReadableName()) },

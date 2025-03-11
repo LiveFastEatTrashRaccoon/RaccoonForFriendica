@@ -183,6 +183,7 @@ interface SettingsMviModel :
         val pushNotificationPermissionState: PermissionState = PermissionState.NotDetermined,
         val isBarThemeSupported: Boolean = false,
         val replyDepth: Int = 1,
+        val availableUrlOpeningModes: List<UrlOpeningMode> = emptyList(),
     )
 
     sealed interface Effect {

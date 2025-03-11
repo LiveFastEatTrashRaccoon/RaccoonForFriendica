@@ -33,6 +33,7 @@ val settingsModule =
                     importSettings = instance(),
                     exportSettings = instance(),
                     barColorProvider = instance(),
+                    customTabsHelper = instance(),
                 )
             }
         }

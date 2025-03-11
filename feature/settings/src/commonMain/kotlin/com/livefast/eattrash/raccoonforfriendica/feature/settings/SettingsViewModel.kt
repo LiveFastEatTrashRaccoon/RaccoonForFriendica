@@ -18,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconManag
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
@@ -67,6 +68,7 @@ class SettingsViewModel(
     private val exportSettings: ExportSettingsUseCase,
     private val permissionController: PermissionsController,
     private val barColorProvider: BarColorProvider,
+    private val customTabsHelper: CustomTabsHelper,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
         initialState = SettingsMviModel.State(),
     ),
@@ -80,6 +82,7 @@ class SettingsViewModel(
             val supportsDynamicColors = colorSchemeProvider.supportsDynamicColors
             val pushNotificationPermissionState =
                 permissionController.getPermissionState(Permission.REMOTE_NOTIFICATION)
+            val supportsCustomTabs = customTabsHelper.isSupported
             updateState {
                 it.copy(
                     supportsNotifications = supportsPullNotifications || supportsPushNotifications,
@@ -100,6 +103,14 @@ class SettingsViewModel(
                     supportSettingsImportExport = fileSystemManager.isSupported,
                     pushNotificationPermissionState = pushNotificationPermissionState,
                     isBarThemeSupported = barColorProvider.isBarThemeSupported,
+                    availableUrlOpeningModes =
+                        buildList {
+                            this += UrlOpeningMode.Internal
+                            if (supportsCustomTabs) {
+                                this += UrlOpeningMode.CustomTabs
+                            }
+                            this += UrlOpeningMode.External
+                        },
                 )
             }
 
@@ -516,11 +527,11 @@ class SettingsViewModel(
                     try {
                         permissionController.providePermission(Permission.REMOTE_NOTIFICATION)
                         PermissionState.Granted
-                    } catch (e: DeniedAlwaysException) {
+                    } catch (_: DeniedAlwaysException) {
                         PermissionState.DeniedAlways
-                    } catch (e: DeniedException) {
+                    } catch (_: DeniedException) {
                         PermissionState.Denied
-                    } catch (e: RequestCanceledException) {
+                    } catch (_: RequestCanceledException) {
                         state
                     }
                 updateState {
