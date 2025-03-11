@@ -1,2 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="account_section_posts">Publicações</string>
+    <string name="action_add_reaction">Adicionar reação</string>
+    <string name="account_section_all">Publicações e respostas</string>
+    <string name="account_section_pinned">Fixado</string>
+    <string name="action_accept">Aceitar</string>
+    <string name="action_add_image">Adicionar imagem</string>
+    <string name="action_add_image_from_gallery">Adicionar imagem (galeria de mídia)</string>
+    <string name="action_add_new">Adicionar novo</string>
+    <string name="action_add_spoiler">Adicionar spoiler</string>
+    <string name="action_add_to_bookmarks">Adicionar aos marcadores</string>
+    <string name="action_add_to_favorites">Adicionar aos favoritos</string>
+    <string name="action_block">Bloquear</string>
+    <string name="action_cancel_edit_personal_note">Cancelar a edição da nota</string>
+    <string name="action_clear">Limpar</string>
+    <string name="action_copy_to_clipboard">Copiar para a área de transferência</string>
+    <string name="action_copy_url">Copiar o link</string>
+    <string name="action_create_thread_in_group">Publicar em</string>
+    <string name="action_delete_account">Excluir a conta</string>
+    <string name="action_delete">Excluir</string>
+    <string name="action_dislike">Descurtir</string>
+    <string name="action_dismiss_all_notifications">Ignorar todas as notificações</string>
+    <string name="action_download">Baixar</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_edit_members">Editar membros</string>
+    <string name="action_edit_personal_note">Editar nota</string>
+    <string name="action_export">Exportar</string>
+    <string name="action_filter">Filtrar</string>
+    <string name="action_follow">Seguir</string>
+    <string name="action_go_back">Voltar</string>
+    <string name="action_grant_permission">Conceder</string>
+    <string name="action_hide_content">Ocultar conteúdo</string>
+    <string name="action_hide_results">Exibir os resultados</string>
+    <string name="action_change_rate_limit">Alterar o limite da frequência</string>
+    <string name="account_section_media">Mídia</string>
+    <string name="action_change_markup_mode">Alterar o tipo de marcação</string>
+    <string name="action_add_poll">Adicionar enquete</string>
+    <string name="action_change_visibility">Alterar a visibilidade</string>
+    <string name="account_age">Idade da conta</string>
+    <string name="action_add_title">Adicionar título</string>
+</resources>
