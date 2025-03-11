@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="account_age">idade da conta</string>
+    <string name="account_age">Idade da conta</string>
     <string name="account_section_all">Mensagens e respostas</string>
     <string name="account_section_media">Media</string>
     <string name="account_section_pinned">Fixado</string>
