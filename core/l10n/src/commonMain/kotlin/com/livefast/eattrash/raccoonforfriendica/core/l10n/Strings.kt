@@ -220,6 +220,7 @@ interface Strings {
     val languageIt: String @Composable get
     val languagePl: String @Composable get
     val languagePt: String @Composable get
+    val languagePtBr: String @Composable get
     val languageRo: String @Composable get
     val languageRu: String @Composable get
     val languageTa: String @Composable get

@@ -234,6 +234,7 @@ import raccoonforfriendica.composeapp.generated.resources.language_fr
 import raccoonforfriendica.composeapp.generated.resources.language_it
 import raccoonforfriendica.composeapp.generated.resources.language_pl
 import raccoonforfriendica.composeapp.generated.resources.language_pt
+import raccoonforfriendica.composeapp.generated.resources.language_pt_br
 import raccoonforfriendica.composeapp.generated.resources.language_ro
 import raccoonforfriendica.composeapp.generated.resources.language_ru
 import raccoonforfriendica.composeapp.generated.resources.language_ta
@@ -899,6 +900,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.language_pl)
     override val languagePt: String
         @Composable get() = stringResource(Res.string.language_pt)
+    override val languagePtBr: String
+        @Composable get() = stringResource(Res.string.language_pt_br)
     override val languageRo: String
         @Composable get() = stringResource(Res.string.language_ro)
     override val languageRu: String
