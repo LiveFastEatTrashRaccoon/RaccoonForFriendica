@@ -175,7 +175,7 @@ class HashtagViewModel(
         paginationManager.reset(
             TimelinePaginationSpecification.Hashtag(
                 hashtag = tag,
-                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                includeNsfw = settingsRepository.current.value?.includeNsfw == true,
             ),
         )
         loadNextPage()

@@ -146,7 +146,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
     val scope = rememberCoroutineScope()
 
     AppTheme(
-        useDynamicColors = currentSettings?.dynamicColors ?: false,
+        useDynamicColors = currentSettings?.dynamicColors == true,
         barTheme = currentSettings?.barTheme ?: UiBarTheme.Transparent,
     ) {
         ProvideCustomUriHandler {

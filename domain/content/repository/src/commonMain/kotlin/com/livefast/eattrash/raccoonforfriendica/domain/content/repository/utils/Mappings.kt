@@ -514,7 +514,7 @@ internal fun ScheduledStatus.toModel() =
         parentId = params?.inReplyToId,
         poll = params?.poll?.toModel(),
         scheduled = scheduledAt,
-        sensitive = params?.sensitive ?: false,
+        sensitive = params?.sensitive == true,
         spoiler = params?.spoilerText,
         visibility = params?.visibility?.toVisibility() ?: Visibility.Public,
     )
@@ -603,7 +603,7 @@ internal fun Event.toModel() =
 internal fun StatusReaction.toModel() =
     ReactionModel(
         count = count,
-        isMe = me ?: false,
+        isMe = me == true,
         name = name,
         staticUrl = staticUrl,
         url = url,

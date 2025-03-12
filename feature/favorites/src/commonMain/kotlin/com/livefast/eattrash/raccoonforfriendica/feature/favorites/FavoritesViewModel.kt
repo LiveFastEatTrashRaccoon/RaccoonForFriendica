@@ -158,11 +158,11 @@ class FavoritesViewModel(
             when (type) {
                 FavoritesType.Bookmarks ->
                     TimelinePaginationSpecification.Bookmarks(
-                        includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                        includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                     )
                 FavoritesType.Favorites ->
                     TimelinePaginationSpecification.Favorites(
-                        includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                        includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                     )
             },
         )

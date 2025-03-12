@@ -77,7 +77,7 @@ internal class DefaultDraftRepository(
             lang = lang,
             localOnly = localOnly,
             content = text.orEmpty(),
-            sensitive = sensitive ?: false,
+            sensitive = sensitive == true,
             spoiler = spoiler,
             title = title,
             created = created,
@@ -91,7 +91,7 @@ internal class DefaultDraftRepository(
                             ?.map {
                                 PollOptionModel(title = it)
                             }.orEmpty()
-                    val multiple = pollMultiple ?: false
+                    val multiple = pollMultiple == true
                     if (options.isEmpty()) {
                         null
                     } else {

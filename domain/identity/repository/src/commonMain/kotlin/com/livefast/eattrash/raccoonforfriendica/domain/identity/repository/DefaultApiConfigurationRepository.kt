@@ -51,7 +51,7 @@ internal class DefaultApiConfigurationRepository(
                     node = node,
                     credentials = credentials,
                 )
-        } ?: false
+        } == true
 
     private fun retrieveFromKeyStore(): ApiCredentials? {
         val method = keyStore[KEY_METHOD, DEFAULT_METHOD]

@@ -190,7 +190,7 @@ class ExploreViewModel(
                     ExplorePaginationSpecification.Links
                 ExploreSection.Posts ->
                     ExplorePaginationSpecification.Posts(
-                        includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                        includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                     )
                 ExploreSection.Suggestions -> ExplorePaginationSpecification.Suggestions
             },

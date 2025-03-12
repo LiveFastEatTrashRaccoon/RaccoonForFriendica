@@ -168,7 +168,7 @@ class ForumListViewModel(
         paginationManager.reset(
             TimelinePaginationSpecification.Forum(
                 userId = id,
-                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                includeNsfw = settingsRepository.current.value?.includeNsfw == true,
             ),
         )
         loadNextPage()
