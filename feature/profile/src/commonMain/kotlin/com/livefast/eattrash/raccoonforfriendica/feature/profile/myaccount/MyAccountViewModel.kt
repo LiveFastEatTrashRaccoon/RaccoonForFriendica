@@ -129,9 +129,7 @@ class MyAccountViewModel(
                     TimelinePaginationSpecification.User(
                         userId = currentUser.id,
                         excludeReplies = true,
-                        includeNsfw =
-                            settingsRepository.current.value?.includeNsfw
-                                ?: false,
+                        includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                         enableCache = true,
                     ),
                 )
@@ -205,7 +203,7 @@ class MyAccountViewModel(
                 excludeReplies = currentState.section == UserSection.Posts,
                 onlyMedia = currentState.section == UserSection.Media,
                 pinned = currentState.section == UserSection.Pinned,
-                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                 enableCache = currentState.section == UserSection.Posts,
                 refresh = forceRefresh || !initial,
             ),

@@ -200,7 +200,7 @@ class SearchViewModel(
                 SearchSection.Posts ->
                     SearchPaginationSpecification.Entries(
                         query = query,
-                        includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                        includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                     )
                 SearchSection.Users -> SearchPaginationSpecification.Users(query)
             },

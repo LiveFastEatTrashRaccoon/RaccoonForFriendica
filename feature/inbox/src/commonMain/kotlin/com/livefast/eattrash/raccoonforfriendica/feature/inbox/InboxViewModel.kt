@@ -121,7 +121,7 @@ class InboxViewModel(
         paginationManager.reset(
             NotificationsPaginationSpecification.Default(
                 types = uiState.value.selectedNotificationTypes,
-                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                 refresh = forceRefresh || !initial,
             ),
         )

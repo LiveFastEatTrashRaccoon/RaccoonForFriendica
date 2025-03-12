@@ -73,7 +73,7 @@ class DefaultDetailOpener(
             return
         }
         val openGroupsInForumModeByDefault =
-            settingsRepository.current.value?.openGroupsInForumModeByDefault ?: false
+            settingsRepository.current.value?.openGroupsInForumModeByDefault == true
         scope.launch {
             userCache.put(user.id, user)
             val screen =

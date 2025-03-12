@@ -223,7 +223,7 @@ class UserDetailViewModel(
                 excludeReplies = uiState.value.section == UserSection.Posts,
                 onlyMedia = uiState.value.section == UserSection.Media,
                 pinned = uiState.value.section == UserSection.Pinned,
-                includeNsfw = settingsRepository.current.value?.includeNsfw ?: false,
+                includeNsfw = settingsRepository.current.value?.includeNsfw == true,
             ),
         )
         loadNextPage()
