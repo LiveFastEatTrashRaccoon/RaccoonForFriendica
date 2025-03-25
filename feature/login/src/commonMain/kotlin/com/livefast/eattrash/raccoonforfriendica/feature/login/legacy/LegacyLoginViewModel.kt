@@ -46,9 +46,7 @@ class LegacyLoginViewModel(
     }
 
     private fun submit() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         screenModelScope.launch {
             val node = uiState.value.nodeName
@@ -88,9 +86,7 @@ class LegacyLoginViewModel(
             }
 
             val isValid = listOfNotNull(nodeNameError, usernameError, passwordError).isEmpty()
-            if (!isValid) {
-                return@launch
-            }
+            check(isValid) { return@launch }
 
             // submit data
             updateState { it.copy(loading = true) }

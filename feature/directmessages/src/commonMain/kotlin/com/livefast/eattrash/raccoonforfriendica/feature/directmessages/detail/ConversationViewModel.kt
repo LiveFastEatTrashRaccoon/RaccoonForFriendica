@@ -109,9 +109,7 @@ class ConversationViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         updateState { it.copy(loading = true) }
         val items =
@@ -184,9 +182,7 @@ class ConversationViewModel(
     private fun submit() {
         val currentState = uiState.value
         val text = currentState.newMessageValue.text
-        if (text.isEmpty() || currentState.sendInProgress) {
-            return
-        }
+        check(text.isNotEmpty() && !currentState.sendInProgress) { return }
 
         screenModelScope.launch {
             val relationshipStatus =

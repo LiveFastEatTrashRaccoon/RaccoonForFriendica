@@ -74,9 +74,7 @@ internal class DefaultUserRepository(
                 cachedUser = null
             }
             val fromCache = cachedUser
-            if (fromCache != null) {
-                return@withContext fromCache
-            }
+            check(fromCache == null) { return@withContext fromCache }
             runCatching {
                 provider.users.verifyCredentials().toModel()
             }.getOrNull().also {

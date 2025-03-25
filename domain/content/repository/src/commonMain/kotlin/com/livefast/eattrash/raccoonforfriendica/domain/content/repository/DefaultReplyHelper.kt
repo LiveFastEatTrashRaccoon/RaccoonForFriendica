@@ -9,15 +9,11 @@ internal class DefaultReplyHelper(
 ) : ReplyHelper {
     override suspend fun TimelineEntryModel.withInReplyToIfMissing(): TimelineEntryModel {
         val parent = inReplyTo ?: return this
-        if (parent.content.isNotEmpty()) {
-            return this
-        }
+        check(parent.content.isEmpty()) { return this }
 
         val parentId = parent.id
         val cachedValue = entryCache.get(parentId)
-        if (cachedValue != null) {
-            return copy(inReplyTo = cachedValue)
-        }
+        check(cachedValue == null) { return copy(inReplyTo = cachedValue) }
 
         val remoteParent =
             entryRepository

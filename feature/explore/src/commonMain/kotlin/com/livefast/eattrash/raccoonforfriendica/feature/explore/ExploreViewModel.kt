@@ -15,7 +15,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
@@ -131,9 +130,7 @@ class ExploreViewModel(
         when (intent) {
             is ExploreMviModel.Intent.ChangeSection ->
                 screenModelScope.launch {
-                    if (uiState.value.loading) {
-                        return@launch
-                    }
+                    check(!uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(ExploreMviModel.Effect.BackToTop)
                     refresh(initial = true)
@@ -199,9 +196,7 @@ class ExploreViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()
@@ -581,9 +576,7 @@ class ExploreViewModel(
 
     private fun toggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
-        if (entry.translationLoading) {
-            return
-        }
+        check(!entry.translationLoading) { return }
 
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }

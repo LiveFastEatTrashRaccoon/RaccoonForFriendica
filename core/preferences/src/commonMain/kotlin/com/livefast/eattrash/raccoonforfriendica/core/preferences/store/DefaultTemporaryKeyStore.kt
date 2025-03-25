@@ -84,9 +84,7 @@ internal class DefaultTemporaryKeyStore(
         default: List<String>,
         delimiter: String,
     ): List<String> {
-        if (!settings.hasKey(key)) {
-            return default
-        }
+        check(settings.hasKey(key)) { return default }
         val joined = settings[key, ""]
         return joined.split(delimiter)
     }

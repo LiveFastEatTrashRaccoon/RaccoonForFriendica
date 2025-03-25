@@ -58,9 +58,7 @@ class ImageDetailViewModel(
     }
 
     private fun downloadAndSave() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
         screenModelScope.launch {
             updateState { it.copy(loading = true) }
             val currentState = uiState.value
@@ -93,9 +91,7 @@ class ImageDetailViewModel(
     }
 
     private fun shareAsFile() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
         screenModelScope.launch {
             updateState { it.copy(loading = true) }
             val currentState = uiState.value

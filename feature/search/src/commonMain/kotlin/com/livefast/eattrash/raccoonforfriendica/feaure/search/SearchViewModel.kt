@@ -143,9 +143,7 @@ class SearchViewModel(
 
             is SearchMviModel.Intent.ChangeSection ->
                 screenModelScope.launch {
-                    if (uiState.value.loading) {
-                        return@launch
-                    }
+                    check(!uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(SearchMviModel.Effect.BackToTop)
                     refresh(initial = true)
@@ -209,9 +207,7 @@ class SearchViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()
@@ -592,9 +588,7 @@ class SearchViewModel(
 
     private fun toggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
-        if (entry.translationLoading) {
-            return
-        }
+        check(!entry.translationLoading) { return }
 
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }

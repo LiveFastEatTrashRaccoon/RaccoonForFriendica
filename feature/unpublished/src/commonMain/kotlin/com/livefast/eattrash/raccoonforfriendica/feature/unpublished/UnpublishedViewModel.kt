@@ -96,9 +96,7 @@ class UnpublishedViewModel(
         when (intent) {
             is UnpublishedMviModel.Intent.ChangeSection ->
                 screenModelScope.launch {
-                    if (uiState.value.loading) {
-                        return@launch
-                    }
+                    check(!uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(UnpublishedMviModel.Effect.BackToTop)
                     refresh(initial = true)
@@ -131,9 +129,7 @@ class UnpublishedViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         updateState { it.copy(loading = true) }
         val currentUser = uiState.value.currentUser

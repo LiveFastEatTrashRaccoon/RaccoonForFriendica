@@ -61,9 +61,7 @@ class GalleryViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
         updateState { it.copy(loading = true) }
         val items = albumRepository.getAll().orEmpty()
         val wasRefreshing = uiState.value.refreshing

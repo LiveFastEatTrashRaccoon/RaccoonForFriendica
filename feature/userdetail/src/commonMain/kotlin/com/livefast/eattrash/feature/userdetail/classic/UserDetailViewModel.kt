@@ -121,9 +121,7 @@ class UserDetailViewModel(
         when (intent) {
             is UserDetailMviModel.Intent.ChangeSection ->
                 screenModelScope.launch {
-                    if (uiState.value.loading) {
-                        return@launch
-                    }
+                    check(!uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(UserDetailMviModel.Effect.BackToTop)
                     refresh(initial = true)
@@ -230,9 +228,7 @@ class UserDetailViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()
@@ -650,9 +646,7 @@ class UserDetailViewModel(
 
     private fun toggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
-        if (entry.translationLoading) {
-            return
-        }
+        check(!entry.translationLoading) { return }
 
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }

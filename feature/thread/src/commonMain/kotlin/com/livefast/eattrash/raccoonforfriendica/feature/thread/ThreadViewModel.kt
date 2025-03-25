@@ -222,9 +222,7 @@ class ThreadViewModel(
     }
 
     private suspend fun loadMoreReplies(entry: TimelineEntryModel) {
-        if (entry.loadMoreButtonLoading) {
-            return
-        }
+        check(!entry.loadMoreButtonLoading) { return }
         val currentState = uiState.value
         val currentReplies = currentState.replies[currentState.currentIndex]
         updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
@@ -572,9 +570,7 @@ class ThreadViewModel(
 
     private fun toggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
-        if (entry.translationLoading) {
-            return
-        }
+        check(!entry.translationLoading) { return }
 
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
@@ -603,9 +599,7 @@ class ThreadViewModel(
     }
 
     private fun changeNavigationIndex(newIndex: Int) {
-        if (!swipeNavigationEnabled) {
-            return
-        }
+        check(swipeNavigationEnabled) { return }
         screenModelScope.launch {
             updateState {
                 it.copy(
@@ -629,9 +623,7 @@ class ThreadViewModel(
     }
 
     private suspend fun loadNavigationNextPage() {
-        if (!swipeNavigationEnabled) {
-            return
-        }
+        check(swipeNavigationEnabled) { return }
         timelineNavigationManager.loadNextPage()
         updateState {
             val currentEntries = it.mainEntries

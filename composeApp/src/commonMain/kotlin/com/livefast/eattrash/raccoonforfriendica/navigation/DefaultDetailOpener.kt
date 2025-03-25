@@ -69,9 +69,7 @@ class DefaultDetailOpener(
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
     override fun openUserDetail(user: UserModel) {
-        if (user.id == currentUserId) {
-            return
-        }
+        check(user.id != currentUserId) { return }
         val openGroupsInForumModeByDefault =
             settingsRepository.current.value?.openGroupsInForumModeByDefault == true
         scope.launch {
@@ -159,25 +157,19 @@ class DefaultDetailOpener(
     }
 
     override fun openFavorites() {
-        if (!isLogged) {
-            return
-        }
+        check(isLogged) { return }
         val screen = FavoritesScreen(type = FavoritesType.Favorites.toInt())
         navigationCoordinator.push(screen)
     }
 
     override fun openBookmarks() {
-        if (!isLogged) {
-            return
-        }
+        check(isLogged) { return }
         val screen = FavoritesScreen(type = FavoritesType.Bookmarks.toInt())
         navigationCoordinator.push(screen)
     }
 
     override fun openFollowedHashtags() {
-        if (!isLogged) {
-            return
-        }
+        check(isLogged) { return }
         val screen = FollowedHashtagsScreen()
         navigationCoordinator.push(screen)
     }
@@ -217,9 +209,7 @@ class DefaultDetailOpener(
         initialText: String?,
         initialAttachment: ByteArray?,
     ) {
-        if (!isLogged) {
-            return
-        }
+        check(isLogged) { return }
         scope.launch {
             if (inReplyTo != null) {
                 entryCache.put(inReplyTo.id, inReplyTo)

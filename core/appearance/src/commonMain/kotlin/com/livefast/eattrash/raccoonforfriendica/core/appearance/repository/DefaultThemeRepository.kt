@@ -36,9 +36,7 @@ internal class DefaultThemeRepository : ThemeRepository {
 
     override fun getCommentBarColor(depth: Int): Color {
         val colors = getCommentBarColors()
-        if (colors.isEmpty()) {
-            return Color.Transparent
-        }
+        check(colors.isNotEmpty()) { return Color.Transparent }
         val index = depth % colors.size
         return colors[index]
     }

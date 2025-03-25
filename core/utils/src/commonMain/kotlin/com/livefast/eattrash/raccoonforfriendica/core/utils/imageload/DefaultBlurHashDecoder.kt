@@ -34,15 +34,11 @@ internal class DefaultBlurHashDecoder(
         punch: Float,
         useCache: Boolean,
     ): ImageBitmap? {
-        if (blurHash == null || blurHash.length < 6) {
-            return null
-        }
+        check(blurHash != null && blurHash.length >= 6) { return null }
         val numCompEnc = decode83(blurHash, 0, 1)
         val numCompX = (numCompEnc % 9) + 1
         val numCompY = (numCompEnc / 9) + 1
-        if (blurHash.length != 4 + 2 * numCompX * numCompY) {
-            return null
-        }
+        check(blurHash.length == 4 + 2 * numCompX * numCompY) { return null }
         val maxAcEnc = decode83(blurHash, 1, 2)
         val maxAc = (maxAcEnc + 1) / 166f
         val colors =

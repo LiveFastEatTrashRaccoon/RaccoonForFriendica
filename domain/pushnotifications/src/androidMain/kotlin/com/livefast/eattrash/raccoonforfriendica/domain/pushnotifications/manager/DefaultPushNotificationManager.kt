@@ -36,18 +36,13 @@ internal class DefaultPushNotificationManager(
     override suspend fun refreshState() {
         val account = accountRepository.getActive() ?: return
         val availableDistributors = getAvailableDistributors()
-        if (availableDistributors.isEmpty()) {
+        check(availableDistributors.isNotEmpty()) {
             _state.update { PushNotificationManagerState.NoDistributors }
             return
         }
 
-        if (account.notificationEnabled) {
+        check(!account.notificationEnabled) {
             _state.update { PushNotificationManagerState.Idle }
-            return
-        }
-
-        if (availableDistributors.isEmpty()) {
-            _state.update { PushNotificationManagerState.NoDistributors }
             return
         }
 
@@ -63,20 +58,20 @@ internal class DefaultPushNotificationManager(
 
     override suspend fun startup() {
         val account = accountRepository.getActive() ?: return
-        if (account.notificationEnabled) {
+        check(!account.notificationEnabled) {
             updateSubscription(account)
             _state.update { PushNotificationManagerState.Enabled }
             return
         }
 
         val availableDistributors = getAvailableDistributors()
-        if (availableDistributors.isEmpty()) {
+        check(availableDistributors.isNotEmpty()) {
             _state.update { PushNotificationManagerState.NoDistributors }
             return
         }
 
         val selectedDistributor = getSelectedDistributor()
-        if (!selectedDistributor.isNullOrEmpty()) {
+        check(selectedDistributor.isNullOrEmpty()) {
             enable()
             return
         }
@@ -104,9 +99,7 @@ internal class DefaultPushNotificationManager(
 
     override suspend fun enable() {
         val account = accountRepository.getActive() ?: return
-        if (account.notificationEnabled) {
-            return
-        }
+        check(!account.notificationEnabled) { return }
 
         registerForPushNotification(account)
         _state.update { PushNotificationManagerState.Enabled }
@@ -114,9 +107,7 @@ internal class DefaultPushNotificationManager(
 
     override suspend fun disable() {
         val account = accountRepository.getActive() ?: return
-        if (!account.notificationEnabled) {
-            return
-        }
+        check(account.notificationEnabled) { return }
 
         unregisterForPushNotifications(account)
         _state.update { PushNotificationManagerState.Initializing }
