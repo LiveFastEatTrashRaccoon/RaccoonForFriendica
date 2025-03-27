@@ -67,9 +67,7 @@ class ManageBlocksViewModel(
         when (intent) {
             is ManageBlocksMviModel.Intent.ChangeSection ->
                 screenModelScope.launch {
-                    if (uiState.value.loading) {
-                        return@launch
-                    }
+                    check(!uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(ManageBlocksMviModel.Effect.BackToTop)
                     refresh(initial = true)
@@ -137,9 +135,7 @@ class ManageBlocksViewModel(
     }
 
     private suspend fun loadNextUserPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         updateState { it.copy(loading = true) }
         val users = paginationManager.loadNextPage()
@@ -217,9 +213,7 @@ class ManageBlocksViewModel(
     }
 
     private fun addStopWord(word: String) {
-        if (word.isBlank()) {
-            return
-        }
+        check(word.isNotBlank()) { return }
         screenModelScope.launch {
             mutex.withLock {
                 val newValues =

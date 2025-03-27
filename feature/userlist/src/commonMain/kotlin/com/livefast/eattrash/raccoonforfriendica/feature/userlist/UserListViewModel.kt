@@ -132,9 +132,7 @@ internal class UserListViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         val currentState = uiState.value
         updateState { it.copy(loading = true) }

@@ -89,9 +89,7 @@ class FollowedHashtagsViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage()

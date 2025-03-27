@@ -223,9 +223,7 @@ class EditProfileViewModel(
     }
 
     private fun loadImageAvatar(bytes: ByteArray) {
-        if (bytes.isEmpty()) {
-            return
-        }
+        check(bytes.isNotEmpty()) { return }
         screenModelScope.launch(Dispatchers.IO) {
             updateState {
                 it.copy(
@@ -237,9 +235,7 @@ class EditProfileViewModel(
     }
 
     private fun loadImageHeader(bytes: ByteArray) {
-        if (bytes.isEmpty()) {
-            return
-        }
+        check(bytes.isNotEmpty()) { return }
         screenModelScope.launch(Dispatchers.IO) {
             updateState {
                 it.copy(
@@ -316,9 +312,7 @@ class EditProfileViewModel(
 
     private fun submit() {
         val currentState = uiState.value
-        if (currentState.loading) {
-            return
-        }
+        check(!currentState.loading) { return }
 
         val fieldMap =
             currentState.fields.fold(mutableMapOf<String, String>()) { res, item ->

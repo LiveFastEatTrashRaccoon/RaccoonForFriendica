@@ -88,9 +88,7 @@ class AlbumDetailViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
         updateState { it.copy(loading = true) }
 
         val wasRefreshing = uiState.value.refreshing
@@ -190,9 +188,7 @@ class AlbumDetailViewModel(
         attachment: AttachmentModel,
         otherAlbum: String,
     ) {
-        if (otherAlbum == albumName) {
-            return
-        }
+        check(otherAlbum != albumName) { return }
         screenModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val successful =

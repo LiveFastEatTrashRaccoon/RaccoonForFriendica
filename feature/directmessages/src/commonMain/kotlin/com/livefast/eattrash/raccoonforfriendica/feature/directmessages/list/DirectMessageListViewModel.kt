@@ -124,9 +124,7 @@ class DirectMessageListViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         updateState { it.copy(loading = true) }
         val currentUserId = uiState.value.currentUserId
@@ -179,9 +177,7 @@ class DirectMessageListViewModel(
     }
 
     private suspend fun loadNextPageUsers() {
-        if (uiState.value.userSearchLoading) {
-            return
-        }
+        check(!uiState.value.userSearchLoading) { return }
 
         updateState { it.copy(userSearchLoading = true) }
         val users = userPaginationManager.loadNextPage()

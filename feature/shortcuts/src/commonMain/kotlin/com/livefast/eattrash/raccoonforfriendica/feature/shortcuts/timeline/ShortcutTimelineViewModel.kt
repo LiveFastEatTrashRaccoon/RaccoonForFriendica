@@ -153,9 +153,7 @@ class ShortcutTimelineViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         val wasRefreshing = uiState.value.refreshing
         updateState { it.copy(loading = true) }
@@ -393,9 +391,7 @@ class ShortcutTimelineViewModel(
 
     private fun toggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
-        if (entry.translationLoading) {
-            return
-        }
+        check(!entry.translationLoading) { return }
 
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }

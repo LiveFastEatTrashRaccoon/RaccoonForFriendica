@@ -62,9 +62,7 @@ class CalendarViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
         val wasRefreshing = uiState.value.refreshing
         updateState { it.copy(loading = true) }
         val events = paginationManager.loadNextPage()

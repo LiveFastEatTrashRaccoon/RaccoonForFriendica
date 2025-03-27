@@ -46,9 +46,7 @@ class MainActivity : ComponentActivity() {
 
                     // back can be prevented by custom callback
                     val canGoBackCallback = navigationCoordinator.getCanGoBackCallback()
-                    if (canGoBackCallback?.invoke() == false) {
-                        return
-                    }
+                    check(canGoBackCallback?.invoke() != false) { return }
 
                     // if in home, ask for confirmation
                     if (navigationCoordinator.currentSection.value == BottomNavigationSection.Home) {

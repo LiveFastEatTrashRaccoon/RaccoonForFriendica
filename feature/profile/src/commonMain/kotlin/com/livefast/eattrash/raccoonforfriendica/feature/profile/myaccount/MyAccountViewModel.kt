@@ -148,9 +148,7 @@ class MyAccountViewModel(
         when (intent) {
             is MyAccountMviModel.Intent.ChangeSection ->
                 screenModelScope.launch {
-                    if (uiState.value.loading) {
-                        return@launch
-                    }
+                    check(!uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(MyAccountMviModel.Effect.BackToTop)
                     refresh(initial = true)
@@ -212,9 +210,7 @@ class MyAccountViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         updateState { it.copy(loading = true) }
         val entries = paginationManager.loadNextPage().distinctBy { it.safeKey }

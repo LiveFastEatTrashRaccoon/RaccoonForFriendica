@@ -9,17 +9,13 @@ internal class DefaultEmojiHelper(
     private val repository: EmojiRepository,
 ) : EmojiHelper {
     override suspend fun UserModel.withEmojisIfMissing(): UserModel {
-        if (emojis.isNotEmpty()) {
-            return this
-        }
+        check(emojis.isEmpty()) { return this }
         val texts =
             arrayOf(
                 displayName.orEmpty(),
                 bio.orEmpty(),
             )
-        if (texts.none { it.contains(EMOJI_REGEX) }) {
-            return this
-        }
+        check(texts.any { it.contains(EMOJI_REGEX) }) { return this }
 
         val node = handle.nodeName
         val emojis = repository.getAll(node)?.filterContainedIn(*texts).orEmpty()

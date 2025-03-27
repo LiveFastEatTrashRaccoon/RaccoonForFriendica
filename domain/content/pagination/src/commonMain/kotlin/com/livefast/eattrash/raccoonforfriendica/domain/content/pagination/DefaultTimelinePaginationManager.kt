@@ -286,9 +286,7 @@ internal class DefaultTimelinePaginationManager(
             val entriesByThisUserSoFar =
                 subList(0, index).count { it.creator?.id == creator.id }
             val total = history.size + index
-            if (total == 0) {
-                return@filterIndexed true
-            }
+            check(total != 0) { return@filterIndexed true }
             val rate =
                 (entriesByThisUserInHistory + entriesByThisUserSoFar + 1).toDouble() / (total + 1)
             rate <= rateLimit

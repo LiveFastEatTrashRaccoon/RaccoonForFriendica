@@ -216,9 +216,8 @@ class EntryDetailViewModel(
     }
 
     private suspend fun loadContext() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
+
         updateState { it.copy(loading = true) }
         val mainEntry = uiState.value.mainEntry
         val maxDepth = settingsRepository.current.value?.replyDepth ?: 1
@@ -274,9 +273,7 @@ class EntryDetailViewModel(
             list: List<TimelineEntryModel>,
         ): List<TimelineEntryModel> {
             val parentId = entry.parentId
-            if (parentId.isNullOrEmpty() || entry.id == rootId) {
-                return list
-            }
+            check(!parentId.isNullOrEmpty() && entry.id != rootId) { return list }
             val parent = timelineEntryRepository.getById(parentId) ?: return list
             return buildAncestorsRec(parent, listOf(parent) + list)
         }
@@ -297,9 +294,8 @@ class EntryDetailViewModel(
     }
 
     private suspend fun loadMoreReplies(entry: TimelineEntryModel) {
-        if (entry.loadMoreButtonLoading) {
-            return
-        }
+        check(!entry.loadMoreButtonLoading) { return }
+
         val currentState = uiState.value
         val currentReplies = currentState.entries.getOrNull(currentState.currentIndex).orEmpty()
         updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
@@ -636,9 +632,7 @@ class EntryDetailViewModel(
 
     private fun toggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
-        if (entry.translationLoading) {
-            return
-        }
+        check(!entry.translationLoading) { return }
 
         screenModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
@@ -667,9 +661,8 @@ class EntryDetailViewModel(
     }
 
     private fun changeNavigationIndex(newIndex: Int) {
-        if (!swipeNavigationEnabled) {
-            return
-        }
+        check(swipeNavigationEnabled) { return }
+
         screenModelScope.launch {
             updateState {
                 it.copy(
@@ -691,9 +684,8 @@ class EntryDetailViewModel(
     }
 
     private suspend fun loadNavigationNextPage() {
-        if (!swipeNavigationEnabled) {
-            return
-        }
+        check(swipeNavigationEnabled) { return }
+
         timelineNavigationManager.loadNextPage()
         updateState {
             val currentEntries = it.entries

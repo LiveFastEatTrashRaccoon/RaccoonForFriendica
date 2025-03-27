@@ -133,9 +133,7 @@ class InboxViewModel(
     }
 
     private suspend fun loadNextPage() {
-        if (uiState.value.loading) {
-            return
-        }
+        check(!uiState.value.loading) { return }
 
         val lastReadId = markerRepository.get(MarkerType.Notifications)?.lastReadId
         val wasRefreshing = uiState.value.refreshing
@@ -271,9 +269,7 @@ class InboxViewModel(
     }
 
     private fun markAsRead(notification: NotificationModel) {
-        if (notification.read) {
-            return
-        }
+        check(!notification.read) { return }
         screenModelScope.launch {
             updateItemInState(notification.id) { it.copy(read = true) }
             inboxManager.decrementUnreadCount()
@@ -281,9 +277,7 @@ class InboxViewModel(
     }
 
     private fun dismiss(notification: NotificationModel) {
-        if (notification.read) {
-            return
-        }
+        check(!notification.read) { return }
         screenModelScope.launch {
             val success = notificationRepository.dismiss(notification.id)
             if (success) {
