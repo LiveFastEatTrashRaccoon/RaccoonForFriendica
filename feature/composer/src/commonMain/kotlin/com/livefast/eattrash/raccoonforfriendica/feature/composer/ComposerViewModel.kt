@@ -909,14 +909,14 @@ class ComposerViewModel(
                 when (markupMode) {
                     MarkupMode.HTML -> "<i>"
                     MarkupMode.BBCode -> "[i]"
-                    MarkupMode.Markdown -> "_"
+                    MarkupMode.Markdown -> "*"
                     else -> ""
                 }
             val after =
                 when (markupMode) {
                     MarkupMode.HTML -> "</i>"
                     MarkupMode.BBCode -> "[/i]"
-                    MarkupMode.Markdown -> "_"
+                    MarkupMode.Markdown -> "*"
                     else -> ""
                 }
             val newValue =
