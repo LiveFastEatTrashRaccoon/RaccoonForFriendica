@@ -1,10 +1,9 @@
-name: release
+name: release-beta-gplay
 
 on:
   push:
     tags:
-      - '*.*.*'
-      - '!*.*.*-beta*'
+      - '*.*.*-beta*'
 
 permissions:
   contents: write
@@ -56,20 +55,21 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        run: ./gradlew assembleRelease --stacktrace
+        run: ./gradlew bundleRelease --stacktrace
 
       - name: Upload release build to artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-artifacts
           path: |
-            composeApp/build/outputs/apk/release/*.apk
+            composeApp/build/outputs/apk/release/RaccoonForFriendica-release.aab
 
-      - name: Create Github release
-        uses: softprops/action-gh-release@v2
+      - name: Create Google Play release (beta)
+        uses: r0adkll/upload-google-play@v1
         with:
-          body_path: distribution/changelog.txt
-          generate_release_notes: false
-          make_latest: true
-          files: |
-            composeApp/build/outputs/apk/release/*.apk
+          serviceAccountJsonPlainText: ${{ SERVICE_ACCOUNT_JSON }}
+          packageName: com.livefast.eattrash.raccoonforfriendica
+          track: beta
+          whatsNewDirectory: distribution/whatsnew
+          releaseFiles: |
+            composeApp/build/outputs/apk/release/RaccoonForFriendica-release.aab
