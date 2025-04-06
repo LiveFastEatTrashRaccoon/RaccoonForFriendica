@@ -44,6 +44,13 @@ jobs:
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > composeApp/keystore.jks
 
+      - name: Bump version code
+        uses: chkfung/android-version-actions@v1.1
+        with:
+          gradlePath: composeApp/build.gradle.kts
+          versionCode: ${{ vars.VERSION_CODE }}
+          versionName: ${{ github.ref_name }}
+
       - name: Build release APK
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -61,7 +68,7 @@ jobs:
       - name: Create Github release
         uses: softprops/action-gh-release@v2
         with:
-          body_path: res/changelog.txt
+          body_path: distribution/changelog.txt
           generate_release_notes: false
           make_latest: true
           files: |
