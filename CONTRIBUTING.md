@@ -58,8 +58,12 @@ Symbols used in version numbers:
 
 #### Beta releases
 
-- [ ] checkout the `master` branch
-- [ ] increment `versionCode` (ε) and `versionName` (α.β.γ-betaδ) in `composeApp/build.gradle.kts`
+In order to create version `α.β.γ-betaδ`
+
+- [ ] increment `versionCode` (ε) under the "Repository variables" section in the repo settings
+  (previous value + 1)
+- edit `distribution/whatsnew/whatsnew-en-US` with the change list you want to display on
+  Google Play (remember: 500 character limit)
 - [ ] add everything to stage and create a commit with the message "version α.β.γ-betaδ"
 - [ ] tag the commit with the label "α.β.γ-betaδ"
 - [ ] push both the commit and tag to `origin`
@@ -67,13 +71,18 @@ Symbols used in version numbers:
 
 #### Stable releases
 
+In order to create version `α.β.γ`
+
 - [ ] checkout the `master` branch
-- [ ] increment `versionCode` (ε) and `versionName` (α.β.γ) in `composeApp/build.gradle.kts`
-- [ ] update `res/changelog.txt` with a detailed change list, remembering:
+- [ ] increment `versionCode` (ε) under the "Repository variables" section in the repo settings
+  (previous value + 1)
+- [ ] update `distribution/changelog.txt` with a detailed change list, remembering:
   - to include PR (with author) and issue references (if possible)
   - to update the version comparison for GitHub diff view
+- edit `distribution/whatsnew/whatsnew-en-US` with the change list you want to display on
+  Google Play, you can summarize `distribution/changelog.txt` (remember: 500 character limit)
 - [ ] create a file called `ε.txt` under `fastlane/metadata/android/en-US/changelogs/` with the
-  change list copying the content of `res/changelog.txt` (remember: 500 character limit)
+  changes you want to display on F-Droid (typically copy `distribution/whatsnew/whatsnew-en-US`)
 - [ ] add everything to stage and create a commit with the message "version α.β.γ"
 - [ ] tag the commit with the label "α.β.γ"
 - [ ] push both the commit and tag to `origin`
