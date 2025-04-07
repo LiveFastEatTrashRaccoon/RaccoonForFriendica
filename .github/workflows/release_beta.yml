@@ -43,13 +43,6 @@ jobs:
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > composeApp/keystore.jks
 
-      - name: Bump version code
-        uses: chkfung/android-version-actions@v1.2
-        with:
-          gradlePath: composeApp/build.gradle.kts
-          versionCode: ${{ vars.VERSION_CODE }}
-          versionName: ${{ github.ref_name }}
-
       - name: Build release APK
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}

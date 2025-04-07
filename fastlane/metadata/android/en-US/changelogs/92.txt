@@ -1,0 +1,6 @@
+- fix: change markdown italic representation
+- fix: avoid showing custom tabs option if not supported
+- refactor: improve code readability
+- chore: change default instance
+- chore: update dependencies
+- chore: update l10n

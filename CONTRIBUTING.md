@@ -60,13 +60,15 @@ Symbols used in version numbers:
 
 In order to create version `α.β.γ-betaδ`
 
-- [ ] increment `versionCode` (ε) under the "Repository variables" section in the repo settings
-  (previous value + 1)
-- edit `distribution/whatsnew/whatsnew-en-US` with the change list you want to display on
-  Google Play (remember: 500 character limit)
+- [ ] checkout the `master` branch
+- [ ] increment `versionCode` (ε) and `versionName` (α.β.γ-betaδ) in `composeApp/build.gradle.kts`
+- [ ] create a file called `ε.txt` under `fastlane/metadata/android/en-US/changelogs/` with the
+  changes you want to display on the stores (remember: 500 character limit)
 - [ ] add everything to stage and create a commit with the message "version α.β.γ-betaδ"
 - [ ] tag the commit with the label "α.β.γ-betaδ"
-- [ ] push both the commit and tag to `origin`
+- [ ] push both the commit and tag to `origin` and wait for the workflows to finish
+- [ ] create a signed AAB and upload it to Google Play in the `beta` track (open tests) with a
+  summary of the changelog
 - [ ] (optional) create an announcement in the Friendica group
 
 #### Stable releases
@@ -74,16 +76,15 @@ In order to create version `α.β.γ-betaδ`
 In order to create version `α.β.γ`
 
 - [ ] checkout the `master` branch
-- [ ] increment `versionCode` (ε) under the "Repository variables" section in the repo settings
-  (previous value + 1)
+- [ ] increment `versionCode` (ε) and `versionName` (α.β.γ-betaδ) in `composeApp/build.gradle.kts`
 - [ ] update `distribution/changelog.txt` with a detailed change list, remembering:
   - to include PR (with author) and issue references (if possible)
   - to update the version comparison for GitHub diff view
-- edit `distribution/whatsnew/whatsnew-en-US` with the change list you want to display on
-  Google Play, you can summarize `distribution/changelog.txt` (remember: 500 character limit)
 - [ ] create a file called `ε.txt` under `fastlane/metadata/android/en-US/changelogs/` with the
-  changes you want to display on F-Droid (typically copy `distribution/whatsnew/whatsnew-en-US`)
+  changes you want to display on the stores (remember: 500 character limit)
 - [ ] add everything to stage and create a commit with the message "version α.β.γ"
 - [ ] tag the commit with the label "α.β.γ"
-- [ ] push both the commit and tag to `origin`
+- [ ] push both the commit and tag to `origin` and wait for the workflows to finish
+- [ ] create a signed AAB and upload it to Google Play in the `production` track using the content
+  of `ε.txt` as the changelog
 - [ ] (optional) create an announcement in the Friendica group
