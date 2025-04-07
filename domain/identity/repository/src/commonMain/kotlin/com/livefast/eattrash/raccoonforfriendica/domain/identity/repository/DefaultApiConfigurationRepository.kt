@@ -108,7 +108,7 @@ internal class DefaultApiConfigurationRepository(
         private const val KEY_METHOD = "lastMethod"
         private const val METHOD_BASIC = "HTTPBasic"
         private const val METHOD_OAUTH_2 = "OAuth2"
-        private const val DEFAULT_NODE = "poliverso.org"
+        private const val DEFAULT_NODE = "friendica.world"
         private const val DEFAULT_METHOD = METHOD_BASIC
         private const val VALIDATE_CREDENTIALS_TIMEOUT = 2000L
     }

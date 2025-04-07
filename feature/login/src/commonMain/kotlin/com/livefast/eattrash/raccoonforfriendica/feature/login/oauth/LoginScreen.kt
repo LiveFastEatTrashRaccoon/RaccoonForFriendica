@@ -194,7 +194,7 @@ class LoginScreen(
                                     buildString {
                                         append(LocalStrings.current.exempliGratia)
                                         append(" ")
-                                        append("poliverso.org")
+                                        append("friendica.world")
                                     },
                             )
                         },
