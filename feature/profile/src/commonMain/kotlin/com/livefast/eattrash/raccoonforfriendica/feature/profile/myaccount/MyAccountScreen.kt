@@ -334,33 +334,31 @@ object MyAccountScreen : Tab {
                     }
                 }
 
-                if (uiState.initial) {
-                    stickyHeader {
-                        val titles =
-                            listOf(
-                                UserSection.Posts,
-                                UserSection.All,
-                                UserSection.Pinned,
-                                UserSection.Media,
-                            )
-                        SectionSelector(
-                            modifier =
-                                Modifier
-                                    .background(MaterialTheme.colorScheme.background)
-                                    .padding(
-                                        top = stickyHeaderTopOffset,
-                                        bottom = Spacing.s,
-                                    ),
-                            titles = titles.map { it.toReadableName() },
-                            scrollable = true,
-                            currentSection = titles.indexOf(uiState.section),
-                            onSectionSelected = {
-                                model.reduce(
-                                    MyAccountMviModel.Intent.ChangeSection(titles[it]),
-                                )
-                            },
+                stickyHeader {
+                    val titles =
+                        listOf(
+                            UserSection.Posts,
+                            UserSection.All,
+                            UserSection.Pinned,
+                            UserSection.Media,
                         )
-                    }
+                    SectionSelector(
+                        modifier =
+                            Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .padding(
+                                    top = stickyHeaderTopOffset,
+                                    bottom = Spacing.s,
+                                ),
+                        titles = titles.map { it.toReadableName() },
+                        scrollable = true,
+                        currentSection = titles.indexOf(uiState.section),
+                        onSectionSelected = {
+                            model.reduce(
+                                MyAccountMviModel.Intent.ChangeSection(titles[it]),
+                            )
+                        },
+                    )
                 }
 
                 if (uiState.initial) {
