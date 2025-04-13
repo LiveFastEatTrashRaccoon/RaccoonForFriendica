@@ -40,6 +40,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternall
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
 import com.livefast.eattrash.raccoonforfriendica.main.MainScreen
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -67,6 +68,20 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
 
     LaunchedEffect(settingsRepository) {
         var isInitialized = false
+
+        fun finishInitialization() {
+            if (!isInitialized) {
+                isInitialized = true
+                onLoadingFinished?.invoke()
+            }
+        }
+
+        launch {
+            // set a timeout on the initialization
+            delay(1500)
+            finishInitialization()
+        }
+
         settingsRepository.current
             .onEach { settings ->
                 if (settings != null) {
@@ -77,11 +92,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                     themeRepository.changeCustomSeedColor(
                         color = settings.customSeedColor?.let { c -> Color(color = c) },
                     )
-
-                    if (!isInitialized) {
-                        isInitialized = true
-                        onLoadingFinished?.invoke()
-                    }
+                    finishInitialization()
                 }
             }.launchIn(this)
 
