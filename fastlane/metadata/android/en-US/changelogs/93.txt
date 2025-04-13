@@ -1,0 +1,3 @@
+- fix: set timeout on app startup
+- fix: section selector in profile screen
+- chore: update dependencies
