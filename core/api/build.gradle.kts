@@ -20,6 +20,14 @@ kotlin {
 
                 implementation(projects.core.utils)
             }
+
         }
+    }
+}
+
+// workaround after KSP 2.0.0
+tasks.configureEach {
+    if (name.contains(Regex("ksp.*KotlinAndroid"))) {
+        dependsOn(tasks.named("kspCommonMainKotlinMetadata"))
     }
 }
