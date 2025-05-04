@@ -15,7 +15,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
@@ -201,6 +200,7 @@ class SearchViewModel(
                         includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                     )
                 SearchSection.Users -> SearchPaginationSpecification.Users(query)
+                SearchSection.Groups -> SearchPaginationSpecification.Groups(query)
             },
         )
         loadNextPage()

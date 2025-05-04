@@ -112,7 +112,7 @@ internal class DefaultSearchPaginationManager(
                             query = specification.query,
                             pageCursor = pageCursor,
                             type = SearchResultType.Entries,
-                        )?.filterNsfw(specification.includeNsfw)
+                        )
 
                 is SearchPaginationSpecification.Hashtags ->
                     searchRepository
@@ -129,8 +129,24 @@ internal class DefaultSearchPaginationManager(
                             pageCursor = pageCursor,
                             type = SearchResultType.Users,
                         )?.determineUserRelationshipStatus()
-            }?.filterByStopWords()
+
+                is SearchPaginationSpecification.Groups ->
+                    searchRepository.search(
+                        query = specification.query,
+                        pageCursor = pageCursor,
+                        type = SearchResultType.Users,
+                    )
+            }
                 ?.deduplicate()
+
+                ?.filterByStopWords()
+                ?.let { list ->
+                    when (specification) {
+                        is SearchPaginationSpecification.Entries -> list.filterNsfw(specification.includeNsfw)
+                        is SearchPaginationSpecification.Groups -> list.filterGroups()
+                        else -> list
+                    }
+                }
                 ?.updatePaginationData()
                 ?.fixupCreatorEmojis()
                 ?.fixupInReplyTo()
@@ -214,9 +230,18 @@ internal class DefaultSearchPaginationManager(
                                 )
                             entryTexts.any { it.contains(other = word, ignoreCase = true) }
                         }
-                    } ?: true
+                    } != false
 
                 else -> true
+            }
+        }
+
+    private fun List<ExploreItemModel>.filterGroups(): List<ExploreItemModel> =
+        filter {
+            if (it is ExploreItemModel.User) {
+                it.user.group
+            } else {
+                false
             }
         }
 }

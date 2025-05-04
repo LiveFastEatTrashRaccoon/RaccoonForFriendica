@@ -13,4 +13,8 @@ sealed interface SearchPaginationSpecification {
     data class Hashtags(
         val query: String,
     ) : SearchPaginationSpecification
+
+    data class Groups(
+        val query: String,
+    ) : SearchPaginationSpecification
 }

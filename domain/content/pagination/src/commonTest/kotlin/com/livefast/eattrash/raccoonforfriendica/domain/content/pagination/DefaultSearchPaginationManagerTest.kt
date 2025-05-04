@@ -465,4 +465,96 @@ class DefaultSearchPaginationManagerTest {
             }
         }
     // endregion
+
+    // region Groups
+    @Test
+    fun `given no results when loadNextPage with Groups specification then result is as expected`() =
+        runTest {
+            everySuspend {
+                searchRepository.search(
+                    query = any(),
+                    type = any(),
+                    pageCursor = any(),
+                    resolve = any(),
+                )
+            } returns emptyList()
+
+            sut.reset(SearchPaginationSpecification.Groups(query = "query"))
+            val res = sut.loadNextPage()
+
+            assertTrue(res.isEmpty())
+            assertFalse(sut.canFetchMore)
+            verifySuspend {
+                searchRepository.search(
+                    query = "query",
+                    type = SearchResultType.Users,
+                    pageCursor = null,
+                    resolve = false,
+                )
+            }
+        }
+
+    @Test
+    fun `given results when loadNextPage with Groups specification then result is as expected`() =
+        runTest {
+            val list = listOf(UserModel(id = "1", group = true), UserModel(id = "2", group = false))
+            everySuspend {
+                searchRepository.search(
+                    query = any(),
+                    type = any(),
+                    pageCursor = any(),
+                    resolve = any(),
+                )
+            } returns list.map { ExploreItemModel.User(it) }
+
+            sut.reset(SearchPaginationSpecification.Groups(query = "query"))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.filter { it.group }.map { ExploreItemModel.User(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                searchRepository.search(
+                    query = "query",
+                    type = SearchResultType.Users,
+                    pageCursor = null,
+                    resolve = false,
+                )
+            }
+        }
+
+    @Test
+    fun `given no more results when loadNextPage twice with Groups specification then result is as expected`() =
+        runTest {
+            val list = listOf(UserModel(id = "1", group = true))
+            everySuspend {
+                searchRepository.search(
+                    query = any(),
+                    type = any(),
+                    pageCursor = any(),
+                    resolve = any(),
+                )
+            } sequentiallyReturns listOf(list.map { ExploreItemModel.User(it) }, emptyList())
+
+            sut.reset(SearchPaginationSpecification.Groups(query = "query"))
+            sut.loadNextPage()
+            val res = sut.loadNextPage()
+
+            assertEquals(list.map { ExploreItemModel.User(it) }, res)
+            assertFalse(sut.canFetchMore)
+            verifySuspend {
+                searchRepository.search(
+                    query = "query",
+                    type = SearchResultType.Users,
+                    pageCursor = null,
+                    resolve = false,
+                )
+                searchRepository.search(
+                    query = "query",
+                    type = SearchResultType.Users,
+                    pageCursor = "1",
+                    resolve = false,
+                )
+            }
+        }
+    // endregion
 }
