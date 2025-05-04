@@ -217,6 +217,7 @@ class SearchScreen : Screen {
                                 SearchSection.Posts,
                                 SearchSection.Users,
                                 SearchSection.Hashtags,
+                                SearchSection.Groups,
                             )
                         SectionSelector(
                             modifier =
@@ -253,7 +254,7 @@ class SearchScreen : Screen {
                                     }
                                 }
 
-                                SearchSection.Users -> {
+                                SearchSection.Users, SearchSection.Groups -> {
                                     UserItemPlaceholder(modifier = modifier)
                                     Spacer(modifier = Modifier.height(Spacing.interItem))
                                 }
