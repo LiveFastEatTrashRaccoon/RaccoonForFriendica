@@ -1,0 +1,2 @@
+- feat: add possibility to search groups
+- chore: update dependencies

@@ -67,8 +67,8 @@ In order to create version `α.β.γ-betaδ`
 - [ ] add everything to stage and create a commit with the message "version α.β.γ-betaδ"
 - [ ] tag the commit with the label "α.β.γ-betaδ"
 - [ ] push both the commit and tag to `origin` and wait for the workflows to finish
-- [ ] create a signed AAB and upload it to Google Play in the `beta` track (open tests) with a
-  summary of the changelog
+- [ ] create a signed AAB and upload it to Google Play in the `beta` track (open tests) using the
+  content of `ε.txt` as the changelog
 - [ ] (optional) create an announcement in the Friendica group
 
 #### Stable releases
