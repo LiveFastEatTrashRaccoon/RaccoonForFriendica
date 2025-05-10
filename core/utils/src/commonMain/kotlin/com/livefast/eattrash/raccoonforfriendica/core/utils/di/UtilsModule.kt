@@ -24,6 +24,7 @@ val utilsModule =
             nativeDebugModule,
             nativeFileSystemModule,
             nativeGalleryModule,
+            nativeImageLoadModule,
             nativeShareModule,
             nativeOpenUrlModule,
             nativeVibrateModule,
