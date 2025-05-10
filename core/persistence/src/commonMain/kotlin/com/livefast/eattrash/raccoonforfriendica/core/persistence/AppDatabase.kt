@@ -43,6 +43,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.UserR
         AutoMigration(from = 19, to = 20),
         AutoMigration(from = 20, to = 21),
     ],
+    exportSchema = true,
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {

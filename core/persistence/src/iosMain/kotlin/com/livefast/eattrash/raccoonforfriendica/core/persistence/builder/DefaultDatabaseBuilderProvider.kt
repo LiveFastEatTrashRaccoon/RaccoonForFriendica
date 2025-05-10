@@ -15,9 +15,6 @@ internal class DefaultDatabaseBuilderProvider : DatabaseBuilderProvider {
         return Room
             .databaseBuilder<AppDatabase>(
                 name = dbFilePath,
-                factory = {
-                    findDatabaseConstructorAndInitDatabaseImpl(AppDatabase::class)
-                },
             )
     }
 
