@@ -9,10 +9,7 @@ import org.kodein.di.DIAware
 import org.kodein.di.bind
 import org.kodein.di.provider
 
-class MainApplication :
-    Application(),
-    DIAware {
-    override val di: DI get() = RootDI.di
+class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
