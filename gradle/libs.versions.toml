@@ -67,6 +67,7 @@ connectivity-device = { module = "dev.jordond.connectivity:connectivity-device",
 gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 
 kodein = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
+kodein-compose = { module = "org.kodein.di:kodein-di-framework-compose", version.ref = "kodein" }
 
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
