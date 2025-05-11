@@ -21,6 +21,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.getL10nManager
@@ -45,10 +46,11 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.kodein.di.compose.withDI
 
 @OptIn(FlowPreview::class)
 @Composable
-fun App(onLoadingFinished: (() -> Unit)? = null) {
+fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
     // initialize crash reporting as soon as possible
     val crashReportManager = remember { getCrashReportManager() }
     LaunchedEffect(crashReportManager) {

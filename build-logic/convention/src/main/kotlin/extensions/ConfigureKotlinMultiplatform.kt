@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 interface CustomKotlinMultiplatformExtension {
-    val additionalLinkerOptionForIos: Property<String>
+    val baseName: Property<String>
 }
 
 internal fun Project.configureKotlinMultiplatform(extension: KotlinMultiplatformExtension) =
@@ -23,18 +23,14 @@ internal fun Project.configureKotlinMultiplatform(extension: KotlinMultiplatform
         val customExtension =
             project.extensions
                 .create<CustomKotlinMultiplatformExtension>("customKotlinMultiplatformExtension")
-        val linkerOption = customExtension.additionalLinkerOptionForIos.getOrElse("")
         listOf(
             iosX64(),
             iosArm64(),
             iosSimulatorArm64(),
         ).forEach {
             it.binaries.framework {
-                baseName = moduleName
+                baseName = customExtension.baseName.orNull ?: moduleName
                 isStatic = true
-                if (linkerOption.isNotEmpty()) {
-                    linkerOpts.add(linkerOption)
-                }
             }
         }
     }

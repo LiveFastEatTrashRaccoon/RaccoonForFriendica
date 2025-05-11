@@ -24,10 +24,6 @@ kotlin {
     }
 }
 
-customKotlinMultiplatformExtension {
-    additionalLinkerOptionForIos = "-lsqlite3"
-}
-
 room {
     schemaDirectory("$projectDir/schemas")
 }

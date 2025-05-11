@@ -25,6 +25,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            // Required when using NativeSQLiteDriver
+            linkerOpts.add("-lsqlite3")
         }
     }
 
@@ -46,7 +48,7 @@ kotlin {
 
             implementation(libs.coil)
             implementation(libs.compose.multiplatform.media.player)
-            implementation(libs.kodein)
+            implementation(libs.kodein.compose)
             implementation(libs.ktor.client.core)
 
             implementation(libs.voyager.navigator)
