@@ -14,6 +14,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.utilsModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.contentPaginationModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.contentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.di.contentUseCaseModule
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getAuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.identityRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.identityUseCaseModule
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di.pullNotificationsModule
@@ -121,3 +123,6 @@ fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
             )
         }
 }
+
+// Needed for the OAuth flow on iOS
+fun provideAuthManager(): AuthManager = getAuthManager()

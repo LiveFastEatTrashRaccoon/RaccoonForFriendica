@@ -1,5 +1,6 @@
 import SwiftUI
 import ComposeApp
+import os
 
 @main
 struct iOSApp: App {
@@ -21,6 +22,8 @@ struct iOSApp: App {
             }
         }
     }
+    
+    private let logger = Logger()
 
     private func handleIncomingUrl(_ url: URL) {
         guard url.scheme == "raccoonforfriendica" else {
@@ -34,7 +37,14 @@ struct iOSApp: App {
             print("Unknown host")
             return
         }
-        let authManager = UtilsKt.getAuthManager()
-        authManager.performTokenExchange(url.absoluteString)
+        
+        Task {
+            let authManager = DiHelperKt.provideAuthManager()
+            do {
+                try await authManager.performTokenExchange(url: url.absoluteString)
+            } catch {
+                logger.log("Auth error: \(error)")
+            }
+        }
     }
 }
