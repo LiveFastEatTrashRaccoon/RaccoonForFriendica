@@ -49,7 +49,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.userListMod
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.di.searchModule
 import org.kodein.di.DI
 
-internal fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
+fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
     RootDI.di =
         DI {
             additionalBuilder()
