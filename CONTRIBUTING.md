@@ -38,7 +38,7 @@ empty `build.properties` file in the `core/utils` directory with the following c
 sentry_dsn=dummy_dsn
 ```
 
-Similarly, create a `core/utils/build.properties` with the dummy configuration for the fallback
+Similarly, create a `core/api/build.properties` with the dummy configuration for the fallback
 translation API:
 ```properties
 inner_translation_api_url=dummy_url
