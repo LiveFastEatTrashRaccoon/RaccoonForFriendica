@@ -24,9 +24,7 @@ interface ListService {
     suspend fun getFriendicaCircles(): List<FriendicaCircle>
 
     @GET("v1/lists/{id}")
-    suspend fun getBy(
-        @Path("id") id: String,
-    ): UserList
+    suspend fun getBy(@Path("id") id: String): UserList
 
     @GET("v1/lists/{id}/accounts")
     suspend fun getMembers(
@@ -37,33 +35,20 @@ interface ListService {
 
     @POST("v1/lists")
     @Headers("Content-Type: application/json")
-    suspend fun create(
-        @Body data: EditListForm,
-    ): UserList
+    suspend fun create(@Body data: EditListForm): UserList
 
     @PUT("v1/lists/{id}")
     @Headers("Content-Type: application/json")
-    suspend fun update(
-        @Path("id") id: String,
-        @Body data: EditListForm,
-    ): UserList
+    suspend fun update(@Path("id") id: String, @Body data: EditListForm): UserList
 
     @DELETE("v1/lists/{id}")
-    suspend fun delete(
-        @Path("id") id: String,
-    ): Response<Unit>
+    suspend fun delete(@Path("id") id: String): Response<Unit>
 
     @POST("v1/lists/{id}/accounts")
     @Headers("Content-Type: application/json")
-    suspend fun addMembers(
-        @Path("id") id: String,
-        @Body data: EditListMembersForm,
-    ): Response<Unit>
+    suspend fun addMembers(@Path("id") id: String, @Body data: EditListMembersForm): Response<Unit>
 
     @HTTP(method = "DELETE", path = "v1/lists/{id}/accounts", hasBody = true)
     @Headers("Content-Type: application/json")
-    suspend fun removeMembers(
-        @Path("id") id: String,
-        @Body data: EditListMembersForm,
-    ): Response<Unit>
+    suspend fun removeMembers(@Path("id") id: String, @Body data: EditListMembersForm): Response<Unit>
 }

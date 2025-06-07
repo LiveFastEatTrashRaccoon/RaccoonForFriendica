@@ -14,9 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
-internal class DefaultNavigationCoordinator(
-    dispatcher: CoroutineDispatcher = Dispatchers.Main,
-) : NavigationCoordinator {
+internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Dispatchers.Main) :
+    NavigationCoordinator {
     override val currentSection = MutableStateFlow<BottomNavigationSection?>(null)
     override val onDoubleTabSelection = MutableSharedFlow<BottomNavigationSection>()
     override val canPop = MutableStateFlow(false)
@@ -88,10 +87,7 @@ internal class DefaultNavigationCoordinator(
         deepLinkUrl.emit(url)
     }
 
-    override fun showGlobalMessage(
-        message: String,
-        delay: Duration,
-    ) {
+    override fun showGlobalMessage(message: String, delay: Duration) {
         scope.launch {
             delay(delay)
             globalMessage.emit(message)

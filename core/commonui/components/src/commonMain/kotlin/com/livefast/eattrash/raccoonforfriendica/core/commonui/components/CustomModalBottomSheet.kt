@@ -49,7 +49,7 @@ fun CustomModalBottomSheet(
     sheetState: SheetState = rememberModalBottomSheetState(),
     title: String = "",
     items: List<CustomModalBottomSheetItem> = emptyList(),
-    onSelected: ((Int?) -> Unit)? = null,
+    onSelect: ((Int?) -> Unit)? = null,
     onLongPress: ((Int) -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
@@ -59,7 +59,7 @@ fun CustomModalBottomSheet(
         contentWindowInsets = { WindowInsets.navigationBars },
         sheetState = sheetState,
         onDismissRequest = {
-            onSelected?.invoke(null)
+            onSelect?.invoke(null)
         },
         content = {
             Column(
@@ -77,33 +77,33 @@ fun CustomModalBottomSheet(
                     itemsIndexed(items = items) { idx, item ->
                         Row(
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .clip(
-                                        shape = RoundedCornerShape(CornerSize.xl),
-                                    ).combinedClickable(
-                                        onClick = {
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(
+                                    shape = RoundedCornerShape(CornerSize.xl),
+                                ).combinedClickable(
+                                    onClick = {
+                                        sheetScope
+                                            .launch {
+                                                sheetState.hide()
+                                            }.invokeOnCompletion {
+                                                onSelect?.invoke(idx)
+                                            }
+                                    },
+                                    onLongClick =
+                                    if (onLongPress != null) {
+                                        {
                                             sheetScope
                                                 .launch {
                                                     sheetState.hide()
                                                 }.invokeOnCompletion {
-                                                    onSelected?.invoke(idx)
+                                                    onLongPress(idx)
                                                 }
-                                        },
-                                        onLongClick =
-                                            if (onLongPress != null) {
-                                                {
-                                                    sheetScope
-                                                        .launch {
-                                                            sheetState.hide()
-                                                        }.invokeOnCompletion {
-                                                            onLongPress(idx)
-                                                        }
-                                                }
-                                            } else {
-                                                null
-                                            },
-                                    ).padding(10.dp),
+                                        }
+                                    } else {
+                                        null
+                                    },
+                                ).padding(10.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                         ) {
@@ -115,8 +115,8 @@ fun CustomModalBottomSheet(
                                 Text(
                                     text = item.label,
                                     style =
-                                        item.customLabelStyle
-                                            ?: MaterialTheme.typography.bodyLarge,
+                                    item.customLabelStyle
+                                        ?: MaterialTheme.typography.bodyLarge,
                                     color = fullColor,
                                 )
                                 if (!item.subtitle.isNullOrEmpty()) {

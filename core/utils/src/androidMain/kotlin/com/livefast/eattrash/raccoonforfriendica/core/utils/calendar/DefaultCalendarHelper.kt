@@ -4,17 +4,10 @@ import android.content.Intent
 import android.provider.CalendarContract
 import io.sentry.kotlin.multiplatform.Context
 
-internal class DefaultCalendarHelper(
-    private val context: Context,
-) : CalendarHelper {
+internal class DefaultCalendarHelper(private val context: Context) : CalendarHelper {
     override val supportsExport: Boolean = true
 
-    override fun export(
-        title: String,
-        startDate: Long,
-        endDate: Long?,
-        location: String?,
-    ) {
+    override fun export(title: String, startDate: Long, endDate: Long?, location: String?) {
         val intent =
             Intent(Intent.ACTION_INSERT).apply {
                 data = CalendarContract.Events.CONTENT_URI

@@ -24,10 +24,7 @@ import kotlin.time.toDuration
 
 actual fun epochMillis(): Long = (NSDate().timeIntervalSince1970 * 1000).toLong()
 
-private fun getDateFormatter(
-    format: String,
-    withLocalTimezone: Boolean = false,
-) = NSDateFormatter().apply {
+private fun getDateFormatter(format: String, withLocalTimezone: Boolean = false) = NSDateFormatter().apply {
     locale = NSLocale.autoupdatingCurrentLocale
     timeZone =
         if (withLocalTimezone) {
@@ -67,22 +64,18 @@ actual fun String.toEpochMillis(): Long {
     return (date.timeIntervalSince1970 * 1000).toLong()
 }
 
-actual fun Long.concatDateWithTime(
-    hours: Int,
-    minutes: Int,
-    seconds: Int,
-): Long {
+actual fun Long.concatDateWithTime(hours: Int, minutes: Int, seconds: Int): Long {
     val date = NSDate(timeIntervalSinceReferenceDate = (this.toDouble() / 1000))
     val calendar = NSCalendar(calendarIdentifier = NSCalendarIdentifierGregorian)
     val dateComponents =
         calendar.components(
             unitFlags =
-                NSCalendarUnitSecond
-                    .or(NSCalendarUnitMinute)
-                    .or(NSCalendarUnitHour)
-                    .or(NSCalendarUnitDay)
-                    .or(NSCalendarUnitMonth)
-                    .or(NSCalendarUnitYear),
+            NSCalendarUnitSecond
+                .or(NSCalendarUnitMinute)
+                .or(NSCalendarUnitHour)
+                .or(NSCalendarUnitDay)
+                .or(NSCalendarUnitMonth)
+                .or(NSCalendarUnitYear),
             fromDate = date,
         )
     dateComponents.hour = hours.toLong()
@@ -99,9 +92,9 @@ actual fun Long.extractTimePart(): Pair<Int, Int> {
     val dateComponents =
         calendar.components(
             unitFlags =
-                NSCalendarUnitSecond
-                    .or(NSCalendarUnitMinute)
-                    .or(NSCalendarUnitHour),
+            NSCalendarUnitSecond
+                .or(NSCalendarUnitMinute)
+                .or(NSCalendarUnitHour),
             fromDate = date,
         )
     val hours = dateComponents.hour.toInt()
@@ -115,9 +108,9 @@ actual fun Long.extractDatePart(): Pair<Int, Int> {
     val dateComponents =
         calendar.components(
             unitFlags =
-                NSCalendarUnitSecond
-                    .or(NSCalendarUnitMonth)
-                    .or(NSCalendarUnitYear),
+            NSCalendarUnitSecond
+                .or(NSCalendarUnitMonth)
+                .or(NSCalendarUnitYear),
             fromDate = date,
         )
     val year = dateComponents.year.toInt()
@@ -125,11 +118,7 @@ actual fun Long.extractDatePart(): Pair<Int, Int> {
     return year to month
 }
 
-actual fun getFormattedDate(
-    iso8601Timestamp: String,
-    format: String,
-    withLocalTimezone: Boolean,
-): String {
+actual fun getFormattedDate(iso8601Timestamp: String, format: String, withLocalTimezone: Boolean): String {
     val date = getDateFromIso8601Timestamp(iso8601Timestamp) ?: return ""
     val dateFormatter =
         getDateFormatter(format).run {
@@ -141,16 +130,12 @@ actual fun getFormattedDate(
     return dateFormatter.stringFromDate(date)
 }
 
-actual fun parseDate(
-    value: String,
-    format: String,
-    withLocalTimezone: Boolean,
-): String {
+actual fun parseDate(value: String, format: String, withLocalTimezone: Boolean): String {
     val dateFormatter =
         getDateFormatter(
             format = format,
-            withLocalTimezone = withLocalTimezone
-    )
+            withLocalTimezone = withLocalTimezone,
+        )
     val date =
         runCatching {
             dateFormatter.dateFromString(value)
@@ -174,12 +159,12 @@ actual fun getPrettyDate(
     val delta =
         calendar.components(
             unitFlags =
-                NSCalendarUnitSecond
-                    .or(NSCalendarUnitMinute)
-                    .or(NSCalendarUnitHour)
-                    .or(NSCalendarUnitDay)
-                    .or(NSCalendarUnitMonth)
-                    .or(NSCalendarUnitYear),
+            NSCalendarUnitSecond
+                .or(NSCalendarUnitMinute)
+                .or(NSCalendarUnitHour)
+                .or(NSCalendarUnitDay)
+                .or(NSCalendarUnitMonth)
+                .or(NSCalendarUnitYear),
             fromDate = date,
             toDate = now,
             options = 0u,
@@ -256,9 +241,9 @@ actual fun isToday(iso8601Timestamp: String): Boolean {
     val dateComponents =
         calendar.components(
             unitFlags =
-                NSCalendarUnitDay
-                    .or(NSCalendarUnitMonth)
-                    .or(NSCalendarUnitYear),
+            NSCalendarUnitDay
+                .or(NSCalendarUnitMonth)
+                .or(NSCalendarUnitYear),
             fromDate = date,
         )
     val year = dateComponents.year
@@ -268,9 +253,9 @@ actual fun isToday(iso8601Timestamp: String): Boolean {
     val componentsNow =
         calendar.components(
             unitFlags =
-                NSCalendarUnitDay
-                    .or(NSCalendarUnitMonth)
-                    .or(NSCalendarUnitYear),
+            NSCalendarUnitDay
+                .or(NSCalendarUnitMonth)
+                .or(NSCalendarUnitYear),
             fromDate = NSDate(),
         )
     val yearNow = componentsNow.year

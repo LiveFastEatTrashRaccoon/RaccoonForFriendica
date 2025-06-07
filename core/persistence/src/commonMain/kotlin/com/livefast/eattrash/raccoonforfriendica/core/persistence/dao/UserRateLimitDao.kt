@@ -16,10 +16,7 @@ interface UserRateLimitDao {
     suspend fun getAll(accountId: Long): List<UserRateLimitEntity>
 
     @Query("SELECT * FROM UserRateLimitEntity WHERE accountId = :accountId AND userHandle = :handle")
-    suspend fun getBy(
-        accountId: Long,
-        handle: String,
-    ): UserRateLimitEntity?
+    suspend fun getBy(accountId: Long, handle: String): UserRateLimitEntity?
 
     @Update
     suspend fun update(item: UserRateLimitEntity)

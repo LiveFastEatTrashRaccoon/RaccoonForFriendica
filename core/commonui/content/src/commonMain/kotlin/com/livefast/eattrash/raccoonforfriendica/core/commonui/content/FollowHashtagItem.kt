@@ -26,23 +26,23 @@ fun FollowHashtagItem(
 
     Row(
         modifier =
-            modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    onOpen?.invoke(hashtag.name)
-                }.padding(Spacing.s),
+        modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                onOpen?.invoke(hashtag.name)
+            }.padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             modifier = Modifier.weight(1f),
             text =
-                buildString {
-                    append("#")
-                    append(hashtag.name)
-                },
+            buildString {
+                append("#")
+                append(hashtag.name)
+            },
             style = MaterialTheme.typography.bodyLarge,
             color = fullColor,
         )

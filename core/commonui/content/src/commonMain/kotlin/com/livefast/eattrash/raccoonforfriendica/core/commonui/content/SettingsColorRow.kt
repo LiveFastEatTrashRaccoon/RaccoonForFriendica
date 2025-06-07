@@ -35,18 +35,18 @@ fun SettingsColorRow(
 
     Row(
         modifier =
-            modifier
-                .clip(
-                    shape = RoundedCornerShape(CornerSize.xl),
-                ).then(
-                    if (onTap != null) {
-                        Modifier.clickable {
-                            onTap.invoke()
-                        }
-                    } else {
-                        Modifier
-                    },
-                ).padding(vertical = Spacing.s, horizontal = Spacing.m),
+        modifier
+            .clip(
+                shape = RoundedCornerShape(CornerSize.xl),
+            ).then(
+                if (onTap != null) {
+                    Modifier.clickable {
+                        onTap.invoke()
+                    }
+                } else {
+                    Modifier
+                },
+            ).padding(vertical = Spacing.s, horizontal = Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(
@@ -68,10 +68,10 @@ fun SettingsColorRow(
         }
         Box(
             modifier =
-                Modifier
-                    .padding(start = Spacing.xs)
-                    .size(36.dp)
-                    .background(color = value, shape = CircleShape),
+            Modifier
+                .padding(start = Spacing.xs)
+                .size(36.dp)
+                .background(color = value, shape = CircleShape),
         )
     }
 }

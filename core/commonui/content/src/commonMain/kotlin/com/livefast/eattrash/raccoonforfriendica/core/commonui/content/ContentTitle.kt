@@ -12,8 +12,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
 @Composable
 fun ContentTitle(
-    content: String = "",
     modifier: Modifier = Modifier,
+    content: String = "",
     maxLines: Int = Int.MAX_VALUE,
     autoloadImages: Boolean = true,
     emojis: List<EmojiModel> = emptyList(),

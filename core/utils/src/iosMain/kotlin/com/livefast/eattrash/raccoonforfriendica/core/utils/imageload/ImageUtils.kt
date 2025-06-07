@@ -17,10 +17,7 @@ import org.jetbrains.skia.ImageInfo
 
 actual fun ByteArray.toComposeImageBitmap(): ImageBitmap = Image.makeFromEncoded(this).toComposeImageBitmap()
 
-actual fun IntArray.toComposeImageBitmap(
-    width: Int,
-    height: Int,
-): ImageBitmap {
+actual fun IntArray.toComposeImageBitmap(width: Int, height: Int): ImageBitmap {
     val bmp = Bitmap()
     val info = ImageInfo(width, height, ColorType.RGBA_8888, ColorAlphaType.PREMUL)
     bmp.installPixels(info, map { it.toByte() }.toByteArray(), info.minRowBytes)

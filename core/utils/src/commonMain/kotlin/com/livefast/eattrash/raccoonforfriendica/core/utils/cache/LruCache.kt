@@ -3,10 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.cache
 interface LruCache<K, V> {
     suspend fun containsKey(key: K): Boolean
 
-    suspend fun put(
-        key: K,
-        value: V,
-    )
+    suspend fun put(key: K, value: V)
 
     suspend fun get(key: K): V?
 

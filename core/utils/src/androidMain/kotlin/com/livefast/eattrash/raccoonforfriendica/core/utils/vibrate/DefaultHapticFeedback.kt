@@ -6,9 +6,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 
-internal class DefaultHapticFeedback(
-    private val context: Context,
-) : HapticFeedback {
+internal class DefaultHapticFeedback(private val context: Context) : HapticFeedback {
     @SuppressLint("MissingPermission")
     override fun vibrate() {
         val vibrator = context.getSystemService(Vibrator::class.java)

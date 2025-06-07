@@ -61,7 +61,7 @@ fun AlbumImageItem(
     maxHeight: Dp = Dp.Unspecified,
     onClick: (() -> Unit)? = null,
     options: List<Option> = emptyList(),
-    onOptionSelected: ((OptionId) -> Unit)? = null,
+    onSelectOption: ((OptionId) -> Unit)? = null,
 ) {
     var showingAltText by remember { mutableStateOf(false) }
     var popupOffset by remember { mutableStateOf(Offset.Zero) }
@@ -79,18 +79,18 @@ fun AlbumImageItem(
 
     Box(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .heightIn(min = minHeight, max = maxHeight),
+        modifier
+            .fillMaxWidth()
+            .heightIn(min = minHeight, max = maxHeight),
     ) {
         CustomImage(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(CornerSize.xl))
-                    .clickable {
-                        onClick?.invoke()
-                    },
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(CornerSize.xl))
+                .clickable {
+                    onClick?.invoke()
+                },
             url = attachment.thumbnail ?: attachment.url,
             autoload = autoload,
             contentDescription = attachment.description,
@@ -101,19 +101,19 @@ fun AlbumImageItem(
         if (options.isNotEmpty()) {
             Box(
                 modifier =
-                    Modifier.align(Alignment.TopEnd).padding(
-                        bottom = Spacing.xxs,
-                        end = Spacing.xs,
-                    ),
+                Modifier.align(Alignment.TopEnd).padding(
+                    bottom = Spacing.xxs,
+                    end = Spacing.xs,
+                ),
             ) {
                 FilledIconButton(
                     modifier =
-                        Modifier
-                            .padding(5.dp)
-                            .size(IconSize.s)
-                            .onGloballyPositioned {
-                                optionsOffset = it.positionInParent()
-                            },
+                    Modifier
+                        .padding(5.dp)
+                        .size(IconSize.s)
+                        .onGloballyPositioned {
+                            optionsOffset = it.positionInParent()
+                        },
                     onClick = {
                         optionsMenuOpen = true
                     },
@@ -132,12 +132,12 @@ fun AlbumImageItem(
                         optionsMenuOpen = false
                     },
                     offset =
-                        with(LocalDensity.current) {
-                            DpOffset(
-                                x = optionsOffset.x.toDp(),
-                                y = optionsOffset.y.toDp(),
-                            )
-                        },
+                    with(LocalDensity.current) {
+                        DpOffset(
+                            x = optionsOffset.x.toDp(),
+                            y = optionsOffset.y.toDp(),
+                        )
+                    },
                 ) {
                     options.forEach { option ->
                         DropdownMenuItem(
@@ -146,7 +146,7 @@ fun AlbumImageItem(
                             },
                             onClick = {
                                 optionsMenuOpen = false
-                                onOptionSelected?.invoke(option.id)
+                                onSelectOption?.invoke(option.id)
                             },
                         )
                     }
@@ -160,50 +160,50 @@ fun AlbumImageItem(
             ) {
                 CircularProgressIndicator(
                     modifier =
-                        Modifier
-                            .size(IconSize.l)
-                            .align(Alignment.Center),
+                    Modifier
+                        .size(IconSize.l)
+                        .align(Alignment.Center),
                 )
             }
         }
 
         Row(
             modifier =
-                Modifier.align(Alignment.BottomEnd).padding(
-                    bottom = Spacing.xxs,
-                    end = Spacing.xs,
-                ),
+            Modifier.align(Alignment.BottomEnd).padding(
+                bottom = Spacing.xxs,
+                end = Spacing.xs,
+            ),
         ) {
             if (!attachment.description.isNullOrEmpty()) {
                 Box {
                     if (showingAltText) {
                         Popup(
                             offset =
-                                IntOffset(
-                                    x = 0,
-                                    y = popupOffset.y.roundToInt() - additionalOffset,
-                                ),
+                            IntOffset(
+                                x = 0,
+                                y = popupOffset.y.roundToInt() - additionalOffset,
+                            ),
                             onDismissRequest = {},
                             content = {
                                 Box(
                                     modifier =
-                                        Modifier
-                                            .clickable(
-                                                interactionSource = remember { MutableInteractionSource() },
-                                                indication = null,
-                                            ) {
-                                                showingAltText = false
-                                            }.padding(Spacing.s)
-                                            .background(
-                                                color =
-                                                    MaterialTheme.colorScheme
-                                                        .surfaceColorAtElevation(5.dp)
-                                                        .copy(alpha = 0.9f),
-                                                shape = RoundedCornerShape(CornerSize.xl),
-                                            ).padding(
-                                                vertical = Spacing.s,
-                                                horizontal = Spacing.m,
-                                            ),
+                                    Modifier
+                                        .padding(Spacing.s)
+                                        .background(
+                                            color =
+                                            MaterialTheme.colorScheme
+                                                .surfaceColorAtElevation(5.dp)
+                                                .copy(alpha = 0.9f),
+                                            shape = RoundedCornerShape(CornerSize.xl),
+                                        ).clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null,
+                                        ) {
+                                            showingAltText = false
+                                        }.padding(
+                                            vertical = Spacing.s,
+                                            horizontal = Spacing.m,
+                                        ),
                                 ) {
                                     Text(
                                         text = attachment.description.orEmpty(),
@@ -216,9 +216,9 @@ fun AlbumImageItem(
                     }
                     IconButton(
                         modifier =
-                            Modifier.onGloballyPositioned {
-                                popupOffset = it.positionInParent()
-                            },
+                        Modifier.onGloballyPositioned {
+                            popupOffset = it.positionInParent()
+                        },
                         onClick = {
                             showingAltText = !showingAltText
                         },

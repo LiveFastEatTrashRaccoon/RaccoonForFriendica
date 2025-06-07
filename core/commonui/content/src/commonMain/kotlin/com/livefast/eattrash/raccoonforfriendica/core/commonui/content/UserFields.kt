@@ -28,9 +28,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 
 @Composable
 fun UserFields(
+    modifier: Modifier = Modifier,
     fields: List<FieldModel> = emptyList(),
     autoloadImages: Boolean = true,
-    modifier: Modifier = Modifier,
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
@@ -49,9 +49,9 @@ fun UserFields(
                     text = field.key.uppercase(),
                     color = ancillaryColor,
                     style =
-                        MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight(350),
-                        ),
+                    MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight(350),
+                    ),
                 )
                 Box(
                     contentAlignment = Alignment.CenterStart,

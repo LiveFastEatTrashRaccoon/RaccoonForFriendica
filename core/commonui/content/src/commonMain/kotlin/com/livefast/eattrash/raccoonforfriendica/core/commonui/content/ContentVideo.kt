@@ -43,22 +43,22 @@ fun ContentVideo(
         if (shouldBeRendered) {
             VideoPlayerPreview(
                 modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .blur(radius = if (sensitive) 60.dp else 0.dp),
+                Modifier
+                    .fillMaxSize()
+                    .blur(radius = if (sensitive) 60.dp else 0.dp),
                 url = url,
             )
             FilledIconButton(
                 colors =
-                    IconButtonDefaults.filledIconButtonColors().copy(
-                        containerColor = MaterialTheme.colorScheme.onBackground,
-                    ),
+                IconButtonDefaults.filledIconButtonColors().copy(
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                ),
                 modifier =
-                    Modifier
-                        .align(Alignment.Center)
-                        .padding(
-                            start = Spacing.xs,
-                        ),
+                Modifier
+                    .align(Alignment.Center)
+                    .padding(
+                        start = Spacing.xs,
+                    ),
                 onClick = {
                     onClick?.invoke()
                 },

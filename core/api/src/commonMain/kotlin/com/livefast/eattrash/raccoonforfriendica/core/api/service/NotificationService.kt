@@ -19,9 +19,7 @@ interface NotificationService {
     ): List<Notification>
 
     @POST("v1/notifications/{id}/dismiss")
-    suspend fun dismiss(
-        @Path("id") id: String,
-    ): Response<Unit>
+    suspend fun dismiss(@Path("id") id: String): Response<Unit>
 
     @POST("v1/notifications/clear")
     suspend fun clear(): Response<Unit>

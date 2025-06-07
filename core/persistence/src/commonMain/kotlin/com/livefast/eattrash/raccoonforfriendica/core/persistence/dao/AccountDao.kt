@@ -36,10 +36,7 @@ abstract class AccountDao {
     abstract suspend fun update(item: AccountEntity)
 
     @Transaction
-    open suspend fun replaceActive(
-        old: AccountEntity,
-        new: AccountEntity,
-    ) {
+    open suspend fun replaceActive(old: AccountEntity, new: AccountEntity) {
         update(old)
         update(new)
     }

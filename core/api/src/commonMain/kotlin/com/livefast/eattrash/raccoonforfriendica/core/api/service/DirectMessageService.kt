@@ -29,18 +29,12 @@ interface DirectMessageService {
     ): List<FriendicaPrivateMessage>
 
     @POST("direct_messages/new")
-    suspend fun create(
-        @Body data: FormDataContent,
-    ): FriendicaPrivateMessage
+    suspend fun create(@Body data: FormDataContent): FriendicaPrivateMessage
 
     @POST("direct_messages/destroy")
     @Headers("Content-Type: application/json")
-    suspend fun delete(
-        @Query("id") id: Long,
-    ): FriendicaApiResult
+    suspend fun delete(@Query("id") id: Long): FriendicaApiResult
 
     @POST("friendica/direct_messages_setseen")
-    suspend fun markAsRead(
-        @Query("id") id: Long,
-    ): FriendicaApiResult
+    suspend fun markAsRead(@Query("id") id: Long): FriendicaApiResult
 }

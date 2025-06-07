@@ -46,34 +46,30 @@ sealed interface OptionId {
 }
 
 @Composable
-private fun OptionId.toReadableName(): String =
-    when (this) {
-        OptionId.Add -> LocalStrings.current.actionAddNew
-        OptionId.Edit -> LocalStrings.current.actionEdit
-        OptionId.Delete -> LocalStrings.current.actionDelete
-        OptionId.Share -> LocalStrings.current.actionShare
-        OptionId.CopyUrl -> LocalStrings.current.actionCopyUrl
-        OptionId.Mute -> LocalStrings.current.actionMute
-        OptionId.Unmute -> LocalStrings.current.actionUnmute
-        OptionId.Block -> LocalStrings.current.actionBlock
-        OptionId.Unblock -> LocalStrings.current.actionUnblock
-        OptionId.Pin -> LocalStrings.current.actionPin
-        OptionId.Unpin -> LocalStrings.current.actionUnpin
-        OptionId.ReportUser -> LocalStrings.current.actionReportUser
-        OptionId.ReportEntry -> LocalStrings.current.actionReportEntry
-        OptionId.ViewDetails -> LocalStrings.current.actionViewDetails
-        OptionId.Quote -> LocalStrings.current.actionQuote
-        OptionId.CopyToClipboard -> LocalStrings.current.actionCopyToClipboard
-        OptionId.OpenInBrowser -> LocalStrings.current.actionOpenInBrowser
-        else -> ""
-    }
+private fun OptionId.toReadableName(): String = when (this) {
+    OptionId.Add -> LocalStrings.current.actionAddNew
+    OptionId.Edit -> LocalStrings.current.actionEdit
+    OptionId.Delete -> LocalStrings.current.actionDelete
+    OptionId.Share -> LocalStrings.current.actionShare
+    OptionId.CopyUrl -> LocalStrings.current.actionCopyUrl
+    OptionId.Mute -> LocalStrings.current.actionMute
+    OptionId.Unmute -> LocalStrings.current.actionUnmute
+    OptionId.Block -> LocalStrings.current.actionBlock
+    OptionId.Unblock -> LocalStrings.current.actionUnblock
+    OptionId.Pin -> LocalStrings.current.actionPin
+    OptionId.Unpin -> LocalStrings.current.actionUnpin
+    OptionId.ReportUser -> LocalStrings.current.actionReportUser
+    OptionId.ReportEntry -> LocalStrings.current.actionReportEntry
+    OptionId.ViewDetails -> LocalStrings.current.actionViewDetails
+    OptionId.Quote -> LocalStrings.current.actionQuote
+    OptionId.CopyToClipboard -> LocalStrings.current.actionCopyToClipboard
+    OptionId.OpenInBrowser -> LocalStrings.current.actionOpenInBrowser
+    else -> ""
+}
 
 @Composable
 fun OptionId.toOption() = Option(id = this, label = toReadableName())
 
 fun OptionId.toOption(label: String) = Option(id = this, label = label)
 
-data class Option(
-    val id: OptionId,
-    val label: String,
-)
+data class Option(val id: OptionId, val label: String)

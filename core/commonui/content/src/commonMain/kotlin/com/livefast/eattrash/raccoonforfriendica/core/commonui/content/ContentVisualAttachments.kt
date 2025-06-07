@@ -68,9 +68,9 @@ fun ContentVisualAttachments(
     ) {
         HorizontalPager(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(referenceAspectRatio),
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(referenceAspectRatio),
             state = pagerState,
             beyondViewportPageCount = 1,
         ) { index ->
@@ -91,9 +91,9 @@ fun ContentVisualAttachments(
                 if (hasMultipleElements) {
                     Badge(
                         modifier =
-                            Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(top = Spacing.s, end = Spacing.s),
+                        Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(top = Spacing.s, end = Spacing.s),
                         containerColor = MaterialTheme.colorScheme.background.copy(0.75f),
                     ) {
                         Text(
@@ -120,10 +120,10 @@ fun ContentVisualAttachments(
                     val bgColor = if (pagerState.currentPage == idx) activeColor else inactiveColor
                     Box(
                         modifier =
-                            Modifier
-                                .padding(horizontal = Spacing.xxs)
-                                .background(color = bgColor, shape = CircleShape)
-                                .size(6.dp),
+                        Modifier
+                            .padding(horizontal = Spacing.xxs)
+                            .background(color = bgColor, shape = CircleShape)
+                            .size(6.dp),
                     )
                 }
             }

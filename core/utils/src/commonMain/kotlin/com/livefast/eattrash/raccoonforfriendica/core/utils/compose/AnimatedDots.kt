@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -17,7 +18,7 @@ fun getAnimatedDots(
 ): String {
     val maxStep = 4
     val interval = (durationMillis / maxStep.toFloat()).roundToLong()
-    var step by remember { mutableStateOf(0) }
+    var step by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
         while (true) {
             delay(interval)

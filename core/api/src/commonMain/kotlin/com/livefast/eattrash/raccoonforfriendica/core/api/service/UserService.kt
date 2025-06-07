@@ -22,9 +22,7 @@ interface UserService {
     suspend fun verifyCredentials(): CredentialAccount
 
     @GET("v1/accounts/{id}")
-    suspend fun getById(
-        @Path("id") id: String,
-    ): Account
+    suspend fun getById(@Path("id") id: String): Account
 
     @GET("v1/accounts/search")
     suspend fun search(
@@ -47,14 +45,10 @@ interface UserService {
     ): List<Status>
 
     @GET("v1/accounts/relationships")
-    suspend fun getRelationships(
-        @Query("id[]") id: List<String>,
-    ): List<Relationship>
+    suspend fun getRelationships(@Query("id[]") id: List<String>): List<Relationship>
 
     @GET("v2/suggestions")
-    suspend fun getSuggestions(
-        @Query("limit") limit: Int,
-    ): List<Suggestion>
+    suspend fun getSuggestions(@Query("limit") limit: Int): List<Suggestion>
 
     @GET("v1/accounts/{id}/followers")
     suspend fun getFollowers(
@@ -74,16 +68,11 @@ interface UserService {
 
     @POST("v1/accounts/{id}/follow")
     @Headers("Content-Type: application/json")
-    suspend fun follow(
-        @Path("id") id: String,
-        @Body data: FollowUserForm,
-    ): Relationship
+    suspend fun follow(@Path("id") id: String, @Body data: FollowUserForm): Relationship
 
     @POST("v1/accounts/{id}/unfollow")
     @Headers("Content-Type: application/json")
-    suspend fun unfollow(
-        @Path("id") id: String,
-    ): Relationship
+    suspend fun unfollow(@Path("id") id: String): Relationship
 
     @GET("v1/favourites")
     suspend fun getFavorites(
@@ -101,52 +90,30 @@ interface UserService {
 
     @POST("v1/accounts/{id}/mute")
     @Headers("Content-Type: application/json")
-    suspend fun mute(
-        @Path("id") id: String,
-        @Body data: MuteUserForm,
-    ): Relationship
+    suspend fun mute(@Path("id") id: String, @Body data: MuteUserForm): Relationship
 
     @POST("v1/accounts/{id}/unmute")
-    suspend fun unmute(
-        @Path("id") id: String,
-    ): Relationship
+    suspend fun unmute(@Path("id") id: String): Relationship
 
     @POST("v1/accounts/{id}/block")
     @Headers("Content-Type: application/json")
-    suspend fun block(
-        @Path("id") id: String,
-    ): Relationship
+    suspend fun block(@Path("id") id: String): Relationship
 
     @POST("v1/accounts/{id}/unblock")
-    suspend fun unblock(
-        @Path("id") id: String,
-    ): Relationship
+    suspend fun unblock(@Path("id") id: String): Relationship
 
     @GET("v1/mutes")
-    suspend fun getMuted(
-        @Query("max_id") maxId: String? = null,
-        @Query("limit") limit: Int = 20,
-    ): List<Account>
+    suspend fun getMuted(@Query("max_id") maxId: String? = null, @Query("limit") limit: Int = 20): List<Account>
 
     @GET("v1/blocks")
-    suspend fun getBlocked(
-        @Query("max_id") maxId: String? = null,
-        @Query("limit") limit: Int = 20,
-    ): List<Account>
+    suspend fun getBlocked(@Query("max_id") maxId: String? = null, @Query("limit") limit: Int = 20): List<Account>
 
     @PATCH("v1/accounts/update_credentials")
-    suspend fun updateProfile(
-        @Body content: FormDataContent,
-    ): Account
+    suspend fun updateProfile(@Body content: FormDataContent): Account
 
     @PATCH("v1/accounts/update_credentials")
-    suspend fun updateProfileImage(
-        @Body content: MultiPartFormDataContent,
-    ): Account
+    suspend fun updateProfileImage(@Body content: MultiPartFormDataContent): Account
 
     @POST("v1/accounts/{id}/note")
-    suspend fun updatePersonalNote(
-        @Path("id") id: String,
-        @Body data: FormDataContent,
-    ): Relationship
+    suspend fun updatePersonalNote(@Path("id") id: String, @Body data: FormDataContent): Relationship
 }

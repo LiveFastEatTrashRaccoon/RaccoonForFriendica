@@ -10,24 +10,16 @@ import de.jensklingenberg.ktorfit.http.Query
 
 interface TagsService {
     @GET("v1/followed_tags")
-    suspend fun getFollowedTags(
-        @Query("max_id") maxId: String? = null,
-    ): Response<List<Tag>>
+    suspend fun getFollowedTags(@Query("max_id") maxId: String? = null): Response<List<Tag>>
 
     @POST("v1/tags/{id}/follow")
     @Headers("Content-Type: application/json")
-    suspend fun follow(
-        @Path("id") name: String,
-    ): Tag?
+    suspend fun follow(@Path("id") name: String): Tag?
 
     @POST("v1/tags/{id}/unfollow")
     @Headers("Content-Type: application/json")
-    suspend fun unfollow(
-        @Path("id") name: String,
-    ): Tag?
+    suspend fun unfollow(@Path("id") name: String): Tag?
 
     @GET("v1/tags/{id}")
-    suspend fun get(
-        @Path("id") name: String,
-    ): Tag?
+    suspend fun get(@Path("id") name: String): Tag?
 }

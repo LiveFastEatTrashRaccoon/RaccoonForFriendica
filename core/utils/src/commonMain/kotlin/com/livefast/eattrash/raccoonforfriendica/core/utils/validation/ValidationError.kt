@@ -10,8 +10,7 @@ sealed interface ValidationError {
 }
 
 @Composable
-fun ValidationError.toReadableMessage(): String =
-    when (this) {
-        ValidationError.InvalidField -> LocalStrings.current.messageInvalidField
-        ValidationError.MissingField -> LocalStrings.current.messageMissingField
-    }
+fun ValidationError.toReadableMessage(): String = when (this) {
+    ValidationError.InvalidField -> LocalStrings.current.messageInvalidField
+    ValidationError.MissingField -> LocalStrings.current.messageMissingField
+}

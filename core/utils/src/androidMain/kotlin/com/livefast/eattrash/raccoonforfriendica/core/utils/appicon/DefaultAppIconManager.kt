@@ -8,10 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-internal class DefaultAppIconManager(
-    private val context: Context,
-    private val keyStore: TemporaryKeyStore,
-) : AppIconManager {
+internal class DefaultAppIconManager(private val context: Context, private val keyStore: TemporaryKeyStore) :
+    AppIconManager {
     private val _current = MutableStateFlow<AppIconVariant>(AppIconVariant.Default)
     override val current: StateFlow<AppIconVariant> = _current
 

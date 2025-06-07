@@ -47,24 +47,22 @@ class DefaultNavigationCoordinatorTest {
     }
 
     @Test
-    fun `when setCanGoBackCallback then result is as expected`() =
-        runTest {
-            val callback = { true }
-            sut.setCanGoBackCallback(callback)
+    fun `when setCanGoBackCallback then result is as expected`() = runTest {
+        val callback = { true }
+        sut.setCanGoBackCallback(callback)
 
-            val res = sut.getCanGoBackCallback()
-            assertEquals(callback, res)
-        }
+        val res = sut.getCanGoBackCallback()
+        assertEquals(callback, res)
+    }
 
     @Test
-    fun `when setBottomBarScrollConnection then result is as expected`() =
-        runTest {
-            val connection = mock<NestedScrollConnection>(MockMode.autofill)
-            sut.setBottomBarScrollConnection(connection)
+    fun `when setBottomBarScrollConnection then result is as expected`() = runTest {
+        val connection = mock<NestedScrollConnection>(MockMode.autofill)
+        sut.setBottomBarScrollConnection(connection)
 
-            val res = sut.getBottomBarScrollConnection()
-            assertEquals(connection, res)
-        }
+        val res = sut.getBottomBarScrollConnection()
+        assertEquals(connection, res)
+    }
 
     @Test
     fun `when setCurrentSection then result is as expected`() {
@@ -77,172 +75,163 @@ class DefaultNavigationCoordinatorTest {
     }
 
     @Test
-    fun `when setCurrentSection twice then onDoubleTabSelection is triggered`() =
-        runTest {
-            val section = BottomNavigationSection.Explore
+    fun `when setCurrentSection twice then onDoubleTabSelection is triggered`() = runTest {
+        val section = BottomNavigationSection.Explore
+        sut.setCurrentSection(section)
+        launch {
+            delay(DELAY)
             sut.setCurrentSection(section)
-            launch {
-                delay(DELAY)
-                sut.setCurrentSection(section)
-            }
-            sut.onDoubleTabSelection.test {
-                val res = awaitItem()
-                assertEquals(section, res)
-            }
         }
+        sut.onDoubleTabSelection.test {
+            val res = awaitItem()
+            assertEquals(section, res)
+        }
+    }
 
     @Test
-    fun `given navigator can pop when root navigator set then canPop is as expected`() =
-        runTest {
-            val initial = sut.canPop.value
-            assertFalse(initial)
-            val navigator =
-                mock<NavigatorAdapter>(MockMode.autoUnit) {
-                    every { canPop } returns true
+    fun `given navigator can pop when root navigator set then canPop is as expected`() = runTest {
+        val initial = sut.canPop.value
+        assertFalse(initial)
+        val navigator =
+            mock<NavigatorAdapter>(MockMode.autoUnit) {
+                every { canPop } returns true
+            }
+
+        sut.setRootNavigator(navigator)
+
+        val value = sut.canPop.value
+        assertTrue(value)
+    }
+
+    @Test
+    fun `when setExitMessageVisible then value is as expected`() = runTest {
+        val initial = sut.exitMessageVisible.value
+        assertFalse(initial)
+
+        sut.setExitMessageVisible(true)
+        val value = sut.exitMessageVisible.value
+        assertTrue(value)
+    }
+
+    @Test
+    fun `when showGlobalMessage then value is as expected`() = runTest {
+        val text = "Global message"
+
+        launch {
+            sut.showGlobalMessage(text)
+        }
+
+        sut.globalMessage.test {
+            val item = awaitItem()
+            assertEquals(text, item)
+        }
+    }
+
+    @Test
+    fun `when push then interactions are as expected`() = runTest {
+        val screen =
+            object : Screen {
+                override val key: ScreenKey = "new"
+
+                @Composable
+                override fun Content() {
+                    Box(modifier = Modifier.fillMaxSize())
                 }
-
-            sut.setRootNavigator(navigator)
-
-            val value = sut.canPop.value
-            assertTrue(value)
-        }
-
-    @Test
-    fun `when setExitMessageVisible then value is as expected`() =
-        runTest {
-            val initial = sut.exitMessageVisible.value
-            assertFalse(initial)
-
-            sut.setExitMessageVisible(true)
-            val value = sut.exitMessageVisible.value
-            assertTrue(value)
-        }
-
-    @Test
-    fun `when showGlobalMessage then value is as expected`() =
-        runTest {
-            val text = "Global message"
-
-            launch {
-                sut.showGlobalMessage(text)
             }
-
-            sut.globalMessage.test {
-                val item = awaitItem()
-                assertEquals(text, item)
+        val navigator =
+            mock<NavigatorAdapter>(MockMode.autoUnit) {
+                every { canPop } returns true
             }
+        sut.setRootNavigator(navigator)
+
+        launch {
+            sut.push(screen)
         }
+        advanceTimeBy(DELAY)
+
+        val canPop = sut.canPop.value
+        assertTrue(canPop)
+        verify {
+            navigator.push(screen)
+        }
+    }
 
     @Test
-    fun `when push then interactions are as expected`() =
-        runTest {
-            val screen =
-                object : Screen {
-                    override val key: ScreenKey = "new"
+    fun `when replace then interactions are as expected`() = runTest {
+        val screen =
+            object : Screen {
+                override val key: ScreenKey = "new"
 
-                    @Composable
-                    override fun Content() {
-                        Box(modifier = Modifier.fillMaxSize())
-                    }
+                @Composable
+                override fun Content() {
+                    Box(modifier = Modifier.fillMaxSize())
                 }
-            val navigator =
-                mock<NavigatorAdapter>(MockMode.autoUnit) {
-                    every { canPop } returns true
-                }
-            sut.setRootNavigator(navigator)
-
-            launch {
-                sut.push(screen)
             }
+        val navigator =
+            mock<NavigatorAdapter>(MockMode.autoUnit) {
+                every { canPop } returns true
+            }
+        sut.setRootNavigator(navigator)
+
+        launch {
+            sut.replace(screen)
+        }
+        advanceTimeBy(DELAY)
+
+        val canPop = sut.canPop.value
+        assertTrue(canPop)
+        verify {
+            navigator.replace(screen)
+        }
+    }
+
+    @Test
+    fun `when pop then interactions are as expected`() = runTest {
+        val navigator =
+            mock<NavigatorAdapter>(MockMode.autoUnit) {
+                every { canPop } returns false
+            }
+        sut.setRootNavigator(navigator)
+
+        launch {
+            sut.pop()
+        }
+        advanceTimeBy(DELAY)
+
+        val canPop = sut.canPop.value
+        assertFalse(canPop)
+        verify {
+            navigator.pop()
+        }
+    }
+
+    @Test
+    fun `when popUntilRoot then interactions are as expected`() = runTest {
+        val navigator =
+            mock<NavigatorAdapter>(MockMode.autoUnit) {
+                every { canPop } returns false
+            }
+        sut.setRootNavigator(navigator)
+
+        sut.popUntilRoot()
+
+        verify {
+            navigator.popUntilRoot()
+        }
+    }
+
+    @Test
+    fun `when submitDeeplink then event flow emits`() = runTest {
+        val url = "https://www.google.com"
+        launch {
             advanceTimeBy(DELAY)
-
-            val canPop = sut.canPop.value
-            assertTrue(canPop)
-            verify {
-                navigator.push(screen)
-            }
+            sut.submitDeeplink(url)
         }
-
-    @Test
-    fun `when replace then interactions are as expected`() =
-        runTest {
-            val screen =
-                object : Screen {
-                    override val key: ScreenKey = "new"
-
-                    @Composable
-                    override fun Content() {
-                        Box(modifier = Modifier.fillMaxSize())
-                    }
-                }
-            val navigator =
-                mock<NavigatorAdapter>(MockMode.autoUnit) {
-                    every { canPop } returns true
-                }
-            sut.setRootNavigator(navigator)
-
-            launch {
-                sut.replace(screen)
-            }
-            advanceTimeBy(DELAY)
-
-            val canPop = sut.canPop.value
-            assertTrue(canPop)
-            verify {
-                navigator.replace(screen)
-            }
+        sut.deepLinkUrl.test {
+            val item = awaitItem()
+            assertEquals(url, item)
         }
-
-    @Test
-    fun `when pop then interactions are as expected`() =
-        runTest {
-            val navigator =
-                mock<NavigatorAdapter>(MockMode.autoUnit) {
-                    every { canPop } returns false
-                }
-            sut.setRootNavigator(navigator)
-
-            launch {
-                sut.pop()
-            }
-            advanceTimeBy(DELAY)
-
-            val canPop = sut.canPop.value
-            assertFalse(canPop)
-            verify {
-                navigator.pop()
-            }
-        }
-
-    @Test
-    fun `when popUntilRoot then interactions are as expected`() =
-        runTest {
-            val navigator =
-                mock<NavigatorAdapter>(MockMode.autoUnit) {
-                    every { canPop } returns false
-                }
-            sut.setRootNavigator(navigator)
-
-            sut.popUntilRoot()
-
-            verify {
-                navigator.popUntilRoot()
-            }
-        }
-
-    @Test
-    fun `when submitDeeplink then event flow emits`() =
-        runTest {
-            val url = "https://www.google.com"
-            launch {
-                advanceTimeBy(DELAY)
-                sut.submitDeeplink(url)
-            }
-            sut.deepLinkUrl.test {
-                val item = awaitItem()
-                assertEquals(url, item)
-            }
-        }
+    }
 
     companion object {
         const val DELAY = 250L

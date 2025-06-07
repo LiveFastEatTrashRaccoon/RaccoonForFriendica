@@ -20,11 +20,7 @@ expect fun String.toEpochMillis(): Long
 /**
  * Updates the time part of a timestamp (in milliseconds).
  */
-expect fun Long.concatDateWithTime(
-    hours: Int,
-    minutes: Int,
-    seconds: Int,
-): Long
+expect fun Long.concatDateWithTime(hours: Int, minutes: Int, seconds: Int): Long
 
 /**
  * Extract the time (hours, minutes) from a timestamp (in milliseconds).
@@ -39,20 +35,12 @@ expect fun Long.extractDatePart(): Pair<Int, Int>
 /**
  * Converts a date (in the ISO 8601 format) to another given format.
  */
-expect fun getFormattedDate(
-    iso8601Timestamp: String,
-    format: String,
-    withLocalTimezone: Boolean = true,
-): String
+expect fun getFormattedDate(iso8601Timestamp: String, format: String, withLocalTimezone: Boolean = true): String
 
 /**
  * Parse a date (as String) given its format to an ISO-8601 string date.
  */
-expect fun parseDate(
-    value: String,
-    format: String,
-    withLocalTimezone: Boolean = false,
-): String
+expect fun parseDate(value: String, format: String, withLocalTimezone: Boolean = false): String
 
 /**
  * Format the amount of type elapsed from a date until now.

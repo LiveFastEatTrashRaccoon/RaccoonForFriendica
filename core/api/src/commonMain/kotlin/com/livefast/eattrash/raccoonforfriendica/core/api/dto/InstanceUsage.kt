@@ -4,6 +4,4 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class InstanceUsage(
-    @SerialName("users") val users: InstanceUsageUsers? = null,
-)
+data class InstanceUsage(@SerialName("users") val users: InstanceUsageUsers? = null)

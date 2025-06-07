@@ -4,9 +4,7 @@ import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.StateFlow
 
 sealed interface NetworkState {
-    data class Connected(
-        val metered: Boolean,
-    ) : NetworkState
+    data class Connected(val metered: Boolean) : NetworkState
 
     data object Disconnected : NetworkState
 }

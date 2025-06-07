@@ -17,6 +17,4 @@ internal data class InnerTranslationInputs(
 )
 
 @Serializable
-internal data class InnerTranslationResponse(
-    @SerialName("translated_text") val translatedText: String,
-)
+internal data class InnerTranslationResponse(@SerialName("translated_text") val translatedText: String)

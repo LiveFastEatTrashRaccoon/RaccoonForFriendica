@@ -14,63 +14,62 @@ internal class DefaultColorSchemeProvider : ColorSchemeProvider {
         dynamic: Boolean,
         customSeed: Color?,
         isSystemInDarkTheme: Boolean,
-    ): ColorScheme =
-        when (theme) {
-            UiTheme.Dark -> {
-                if (customSeed != null) {
-                    dynamicColorScheme(
-                        seedColor = customSeed,
-                        isDark = true,
-                        isAmoled = false,
-                        style = defaultStyle,
-                    )
-                } else {
+    ): ColorScheme = when (theme) {
+        UiTheme.Dark -> {
+            if (customSeed != null) {
+                dynamicColorScheme(
+                    seedColor = customSeed,
+                    isDark = true,
+                    isAmoled = false,
+                    style = defaultStyle,
+                )
+            } else {
+                DarkColors
+            }
+        }
+
+        UiTheme.Black -> {
+            if (customSeed != null) {
+                dynamicColorScheme(
+                    seedColor = customSeed,
+                    isDark = true,
+                    isAmoled = true,
+                    style = defaultStyle,
+                )
+            } else {
+                BlackColors
+            }
+        }
+
+        UiTheme.Light ->
+            if (customSeed != null) {
+                dynamicColorScheme(
+                    seedColor = customSeed,
+                    isDark = false,
+                    isAmoled = false,
+                    style = defaultStyle,
+                )
+            } else {
+                LightColors
+            }
+
+        else -> {
+            if (customSeed != null) {
+                dynamicColorScheme(
+                    seedColor = customSeed,
+                    isDark = isSystemInDarkTheme,
+                    isAmoled = false,
+                    style = defaultStyle,
+                )
+            } else {
+                if (isSystemInDarkTheme) {
                     DarkColors
-                }
-            }
-
-            UiTheme.Black -> {
-                if (customSeed != null) {
-                    dynamicColorScheme(
-                        seedColor = customSeed,
-                        isDark = true,
-                        isAmoled = true,
-                        style = defaultStyle,
-                    )
-                } else {
-                    BlackColors
-                }
-            }
-
-            UiTheme.Light ->
-                if (customSeed != null) {
-                    dynamicColorScheme(
-                        seedColor = customSeed,
-                        isDark = false,
-                        isAmoled = false,
-                        style = defaultStyle,
-                    )
                 } else {
                     LightColors
                 }
-
-            else -> {
-                if (customSeed != null) {
-                    dynamicColorScheme(
-                        seedColor = customSeed,
-                        isDark = isSystemInDarkTheme,
-                        isAmoled = false,
-                        style = defaultStyle,
-                    )
-                } else {
-                    if (isSystemInDarkTheme) {
-                        DarkColors
-                    } else {
-                        LightColors
-                    }
-                }
             }
         }
+    }
 
     companion object {
         private val defaultStyle = PaletteStyle.Rainbow

@@ -46,18 +46,18 @@ internal fun FollowedHashtagsInfo(
         tags.forEachIndexed { idx, tag ->
             Text(
                 modifier =
-                    Modifier
-                        .clip(RoundedCornerShape(CornerSize.l))
-                        .clickable {
-                            onOpenTag?.invoke(tag)
-                        }.padding(vertical = Spacing.xxs, horizontal = Spacing.xs),
+                Modifier
+                    .clip(RoundedCornerShape(CornerSize.l))
+                    .clickable {
+                        onOpenTag?.invoke(tag)
+                    }.padding(vertical = Spacing.xxs, horizontal = Spacing.xs),
                 text =
-                    buildString {
-                        append(tag.name)
-                        if (idx < tags.lastIndex) {
-                            append(",")
-                        }
-                    },
+                buildString {
+                    append(tag.name)
+                    if (idx < tags.lastIndex) {
+                        append(",")
+                    }
+                },
                 color = ancillaryColor,
                 style = MaterialTheme.typography.bodyMedium,
             )

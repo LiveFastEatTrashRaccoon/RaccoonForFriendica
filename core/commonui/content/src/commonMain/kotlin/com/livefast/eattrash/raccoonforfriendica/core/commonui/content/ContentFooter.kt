@@ -64,8 +64,8 @@ fun ContentFooter(
     dislikeLoading: Boolean = false,
     options: List<Option> = emptyList(),
     optionsMenuOpen: Boolean = false,
-    onOptionSelected: ((OptionId) -> Unit)? = null,
-    onOptionsMenuToggled: ((Boolean) -> Unit)? = null,
+    onSelectOption: ((OptionId) -> Unit)? = null,
+    onToggleOptionsMenu: ((Boolean) -> Unit)? = null,
     onReply: (() -> Unit)? = null,
     onReblog: (() -> Unit)? = null,
     onFavorite: (() -> Unit)? = null,
@@ -78,10 +78,10 @@ fun ContentFooter(
 
     Row(
         modifier =
-            modifier.padding(
-                vertical = Spacing.xs,
-                horizontal = Spacing.xxs,
-            ),
+        modifier.padding(
+            vertical = Spacing.xs,
+            horizontal = Spacing.xxs,
+        ),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         if (onReply != null) {
@@ -109,17 +109,17 @@ fun ContentFooter(
             FooterItem(
                 modifier = itemModifier,
                 icon =
-                    if (canLikeAndDislike) {
-                        Icons.Outlined.ThumbUp
-                    } else {
-                        Icons.Default.FavoriteBorder
-                    },
+                if (canLikeAndDislike) {
+                    Icons.Outlined.ThumbUp
+                } else {
+                    Icons.Default.FavoriteBorder
+                },
                 toggledIcon =
-                    if (canLikeAndDislike) {
-                        Icons.Default.ThumbUp
-                    } else {
-                        Icons.Default.Favorite
-                    },
+                if (canLikeAndDislike) {
+                    Icons.Default.ThumbUp
+                } else {
+                    Icons.Default.Favorite
+                },
                 contentDescription = null,
                 value = favoriteCount,
                 toggled = favorite,
@@ -155,14 +155,14 @@ fun ContentFooter(
             Box {
                 IconButton(
                     modifier =
-                        Modifier
-                            .padding(bottom = Spacing.xs, end = Spacing.s)
-                            .size(height = IconSize.m, width = IconSize.l)
-                            .onGloballyPositioned {
-                                optionsOffset = it.positionInParent()
-                            }.clearAndSetSemantics { },
+                    Modifier
+                        .padding(bottom = Spacing.xs, end = Spacing.s)
+                        .size(height = IconSize.m, width = IconSize.l)
+                        .onGloballyPositioned {
+                            optionsOffset = it.positionInParent()
+                        }.clearAndSetSemantics { },
                     onClick = {
-                        onOptionsMenuToggled?.invoke(true)
+                        onToggleOptionsMenu?.invoke(true)
                     },
                 ) {
                     Icon(
@@ -176,15 +176,15 @@ fun ContentFooter(
                 CustomDropDown(
                     expanded = optionsMenuOpen,
                     onDismiss = {
-                        onOptionsMenuToggled?.invoke(false)
+                        onToggleOptionsMenu?.invoke(false)
                     },
                     offset =
-                        with(LocalDensity.current) {
-                            DpOffset(
-                                x = optionsOffset.x.toDp(),
-                                y = optionsOffset.y.toDp(),
-                            )
-                        },
+                    with(LocalDensity.current) {
+                        DpOffset(
+                            x = optionsOffset.x.toDp(),
+                            y = optionsOffset.y.toDp(),
+                        )
+                    },
                 ) {
                     options.forEach { option ->
                         DropdownMenuItem(
@@ -192,8 +192,8 @@ fun ContentFooter(
                                 Text(option.label)
                             },
                             onClick = {
-                                onOptionsMenuToggled?.invoke(false)
-                                onOptionSelected?.invoke(option.id)
+                                onToggleOptionsMenu?.invoke(false)
+                                onSelectOption?.invoke(option.id)
                             },
                         )
                     }
@@ -206,8 +206,8 @@ fun ContentFooter(
 @Composable
 private fun FooterItem(
     icon: ImageVector,
-    contentDescription: String? = null,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
     value: Int = 0,
     toggledIcon: ImageVector? = null,
     toggled: Boolean = false,
@@ -222,10 +222,10 @@ private fun FooterItem(
     ) {
         Row(
             modifier =
-                Modifier
-                    .clickable {
-                        onClick?.invoke()
-                    },
+            Modifier
+                .clickable {
+                    onClick?.invoke()
+                },
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -237,9 +237,9 @@ private fun FooterItem(
                     ) {
                         CircularProgressIndicator(
                             color =
-                                MaterialTheme.colorScheme.onBackground.copy(
-                                    ancillaryTextAlpha,
-                                ),
+                            MaterialTheme.colorScheme.onBackground.copy(
+                                ancillaryTextAlpha,
+                            ),
                         )
                     }
                 }
@@ -256,11 +256,11 @@ private fun FooterItem(
             }
             Text(
                 modifier =
-                    Modifier
-                        .padding(start = Spacing.xs)
-                        .alpha(
-                            if (loading || value == 0) 0f else 1f,
-                        ),
+                Modifier
+                    .padding(start = Spacing.xs)
+                    .alpha(
+                        if (loading || value == 0) 0f else 1f,
+                    ),
                 text = value.toString(),
                 style = MaterialTheme.typography.labelMedium,
                 color = toggledColor.takeIf { toggled } ?: fullColor,

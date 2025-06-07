@@ -24,9 +24,9 @@ fun ListLoadingIndicator(modifier: Modifier = Modifier) {
             initialValue = 0f,
             targetValue = 360f,
             animationSpec =
-                infiniteRepeatable(
-                    animation = tween(durationMillis = 1000, delayMillis = 0, easing = LinearEasing),
-                ),
+            infiniteRepeatable(
+                animation = tween(durationMillis = 1000, delayMillis = 0, easing = LinearEasing),
+            ),
         )
     Box(modifier = modifier.height(IconSize.xl), contentAlignment = Alignment.Center) {
         Text(

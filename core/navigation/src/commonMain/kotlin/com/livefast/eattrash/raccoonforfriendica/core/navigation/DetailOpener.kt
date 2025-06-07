@@ -25,15 +25,9 @@ interface DetailOpener {
 
     fun openHashtag(tag: String)
 
-    fun openFollowers(
-        user: UserModel,
-        enableExport: Boolean = false,
-    )
+    fun openFollowers(user: UserModel, enableExport: Boolean = false)
 
-    fun openFollowing(
-        user: UserModel,
-        enableExport: Boolean = false,
-    )
+    fun openFollowing(user: UserModel, enableExport: Boolean = false)
 
     fun openFavorites()
 
@@ -41,15 +35,9 @@ interface DetailOpener {
 
     fun openFollowedHashtags()
 
-    fun openEntryUsersFavorite(
-        entryId: String,
-        count: Int,
-    )
+    fun openEntryUsersFavorite(entryId: String, count: Int)
 
-    fun openEntryUsersReblog(
-        entryId: String,
-        count: Int,
-    )
+    fun openEntryUsersReblog(entryId: String, count: Int)
 
     fun openComposer(
         inReplyTo: TimelineEntryModel? = null,
@@ -61,25 +49,15 @@ interface DetailOpener {
         initialAttachment: ByteArray? = null,
     )
 
-    fun openEditUnpublished(
-        entry: TimelineEntryModel,
-        type: UnpublishedType,
-    )
+    fun openEditUnpublished(entry: TimelineEntryModel, type: UnpublishedType)
 
     fun openSearch()
 
-    fun openThread(
-        entry: TimelineEntryModel,
-        swipeNavigationEnabled: Boolean = false,
-    )
+    fun openThread(entry: TimelineEntryModel, swipeNavigationEnabled: Boolean = false)
 
     fun openImageDetail(url: String)
 
-    fun openImageDetail(
-        urls: List<String>,
-        initialIndex: Int,
-        videoIndices: List<Int> = emptyList(),
-    )
+    fun openImageDetail(urls: List<String>, initialIndex: Int, videoIndices: List<Int> = emptyList())
 
     fun openBlockedAndMuted()
 
@@ -97,10 +75,7 @@ interface DetailOpener {
 
     fun openDirectMessages()
 
-    fun openConversation(
-        otherUser: UserModel,
-        parentUri: String,
-    )
+    fun openConversation(otherUser: UserModel, parentUri: String)
 
     fun openGallery()
 
@@ -108,10 +83,7 @@ interface DetailOpener {
 
     fun openUnpublished()
 
-    fun openCreateReport(
-        user: UserModel,
-        entry: TimelineEntryModel? = null,
-    )
+    fun openCreateReport(user: UserModel, entry: TimelineEntryModel? = null)
 
     fun openUserFeedback()
 

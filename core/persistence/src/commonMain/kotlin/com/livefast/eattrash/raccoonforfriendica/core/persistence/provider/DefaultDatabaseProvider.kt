@@ -6,9 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.builder.Databa
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
-internal class DefaultDatabaseProvider(
-    private val builderProvider: DatabaseBuilderProvider,
-) : DatabaseProvider {
+internal class DefaultDatabaseProvider(private val builderProvider: DatabaseBuilderProvider) : DatabaseProvider {
     private val database: AppDatabase by lazy {
         builderProvider
             .provideDatabaseBuilder()

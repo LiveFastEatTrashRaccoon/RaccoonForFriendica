@@ -15,29 +15,25 @@ import androidx.compose.ui.unit.Dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 
 @Composable
-fun PlaceholderImage(
-    modifier: Modifier = Modifier,
-    size: Dp,
-    title: String,
-) {
+fun PlaceholderImage(size: Dp, title: String, modifier: Modifier = Modifier) {
     Box(
         modifier =
-            modifier
-                .padding(Spacing.xxxs)
-                .size(size)
-                .background(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(size / 2),
-                ),
+        modifier
+            .padding(Spacing.xxxs)
+            .size(size)
+            .background(
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(size / 2),
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text =
-                title
-                    .firstOrNull()
-                    ?.toString()
-                    .orEmpty()
-                    .uppercase(),
+            title
+                .firstOrNull()
+                ?.toString()
+                .orEmpty()
+                .uppercase(),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.SemiBold,

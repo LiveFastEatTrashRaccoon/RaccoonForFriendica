@@ -41,13 +41,12 @@ internal class DefaultThemeRepository : ThemeRepository {
         return colors[index]
     }
 
-    private fun getCommentBarColors(): List<Color> =
-        buildList {
-            this += Color(0xFF9400D3)
-            this += Color(0xFF0000FF)
-            this += Color(0xFF00FF00)
-            this += Color(0xFFFFFF00)
-            this += Color(0xFFFF7F00)
-            this += Color(0xFFFF0000)
-        }
+    private fun getCommentBarColors(): List<Color> = buildList {
+        this += Color(0xFF9400D3)
+        this += Color(0xFF0000FF)
+        this += Color(0xFF00FF00)
+        this += Color(0xFFFFFF00)
+        this += Color(0xFFFF7F00)
+        this += Color(0xFFFF0000)
+    }
 }

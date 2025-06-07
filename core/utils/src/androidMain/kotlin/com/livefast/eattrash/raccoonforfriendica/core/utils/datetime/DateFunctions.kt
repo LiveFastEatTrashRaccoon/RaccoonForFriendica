@@ -19,10 +19,7 @@ import java.time.Duration as JavaDuration
 
 actual fun epochMillis(): Long = System.currentTimeMillis()
 
-private fun getDateTimeFormatter(
-    pattern: String,
-    withLocalTimezone: Boolean = false,
-) = DateTimeFormatter
+private fun getDateTimeFormatter(pattern: String, withLocalTimezone: Boolean = false) = DateTimeFormatter
     .ofPattern(pattern)
     .withLocale(Locale.US)
     .run {
@@ -64,11 +61,7 @@ actual fun String.toEpochMillis(): Long {
     return Instant.EPOCH.until(instant, ChronoUnit.MILLIS)
 }
 
-actual fun Long.concatDateWithTime(
-    hours: Int,
-    minutes: Int,
-    seconds: Int,
-): Long {
+actual fun Long.concatDateWithTime(hours: Int, minutes: Int, seconds: Int): Long {
     val calendar = GregorianCalendar.getInstance()
     calendar.timeInMillis = this
     calendar.set(Calendar.HOUR_OF_DAY, hours)
@@ -95,11 +88,7 @@ actual fun Long.extractDatePart(): Pair<Int, Int> {
     return year to month
 }
 
-actual fun getFormattedDate(
-    iso8601Timestamp: String,
-    format: String,
-    withLocalTimezone: Boolean,
-): String {
+actual fun getFormattedDate(iso8601Timestamp: String, format: String, withLocalTimezone: Boolean): String {
     val date = getDateFromIso8601Timestamp(iso8601Timestamp)
     val formatter =
         DateTimeFormatter.ofPattern(format).run {
@@ -112,19 +101,14 @@ actual fun getFormattedDate(
     return date.format(formatter)
 }
 
-actual fun parseDate(
-    value: String,
-    format: String,
-    withLocalTimezone: Boolean,
-): String =
-    getDateTimeFormatter(
-        pattern = format,
-        withLocalTimezone = withLocalTimezone,
-    ).runCatching {
-        parse(value)
-    }.getOrNull()
-        ?.let { defaultFormatter.format(it) }
-        .orEmpty()
+actual fun parseDate(value: String, format: String, withLocalTimezone: Boolean): String = getDateTimeFormatter(
+    pattern = format,
+    withLocalTimezone = withLocalTimezone,
+).runCatching {
+    parse(value)
+}.getOrNull()
+    ?.let { defaultFormatter.format(it) }
+    .orEmpty()
 
 actual fun getPrettyDate(
     iso8601Timestamp: String,
@@ -205,21 +189,19 @@ actual fun getPrettyDate(
     }
 }
 
-actual fun getDurationFromNowToDate(iso8601Timestamp: String): Duration? =
-    runCatching {
-        val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
-        val now = ZonedDateTime.now()
-        val duration = JavaDuration.between(now, date)
-        duration.toKotlinDuration()
-    }.getOrNull()
+actual fun getDurationFromNowToDate(iso8601Timestamp: String): Duration? = runCatching {
+    val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
+    val now = ZonedDateTime.now()
+    val duration = JavaDuration.between(now, date)
+    duration.toKotlinDuration()
+}.getOrNull()
 
-actual fun getDurationFromDateToNow(iso8601Timestamp: String): Duration? =
-    runCatching {
-        val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
-        val now = ZonedDateTime.now()
-        val duration = JavaDuration.between(date, now)
-        duration.toKotlinDuration()
-    }.getOrNull()
+actual fun getDurationFromDateToNow(iso8601Timestamp: String): Duration? = runCatching {
+    val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
+    val now = ZonedDateTime.now()
+    val duration = JavaDuration.between(date, now)
+    duration.toKotlinDuration()
+}.getOrNull()
 
 actual fun isToday(iso8601Timestamp: String): Boolean {
     val millis = iso8601Timestamp.toEpochMillis()

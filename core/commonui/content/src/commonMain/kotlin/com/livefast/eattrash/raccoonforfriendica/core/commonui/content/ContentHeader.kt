@@ -74,11 +74,11 @@ fun ContentHeader(
         if (creatorAvatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
-                    Modifier
-                        .size(iconSize)
-                        .then(onOpenUserModifier)
-                        .padding(Spacing.xxxs)
-                        .clip(RoundedCornerShape(iconSize / 2)),
+                Modifier
+                    .size(iconSize)
+                    .then(onOpenUserModifier)
+                    .padding(Spacing.xxxs)
+                    .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
                 autoload = autoloadImages,
                 quality = FilterQuality.Low,
@@ -108,41 +108,41 @@ fun ContentHeader(
 
             Text(
                 text =
-                    buildAnnotatedString {
-                        if (!user?.handle.isNullOrBlank()) {
-                            pushLink(
-                                LinkAnnotation.Clickable(
-                                    tag = "user-handle",
-                                    linkInteractionListener = {
-                                        user?.also { onOpenUser?.invoke(it) }
-                                    },
-                                ),
-                            )
-                            append(user?.handle?.ellipsize(30))
-                            pop()
+                buildAnnotatedString {
+                    if (!user?.handle.isNullOrBlank()) {
+                        pushLink(
+                            LinkAnnotation.Clickable(
+                                tag = "user-handle",
+                                linkInteractionListener = {
+                                    user?.also { onOpenUser?.invoke(it) }
+                                },
+                            ),
+                        )
+                        append(user?.handle?.ellipsize(30))
+                        pop()
+                    }
+                    if (!scheduleDate.isNullOrBlank()) {
+                        if (length > 0) {
+                            append(" • ")
                         }
-                        if (!scheduleDate.isNullOrBlank()) {
-                            if (length > 0) {
-                                append(" • ")
-                            }
-                            append(
-                                getFormattedDate(
-                                    iso8601Timestamp = scheduleDate,
-                                    format = "dd/MM/yy HH:mm:ss",
-                                ),
-                            )
-                        } else if (!date.isNullOrBlank()) {
-                            if (length > 0) {
-                                append(" • ")
-                            }
-                            append(date.prettifyDate())
-                            if (isEdited) {
-                                append(" (")
-                                append(LocalStrings.current.infoEdited)
-                                append(")")
-                            }
+                        append(
+                            getFormattedDate(
+                                iso8601Timestamp = scheduleDate,
+                                format = "dd/MM/yy HH:mm:ss",
+                            ),
+                        )
+                    } else if (!date.isNullOrBlank()) {
+                        if (length > 0) {
+                            append(" • ")
                         }
-                    },
+                        append(date.prettifyDate())
+                        if (isEdited) {
+                            append(" (")
+                            append(LocalStrings.current.infoEdited)
+                            append(")")
+                        }
+                    }
+                },
                 style = MaterialTheme.typography.bodyMedium,
                 color = ancillaryColor,
             )
@@ -152,9 +152,9 @@ fun ContentHeader(
             val icon = platform.toPlatformIcon()
             Icon(
                 modifier =
-                    Modifier
-                        .padding(end = Spacing.xs)
-                        .size(SOURCE_PLATFORM_SIZE),
+                Modifier
+                    .padding(end = Spacing.xs)
+                    .size(SOURCE_PLATFORM_SIZE),
                 painter = icon,
                 contentDescription = platform,
                 tint = MaterialTheme.colorScheme.onBackground,

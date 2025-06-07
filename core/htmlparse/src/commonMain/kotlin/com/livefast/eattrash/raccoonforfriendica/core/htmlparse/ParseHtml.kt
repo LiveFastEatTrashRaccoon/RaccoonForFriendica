@@ -14,11 +14,7 @@ import com.mohamedrejeb.ksoup.entities.KsoupEntities
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
 
-fun String.parseHtml(
-    linkColor: Color,
-    quoteColor: Color,
-    requiresHtmlDecode: Boolean = true,
-): AnnotatedString {
+fun String.parseHtml(linkColor: Color, quoteColor: Color, requiresHtmlDecode: Boolean = true): AnnotatedString {
     val builder = AnnotatedString.Builder()
     var inOrderedList = false
     var orderedListIndex = 0
@@ -67,10 +63,10 @@ fun String.parseHtml(
                         builder.pushStyle(
                             ParagraphStyle(
                                 textIndent =
-                                    TextIndent(
-                                        firstLine = 8.sp,
-                                        restLine = 8.sp,
-                                    ),
+                                TextIndent(
+                                    firstLine = 8.sp,
+                                    restLine = 8.sp,
+                                ),
                             ),
                         )
                         builder.pushStyle(
@@ -134,17 +130,16 @@ fun String.parseHtml(
     }
 }
 
-private fun String.sanitize(requiresHtmlDecode: Boolean): String =
-    run {
-        if (requiresHtmlDecode) {
-            KsoupEntities.decodeHtml(this)
-        } else {
-            this
-        }
-    }.replace(
-        regex = Regex("<p><br\\s*?/?></p>"),
-        replacement = "<br/>",
-    ).replace(
-        regex = Regex("<p><br\\s*?/?>"),
-        replacement = "<p>",
-    )
+private fun String.sanitize(requiresHtmlDecode: Boolean): String = run {
+    if (requiresHtmlDecode) {
+        KsoupEntities.decodeHtml(this)
+    } else {
+        this
+    }
+}.replace(
+    regex = Regex("<p><br\\s*?/?></p>"),
+    replacement = "<br/>",
+).replace(
+    regex = Regex("<p><br\\s*?/?>"),
+    replacement = "<p>",
+)

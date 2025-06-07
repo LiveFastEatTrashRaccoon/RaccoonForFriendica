@@ -8,17 +8,11 @@ import io.ktor.client.request.forms.MultiPartFormDataContent
 
 interface PhotoService {
     @POST("friendica/photo/create")
-    suspend fun create(
-        @Body content: MultiPartFormDataContent,
-    ): FriendicaPhoto
+    suspend fun create(@Body content: MultiPartFormDataContent): FriendicaPhoto
 
     @POST("friendica/photo/update")
-    suspend fun update(
-        @Body content: MultiPartFormDataContent,
-    ): FriendicaApiResult
+    suspend fun update(@Body content: MultiPartFormDataContent): FriendicaApiResult
 
     @POST("friendica/photo/delete")
-    suspend fun delete(
-        @Body content: MultiPartFormDataContent,
-    ): FriendicaApiResult
+    suspend fun delete(@Body content: MultiPartFormDataContent): FriendicaApiResult
 }

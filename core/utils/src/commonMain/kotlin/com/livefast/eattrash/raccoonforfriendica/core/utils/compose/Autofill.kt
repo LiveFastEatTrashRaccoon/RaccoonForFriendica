@@ -15,10 +15,7 @@ import androidx.compose.ui.platform.LocalAutofillTree
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Modifier.autofill(
-    autofillTypes: List<AutofillType>,
-    onFill: ((String) -> Unit),
-): Modifier {
+fun Modifier.autofill(autofillTypes: List<AutofillType>, onFill: ((String) -> Unit)): Modifier {
     val autofill = LocalAutofill.current
     val tree = LocalAutofillTree.current
     val autofillNode =

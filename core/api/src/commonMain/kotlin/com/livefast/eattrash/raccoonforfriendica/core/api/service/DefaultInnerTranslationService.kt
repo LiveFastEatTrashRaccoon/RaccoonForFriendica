@@ -17,24 +17,18 @@ import kotlinx.serialization.json.Json
  * BEWARE:
  * It has a usage quota and it should not be used extensively or as a 100% reliable service.
  */
-internal class DefaultInnerTranslationService(
-    private val client: HttpClient = HttpClient(provideHttpClientEngine()),
-) : InnerTranslationService {
-    override suspend fun translate(
-        sourceText: String,
-        sourceLang: String,
-        targetLang: String,
-    ): String? =
-        runCatching {
-            val response =
-                client.get {
-                    url(InnerTranslationApiConfigurationValues.URL)
-                    parameter("text", sourceText)
-                    parameter("source_lang", sourceLang)
-                    parameter("target_lang", targetLang)
-                }
-            val body = response.bodyAsText()
-            val parsedResult = Json.decodeFromString<InnerTranslation>(body)
-            parsedResult.response.translatedText
-        }.getOrNull()
+internal class DefaultInnerTranslationService(private val client: HttpClient = HttpClient(provideHttpClientEngine())) :
+    InnerTranslationService {
+    override suspend fun translate(sourceText: String, sourceLang: String, targetLang: String): String? = runCatching {
+        val response =
+            client.get {
+                url(InnerTranslationApiConfigurationValues.URL)
+                parameter("text", sourceText)
+                parameter("source_lang", sourceLang)
+                parameter("target_lang", targetLang)
+            }
+        val body = response.bodyAsText()
+        val parsedResult = Json.decodeFromString<InnerTranslation>(body)
+        parsedResult.response.translatedText
+    }.getOrNull()
 }

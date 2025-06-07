@@ -20,6 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,7 +51,7 @@ fun SpinnerField(
     val focusRequester = remember { FocusRequester() }
     var readOnly by remember { mutableStateOf(true) }
     var expanded by remember { mutableStateOf(false) }
-    var availableWidthPx by remember { mutableStateOf(0f) }
+    var availableWidthPx by remember { mutableFloatStateOf(0f) }
     val availableWidth = with(LocalDensity.current) { availableWidthPx.toDp() }
 
     Box(
@@ -59,11 +60,11 @@ fun SpinnerField(
         Column {
             OutlinedTextField(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .onGloballyPositioned {
-                            availableWidthPx = it.size.toSize().width
-                        }.focusRequester(focusRequester),
+                Modifier
+                    .fillMaxWidth()
+                    .onGloballyPositioned {
+                        availableWidthPx = it.size.toSize().width
+                    }.focusRequester(focusRequester),
                 value = value,
                 label = label,
                 placeholder = placeholder,
@@ -121,13 +122,13 @@ fun SpinnerField(
         if (readOnly) {
             Spacer(
                 modifier =
-                    Modifier
-                        .matchParentSize()
-                        .background(Color.Transparent)
-                        .padding(top = Spacing.s, bottom = Spacing.m)
-                        .clickable(
-                            onClick = { expanded = !expanded },
-                        ),
+                Modifier
+                    .matchParentSize()
+                    .background(Color.Transparent)
+                    .padding(top = Spacing.s, bottom = Spacing.m)
+                    .clickable(
+                        onClick = { expanded = !expanded },
+                    ),
             )
         }
     }

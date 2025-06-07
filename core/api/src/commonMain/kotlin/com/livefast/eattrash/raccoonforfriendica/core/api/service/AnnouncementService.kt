@@ -13,19 +13,11 @@ interface AnnouncementService {
     suspend fun getAll(): List<Announcement>
 
     @POST("v1/announcements/{id}/dismiss")
-    suspend fun dismiss(
-        @Path("id") id: String,
-    ): Response<Unit>
+    suspend fun dismiss(@Path("id") id: String): Response<Unit>
 
     @PUT("v1/announcements/{id}/reactions/{name}")
-    suspend fun addReaction(
-        @Path("id") id: String,
-        @Path("name") name: String,
-    ): Response<Unit>
+    suspend fun addReaction(@Path("id") id: String, @Path("name") name: String): Response<Unit>
 
     @DELETE("v1/announcements/{id}/reactions/{name}")
-    suspend fun removeReaction(
-        @Path("id") id: String,
-        @Path("name") name: String,
-    ): Response<Unit>
+    suspend fun removeReaction(@Path("id") id: String, @Path("name") name: String): Response<Unit>
 }

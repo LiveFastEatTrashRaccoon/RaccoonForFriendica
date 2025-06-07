@@ -45,16 +45,16 @@ fun EditFieldItem(
             maxLines = 1,
             value = field.key,
             keyboardOptions =
-                KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Text,
-                ),
+            KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Text,
+            ),
             keyboardActions =
-                KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    },
-                ),
+            KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                },
+            ),
             onValueChange = {
                 onValueChange?.invoke(it, field.value)
             },
@@ -76,16 +76,16 @@ fun EditFieldItem(
             maxLines = 1,
             value = field.value,
             keyboardOptions =
-                KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Text,
-                ),
+            KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Text,
+            ),
             keyboardActions =
-                KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    },
-                ),
+            KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                },
+            ),
             onValueChange = {
                 onValueChange?.invoke(field.key, it)
             },

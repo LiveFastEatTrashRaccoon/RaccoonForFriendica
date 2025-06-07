@@ -14,10 +14,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.shimmerEffec
 fun UserHeaderPlaceholder(modifier: Modifier = Modifier) {
     Box(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .aspectRatio(16 / 9f)
-                .clip(RoundedCornerShape(CornerSize.s))
-                .shimmerEffect(),
+        modifier
+            .fillMaxWidth()
+            .aspectRatio(16 / 9f)
+            .clip(RoundedCornerShape(CornerSize.s))
+            .shimmerEffect(),
     )
 }

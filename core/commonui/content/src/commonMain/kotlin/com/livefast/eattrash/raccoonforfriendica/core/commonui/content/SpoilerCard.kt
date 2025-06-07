@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,7 +40,7 @@ fun SpoilerCard(
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
-    var contentHeightPx by remember { mutableStateOf(0f) }
+    var contentHeightPx by remember { mutableFloatStateOf(0f) }
     val contentHeightDp = with(LocalDensity.current) { contentHeightPx.toDp() }
     val annotatedContent =
         content.parseHtml(
@@ -50,16 +50,17 @@ fun SpoilerCard(
 
     Row(
         modifier =
-            modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    onClick?.invoke()
-                }.background(
-                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
-                    shape = RoundedCornerShape(CornerSize.l),
-                ).clip(RoundedCornerShape(CornerSize.l)),
+        modifier
+            .background(
+                color = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
+                shape = RoundedCornerShape(CornerSize.l),
+            ).clip(RoundedCornerShape(CornerSize.l))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                onClick?.invoke()
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
@@ -68,14 +69,14 @@ fun SpoilerCard(
         )
         Column(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .onGloballyPositioned {
-                        contentHeightPx = it.size.toSize().height
-                    }.padding(
-                        vertical = Spacing.m,
-                        horizontal = Spacing.s,
-                    ),
+            Modifier
+                .weight(1f)
+                .onGloballyPositioned {
+                    contentHeightPx = it.size.toSize().height
+                }.padding(
+                    vertical = Spacing.m,
+                    horizontal = Spacing.s,
+                ),
             verticalArrangement = Arrangement.spacedBy(Spacing.s),
         ) {
             TextWithCustomEmojis(
@@ -88,11 +89,11 @@ fun SpoilerCard(
             )
             Text(
                 text =
-                    if (active) {
-                        LocalStrings.current.actionHideContent
-                    } else {
-                        LocalStrings.current.actionRevealContent
-                    },
+                if (active) {
+                    LocalStrings.current.actionHideContent
+                } else {
+                    LocalStrings.current.actionRevealContent
+                },
                 style = MaterialTheme.typography.labelMedium.copy(color = ancillaryColor),
             )
         }

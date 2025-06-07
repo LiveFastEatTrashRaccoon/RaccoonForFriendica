@@ -14,10 +14,7 @@ internal class DefaultBarColorProvider : BarColorProvider {
     override val isBarThemeSupported = false
 
     @Composable
-    override fun setBarColorAccordingToTheme(
-        theme: UiTheme,
-        barTheme: UiBarTheme,
-    ) {
+    override fun setBarColorAccordingToTheme(theme: UiTheme, barTheme: UiBarTheme) {
         val isSystemInDarkTheme = isSystemInDarkTheme()
         LaunchedEffect(theme, isSystemInDarkTheme) {
             val style =

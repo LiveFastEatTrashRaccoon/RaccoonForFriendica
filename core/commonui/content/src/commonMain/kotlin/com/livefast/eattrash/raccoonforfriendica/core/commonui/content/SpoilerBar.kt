@@ -13,10 +13,7 @@ import kotlin.math.roundToInt
 import kotlin.math.tan
 
 @Composable
-internal fun SpoilerBar(
-    modifier: Modifier = Modifier,
-    inverted: Boolean = false,
-) {
+internal fun SpoilerBar(modifier: Modifier = Modifier, inverted: Boolean = false) {
     val yellowHeight = with(LocalDensity.current) { 8.dp.toPx() }
     val blackHeight = with(LocalDensity.current) { 4.dp.toPx() }
     Canvas(modifier = modifier) {

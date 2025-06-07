@@ -36,6 +36,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditTextualInfoDialog(
+    modifier: Modifier = Modifier,
     title: String = LocalStrings.current.actionEdit,
     label: String = "",
     value: String = "",
@@ -50,16 +51,16 @@ fun EditTextualInfoDialog(
     }
 
     BasicAlertDialog(
-        modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
+        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onClose?.invoke(null)
         },
     ) {
         Column(
             modifier =
-                Modifier
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                    .padding(Spacing.m),
+            Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                .padding(Spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
@@ -77,11 +78,11 @@ fun EditTextualInfoDialog(
                 singleLine = singleLine,
                 isError = isError,
                 colors =
-                    TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                    ),
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                ),
                 label = {
                     Text(
                         text = label,
@@ -91,9 +92,9 @@ fun EditTextualInfoDialog(
                 textStyle = MaterialTheme.typography.bodyMedium,
                 value = textFieldValue,
                 keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                    ),
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                ),
                 onValueChange = { value ->
                     textFieldValue = value
                 },

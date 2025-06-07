@@ -41,9 +41,9 @@ fun UserHeader(
     onOpenFollowers: (() -> Unit)? = null,
     onOpenFollowing: (() -> Unit)? = null,
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
-    onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
-    onNotificationsClicked: ((NotificationStatusNextAction) -> Unit)? = null,
-    onEditClicked: (() -> Unit)? = null,
+    onRelationshipClick: ((RelationshipStatusNextAction) -> Unit)? = null,
+    onNotificationsClick: ((NotificationStatusNextAction) -> Unit)? = null,
+    onEditClick: (() -> Unit)? = null,
 ) {
     val banner = user?.header.orEmpty()
     val avatar = user?.avatar.orEmpty()
@@ -59,14 +59,14 @@ fun UserHeader(
         Box {
             CustomImage(
                 modifier =
-                    Modifier
-                        .padding(bottom = avatarSize * 0.8f)
-                        .aspectRatio(16 / 9f)
-                        .clickable {
-                            if (banner.isNotBlank()) {
-                                onOpenImage?.invoke(banner)
-                            }
-                        },
+                Modifier
+                    .padding(bottom = avatarSize * 0.8f)
+                    .aspectRatio(16 / 9f)
+                    .clickable {
+                        if (banner.isNotBlank()) {
+                            onOpenImage?.invoke(banner)
+                        }
+                    },
                 url = banner,
                 autoload = autoloadImages,
                 contentScale = ContentScale.FillBounds,
@@ -74,22 +74,22 @@ fun UserHeader(
 
             Row(
                 modifier =
-                    Modifier
-                        .align(Alignment.BottomStart)
-                        .offset(
-                            y = -avatarSize * 0.1f,
-                        ).padding(horizontal = Spacing.m),
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .offset(
+                        y = -avatarSize * 0.1f,
+                    ).padding(horizontal = Spacing.m),
                 verticalAlignment = Alignment.Bottom,
             ) {
                 if (avatar.isNotEmpty() && autoloadImages) {
                     CustomImage(
                         modifier =
-                            Modifier
-                                .size(avatarSize)
-                                .clip(RoundedCornerShape(avatarSize / 2))
-                                .clickable {
-                                    onOpenImage?.invoke(avatar)
-                                },
+                        Modifier
+                            .size(avatarSize)
+                            .clip(RoundedCornerShape(avatarSize / 2))
+                            .clickable {
+                                onOpenImage?.invoke(avatar)
+                            },
                         url = avatar,
                         quality = FilterQuality.Low,
                         contentScale = ContentScale.FillBounds,
@@ -108,7 +108,6 @@ fun UserHeader(
                     horizontalAlignment = Alignment.End,
                 ) {
                     Row(
-                        modifier = modifier,
                         horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -116,13 +115,13 @@ fun UserHeader(
                         val following = user?.following ?: 0
                         Text(
                             modifier =
-                                Modifier
-                                    .clip(RoundedCornerShape(CornerSize.xl))
-                                    .clickable {
-                                        if (followers > 0) {
-                                            onOpenFollowers?.invoke()
-                                        }
-                                    }.padding(horizontal = Spacing.s),
+                            Modifier
+                                .clip(RoundedCornerShape(CornerSize.xl))
+                                .clickable {
+                                    if (followers > 0) {
+                                        onOpenFollowers?.invoke()
+                                    }
+                                }.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.accountFollower(followers),
                             style = MaterialTheme.typography.labelMedium,
                             color = ancillaryColor,
@@ -134,13 +133,13 @@ fun UserHeader(
                         )
                         Text(
                             modifier =
-                                Modifier
-                                    .clip(RoundedCornerShape(CornerSize.xl))
-                                    .clickable {
-                                        if (following > 0) {
-                                            onOpenFollowing?.invoke()
-                                        }
-                                    }.padding(horizontal = Spacing.s),
+                            Modifier
+                                .clip(RoundedCornerShape(CornerSize.xl))
+                                .clickable {
+                                    if (following > 0) {
+                                        onOpenFollowing?.invoke()
+                                    }
+                                }.padding(horizontal = Spacing.s),
                             text = LocalStrings.current.accountFollowing(following),
                             style = MaterialTheme.typography.labelMedium,
                             color = ancillaryColor,
@@ -155,7 +154,7 @@ fun UserHeader(
                             UserNotificationButton(
                                 status = notificationStatus,
                                 pending = user.notificationStatusPending,
-                                onClick = onNotificationsClicked,
+                                onClick = onNotificationsClick,
                             )
                         }
                         if (relationshipStatus != null) {
@@ -163,13 +162,13 @@ fun UserHeader(
                                 status = relationshipStatus,
                                 locked = user.locked,
                                 pending = user.relationshipStatusPending,
-                                onClick = onRelationshipClicked,
+                                onClick = onRelationshipClick,
                             )
                         }
                         if (editButtonEnabled) {
                             OutlinedButton(
                                 onClick = {
-                                    onEditClicked?.invoke()
+                                    onEditClick?.invoke()
                                 },
                             ) {
                                 Text(text = LocalStrings.current.editProfileTitle)

@@ -17,21 +17,18 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.shimmerEffect
 
 @Composable
-fun GenericPlaceholder(
-    height: Dp = 100.dp,
-    modifier: Modifier = Modifier,
-) {
+fun GenericPlaceholder(modifier: Modifier = Modifier, height: Dp = 100.dp) {
     Column(
         modifier = modifier.padding(horizontal = Spacing.xs),
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Box(
             modifier =
-                Modifier
-                    .height(height)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(CornerSize.s))
-                    .shimmerEffect(),
+            Modifier
+                .height(height)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(CornerSize.s))
+                .shimmerEffect(),
         )
     }
 }

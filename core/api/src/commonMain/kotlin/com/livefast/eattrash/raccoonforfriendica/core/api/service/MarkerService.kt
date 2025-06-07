@@ -9,12 +9,8 @@ import io.ktor.client.request.forms.FormDataContent
 
 interface MarkerService {
     @GET("v1/markers")
-    suspend fun get(
-        @Query("timeline[]") timelines: List<String>,
-    ): Markers
+    suspend fun get(@Query("timeline[]") timelines: List<String>): Markers
 
     @POST("v1/markers")
-    suspend fun update(
-        @Body data: FormDataContent,
-    ): Markers
+    suspend fun update(@Body data: FormDataContent): Markers
 }

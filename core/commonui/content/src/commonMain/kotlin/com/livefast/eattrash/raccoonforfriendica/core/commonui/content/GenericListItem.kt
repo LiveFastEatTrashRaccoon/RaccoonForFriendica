@@ -35,11 +35,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 @Composable
 fun GenericListItem(
     title: String,
-    subtitle: String? = null,
     modifier: Modifier = Modifier,
+    subtitle: String? = null,
     options: List<Option> = emptyList(),
     onClick: (() -> Unit)? = null,
-    onOptionSelected: ((OptionId) -> Unit)? = null,
+    onSelectOption: ((OptionId) -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
@@ -48,16 +48,16 @@ fun GenericListItem(
 
     Row(
         modifier =
-            modifier
-                .then(
-                    if (onClick != null) {
-                        Modifier.clickable {
-                            onClick()
-                        }
-                    } else {
-                        Modifier
-                    },
-                ).padding(Spacing.s),
+        modifier
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable {
+                        onClick()
+                    }
+                } else {
+                    Modifier
+                },
+            ).padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -83,9 +83,9 @@ fun GenericListItem(
             Box {
                 IconButton(
                     modifier =
-                        Modifier.onGloballyPositioned {
-                            optionsOffset = it.positionInParent()
-                        },
+                    Modifier.onGloballyPositioned {
+                        optionsOffset = it.positionInParent()
+                    },
                     onClick = {
                         optionsMenuOpen = true
                     },
@@ -104,12 +104,12 @@ fun GenericListItem(
                         optionsMenuOpen = false
                     },
                     offset =
-                        with(LocalDensity.current) {
-                            DpOffset(
-                                x = optionsOffset.x.toDp(),
-                                y = optionsOffset.y.toDp(),
-                            )
-                        },
+                    with(LocalDensity.current) {
+                        DpOffset(
+                            x = optionsOffset.x.toDp(),
+                            y = optionsOffset.y.toDp(),
+                        )
+                    },
                 ) {
                     options.forEach { option ->
                         DropdownMenuItem(
@@ -118,7 +118,7 @@ fun GenericListItem(
                             },
                             onClick = {
                                 optionsMenuOpen = false
-                                onOptionSelected?.invoke(option.id)
+                                onSelectOption?.invoke(option.id)
                             },
                         )
                     }

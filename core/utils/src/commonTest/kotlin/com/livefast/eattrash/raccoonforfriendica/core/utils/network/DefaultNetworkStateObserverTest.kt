@@ -30,57 +30,54 @@ class DefaultNetworkStateObserverTest {
         )
 
     @Test
-    fun `given not started when connectivity changes then result is as expected`() =
-        runTest {
-            sut.state.test {
-                val state1 = awaitItem()
-                assertEquals(NetworkState.Disconnected, state1)
-                connectivityStatusUpdates.emit(Connectivity.Status.Connected(false))
-                val state2 = awaitItem()
-                assertEquals(NetworkState.Connected(false), state2)
-            }
-
-            verify(VerifyMode.not) {
-                connectivity.start()
-                connectivity.stop()
-            }
+    fun `given not started when connectivity changes then result is as expected`() = runTest {
+        sut.state.test {
+            val state1 = awaitItem()
+            assertEquals(NetworkState.Disconnected, state1)
+            connectivityStatusUpdates.emit(Connectivity.Status.Connected(false))
+            val state2 = awaitItem()
+            assertEquals(NetworkState.Connected(false), state2)
         }
+
+        verify(VerifyMode.not) {
+            connectivity.start()
+            connectivity.stop()
+        }
+    }
 
     @Test
-    fun `given started when connectivity changes then result is as expected`() =
-        runTest {
-            sut.state.test {
-                val state1 = awaitItem()
-                assertEquals(NetworkState.Disconnected, state1)
+    fun `given started when connectivity changes then result is as expected`() = runTest {
+        sut.state.test {
+            val state1 = awaitItem()
+            assertEquals(NetworkState.Disconnected, state1)
 
-                sut.start()
-                connectivityStatusUpdates.emit(Connectivity.Status.Connected(false))
+            sut.start()
+            connectivityStatusUpdates.emit(Connectivity.Status.Connected(false))
 
-                val state2 = awaitItem()
-                assertEquals(NetworkState.Connected(false), state2)
-            }
-
-            verify {
-                connectivity.start()
-            }
+            val state2 = awaitItem()
+            assertEquals(NetworkState.Connected(false), state2)
         }
+
+        verify {
+            connectivity.start()
+        }
+    }
 
     @Test
-    fun `given started and metered network when connectivity changes then result is as expected`() =
-        runTest {
-            sut.state.test {
-                val state1 = awaitItem()
-                assertEquals(NetworkState.Disconnected, state1)
+    fun `given started and metered network when connectivity changes then result is as expected`() = runTest {
+        sut.state.test {
+            val state1 = awaitItem()
+            assertEquals(NetworkState.Disconnected, state1)
 
-                sut.start()
-                connectivityStatusUpdates.emit(Connectivity.Status.Connected(true))
+            sut.start()
+            connectivityStatusUpdates.emit(Connectivity.Status.Connected(true))
 
-                val state2 = awaitItem()
-                assertEquals(NetworkState.Connected(true), state2)
-            }
-
-            verify {
-                connectivity.start()
-            }
+            val state2 = awaitItem()
+            assertEquals(NetworkState.Connected(true), state2)
         }
+
+        verify {
+            connectivity.start()
+        }
+    }
 }

@@ -26,8 +26,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getImageLoaderPro
 
 @Composable
 fun CustomImage(
-    modifier: Modifier = Modifier,
     url: String,
+    modifier: Modifier = Modifier,
     blurred: Boolean = false,
     autoload: Boolean = true,
     contentDescription: String? = null,
@@ -54,9 +54,9 @@ fun CustomImage(
         if (shouldBeRendered) {
             AsyncImage(
                 modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .blur(radius = if (blurred) 60.dp else 0.dp),
+                Modifier
+                    .fillMaxSize()
+                    .blur(radius = if (blurred) 60.dp else 0.dp),
                 model = url,
                 contentDescription = contentDescription,
                 filterQuality = quality,

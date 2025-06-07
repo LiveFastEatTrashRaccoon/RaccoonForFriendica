@@ -8,20 +8,11 @@ import de.jensklingenberg.ktorfit.http.Query
 
 interface TrendsService {
     @GET("v1/trends/tags")
-    suspend fun getHashtags(
-        @Query("offset") offset: Int,
-        @Query("limit") limit: Int = 20,
-    ): List<Tag>
+    suspend fun getHashtags(@Query("offset") offset: Int, @Query("limit") limit: Int = 20): List<Tag>
 
     @GET("v1/trends/statuses")
-    suspend fun getStatuses(
-        @Query("offset") offset: Int,
-        @Query("limit") limit: Int = 20,
-    ): List<Status>
+    suspend fun getStatuses(@Query("offset") offset: Int, @Query("limit") limit: Int = 20): List<Status>
 
     @GET("v1/trends/links")
-    suspend fun getLinks(
-        @Query("offset") offset: Int,
-        @Query("limit") limit: Int = 20,
-    ): Response<Any>
+    suspend fun getLinks(@Query("offset") offset: Int, @Query("limit") limit: Int = 20): Response<Any>
 }

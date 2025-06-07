@@ -10,9 +10,7 @@ import de.jensklingenberg.ktorfit.http.POST
 interface AppService {
     @POST("v1/apps")
     @Headers("Content-Type: application/json")
-    suspend fun create(
-        @Body data: CreateAppForm,
-    ): Application
+    suspend fun create(@Body data: CreateAppForm): Application
 
     @GET("v1/apps/verify_credentials")
     suspend fun verifyCredentials(): Application

@@ -18,13 +18,9 @@ interface FollowRequestService {
 
     @POST("v1/follow_requests/{id}/authorize")
     @Headers("Content-Type: application/json")
-    suspend fun accept(
-        @Path("id") id: String,
-    ): Relationship
+    suspend fun accept(@Path("id") id: String): Relationship
 
     @POST("v1/follow_requests/{id}/reject")
     @Headers("Content-Type: application/json")
-    suspend fun reject(
-        @Path("id") id: String,
-    ): Relationship
+    suspend fun reject(@Path("id") id: String): Relationship
 }

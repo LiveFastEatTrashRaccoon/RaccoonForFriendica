@@ -5,9 +5,7 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
-internal class SharedPreferencesProvider(
-    context: Context,
-) {
+internal class SharedPreferencesProvider(context: Context) {
     private val masterKeyAlias: String = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
 
     val sharedPreferences: SharedPreferences =

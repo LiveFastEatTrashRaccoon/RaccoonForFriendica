@@ -40,6 +40,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 @Composable
 fun EditAttachmentDescriptionDialog(
     attachment: AttachmentModel,
+    modifier: Modifier = Modifier,
     onClose: ((String?) -> Unit)? = null,
 ) {
     var textFieldValue by remember {
@@ -47,16 +48,16 @@ fun EditAttachmentDescriptionDialog(
     }
 
     BasicAlertDialog(
-        modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
+        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onClose?.invoke(null)
         },
     ) {
         Column(
             modifier =
-                Modifier
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                    .padding(Spacing.m),
+            Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                .padding(Spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
@@ -80,11 +81,11 @@ fun EditAttachmentDescriptionDialog(
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 4,
                 colors =
-                    TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                    ),
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                ),
                 label = {
                     Text(
                         text = LocalStrings.current.imageFieldAltText,
@@ -94,9 +95,9 @@ fun EditAttachmentDescriptionDialog(
                 textStyle = MaterialTheme.typography.bodyMedium,
                 value = textFieldValue,
                 keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                    ),
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                ),
                 onValueChange = { value ->
                     textFieldValue = value
                 },

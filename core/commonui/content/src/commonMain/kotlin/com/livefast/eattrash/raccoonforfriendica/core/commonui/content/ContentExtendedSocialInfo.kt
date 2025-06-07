@@ -24,9 +24,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @Composable
 fun ContentExtendedSocialInfo(
+    modifier: Modifier = Modifier,
     favoriteCount: Int = 0,
     reblogCount: Int = 0,
-    modifier: Modifier = Modifier,
     onOpenUsersFavorite: (() -> Unit)? = null,
     onOpenUsersReblog: (() -> Unit)? = null,
 ) {
@@ -38,13 +38,13 @@ fun ContentExtendedSocialInfo(
     ) {
         Row(
             modifier =
-                Modifier
-                    .clip(RoundedCornerShape(CornerSize.xl))
-                    .clickable {
-                        if (reblogCount > 0) {
-                            onOpenUsersReblog?.invoke()
-                        }
-                    }.padding(horizontal = Spacing.s),
+            Modifier
+                .clip(RoundedCornerShape(CornerSize.xl))
+                .clickable {
+                    if (reblogCount > 0) {
+                        onOpenUsersReblog?.invoke()
+                    }
+                }.padding(horizontal = Spacing.s),
             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -67,13 +67,13 @@ fun ContentExtendedSocialInfo(
         )
         Row(
             modifier =
-                Modifier
-                    .clip(RoundedCornerShape(CornerSize.xl))
-                    .clickable {
-                        if (favoriteCount > 0) {
-                            onOpenUsersFavorite?.invoke()
-                        }
-                    }.padding(horizontal = Spacing.s),
+            Modifier
+                .clip(RoundedCornerShape(CornerSize.xl))
+                .clickable {
+                    if (favoriteCount > 0) {
+                        onOpenUsersFavorite?.invoke()
+                    }
+                }.padding(horizontal = Spacing.s),
             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
             verticalAlignment = Alignment.CenterVertically,
         ) {

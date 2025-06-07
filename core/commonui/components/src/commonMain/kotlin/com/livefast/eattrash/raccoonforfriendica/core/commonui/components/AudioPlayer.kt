@@ -40,12 +40,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 
 @Composable
-fun AudioPlayer(
-    urls: List<String>,
-    titles: List<String>,
-    modifier: Modifier = Modifier,
-    autoplay: Boolean = false,
-) {
+fun AudioPlayer(urls: List<String>, titles: List<String>, modifier: Modifier = Modifier, autoplay: Boolean = false) {
     var isInitial by remember { mutableStateOf(true) }
     val resources = remember { getCoreResources() }
 
@@ -69,12 +64,12 @@ fun AudioPlayer(
             audioPlayerConfig = resources.audioPlayerConfig,
             playerHost = playerHost,
             audios =
-                urls.mapIndexed { idx, url ->
-                    AudioFile(
-                        audioUrl = url,
-                        audioTitle = titles.getOrNull(idx).orEmpty(),
-                    )
-                },
+            urls.mapIndexed { idx, url ->
+                AudioFile(
+                    audioUrl = url,
+                    audioTitle = titles.getOrNull(idx).orEmpty(),
+                )
+            },
         )
     }
 }
@@ -87,9 +82,9 @@ fun AudioPlayer(
  */
 @Composable
 private fun FakeAudioPlayerComposable(
-    modifier: Modifier = Modifier,
     audioPlayerConfig: AudioPlayerConfig,
     onPlay: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier.background(audioPlayerConfig.backgroundColor),
@@ -97,31 +92,31 @@ private fun FakeAudioPlayerComposable(
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier =
-                    Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(bottom = audioPlayerConfig.controlsBottomPadding),
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(bottom = audioPlayerConfig.controlsBottomPadding),
                 verticalArrangement = Arrangement.spacedBy(30.dp),
             ) {
                 Column(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .weight(0.5f)
-                            .padding(horizontal = 25.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(0.5f)
+                        .padding(horizontal = 25.dp),
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Spacer(modifier = Modifier.weight(0.25f))
                     // fake AlbumArt
                     Box(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight(0.7f)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(
-                                    color = audioPlayerConfig.coverBackground,
-                                    shape = RoundedCornerShape(10.dp),
-                                ),
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.7f)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(
+                                color = audioPlayerConfig.coverBackground,
+                                shape = RoundedCornerShape(10.dp),
+                            ),
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
@@ -137,9 +132,9 @@ private fun FakeAudioPlayerComposable(
                 if (audioPlayerConfig.isControlsVisible) {
                     Row(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                         verticalAlignment = Alignment.Top,
                     ) {
                         Column(
@@ -147,27 +142,27 @@ private fun FakeAudioPlayerComposable(
                         ) {
                             Slider(
                                 modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .height(25.dp)
-                                        .clearAndSetSemantics { },
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(25.dp)
+                                    .clearAndSetSemantics { },
                                 enabled = false,
                                 value = 0f,
                                 onValueChange = {},
                                 colors =
-                                    SliderDefaults.colors(
-                                        thumbColor = audioPlayerConfig.seekBarThumbColor,
-                                        inactiveTrackColor = audioPlayerConfig.seekBarInactiveTrackColor,
-                                        activeTrackColor = audioPlayerConfig.seekBarActiveTrackColor,
-                                    ),
+                                SliderDefaults.colors(
+                                    thumbColor = audioPlayerConfig.seekBarThumbColor,
+                                    inactiveTrackColor = audioPlayerConfig.seekBarInactiveTrackColor,
+                                    activeTrackColor = audioPlayerConfig.seekBarActiveTrackColor,
+                                ),
                             )
 
                             // fake TimeDetails
                             Row(
                                 modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 5.dp),
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 5.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Text(
@@ -195,9 +190,9 @@ private fun FakeAudioPlayerComposable(
 
                     Row(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(controlPanelHeight),
+                        Modifier
+                            .fillMaxWidth()
+                            .height(controlPanelHeight),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceAround,
                     ) {
