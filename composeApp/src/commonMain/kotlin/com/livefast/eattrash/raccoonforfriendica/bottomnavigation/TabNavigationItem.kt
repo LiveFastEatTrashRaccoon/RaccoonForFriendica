@@ -70,19 +70,17 @@ internal fun RowScope.BottomNavigationItem(
     )
 }
 
-private fun BottomNavigationSection.toIcon(): ImageVector =
-    when (this) {
-        BottomNavigationSection.Explore -> Icons.Default.Explore
-        BottomNavigationSection.Home -> Icons.AutoMirrored.Default.Article
-        is BottomNavigationSection.Inbox -> Icons.Default.Inbox
-        BottomNavigationSection.Profile -> Icons.Default.AccountCircle
-    }
+private fun BottomNavigationSection.toIcon(): ImageVector = when (this) {
+    BottomNavigationSection.Explore -> Icons.Default.Explore
+    BottomNavigationSection.Home -> Icons.AutoMirrored.Default.Article
+    is BottomNavigationSection.Inbox -> Icons.Default.Inbox
+    BottomNavigationSection.Profile -> Icons.Default.AccountCircle
+}
 
 @Composable
-private fun BottomNavigationSection.toReadableName(): String =
-    when (this) {
-        BottomNavigationSection.Explore -> LocalStrings.current.sectionTitleExplore
-        BottomNavigationSection.Home -> LocalStrings.current.sectionTitleHome
-        is BottomNavigationSection.Inbox -> LocalStrings.current.sectionTitleInbox
-        BottomNavigationSection.Profile -> LocalStrings.current.sectionTitleProfile
-    }
+private fun BottomNavigationSection.toReadableName(): String = when (this) {
+    BottomNavigationSection.Explore -> LocalStrings.current.sectionTitleExplore
+    BottomNavigationSection.Home -> LocalStrings.current.sectionTitleHome
+    is BottomNavigationSection.Inbox -> LocalStrings.current.sectionTitleInbox
+    BottomNavigationSection.Profile -> LocalStrings.current.sectionTitleProfile
+}

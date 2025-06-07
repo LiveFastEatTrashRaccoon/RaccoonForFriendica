@@ -98,11 +98,7 @@ internal class DefaultAuthManager(
         }
     }
 
-    private fun storeInitialData(
-        node: String,
-        clientId: String,
-        clientSecret: String,
-    ) {
+    private fun storeInitialData(node: String, clientId: String, clientSecret: String) {
         keyStore.save(KEY_LAST_NODE, node)
         keyStore.save(KEY_CLIENT_ID, clientId)
         keyStore.save(KEY_CLIENT_SECRET, clientSecret)

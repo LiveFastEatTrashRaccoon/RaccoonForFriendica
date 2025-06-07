@@ -94,11 +94,7 @@ class DefaultDetailOpener(
         navigationCoordinator.replace(screen)
     }
 
-    override fun openEntryDetail(
-        entry: TimelineEntryModel,
-        replaceTop: Boolean,
-        swipeNavigationEnabled: Boolean,
-    ) {
+    override fun openEntryDetail(entry: TimelineEntryModel, replaceTop: Boolean, swipeNavigationEnabled: Boolean) {
         scope.launch {
             entryCache.put(entry.id, entry)
             val screen =
@@ -124,10 +120,7 @@ class DefaultDetailOpener(
         navigationCoordinator.push(screen)
     }
 
-    override fun openFollowers(
-        user: UserModel,
-        enableExport: Boolean,
-    ) {
+    override fun openFollowers(user: UserModel, enableExport: Boolean) {
         scope.launch {
             userCache.put(user.id, user)
             val screen =
@@ -140,10 +133,7 @@ class DefaultDetailOpener(
         }
     }
 
-    override fun openFollowing(
-        user: UserModel,
-        enableExport: Boolean,
-    ) {
+    override fun openFollowing(user: UserModel, enableExport: Boolean) {
         scope.launch {
             userCache.put(user.id, user)
             val screen =
@@ -174,10 +164,7 @@ class DefaultDetailOpener(
         navigationCoordinator.push(screen)
     }
 
-    override fun openEntryUsersFavorite(
-        entryId: String,
-        count: Int,
-    ) {
+    override fun openEntryUsersFavorite(entryId: String, count: Int) {
         val screen =
             UserListScreen(
                 type = UserListType.UsersFavorite.toInt(),
@@ -187,10 +174,7 @@ class DefaultDetailOpener(
         navigationCoordinator.push(screen)
     }
 
-    override fun openEntryUsersReblog(
-        entryId: String,
-        count: Int,
-    ) {
+    override fun openEntryUsersReblog(entryId: String, count: Int) {
         val screen =
             UserListScreen(
                 type = UserListType.UsersReblog.toInt(),
@@ -234,10 +218,7 @@ class DefaultDetailOpener(
         }
     }
 
-    override fun openEditUnpublished(
-        entry: TimelineEntryModel,
-        type: UnpublishedType,
-    ) {
+    override fun openEditUnpublished(entry: TimelineEntryModel, type: UnpublishedType) {
         scope.launch {
             entryCache.put(entry.id, entry)
             val screen =
@@ -254,10 +235,7 @@ class DefaultDetailOpener(
         navigationCoordinator.push(screen)
     }
 
-    override fun openThread(
-        entry: TimelineEntryModel,
-        swipeNavigationEnabled: Boolean,
-    ) {
+    override fun openThread(entry: TimelineEntryModel, swipeNavigationEnabled: Boolean) {
         scope.launch {
             entryCache.put(entry.id, entry)
             val screen =
@@ -276,11 +254,7 @@ class DefaultDetailOpener(
         )
     }
 
-    override fun openImageDetail(
-        urls: List<String>,
-        initialIndex: Int,
-        videoIndices: List<Int>,
-    ) {
+    override fun openImageDetail(urls: List<String>, initialIndex: Int, videoIndices: List<Int>) {
         val screen =
             ImageDetailScreen(
                 urls = urls,
@@ -333,10 +307,7 @@ class DefaultDetailOpener(
         navigationCoordinator.push(screen)
     }
 
-    override fun openConversation(
-        otherUser: UserModel,
-        parentUri: String,
-    ) {
+    override fun openConversation(otherUser: UserModel, parentUri: String) {
         scope.launch {
             userCache.put(otherUser.id, otherUser)
             val screen =
@@ -366,10 +337,7 @@ class DefaultDetailOpener(
         navigationCoordinator.push(screen)
     }
 
-    override fun openCreateReport(
-        user: UserModel,
-        entry: TimelineEntryModel?,
-    ) {
+    override fun openCreateReport(user: UserModel, entry: TimelineEntryModel?) {
         scope.launch {
             userCache.put(user.id, user)
             if (entry != null) {
