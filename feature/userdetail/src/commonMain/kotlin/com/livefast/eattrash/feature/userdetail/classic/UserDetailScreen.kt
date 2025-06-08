@@ -114,9 +114,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
-class UserDetailScreen(
-    private val id: String,
-) : Screen {
+class UserDetailScreen(private val id: String) : Screen {
     override val key: ScreenKey
         get() = super.key + id
 
@@ -257,11 +255,11 @@ class UserDetailScreen(
                                         Option(
                                             id = OptionId.Edit,
                                             label =
-                                                if (uiState.personalNoteEditEnabled) {
-                                                    LocalStrings.current.actionCancelEditPersonalNote
-                                                } else {
-                                                    LocalStrings.current.actionEditPersonalNote
-                                                },
+                                            if (uiState.personalNoteEditEnabled) {
+                                                LocalStrings.current.actionCancelEditPersonalNote
+                                            } else {
+                                                LocalStrings.current.actionEditPersonalNote
+                                            },
                                         )
                                     if (user.group) {
                                         this +=
@@ -284,9 +282,9 @@ class UserDetailScreen(
                                 var optionsMenuOpen by remember { mutableStateOf(false) }
                                 IconButton(
                                     modifier =
-                                        Modifier.onGloballyPositioned {
-                                            optionsOffset = it.positionInParent()
-                                        },
+                                    Modifier.onGloballyPositioned {
+                                        optionsOffset = it.positionInParent()
+                                    },
                                     onClick = {
                                         optionsMenuOpen = true
                                     },
@@ -304,12 +302,12 @@ class UserDetailScreen(
                                         optionsMenuOpen = false
                                     },
                                     offset =
-                                        with(LocalDensity.current) {
-                                            DpOffset(
-                                                x = optionsOffset.x.toDp(),
-                                                y = optionsOffset.y.toDp(),
-                                            )
-                                        },
+                                    with(LocalDensity.current) {
+                                        DpOffset(
+                                            x = optionsOffset.x.toDp(),
+                                            y = optionsOffset.y.toDp(),
+                                        )
+                                    },
                                 ) {
                                     for (option in options) {
                                         DropdownMenuItem(
@@ -385,13 +383,13 @@ class UserDetailScreen(
                 AnimatedVisibility(
                     visible = isFabVisible,
                     enter =
-                        slideInVertically(
-                            initialOffsetY = { it * 2 },
-                        ),
+                    slideInVertically(
+                        initialOffsetY = { it * 2 },
+                    ),
                     exit =
-                        slideOutVertically(
-                            targetOffsetY = { it * 2 },
-                        ),
+                    slideOutVertically(
+                        targetOffsetY = { it * 2 },
+                    ),
                 ) {
                     FloatingActionButton(
                         onClick = {
@@ -421,16 +419,16 @@ class UserDetailScreen(
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ).nestedScroll(fabNestedScrollConnection),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ).nestedScroll(fabNestedScrollConnection),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(UserDetailMviModel.Intent.Refresh)
@@ -454,7 +452,7 @@ class UserDetailScreen(
                                 onOpenImage = { url ->
                                     detailOpener.openImageDetail(url)
                                 },
-                                onRelationshipClicked = { nextAction ->
+                                onRelationshipClick = { nextAction ->
                                     when (nextAction) {
                                         RelationshipStatusNextAction.AcceptRequest -> {
                                             detailOpener.openFollowRequests()
@@ -477,7 +475,7 @@ class UserDetailScreen(
                                         }
                                     }
                                 },
-                                onNotificationsClicked = { nextAction ->
+                                onNotificationsClick = { nextAction ->
                                     when (nextAction) {
                                         NotificationStatusNextAction.Disable -> {
                                             confirmMuteNotificationsDialogOpen = true
@@ -513,15 +511,15 @@ class UserDetailScreen(
                         if (note.isNotEmpty() || uiState.personalNoteEditEnabled) {
                             UserNoteField(
                                 modifier =
-                                    Modifier.fillMaxWidth().padding(
-                                        top = Spacing.s,
-                                        bottom = Spacing.s,
-                                        start = Spacing.xs,
-                                        end = Spacing.xs,
-                                    ),
+                                Modifier.fillMaxWidth().padding(
+                                    top = Spacing.s,
+                                    bottom = Spacing.s,
+                                    start = Spacing.xs,
+                                    end = Spacing.xs,
+                                ),
                                 editEnabled = uiState.personalNoteEditEnabled,
                                 note = note,
-                                onNoteChanged = {
+                                onChangeNote = {
                                     model.reduce(UserDetailMviModel.Intent.SetPersonalNote(it))
                                 },
                                 onSave = {
@@ -572,16 +570,16 @@ class UserDetailScreen(
                             )
                         SectionSelector(
                             modifier =
-                                Modifier
-                                    .background(MaterialTheme.colorScheme.background)
-                                    .padding(
-                                        top = stickyHeaderTopOffset,
-                                        bottom = Spacing.s,
-                                    ),
+                            Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .padding(
+                                    top = stickyHeaderTopOffset,
+                                    bottom = Spacing.s,
+                                ),
                             titles = titles.map { it.toReadableName() },
                             scrollable = true,
                             currentSection = titles.indexOf(uiState.section),
-                            onSectionSelected = {
+                            onSelectSection = {
                                 model.reduce(
                                     UserDetailMviModel.Intent.ChangeSection(titles[it]),
                                 )
@@ -632,98 +630,101 @@ class UserDetailScreen(
                                 )
                             },
                             onReblog =
-                                { e: TimelineEntryModel ->
-                                    val timeSinceCreation =
-                                        e.created?.run {
-                                            getDurationFromDateToNow(this)
-                                        } ?: Duration.ZERO
-                                    when {
-                                        !e.reblogged && timeSinceCreation.isOldEntry ->
-                                            confirmReblogEntry = e
+                            { e: TimelineEntryModel ->
+                                val timeSinceCreation =
+                                    e.created?.run {
+                                        getDurationFromDateToNow(this)
+                                    } ?: Duration.ZERO
+                                when {
+                                    !e.reblogged && timeSinceCreation.isOldEntry ->
+                                        confirmReblogEntry = e
 
-                                        else ->
-                                            model.reduce(
-                                                UserDetailMviModel.Intent.ToggleReblog(e),
-                                            )
-                                    }
-                                }.takeIf { actionRepository.canReblog(entry.original) },
-                            onBookmark =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(UserDetailMviModel.Intent.ToggleBookmark(e))
-                                }.takeIf { actionRepository.canBookmark(entry.original) },
-                            onFavorite =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(UserDetailMviModel.Intent.ToggleFavorite(e))
-                                }.takeIf { actionRepository.canFavorite(entry.original) },
-                            onDislike =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(UserDetailMviModel.Intent.ToggleDislike(e))
-                                }.takeIf { actionRepository.canDislike(entry.original) },
-                            onReply =
-                                { e: TimelineEntryModel ->
-                                    detailOpener.openComposer(
-                                        inReplyTo = e,
-                                        inReplyToUser = e.creator,
-                                    )
-                                }.takeIf { actionRepository.canReply(entry.original) },
-                            onPollVote =
-                                uiState.currentUserId?.let {
-                                    { e, choices ->
+                                    else ->
                                         model.reduce(
-                                            UserDetailMviModel.Intent.SubmitPollVote(
-                                                entry = e,
-                                                choices = choices,
-                                            ),
+                                            UserDetailMviModel.Intent.ToggleReblog(e),
                                         )
-                                    }
-                                },
+                                }
+                            }.takeIf { actionRepository.canReblog(entry.original) },
+                            onBookmark =
+                            { e: TimelineEntryModel ->
+                                model.reduce(UserDetailMviModel.Intent.ToggleBookmark(e))
+                            }.takeIf { actionRepository.canBookmark(entry.original) },
+                            onFavorite =
+                            { e: TimelineEntryModel ->
+                                model.reduce(UserDetailMviModel.Intent.ToggleFavorite(e))
+                            }.takeIf { actionRepository.canFavorite(entry.original) },
+                            onDislike =
+                            { e: TimelineEntryModel ->
+                                model.reduce(UserDetailMviModel.Intent.ToggleDislike(e))
+                            }.takeIf { actionRepository.canDislike(entry.original) },
+                            onReply =
+                            { e: TimelineEntryModel ->
+                                detailOpener.openComposer(
+                                    inReplyTo = e,
+                                    inReplyToUser = e.creator,
+                                )
+                            }.takeIf { actionRepository.canReply(entry.original) },
+                            onPollVote =
+                            uiState.currentUserId?.let {
+                                { e, choices ->
+                                    model.reduce(
+                                        UserDetailMviModel.Intent.SubmitPollVote(
+                                            entry = e,
+                                            choices = choices,
+                                        ),
+                                    )
+                                }
+                            },
                             onShowOriginal = {
                                 model.reduce(
                                     UserDetailMviModel.Intent.ToggleTranslation(entry.original),
                                 )
                             },
                             options =
-                                buildList {
-                                    if (actionRepository.canShare(entry.original)) {
-                                        this += OptionId.Share.toOption()
-                                        this += OptionId.CopyUrl.toOption()
-                                    }
-                                    if (actionRepository.canReport(entry.original)) {
-                                        this += OptionId.ReportEntry.toOption()
-                                    }
-                                    if (actionRepository.canQuote(entry.original)) {
-                                        this += OptionId.Quote.toOption()
-                                    }
-                                    this += OptionId.ViewDetails.toOption()
-                                    this += OptionId.CopyToClipboard.toOption()
-                                    val currentLang = uiState.lang.orEmpty()
-                                    if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
-                                        this +=
-                                            Option(
-                                                id = OptionId.Translate,
-                                                label =
-                                                    buildString {
-                                                        append(
-                                                            LocalStrings.current.actionTranslateTo(
-                                                                currentLang,
-                                                            ),
-                                                        )
-                                                        append(" (")
-                                                        append(LocalStrings.current.experimental)
-                                                        append(")")
-                                                    },
-                                            )
-                                    }
-                                    val nodeName = entry.nodeName
-                                    if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
-                                        this +=
-                                            OptionId.AddShortcut.toOption(
-                                                LocalStrings.current.actionShortcut(nodeName),
-                                            )
-                                    }
-                                    this += OptionId.OpenInBrowser.toOption()
-                                },
-                            onOptionSelected = { optionId ->
+                            buildList {
+                                if (actionRepository.canShare(entry.original)) {
+                                    this += OptionId.Share.toOption()
+                                    this += OptionId.CopyUrl.toOption()
+                                }
+                                if (actionRepository.canReport(entry.original)) {
+                                    this += OptionId.ReportEntry.toOption()
+                                }
+                                if (actionRepository.canQuote(entry.original)) {
+                                    this += OptionId.Quote.toOption()
+                                }
+                                this += OptionId.ViewDetails.toOption()
+                                this += OptionId.CopyToClipboard.toOption()
+                                val currentLang = uiState.lang.orEmpty()
+                                if (currentLang.isNotEmpty() &&
+                                    entry.lang != currentLang &&
+                                    !entry.isShowingTranslation
+                                ) {
+                                    this +=
+                                        Option(
+                                            id = OptionId.Translate,
+                                            label =
+                                            buildString {
+                                                append(
+                                                    LocalStrings.current.actionTranslateTo(
+                                                        currentLang,
+                                                    ),
+                                                )
+                                                append(" (")
+                                                append(LocalStrings.current.experimental)
+                                                append(")")
+                                            },
+                                        )
+                                }
+                                val nodeName = entry.nodeName
+                                if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
+                                    this +=
+                                        OptionId.AddShortcut.toOption(
+                                            LocalStrings.current.actionShortcut(nodeName),
+                                        )
+                                }
+                                this += OptionId.OpenInBrowser.toOption()
+                            },
+                            onSelectOption = { optionId ->
                                 when (optionId) {
                                     OptionId.Share -> {
                                         val urlString = entry.url.orEmpty()
@@ -876,13 +877,13 @@ class UserDetailScreen(
         if (confirmBlockUserDialogOpen) {
             CustomConfirmDialog(
                 title =
-                    buildString {
-                        append(LocalStrings.current.actionBlock)
-                        val handle = uiState.user?.handle ?: ""
-                        if (handle.isNotEmpty()) {
-                            append(" @$handle")
-                        }
-                    },
+                buildString {
+                    append(LocalStrings.current.actionBlock)
+                    val handle = uiState.user?.handle ?: ""
+                    if (handle.isNotEmpty()) {
+                        append(" @$handle")
+                    }
+                },
                 onClose = { confirm ->
                     confirmBlockUserDialogOpen = false
                     if (confirm) {
@@ -925,27 +926,27 @@ class UserDetailScreen(
             CustomModalBottomSheet(
                 title = LocalStrings.current.actionChangeRateLimit,
                 items =
-                    availableRates.map { rate ->
-                        CustomModalBottomSheetItem(
-                            label =
-                                if (rate < 1.0) {
-                                    "${rate * 100} %"
-                                } else {
-                                    LocalStrings.current.settingsOptionUnlimited
-                                },
-                            trailingContent = {
-                                val selected =
-                                    rate == uiState.rateLimit?.rate || (rate >= 1 && uiState.rateLimit == null)
-                                if (selected) {
-                                    Icon(
-                                        imageVector = Icons.Default.RadioButtonChecked,
-                                        contentDescription = LocalStrings.current.itemSelected,
-                                    )
-                                }
-                            },
-                        )
-                    },
-                onSelected = { index ->
+                availableRates.map { rate ->
+                    CustomModalBottomSheetItem(
+                        label =
+                        if (rate < 1.0) {
+                            "${rate * 100} %"
+                        } else {
+                            LocalStrings.current.settingsOptionUnlimited
+                        },
+                        trailingContent = {
+                            val selected =
+                                rate == uiState.rateLimit?.rate || (rate >= 1 && uiState.rateLimit == null)
+                            if (selected) {
+                                Icon(
+                                    imageVector = Icons.Default.RadioButtonChecked,
+                                    contentDescription = LocalStrings.current.itemSelected,
+                                )
+                            }
+                        },
+                    )
+                },
+                onSelect = { index ->
                     changeRateLimitBottomSheetOpen = false
                     if (index != null) {
                         val newRate = availableRates[index]

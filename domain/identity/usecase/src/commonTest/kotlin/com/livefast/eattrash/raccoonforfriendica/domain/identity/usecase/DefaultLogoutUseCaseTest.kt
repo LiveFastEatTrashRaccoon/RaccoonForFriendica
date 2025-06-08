@@ -24,55 +24,52 @@ class DefaultLogoutUseCaseTest {
         )
 
     @Test
-    fun `when invoke then interactions are as expected`() =
-        runTest {
-            val accountData = AccountModel(id = 2)
-            everySuspend { accountRepository.getActive() } returns accountData
-            val anonymousAccount = AccountModel(id = 1)
-            everySuspend { accountRepository.getBy(handle = any()) } returns anonymousAccount
+    fun `when invoke then interactions are as expected`() = runTest {
+        val accountData = AccountModel(id = 2)
+        everySuspend { accountRepository.getActive() } returns accountData
+        val anonymousAccount = AccountModel(id = 1)
+        everySuspend { accountRepository.getBy(handle = any()) } returns anonymousAccount
 
-            sut.invoke()
+        sut.invoke()
 
-            verifySuspend {
-                apiConfigurationRepository.setAuth(null)
-                accountRepository.getActive()
-                accountRepository.getBy("")
-                accountRepository.setActive(account = anonymousAccount, active = true)
-            }
+        verifySuspend {
+            apiConfigurationRepository.setAuth(null)
+            accountRepository.getActive()
+            accountRepository.getBy("")
+            accountRepository.setActive(account = anonymousAccount, active = true)
         }
+    }
 
     @Test
-    fun `given no anonymous account when invoke then interactions are as expected`() =
-        runTest {
-            val accountData = AccountModel(id = 2)
-            everySuspend { accountRepository.getActive() } returns accountData
-            everySuspend { accountRepository.getBy(handle = any()) } returns null
+    fun `given no anonymous account when invoke then interactions are as expected`() = runTest {
+        val accountData = AccountModel(id = 2)
+        everySuspend { accountRepository.getActive() } returns accountData
+        everySuspend { accountRepository.getBy(handle = any()) } returns null
 
-            sut.invoke()
+        sut.invoke()
 
-            verifySuspend {
-                apiConfigurationRepository.setAuth(null)
-                accountRepository.getActive()
-                accountRepository.getBy("")
-                accountRepository.setActive(account = accountData, active = false)
-            }
+        verifySuspend {
+            apiConfigurationRepository.setAuth(null)
+            accountRepository.getActive()
+            accountRepository.getBy("")
+            accountRepository.setActive(account = accountData, active = false)
         }
+    }
 
     @Test
-    fun `given no active account when invoke then interactions are as expected`() =
-        runTest {
-            everySuspend { accountRepository.getActive() } returns null
-            val anonymousAccount = AccountModel(id = 1)
-            everySuspend { accountRepository.getBy(handle = any()) } returns anonymousAccount
+    fun `given no active account when invoke then interactions are as expected`() = runTest {
+        everySuspend { accountRepository.getActive() } returns null
+        val anonymousAccount = AccountModel(id = 1)
+        everySuspend { accountRepository.getBy(handle = any()) } returns anonymousAccount
 
-            sut.invoke()
+        sut.invoke()
 
-            verifySuspend {
-                apiConfigurationRepository.setAuth(null)
-                accountRepository.getActive()
-            }
-            verifySuspend(mode = VerifyMode.not) {
-                accountRepository.setActive(account = any(), active = any())
-            }
+        verifySuspend {
+            apiConfigurationRepository.setAuth(null)
+            accountRepository.getActive()
         }
+        verifySuspend(mode = VerifyMode.not) {
+            accountRepository.setActive(account = any(), active = any())
+        }
+    }
 }

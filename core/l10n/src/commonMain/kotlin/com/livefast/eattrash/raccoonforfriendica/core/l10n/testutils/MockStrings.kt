@@ -6,10 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.Strings
 class MockStrings : Strings {
     private val answers = mutableMapOf<String, String>()
 
-    operator fun set(
-        key: String,
-        value: String,
-    ) {
+    operator fun set(key: String, value: String) {
         answers[key] = value
     }
 

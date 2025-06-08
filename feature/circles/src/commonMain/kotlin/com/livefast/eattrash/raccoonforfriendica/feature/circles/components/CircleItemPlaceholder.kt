@@ -29,10 +29,10 @@ internal fun CircleItemPlaceholder(modifier: Modifier = Modifier) {
     ) {
         Box(
             modifier =
-                Modifier
-                    .size(IconSize.l)
-                    .clip(CircleShape)
-                    .shimmerEffect(),
+            Modifier
+                .size(IconSize.l)
+                .clip(CircleShape)
+                .shimmerEffect(),
         )
 
         Column(
@@ -41,12 +41,12 @@ internal fun CircleItemPlaceholder(modifier: Modifier = Modifier) {
         ) {
             Box(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(end = Spacing.xs)
-                        .height(30.dp)
-                        .clip(RoundedCornerShape(CornerSize.s))
-                        .shimmerEffect(),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(end = Spacing.xs)
+                    .height(30.dp)
+                    .clip(RoundedCornerShape(CornerSize.s))
+                    .shimmerEffect(),
             )
         }
     }

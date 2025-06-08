@@ -16,35 +16,31 @@ import kotlinx.coroutines.withContext
 import org.kodein.di.instance
 import java.util.Collections.max
 
-internal class CheckNotificationWorker(
-    private val context: Context,
-    parameters: WorkerParameters,
-) : CoroutineWorker(context, parameters) {
+internal class CheckNotificationWorker(private val context: Context, parameters: WorkerParameters) :
+    CoroutineWorker(context, parameters) {
     private val inboxManager by RootDI.di.instance<InboxManager>()
     private val strings by RootDI.di.instance<Strings>()
     private val notificationManager: NotificationManager
         get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    override suspend fun getForegroundInfo(): ForegroundInfo =
-        ForegroundInfo(
-            getNextNotificationId(),
-            Notification
-                .Builder(context, NotificationConstants.CHANNEL_ID)
-                .setContentTitle("RaccoonForFriendica")
-                .setSmallIcon(R.drawable.ic_monochrome)
-                .setContentIntent(getPendingIntent())
-                .build(),
-        )
+    override suspend fun getForegroundInfo(): ForegroundInfo = ForegroundInfo(
+        getNextNotificationId(),
+        Notification
+            .Builder(context, NotificationConstants.CHANNEL_ID)
+            .setContentTitle("RaccoonForFriendica")
+            .setSmallIcon(R.drawable.ic_monochrome)
+            .setContentIntent(getPendingIntent())
+            .build(),
+    )
 
-    override suspend fun doWork(): Result =
-        withContext(Dispatchers.IO) {
-            inboxManager.refreshUnreadCount()
-            val unread = inboxManager.unreadCount.value
-            if (unread > 0) {
-                sendNotification(unread)
-            }
-            Result.success()
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+        inboxManager.refreshUnreadCount()
+        val unread = inboxManager.unreadCount.value
+        if (unread > 0) {
+            sendNotification(unread)
         }
+        Result.success()
+    }
 
     private suspend fun sendNotification(count: Int) {
         val notification =

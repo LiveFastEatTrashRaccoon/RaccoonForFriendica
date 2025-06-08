@@ -57,11 +57,7 @@ internal class DefaultBlurHashDecoder(
         }.getOrNull()
     }
 
-    private fun decode83(
-        str: String,
-        from: Int = 0,
-        to: Int = str.length,
-    ): Int {
+    private fun decode83(str: String, from: Int = 0, to: Int = str.length): Int {
         var result = 0
         for (i in from until to) {
             val index = charMap[str[i]] ?: -1
@@ -88,10 +84,7 @@ internal class DefaultBlurHashDecoder(
         }
     }
 
-    private fun decodeAc(
-        value: Int,
-        maxAc: Float,
-    ): FloatArray {
+    private fun decodeAc(value: Int, maxAc: Float): FloatArray {
         val r = value / (19 * 19)
         val g = (value / 19) % 19
         val b = value % 19
@@ -142,11 +135,7 @@ internal class DefaultBlurHashDecoder(
         return imageArray.toComposeImageBitmap(width, height)
     }
 
-    private suspend fun getArrayForCosinesY(
-        calculate: Boolean,
-        height: Int,
-        numCompY: Int,
-    ) = when {
+    private suspend fun getArrayForCosinesY(calculate: Boolean, height: Int, numCompY: Int) = when {
         calculate -> {
             DoubleArray(height * numCompY).also {
                 cacheCosinesY.put(height * numCompY, it)
@@ -158,11 +147,7 @@ internal class DefaultBlurHashDecoder(
         }
     }
 
-    private suspend fun getArrayForCosinesX(
-        calculate: Boolean,
-        width: Int,
-        numCompX: Int,
-    ) = when {
+    private suspend fun getArrayForCosinesX(calculate: Boolean, width: Int, numCompX: Int) = when {
         calculate -> {
             DoubleArray(width * numCompX).also {
                 cacheCosinesX.put(width * numCompX, it)
@@ -172,13 +157,7 @@ internal class DefaultBlurHashDecoder(
         else -> cacheCosinesX.get(width * numCompX)!!
     }
 
-    private fun DoubleArray.getCos(
-        calculate: Boolean,
-        x: Int,
-        numComp: Int,
-        y: Int,
-        size: Int,
-    ): Double {
+    private fun DoubleArray.getCos(calculate: Boolean, x: Int, numComp: Int, y: Int, size: Int): Double {
         if (calculate) {
             this[x + numComp * y] = cos(PI * y * x / size)
         }

@@ -72,45 +72,43 @@ class DefaultExplorePaginationManagerTest {
 
     // region Posts
     @Test
-    fun `given no results when loadNextPage with Posts specification then result is as expected`() =
-        runTest {
-            everySuspend {
-                trendingRepository.getEntries(offset = any())
-            } returns emptyList()
+    fun `given no results when loadNextPage with Posts specification then result is as expected`() = runTest {
+        everySuspend {
+            trendingRepository.getEntries(offset = any())
+        } returns emptyList()
 
-            sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = false))
-            val res = sut.loadNextPage()
+        sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = false))
+        val res = sut.loadNextPage()
 
-            assertTrue(res.isEmpty())
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                trendingRepository.getEntries(offset = 0)
-            }
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            trendingRepository.getEntries(offset = 0)
         }
+    }
 
     @Test
-    fun `given results when loadNextPage with Posts specification then result is as expected`() =
-        runTest {
-            val list =
-                listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
-                )
-            everySuspend {
-                trendingRepository.getEntries(offset = any())
-            } returns list
+    fun `given results when loadNextPage with Posts specification then result is as expected`() = runTest {
+        val list =
+            listOf(
+                TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+            )
+        everySuspend {
+            trendingRepository.getEntries(offset = any())
+        } returns list
 
-            sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = false))
-            val res = sut.loadNextPage()
+        sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = false))
+        val res = sut.loadNextPage()
 
-            assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                trendingRepository.getEntries(offset = 0)
-            }
+        assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            trendingRepository.getEntries(offset = 0)
         }
+    }
 
     @Test
-    fun `given sensitive results when loadNextPage with Posts specification and not includeNsfw then result is as expected`() =
+    fun `given sensitive results when loadNextPage with Posts spec and not includeNsfw then result is as expected`() =
         runTest {
             val list =
                 listOf(
@@ -137,31 +135,30 @@ class DefaultExplorePaginationManagerTest {
         }
 
     @Test
-    fun `given sensitive results when loadNextPage with Posts specification then result is as expected`() =
-        runTest {
-            val list =
-                listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
-                    TimelineEntryModel(
-                        id = "3",
-                        content = "",
-                        creator = UserModel(id = "2"),
-                        sensitive = true,
-                    ),
-                )
-            everySuspend {
-                trendingRepository.getEntries(offset = any())
-            } returns list
+    fun `given sensitive results when loadNextPage with Posts specification then result is as expected`() = runTest {
+        val list =
+            listOf(
+                TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                TimelineEntryModel(
+                    id = "3",
+                    content = "",
+                    creator = UserModel(id = "2"),
+                    sensitive = true,
+                ),
+            )
+        everySuspend {
+            trendingRepository.getEntries(offset = any())
+        } returns list
 
-            sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = true))
-            val res = sut.loadNextPage()
+        sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = true))
+        val res = sut.loadNextPage()
 
-            assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                trendingRepository.getEntries(offset = 0)
-            }
+        assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            trendingRepository.getEntries(offset = 0)
         }
+    }
 
     @Test
     fun `given results and stopwords when loadNextPage with Posts specification then result is as expected`() =
@@ -219,42 +216,40 @@ class DefaultExplorePaginationManagerTest {
 
     // region Hashtags
     @Test
-    fun `given no results when loadNextPage with Hashtags specification then result is as expected`() =
-        runTest {
-            everySuspend {
-                trendingRepository.getHashtags(offset = any(), refresh = any())
-            } returns emptyList()
+    fun `given no results when loadNextPage with Hashtags specification then result is as expected`() = runTest {
+        everySuspend {
+            trendingRepository.getHashtags(offset = any(), refresh = any())
+        } returns emptyList()
 
-            sut.reset(ExplorePaginationSpecification.Hashtags(refresh = false))
-            val res = sut.loadNextPage()
+        sut.reset(ExplorePaginationSpecification.Hashtags(refresh = false))
+        val res = sut.loadNextPage()
 
-            assertTrue(res.isEmpty())
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                trendingRepository.getHashtags(offset = 0, refresh = false)
-            }
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            trendingRepository.getHashtags(offset = 0, refresh = false)
         }
+    }
 
     @Test
-    fun `given results when loadNextPage with Hashtags specification then result is as expected`() =
-        runTest {
-            val list =
-                listOf(
-                    TagModel(name = "", url = ""),
-                )
-            everySuspend {
-                trendingRepository.getHashtags(offset = any(), refresh = any())
-            } returns list
+    fun `given results when loadNextPage with Hashtags specification then result is as expected`() = runTest {
+        val list =
+            listOf(
+                TagModel(name = "", url = ""),
+            )
+        everySuspend {
+            trendingRepository.getHashtags(offset = any(), refresh = any())
+        } returns list
 
-            sut.reset(ExplorePaginationSpecification.Hashtags(refresh = false))
-            val res = sut.loadNextPage()
+        sut.reset(ExplorePaginationSpecification.Hashtags(refresh = false))
+        val res = sut.loadNextPage()
 
-            assertEquals(list.map { ExploreItemModel.HashTag(it) }, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                trendingRepository.getHashtags(offset = 0, refresh = false)
-            }
+        assertEquals(list.map { ExploreItemModel.HashTag(it) }, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            trendingRepository.getHashtags(offset = 0, refresh = false)
         }
+    }
 
     @Test
     fun `given no more results when loadNextPage twice with Hashtags specification then result is as expected`() =
@@ -282,39 +277,37 @@ class DefaultExplorePaginationManagerTest {
 
     // region Links
     @Test
-    fun `given no results when loadNextPage with Links specification then result is as expected`() =
-        runTest {
-            everySuspend {
-                trendingRepository.getLinks(offset = any())
-            } returns emptyList()
+    fun `given no results when loadNextPage with Links specification then result is as expected`() = runTest {
+        everySuspend {
+            trendingRepository.getLinks(offset = any())
+        } returns emptyList()
 
-            sut.reset(ExplorePaginationSpecification.Links)
-            val res = sut.loadNextPage()
+        sut.reset(ExplorePaginationSpecification.Links)
+        val res = sut.loadNextPage()
 
-            assertTrue(res.isEmpty())
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                trendingRepository.getLinks(offset = 0)
-            }
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            trendingRepository.getLinks(offset = 0)
         }
+    }
 
     @Test
-    fun `given results when loadNextPage with Links specification then result is as expected`() =
-        runTest {
-            val list = listOf(LinkModel(url = "fake-url"))
-            everySuspend {
-                trendingRepository.getLinks(offset = any())
-            } returns list
+    fun `given results when loadNextPage with Links specification then result is as expected`() = runTest {
+        val list = listOf(LinkModel(url = "fake-url"))
+        everySuspend {
+            trendingRepository.getLinks(offset = any())
+        } returns list
 
-            sut.reset(ExplorePaginationSpecification.Links)
-            val res = sut.loadNextPage()
+        sut.reset(ExplorePaginationSpecification.Links)
+        val res = sut.loadNextPage()
 
-            assertEquals(list.map { ExploreItemModel.Link(it) }, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                trendingRepository.getLinks(offset = 0)
-            }
+        assertEquals(list.map { ExploreItemModel.Link(it) }, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            trendingRepository.getLinks(offset = 0)
         }
+    }
 
     @Test
     fun `given no more results when loadNextPage twice with Links specification then result is as expected`() =
@@ -339,39 +332,37 @@ class DefaultExplorePaginationManagerTest {
 
     // region Suggestions
     @Test
-    fun `given no results when loadNextPage with Suggestions specification then result is as expected`() =
-        runTest {
-            everySuspend {
-                userRepository.getSuggestions()
-            } returns emptyList()
+    fun `given no results when loadNextPage with Suggestions specification then result is as expected`() = runTest {
+        everySuspend {
+            userRepository.getSuggestions()
+        } returns emptyList()
 
-            sut.reset(ExplorePaginationSpecification.Suggestions)
-            val res = sut.loadNextPage()
+        sut.reset(ExplorePaginationSpecification.Suggestions)
+        val res = sut.loadNextPage()
 
-            assertTrue(res.isEmpty())
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                userRepository.getSuggestions()
-            }
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            userRepository.getSuggestions()
         }
+    }
 
     @Test
-    fun `given results when loadNextPage with Suggestions specification then result is as expected`() =
-        runTest {
-            val list = listOf(UserModel(id = "1"))
-            everySuspend {
-                userRepository.getSuggestions()
-            } returns list
+    fun `given results when loadNextPage with Suggestions specification then result is as expected`() = runTest {
+        val list = listOf(UserModel(id = "1"))
+        everySuspend {
+            userRepository.getSuggestions()
+        } returns list
 
-            sut.reset(ExplorePaginationSpecification.Suggestions)
-            val res = sut.loadNextPage()
+        sut.reset(ExplorePaginationSpecification.Suggestions)
+        val res = sut.loadNextPage()
 
-            assertEquals(list.map { ExploreItemModel.User(it) }, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                userRepository.getSuggestions()
-                userRepository.getRelationships(listOf("1"))
-            }
+        assertEquals(list.map { ExploreItemModel.User(it) }, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            userRepository.getSuggestions()
+            userRepository.getRelationships(listOf("1"))
         }
+    }
     // endregion
 }

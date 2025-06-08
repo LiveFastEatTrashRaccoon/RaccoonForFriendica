@@ -27,37 +27,35 @@ class DefaultIdentityRepositoryTest {
     private val sut = DefaultIdentityRepository(provider = provider)
 
     @Test
-    fun `given valid user id when refresh then result is as expected`() =
-        runTest {
-            val userId = "user-id"
-            everySuspend {
-                userService.getById(any())
-            } returns Account(id = userId, acct = "fake-user-name", username = "fake-user-name")
-            sut.refreshCurrentUser(userId)
+    fun `given valid user id when refresh then result is as expected`() = runTest {
+        val userId = "user-id"
+        everySuspend {
+            userService.getById(any())
+        } returns Account(id = userId, acct = "fake-user-name", username = "fake-user-name")
+        sut.refreshCurrentUser(userId)
 
-            val res = sut.currentUser.value
+        val res = sut.currentUser.value
 
-            assertNotNull(res)
-            assertEquals(userId, res.id)
-            verifySuspend {
-                userService.getById(userId)
-            }
+        assertNotNull(res)
+        assertEquals(userId, res.id)
+        verifySuspend {
+            userService.getById(userId)
         }
+    }
 
     @Test
-    fun `given invalid user id when refresh then result is as expected`() =
-        runTest {
-            val userId = "user-id"
-            everySuspend {
-                userService.getById(any())
-            } throws IOException("Not found")
-            sut.refreshCurrentUser(userId)
+    fun `given invalid user id when refresh then result is as expected`() = runTest {
+        val userId = "user-id"
+        everySuspend {
+            userService.getById(any())
+        } throws IOException("Not found")
+        sut.refreshCurrentUser(userId)
 
-            val res = sut.currentUser.value
+        val res = sut.currentUser.value
 
-            assertNull(res)
-            verifySuspend {
-                userService.getById(userId)
-            }
+        assertNull(res)
+        verifySuspend {
+            userService.getById(userId)
         }
+    }
 }

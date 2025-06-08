@@ -63,10 +63,10 @@ class ImageDetailScreen(
         val model: ImageDetailMviModel =
             rememberScreenModel(
                 arg =
-                    ImageDetailMviModelParams(
-                        urls = urls,
-                        initialIndex = initialIndex,
-                    ),
+                ImageDetailMviModelParams(
+                    urls = urls,
+                    initialIndex = initialIndex,
+                ),
             )
         val uiState by model.uiState.collectAsState()
         val snackbarHostState = remember { SnackbarHostState() }
@@ -122,13 +122,13 @@ class ImageDetailScreen(
                     title = {
                         Text(
                             text =
-                                buildString {
-                                    if (urls.size > 1) {
-                                        append(uiState.currentIndex + 1)
-                                        append("/")
-                                        append(urls.size)
-                                    }
-                                },
+                            buildString {
+                                if (urls.size > 1) {
+                                    append(uiState.currentIndex + 1)
+                                    append("/")
+                                    append(urls.size)
+                                }
+                            },
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },
@@ -194,10 +194,10 @@ class ImageDetailScreen(
         ) { padding ->
             Box(
                 modifier =
-                    Modifier
-                        .padding(top = padding.calculateTopPadding())
-                        .fillMaxSize()
-                        .background(Color.Black),
+                Modifier
+                    .padding(top = padding.calculateTopPadding())
+                    .fillMaxSize()
+                    .background(Color.Black),
             ) {
                 HorizontalPager(
                     modifier = Modifier.fillMaxSize(),
@@ -231,18 +231,18 @@ class ImageDetailScreen(
                 CustomModalBottomSheet(
                     title = LocalStrings.current.contentScaleTitle,
                     items =
-                        listOf(
-                            CustomModalBottomSheetItem(
-                                label = LocalStrings.current.contentScaleFit,
-                            ),
-                            CustomModalBottomSheetItem(
-                                label = LocalStrings.current.contentScaleFillWidth,
-                            ),
-                            CustomModalBottomSheetItem(
-                                label = LocalStrings.current.contentScaleFillHeight,
-                            ),
+                    listOf(
+                        CustomModalBottomSheetItem(
+                            label = LocalStrings.current.contentScaleFit,
                         ),
-                    onSelected = { index ->
+                        CustomModalBottomSheetItem(
+                            label = LocalStrings.current.contentScaleFillWidth,
+                        ),
+                        CustomModalBottomSheetItem(
+                            label = LocalStrings.current.contentScaleFillHeight,
+                        ),
+                    ),
+                    onSelect = { index ->
                         scaleModeBottomSheetOpened = false
                         if (index != null) {
                             model.reduce(
@@ -263,15 +263,15 @@ class ImageDetailScreen(
                 CustomModalBottomSheet(
                     title = LocalStrings.current.actionShare,
                     items =
-                        listOf(
-                            CustomModalBottomSheetItem(
-                                label = LocalStrings.current.shareAsUrl,
-                            ),
-                            CustomModalBottomSheetItem(
-                                label = LocalStrings.current.shareAsFile,
-                            ),
+                    listOf(
+                        CustomModalBottomSheetItem(
+                            label = LocalStrings.current.shareAsUrl,
                         ),
-                    onSelected = { index ->
+                        CustomModalBottomSheetItem(
+                            label = LocalStrings.current.shareAsFile,
+                        ),
+                    ),
+                    onSelect = { index ->
                         shareModeBottomSheetOpened = false
                         if (index != null) {
                             model.reduce(

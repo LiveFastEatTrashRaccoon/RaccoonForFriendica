@@ -15,7 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,17 +33,17 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 
 @Composable
 fun SpoilerTextField(
-    hint: String? = null,
-    hintTextStyle: TextStyle = LocalTextStyle.current,
     value: TextFieldValue,
-    textStyle: TextStyle = LocalTextStyle.current,
-    backgroundColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
     onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
+    hint: String? = null,
+    hintTextStyle: TextStyle = LocalTextStyle.current,
+    textStyle: TextStyle = LocalTextStyle.current,
+    backgroundColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
-    var contentHeightPx by remember { mutableStateOf(0f) }
+    var contentHeightPx by remember { mutableFloatStateOf(0f) }
     val contentHeightDp = with(LocalDensity.current) { contentHeightPx.toDp() }
 
     BasicTextField(
@@ -56,41 +56,41 @@ fun SpoilerTextField(
         cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
         textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onBackground),
         decorationBox =
-            { innerTextField ->
-                Row(
-                    modifier = Modifier.background(color = backgroundColor),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+        { innerTextField ->
+            Row(
+                modifier = Modifier.background(color = backgroundColor),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+            ) {
+                SpoilerBar(
+                    modifier = Modifier.size(width = 6.dp, height = contentHeightDp),
+                )
+                Box(
+                    modifier =
+                    Modifier
+                        .weight(1f)
+                        .onGloballyPositioned {
+                            contentHeightPx = it.size.toSize().height
+                        }.padding(Spacing.s),
+                    contentAlignment = Alignment.CenterStart,
                 ) {
-                    SpoilerBar(
-                        modifier = Modifier.size(width = 6.dp, height = contentHeightDp),
-                    )
-                    Box(
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .onGloballyPositioned {
-                                    contentHeightPx = it.size.toSize().height
-                                }.padding(Spacing.s),
-                        contentAlignment = Alignment.CenterStart,
-                    ) {
-                        innerTextField()
+                    innerTextField()
 
-                        if (value.text.isEmpty() && hint != null) {
-                            Text(
-                                text = hint,
-                                color =
-                                    MaterialTheme.colorScheme.onBackground.copy(
-                                        ancillaryTextAlpha,
-                                    ),
-                                style = hintTextStyle,
-                            )
-                        }
+                    if (value.text.isEmpty() && hint != null) {
+                        Text(
+                            text = hint,
+                            color =
+                            MaterialTheme.colorScheme.onBackground.copy(
+                                ancillaryTextAlpha,
+                            ),
+                            style = hintTextStyle,
+                        )
                     }
-                    SpoilerBar(
-                        modifier = Modifier.size(width = 6.dp, height = contentHeightDp),
-                    )
                 }
-            },
+                SpoilerBar(
+                    modifier = Modifier.size(width = 6.dp, height = contentHeightDp),
+                )
+            }
+        },
     )
 }

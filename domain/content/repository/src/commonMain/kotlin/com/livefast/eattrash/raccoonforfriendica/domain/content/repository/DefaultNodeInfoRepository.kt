@@ -17,29 +17,27 @@ internal class DefaultNodeInfoRepository(
     private val provider: ServiceProvider,
     private val client: HttpClient = HttpClient(provideHttpClientEngine()),
 ) : NodeInfoRepository {
-    override suspend fun getInfo(): NodeInfoModel? =
-        withContext(Dispatchers.IO) {
-            val instanceInfo =
-                runCatching {
-                    provider.instance.getInfo()
-                }.getOrNull()
-
-            val softwareName =
-                runCatching {
-                    extractSoftwareName()
-                }.getOrNull()
-
-            instanceInfo?.toModel()?.copy(
-                software = softwareName,
-            )
-        }
-
-    override suspend fun getRules(): List<RuleModel>? =
-        withContext(Dispatchers.IO) {
+    override suspend fun getInfo(): NodeInfoModel? = withContext(Dispatchers.IO) {
+        val instanceInfo =
             runCatching {
-                provider.instance.getRules().map { it.toModel() }
+                provider.instance.getInfo()
             }.getOrNull()
-        }
+
+        val softwareName =
+            runCatching {
+                extractSoftwareName()
+            }.getOrNull()
+
+        instanceInfo?.toModel()?.copy(
+            software = softwareName,
+        )
+    }
+
+    override suspend fun getRules(): List<RuleModel>? = withContext(Dispatchers.IO) {
+        runCatching {
+            provider.instance.getRules().map { it.toModel() }
+        }.getOrNull()
+    }
 
     private suspend fun extractSoftwareName(): String? {
         val linksJson =

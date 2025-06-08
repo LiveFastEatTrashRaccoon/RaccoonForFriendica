@@ -36,18 +36,13 @@ internal class DefaultBlurHashRepository(
             }
     }
 
-    private suspend fun decode(
-        blurHash: String,
-        width: Int,
-        height: Int,
-    ): ImageBitmap? =
-        withContext(dispatcher) {
-            decoder.decode(
-                blurHash = blurHash,
-                width = width,
-                height = height,
-            )
-        }
+    private suspend fun decode(blurHash: String, width: Int, height: Int): ImageBitmap? = withContext(dispatcher) {
+        decoder.decode(
+            blurHash = blurHash,
+            width = width,
+            height = height,
+        )
+    }
 
     companion object {
         private const val CACHE_SIZE = 20

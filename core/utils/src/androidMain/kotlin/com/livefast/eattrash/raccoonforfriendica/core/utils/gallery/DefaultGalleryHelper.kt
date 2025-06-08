@@ -16,16 +16,10 @@ import kotlinx.coroutines.launch
 
 private const val DEFAULT_BASE_PATH = "RaccoonForFriendica"
 
-internal class DefaultGalleryHelper(
-    private val context: Context,
-) : GalleryHelper {
+internal class DefaultGalleryHelper(private val context: Context) : GalleryHelper {
     override val supportsCustomPath: Boolean = true
 
-    override fun saveToGallery(
-        bytes: ByteArray,
-        name: String,
-        additionalPathSegment: String?,
-    ): Any? {
+    override fun saveToGallery(bytes: ByteArray, name: String, additionalPathSegment: String?): Any? {
         val relativePath =
             buildString {
                 append(Environment.DIRECTORY_PICTURES)

@@ -64,8 +64,8 @@ class SearchViewModel(
     private val getInnerUrl: GetInnerUrlUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<SearchMviModel.Intent, SearchMviModel.State, SearchMviModel.Effect>(
-        initialState = SearchMviModel.State(),
-    ),
+    initialState = SearchMviModel.State(),
+),
     SearchMviModel {
     init {
         screenModelScope.launch {
@@ -76,7 +76,7 @@ class SearchViewModel(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
                             lang = settings?.lang,
                         )
@@ -246,22 +246,19 @@ class SearchViewModel(
         }
     }
 
-    private suspend fun updateUserInState(
-        userId: String,
-        block: (UserModel) -> UserModel,
-    ) {
+    private suspend fun updateUserInState(userId: String, block: (UserModel) -> UserModel) {
         updateState {
             it.copy(
                 items =
-                    it.items.map { item ->
-                        if (item is ExploreItemModel.User && item.user.id == userId) {
-                            item.copy(
-                                user = item.user.let(block),
-                            )
-                        } else {
-                            item
-                        }
-                    },
+                it.items.map { item ->
+                    if (item is ExploreItemModel.User && item.user.id == userId) {
+                        item.copy(
+                            user = item.user.let(block),
+                        )
+                    } else {
+                        item
+                    }
+                },
             )
         }
     }
@@ -316,35 +313,32 @@ class SearchViewModel(
         }
     }
 
-    private suspend fun updateEntryInState(
-        entryId: String,
-        block: (TimelineEntryModel) -> TimelineEntryModel,
-    ) {
+    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
         updateState {
             it.copy(
                 items =
-                    it.items.map { item ->
-                        when {
-                            item is ExploreItemModel.Entry && item.entry.id == entryId -> {
-                                item.copy(
-                                    entry = item.entry.let(block),
-                                )
-                            }
-
-                            item is ExploreItemModel.Entry && item.entry.reblog?.id == entryId -> {
-                                item.copy(
-                                    entry =
-                                        item.entry.copy(
-                                            reblog = item.entry.reblog?.let(block),
-                                        ),
-                                )
-                            }
-
-                            else -> {
-                                item
-                            }
+                it.items.map { item ->
+                    when {
+                        item is ExploreItemModel.Entry && item.entry.id == entryId -> {
+                            item.copy(
+                                entry = item.entry.let(block),
+                            )
                         }
-                    },
+
+                        item is ExploreItemModel.Entry && item.entry.reblog?.id == entryId -> {
+                            item.copy(
+                                entry =
+                                item.entry.copy(
+                                    reblog = item.entry.reblog?.let(block),
+                                ),
+                            )
+                        }
+
+                        else -> {
+                            item
+                        }
+                    }
+                },
             )
         }
     }
@@ -353,13 +347,13 @@ class SearchViewModel(
         updateState {
             it.copy(
                 items =
-                    it.items.filter { item ->
-                        when {
-                            item is ExploreItemModel.Entry && item.entry.id == entryId -> false
-                            item is ExploreItemModel.Entry && item.entry.reblog?.id == entryId -> false
-                            else -> true
-                        }
-                    },
+                it.items.filter { item ->
+                    when {
+                        item is ExploreItemModel.Entry && item.entry.id == entryId -> false
+                        item is ExploreItemModel.Entry && item.entry.reblog?.id == entryId -> false
+                        else -> true
+                    }
+                },
             )
         }
     }
@@ -495,12 +489,7 @@ class SearchViewModel(
         }
     }
 
-    private fun mute(
-        userId: String,
-        entryId: String,
-        duration: Duration,
-        disableNotifications: Boolean,
-    ) {
+    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         screenModelScope.launch {
             val res =
                 userRepository.mute(
@@ -514,10 +503,7 @@ class SearchViewModel(
         }
     }
 
-    private fun block(
-        userId: String,
-        entryId: String,
-    ) {
+    private fun block(userId: String, entryId: String) {
         screenModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
@@ -544,10 +530,7 @@ class SearchViewModel(
         }
     }
 
-    private fun submitPoll(
-        entry: TimelineEntryModel,
-        choices: List<Int>,
-    ) {
+    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         screenModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }

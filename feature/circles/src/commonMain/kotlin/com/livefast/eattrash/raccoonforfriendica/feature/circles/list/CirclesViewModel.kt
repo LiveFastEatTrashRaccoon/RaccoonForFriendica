@@ -18,8 +18,8 @@ class CirclesViewModel(
     private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository,
 ) : DefaultMviModel<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect>(
-        initialState = CirclesMviModel.State(),
-    ),
+    initialState = CirclesMviModel.State(),
+),
     CirclesMviModel {
     init {
         screenModelScope.launch {
@@ -28,7 +28,7 @@ class CirclesViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -90,35 +90,33 @@ class CirclesViewModel(
         }
     }
 
-    private fun Map<CircleType, List<CircleModel>>.toListItems() =
-        buildList {
-            val types =
-                listOf(
-                    CircleType.UserDefined,
-                    CircleType.Predefined,
-                    CircleType.Group,
-                    CircleType.Other,
-                )
-            for (type in types) {
-                val items = generateSection(type)
-                if (items.isNotEmpty()) {
-                    addAll(items)
-                }
-            }
-        }
-
-    private fun Map<CircleType, List<CircleModel>>.generateSection(type: CircleType) =
-        buildList<CircleListItem> {
-            val items =
-                get(type)
-                    .orEmpty()
-                    .sortedBy { it.name }
-                    .map { CircleListItem.Circle(circle = it) }
+    private fun Map<CircleType, List<CircleModel>>.toListItems() = buildList {
+        val types =
+            listOf(
+                CircleType.UserDefined,
+                CircleType.Predefined,
+                CircleType.Group,
+                CircleType.Other,
+            )
+        for (type in types) {
+            val items = generateSection(type)
             if (items.isNotEmpty()) {
-                this += CircleListItem.Header(type = type)
-                this += get(type).orEmpty().map { CircleListItem.Circle(circle = it) }
+                addAll(items)
             }
         }
+    }
+
+    private fun Map<CircleType, List<CircleModel>>.generateSection(type: CircleType) = buildList<CircleListItem> {
+        val items =
+            get(type)
+                .orEmpty()
+                .sortedBy { it.name }
+                .map { CircleListItem.Circle(circle = it) }
+        if (items.isNotEmpty()) {
+            this += CircleListItem.Header(type = type)
+            this += get(type).orEmpty().map { CircleListItem.Circle(circle = it) }
+        }
+    }
 
     private suspend fun removeItemFromState(id: String) {
         updateState {
@@ -136,20 +134,17 @@ class CirclesViewModel(
         }
     }
 
-    private suspend fun updateItemInState(
-        id: String,
-        block: (CircleModel) -> CircleModel,
-    ) {
+    private suspend fun updateItemInState(id: String, block: (CircleModel) -> CircleModel) {
         updateState {
             it.copy(
                 items =
-                    it.items.map { item ->
-                        if (item is CircleListItem.Circle && item.circle.id == id) {
-                            item.copy(circle = item.circle.let(block))
-                        } else {
-                            item
-                        }
-                    },
+                it.items.map { item ->
+                    if (item is CircleListItem.Circle && item.circle.id == id) {
+                        item.copy(circle = item.circle.let(block))
+                    } else {
+                        item
+                    }
+                },
             )
         }
     }

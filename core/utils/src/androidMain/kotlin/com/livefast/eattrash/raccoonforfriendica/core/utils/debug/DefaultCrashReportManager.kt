@@ -8,9 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-internal class DefaultCrashReportManager(
-    private val keyStore: TemporaryKeyStore,
-) : CrashReportManager {
+internal class DefaultCrashReportManager(private val keyStore: TemporaryKeyStore) : CrashReportManager {
     private val _enabled = MutableStateFlow(false)
     override val enabled: StateFlow<Boolean> = _enabled
     private val _restartRequired = MutableStateFlow(false)
@@ -48,11 +46,7 @@ internal class DefaultCrashReportManager(
         }
     }
 
-    override fun collectUserFeedback(
-        tag: CrashReportTag,
-        comment: String,
-        email: String?,
-    ) {
+    override fun collectUserFeedback(tag: CrashReportTag, comment: String, email: String?) {
         check(enabled.value) { return }
         val eventId = Sentry.captureMessage(tag.toMessageTag())
         val feedback =

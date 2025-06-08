@@ -45,7 +45,7 @@ internal fun MediaAlbumItem(
     modifier: Modifier = Modifier,
     options: List<Option> = emptyList(),
     onClick: (() -> Unit)? = null,
-    onOptionSelected: ((OptionId) -> Unit)? = null,
+    onSelectOption: ((OptionId) -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
@@ -54,13 +54,13 @@ internal fun MediaAlbumItem(
 
     Row(
         modifier =
-            modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    onClick?.invoke()
-                }.padding(Spacing.s),
+        modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                onClick?.invoke()
+            }.padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -81,21 +81,21 @@ internal fun MediaAlbumItem(
             )
             Text(
                 text =
-                    buildString {
-                        val creationDate = album.created
-                        if (creationDate != null) {
-                            val formattedDate =
-                                getFormattedDate(
-                                    iso8601Timestamp = creationDate,
-                                    format = "dd/MM/yy",
-                                )
-                            append(formattedDate)
-                        }
-                        if (isNotEmpty()) {
-                            append(" • ")
-                        }
-                        append(LocalStrings.current.items(album.items))
-                    },
+                buildString {
+                    val creationDate = album.created
+                    if (creationDate != null) {
+                        val formattedDate =
+                            getFormattedDate(
+                                iso8601Timestamp = creationDate,
+                                format = "dd/MM/yy",
+                            )
+                        append(formattedDate)
+                    }
+                    if (isNotEmpty()) {
+                        append(" • ")
+                    }
+                    append(LocalStrings.current.items(album.items))
+                },
                 style = MaterialTheme.typography.titleSmall,
                 color = ancillaryColor,
             )
@@ -105,9 +105,9 @@ internal fun MediaAlbumItem(
             Box {
                 IconButton(
                     modifier =
-                        Modifier.onGloballyPositioned {
-                            optionsOffset = it.positionInParent()
-                        },
+                    Modifier.onGloballyPositioned {
+                        optionsOffset = it.positionInParent()
+                    },
                     onClick = {
                         optionsMenuOpen = true
                     },
@@ -126,12 +126,12 @@ internal fun MediaAlbumItem(
                         optionsMenuOpen = false
                     },
                     offset =
-                        with(LocalDensity.current) {
-                            DpOffset(
-                                x = optionsOffset.x.toDp(),
-                                y = optionsOffset.y.toDp(),
-                            )
-                        },
+                    with(LocalDensity.current) {
+                        DpOffset(
+                            x = optionsOffset.x.toDp(),
+                            y = optionsOffset.y.toDp(),
+                        )
+                    },
                 ) {
                     options.forEach { option ->
                         DropdownMenuItem(
@@ -140,7 +140,7 @@ internal fun MediaAlbumItem(
                             },
                             onClick = {
                                 optionsMenuOpen = false
-                                onOptionSelected?.invoke(option.id)
+                                onSelectOption?.invoke(option.id)
                             },
                         )
                     }

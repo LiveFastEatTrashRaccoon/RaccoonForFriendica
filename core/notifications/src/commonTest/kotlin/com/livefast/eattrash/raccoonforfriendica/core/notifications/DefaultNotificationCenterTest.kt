@@ -41,131 +41,124 @@ class DefaultNotificationCenterTest {
     }
 
     @Test
-    fun `given subscription when send UserUpdatedEvent then event is received just once`() =
-        runTest {
-            val expected =
-                UserUpdatedEvent(user = UserModel(id = "0"))
-            launch {
-                sut.send(expected)
-            }
-
-            sut.subscribe(UserUpdatedEvent::class).test {
-                val actual = awaitItem()
-                assertEquals(expected, actual)
-            }
-
-            sut.subscribe(UserUpdatedEvent::class).test {
-                expectNoEvents()
-            }
+    fun `given subscription when send UserUpdatedEvent then event is received just once`() = runTest {
+        val expected =
+            UserUpdatedEvent(user = UserModel(id = "0"))
+        launch {
+            sut.send(expected)
         }
+
+        sut.subscribe(UserUpdatedEvent::class).test {
+            val actual = awaitItem()
+            assertEquals(expected, actual)
+        }
+
+        sut.subscribe(UserUpdatedEvent::class).test {
+            expectNoEvents()
+        }
+    }
 
     @Test
-    fun `given subscription when send TimelineEntryCreatedEvent then event is received just once`() =
-        runTest {
-            val expected =
-                TimelineEntryCreatedEvent(entry = TimelineEntryModel(id = "0", content = ""))
-            launch {
-                sut.send(expected)
-            }
-
-            sut.subscribe(TimelineEntryCreatedEvent::class).test {
-                val actual = awaitItem()
-                assertEquals(expected, actual)
-            }
-
-            sut.subscribe(TimelineEntryCreatedEvent::class).test {
-                expectNoEvents()
-            }
+    fun `given subscription when send TimelineEntryCreatedEvent then event is received just once`() = runTest {
+        val expected =
+            TimelineEntryCreatedEvent(entry = TimelineEntryModel(id = "0", content = ""))
+        launch {
+            sut.send(expected)
         }
+
+        sut.subscribe(TimelineEntryCreatedEvent::class).test {
+            val actual = awaitItem()
+            assertEquals(expected, actual)
+        }
+
+        sut.subscribe(TimelineEntryCreatedEvent::class).test {
+            expectNoEvents()
+        }
+    }
 
     @Test
-    fun `given subscription when send TimelineEntryUpdatedEvent then event is received just once`() =
-        runTest {
-            val expected =
-                TimelineEntryUpdatedEvent(entry = TimelineEntryModel(id = "0", content = ""))
-            launch {
-                sut.send(expected)
-            }
-
-            sut.subscribe(TimelineEntryUpdatedEvent::class).test {
-                val actual = awaitItem()
-                assertEquals(expected, actual)
-            }
-
-            sut.subscribe(TimelineEntryUpdatedEvent::class).test {
-                expectNoEvents()
-            }
+    fun `given subscription when send TimelineEntryUpdatedEvent then event is received just once`() = runTest {
+        val expected =
+            TimelineEntryUpdatedEvent(entry = TimelineEntryModel(id = "0", content = ""))
+        launch {
+            sut.send(expected)
         }
+
+        sut.subscribe(TimelineEntryUpdatedEvent::class).test {
+            val actual = awaitItem()
+            assertEquals(expected, actual)
+        }
+
+        sut.subscribe(TimelineEntryUpdatedEvent::class).test {
+            expectNoEvents()
+        }
+    }
 
     @Test
-    fun `given subscription when send TimelineEntryDeletedEvent then event is received just once`() =
-        runTest {
-            val expected = TimelineEntryDeletedEvent(id = "0")
-            launch {
-                sut.send(expected)
-            }
-
-            sut.subscribe(TimelineEntryDeletedEvent::class).test {
-                val actual = awaitItem()
-                assertEquals(expected, actual)
-            }
-
-            sut.subscribe(TimelineEntryDeletedEvent::class).test {
-                expectNoEvents()
-            }
+    fun `given subscription when send TimelineEntryDeletedEvent then event is received just once`() = runTest {
+        val expected = TimelineEntryDeletedEvent(id = "0")
+        launch {
+            sut.send(expected)
         }
+
+        sut.subscribe(TimelineEntryDeletedEvent::class).test {
+            val actual = awaitItem()
+            assertEquals(expected, actual)
+        }
+
+        sut.subscribe(TimelineEntryDeletedEvent::class).test {
+            expectNoEvents()
+        }
+    }
 
     @Test
-    fun `given subscription when send TagUpdatedEvent then event is received just once`() =
-        runTest {
-            val expected = TagUpdatedEvent(tag = TagModel(name = "tag"))
-            launch {
-                sut.send(expected)
-            }
-
-            sut.subscribe(TagUpdatedEvent::class).test {
-                val actual = awaitItem()
-                assertEquals(expected, actual)
-            }
-
-            sut.subscribe(TagUpdatedEvent::class).test {
-                expectNoEvents()
-            }
+    fun `given subscription when send TagUpdatedEvent then event is received just once`() = runTest {
+        val expected = TagUpdatedEvent(tag = TagModel(name = "tag"))
+        launch {
+            sut.send(expected)
         }
+
+        sut.subscribe(TagUpdatedEvent::class).test {
+            val actual = awaitItem()
+            assertEquals(expected, actual)
+        }
+
+        sut.subscribe(TagUpdatedEvent::class).test {
+            expectNoEvents()
+        }
+    }
 
     @Test
-    fun `given subscription when send AlbumsUpdatedEvent then event is received just once`() =
-        runTest {
-            val expected = AlbumsUpdatedEvent
-            launch {
-                sut.send(expected)
-            }
-
-            sut.subscribe(AlbumsUpdatedEvent::class).test {
-                val actual = awaitItem()
-                assertEquals(expected, actual)
-            }
-
-            sut.subscribe(AlbumsUpdatedEvent::class).test {
-                expectNoEvents()
-            }
+    fun `given subscription when send AlbumsUpdatedEvent then event is received just once`() = runTest {
+        val expected = AlbumsUpdatedEvent
+        launch {
+            sut.send(expected)
         }
+
+        sut.subscribe(AlbumsUpdatedEvent::class).test {
+            val actual = awaitItem()
+            assertEquals(expected, actual)
+        }
+
+        sut.subscribe(AlbumsUpdatedEvent::class).test {
+            expectNoEvents()
+        }
+    }
 
     @Test
-    fun `given subscription when send DraftDeletedEvent then event is received just once`() =
-        runTest {
-            val expected = DraftDeletedEvent(id = "0")
-            launch {
-                sut.send(expected)
-            }
-
-            sut.subscribe(DraftDeletedEvent::class).test {
-                val actual = awaitItem()
-                assertEquals(expected, actual)
-            }
-
-            sut.subscribe(DraftDeletedEvent::class).test {
-                expectNoEvents()
-            }
+    fun `given subscription when send DraftDeletedEvent then event is received just once`() = runTest {
+        val expected = DraftDeletedEvent(id = "0")
+        launch {
+            sut.send(expected)
         }
+
+        sut.subscribe(DraftDeletedEvent::class).test {
+            val actual = awaitItem()
+            assertEquals(expected, actual)
+        }
+
+        sut.subscribe(DraftDeletedEvent::class).test {
+            expectNoEvents()
+        }
+    }
 }

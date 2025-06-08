@@ -6,10 +6,7 @@ import coil3.network.NetworkFetcher
 
 expect fun ByteArray.toComposeImageBitmap(): ImageBitmap
 
-expect fun IntArray.toComposeImageBitmap(
-    width: Int,
-    height: Int,
-): ImageBitmap
+expect fun IntArray.toComposeImageBitmap(width: Int, height: Int): ImageBitmap
 
 expect fun getNativeDecoders(): List<Decoder.Factory>
 

@@ -191,15 +191,15 @@ class SettingsScreen : Screen {
             content = { padding ->
                 Box(
                     modifier =
-                        Modifier
-                            .padding(padding)
-                            .then(
-                                if (uiState.hideNavigationBarWhileScrolling) {
-                                    Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                                } else {
-                                    Modifier
-                                },
-                            ),
+                    Modifier
+                        .padding(padding)
+                        .then(
+                            if (uiState.hideNavigationBarWhileScrolling) {
+                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                            } else {
+                                Modifier
+                            },
+                        ),
                 ) {
                     Column(
                         modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -212,11 +212,11 @@ class SettingsScreen : Screen {
                         SettingsRow(
                             title = LocalStrings.current.settingsItemLanguage,
                             value =
-                                buildString {
-                                    append(uiState.lang.toLanguageName().orEmpty())
-                                    append("  ")
-                                    append(uiState.lang.toLanguageFlag().orEmpty())
-                                },
+                            buildString {
+                                append(uiState.lang.toLanguageName().orEmpty())
+                                append("  ")
+                                append(uiState.lang.toLanguageFlag().orEmpty())
+                            },
                             onTap = {
                                 languageBottomSheetOpened = true
                             },
@@ -252,7 +252,7 @@ class SettingsScreen : Screen {
                         SettingsSwitchRow(
                             title = LocalStrings.current.settingsItemExcludeRepliesFromTimeline,
                             value = uiState.excludeRepliesFromTimeline,
-                            onValueChanged = {
+                            onValueChange = {
                                 model.reduce(
                                     SettingsMviModel.Intent.ChangeExcludeRepliesFromTimeline(it),
                                 )
@@ -261,7 +261,7 @@ class SettingsScreen : Screen {
                         SettingsSwitchRow(
                             title = LocalStrings.current.settingsItemOpenGroupsInForumModeByDefault,
                             value = uiState.openGroupsInForumModeByDefault,
-                            onValueChanged = {
+                            onValueChange = {
                                 model.reduce(
                                     SettingsMviModel.Intent.ChangeOpenGroupsInForumModeByDefault(it),
                                 )
@@ -305,19 +305,19 @@ class SettingsScreen : Screen {
                                 SettingsRow(
                                     title = LocalStrings.current.settingsOptionBackgroundNotificationCheck,
                                     subtitle =
-                                        if (uiState.pullNotificationsRestricted) {
-                                            LocalStrings.current.settingsSubtitleBackgroundNotificationRestricted
-                                        } else {
-                                            LocalStrings.current.settingsSubtitleBackgroundNotificationNotRestricted
-                                        },
+                                    if (uiState.pullNotificationsRestricted) {
+                                        LocalStrings.current.settingsSubtitleBackgroundNotificationRestricted
+                                    } else {
+                                        LocalStrings.current.settingsSubtitleBackgroundNotificationNotRestricted
+                                    },
                                     value =
-                                        uiState.backgroundNotificationCheckInterval?.getPrettyDuration(
-                                            secondsLabel = LocalStrings.current.timeSecondShort,
-                                            minutesLabel = LocalStrings.current.timeMinuteShort,
-                                            hoursLabel = LocalStrings.current.timeHourShort,
-                                            daysLabel = LocalStrings.current.dateDayShort,
-                                            finePrecision = false,
-                                        ) ?: LocalStrings.current.durationNever,
+                                    uiState.backgroundNotificationCheckInterval?.getPrettyDuration(
+                                        secondsLabel = LocalStrings.current.timeSecondShort,
+                                        minutesLabel = LocalStrings.current.timeMinuteShort,
+                                        hoursLabel = LocalStrings.current.timeHourShort,
+                                        daysLabel = LocalStrings.current.dateDayShort,
+                                        finePrecision = false,
+                                    ) ?: LocalStrings.current.durationNever,
                                     onTap = {
                                         backgroundNotificationCheckIntervalDialogOpened = true
                                     },
@@ -339,7 +339,8 @@ class SettingsScreen : Screen {
 
                                     PermissionState.DeniedAlways ->
                                         SettingsRow(
-                                            title = LocalStrings.current.settingsPushNotificationPermissionDeniedPermanently,
+                                            title = LocalStrings.current
+                                                .settingsPushNotificationPermissionDeniedPermanently,
                                             value = LocalStrings.current.actionOpenSettings,
                                             onTap = {
                                             },
@@ -351,9 +352,12 @@ class SettingsScreen : Screen {
                                     title = LocalStrings.current.settingsItemPushNotificationState,
                                     value = uiState.pushNotificationState.toReadableName(),
                                     onTap =
-                                        {
-                                            pushNotificationDistributorBottomSheetOpened = true
-                                        }.takeIf { uiState.pushNotificationState == PushNotificationManagerState.NoDistributorSelected },
+                                    {
+                                        pushNotificationDistributorBottomSheetOpened = true
+                                    }.takeIf {
+                                        uiState.pushNotificationState ==
+                                            PushNotificationManagerState.NoDistributorSelected
+                                    },
                                 )
                             }
                         }
@@ -411,7 +415,7 @@ class SettingsScreen : Screen {
                                 title = LocalStrings.current.settingsItemDynamicColors,
                                 subtitle = LocalStrings.current.settingsItemDynamicColorsSubtitle,
                                 value = uiState.dynamicColors,
-                                onValueChanged = {
+                                onValueChange = {
                                     model.reduce(SettingsMviModel.Intent.ChangeDynamicColors(it))
                                 },
                             )
@@ -419,7 +423,7 @@ class SettingsScreen : Screen {
                         SettingsSwitchRow(
                             title = LocalStrings.current.settingsItemHideNavigationBarWhileScrolling,
                             value = uiState.hideNavigationBarWhileScrolling,
-                            onValueChanged = {
+                            onValueChange = {
                                 model.reduce(
                                     SettingsMviModel.Intent.ChangeHideNavigationBarWhileScrolling(it),
                                 )
@@ -429,11 +433,11 @@ class SettingsScreen : Screen {
                             SettingsRow(
                                 title = LocalStrings.current.settingsItemAppIcon,
                                 subtitle =
-                                    if (uiState.appIconRestartRequired) {
-                                        LocalStrings.current.messageRestartToApplyChanges
-                                    } else {
-                                        null
-                                    },
+                                if (uiState.appIconRestartRequired) {
+                                    LocalStrings.current.messageRestartToApplyChanges
+                                } else {
+                                    null
+                                },
                                 value = uiState.appIconVariant.toReadableName(),
                                 onTap = {
                                     appIconBottomSheetOpened = true
@@ -467,14 +471,14 @@ class SettingsScreen : Screen {
                         SettingsSwitchRow(
                             title = LocalStrings.current.settingsItemIncludeNsfw,
                             value = uiState.includeNsfw,
-                            onValueChanged = {
+                            onValueChange = {
                                 model.reduce(SettingsMviModel.Intent.ChangeIncludeNsfw(it))
                             },
                         )
                         SettingsSwitchRow(
                             title = LocalStrings.current.settingsItemBlurNsfw,
                             value = uiState.blurNsfw,
-                            onValueChanged = {
+                            onValueChange = {
                                 model.reduce(SettingsMviModel.Intent.ChangeBlurNsfw(it))
                             },
                         )
@@ -487,13 +491,13 @@ class SettingsScreen : Screen {
                         SettingsSwitchRow(
                             title = LocalStrings.current.settingsItemCrashReportEnabled,
                             subtitle =
-                                if (uiState.crashReportRestartRequired) {
-                                    LocalStrings.current.messageRestartToApplyChanges
-                                } else {
-                                    null
-                                },
+                            if (uiState.crashReportRestartRequired) {
+                                LocalStrings.current.messageRestartToApplyChanges
+                            } else {
+                                null
+                            },
                             value = uiState.crashReportEnabled,
-                            onValueChanged = {
+                            onValueChange = {
                                 model.reduce(SettingsMviModel.Intent.ChangeCrashReportEnabled(it))
                             },
                         )
@@ -533,18 +537,18 @@ class SettingsScreen : Screen {
                 title = LocalStrings.current.settingsItemLanguage,
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
                 items =
-                    Locales.AVAILABLE_LANGUAGES.map { lang ->
-                        CustomModalBottomSheetItem(
-                            label = lang.toLanguageName().orEmpty(),
-                            trailingContent = {
-                                Text(
-                                    text = lang.toLanguageFlag().orEmpty(),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                )
-                            },
-                        )
-                    },
-                onSelected = { index ->
+                Locales.AVAILABLE_LANGUAGES.map { lang ->
+                    CustomModalBottomSheetItem(
+                        label = lang.toLanguageName().orEmpty(),
+                        trailingContent = {
+                            Text(
+                                text = lang.toLanguageFlag().orEmpty(),
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        },
+                    )
+                },
+                onSelect = { index ->
                     languageBottomSheetOpened = false
                     if (index != null) {
                         val value = Locales.AVAILABLE_LANGUAGES[index]
@@ -559,20 +563,20 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemTheme,
                 items =
-                    themes.map { theme ->
-                        CustomModalBottomSheetItem(
-                            label = theme.toReadableName(),
-                            trailingContent = {
-                                Icon(
-                                    modifier = Modifier.size(IconSize.m),
-                                    imageVector = theme.toIcon(),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onBackground,
-                                )
-                            },
-                        )
-                    },
-                onSelected = { index ->
+                themes.map { theme ->
+                    CustomModalBottomSheetItem(
+                        label = theme.toReadableName(),
+                        trailingContent = {
+                            Icon(
+                                modifier = Modifier.size(IconSize.m),
+                                imageVector = theme.toIcon(),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        },
+                    )
+                },
+                onSelect = { index ->
                     themeBottomSheetOpened = false
                     if (index != null) {
                         val value = themes[index]
@@ -593,13 +597,13 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemFontFamily,
                 items =
-                    fonts.map { family ->
-                        CustomModalBottomSheetItem(
-                            label = family.toReadableName(),
-                            customLabelStyle = family.toTypography().bodyLarge,
-                        )
-                    },
-                onSelected = { index ->
+                fonts.map { family ->
+                    CustomModalBottomSheetItem(
+                        label = family.toReadableName(),
+                        customLabelStyle = family.toTypography().bodyLarge,
+                    )
+                },
+                onSelect = { index ->
                     fontFamilyBottomSheetOpened = false
                     if (index != null) {
                         val value = fonts[index]
@@ -621,16 +625,16 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemFontScale,
                 items =
-                    fontScales.map {
-                        CustomModalBottomSheetItem(
-                            label = it.toReadableName(),
-                            customLabelStyle =
-                                MaterialTheme.typography.bodyLarge.let { s ->
-                                    s.copy(fontSize = s.fontSize * it.toScaleFactor())
-                                },
-                        )
-                    },
-                onSelected = { index ->
+                fontScales.map {
+                    CustomModalBottomSheetItem(
+                        label = it.toReadableName(),
+                        customLabelStyle =
+                        MaterialTheme.typography.bodyLarge.let { s ->
+                            s.copy(fontSize = s.fontSize * it.toScaleFactor())
+                        },
+                    )
+                },
+                onSelect = { index ->
                     fontScaleBottomSheetOpened = false
                     if (index != null) {
                         val scale = fontScales[index]
@@ -646,57 +650,57 @@ class SettingsScreen : Screen {
                 sheetState = state,
                 title = LocalStrings.current.settingsItemTheme,
                 items =
-                    buildList {
-                        this +=
-                            uiState.availableThemeColors.map { theme ->
-                                CustomModalBottomSheetItem(
-                                    leadingContent = {
-                                        Box(
-                                            modifier =
-                                                Modifier
-                                                    .padding(start = Spacing.xs)
-                                                    .size(IconSize.m)
-                                                    .background(
-                                                        color = theme.toColor(),
-                                                        shape = CircleShape,
-                                                    ),
-                                        )
-                                    },
-                                    label = theme.toReadableName(),
-                                    trailingContent = {
-                                        Text(
-                                            text = theme.toEmoji(),
-                                            style = MaterialTheme.typography.bodyLarge,
-                                        )
-                                    },
-                                )
-                            }
-                        this +=
+                buildList {
+                    this +=
+                        uiState.availableThemeColors.map { theme ->
                             CustomModalBottomSheetItem(
                                 leadingContent = {
                                     Box(
                                         modifier =
-                                            Modifier
-                                                .padding(start = Spacing.xs)
-                                                .size(IconSize.m)
-                                                .background(
-                                                    color =
-                                                        uiState.themeColor
-                                                            ?: MaterialTheme.colorScheme.primary,
-                                                    shape = CircleShape,
-                                                ),
+                                        Modifier
+                                            .padding(start = Spacing.xs)
+                                            .size(IconSize.m)
+                                            .background(
+                                                color = theme.toColor(),
+                                                shape = CircleShape,
+                                            ),
                                     )
                                 },
-                                label = LocalStrings.current.customOption,
+                                label = theme.toReadableName(),
                                 trailingContent = {
                                     Text(
-                                        text = "🎨",
+                                        text = theme.toEmoji(),
                                         style = MaterialTheme.typography.bodyLarge,
                                     )
                                 },
                             )
-                    },
-                onSelected = { index ->
+                        }
+                    this +=
+                        CustomModalBottomSheetItem(
+                            leadingContent = {
+                                Box(
+                                    modifier =
+                                    Modifier
+                                        .padding(start = Spacing.xs)
+                                        .size(IconSize.m)
+                                        .background(
+                                            color =
+                                            uiState.themeColor
+                                                ?: MaterialTheme.colorScheme.primary,
+                                            shape = CircleShape,
+                                        ),
+                                )
+                            },
+                            label = LocalStrings.current.customOption,
+                            trailingContent = {
+                                Text(
+                                    text = "🎨",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            },
+                        )
+                },
+                onSelect = { index ->
                     themeColorBottomSheetOpened = false
                     if (index != null) {
                         if (index in uiState.availableThemeColors.indices) {
@@ -728,20 +732,20 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.feedTypeTitle,
                 items =
-                    uiState.availableTimelineTypes.map {
-                        CustomModalBottomSheetItem(
-                            label = it.toReadableName(),
-                            trailingContent = {
-                                Icon(
-                                    modifier = Modifier.size(IconSize.m),
-                                    imageVector = it.toIcon(),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onBackground,
-                                )
-                            },
-                        )
-                    },
-                onSelected = { index ->
+                uiState.availableTimelineTypes.map {
+                    CustomModalBottomSheetItem(
+                        label = it.toReadableName(),
+                        trailingContent = {
+                            Icon(
+                                modifier = Modifier.size(IconSize.m),
+                                imageVector = it.toIcon(),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        },
+                    )
+                },
+                onSelect = { index ->
                     defaultTimelineTypeBottomSheetOpened = false
                     if (index != null) {
                         val type = uiState.availableTimelineTypes[index]
@@ -756,7 +760,7 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemUrlOpeningMode,
                 items = types.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
-                onSelected = { index ->
+                onSelect = { index ->
                     urlOpeningModeBottomSheetOpened = false
                     if (index != null) {
                         val type = types[index]
@@ -771,20 +775,20 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemDefaultPostVisibility,
                 items =
-                    types.map {
-                        CustomModalBottomSheetItem(
-                            label = it.toReadableName(),
-                            trailingContent = {
-                                Icon(
-                                    modifier = Modifier.size(IconSize.m),
-                                    imageVector = it.toIcon(),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onBackground,
-                                )
-                            },
-                        )
-                    },
-                onSelected = { index ->
+                types.map {
+                    CustomModalBottomSheetItem(
+                        label = it.toReadableName(),
+                        trailingContent = {
+                            Icon(
+                                modifier = Modifier.size(IconSize.m),
+                                imageVector = it.toIcon(),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        },
+                    )
+                },
+                onSelect = { index ->
                     defaultPostVisibilityBottomSheetOpened = false
                     if (index != null) {
                         val type = types[index]
@@ -799,20 +803,20 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemDefaultReplyVisibility,
                 items =
-                    types.map {
-                        CustomModalBottomSheetItem(
-                            label = it.toReadableName(),
-                            trailingContent = {
-                                Icon(
-                                    modifier = Modifier.size(IconSize.m),
-                                    imageVector = it.toIcon(),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onBackground,
-                                )
-                            },
-                        )
-                    },
-                onSelected = { index ->
+                types.map {
+                    CustomModalBottomSheetItem(
+                        label = it.toReadableName(),
+                        trailingContent = {
+                            Icon(
+                                modifier = Modifier.size(IconSize.m),
+                                imageVector = it.toIcon(),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        },
+                    )
+                },
+                onSelect = { index ->
                     defaultReplyVisibilityBottomSheetOpened = false
                     if (index != null) {
                         val type = types[index]
@@ -827,7 +831,7 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemMarkupMode,
                 items = modes.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
-                onSelected = { index ->
+                onSelect = { index ->
                     markupModeBottomSheetOpened = false
                     if (index != null) {
                         val mode = modes[index]
@@ -840,8 +844,10 @@ class SettingsScreen : Screen {
         if (maxPostBodyLinesBottomSheetOpened) {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemMaxPostBodyLines,
-                items = MAX_POST_BODY_LINES_OPTIONS.map { CustomModalBottomSheetItem(label = it.toMaxBodyLinesReadableName()) },
-                onSelected = { index ->
+                items = MAX_POST_BODY_LINES_OPTIONS.map {
+                    CustomModalBottomSheetItem(label = it.toMaxBodyLinesReadableName())
+                },
+                onSelect = { index ->
                     maxPostBodyLinesBottomSheetOpened = false
                     if (index != null) {
                         val value = MAX_POST_BODY_LINES_OPTIONS[index]
@@ -855,19 +861,19 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsOptionBackgroundNotificationCheck,
                 items =
-                    BACKGROUND_NOTIFICATION_CHECK_INTERVALS.map {
-                        CustomModalBottomSheetItem(
-                            label =
-                                it?.getPrettyDuration(
-                                    secondsLabel = LocalStrings.current.timeSecondShort,
-                                    minutesLabel = LocalStrings.current.timeMinuteShort,
-                                    hoursLabel = LocalStrings.current.timeHourShort,
-                                    daysLabel = LocalStrings.current.dateDayShort,
-                                    finePrecision = false,
-                                ) ?: LocalStrings.current.durationNever,
-                        )
-                    },
-                onSelected = { index ->
+                BACKGROUND_NOTIFICATION_CHECK_INTERVALS.map {
+                    CustomModalBottomSheetItem(
+                        label =
+                        it?.getPrettyDuration(
+                            secondsLabel = LocalStrings.current.timeSecondShort,
+                            minutesLabel = LocalStrings.current.timeMinuteShort,
+                            hoursLabel = LocalStrings.current.timeHourShort,
+                            daysLabel = LocalStrings.current.dateDayShort,
+                            finePrecision = false,
+                        ) ?: LocalStrings.current.durationNever,
+                    )
+                },
+                onSelect = { index ->
                     backgroundNotificationCheckIntervalDialogOpened = false
                     if (index != null) {
                         val value = BACKGROUND_NOTIFICATION_CHECK_INTERVALS[index]
@@ -883,28 +889,30 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemNotificationMode,
                 items =
-                    uiState.availableNotificationModes.map {
-                        CustomModalBottomSheetItem(
-                            label = it.toReadableName(),
-                            trailingContent = {
-                                Text(
-                                    text =
-                                        when (it) {
-                                            NotificationMode.Disabled -> ""
-                                            NotificationMode.Pull -> LocalStrings.current.settingsNotificationModePullExplanation
-                                            NotificationMode.Push ->
-                                                buildString {
-                                                    append(LocalStrings.current.settingsNotificationModePushExplanation)
-                                                    append(" (")
-                                                    append(LocalStrings.current.experimental)
-                                                    append(")")
-                                                }
-                                        },
-                                )
-                            },
-                        )
-                    },
-                onSelected = { index ->
+                uiState.availableNotificationModes.map {
+                    CustomModalBottomSheetItem(
+                        label = it.toReadableName(),
+                        trailingContent = {
+                            Text(
+                                text =
+                                when (it) {
+                                    NotificationMode.Disabled -> ""
+                                    NotificationMode.Pull ->
+                                        LocalStrings.current.settingsNotificationModePullExplanation
+
+                                    NotificationMode.Push ->
+                                        buildString {
+                                            append(LocalStrings.current.settingsNotificationModePushExplanation)
+                                            append(" (")
+                                            append(LocalStrings.current.experimental)
+                                            append(")")
+                                        }
+                                },
+                            )
+                        },
+                    )
+                },
+                onSelect = { index ->
                     notificationModeBottomSheetOpened = false
                     if (index != null) {
                         val mode = uiState.availableNotificationModes[index]
@@ -918,10 +926,10 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsPushNotificationStateNoDistributorSelected,
                 items =
-                    uiState.availablePushDistributors.map {
-                        CustomModalBottomSheetItem(label = it)
-                    },
-                onSelected = { index ->
+                uiState.availablePushDistributors.map {
+                    CustomModalBottomSheetItem(label = it)
+                },
+                onSelect = { index ->
                     pushNotificationDistributorBottomSheetOpened = false
                     if (index != null) {
                         val distributor = uiState.availablePushDistributors[index]
@@ -941,12 +949,12 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsAutoloadImages,
                 items =
-                    values.map {
-                        CustomModalBottomSheetItem(
-                            label = it.toReadableName(),
-                        )
-                    },
-                onSelected = { index ->
+                values.map {
+                    CustomModalBottomSheetItem(
+                        label = it.toReadableName(),
+                    )
+                },
+                onSelect = { index ->
                     imageLoadingModeBottomSheetOpened = false
                     if (index != null) {
                         model.reduce(
@@ -966,24 +974,24 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemAppIcon,
                 items =
-                    values.map { value ->
-                        CustomModalBottomSheetItem(
-                            leadingContent = {
-                                val painter =
-                                    when (value) {
-                                        AppIconVariant.Alt -> coreResources.appIconAlt
-                                        else -> coreResources.appIconDefault
-                                    }
-                                Image(
-                                    modifier = Modifier.size(IconSize.m),
-                                    painter = painter,
-                                    contentDescription = null,
-                                )
-                            },
-                            label = value.toReadableName(),
-                        )
-                    },
-                onSelected = { index ->
+                values.map { value ->
+                    CustomModalBottomSheetItem(
+                        leadingContent = {
+                            val painter =
+                                when (value) {
+                                    AppIconVariant.Alt -> coreResources.appIconAlt
+                                    else -> coreResources.appIconDefault
+                                }
+                            Image(
+                                modifier = Modifier.size(IconSize.m),
+                                painter = painter,
+                                contentDescription = null,
+                            )
+                        },
+                        label = value.toReadableName(),
+                    )
+                },
+                onSelect = { index ->
                     appIconBottomSheetOpened = false
                     if (index != null) {
                         val value = values[index]
@@ -1012,8 +1020,8 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemBarTheme,
                 items =
-                    values.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
-                onSelected = { index ->
+                values.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+                onSelect = { index ->
                     barThemeBottomSheetOpened = false
                     if (index != null) {
                         model.reduce(
@@ -1035,8 +1043,8 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemTimelineLayout,
                 items =
-                    values.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
-                onSelected = { index ->
+                values.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+                onSelect = { index ->
                     timelineLayoutBottomSheetOpened = false
                     if (index != null) {
                         model.reduce(
@@ -1070,7 +1078,7 @@ class SettingsScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemConversationReplyDepth,
                 items = REPLY_DEPTH_VALUES.map { CustomModalBottomSheetItem(label = it.toString()) },
-                onSelected = { index ->
+                onSelect = { index ->
                     replyDepthBottoSheepOpened = false
                     if (index != null) {
                         val value = REPLY_DEPTH_VALUES[index]
@@ -1110,11 +1118,10 @@ private val REPLY_DEPTH_VALUES =
     )
 
 @Composable
-private fun Int.toMaxBodyLinesReadableName(): String =
-    when (this) {
-        Int.MAX_VALUE -> LocalStrings.current.settingsOptionUnlimited
-        else -> this.toString()
-    }
+private fun Int.toMaxBodyLinesReadableName(): String = when (this) {
+    Int.MAX_VALUE -> LocalStrings.current.settingsOptionUnlimited
+    else -> this.toString()
+}
 
 private const val SETTINGS_MIME_TYPE = "application/json"
 private const val SETTINGS_FILE_NAME = "raccoon4friendica_settings.json"

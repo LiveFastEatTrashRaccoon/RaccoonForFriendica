@@ -48,12 +48,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
 import kotlin.math.roundToInt
 
-private fun PollOptionModel.getPercentage(total: Int): Float =
-    if (total == 0) {
-        0f
-    } else {
-        ((votes / total.toFloat()) * 1000).roundToInt() / 10f
-    }
+private fun PollOptionModel.getPercentage(total: Int): Float = if (total == 0) {
+    0f
+} else {
+    ((votes / total.toFloat()) * 1000).roundToInt() / 10f
+}
 
 @Composable
 fun PollCard(
@@ -117,7 +116,6 @@ fun PollCard(
                 enabled = selectedOptions.isNotEmpty() && !showingResults,
                 content = {
                     Row(
-                        modifier = modifier,
                         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -161,64 +159,64 @@ private fun PollCardOption(
     val shape = RoundedCornerShape(CornerSize.xl)
     Row(
         modifier =
-            modifier
-                .padding(vertical = Spacing.xxxs)
-                .border(
-                    width = Dp.Hairline,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    shape = RoundedCornerShape(CornerSize.xl),
-                ).then(
-                    if (isScoreHigher) {
-                        Modifier.background(
-                            color = MaterialTheme.colorScheme.onBackground.copy(0.1f),
-                            shape = shape,
-                        )
-                    } else {
-                        Modifier
-                    },
-                ).clip(shape)
-                .then(
-                    if (enabled) {
-                        Modifier.clickable {
-                            if (reactToClickEnabled) {
-                                onVote?.invoke()
-                            }
+        modifier
+            .padding(vertical = Spacing.xxxs)
+            .border(
+                width = Dp.Hairline,
+                color = MaterialTheme.colorScheme.onBackground,
+                shape = RoundedCornerShape(CornerSize.xl),
+            ).then(
+                if (isScoreHigher) {
+                    Modifier.background(
+                        color = MaterialTheme.colorScheme.onBackground.copy(0.1f),
+                        shape = shape,
+                    )
+                } else {
+                    Modifier
+                },
+            ).clip(shape)
+            .then(
+                if (enabled) {
+                    Modifier.clickable {
+                        if (reactToClickEnabled) {
+                            onVote?.invoke()
                         }
-                    } else {
-                        Modifier
-                    },
-                ).padding(vertical = Spacing.s, horizontal = Spacing.s),
+                    }
+                } else {
+                    Modifier
+                },
+            ).padding(vertical = Spacing.s, horizontal = Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         // leading part
         Box(
             modifier =
-                Modifier
-                    .size(IconSize.s)
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        shape = CircleShape,
-                    ),
+            Modifier
+                .size(IconSize.s)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    shape = CircleShape,
+                ),
         ) {
             if (isCurrentVote) {
                 Box(
                     modifier =
-                        Modifier
-                            .padding(Spacing.xs)
-                            .fillMaxSize()
-                            .background(
-                                color = MaterialTheme.colorScheme.onBackground,
-                                shape = CircleShape,
-                            ),
+                    Modifier
+                        .padding(Spacing.xs)
+                        .fillMaxSize()
+                        .background(
+                            color = MaterialTheme.colorScheme.onBackground,
+                            shape = CircleShape,
+                        ),
                 )
             } else if (isOwnVote || (!enabled && isScoreHigher)) {
                 Icon(
                     modifier =
-                        Modifier
-                            .padding(Spacing.xxs)
-                            .fillMaxSize(),
+                    Modifier
+                        .padding(Spacing.xxs)
+                        .fillMaxSize(),
                     imageVector = Icons.Default.Check,
                     contentDescription = LocalStrings.current.highestScore,
                 )
@@ -239,14 +237,14 @@ private fun PollCardOption(
             Text(
                 modifier = Modifier.widthIn(min = 40.dp),
                 text =
-                    buildString {
-                        if ((percentage * 10).roundToInt() % 10 == 0) {
-                            append(percentage.roundToInt())
-                        } else {
-                            append(percentage)
-                        }
-                        append("%")
-                    },
+                buildString {
+                    if ((percentage * 10).roundToInt() % 10 == 0) {
+                        append(percentage.roundToInt())
+                    } else {
+                        append(percentage)
+                    }
+                    append("%")
+                },
                 textAlign = TextAlign.End,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
@@ -272,28 +270,28 @@ private fun PollCardFooter(
     ) {
         Text(
             text =
-                buildString {
-                    append(LocalStrings.current.pollVote(votes))
-                    append(" • ")
-                    if (expired) {
-                        append(LocalStrings.current.pollExpired)
-                    } else {
-                        val remainingTime =
-                            expirationDate
-                                ?.let {
-                                    getDurationFromNowToDate(it)
-                                }?.getPrettyDuration(
-                                    secondsLabel = LocalStrings.current.timeSecondShort,
-                                    minutesLabel = LocalStrings.current.timeMinuteShort,
-                                    hoursLabel = LocalStrings.current.timeHourShort,
-                                    daysLabel = LocalStrings.current.dateDayShort,
-                                    finePrecision = false,
-                                ) ?: LocalStrings.current.shortUnavailable
-                        append(LocalStrings.current.pollExpiresIn)
-                        append(" ")
-                        append(remainingTime)
-                    }
-                },
+            buildString {
+                append(LocalStrings.current.pollVote(votes))
+                append(" • ")
+                if (expired) {
+                    append(LocalStrings.current.pollExpired)
+                } else {
+                    val remainingTime =
+                        expirationDate
+                            ?.let {
+                                getDurationFromNowToDate(it)
+                            }?.getPrettyDuration(
+                                secondsLabel = LocalStrings.current.timeSecondShort,
+                                minutesLabel = LocalStrings.current.timeMinuteShort,
+                                hoursLabel = LocalStrings.current.timeHourShort,
+                                daysLabel = LocalStrings.current.dateDayShort,
+                                finePrecision = false,
+                            ) ?: LocalStrings.current.shortUnavailable
+                    append(LocalStrings.current.pollExpiresIn)
+                    append(" ")
+                    append(remainingTime)
+                }
+            },
             style = MaterialTheme.typography.bodyMedium,
             color = ancillaryColor,
             modifier = Modifier.weight(1f),

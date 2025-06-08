@@ -41,8 +41,5 @@ interface NavigationCoordinator {
 
     suspend fun submitDeeplink(url: String)
 
-    fun showGlobalMessage(
-        message: String,
-        delay: Duration = Duration.ZERO,
-    )
+    fun showGlobalMessage(message: String, delay: Duration = Duration.ZERO)
 }

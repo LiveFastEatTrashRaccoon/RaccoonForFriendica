@@ -25,89 +25,85 @@ class DefaultFetchUserUseCaseTest {
         )
 
     @Test
-    fun `given user found when invoke then result is as expected`() =
-        runTest {
-            val user = UserModel(id = "0", username = USERNAME, url = URL)
-            everySuspend {
-                searchRepository.search(
-                    query = any(),
-                    type = any(),
-                    pageCursor = any(),
-                    resolve = any(),
-                )
-            } returns
-                listOf(ExploreItemModel.User(user))
+    fun `given user found when invoke then result is as expected`() = runTest {
+        val user = UserModel(id = "0", username = USERNAME, url = URL)
+        everySuspend {
+            searchRepository.search(
+                query = any(),
+                type = any(),
+                pageCursor = any(),
+                resolve = any(),
+            )
+        } returns
+            listOf(ExploreItemModel.User(user))
 
-            val res = sut.invoke(URL)
+        val res = sut.invoke(URL)
 
-            assertNotNull(res)
-            verifySuspend {
-                searchRepository.search(
-                    query = URL,
-                    type = SearchResultType.Users,
-                    pageCursor = null,
-                    resolve = true,
-                )
-            }
+        assertNotNull(res)
+        verifySuspend {
+            searchRepository.search(
+                query = URL,
+                type = SearchResultType.Users,
+                pageCursor = null,
+                resolve = true,
+            )
         }
+    }
 
     @Test
-    fun `given user not found when invoke then result is as expected`() =
-        runTest {
-            everySuspend {
-                searchRepository.search(
-                    query = any(),
-                    type = any(),
-                    pageCursor = any(),
-                    resolve = any(),
-                )
-            } returns emptyList()
+    fun `given user not found when invoke then result is as expected`() = runTest {
+        everySuspend {
+            searchRepository.search(
+                query = any(),
+                type = any(),
+                pageCursor = any(),
+                resolve = any(),
+            )
+        } returns emptyList()
 
-            val res = sut.invoke(URL)
+        val res = sut.invoke(URL)
 
-            assertNull(res)
-            verifySuspend {
-                searchRepository.search(
-                    query = URL,
-                    type = SearchResultType.Users,
-                    pageCursor = null,
-                    resolve = true,
-                )
-            }
+        assertNull(res)
+        verifySuspend {
+            searchRepository.search(
+                query = URL,
+                type = SearchResultType.Users,
+                pageCursor = null,
+                resolve = true,
+            )
         }
-
+    }
 
     @Test
-    fun `given request timeout when invoke then result is as expected`() =
-        runTest {
-            everySuspend {
-                searchRepository.search(
-                    query = any(),
-                    type = any(),
-                    pageCursor = any(),
-                    resolve = any(),
-                )
-            } calls {
-                delay(10.seconds)
-                listOf(
-                    ExploreItemModel.User(
-                        UserModel(id = "0", username = USERNAME),
-                    ),
-                )
-            }
-
-            val res = sut.invoke(URL)
-
-            assertNull(res)
-            verifySuspend {
-                searchRepository.search(
-                    query = URL,
-                    type = SearchResultType.Users,
-                    pageCursor = null,
-                    resolve = true,
-                )
-            }
+    fun `given request timeout when invoke then result is as expected`() = runTest {
+        everySuspend {
+            searchRepository.search(
+                query = any(),
+                type = any(),
+                pageCursor = any(),
+                resolve = any(),
+            )
+        } calls {
+            delay(10.seconds)
+            listOf(
+                ExploreItemModel.User(
+                    UserModel(id = "0", username = USERNAME),
+                ),
+            )
         }
+
+        val res = sut.invoke(URL)
+
+        assertNull(res)
+        verifySuspend {
+            searchRepository.search(
+                query = URL,
+                type = SearchResultType.Users,
+                pageCursor = null,
+                resolve = true,
+            )
+        }
+    }
 
     companion object {
         private const val URL = "https://example.com/profile/username"

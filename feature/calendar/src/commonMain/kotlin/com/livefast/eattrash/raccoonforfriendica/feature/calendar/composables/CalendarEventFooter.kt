@@ -39,13 +39,13 @@ fun CalendarEventFooter(
             }
         Text(
             text =
-                buildString {
-                    append(startDateString)
-                    if (!endDateString.isNullOrEmpty()) {
-                        append(" – ")
-                        append(endDateString)
-                    }
-                },
+            buildString {
+                append(startDateString)
+                if (!endDateString.isNullOrEmpty()) {
+                    append(" – ")
+                    append(endDateString)
+                }
+            },
             style = MaterialTheme.typography.bodyMedium,
             color = ancillaryColor,
         )

@@ -44,12 +44,12 @@ internal fun DrawerHeader(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ancillaryTextAlpha)
     Row(
         modifier =
-            modifier.padding(
-                top = Spacing.m,
-                start = Spacing.s,
-                end = Spacing.s,
-                bottom = Spacing.s,
-            ),
+        modifier.padding(
+            top = Spacing.m,
+            start = Spacing.s,
+            end = Spacing.s,
+            bottom = Spacing.s,
+        ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.m),
     ) {
@@ -59,10 +59,10 @@ internal fun DrawerHeader(
             if (userAvatar.isNotEmpty() && autoloadImages) {
                 CustomImage(
                     modifier =
-                        Modifier
-                            .padding(Spacing.xxxs)
-                            .size(avatarSize)
-                            .clip(RoundedCornerShape(avatarSize / 2)),
+                    Modifier
+                        .padding(Spacing.xxxs)
+                        .size(avatarSize)
+                        .clip(RoundedCornerShape(avatarSize / 2)),
                     url = userAvatar,
                     quality = FilterQuality.Low,
                     contentScale = ContentScale.FillBounds,
@@ -91,11 +91,11 @@ internal fun DrawerHeader(
                     )
                     Text(
                         text =
-                            buildString {
-                                append(LocalStrings.current.nodeVia)
-                                append(" ")
-                                append(node)
-                            },
+                        buildString {
+                            append(LocalStrings.current.nodeVia)
+                            append(" ")
+                            append(node)
+                        },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.titleMedium,
@@ -135,11 +135,11 @@ internal fun DrawerHeader(
                 ) {
                     Text(
                         text =
-                            buildString {
-                                append(LocalStrings.current.nodeVia)
-                                append(" ")
-                                append(node)
-                            },
+                        buildString {
+                            append(LocalStrings.current.nodeVia)
+                            append(" ")
+                            append(node)
+                        },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.titleMedium,

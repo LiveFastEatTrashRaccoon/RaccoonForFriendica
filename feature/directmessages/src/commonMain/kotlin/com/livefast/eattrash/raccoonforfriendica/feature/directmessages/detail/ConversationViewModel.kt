@@ -34,8 +34,8 @@ class ConversationViewModel(
     private val userCache: LocalItemCache<UserModel>,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<ConversationMviModel.Intent, ConversationMviModel.State, ConversationMviModel.Effect>(
-        initialState = ConversationMviModel.State(),
-    ),
+    initialState = ConversationMviModel.State(),
+),
     ConversationMviModel {
     private var parentUriToUse = parentUri
     private var job: Job? = null
@@ -161,20 +161,17 @@ class ConversationViewModel(
         }
     }
 
-    private suspend fun updateMessageInState(
-        messageId: String,
-        block: (DirectMessageModel) -> DirectMessageModel,
-    ) {
+    private suspend fun updateMessageInState(messageId: String, block: (DirectMessageModel) -> DirectMessageModel) {
         updateState {
             it.copy(
                 items =
-                    it.items.map { msg ->
-                        if (msg.id == messageId) {
-                            msg.let(block)
-                        } else {
-                            msg
-                        }
-                    },
+                it.items.map { msg ->
+                    if (msg.id == messageId) {
+                        msg.let(block)
+                    } else {
+                        msg
+                    }
+                },
             )
         }
     }

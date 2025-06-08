@@ -22,7 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,8 +46,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
 @Composable
 fun LinkItem(
     link: LinkModel,
-    autoloadImages: Boolean = true,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     onOpen: ((String) -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
@@ -58,46 +58,46 @@ fun LinkItem(
     val description = link.description.orEmpty()
     val cornerSize = CornerSize.xl
     val contentPadding = 12.dp
-    var imageHeight by remember { mutableStateOf(0f) }
+    var imageHeight by remember { mutableFloatStateOf(0f) }
     val minImageHeightForBanner = with(LocalDensity.current) { 50.dp.toPx() }
 
     Column(
         modifier =
-            modifier
-                .padding(horizontal = Spacing.s)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    if (url.isNotEmpty()) {
-                        onOpen?.invoke(url)
-                    }
-                }.border(
-                    width = Dp.Hairline,
-                    color = ancillaryColor,
-                    shape = RoundedCornerShape(cornerSize),
-                ),
+        modifier
+            .padding(horizontal = Spacing.s)
+            .border(
+                width = Dp.Hairline,
+                color = ancillaryColor,
+                shape = RoundedCornerShape(cornerSize),
+            ).clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                if (url.isNotEmpty()) {
+                    onOpen?.invoke(url)
+                }
+            },
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         if (!image.isNullOrBlank()) {
             Box(
                 modifier =
-                    Modifier.heightIn(
-                        min = 50.dp,
-                        max = 200.dp,
-                    ),
+                Modifier.heightIn(
+                    min = 50.dp,
+                    max = 200.dp,
+                ),
             ) {
                 CustomImage(
                     modifier =
-                        Modifier
-                            .clip(
-                                RoundedCornerShape(
-                                    topStart = cornerSize,
-                                    topEnd = cornerSize,
-                                ),
-                            ).onGloballyPositioned {
-                                imageHeight = it.size.toSize().height
-                            },
+                    Modifier
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = cornerSize,
+                                topEnd = cornerSize,
+                            ),
+                        ).onGloballyPositioned {
+                            imageHeight = it.size.toSize().height
+                        },
                     url = image,
                     autoload = autoloadImages,
                     quality = FilterQuality.Low,
@@ -106,15 +106,15 @@ fun LinkItem(
                 if (imageHeight > minImageHeightForBanner) {
                     UrlBanner(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.BottomCenter)
-                                .background(
-                                    color =
-                                        MaterialTheme.colorScheme
-                                            .surfaceColorAtElevation(5.dp)
-                                            .copy(0.45f),
-                                ).padding(10.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)
+                            .background(
+                                color =
+                                MaterialTheme.colorScheme
+                                    .surfaceColorAtElevation(5.dp)
+                                    .copy(0.45f),
+                            ).padding(10.dp),
                         url = url,
                     )
                 }
@@ -123,11 +123,11 @@ fun LinkItem(
 
         Column(
             modifier =
-                Modifier.padding(
-                    top = Spacing.s,
-                    end = contentPadding,
-                    start = contentPadding,
-                ),
+            Modifier.padding(
+                top = Spacing.s,
+                end = contentPadding,
+                start = contentPadding,
+            ),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             if (title.isNotEmpty()) {
@@ -150,19 +150,19 @@ fun LinkItem(
             UrlBanner(
                 url = url,
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color =
-                                MaterialTheme.colorScheme
-                                    .surfaceColorAtElevation(5.dp)
-                                    .copy(0.5f),
-                            shape =
-                                RoundedCornerShape(
-                                    bottomStart = cornerSize,
-                                    bottomEnd = cornerSize,
-                                ),
-                        ).padding(10.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color =
+                        MaterialTheme.colorScheme
+                            .surfaceColorAtElevation(5.dp)
+                            .copy(0.5f),
+                        shape =
+                        RoundedCornerShape(
+                            bottomStart = cornerSize,
+                            bottomEnd = cornerSize,
+                        ),
+                    ).padding(10.dp),
             )
         } else {
             Spacer(modifier = Modifier.height(contentPadding))
@@ -171,10 +171,7 @@ fun LinkItem(
 }
 
 @Composable
-private fun UrlBanner(
-    url: String,
-    modifier: Modifier = Modifier,
-) {
+private fun UrlBanner(url: String, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,

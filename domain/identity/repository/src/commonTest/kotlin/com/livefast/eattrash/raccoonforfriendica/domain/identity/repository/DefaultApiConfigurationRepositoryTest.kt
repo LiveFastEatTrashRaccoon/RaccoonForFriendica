@@ -44,140 +44,132 @@ class DefaultApiConfigurationRepositoryTest {
         )
 
     @Test
-    fun `when change node then interactions are as expected`() =
-        runTest {
-            sut.changeNode("new-instance")
+    fun `when change node then interactions are as expected`() = runTest {
+        sut.changeNode("new-instance")
 
-            verify {
-                serviceProvider.changeNode("new-instance")
-                keyStore.save("lastInstance", "new-instance")
-            }
+        verify {
+            serviceProvider.changeNode("new-instance")
+            keyStore.save("lastInstance", "new-instance")
         }
+    }
 
     @Test
-    fun `when setAuth with OAuth credentials then interactions are as expected`() =
-        runTest {
-            val credentials =
-                ApiCredentials.OAuth2(accessToken = "fake-access-token-2", refreshToken = "")
-            sut.setAuth(credentials)
+    fun `when setAuth with OAuth credentials then interactions are as expected`() = runTest {
+        val credentials =
+            ApiCredentials.OAuth2(accessToken = "fake-access-token-2", refreshToken = "")
+        sut.setAuth(credentials)
 
-            assertTrue(sut.isLogged.value)
-            verify {
-                serviceProvider.setAuth(credentials.toServiceCredentials())
-                keyStore.save("lastMethod", "OAuth2")
-                keyStore.save("lastCred1", "fake-access-token-2")
-                keyStore.save("lastCred2", "")
-            }
+        assertTrue(sut.isLogged.value)
+        verify {
+            serviceProvider.setAuth(credentials.toServiceCredentials())
+            keyStore.save("lastMethod", "OAuth2")
+            keyStore.save("lastCred1", "fake-access-token-2")
+            keyStore.save("lastCred2", "")
         }
+    }
 
     @Test
-    fun `when setAuth with basic credentials then interactions are as expected`() =
-        runTest {
-            val credentials = ApiCredentials.HttpBasic(user = "fake1", pass = "fake2")
-            sut.setAuth(credentials)
+    fun `when setAuth with basic credentials then interactions are as expected`() = runTest {
+        val credentials = ApiCredentials.HttpBasic(user = "fake1", pass = "fake2")
+        sut.setAuth(credentials)
 
-            assertTrue(sut.isLogged.value)
-            verify {
-                serviceProvider.setAuth(credentials.toServiceCredentials())
-                keyStore.save("lastMethod", "HTTPBasic")
-                keyStore.save("lastCred1", "fake1")
-                keyStore.save("lastCred2", "fake2")
-            }
+        assertTrue(sut.isLogged.value)
+        verify {
+            serviceProvider.setAuth(credentials.toServiceCredentials())
+            keyStore.save("lastMethod", "HTTPBasic")
+            keyStore.save("lastCred1", "fake1")
+            keyStore.save("lastCred2", "fake2")
         }
+    }
 
     @Test
-    fun `when setAuth with null credentials then interactions are as expected`() =
-        runTest {
-            sut.setAuth(null)
+    fun `when setAuth with null credentials then interactions are as expected`() = runTest {
+        sut.setAuth(null)
 
-            assertFalse(sut.isLogged.value)
-            verify {
-                serviceProvider.setAuth()
-                keyStore.remove("lastCred1")
-                keyStore.remove("lastCred2")
-            }
+        assertFalse(sut.isLogged.value)
+        verify {
+            serviceProvider.setAuth()
+            keyStore.remove("lastCred1")
+            keyStore.remove("lastCred2")
         }
+    }
 
     @Test
-    fun `given invalid OAuth credentials stored when hasCachedAuthCredentials then result is as expected`() =
-        runTest {
-            everySuspend {
-                credentialsRepository.validateApplicationCredentials(
-                    node = any(),
-                    credentials = any(),
-                )
-            } returns false
+    fun `given invalid OAuth credentials stored when hasCachedAuthCredentials then result is as expected`() = runTest {
+        everySuspend {
+            credentialsRepository.validateApplicationCredentials(
+                node = any(),
+                credentials = any(),
+            )
+        } returns false
 
-            val res = sut.hasCachedAuthCredentials()
+        val res = sut.hasCachedAuthCredentials()
 
-            assertFalse(res)
-            verifySuspend {
-                credentialsRepository.validateApplicationCredentials(
-                    "default-instance",
-                    ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
-                )
-            }
+        assertFalse(res)
+        verifySuspend {
+            credentialsRepository.validateApplicationCredentials(
+                "default-instance",
+                ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
+            )
         }
+    }
 
     @Test
-    fun `given invalid basic credentials stored when hasCachedAuthCredentials then result is as expected`() =
-        runTest {
-            every { keyStore["lastMethod", any<String>()] } returns "HTTPBasic"
-            every { keyStore["lastCred1", any<String>()] } returns "fake1"
-            every { keyStore["lastCred2", any<String>()] } returns "fake2"
-            everySuspend {
-                credentialsRepository.validateApplicationCredentials(
-                    node = any(),
-                    credentials = any(),
-                )
-            } returns false
+    fun `given invalid basic credentials stored when hasCachedAuthCredentials then result is as expected`() = runTest {
+        every { keyStore["lastMethod", any<String>()] } returns "HTTPBasic"
+        every { keyStore["lastCred1", any<String>()] } returns "fake1"
+        every { keyStore["lastCred2", any<String>()] } returns "fake2"
+        everySuspend {
+            credentialsRepository.validateApplicationCredentials(
+                node = any(),
+                credentials = any(),
+            )
+        } returns false
 
-            val res = sut.hasCachedAuthCredentials()
+        val res = sut.hasCachedAuthCredentials()
 
-            assertFalse(res)
-            verifySuspend {
-                credentialsRepository.validateApplicationCredentials(
-                    "default-instance",
-                    ApiCredentials.HttpBasic(user = "fake1", pass = "fake2"),
-                )
-            }
+        assertFalse(res)
+        verifySuspend {
+            credentialsRepository.validateApplicationCredentials(
+                "default-instance",
+                ApiCredentials.HttpBasic(user = "fake1", pass = "fake2"),
+            )
         }
+    }
 
     @Test
-    fun `given timeout when hasCachedAuthCredentials then result is as expected`() =
-        runTest {
-            everySuspend {
-                credentialsRepository.validateApplicationCredentials(
-                    node = any(),
-                    credentials = any(),
-                )
-            } calls {
-                delay(10.seconds)
-                true
-            }
-
-            val res = sut.hasCachedAuthCredentials()
-
-            assertFalse(res)
-            verifySuspend {
-                credentialsRepository.validateApplicationCredentials(
-                    "default-instance",
-                    ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
-                )
-            }
+    fun `given timeout when hasCachedAuthCredentials then result is as expected`() = runTest {
+        everySuspend {
+            credentialsRepository.validateApplicationCredentials(
+                node = any(),
+                credentials = any(),
+            )
+        } calls {
+            delay(10.seconds)
+            true
         }
+
+        val res = sut.hasCachedAuthCredentials()
+
+        assertFalse(res)
+        verifySuspend {
+            credentialsRepository.validateApplicationCredentials(
+                "default-instance",
+                ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
+            )
+        }
+    }
 
     @Test
-    fun `given valid credentials when hasCachedAuthCredentials then result is as expected`() =
-        runTest {
-            val res = sut.hasCachedAuthCredentials()
+    fun `given valid credentials when hasCachedAuthCredentials then result is as expected`() = runTest {
+        val res = sut.hasCachedAuthCredentials()
 
-            assertTrue(res)
-            verifySuspend {
-                credentialsRepository.validateApplicationCredentials(
-                    "default-instance",
-                    ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
-                )
-            }
+        assertTrue(res)
+        verifySuspend {
+            credentialsRepository.validateApplicationCredentials(
+                "default-instance",
+                ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
+            )
         }
+    }
 }

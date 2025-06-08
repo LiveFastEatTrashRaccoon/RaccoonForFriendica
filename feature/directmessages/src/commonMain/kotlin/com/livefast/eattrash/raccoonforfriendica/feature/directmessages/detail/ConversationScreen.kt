@@ -74,20 +74,17 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-class ConversationScreen(
-    private val otherUserId: String,
-    private val parentUri: String,
-) : Screen {
+class ConversationScreen(private val otherUserId: String, private val parentUri: String) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val model: ConversationMviModel =
             rememberScreenModel(
                 arg =
-                    ConversationMviModelParams(
-                        otherUserId = otherUserId,
-                        parentUri = parentUri,
-                    ),
+                ConversationMviModelParams(
+                    otherUserId = otherUserId,
+                    parentUri = parentUri,
+                ),
             )
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
@@ -126,10 +123,10 @@ class ConversationScreen(
 
         Scaffold(
             modifier =
-                Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .navigationBarsPadding()
-                    .safeImePadding(),
+            Modifier
+                .background(MaterialTheme.colorScheme.surface)
+                .navigationBarsPadding()
+                .safeImePadding(),
             topBar = {
                 TopAppBar(
                     modifier = Modifier.clickable { scope.launch { goBackToTop() } },
@@ -145,9 +142,9 @@ class ConversationScreen(
                             if (avatar.isNotEmpty() && uiState.autoloadImages) {
                                 CustomImage(
                                     modifier =
-                                        Modifier
-                                            .size(avatarSize)
-                                            .clip(RoundedCornerShape(avatarSize / 2)),
+                                    Modifier
+                                        .size(avatarSize)
+                                        .clip(RoundedCornerShape(avatarSize / 2)),
                                     url = avatar,
                                     quality = FilterQuality.Low,
                                     contentScale = ContentScale.FillBounds,
@@ -199,23 +196,23 @@ class ConversationScreen(
             bottomBar = {
                 Row(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                top = Spacing.s,
-                                end = Spacing.s,
-                                start = Spacing.s,
-                                bottom = Spacing.s,
-                            ),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = Spacing.s,
+                            end = Spacing.s,
+                            start = Spacing.s,
+                            bottom = Spacing.s,
+                        ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(Spacing.xxs),
                 ) {
                     OutlinedTextField(
                         modifier = Modifier.weight(1f),
                         keyboardOptions =
-                            KeyboardOptions(
-                                keyboardType = KeyboardType.Text,
-                            ),
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                        ),
                         value = uiState.newMessageValue,
                         textStyle = MaterialTheme.typography.bodyMedium,
                         maxLines = 3,
@@ -238,9 +235,9 @@ class ConversationScreen(
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxSize(),
+                Modifier
+                    .padding(padding)
+                    .fillMaxSize(),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(ConversationMviModel.Intent.Refresh)
@@ -257,11 +254,11 @@ class ConversationScreen(
                             MessageItemPlaceholder(
                                 isMyMessage = idx % 2 == 0,
                                 height =
-                                    when (idx % 3) {
-                                        1 -> 80.dp
-                                        2 -> 100.dp
-                                        else -> 50.dp
-                                    },
+                                when (idx % 3) {
+                                    1 -> 80.dp
+                                    2 -> 100.dp
+                                    else -> 50.dp
+                                },
                                 isLastOfSequence = false,
                                 isFirstOfSequence = false,
                             )
@@ -273,32 +270,32 @@ class ConversationScreen(
                             if (otherUserName.isNotEmpty()) {
                                 Box(
                                     modifier =
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .padding(
-                                                top = Spacing.m,
-                                                start = Spacing.s,
-                                                end = Spacing.s,
-                                            ).border(
-                                                width = Dp.Hairline,
-                                                color = MaterialTheme.colorScheme.onBackground,
-                                                shape = RoundedCornerShape(CornerSize.xl),
-                                            ).background(
-                                                color =
-                                                    MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                                        5.dp,
-                                                    ),
-                                                shape = RoundedCornerShape(CornerSize.xl),
-                                            ).padding(Spacing.m),
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            top = Spacing.m,
+                                            start = Spacing.s,
+                                            end = Spacing.s,
+                                        ).border(
+                                            width = Dp.Hairline,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                            shape = RoundedCornerShape(CornerSize.xl),
+                                        ).background(
+                                            color =
+                                            MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                                5.dp,
+                                            ),
+                                            shape = RoundedCornerShape(CornerSize.xl),
+                                        ).padding(Spacing.m),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     TextWithCustomEmojis(
                                         text =
-                                            buildString {
-                                                append(LocalStrings.current.messageEmptyConversation)
-                                                append(" ")
-                                                append(otherUserName)
-                                            },
+                                        buildString {
+                                            append(LocalStrings.current.messageEmptyConversation)
+                                            append(" ")
+                                            append(otherUserName)
+                                        },
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onBackground,
                                         emojis = uiState.otherUser?.emojis.orEmpty(),

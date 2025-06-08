@@ -22,12 +22,8 @@ interface PhotoAlbumService {
     ): List<FriendicaPhoto>
 
     @POST("friendica/photoalbum/update")
-    suspend fun update(
-        @Body data: FormDataContent,
-    ): FriendicaApiResult
+    suspend fun update(@Body data: FormDataContent): FriendicaApiResult
 
     @POST("friendica/photoalbum/delete")
-    suspend fun delete(
-        @Body data: FormDataContent,
-    ): FriendicaApiResult
+    suspend fun delete(@Body data: FormDataContent): FriendicaApiResult
 }

@@ -10,14 +10,9 @@ import de.jensklingenberg.ktorfit.http.Path
 
 interface PollService {
     @GET("v1/polls/{id}")
-    suspend fun getById(
-        @Path("id") id: String,
-    ): Poll
+    suspend fun getById(@Path("id") id: String): Poll
 
     @POST("v1/polls/{id}/votes")
     @Headers("Content-Type: application/json")
-    suspend fun vote(
-        @Path("id") id: String,
-        @Body data: SubmitPollVoteForm,
-    ): Poll
+    suspend fun vote(@Path("id") id: String, @Body data: SubmitPollVoteForm): Poll
 }

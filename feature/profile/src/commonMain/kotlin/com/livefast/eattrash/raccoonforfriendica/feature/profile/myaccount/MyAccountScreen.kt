@@ -163,21 +163,21 @@ object MyAccountScreen : Tab {
 
         PullToRefreshBox(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .then(
-                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(connection)
-                        } else {
-                            Modifier
-                        },
-                    ).then(
-                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        } else {
-                            Modifier
-                        },
-                    ),
+            Modifier
+                .fillMaxWidth()
+                .then(
+                    if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(connection)
+                    } else {
+                        Modifier
+                    },
+                ).then(
+                    if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    } else {
+                        Modifier
+                    },
+                ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
                 model.reduce(MyAccountMviModel.Intent.Refresh)
@@ -215,7 +215,7 @@ object MyAccountScreen : Tab {
                                     )
                                 }
                             },
-                            onEditClicked = {
+                            onEditClick = {
                                 detailOpener.openEditProfile()
                             },
                         )
@@ -224,9 +224,9 @@ object MyAccountScreen : Tab {
                     item {
                         UserHeaderPlaceholder(
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = Spacing.xs),
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = Spacing.xs),
                         )
                     }
                 } else {
@@ -280,22 +280,22 @@ object MyAccountScreen : Tab {
                             }
                         Box(
                             modifier =
-                                Modifier
-                                    .padding(
-                                        vertical = Spacing.m,
-                                        horizontal = Spacing.s,
-                                    ).border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                        shape = RoundedCornerShape(CornerSize.l),
-                                    ).padding(
-                                        vertical = Spacing.s,
-                                        horizontal = Spacing.m,
-                                    ),
+                            Modifier
+                                .padding(
+                                    vertical = Spacing.m,
+                                    horizontal = Spacing.s,
+                                ).border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    shape = RoundedCornerShape(CornerSize.l),
+                                ).padding(
+                                    vertical = Spacing.s,
+                                    horizontal = Spacing.m,
+                                ),
                         ) {
                             Text(
                                 modifier =
-                                    Modifier.fillMaxWidth(),
+                                Modifier.fillMaxWidth(),
                                 text = annotatedString,
                                 style = MaterialTheme.typography.bodyLarge,
                             )
@@ -344,16 +344,16 @@ object MyAccountScreen : Tab {
                         )
                     SectionSelector(
                         modifier =
-                            Modifier
-                                .background(MaterialTheme.colorScheme.background)
-                                .padding(
-                                    top = stickyHeaderTopOffset,
-                                    bottom = Spacing.s,
-                                ),
+                        Modifier
+                            .background(MaterialTheme.colorScheme.background)
+                            .padding(
+                                top = stickyHeaderTopOffset,
+                                bottom = Spacing.s,
+                            ),
                         titles = titles.map { it.toReadableName() },
                         scrollable = true,
                         currentSection = titles.indexOf(uiState.section),
-                        onSectionSelected = {
+                        onSelectSection = {
                             model.reduce(
                                 MyAccountMviModel.Intent.ChangeSection(titles[it]),
                             )
@@ -403,51 +403,51 @@ object MyAccountScreen : Tab {
                             )
                         },
                         onBookmark =
-                            { e: TimelineEntryModel ->
-                                model.reduce(MyAccountMviModel.Intent.ToggleBookmark(e))
-                            }.takeIf { actionRepository.canBookmark(entry.original) },
+                        { e: TimelineEntryModel ->
+                            model.reduce(MyAccountMviModel.Intent.ToggleBookmark(e))
+                        }.takeIf { actionRepository.canBookmark(entry.original) },
                         onFavorite =
-                            { e: TimelineEntryModel ->
-                                model.reduce(MyAccountMviModel.Intent.ToggleFavorite(e))
-                            }.takeIf { actionRepository.canFavorite(entry.original) },
+                        { e: TimelineEntryModel ->
+                            model.reduce(MyAccountMviModel.Intent.ToggleFavorite(e))
+                        }.takeIf { actionRepository.canFavorite(entry.original) },
                         onDislike =
-                            { e: TimelineEntryModel ->
-                                model.reduce(MyAccountMviModel.Intent.ToggleDislike(e))
-                            }.takeIf { actionRepository.canDislike(entry.original) },
+                        { e: TimelineEntryModel ->
+                            model.reduce(MyAccountMviModel.Intent.ToggleDislike(e))
+                        }.takeIf { actionRepository.canDislike(entry.original) },
                         onReply =
-                            { e: TimelineEntryModel ->
-                                detailOpener.openComposer(
-                                    inReplyTo = e,
-                                    inReplyToUser = e.creator,
-                                )
-                            }.takeIf { actionRepository.canReply(entry.original) },
+                        { e: TimelineEntryModel ->
+                            detailOpener.openComposer(
+                                inReplyTo = e,
+                                inReplyToUser = e.creator,
+                            )
+                        }.takeIf { actionRepository.canReply(entry.original) },
                         options =
-                            buildList {
-                                if (actionRepository.canShare(entry.original)) {
-                                    this += OptionId.Share.toOption()
-                                    this += OptionId.CopyUrl.toOption()
+                        buildList {
+                            if (actionRepository.canShare(entry.original)) {
+                                this += OptionId.Share.toOption()
+                                this += OptionId.CopyUrl.toOption()
+                            }
+                            if (actionRepository.canEdit(entry.original)) {
+                                this += OptionId.Edit.toOption()
+                            }
+                            if (actionRepository.canDelete(entry.original)) {
+                                this += OptionId.Delete.toOption()
+                            }
+                            if (actionRepository.canTogglePin(entry)) {
+                                if (entry.pinned) {
+                                    this += OptionId.Unpin.toOption()
+                                } else {
+                                    this += OptionId.Pin.toOption()
                                 }
-                                if (actionRepository.canEdit(entry.original)) {
-                                    this += OptionId.Edit.toOption()
-                                }
-                                if (actionRepository.canDelete(entry.original)) {
-                                    this += OptionId.Delete.toOption()
-                                }
-                                if (actionRepository.canTogglePin(entry)) {
-                                    if (entry.pinned) {
-                                        this += OptionId.Unpin.toOption()
-                                    } else {
-                                        this += OptionId.Pin.toOption()
-                                    }
-                                }
-                                if (actionRepository.canQuote(entry.original)) {
-                                    this += OptionId.Quote.toOption()
-                                }
-                                this += OptionId.ViewDetails.toOption()
-                                this += OptionId.CopyToClipboard.toOption()
-                                this += OptionId.OpenInBrowser.toOption()
-                            },
-                        onOptionSelected = { optionId ->
+                            }
+                            if (actionRepository.canQuote(entry.original)) {
+                                this += OptionId.Quote.toOption()
+                            }
+                            this += OptionId.ViewDetails.toOption()
+                            this += OptionId.CopyToClipboard.toOption()
+                            this += OptionId.OpenInBrowser.toOption()
+                        },
+                        onSelectOption = { optionId ->
                             when (optionId) {
                                 OptionId.Edit -> {
                                     if (entry.creator?.group == true) {
@@ -516,7 +516,9 @@ object MyAccountScreen : Tab {
                         model.reduce(MyAccountMviModel.Intent.LoadNextPage)
                     }
                 }
-                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty() && uiState.user != null) {
+                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty() &&
+                    uiState.user != null
+                ) {
                     item {
                         Text(
                             modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
@@ -545,9 +547,9 @@ object MyAccountScreen : Tab {
 
             SnackbarHost(
                 modifier =
-                    Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = Dimensions.floatingActionButtonBottomInset),
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = Dimensions.floatingActionButtonBottomInset),
                 hostState = snackbarHostState,
             ) { data ->
                 Snackbar(

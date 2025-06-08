@@ -21,7 +21,7 @@ val unpublishedModule =
                     blurHashRepository = instance(),
                     imageAutoloadObserver = instance(),
                     notificationCenter = instance(),
-            )
+                )
+            }
         }
     }
-}

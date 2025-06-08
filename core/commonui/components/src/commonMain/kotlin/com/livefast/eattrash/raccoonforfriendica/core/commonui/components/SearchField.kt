@@ -21,8 +21,10 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,16 +65,17 @@ fun SearchField(
             TextFieldValue(text = value),
         )
     }
+    val valueChangedCallback by rememberUpdatedState(onValueChange)
     LaunchedEffect(textFieldValue) {
-        onValueChange(textFieldValue.text)
+        valueChangedCallback(textFieldValue.text)
     }
-    var height by remember { mutableStateOf(0f) }
+    var height by remember { mutableFloatStateOf(0f) }
 
     BasicTextField(
         modifier =
-            modifier.onGloballyPositioned {
-                height = it.size.toSize().height
-            },
+        modifier.onGloballyPositioned {
+            height = it.size.toSize().height
+        },
         value = textFieldValue,
         onValueChange = { newValue ->
             textFieldValue = newValue
@@ -82,58 +85,58 @@ fun SearchField(
         cursorBrush = SolidColor(textColor),
         textStyle = textStyle.copy(color = textColor),
         decorationBox =
-            { innerTextField ->
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = backgroundColor,
-                                shape =
-                                    with(LocalDensity.current) {
-                                        RoundedCornerShape((height / 2).toDp())
-                                    },
-                            ).padding(
-                                horizontal = 12.dp,
-                                vertical = Spacing.s,
-                            ),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
+        { innerTextField ->
+            Row(
+                modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = backgroundColor,
+                        shape =
+                        with(LocalDensity.current) {
+                            RoundedCornerShape((height / 2).toDp())
+                        },
+                    ).padding(
+                        horizontal = 12.dp,
+                        vertical = Spacing.s,
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
+            ) {
+                val iconModifier = Modifier.size(IconSize.m).padding(2.5.dp)
+                Icon(
+                    modifier = iconModifier,
+                    imageVector = Icons.Default.Search,
+                    contentDescription = LocalStrings.current.actionSearch,
+                    tint = textColor,
+                )
+                Box(
+                    modifier = Modifier.weight(1f),
+                    contentAlignment = Alignment.CenterStart,
                 ) {
-                    val iconModifier = Modifier.size(IconSize.m).padding(2.5.dp)
-                    Icon(
-                        modifier = iconModifier,
-                        imageVector = Icons.Default.Search,
-                        contentDescription = LocalStrings.current.actionSearch,
-                        tint = textColor,
-                    )
-                    Box(
-                        modifier = Modifier.weight(1f),
-                        contentAlignment = Alignment.CenterStart,
-                    ) {
-                        innerTextField()
+                    innerTextField()
 
-                        if (textFieldValue.text.isEmpty() && hint != null) {
-                            Text(
-                                text = hint,
-                                color = textColor.copy(ancillaryTextAlpha),
-                                style = hintTextStyle,
-                            )
-                        }
-                    }
-
-                    if (textFieldValue.text.isNotEmpty() && onClear != null) {
-                        Icon(
-                            modifier =
-                                iconModifier.clickable {
-                                    textFieldValue = TextFieldValue()
-                                },
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = LocalStrings.current.actionClear,
-                            tint = textColor,
+                    if (textFieldValue.text.isEmpty() && hint != null) {
+                        Text(
+                            text = hint,
+                            color = textColor.copy(ancillaryTextAlpha),
+                            style = hintTextStyle,
                         )
                     }
                 }
-            },
+
+                if (textFieldValue.text.isNotEmpty() && onClear != null) {
+                    Icon(
+                        modifier =
+                        iconModifier.clickable {
+                            textFieldValue = TextFieldValue()
+                        },
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = LocalStrings.current.actionClear,
+                        tint = textColor,
+                    )
+                }
+            }
+        },
     )
 }

@@ -42,7 +42,7 @@ fun NotificationUserInfo(
     autoloadImages: Boolean = true,
     onOpenUser: (() -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
-    onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
+    onClickRelationship: ((RelationshipStatusNextAction) -> Unit)? = null,
 ) {
     val banner = user.header.orEmpty()
     val avatar = user.avatar.orEmpty()
@@ -68,9 +68,9 @@ fun NotificationUserInfo(
         Box {
             CustomImage(
                 modifier =
-                    Modifier
-                        .padding(bottom = avatarSize * 0.8f)
-                        .aspectRatio(16 / 5f),
+                Modifier
+                    .padding(bottom = avatarSize * 0.8f)
+                    .aspectRatio(16 / 5f),
                 url = banner,
                 autoload = autoloadImages,
                 contentScale = ContentScale.Crop,
@@ -78,20 +78,20 @@ fun NotificationUserInfo(
 
             Row(
                 modifier =
-                    Modifier
-                        .align(Alignment.BottomStart)
-                        .offset(
-                            y = -avatarSize * 0.1f,
-                        ).padding(horizontal = Spacing.m),
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .offset(
+                        y = -avatarSize * 0.1f,
+                    ).padding(horizontal = Spacing.m),
                 verticalAlignment = Alignment.Bottom,
             ) {
                 if (avatar.isNotEmpty() && autoloadImages) {
                     CustomImage(
                         modifier =
-                            Modifier
-                                .clearAndSetSemantics { }
-                                .size(avatarSize)
-                                .clip(RoundedCornerShape(avatarSize / 2)),
+                        Modifier
+                            .clearAndSetSemantics { }
+                            .size(avatarSize)
+                            .clip(RoundedCornerShape(avatarSize / 2)),
                         url = avatar,
                         quality = FilterQuality.Low,
                         contentScale = ContentScale.FillBounds,
@@ -127,16 +127,16 @@ fun NotificationUserInfo(
                     )
                     Text(
                         text =
-                            buildAnnotatedString {
-                                pushLink(
-                                    LinkAnnotation.Clickable(
-                                        tag = "user-handle",
-                                        linkInteractionListener = { onOpenUser?.invoke() },
-                                    ),
-                                )
-                                append(user.handle ?: user.username ?: "")
-                                pop()
-                            },
+                        buildAnnotatedString {
+                            pushLink(
+                                LinkAnnotation.Clickable(
+                                    tag = "user-handle",
+                                    linkInteractionListener = { onOpenUser?.invoke() },
+                                ),
+                            )
+                            append(user.handle ?: user.username ?: "")
+                            pop()
+                        },
                         style = MaterialTheme.typography.titleMedium,
                         color = ancillaryColor,
                     )
@@ -147,7 +147,7 @@ fun NotificationUserInfo(
                         status = relationshipStatus,
                         locked = user.locked,
                         pending = user.relationshipStatusPending,
-                        onClick = onRelationshipClicked,
+                        onClick = onClickRelationship,
                     )
                 }
             }

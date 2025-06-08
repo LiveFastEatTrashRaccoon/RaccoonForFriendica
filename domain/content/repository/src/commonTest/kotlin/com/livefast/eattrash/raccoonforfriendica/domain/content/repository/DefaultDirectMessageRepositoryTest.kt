@@ -26,154 +26,148 @@ class DefaultDirectMessageRepositoryTest {
     private val sut = DefaultDirectMessageRepository(provider = serviceProvider)
 
     @Test
-    fun `when getAll then result is as expected`() =
-        runTest {
-            val list = listOf(FriendicaPrivateMessage(id = 1))
-            everySuspend {
-                messageService.getAll(
-                    page = any(),
-                    count = any(),
-                    maxId = any(),
-                    getText = any(),
-                )
-            } returns list
+    fun `when getAll then result is as expected`() = runTest {
+        val list = listOf(FriendicaPrivateMessage(id = 1))
+        everySuspend {
+            messageService.getAll(
+                page = any(),
+                count = any(),
+                maxId = any(),
+                getText = any(),
+            )
+        } returns list
 
-            val res = sut.getAll(page = 1)
+        val res = sut.getAll(page = 1)
 
-            assertEquals(list.map { it.toModel() }, res)
-            verifySuspend {
-                messageService.getAll(
-                    page = 1,
-                    count = 20,
-                    maxId = null,
-                    getText = "html",
-                )
-            }
+        assertEquals(list.map { it.toModel() }, res)
+        verifySuspend {
+            messageService.getAll(
+                page = 1,
+                count = 20,
+                maxId = null,
+                getText = "html",
+            )
         }
+    }
 
     @Test
-    fun `when getReplies then result is as expected`() =
-        runTest {
-            val list = listOf(FriendicaPrivateMessage(id = 1))
-            everySuspend {
-                messageService.getConversation(
-                    uri = any(),
-                    page = any(),
-                    count = any(),
-                    maxId = any(),
-                    sinceId = any(),
-                    getText = any(),
-                )
-            } returns list
+    fun `when getReplies then result is as expected`() = runTest {
+        val list = listOf(FriendicaPrivateMessage(id = 1))
+        everySuspend {
+            messageService.getConversation(
+                uri = any(),
+                page = any(),
+                count = any(),
+                maxId = any(),
+                sinceId = any(),
+                getText = any(),
+            )
+        } returns list
 
-            val res =
-                sut.getReplies(
-                    parentUri = "uri",
-                    page = 1,
-                )
+        val res =
+            sut.getReplies(
+                parentUri = "uri",
+                page = 1,
+            )
 
-            assertEquals(list.map { it.toModel() }, res)
-            verifySuspend {
-                messageService.getConversation(
-                    uri = "uri",
-                    page = 1,
-                    count = 20,
-                    maxId = null,
-                    getText = "html",
-                    sinceId = null,
-                )
-            }
+        assertEquals(list.map { it.toModel() }, res)
+        verifySuspend {
+            messageService.getConversation(
+                uri = "uri",
+                page = 1,
+                count = 20,
+                maxId = null,
+                getText = "html",
+                sinceId = null,
+            )
         }
+    }
 
     @Test
-    fun `when pollReplies then result is as expected`() =
-        runTest {
-            val list = listOf(FriendicaPrivateMessage(id = 1))
-            everySuspend {
-                messageService.getConversation(
-                    uri = any(),
-                    page = any(),
-                    count = any(),
-                    maxId = any(),
-                    sinceId = any(),
-                    getText = any(),
-                )
-            } returns list
+    fun `when pollReplies then result is as expected`() = runTest {
+        val list = listOf(FriendicaPrivateMessage(id = 1))
+        everySuspend {
+            messageService.getConversation(
+                uri = any(),
+                page = any(),
+                count = any(),
+                maxId = any(),
+                sinceId = any(),
+                getText = any(),
+            )
+        } returns list
 
-            val res =
-                sut.pollReplies(
-                    parentUri = "uri",
-                    minId = "1",
-                )
+        val res =
+            sut.pollReplies(
+                parentUri = "uri",
+                minId = "1",
+            )
 
-            assertEquals(list.map { it.toModel() }, res)
-            verifySuspend {
-                messageService.getConversation(
-                    uri = "uri",
-                    page = 1,
-                    count = 20,
-                    maxId = null,
-                    getText = "html",
-                    sinceId = 1,
-                )
-            }
+        assertEquals(list.map { it.toModel() }, res)
+        verifySuspend {
+            messageService.getConversation(
+                uri = "uri",
+                page = 1,
+                count = 20,
+                maxId = null,
+                getText = "html",
+                sinceId = 1,
+            )
         }
+    }
 
     @Test
-    fun `when create then result is as expected`() =
-        runTest {
-            val text = "text"
-            val recipientId = "recipient-id"
-            val message = FriendicaPrivateMessage(id = 1, text = text)
-            everySuspend {
-                messageService.create(any())
-            } returns message
+    fun `when create then result is as expected`() = runTest {
+        val text = "text"
+        val recipientId = "recipient-id"
+        val message = FriendicaPrivateMessage(id = 1, text = text)
+        everySuspend {
+            messageService.create(any())
+        } returns message
 
-            val res =
-                sut.create(
-                    recipientId = recipientId,
-                    text = text,
-                )
+        val res =
+            sut.create(
+                recipientId = recipientId,
+                text = text,
+            )
 
-            assertEquals(message.toModel(), res)
-            verifySuspend {
-                messageService.create(
-                    matching {
-                        it.formData.let { data ->
-                            data["text"] == text && data["user_id"] == recipientId
-                        }
-                    },
-                )
-            }
+        assertEquals(message.toModel(), res)
+        verifySuspend {
+            messageService.create(
+                matching {
+                    it.formData.let { data ->
+                        data["text"] == text && data["user_id"] == recipientId
+                    }
+                },
+            )
         }
+    }
 
     @Test
-    fun `when delete then result is as expected`() =
-        runTest {
-            everySuspend {
-                messageService.delete(any())
-            } returns FriendicaApiResult(result = "ok")
+    fun `when delete then result is as expected`() = runTest {
+        everySuspend {
+            messageService.delete(any())
+        } returns FriendicaApiResult(result = "ok")
 
-            val res = sut.delete("1")
+        val res = sut.delete("1")
 
-            assertTrue(res)
-            verifySuspend {
-                messageService.delete(1)
-            }
+        assertTrue(res)
+        verifySuspend {
+            messageService.delete(1)
         }
+    }
 
     @Test
-    fun `when markAsRead then result is as expected`() =
-        runTest {
-            everySuspend {
-                messageService.markAsRead(any())
-            } returns FriendicaApiResult(result = "ok")
+    fun `when markAsRead then result is as expected`() = runTest {
+        everySuspend {
+            messageService.markAsRead(any())
+        } returns FriendicaApiResult(result = "ok")
 
-            val res = sut.markAsRead("1")
+        val res = sut.markAsRead("1")
 
-            assertTrue(res)
-            verifySuspend {
-                messageService.markAsRead(1)
-            }
+        assertTrue(res)
+        verifySuspend {
+            messageService.markAsRead(1)
         }
+    }
 }

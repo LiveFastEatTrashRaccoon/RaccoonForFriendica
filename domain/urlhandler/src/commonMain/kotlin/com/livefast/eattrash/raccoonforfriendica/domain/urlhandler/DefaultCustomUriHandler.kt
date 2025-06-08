@@ -35,11 +35,7 @@ internal class DefaultCustomUriHandler(
         )
     }
 
-    override fun openUri(
-        uri: String,
-        allowOpenExternal: Boolean,
-        allowOpenInternal: Boolean,
-    ) {
+    override fun openUri(uri: String, allowOpenExternal: Boolean, allowOpenInternal: Boolean) {
         val urlOpeningMode =
             settingsRepository.current.value?.urlOpeningMode ?: UrlOpeningMode.External
 
@@ -61,10 +57,7 @@ internal class DefaultCustomUriHandler(
         }
     }
 
-    private fun openExternalUrl(
-        url: String,
-        mode: UrlOpeningMode,
-    ) {
+    private fun openExternalUrl(url: String, mode: UrlOpeningMode) {
         when {
             mode == UrlOpeningMode.Internal ->
                 detailOpener.openInternalWebView(url)

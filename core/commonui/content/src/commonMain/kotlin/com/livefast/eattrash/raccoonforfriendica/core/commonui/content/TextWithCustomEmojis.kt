@@ -93,11 +93,11 @@ fun TextWithCustomEmojis(
             emoji.code to
                 InlineTextContent(
                     placeholder =
-                        Placeholder(
-                            width = EMOJI_SIZE,
-                            height = EMOJI_SIZE,
-                            placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter,
-                        ),
+                    Placeholder(
+                        width = EMOJI_SIZE,
+                        height = EMOJI_SIZE,
+                        placeholderVerticalAlign = PlaceholderVerticalAlign.TextCenter,
+                    ),
                 ) {
                     CustomImage(
                         modifier = Modifier.size(IconSize.m),

@@ -13,30 +13,17 @@ interface ManageBlocksMviModel :
 
         data object LoadNextPage : Intent
 
-        data class ChangeSection(
-            val section: ManageBlocksSection,
-        ) : Intent
+        data class ChangeSection(val section: ManageBlocksSection) : Intent
 
-        data class ToggleMute(
-            val userId: String,
-        ) : Intent
+        data class ToggleMute(val userId: String) : Intent
 
-        data class ToggleBlock(
-            val userId: String,
-        ) : Intent
+        data class ToggleBlock(val userId: String) : Intent
 
-        data class SetRateLimit(
-            val handle: String,
-            val rate: Double,
-        ) : Intent
+        data class SetRateLimit(val handle: String, val rate: Double) : Intent
 
-        data class AddStopWord(
-            val word: String,
-        ) : Intent
+        data class AddStopWord(val word: String) : Intent
 
-        data class RemoveStopWord(
-            val word: String,
-        ) : Intent
+        data class RemoveStopWord(val word: String) : Intent
     }
 
     data class State(

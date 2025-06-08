@@ -7,10 +7,7 @@ import org.kodein.di.bind
 import org.kodein.di.factory
 import org.kodein.di.instance
 
-data class EntryDetailMviModelParams(
-    val id: String,
-    val swipeNavigationEnabled: Boolean,
-)
+data class EntryDetailMviModelParams(val id: String, val swipeNavigationEnabled: Boolean)
 
 val entryDetailModule =
     DI.Module("EntryDetailModule") {

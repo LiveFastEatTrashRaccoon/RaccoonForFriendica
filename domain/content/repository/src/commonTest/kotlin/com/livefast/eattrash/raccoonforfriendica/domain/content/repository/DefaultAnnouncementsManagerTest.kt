@@ -18,72 +18,68 @@ class DefaultAnnouncementsManagerTest {
         )
 
     @Test
-    fun `given no results when refreshUnreadCount then count is as expected`() =
-        runTest {
-            val list = emptyList<AnnouncementModel>()
-            everySuspend { announcementRepository.getAll(any()) } returns list
+    fun `given no results when refreshUnreadCount then count is as expected`() = runTest {
+        val list = emptyList<AnnouncementModel>()
+        everySuspend { announcementRepository.getAll(any()) } returns list
 
-            sut.refreshUnreadCount()
-            val res = sut.unreadCount.value
+        sut.refreshUnreadCount()
+        val res = sut.unreadCount.value
 
-            assertEquals(0, res)
-            verifySuspend {
-                announcementRepository.getAll(refresh = true)
-            }
+        assertEquals(0, res)
+        verifySuspend {
+            announcementRepository.getAll(refresh = true)
         }
+    }
 
     @Test
-    fun `given results when refreshUnreadCount then count is as expected`() =
-        runTest {
-            val list =
-                listOf(
-                    AnnouncementModel("1", ""),
-                    AnnouncementModel("2", ""),
-                )
-            everySuspend { announcementRepository.getAll(any()) } returns list
+    fun `given results when refreshUnreadCount then count is as expected`() = runTest {
+        val list =
+            listOf(
+                AnnouncementModel("1", ""),
+                AnnouncementModel("2", ""),
+            )
+        everySuspend { announcementRepository.getAll(any()) } returns list
 
-            sut.refreshUnreadCount()
-            val res = sut.unreadCount.value
+        sut.refreshUnreadCount()
+        val res = sut.unreadCount.value
 
-            assertEquals(2, res)
-            verifySuspend {
-                announcementRepository.getAll(refresh = true)
-            }
+        assertEquals(2, res)
+        verifySuspend {
+            announcementRepository.getAll(refresh = true)
         }
+    }
 
     @Test
-    fun `when refreshUnreadCount then count is as expected`() =
-        runTest {
-            val list =
-                listOf(
-                    AnnouncementModel("1", ""),
-                    AnnouncementModel("2", ""),
-                )
-            everySuspend { announcementRepository.getAll(any()) } returns list
-            sut.refreshUnreadCount()
-            val resBefore = sut.unreadCount.value
-            assertEquals(2, resBefore)
+    fun `when refreshUnreadCount then count is as expected`() = runTest {
+        val list =
+            listOf(
+                AnnouncementModel("1", ""),
+                AnnouncementModel("2", ""),
+            )
+        everySuspend { announcementRepository.getAll(any()) } returns list
+        sut.refreshUnreadCount()
+        val resBefore = sut.unreadCount.value
+        assertEquals(2, resBefore)
 
-            sut.clearUnreadCount()
-            val res = sut.unreadCount.value
-            assertEquals(0, res)
-        }
+        sut.clearUnreadCount()
+        val res = sut.unreadCount.value
+        assertEquals(0, res)
+    }
 
     @Test
-    fun `when decrementUnreadCount then count is as expected`() =
-        runTest {
-            val list =
-                listOf(
-                    AnnouncementModel("1", ""),
-                    AnnouncementModel("2", ""),
-                )
-            everySuspend { announcementRepository.getAll(any()) } returns list
-            sut.refreshUnreadCount()
-            val resBefore = sut.unreadCount.value
-            assertEquals(2, resBefore)
+    fun `when decrementUnreadCount then count is as expected`() = runTest {
+        val list =
+            listOf(
+                AnnouncementModel("1", ""),
+                AnnouncementModel("2", ""),
+            )
+        everySuspend { announcementRepository.getAll(any()) } returns list
+        sut.refreshUnreadCount()
+        val resBefore = sut.unreadCount.value
+        assertEquals(2, resBefore)
 
-            sut.decrementUnreadCount()
-            val res = sut.unreadCount.value
-            assertEquals(1, res)
-        }
+        sut.decrementUnreadCount()
+        val res = sut.unreadCount.value
+        assertEquals(1, res)
+    }
 }

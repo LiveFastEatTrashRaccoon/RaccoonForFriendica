@@ -10,8 +10,7 @@ sealed interface UnpublishedType {
 }
 
 @Composable
-fun UnpublishedType.toReadableName(): String =
-    when (this) {
-        UnpublishedType.Drafts -> LocalStrings.current.unpublishedSectionDrafts
-        UnpublishedType.Scheduled -> LocalStrings.current.unpublishedSectionScheduled
-    }
+fun UnpublishedType.toReadableName(): String = when (this) {
+    UnpublishedType.Drafts -> LocalStrings.current.unpublishedSectionDrafts
+    UnpublishedType.Scheduled -> LocalStrings.current.unpublishedSectionScheduled
+}

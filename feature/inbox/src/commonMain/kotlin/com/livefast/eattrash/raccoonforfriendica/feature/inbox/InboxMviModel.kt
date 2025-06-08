@@ -13,27 +13,17 @@ interface InboxMviModel :
 
         data object LoadNextPage : Intent
 
-        data class Follow(
-            val userId: String,
-        ) : Intent
+        data class Follow(val userId: String) : Intent
 
-        data class Unfollow(
-            val userId: String,
-        ) : Intent
+        data class Unfollow(val userId: String) : Intent
 
-        data class ChangeSelectedNotificationTypes(
-            val types: List<NotificationType>,
-        ) : Intent
+        data class ChangeSelectedNotificationTypes(val types: List<NotificationType>) : Intent
 
         data object DismissAll : Intent
 
-        data class MarkAsRead(
-            val notification: NotificationModel,
-        ) : Intent
+        data class MarkAsRead(val notification: NotificationModel) : Intent
 
-        data class Dismiss(
-            val notification: NotificationModel,
-        ) : Intent
+        data class Dismiss(val notification: NotificationModel) : Intent
     }
 
     data class State(

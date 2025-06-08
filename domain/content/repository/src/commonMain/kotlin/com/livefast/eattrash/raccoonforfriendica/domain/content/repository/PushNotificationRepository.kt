@@ -12,10 +12,7 @@ interface PushNotificationRepository {
         policy: NotificationPolicy,
     ): String?
 
-    suspend fun update(
-        types: List<NotificationType>,
-        policy: NotificationPolicy,
-    ): String?
+    suspend fun update(types: List<NotificationType>, policy: NotificationPolicy): String?
 
     suspend fun delete(): Boolean
 }

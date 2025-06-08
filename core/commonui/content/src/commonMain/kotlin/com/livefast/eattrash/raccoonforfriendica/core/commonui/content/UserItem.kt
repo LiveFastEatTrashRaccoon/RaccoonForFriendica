@@ -50,8 +50,8 @@ fun UserItem(
     withSubtitle: Boolean = true,
     options: List<Option> = emptyList(),
     onClick: (() -> Unit)? = null,
-    onRelationshipClicked: ((RelationshipStatusNextAction) -> Unit)? = null,
-    onOptionSelected: ((OptionId) -> Unit)? = null,
+    onRelationshipClick: ((RelationshipStatusNextAction) -> Unit)? = null,
+    onSelectOption: ((OptionId) -> Unit)? = null,
 ) {
     val avatar = user.avatar.orEmpty()
     val avatarSize = IconSize.l
@@ -63,22 +63,22 @@ fun UserItem(
 
     Row(
         modifier =
-            modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    onClick?.invoke()
-                }.padding(Spacing.s),
+        modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                onClick?.invoke()
+            }.padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (avatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
-                    Modifier
-                        .size(avatarSize)
-                        .clip(RoundedCornerShape(avatarSize / 2)),
+                Modifier
+                    .size(avatarSize)
+                    .clip(RoundedCornerShape(avatarSize / 2)),
                 url = avatar,
                 quality = FilterQuality.Low,
                 contentScale = ContentScale.FillBounds,
@@ -121,16 +121,16 @@ fun UserItem(
                 status = relationshipStatus,
                 pending = user.relationshipStatusPending,
                 locked = user.locked,
-                onClick = onRelationshipClicked,
+                onClick = onRelationshipClick,
             )
         }
         if (options.isNotEmpty()) {
             Box {
                 IconButton(
                     modifier =
-                        Modifier.onGloballyPositioned {
-                            optionsOffset = it.positionInParent()
-                        },
+                    Modifier.onGloballyPositioned {
+                        optionsOffset = it.positionInParent()
+                    },
                     onClick = {
                         optionsMenuOpen = true
                     },
@@ -149,12 +149,12 @@ fun UserItem(
                         optionsMenuOpen = false
                     },
                     offset =
-                        with(LocalDensity.current) {
-                            DpOffset(
-                                x = optionsOffset.x.toDp(),
-                                y = optionsOffset.y.toDp(),
-                            )
-                        },
+                    with(LocalDensity.current) {
+                        DpOffset(
+                            x = optionsOffset.x.toDp(),
+                            y = optionsOffset.y.toDp(),
+                        )
+                    },
                 ) {
                     options.forEach { option ->
                         DropdownMenuItem(
@@ -163,7 +163,7 @@ fun UserItem(
                             },
                             onClick = {
                                 optionsMenuOpen = false
-                                onOptionSelected?.invoke(option.id)
+                                onSelectOption?.invoke(option.id)
                             },
                         )
                     }

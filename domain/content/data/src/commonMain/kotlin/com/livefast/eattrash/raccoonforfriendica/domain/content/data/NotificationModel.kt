@@ -61,6 +61,7 @@ val NotificationModel.blurHashParamsForPreload: List<BlurHashParams>
                 }
         }
 
-fun NotificationModel.hasLaterIdThan(referenceId: String?): Boolean = (id.toIntOrNull() ?: 0) > (referenceId?.toIntOrNull() ?: 0)
+fun NotificationModel.hasLaterIdThan(referenceId: String?): Boolean =
+    (id.toIntOrNull() ?: 0) > (referenceId?.toIntOrNull() ?: 0)
 
 fun NotificationModel.hasPriorIdThen(referenceId: String?): Boolean = !hasLaterIdThan(referenceId)

@@ -96,10 +96,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
-class EntryDetailScreen(
-    private val id: String,
-    private val swipeNavigationEnabled: Boolean,
-) : Screen {
+class EntryDetailScreen(private val id: String, private val swipeNavigationEnabled: Boolean) : Screen {
     override val key: ScreenKey
         get() = super.key + id
 
@@ -109,10 +106,10 @@ class EntryDetailScreen(
         val model: EntryDetailMviModel =
             rememberScreenModel(
                 arg =
-                    EntryDetailMviModelParams(
-                        id = id,
-                        swipeNavigationEnabled = swipeNavigationEnabled,
-                    ),
+                EntryDetailMviModelParams(
+                    id = id,
+                    swipeNavigationEnabled = swipeNavigationEnabled,
+                ),
             )
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
@@ -174,15 +171,15 @@ class EntryDetailScreen(
                     title = {
                         Text(
                             text =
-                                buildString {
-                                    append(LocalStrings.current.postTitle)
-                                    uiState.mainEntry?.creator?.username?.also { username ->
-                                        append(" ")
-                                        append(LocalStrings.current.postBy)
-                                        append(" ")
-                                        append(username)
-                                    }
-                                },
+                            buildString {
+                                append(LocalStrings.current.postTitle)
+                                uiState.mainEntry?.creator?.username?.also { username ->
+                                    append(" ")
+                                    append(LocalStrings.current.postBy)
+                                    append(" ")
+                                    append(username)
+                                }
+                            },
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.titleMedium,
@@ -209,13 +206,13 @@ class EntryDetailScreen(
                     AnimatedVisibility(
                         visible = isFabVisible,
                         enter =
-                            slideInVertically(
-                                initialOffsetY = { it * 2 },
-                            ),
+                        slideInVertically(
+                            initialOffsetY = { it * 2 },
+                        ),
                         exit =
-                            slideOutVertically(
-                                targetOffsetY = { it * 2 },
-                            ),
+                        slideOutVertically(
+                            targetOffsetY = { it * 2 },
+                        ),
                     ) {
                         FloatingActionButton(
                             onClick = {
@@ -269,9 +266,9 @@ class EntryDetailScreen(
                 }
                 HorizontalPager(
                     modifier =
-                        Modifier
-                            .padding(padding)
-                            .fillMaxSize(),
+                    Modifier
+                        .padding(padding)
+                        .fillMaxSize(),
                     state = pagerState,
                     beyondViewportPageCount = 1,
                 ) { index ->
@@ -280,14 +277,14 @@ class EntryDetailScreen(
 
                     PullToRefreshBox(
                         modifier =
-                            Modifier
-                                .then(
-                                    if (uiState.hideNavigationBarWhileScrolling) {
-                                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                                    } else {
-                                        Modifier
-                                    },
-                                ).nestedScroll(fabNestedScrollConnection),
+                        Modifier
+                            .then(
+                                if (uiState.hideNavigationBarWhileScrolling) {
+                                    Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                                } else {
+                                    Modifier
+                                },
+                            ).nestedScroll(fabNestedScrollConnection),
                         isRefreshing = uiState.refreshing,
                         onRefresh = {
                             model.reduce(EntryDetailMviModel.Intent.Refresh)
@@ -338,21 +335,24 @@ class EntryDetailScreen(
                                         this += OptionId.ViewDetails.toOption()
                                         this += OptionId.CopyToClipboard.toOption()
                                         val currentLang = uiState.lang.orEmpty()
-                                        if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
+                                        if (currentLang.isNotEmpty() &&
+                                            entry.lang != currentLang &&
+                                            !entry.isShowingTranslation
+                                        ) {
                                             this +=
                                                 Option(
                                                     id = OptionId.Translate,
                                                     label =
-                                                        buildString {
-                                                            append(
-                                                                LocalStrings.current.actionTranslateTo(
-                                                                    currentLang,
-                                                                ),
-                                                            )
-                                                            append(" (")
-                                                            append(LocalStrings.current.experimental)
-                                                            append(")")
-                                                        },
+                                                    buildString {
+                                                        append(
+                                                            LocalStrings.current.actionTranslateTo(
+                                                                currentLang,
+                                                            ),
+                                                        )
+                                                        append(" (")
+                                                        append(LocalStrings.current.experimental)
+                                                        append(")")
+                                                    },
                                                 )
                                         }
                                         val nodeName = entry.nodeName
@@ -461,29 +461,29 @@ class EntryDetailScreen(
                                     if (entry.parentId.isNullOrEmpty()) {
                                         TimelineItem(
                                             modifier =
-                                                Modifier.then(
-                                                    if (uiState.layout == TimelineLayout.Card) {
-                                                        Modifier
-                                                            // since the main entry is forced to "full", recreates card appearance
-                                                            .padding(horizontal = Spacing.xs)
-                                                            .padding(bottom = Spacing.xs)
-                                                            .shadow(
-                                                                elevation = 5.dp,
-                                                                shape = RoundedCornerShape(CornerSize.l),
-                                                            ).background(
-                                                                color =
-                                                                    MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                                                        5.dp,
-                                                                    ),
-                                                                shape = RoundedCornerShape(CornerSize.l),
-                                                            ).padding(
-                                                                vertical = Spacing.xs,
-                                                                horizontal = Spacing.xxxs,
-                                                            )
-                                                    } else {
-                                                        Modifier
-                                                    },
-                                                ),
+                                            Modifier.then(
+                                                if (uiState.layout == TimelineLayout.Card) {
+                                                    Modifier
+                                                        // since the main entry is forced to "full", recreates card appearance
+                                                        .padding(horizontal = Spacing.xs)
+                                                        .padding(bottom = Spacing.xs)
+                                                        .shadow(
+                                                            elevation = 5.dp,
+                                                            shape = RoundedCornerShape(CornerSize.l),
+                                                        ).background(
+                                                            color =
+                                                            MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                                                5.dp,
+                                                            ),
+                                                            shape = RoundedCornerShape(CornerSize.l),
+                                                        ).padding(
+                                                            vertical = Spacing.xs,
+                                                            horizontal = Spacing.xxxs,
+                                                        )
+                                                } else {
+                                                    Modifier
+                                                },
+                                            ),
                                             entry = entry,
                                             reshareAndReplyVisible = false,
                                             followedHashtagsVisible = false,
@@ -517,47 +517,47 @@ class EntryDetailScreen(
                                                 )
                                             },
                                             onReblog =
-                                                { e: TimelineEntryModel ->
-                                                    val timeSinceCreation =
-                                                        e.created?.run {
-                                                            getDurationFromDateToNow(this)
-                                                        } ?: Duration.ZERO
-                                                    when {
-                                                        !e.reblogged && timeSinceCreation.isOldEntry ->
-                                                            confirmReblogEntry = e
+                                            { e: TimelineEntryModel ->
+                                                val timeSinceCreation =
+                                                    e.created?.run {
+                                                        getDurationFromDateToNow(this)
+                                                    } ?: Duration.ZERO
+                                                when {
+                                                    !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                        confirmReblogEntry = e
 
-                                                        else ->
-                                                            model.reduce(
-                                                                EntryDetailMviModel.Intent.ToggleReblog(
-                                                                    e,
-                                                                ),
-                                                            )
-                                                    }
-                                                }.takeIf { actionRepository.canReblog(entry.original) },
+                                                    else ->
+                                                        model.reduce(
+                                                            EntryDetailMviModel.Intent.ToggleReblog(
+                                                                e,
+                                                            ),
+                                                        )
+                                                }
+                                            }.takeIf { actionRepository.canReblog(entry.original) },
                                             onBookmark =
-                                                { e: TimelineEntryModel ->
-                                                    model.reduce(
-                                                        EntryDetailMviModel.Intent.ToggleBookmark(
-                                                            e,
-                                                        ),
-                                                    )
-                                                }.takeIf { actionRepository.canBookmark(entry.original) },
+                                            { e: TimelineEntryModel ->
+                                                model.reduce(
+                                                    EntryDetailMviModel.Intent.ToggleBookmark(
+                                                        e,
+                                                    ),
+                                                )
+                                            }.takeIf { actionRepository.canBookmark(entry.original) },
                                             onFavorite =
-                                                { e: TimelineEntryModel ->
-                                                    model.reduce(
-                                                        EntryDetailMviModel.Intent.ToggleFavorite(
-                                                            e,
-                                                        ),
-                                                    )
-                                                }.takeIf { actionRepository.canFavorite(entry.original) },
+                                            { e: TimelineEntryModel ->
+                                                model.reduce(
+                                                    EntryDetailMviModel.Intent.ToggleFavorite(
+                                                        e,
+                                                    ),
+                                                )
+                                            }.takeIf { actionRepository.canFavorite(entry.original) },
                                             onDislike =
-                                                { e: TimelineEntryModel ->
-                                                    model.reduce(
-                                                        EntryDetailMviModel.Intent.ToggleDislike(
-                                                            e,
-                                                        ),
-                                                    )
-                                                }.takeIf { actionRepository.canDislike(entry.original) },
+                                            { e: TimelineEntryModel ->
+                                                model.reduce(
+                                                    EntryDetailMviModel.Intent.ToggleDislike(
+                                                        e,
+                                                    ),
+                                                )
+                                            }.takeIf { actionRepository.canDislike(entry.original) },
                                             onOpenUsersFavorite = { e ->
                                                 detailOpener.openEntryUsersFavorite(
                                                     entryId = e.id,
@@ -571,23 +571,23 @@ class EntryDetailScreen(
                                                 )
                                             },
                                             onReply =
-                                                { e: TimelineEntryModel ->
-                                                    detailOpener.openComposer(
-                                                        inReplyTo = e,
-                                                        inReplyToUser = e.creator,
-                                                    )
-                                                }.takeIf { actionRepository.canReply(entry.original) },
+                                            { e: TimelineEntryModel ->
+                                                detailOpener.openComposer(
+                                                    inReplyTo = e,
+                                                    inReplyToUser = e.creator,
+                                                )
+                                            }.takeIf { actionRepository.canReply(entry.original) },
                                             onPollVote =
-                                                uiState.currentUserId?.let {
-                                                    { e, choices ->
-                                                        model.reduce(
-                                                            EntryDetailMviModel.Intent.SubmitPollVote(
-                                                                entry = e,
-                                                                choices = choices,
-                                                            ),
-                                                        )
-                                                    }
-                                                },
+                                            uiState.currentUserId?.let {
+                                                { e, choices ->
+                                                    model.reduce(
+                                                        EntryDetailMviModel.Intent.SubmitPollVote(
+                                                            entry = e,
+                                                            choices = choices,
+                                                        ),
+                                                    )
+                                                }
+                                            },
                                             onShowOriginal = {
                                                 model.reduce(
                                                     EntryDetailMviModel.Intent.ToggleTranslation(
@@ -596,24 +596,24 @@ class EntryDetailScreen(
                                                 )
                                             },
                                             options = options,
-                                            onOptionSelected = ::onOptionSelected,
+                                            onSelectOption = ::onOptionSelected,
                                         )
                                     }
                                 } else {
                                     TimelineReplyItem(
                                         modifier =
-                                            Modifier.then(
-                                                if (isMainEntry) {
-                                                    Modifier.background(
-                                                        color =
-                                                            MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                                                1.dp,
-                                                            ),
-                                                    )
-                                                } else {
-                                                    Modifier
-                                                },
-                                            ),
+                                        Modifier.then(
+                                            if (isMainEntry) {
+                                                Modifier.background(
+                                                    color =
+                                                    MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                                        1.dp,
+                                                    ),
+                                                )
+                                            } else {
+                                                Modifier
+                                            },
+                                        ),
                                         entry = entry,
                                         extendedSocialInfoEnabled = isMainEntry,
                                         layout = uiState.layout,
@@ -645,33 +645,33 @@ class EntryDetailScreen(
                                             )
                                         },
                                         onReblog =
-                                            { e: TimelineEntryModel ->
-                                                val timeSinceCreation =
-                                                    e.created?.run {
-                                                        getDurationFromDateToNow(this)
-                                                    } ?: Duration.ZERO
-                                                when {
-                                                    !e.reblogged && timeSinceCreation.isOldEntry ->
-                                                        confirmReblogEntry = e
+                                        { e: TimelineEntryModel ->
+                                            val timeSinceCreation =
+                                                e.created?.run {
+                                                    getDurationFromDateToNow(this)
+                                                } ?: Duration.ZERO
+                                            when {
+                                                !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                    confirmReblogEntry = e
 
-                                                    else ->
-                                                        model.reduce(
-                                                            EntryDetailMviModel.Intent.ToggleReblog(e),
-                                                        )
-                                                }
-                                            }.takeIf { actionRepository.canReblog(entry.original) },
+                                                else ->
+                                                    model.reduce(
+                                                        EntryDetailMviModel.Intent.ToggleReblog(e),
+                                                    )
+                                            }
+                                        }.takeIf { actionRepository.canReblog(entry.original) },
                                         onBookmark =
-                                            { e: TimelineEntryModel ->
-                                                model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e))
-                                            }.takeIf { actionRepository.canBookmark(entry.original) },
+                                        { e: TimelineEntryModel ->
+                                            model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e))
+                                        }.takeIf { actionRepository.canBookmark(entry.original) },
                                         onFavorite =
-                                            { e: TimelineEntryModel ->
-                                                model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
-                                            }.takeIf { actionRepository.canFavorite(entry.original) },
+                                        { e: TimelineEntryModel ->
+                                            model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
+                                        }.takeIf { actionRepository.canFavorite(entry.original) },
                                         onDislike =
-                                            { e: TimelineEntryModel ->
-                                                model.reduce(EntryDetailMviModel.Intent.ToggleDislike(e))
-                                            }.takeIf { actionRepository.canDislike(entry.original) },
+                                        { e: TimelineEntryModel ->
+                                            model.reduce(EntryDetailMviModel.Intent.ToggleDislike(e))
+                                        }.takeIf { actionRepository.canDislike(entry.original) },
                                         onOpenUsersFavorite = { e ->
                                             detailOpener.openEntryUsersFavorite(
                                                 entryId = e.id,
@@ -685,30 +685,30 @@ class EntryDetailScreen(
                                             )
                                         },
                                         onReply =
-                                            { e: TimelineEntryModel ->
-                                                detailOpener.openComposer(
-                                                    inReplyTo = e,
-                                                    inReplyToUser = e.creator,
-                                                )
-                                            }.takeIf { actionRepository.canReply(entry.original) },
+                                        { e: TimelineEntryModel ->
+                                            detailOpener.openComposer(
+                                                inReplyTo = e,
+                                                inReplyToUser = e.creator,
+                                            )
+                                        }.takeIf { actionRepository.canReply(entry.original) },
                                         onPollVote =
-                                            uiState.currentUserId?.let {
-                                                { e, choices ->
-                                                    model.reduce(
-                                                        EntryDetailMviModel.Intent.SubmitPollVote(
-                                                            entry = e,
-                                                            choices = choices,
-                                                        ),
-                                                    )
-                                                }
-                                            },
+                                        uiState.currentUserId?.let {
+                                            { e, choices ->
+                                                model.reduce(
+                                                    EntryDetailMviModel.Intent.SubmitPollVote(
+                                                        entry = e,
+                                                        choices = choices,
+                                                    ),
+                                                )
+                                            }
+                                        },
                                         onShowOriginal = {
                                             model.reduce(
                                                 EntryDetailMviModel.Intent.ToggleTranslation(entry.original),
                                             )
                                         },
                                         options = options,
-                                        onOptionSelected = ::onOptionSelected,
+                                        onSelectOption = ::onOptionSelected,
                                     )
 
                                     // load more button
@@ -728,9 +728,9 @@ class EntryDetailScreen(
                                             ) {
                                                 Row(
                                                     horizontalArrangement =
-                                                        Arrangement.spacedBy(
-                                                            Spacing.s,
-                                                        ),
+                                                    Arrangement.spacedBy(
+                                                        Spacing.s,
+                                                    ),
                                                     verticalAlignment = Alignment.CenterVertically,
                                                 ) {
                                                     if (entry.loadMoreButtonLoading) {
@@ -741,16 +741,16 @@ class EntryDetailScreen(
                                                     }
                                                     Text(
                                                         text =
-                                                            buildString {
-                                                                append(LocalStrings.current.buttonLoadMoreReplies)
-                                                                entry.replyCount
-                                                                    .takeIf { it > 0 }
-                                                                    ?.also { count ->
-                                                                        append(" (")
-                                                                        append(count)
-                                                                        append(")")
-                                                                    }
-                                                            },
+                                                        buildString {
+                                                            append(LocalStrings.current.buttonLoadMoreReplies)
+                                                            entry.replyCount
+                                                                .takeIf { it > 0 }
+                                                                ?.also { count ->
+                                                                    append(" (")
+                                                                    append(count)
+                                                                    append(")")
+                                                                }
+                                                        },
                                                         maxLines = 1,
                                                         overflow = TextOverflow.Ellipsis,
                                                     )
@@ -770,13 +770,13 @@ class EntryDetailScreen(
                                 items(placeholderCount) { idx ->
                                     TimelineItemPlaceholder(
                                         modifier =
-                                            Modifier.fillMaxWidth().then(
-                                                if (idx == 0) {
-                                                    Modifier.padding(top = Spacing.s)
-                                                } else {
-                                                    Modifier
-                                                },
-                                            ),
+                                        Modifier.fillMaxWidth().then(
+                                            if (idx == 0) {
+                                                Modifier.padding(top = Spacing.s)
+                                            } else {
+                                                Modifier
+                                            },
+                                        ),
                                     )
                                     if (idx < placeholderCount - 1) {
                                         TimelineDivider(layout = uiState.layout)
@@ -835,13 +835,13 @@ class EntryDetailScreen(
             val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
             CustomConfirmDialog(
                 title =
-                    buildString {
-                        append(LocalStrings.current.actionBlock)
-                        val handle = creator?.handle ?: ""
-                        if (handle.isNotEmpty()) {
-                            append(" @$handle")
-                        }
-                    },
+                buildString {
+                    append(LocalStrings.current.actionBlock)
+                    val handle = creator?.handle ?: ""
+                    if (handle.isNotEmpty()) {
+                        append(" @$handle")
+                    }
+                },
                 onClose = { confirm ->
                     val entryId = confirmBlockEntry?.id
                     val creatorId = creator?.id

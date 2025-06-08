@@ -12,10 +12,7 @@ import io.ktor.utils.io.InternalAPI
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.fail
 
-internal fun <T> mockResponse(
-    statusCode: HttpStatusCode = HttpStatusCode.OK,
-    res: T? = null,
-): Response<T> {
+internal fun <T> mockResponse(statusCode: HttpStatusCode = HttpStatusCode.OK, res: T? = null): Response<T> {
     val rawResponse =
         object : HttpResponse() {
             override val call: HttpClientCall

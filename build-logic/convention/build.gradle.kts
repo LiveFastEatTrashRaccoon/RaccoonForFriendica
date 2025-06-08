@@ -12,9 +12,10 @@ repositories {
 
 dependencies {
     compileOnly(libs.gradle)
-    compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)
+    compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
+    compileOnly(libs.spotless.gradlePlugin)
     implementation(libs.kotlinpoet)
 }
 
@@ -43,6 +44,11 @@ gradlePlugin {
         register("serializationPlugin") {
             id = "com.livefast.eattrash.serialization"
             implementationClass = "plugins.SerializationPlugin"
+        }
+
+        register("spotlessPlugin") {
+            id = "com.livefast.eattrash.spotless"
+            implementationClass = "plugins.SpotlessPlugin"
         }
 
         register("testPlugin") {

@@ -46,15 +46,9 @@ interface TimelineEntryRepository {
 
     suspend fun getBookmarks(pageCursor: String? = null): List<TimelineEntryModel>?
 
-    suspend fun getUsersWhoFavorited(
-        id: String,
-        pageCursor: String? = null,
-    ): List<UserModel>?
+    suspend fun getUsersWhoFavorited(id: String, pageCursor: String? = null): List<UserModel>?
 
-    suspend fun getUsersWhoReblogged(
-        id: String,
-        pageCursor: String? = null,
-    ): List<UserModel>?
+    suspend fun getUsersWhoReblogged(id: String, pageCursor: String? = null): List<UserModel>?
 
     suspend fun create(
         localId: String,
@@ -89,10 +83,7 @@ interface TimelineEntryRepository {
 
     suspend fun delete(id: String): Boolean
 
-    suspend fun submitPoll(
-        pollId: String,
-        choices: List<Int>,
-    ): PollModel?
+    suspend fun submitPoll(pollId: String, choices: List<Int>): PollModel?
 
     suspend fun dislike(id: String): Boolean
 

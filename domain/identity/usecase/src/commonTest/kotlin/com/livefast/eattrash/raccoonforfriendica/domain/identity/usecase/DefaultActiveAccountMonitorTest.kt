@@ -70,61 +70,59 @@ class DefaultActiveAccountMonitorTest {
         )
 
     @Test
-    fun `given no active account when started then interactions are as expected`() =
-        runTest {
-            val account: AccountModel? = null
-            val accountChannel = Channel<AccountModel?>()
-            every { accountRepository.getActiveAsFlow() } returns accountChannel.receiveAsFlow()
-            everySuspend { accountRepository.getBy(handle = any()) } returns AccountModel(id = 1)
-            everySuspend { accountRepository.getActive() } returns account
-            val settings = SettingsModel()
-            everySuspend { settingsRepository.get(any()) } returns settings
+    fun `given no active account when started then interactions are as expected`() = runTest {
+        val account: AccountModel? = null
+        val accountChannel = Channel<AccountModel?>()
+        every { accountRepository.getActiveAsFlow() } returns accountChannel.receiveAsFlow()
+        everySuspend { accountRepository.getBy(handle = any()) } returns AccountModel(id = 1)
+        everySuspend { accountRepository.getActive() } returns account
+        val settings = SettingsModel()
+        everySuspend { settingsRepository.get(any()) } returns settings
 
-            sut.start()
-            accountChannel.send(account)
+        sut.start()
+        accountChannel.send(account)
 
-            verifySuspend {
-                apiConfigurationRepository.setAuth(null)
-                supportedFeatureRepository.refresh()
-                identityRepository.refreshCurrentUser(null)
-                supportedFeatureRepository.refresh()
-                contentPreloadManager.preload()
-                accountRepository.getBy(handle = "")
-                settingsRepository.get(accountId = 1)
-                settingsRepository.changeCurrent(settings)
-                notificationCoordinator.setupAnonymousUser()
-                announcementsManager.clearUnreadCount()
-                followedHashtagCache.clear()
-            }
+        verifySuspend {
+            apiConfigurationRepository.setAuth(null)
+            supportedFeatureRepository.refresh()
+            identityRepository.refreshCurrentUser(null)
+            supportedFeatureRepository.refresh()
+            contentPreloadManager.preload()
+            accountRepository.getBy(handle = "")
+            settingsRepository.get(accountId = 1)
+            settingsRepository.changeCurrent(settings)
+            notificationCoordinator.setupAnonymousUser()
+            announcementsManager.clearUnreadCount()
+            followedHashtagCache.clear()
         }
+    }
 
     @Test
-    fun `given active account and valid credentials when started then interactions are as expected`() =
-        runTest {
-            val accountId = 1L
-            val userId = "fake-user-id"
-            val account =
-                AccountModel(id = accountId, handle = "user@example.com", remoteId = userId)
-            val accountChannel = Channel<AccountModel?>()
-            every { accountRepository.getActiveAsFlow() } returns accountChannel.receiveAsFlow()
-            everySuspend { accountRepository.getActive() } returns account
-            val credentials = ApiCredentials.OAuth2("fake-access-token", "")
-            every { accountCredentialsCache.get(any()) } returns credentials
-            val settings = SettingsModel()
-            everySuspend { settingsRepository.get(any()) } returns settings
+    fun `given active account and valid credentials when started then interactions are as expected`() = runTest {
+        val accountId = 1L
+        val userId = "fake-user-id"
+        val account =
+            AccountModel(id = accountId, handle = "user@example.com", remoteId = userId)
+        val accountChannel = Channel<AccountModel?>()
+        every { accountRepository.getActiveAsFlow() } returns accountChannel.receiveAsFlow()
+        everySuspend { accountRepository.getActive() } returns account
+        val credentials = ApiCredentials.OAuth2("fake-access-token", "")
+        every { accountCredentialsCache.get(any()) } returns credentials
+        val settings = SettingsModel()
+        everySuspend { settingsRepository.get(any()) } returns settings
 
-            sut.start()
-            accountChannel.send(account)
+        sut.start()
+        accountChannel.send(account)
 
-            verifySuspend {
-                apiConfigurationRepository.setAuth(credentials)
-                supportedFeatureRepository.refresh()
-                identityRepository.refreshCurrentUser(userId)
-                contentPreloadManager.preload(userId)
-                settingsRepository.changeCurrent(settings)
-                notificationCoordinator.setupLoggedUser()
-                announcementsManager.refreshUnreadCount()
-                followedHashtagCache.refresh()
-            }
+        verifySuspend {
+            apiConfigurationRepository.setAuth(credentials)
+            supportedFeatureRepository.refresh()
+            identityRepository.refreshCurrentUser(userId)
+            contentPreloadManager.preload(userId)
+            settingsRepository.changeCurrent(settings)
+            notificationCoordinator.setupLoggedUser()
+            announcementsManager.refreshUnreadCount()
+            followedHashtagCache.refresh()
         }
+    }
 }

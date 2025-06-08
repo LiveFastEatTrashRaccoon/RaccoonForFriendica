@@ -5,11 +5,7 @@ import androidx.compose.ui.platform.UriHandler
 
 @Stable
 interface CustomUriHandler : UriHandler {
-    fun openUri(
-        uri: String,
-        allowOpenExternal: Boolean = true,
-        allowOpenInternal: Boolean = true,
-    )
+    fun openUri(uri: String, allowOpenExternal: Boolean = true, allowOpenInternal: Boolean = true)
 }
 
 fun UriHandler.openExternally(uri: String) {

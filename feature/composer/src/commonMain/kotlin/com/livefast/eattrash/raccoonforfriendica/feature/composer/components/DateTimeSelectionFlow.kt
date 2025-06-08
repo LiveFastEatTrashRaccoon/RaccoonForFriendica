@@ -25,10 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Ti
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun DateTimeSelectionFlow(
-    initialDateMillis: Long,
-    onClose: ((String?) -> Unit)? = null,
-) {
+internal fun DateTimeSelectionFlow(initialDateMillis: Long, onClose: ((String?) -> Unit)? = null) {
     var dateSelected by remember { mutableStateOf<Long?>(null) }
     var timePickerOpen by remember { mutableStateOf(false) }
     val datePickerState =
@@ -113,9 +110,9 @@ internal fun DateTimeSelectionFlow(
         ) {
             TimePicker(
                 modifier =
-                    Modifier
-                        .padding(top = Spacing.s)
-                        .fillMaxWidth(),
+                Modifier
+                    .padding(top = Spacing.s)
+                    .fillMaxWidth(),
                 state = timePickerState,
             )
         }

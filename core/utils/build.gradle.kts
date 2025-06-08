@@ -3,6 +3,7 @@ plugins {
     id("com.livefast.eattrash.composeMultiplatform")
     id("com.livefast.eattrash.sentryDsn")
     id("com.livefast.eattrash.test")
+    id("com.livefast.eattrash.spotless")
 }
 
 kotlin {
@@ -35,6 +36,16 @@ kotlin {
             dependencies {
                 implementation(libs.ktor.darwin)
             }
+        }
+    }
+}
+
+spotless {
+    kotlin {
+        target("**/FileSystemManager.kt", "**/GalleryHelper.kt")
+        suppressLintsFor {
+            step = "ktlint"
+            shortCode = "compose:naming-check"
         }
     }
 }

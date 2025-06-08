@@ -10,10 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.Draft
 @Dao
 interface DraftDao {
     @Query("SELECT * FROM DraftEntity LIMIT :limit OFFSET :offset")
-    suspend fun getAll(
-        offset: Int,
-        limit: Int,
-    ): List<DraftEntity>
+    suspend fun getAll(offset: Int, limit: Int): List<DraftEntity>
 
     @Insert
     suspend fun insert(item: DraftEntity)

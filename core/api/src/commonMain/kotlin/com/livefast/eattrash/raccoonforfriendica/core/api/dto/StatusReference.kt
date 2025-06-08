@@ -4,7 +4,4 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class StatusReference(
-    @SerialName("id") val id: String,
-    @SerialName("url") val url: String,
-)
+data class StatusReference(@SerialName("id") val id: String, @SerialName("url") val url: String)

@@ -41,23 +41,23 @@ internal fun CircleItem(
     modifier: Modifier = Modifier,
     options: List<Option> = emptyList(),
     onClick: (() -> Unit)? = null,
-    onOptionSelected: ((OptionId) -> Unit)? = null,
+    onSelectOption: ((OptionId) -> Unit)? = null,
 ) {
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
 
     Row(
         modifier =
-            modifier
-                .then(
-                    if (onClick != null) {
-                        Modifier.clickable {
-                            onClick()
-                        }
-                    } else {
-                        Modifier
-                    },
-                ).padding(Spacing.s),
+        modifier
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable {
+                        onClick()
+                    }
+                } else {
+                    Modifier
+                },
+            ).padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -80,9 +80,9 @@ internal fun CircleItem(
             Box {
                 IconButton(
                     modifier =
-                        Modifier.onGloballyPositioned {
-                            optionsOffset = it.positionInParent()
-                        },
+                    Modifier.onGloballyPositioned {
+                        optionsOffset = it.positionInParent()
+                    },
                     onClick = {
                         optionsMenuOpen = true
                     },
@@ -101,12 +101,12 @@ internal fun CircleItem(
                         optionsMenuOpen = false
                     },
                     offset =
-                        with(LocalDensity.current) {
-                            DpOffset(
-                                x = optionsOffset.x.toDp(),
-                                y = optionsOffset.y.toDp(),
-                            )
-                        },
+                    with(LocalDensity.current) {
+                        DpOffset(
+                            x = optionsOffset.x.toDp(),
+                            y = optionsOffset.y.toDp(),
+                        )
+                    },
                 ) {
                     options.forEach { option ->
                         DropdownMenuItem(
@@ -115,7 +115,7 @@ internal fun CircleItem(
                             },
                             onClick = {
                                 optionsMenuOpen = false
-                                onOptionSelected?.invoke(option.id)
+                                onSelectOption?.invoke(option.id)
                             },
                         )
                     }

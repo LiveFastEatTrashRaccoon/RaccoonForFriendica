@@ -41,8 +41,8 @@ class InboxViewModel(
     private val pullNotificationManager: PullNotificationManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>(
-        initialState = InboxMviModel.State(),
-    ),
+    initialState = InboxMviModel.State(),
+),
     InboxMviModel {
     init {
         screenModelScope.launch {
@@ -61,7 +61,7 @@ class InboxViewModel(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -106,10 +106,7 @@ class InboxViewModel(
         }
     }
 
-    private suspend fun refresh(
-        initial: Boolean = false,
-        forceRefresh: Boolean = false,
-    ) {
+    private suspend fun refresh(initial: Boolean = false, forceRefresh: Boolean = false) {
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
@@ -172,40 +169,34 @@ class InboxViewModel(
         }
     }
 
-    private suspend fun updateUserInState(
-        userId: String,
-        block: (UserModel) -> UserModel,
-    ) {
+    private suspend fun updateUserInState(userId: String, block: (UserModel) -> UserModel) {
         updateState {
             it.copy(
                 notifications =
-                    it.notifications.map { notification ->
-                        if (notification.user?.id == userId) {
-                            notification.copy(
-                                user = notification.user?.let(block),
-                            )
-                        } else {
-                            notification
-                        }
-                    },
+                it.notifications.map { notification ->
+                    if (notification.user?.id == userId) {
+                        notification.copy(
+                            user = notification.user?.let(block),
+                        )
+                    } else {
+                        notification
+                    }
+                },
             )
         }
     }
 
-    private suspend fun updateItemInState(
-        id: String,
-        block: (NotificationModel) -> NotificationModel,
-    ) {
+    private suspend fun updateItemInState(id: String, block: (NotificationModel) -> NotificationModel) {
         updateState {
             it.copy(
                 notifications =
-                    it.notifications.map { notification ->
-                        if (notification.id == id) {
-                            notification.let(block)
-                        } else {
-                            notification
-                        }
-                    },
+                it.notifications.map { notification ->
+                    if (notification.id == id) {
+                        notification.let(block)
+                    } else {
+                        notification
+                    }
+                },
             )
         }
     }

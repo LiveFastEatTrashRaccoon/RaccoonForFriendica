@@ -49,6 +49,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 @Composable
 fun InsertEmojiBottomSheet(
     emojis: List<EmojiModel>,
+    modifier: Modifier = Modifier,
     withInsertCustom: Boolean = false,
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     onInsert: ((EmojiModel) -> Unit)? = null,
@@ -59,6 +60,7 @@ fun InsertEmojiBottomSheet(
     val categories = groupedEmojis.keys.sorted()
 
     ModalBottomSheet(
+        modifier = modifier,
         contentWindowInsets = { WindowInsets.navigationBars },
         sheetState = sheetState,
         onDismissRequest = {
@@ -82,10 +84,10 @@ fun InsertEmojiBottomSheet(
                 var customValue by remember { mutableStateOf("") }
                 OutlinedTextField(
                     modifier =
-                        Modifier.fillMaxWidth().padding(
-                            horizontal = Spacing.s,
-                            vertical = Spacing.s,
-                        ),
+                    Modifier.fillMaxWidth().padding(
+                        horizontal = Spacing.s,
+                        vertical = Spacing.s,
+                    ),
                     value = customValue,
                     onValueChange = {
                         customValue = it
@@ -108,9 +110,9 @@ fun InsertEmojiBottomSheet(
 
             LazyVerticalStaggeredGrid(
                 modifier =
-                    Modifier
-                        .heightIn(max = 400.dp)
-                        .padding(bottom = Spacing.s),
+                Modifier
+                    .heightIn(max = 400.dp)
+                    .padding(bottom = Spacing.s),
                 columns = StaggeredGridCells.Fixed(count = 6),
             ) {
                 for (category in categories) {
@@ -125,18 +127,18 @@ fun InsertEmojiBottomSheet(
                     items(groupEmojis) { emoji ->
                         Box(
                             modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(CornerSize.l))
-                                    .clickable {
-                                        onInsert?.invoke(emoji)
-                                    },
+                            Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(CornerSize.l))
+                                .clickable {
+                                    onInsert?.invoke(emoji)
+                                },
                         ) {
                             CustomImage(
                                 modifier =
-                                    Modifier
-                                        .padding(Spacing.m)
-                                        .widthIn(min = IconSize.m),
+                                Modifier
+                                    .padding(Spacing.m)
+                                    .widthIn(min = IconSize.m),
                                 url = emoji.url,
                                 contentScale = ContentScale.FillWidth,
                             )

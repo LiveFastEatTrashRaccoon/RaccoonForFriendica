@@ -15,21 +15,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
-internal class DefaultMediaRepository(
-    private val provider: ServiceProvider,
-) : MediaRepository {
-    override suspend fun getBy(id: String): AttachmentModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                provider.media.getBy(id)?.toModel()
-            }.getOrNull()
-        }
+internal class DefaultMediaRepository(private val provider: ServiceProvider) : MediaRepository {
+    override suspend fun getBy(id: String): AttachmentModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            provider.media.getBy(id)?.toModel()
+        }.getOrNull()
+    }
 
-    override suspend fun create(
-        bytes: ByteArray,
-        album: String,
-        alt: String,
-    ): AttachmentModel? =
+    override suspend fun create(bytes: ByteArray, album: String, alt: String): AttachmentModel? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val content =
@@ -39,10 +32,10 @@ internal class DefaultMediaRepository(
                                 key = "file",
                                 value = bytes,
                                 headers =
-                                    Headers.build {
-                                        append(HttpHeaders.ContentType, "image/*")
-                                        append(HttpHeaders.ContentDisposition, "filename=image.jpeg")
-                                    },
+                                Headers.build {
+                                    append(HttpHeaders.ContentType, "image/*")
+                                    append(HttpHeaders.ContentDisposition, "filename=image.jpeg")
+                                },
                             )
                             append("description", alt)
                         },
@@ -65,28 +58,23 @@ internal class DefaultMediaRepository(
             }
         }.getOrNull()
 
-    override suspend fun update(
-        id: String,
-        alt: String,
-    ): Boolean =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val content =
-                    FormDataContent(
-                        parameters {
-                            append("description", alt)
-                        },
-                    )
-                provider.media.update(id = id, content = content)
-                true
-            }
-        }.getOrElse { false }
+    override suspend fun update(id: String, alt: String): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            val content =
+                FormDataContent(
+                    parameters {
+                        append("description", alt)
+                    },
+                )
+            provider.media.update(id = id, content = content)
+            true
+        }
+    }.getOrElse { false }
 
-    override suspend fun delete(id: String): Boolean =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val res = provider.media.delete(id = id)
-                res.isSuccessful
-            }
-        }.getOrElse { false }
+    override suspend fun delete(id: String): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            val res = provider.media.delete(id = id)
+            res.isSuccessful
+        }
+    }.getOrElse { false }
 }

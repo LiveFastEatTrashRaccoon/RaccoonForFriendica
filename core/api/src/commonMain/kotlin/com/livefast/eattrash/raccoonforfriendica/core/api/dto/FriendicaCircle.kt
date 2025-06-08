@@ -4,7 +4,4 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FriendicaCircle(
-    @SerialName("gid") val id: String,
-    @SerialName("name") val title: String = "",
-)
+data class FriendicaCircle(@SerialName("gid") val id: String, @SerialName("name") val title: String = "")

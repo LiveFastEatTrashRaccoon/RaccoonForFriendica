@@ -17,18 +17,17 @@ interface ColorSchemeProvider {
     ): ColorScheme
 }
 
-internal fun ColorScheme.blackify(): ColorScheme =
-    copy(
-        background = md_theme_black_background,
-        onBackground = md_theme_black_onBackground,
-        surface = md_theme_black_surface,
-        onSurface = md_theme_black_onSurface,
-        surfaceVariant = md_theme_black_surfaceVariant,
-        onSurfaceVariant = md_theme_black_onSurfaceVariant,
-        primaryContainer = md_theme_black_primaryContainer,
-        onPrimaryContainer = md_theme_black_onPrimaryContainer,
-        secondaryContainer = md_theme_black_secondaryContainer,
-        onSecondaryContainer = md_theme_black_onSecondaryContainer,
-        tertiaryContainer = md_theme_black_tertiaryContainer,
-        onTertiaryContainer = md_theme_black_onTertiaryContainer,
-    )
+internal fun ColorScheme.blackify(): ColorScheme = copy(
+    background = md_theme_black_background,
+    onBackground = md_theme_black_onBackground,
+    surface = md_theme_black_surface,
+    onSurface = md_theme_black_onSurface,
+    surfaceVariant = md_theme_black_surfaceVariant,
+    onSurfaceVariant = md_theme_black_onSurfaceVariant,
+    primaryContainer = md_theme_black_primaryContainer,
+    onPrimaryContainer = md_theme_black_onPrimaryContainer,
+    secondaryContainer = md_theme_black_secondaryContainer,
+    onSecondaryContainer = md_theme_black_onSecondaryContainer,
+    tertiaryContainer = md_theme_black_tertiaryContainer,
+    onTertiaryContainer = md_theme_black_onTertiaryContainer,
+)

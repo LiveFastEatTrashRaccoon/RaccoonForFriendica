@@ -5,14 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 
 sealed interface CalendarItem {
-    data class Header(
-        val month: Int,
-        val year: Int,
-    ) : CalendarItem
+    data class Header(val month: Int, val year: Int) : CalendarItem
 
-    data class EventItem(
-        val event: EventModel,
-    ) : CalendarItem
+    data class EventItem(val event: EventModel) : CalendarItem
 }
 
 interface CalendarMviModel :

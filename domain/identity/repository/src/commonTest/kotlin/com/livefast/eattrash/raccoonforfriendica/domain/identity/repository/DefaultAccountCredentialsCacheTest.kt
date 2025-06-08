@@ -100,8 +100,5 @@ class DefaultAccountCredentialsCacheTest {
         }
     }
 
-    private fun getKey(
-        accountId: Long,
-        key: String,
-    ) = "AccountCredentialsRepository.$accountId.$key"
+    private fun getKey(accountId: Long, key: String) = "AccountCredentialsRepository.$accountId.$key"
 }

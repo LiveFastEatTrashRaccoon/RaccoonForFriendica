@@ -111,12 +111,12 @@ class UserListScreen(
         val model: UserListMviModel =
             rememberScreenModel(
                 arg =
-                    UserListMviModelParams(
-                        type.toUserListType(),
-                        userId.orEmpty(),
-                        entryId.orEmpty(),
+                UserListMviModelParams(
+                    type.toUserListType(),
+                    userId.orEmpty(),
+                    entryId.orEmpty(),
+                ),
             )
-        )
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -168,51 +168,51 @@ class UserListScreen(
                     title = {
                         Text(
                             text =
-                                buildString {
-                                    when (type.toUserListType()) {
-                                        is UserListType.Follower -> {
-                                            append(LocalStrings.current.followerTitle)
-                                            val handle = uiState.user?.handle.orEmpty()
-                                            if (handle.isNotEmpty()) {
-                                                append(" (")
-                                                append(uiState.user?.handle.orEmpty())
-                                                append(")")
-                                            }
-                                        }
-
-                                        is UserListType.Following -> {
-                                            append(LocalStrings.current.followingTitle)
-                                            val handle = uiState.user?.handle.orEmpty()
-                                            if (handle.isNotEmpty()) {
-                                                append(" (")
-                                                append(handle)
-                                                append(")")
-                                            }
-                                        }
-
-                                        is UserListType.UsersFavorite -> {
-                                            val count = infoCount ?: 0
-                                            if (count > 0) {
-                                                append(
-                                                    LocalStrings.current.extendedSocialInfoFavorites(
-                                                        count,
-                                                    ),
-                                                )
-                                            }
-                                        }
-
-                                        is UserListType.UsersReblog -> {
-                                            val count = infoCount ?: 0
-                                            if (count > 0) {
-                                                append(
-                                                    LocalStrings.current.extendedSocialInfoReblogs(
-                                                        count,
-                                                    ),
-                                                )
-                                            }
+                            buildString {
+                                when (type.toUserListType()) {
+                                    is UserListType.Follower -> {
+                                        append(LocalStrings.current.followerTitle)
+                                        val handle = uiState.user?.handle.orEmpty()
+                                        if (handle.isNotEmpty()) {
+                                            append(" (")
+                                            append(uiState.user?.handle.orEmpty())
+                                            append(")")
                                         }
                                     }
-                                },
+
+                                    is UserListType.Following -> {
+                                        append(LocalStrings.current.followingTitle)
+                                        val handle = uiState.user?.handle.orEmpty()
+                                        if (handle.isNotEmpty()) {
+                                            append(" (")
+                                            append(handle)
+                                            append(")")
+                                        }
+                                    }
+
+                                    is UserListType.UsersFavorite -> {
+                                        val count = infoCount ?: 0
+                                        if (count > 0) {
+                                            append(
+                                                LocalStrings.current.extendedSocialInfoFavorites(
+                                                    count,
+                                                ),
+                                            )
+                                        }
+                                    }
+
+                                    is UserListType.UsersReblog -> {
+                                        val count = infoCount ?: 0
+                                        if (count > 0) {
+                                            append(
+                                                LocalStrings.current.extendedSocialInfoReblogs(
+                                                    count,
+                                                ),
+                                            )
+                                        }
+                                    }
+                                }
+                            },
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.titleMedium,
@@ -248,9 +248,9 @@ class UserListScreen(
                                 var optionsMenuOpen by remember { mutableStateOf(false) }
                                 IconButton(
                                     modifier =
-                                        Modifier.onGloballyPositioned {
-                                            optionsOffset = it.positionInParent()
-                                        },
+                                    Modifier.onGloballyPositioned {
+                                        optionsOffset = it.positionInParent()
+                                    },
                                     onClick = {
                                         optionsMenuOpen = true
                                     },
@@ -267,12 +267,12 @@ class UserListScreen(
                                         optionsMenuOpen = false
                                     },
                                     offset =
-                                        with(LocalDensity.current) {
-                                            DpOffset(
-                                                x = optionsOffset.x.toDp(),
-                                                y = optionsOffset.y.toDp(),
-                                            )
-                                        },
+                                    with(LocalDensity.current) {
+                                        DpOffset(
+                                            x = optionsOffset.x.toDp(),
+                                            y = optionsOffset.y.toDp(),
+                                        )
+                                    },
                                 ) {
                                     for (option in options) {
                                         DropdownMenuItem(
@@ -311,16 +311,16 @@ class UserListScreen(
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(UserListMviModel.Intent.Refresh)
@@ -357,7 +357,7 @@ class UserListScreen(
                             onClick = {
                                 detailOpener.openUserDetail(user)
                             },
-                            onRelationshipClicked = { nextAction ->
+                            onRelationshipClick = { nextAction ->
                                 when (nextAction) {
                                     RelationshipStatusNextAction.AcceptRequest -> {
                                         detailOpener.openFollowRequests()

@@ -23,34 +23,34 @@ fun UserNoteField(
     note: String,
     modifier: Modifier = Modifier,
     editEnabled: Boolean = false,
-    onNoteChanged: ((String) -> Unit)? = null,
+    onChangeNote: ((String) -> Unit)? = null,
     onSave: (() -> Unit)? = null,
 ) {
     Box(modifier = modifier) {
         OutlinedTextField(
             colors =
-                OutlinedTextFieldDefaults.colors(
-                    disabledBorderColor = MaterialTheme.colorScheme.onBackground,
-                    disabledTextColor = MaterialTheme.colorScheme.onBackground,
-                    disabledLabelColor = MaterialTheme.colorScheme.onBackground,
-                ),
-            modifier = modifier.fillMaxWidth(),
+            OutlinedTextFieldDefaults.colors(
+                disabledBorderColor = MaterialTheme.colorScheme.onBackground,
+                disabledTextColor = MaterialTheme.colorScheme.onBackground,
+                disabledLabelColor = MaterialTheme.colorScheme.onBackground,
+            ),
+            modifier = Modifier.fillMaxWidth(),
             value = note,
             onValueChange = {
-                onNoteChanged?.invoke(it)
+                onChangeNote?.invoke(it)
             },
             enabled = editEnabled,
             keyboardOptions =
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done,
-                ),
+            KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done,
+            ),
             keyboardActions =
-                KeyboardActions(
-                    onDone = {
-                        onSave?.invoke()
-                    },
-                ),
+            KeyboardActions(
+                onDone = {
+                    onSave?.invoke()
+                },
+            ),
             label = { Text(text = LocalStrings.current.userFieldPersonalNote) },
             textStyle = MaterialTheme.typography.bodySmall,
             trailingIcon = {

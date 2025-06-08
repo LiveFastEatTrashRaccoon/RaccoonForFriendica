@@ -10,17 +10,11 @@ interface LegacyLoginMviModel :
     ScreenModel,
     MviModel<LegacyLoginMviModel.Intent, LegacyLoginMviModel.State, LegacyLoginMviModel.Effect> {
     sealed interface Intent {
-        data class SetNodeName(
-            val name: String,
-        ) : Intent
+        data class SetNodeName(val name: String) : Intent
 
-        data class SetUsername(
-            val username: String,
-        ) : Intent
+        data class SetUsername(val username: String) : Intent
 
-        data class SetPassword(
-            val password: String,
-        ) : Intent
+        data class SetPassword(val password: String) : Intent
 
         data object Submit : Intent
     }
@@ -38,8 +32,6 @@ interface LegacyLoginMviModel :
     sealed interface Effect {
         data object Success : Effect
 
-        data class Failure(
-            val message: String? = null,
-        ) : Effect
+        data class Failure(val message: String? = null) : Effect
     }
 }

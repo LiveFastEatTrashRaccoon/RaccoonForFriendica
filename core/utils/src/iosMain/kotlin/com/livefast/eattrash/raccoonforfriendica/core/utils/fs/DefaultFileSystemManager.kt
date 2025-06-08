@@ -8,20 +8,12 @@ internal class DefaultFileSystemManager : FileSystemManager {
     override val isSupported = false
 
     @Composable
-    override fun readFromFile(
-        mimeTypes: Array<String>,
-        callback: (String?) -> Unit,
-    ) {
+    override fun readFromFile(mimeTypes: Array<String>, callback: (String?) -> Unit) {
         callback(null)
     }
 
     @Composable
-    override fun writeToFile(
-        mimeType: String,
-        name: String,
-        data: String,
-        callback: (Boolean) -> Unit,
-    ) {
+    override fun writeToFile(mimeType: String, name: String, data: String, callback: (Boolean) -> Unit) {
         callback(false)
     }
 

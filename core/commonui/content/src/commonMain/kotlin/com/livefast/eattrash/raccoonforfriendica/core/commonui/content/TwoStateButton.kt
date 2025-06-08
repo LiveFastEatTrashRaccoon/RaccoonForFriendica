@@ -22,8 +22,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 @Composable
 fun TwoStateButton(
     label: String,
-    prominentLabel: String = label,
     modifier: Modifier = Modifier,
+    prominentLabel: String = label,
     isProminent: Boolean = false,
     pending: Boolean = false,
     prominentColor: Color = ButtonDefaults.buttonColors().contentColor,
@@ -39,20 +39,20 @@ fun TwoStateButton(
                 CircularProgressIndicator(
                     modifier = Modifier.size(IconSize.s),
                     color =
-                        if (isProminent) {
-                            MaterialTheme.colorScheme.onPrimary
-                        } else {
-                            MaterialTheme.colorScheme.onBackground
-                        },
+                    if (isProminent) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground
+                    },
                 )
             }
             Text(
                 text =
-                    if (isProminent) {
-                        prominentLabel
-                    } else {
-                        label
-                    },
+                if (isProminent) {
+                    prominentLabel
+                } else {
+                    label
+                },
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )

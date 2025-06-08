@@ -15,13 +15,9 @@ interface UnpublishedMviModel :
 
         data object LoadNextPage : Intent
 
-        data class ChangeSection(
-            val section: UnpublishedType,
-        ) : Intent
+        data class ChangeSection(val section: UnpublishedType) : Intent
 
-        data class DeleteEntry(
-            val entryId: String,
-        ) : Intent
+        data class DeleteEntry(val entryId: String) : Intent
     }
 
     data class State(

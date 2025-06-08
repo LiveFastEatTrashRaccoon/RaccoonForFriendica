@@ -53,7 +53,7 @@ fun TimelineReplyItem(
     onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
-    onOptionSelected: ((OptionId) -> Unit)? = null,
+    onSelectOption: ((OptionId) -> Unit)? = null,
     onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
     onShowOriginal: (() -> Unit)? = null,
 ) {
@@ -128,97 +128,97 @@ fun TimelineReplyItem(
 
     Box(
         modifier =
-            modifier
-                .then(
-                    if (onClick != null) {
-                        Modifier.clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                        ) {
-                            onClick(entryToDisplay)
-                        }
-                    } else {
-                        Modifier
-                    },
-                ).semantics(mergeDescendants = true) {
-                    val helperActions: MutableList<CustomAccessibilityAction> = mutableListOf()
-                    if (actionsEnabled) {
-                        if (onReply != null) {
-                            helperActions +=
-                                CustomAccessibilityAction(
-                                    label = replyActionLabel,
-                                    action = {
-                                        onReply(entryToDisplay)
-                                        true
-                                    },
-                                )
-                        }
-                        if (onReblog != null) {
-                            helperActions +=
-                                CustomAccessibilityAction(
-                                    label = reblogActionLabel,
-                                    action = {
-                                        onReblog(entryToDisplay)
-                                        true
-                                    },
-                                )
-                        }
-                        if (onFavorite != null) {
-                            helperActions +=
-                                CustomAccessibilityAction(
-                                    label = favoriteActionLabel,
-                                    action = {
-                                        onFavorite(entryToDisplay)
-                                        true
-                                    },
-                                )
-                        }
-                        if (onDislike != null) {
-                            helperActions +=
-                                CustomAccessibilityAction(
-                                    label = dislikeActionLabel,
-                                    action = {
-                                        onDislike(entryToDisplay)
-                                        true
-                                    },
-                                )
-                        }
-                        if (onBookmark != null) {
-                            helperActions +=
-                                CustomAccessibilityAction(
-                                    label = bookmarkActionLabel,
-                                    action = {
-                                        onBookmark(entryToDisplay)
-                                        true
-                                    },
-                                )
-                        }
+        modifier
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) {
+                        onClick(entryToDisplay)
                     }
-                    if (onOpenUser != null) {
-                        helperActions +=
-                            CustomAccessibilityAction(
-                                label = userActionLabel,
-                                action = {
-                                    entryToDisplay.creator?.let { onOpenUser(it) }
-                                    true
-                                },
-                            )
-                    }
-                    if (options.isNotEmpty()) {
-                        helperActions +=
-                            CustomAccessibilityAction(
-                                label = optionsActionLabel,
-                                action = {
-                                    optionsMenuOpen = true
-                                    true
-                                },
-                            )
-                    }
-
-                    if (helperActions.isNotEmpty()) {
-                        customActions = helperActions
-                    }
+                } else {
+                    Modifier
                 },
+            ).semantics(mergeDescendants = true) {
+                val helperActions: MutableList<CustomAccessibilityAction> = mutableListOf()
+                if (actionsEnabled) {
+                    if (onReply != null) {
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = replyActionLabel,
+                                action = {
+                                    onReply(entryToDisplay)
+                                    true
+                                },
+                            )
+                    }
+                    if (onReblog != null) {
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = reblogActionLabel,
+                                action = {
+                                    onReblog(entryToDisplay)
+                                    true
+                                },
+                            )
+                    }
+                    if (onFavorite != null) {
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = favoriteActionLabel,
+                                action = {
+                                    onFavorite(entryToDisplay)
+                                    true
+                                },
+                            )
+                    }
+                    if (onDislike != null) {
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = dislikeActionLabel,
+                                action = {
+                                    onDislike(entryToDisplay)
+                                    true
+                                },
+                            )
+                    }
+                    if (onBookmark != null) {
+                        helperActions +=
+                            CustomAccessibilityAction(
+                                label = bookmarkActionLabel,
+                                action = {
+                                    onBookmark(entryToDisplay)
+                                    true
+                                },
+                            )
+                    }
+                }
+                if (onOpenUser != null) {
+                    helperActions +=
+                        CustomAccessibilityAction(
+                            label = userActionLabel,
+                            action = {
+                                entryToDisplay.creator?.let { onOpenUser(it) }
+                                true
+                            },
+                        )
+                }
+                if (options.isNotEmpty()) {
+                    helperActions +=
+                        CustomAccessibilityAction(
+                            label = optionsActionLabel,
+                            action = {
+                                optionsMenuOpen = true
+                                true
+                            },
+                        )
+                }
+
+                if (helperActions.isNotEmpty()) {
+                    customActions = helperActions
+                }
+            },
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -227,13 +227,13 @@ fun TimelineReplyItem(
             // comment bar
             Box(
                 modifier =
-                    Modifier
-                        .padding(start = indentAmount)
-                        .size(width = barWidth, height = barHeight)
-                        .background(
-                            color = barColor,
-                            shape = RoundedCornerShape(barWidth / 2),
-                        ),
+                Modifier
+                    .padding(start = indentAmount)
+                    .size(width = barWidth, height = barHeight)
+                    .background(
+                        color = barColor,
+                        shape = RoundedCornerShape(barWidth / 2),
+                    ),
             )
 
             // comment content
@@ -268,8 +268,8 @@ fun TimelineReplyItem(
                         onOpenUser = onOpenUser,
                         onOpenUsersFavorite = onOpenUsersFavorite,
                         onOpenUsersReblog = onOpenUsersReblog,
-                        onOptionSelected = onOptionSelected,
-                        onOptionsMenuToggled = {
+                        onSelectOption = onSelectOption,
+                        onToggleOptionsMenu = {
                             optionsMenuOpen = it
                         },
                         onPollVote = onPollVote,
@@ -295,8 +295,8 @@ fun TimelineReplyItem(
                         onOpenUser = onOpenUser,
                         onOpenUsersFavorite = onOpenUsersFavorite,
                         onOpenUsersReblog = onOpenUsersReblog,
-                        onOptionSelected = onOptionSelected,
-                        onOptionsMenuToggled = {
+                        onSelectOption = onSelectOption,
+                        onToggleOptionsMenu = {
                             optionsMenuOpen = it
                         },
                         onPollVote = onPollVote,
@@ -324,8 +324,8 @@ fun TimelineReplyItem(
                         onOpenUser = onOpenUser,
                         onOpenUsersFavorite = onOpenUsersFavorite,
                         onOpenUsersReblog = onOpenUsersReblog,
-                        onOptionSelected = onOptionSelected,
-                        onOptionsMenuToggled = {
+                        onSelectOption = onSelectOption,
+                        onToggleOptionsMenu = {
                             optionsMenuOpen = it
                         },
                         onPollVote = onPollVote,

@@ -45,214 +45,208 @@ class DefaultNotificationsPaginationManagerTest {
         )
 
     @Test
-    fun `given no results when loadNextPage then result is as expected`() =
-        runTest {
-            everySuspend {
-                notificationRepository.getAll(
-                    types = any(),
-                    pageCursor = any(),
-                    refresh = any(),
-                )
-            } returns emptyList()
-
-            sut.reset(
-                NotificationsPaginationSpecification.Default(
-                    types = NotificationType.ALL,
-                    includeNsfw = false,
-                ),
+    fun `given no results when loadNextPage then result is as expected`() = runTest {
+        everySuspend {
+            notificationRepository.getAll(
+                types = any(),
+                pageCursor = any(),
+                refresh = any(),
             )
-            val res = sut.loadNextPage()
+        } returns emptyList()
 
-            assertTrue(res.isEmpty())
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                notificationRepository.getAll(
-                    types = NotificationType.ALL,
-                    pageCursor = null,
-                    refresh = false,
-                )
-            }
+        sut.reset(
+            NotificationsPaginationSpecification.Default(
+                types = NotificationType.ALL,
+                includeNsfw = false,
+            ),
+        )
+        val res = sut.loadNextPage()
+
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            notificationRepository.getAll(
+                types = NotificationType.ALL,
+                pageCursor = null,
+                refresh = false,
+            )
         }
+    }
 
     @Test
-    fun `given results when loadNextPage then result is as expected`() =
-        runTest {
-            val elements = listOf(NotificationModel(id = "1"))
-            everySuspend {
-                notificationRepository.getAll(
-                    types = any(),
-                    pageCursor = any(),
-                    refresh = any(),
-                )
-            } returns elements
-
-            sut.reset(
-                NotificationsPaginationSpecification.Default(
-                    types = NotificationType.ALL,
-                    includeNsfw = false,
-                ),
+    fun `given results when loadNextPage then result is as expected`() = runTest {
+        val elements = listOf(NotificationModel(id = "1"))
+        everySuspend {
+            notificationRepository.getAll(
+                types = any(),
+                pageCursor = any(),
+                refresh = any(),
             )
-            val res = sut.loadNextPage()
+        } returns elements
 
-            assertEquals(elements, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                notificationRepository.getAll(
-                    types = NotificationType.ALL,
-                    pageCursor = null,
-                    refresh = false,
-                )
-            }
+        sut.reset(
+            NotificationsPaginationSpecification.Default(
+                types = NotificationType.ALL,
+                includeNsfw = false,
+            ),
+        )
+        val res = sut.loadNextPage()
+
+        assertEquals(elements, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            notificationRepository.getAll(
+                types = NotificationType.ALL,
+                pageCursor = null,
+                refresh = false,
+            )
         }
+    }
 
     @Test
-    fun `given results when loadNextPage with refresh then result is as expected`() =
-        runTest {
-            val elements = listOf(NotificationModel(id = "1"))
-            everySuspend {
-                notificationRepository.getAll(
-                    types = any(),
-                    pageCursor = any(),
-                    refresh = any(),
-                )
-            } returns elements
-
-            sut.reset(
-                NotificationsPaginationSpecification.Default(
-                    types = NotificationType.ALL,
-                    includeNsfw = false,
-                    refresh = true,
-                ),
+    fun `given results when loadNextPage with refresh then result is as expected`() = runTest {
+        val elements = listOf(NotificationModel(id = "1"))
+        everySuspend {
+            notificationRepository.getAll(
+                types = any(),
+                pageCursor = any(),
+                refresh = any(),
             )
-            val res = sut.loadNextPage()
+        } returns elements
 
-            assertEquals(elements, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                notificationRepository.getAll(
-                    types = NotificationType.ALL,
-                    pageCursor = null,
-                    refresh = true,
-                )
-            }
+        sut.reset(
+            NotificationsPaginationSpecification.Default(
+                types = NotificationType.ALL,
+                includeNsfw = false,
+                refresh = true,
+            ),
+        )
+        val res = sut.loadNextPage()
+
+        assertEquals(elements, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            notificationRepository.getAll(
+                types = NotificationType.ALL,
+                pageCursor = null,
+                refresh = true,
+            )
         }
+    }
 
     @Test
-    fun `given sensitive results when loadNextPage without includeNsfw then result is as expected`() =
-        runTest {
-            val elements =
-                listOf(
-                    NotificationModel(id = "1"),
-                    NotificationModel(
-                        id = "2",
-                        entry = TimelineEntryModel(id = "3", content = "", sensitive = true),
-                    ),
-                )
-            everySuspend {
-                notificationRepository.getAll(
-                    types = any(),
-                    pageCursor = any(),
-                    refresh = any(),
-                )
-            } returns elements
-
-            sut.reset(
-                NotificationsPaginationSpecification.Default(
-                    types = NotificationType.ALL,
-                    includeNsfw = false,
-                    refresh = true,
+    fun `given sensitive results when loadNextPage without includeNsfw then result is as expected`() = runTest {
+        val elements =
+            listOf(
+                NotificationModel(id = "1"),
+                NotificationModel(
+                    id = "2",
+                    entry = TimelineEntryModel(id = "3", content = "", sensitive = true),
                 ),
             )
-            val res = sut.loadNextPage()
+        everySuspend {
+            notificationRepository.getAll(
+                types = any(),
+                pageCursor = any(),
+                refresh = any(),
+            )
+        } returns elements
 
-            assertEquals(elements.subList(0, 1), res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                notificationRepository.getAll(
-                    types = NotificationType.ALL,
-                    pageCursor = null,
-                    refresh = true,
-                )
-            }
+        sut.reset(
+            NotificationsPaginationSpecification.Default(
+                types = NotificationType.ALL,
+                includeNsfw = false,
+                refresh = true,
+            ),
+        )
+        val res = sut.loadNextPage()
+
+        assertEquals(elements.subList(0, 1), res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            notificationRepository.getAll(
+                types = NotificationType.ALL,
+                pageCursor = null,
+                refresh = true,
+            )
         }
+    }
 
     @Test
-    fun `given sensitive results when loadNextPage then result is as expected`() =
-        runTest {
-            val elements =
-                listOf(
-                    NotificationModel(id = "1"),
-                    NotificationModel(
-                        id = "2",
-                        entry = TimelineEntryModel(id = "3", content = "", sensitive = true),
-                    ),
-                )
-            everySuspend {
-                notificationRepository.getAll(
-                    types = any(),
-                    pageCursor = any(),
-                    refresh = any(),
-                )
-            } returns elements
-
-            sut.reset(
-                NotificationsPaginationSpecification.Default(
-                    types = NotificationType.ALL,
-                    includeNsfw = true,
-                    refresh = true,
+    fun `given sensitive results when loadNextPage then result is as expected`() = runTest {
+        val elements =
+            listOf(
+                NotificationModel(id = "1"),
+                NotificationModel(
+                    id = "2",
+                    entry = TimelineEntryModel(id = "3", content = "", sensitive = true),
                 ),
             )
-            val res = sut.loadNextPage()
+        everySuspend {
+            notificationRepository.getAll(
+                types = any(),
+                pageCursor = any(),
+                refresh = any(),
+            )
+        } returns elements
 
-            assertEquals(elements, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                notificationRepository.getAll(
-                    types = NotificationType.ALL,
-                    pageCursor = null,
-                    refresh = true,
-                )
-            }
+        sut.reset(
+            NotificationsPaginationSpecification.Default(
+                types = NotificationType.ALL,
+                includeNsfw = true,
+                refresh = true,
+            ),
+        )
+        val res = sut.loadNextPage()
+
+        assertEquals(elements, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            notificationRepository.getAll(
+                types = NotificationType.ALL,
+                pageCursor = null,
+                refresh = true,
+            )
         }
+    }
 
     @Test
-    fun `given can not fetch more when loadNextPage twice then result is as expected`() =
-        runTest {
-            val elements = listOf(NotificationModel(id = "1"))
-            everySuspend {
-                notificationRepository.getAll(
-                    types = any(),
-                    pageCursor = any(),
-                    refresh = any(),
-                )
-            } sequentiallyReturns
-                listOf(
-                    elements,
-                    emptyList(),
-                )
-
-            sut.reset(
-                NotificationsPaginationSpecification.Default(
-                    types = NotificationType.ALL,
-                    includeNsfw = false,
-                ),
+    fun `given can not fetch more when loadNextPage twice then result is as expected`() = runTest {
+        val elements = listOf(NotificationModel(id = "1"))
+        everySuspend {
+            notificationRepository.getAll(
+                types = any(),
+                pageCursor = any(),
+                refresh = any(),
             )
-            sut.loadNextPage()
-            val res = sut.loadNextPage()
+        } sequentiallyReturns
+            listOf(
+                elements,
+                emptyList(),
+            )
 
-            assertEquals(elements, res)
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                notificationRepository.getAll(
-                    types = NotificationType.ALL,
-                    pageCursor = null,
-                    refresh = false,
-                )
-                notificationRepository.getAll(
-                    types = NotificationType.ALL,
-                    pageCursor = "1",
-                    refresh = false,
-                )
-            }
+        sut.reset(
+            NotificationsPaginationSpecification.Default(
+                types = NotificationType.ALL,
+                includeNsfw = false,
+            ),
+        )
+        sut.loadNextPage()
+        val res = sut.loadNextPage()
+
+        assertEquals(elements, res)
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            notificationRepository.getAll(
+                types = NotificationType.ALL,
+                pageCursor = null,
+                refresh = false,
+            )
+            notificationRepository.getAll(
+                types = NotificationType.ALL,
+                pageCursor = "1",
+                refresh = false,
+            )
         }
+    }
 }

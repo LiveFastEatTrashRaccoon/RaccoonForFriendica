@@ -18,12 +18,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 
 @Composable
 fun SectionSelector(
+    currentSection: Int,
+    onSelectSection: (Int) -> Unit,
     modifier: Modifier = Modifier,
     draggable: Boolean = true,
     scrollable: Boolean = false,
     titles: List<String> = emptyList(),
-    currentSection: Int,
-    onSectionSelected: (Int) -> Unit,
 ) {
     var isTowardsStart by remember { mutableStateOf(false) }
     val draggableState =
@@ -39,9 +39,9 @@ fun SectionSelector(
                 orientation = Orientation.Horizontal,
                 onDragStopped = {
                     if (isTowardsStart) {
-                        onSectionSelected((currentSection - 1).coerceAtLeast(0))
+                        onSelectSection((currentSection - 1).coerceAtLeast(0))
                     } else {
-                        onSectionSelected(
+                        onSelectSection(
                             (currentSection + 1).coerceAtMost(
                                 titles.lastIndex,
                             ),
@@ -71,7 +71,7 @@ fun SectionSelector(
                             )
                         },
                         onClick = {
-                            onSectionSelected(i)
+                            onSelectSection(i)
                         },
                     )
                 }
@@ -95,7 +95,7 @@ fun SectionSelector(
                             )
                         },
                         onClick = {
-                            onSectionSelected(i)
+                            onSelectSection(i)
                         },
                     )
                 }

@@ -10,16 +10,11 @@ import okio.Path
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 
-internal class DefaultFileSystemManager(
-    private val context: Context,
-) : FileSystemManager {
+internal class DefaultFileSystemManager(private val context: Context) : FileSystemManager {
     override val isSupported = true
 
     @Composable
-    override fun readFromFile(
-        mimeTypes: Array<String>,
-        callback: (String?) -> Unit,
-    ) {
+    override fun readFromFile(mimeTypes: Array<String>, callback: (String?) -> Unit) {
         val launcher =
             rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
                 if (uri != null) {
@@ -36,12 +31,7 @@ internal class DefaultFileSystemManager(
     }
 
     @Composable
-    override fun writeToFile(
-        mimeType: String,
-        name: String,
-        data: String,
-        callback: (Boolean) -> Unit,
-    ) {
+    override fun writeToFile(mimeType: String, name: String, data: String, callback: (Boolean) -> Unit) {
         val launcher =
             rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(mimeType)) { uri ->
                 if (uri != null) {

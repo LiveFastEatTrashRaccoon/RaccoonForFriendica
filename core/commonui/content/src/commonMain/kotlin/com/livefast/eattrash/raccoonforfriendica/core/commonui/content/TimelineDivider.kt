@@ -10,10 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLa
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 
 @Composable
-fun TimelineDivider(
-    modifier: Modifier = Modifier,
-    layout: TimelineLayout = TimelineLayout.Full,
-) {
+fun TimelineDivider(modifier: Modifier = Modifier, layout: TimelineLayout = TimelineLayout.Full) {
     when (layout) {
         TimelineLayout.Card ->
             Spacer(

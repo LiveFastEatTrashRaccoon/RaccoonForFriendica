@@ -8,9 +8,7 @@ interface LoginIntroMviModel :
     ScreenModel,
     MviModel<LoginIntroMviModel.Intent, LoginIntroMviModel.State, LoginIntroMviModel.Effect> {
     sealed interface Intent {
-        data class StartOauth2Flow(
-            val type: LoginType,
-        ) : Intent
+        data class StartOauth2Flow(val type: LoginType) : Intent
 
         data object StartLegacyFlow : Intent
     }

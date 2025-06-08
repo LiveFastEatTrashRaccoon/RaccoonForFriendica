@@ -23,31 +23,27 @@ import com.livefast.eattrash.raccoonforfriendica.feat.licences.models.LicenceIte
 import com.livefast.eattrash.raccoonforfriendica.feat.licences.models.toIcon
 
 @Composable
-internal fun LicenceItem(
-    item: LicenceItem,
-    modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null,
-) {
+internal fun LicenceItem(item: LicenceItem, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ancillaryTextAlpha)
 
     Row(
         modifier =
-            modifier
-                .clip(
-                    shape = RoundedCornerShape(CornerSize.xl),
-                ).then(
-                    if (onClick != null) {
-                        Modifier.clickable {
-                            onClick()
-                        }
-                    } else {
-                        Modifier
-                    },
-                ).padding(
-                    vertical = Spacing.xs,
-                    horizontal = Spacing.s,
-                ),
+        modifier
+            .clip(
+                shape = RoundedCornerShape(CornerSize.xl),
+            ).then(
+                if (onClick != null) {
+                    Modifier.clickable {
+                        onClick()
+                    }
+                } else {
+                    Modifier
+                },
+            ).padding(
+                vertical = Spacing.xs,
+                horizontal = Spacing.s,
+            ),
         horizontalArrangement = Arrangement.spacedBy(Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -56,10 +52,10 @@ internal fun LicenceItem(
                 modifier = Modifier.size(IconSize.m),
                 imageVector = type.toIcon(),
                 contentDescription =
-                    when (type) {
-                        LicenceItemType.Library -> "Library"
-                        LicenceItemType.Resource -> "Resource"
-                    },
+                when (type) {
+                    LicenceItemType.Library -> "Library"
+                    LicenceItemType.Resource -> "Resource"
+                },
                 tint = fullColor,
             )
         }

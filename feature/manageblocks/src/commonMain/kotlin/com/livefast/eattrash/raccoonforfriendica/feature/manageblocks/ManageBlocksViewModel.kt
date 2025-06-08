@@ -30,8 +30,8 @@ class ManageBlocksViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val stopWordRepository: StopWordRepository,
 ) : DefaultMviModel<ManageBlocksMviModel.Intent, ManageBlocksMviModel.State, ManageBlocksMviModel.Effect>(
-        initialState = ManageBlocksMviModel.State(),
-    ),
+    initialState = ManageBlocksMviModel.State(),
+),
     ManageBlocksMviModel {
     private var originalStopWords: List<String> = emptyList()
     private val mutex = Mutex()
@@ -52,7 +52,7 @@ class ManageBlocksViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -163,12 +163,12 @@ class ManageBlocksViewModel(
         updateState {
             it.copy(
                 items =
-                    it.items.filter { item ->
-                        when (item) {
-                            is ManageBlocksItem.User -> item.user.id != userId
-                            else -> false
-                        }
-                    },
+                it.items.filter { item ->
+                    when (item) {
+                        is ManageBlocksItem.User -> item.user.id != userId
+                        else -> false
+                    }
+                },
             )
         }
     }
@@ -191,10 +191,7 @@ class ManageBlocksViewModel(
         }
     }
 
-    private fun setRateLimit(
-        handle: String,
-        value: Double,
-    ) {
+    private fun setRateLimit(handle: String, value: Double) {
         screenModelScope.launch {
             val accountId = accountRepository.getActive()?.id ?: return@launch
             val currentRate = userRateLimitRepository.getBy(handle = handle, accountId = accountId)

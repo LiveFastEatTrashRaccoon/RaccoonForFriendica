@@ -18,20 +18,17 @@ interface AppIconManager {
 }
 
 @Composable
-fun AppIconVariant.toReadableName(): String =
-    when (this) {
-        AppIconVariant.Alt -> LocalStrings.current.appIconClassical
-        AppIconVariant.Default -> LocalStrings.current.appIconDefault
-    }
+fun AppIconVariant.toReadableName(): String = when (this) {
+    AppIconVariant.Alt -> LocalStrings.current.appIconClassical
+    AppIconVariant.Default -> LocalStrings.current.appIconDefault
+}
 
-fun AppIconVariant.toInt(): Int =
-    when (this) {
-        AppIconVariant.Alt -> 1
-        AppIconVariant.Default -> 0
-    }
+fun AppIconVariant.toInt(): Int = when (this) {
+    AppIconVariant.Alt -> 1
+    AppIconVariant.Default -> 0
+}
 
-fun Int.toAppIconVariant(): AppIconVariant =
-    when (this) {
-        1 -> AppIconVariant.Alt
-        else -> AppIconVariant.Default
-    }
+fun Int.toAppIconVariant(): AppIconVariant = when (this) {
+    1 -> AppIconVariant.Alt
+    else -> AppIconVariant.Default
+}

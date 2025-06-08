@@ -13,7 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,7 +41,7 @@ fun MessageItem(
 ) {
     val cornersSize = CornerSize.l
     val fillerSizeDp = Spacing.xxxl
-    var bubbleWidthPx by remember { mutableStateOf(0f) }
+    var bubbleWidthPx by remember { mutableFloatStateOf(0f) }
     val textColor =
         if (isMyMessage) {
             MaterialTheme.colorScheme.onSecondaryContainer
@@ -51,29 +51,29 @@ fun MessageItem(
 
     Box(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(
-                    top =
-                        if (isFirstOfSequence) {
-                            Spacing.xs
-                        } else {
-                            0.dp
-                        },
-                    start = 10.dp,
-                    end = 10.dp,
-                ),
+        modifier
+            .fillMaxWidth()
+            .padding(
+                top =
+                if (isFirstOfSequence) {
+                    Spacing.xs
+                } else {
+                    0.dp
+                },
+                start = 10.dp,
+                end = 10.dp,
+            ),
     ) {
         Box(
             modifier =
-                Modifier
-                    .then(
-                        if (isMyMessage) {
-                            Modifier.padding(start = fillerSizeDp)
-                        } else {
-                            Modifier.padding(end = fillerSizeDp)
-                        },
-                    ),
+            Modifier
+                .then(
+                    if (isMyMessage) {
+                        Modifier.padding(start = fillerSizeDp)
+                    } else {
+                        Modifier.padding(end = fillerSizeDp)
+                    },
+                ),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -83,42 +83,42 @@ fun MessageItem(
                 }
                 Box(
                     modifier =
-                        Modifier
-                            .background(
-                                color =
-                                    if (isMyMessage) {
-                                        MaterialTheme.colorScheme.secondaryContainer
-                                    } else {
-                                        MaterialTheme.colorScheme.primaryContainer
-                                    },
-                                shape =
-                                    RoundedCornerShape(
-                                        topStart = if (isFirstOfSequence || isMyMessage) cornersSize else 0.dp,
-                                        topEnd = if (isFirstOfSequence || !isMyMessage) cornersSize else 0.dp,
-                                        bottomStart = if (isLastOfSequence || isMyMessage) cornersSize else 0.dp,
-                                        bottomEnd = if (isLastOfSequence || !isMyMessage) cornersSize else 0.dp,
-                                    ),
-                            ).padding(
-                                vertical = Spacing.s,
-                                horizontal = 12.dp,
+                    Modifier
+                        .background(
+                            color =
+                            if (isMyMessage) {
+                                MaterialTheme.colorScheme.secondaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.primaryContainer
+                            },
+                            shape =
+                            RoundedCornerShape(
+                                topStart = if (isFirstOfSequence || isMyMessage) cornersSize else 0.dp,
+                                topEnd = if (isFirstOfSequence || !isMyMessage) cornersSize else 0.dp,
+                                bottomStart = if (isLastOfSequence || isMyMessage) cornersSize else 0.dp,
+                                bottomEnd = if (isLastOfSequence || !isMyMessage) cornersSize else 0.dp,
                             ),
+                        ).padding(
+                            vertical = Spacing.s,
+                            horizontal = 12.dp,
+                        ),
                 ) {
                     Column(
                         modifier =
-                            Modifier.onGloballyPositioned {
-                                bubbleWidthPx = it.size.toSize().width
-                            },
+                        Modifier.onGloballyPositioned {
+                            bubbleWidthPx = it.size.toSize().width
+                        },
                         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                     ) {
                         ContentBody(
                             modifier =
-                                Modifier.then(
-                                    if (isMyMessage) {
-                                        Modifier.align(Alignment.End)
-                                    } else {
-                                        Modifier
-                                    },
-                                ),
+                            Modifier.then(
+                                if (isMyMessage) {
+                                    Modifier.align(Alignment.End)
+                                } else {
+                                    Modifier
+                                },
+                            ),
                             content = message.text.orEmpty(),
                             color = textColor,
                         )
@@ -129,11 +129,11 @@ fun MessageItem(
                                 getFormattedDate(
                                     iso8601Timestamp = date,
                                     format =
-                                        if (isDayDifferent) {
-                                            "dd/MM/yy • HH:mm"
-                                        } else {
-                                            "HH:mm"
-                                        },
+                                    if (isDayDifferent) {
+                                        "dd/MM/yy • HH:mm"
+                                    } else {
+                                        "HH:mm"
+                                    },
                                 )
                             Text(
                                 modifier = Modifier.align(Alignment.End),

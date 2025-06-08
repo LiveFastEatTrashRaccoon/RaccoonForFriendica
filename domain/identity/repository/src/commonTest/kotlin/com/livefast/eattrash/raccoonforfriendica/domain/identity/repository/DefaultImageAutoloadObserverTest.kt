@@ -37,54 +37,49 @@ class DefaultImageAutoloadObserverTest {
         )
 
     @Test
-    fun `given always mode when initialized then result is as expected`() =
-        runTest {
-            sut.enabled.test {
-                val value = awaitItem()
-                assertTrue(value)
-            }
+    fun `given always mode when initialized then result is as expected`() = runTest {
+        sut.enabled.test {
+            val value = awaitItem()
+            assertTrue(value)
         }
+    }
 
     @Test
-    fun `given on demand mode when initialized then result is as expected`() =
-        runTest {
-            sut.enabled.drop(1).test {
-                settings.emit(SettingsModel(autoloadImages = ImageLoadingMode.OnDemand))
-                val value = awaitItem()
-                assertFalse(value)
-            }
+    fun `given on demand mode when initialized then result is as expected`() = runTest {
+        sut.enabled.drop(1).test {
+            settings.emit(SettingsModel(autoloadImages = ImageLoadingMode.OnDemand))
+            val value = awaitItem()
+            assertFalse(value)
         }
+    }
 
     @Test
-    fun `given on WiFi mode and disconnected when initialized then result is as expected`() =
-        runTest {
-            sut.enabled.drop(1).test {
-                settings.emit(SettingsModel(autoloadImages = ImageLoadingMode.OnWifi))
-                val value = awaitItem()
-                assertFalse(value)
-            }
+    fun `given on WiFi mode and disconnected when initialized then result is as expected`() = runTest {
+        sut.enabled.drop(1).test {
+            settings.emit(SettingsModel(autoloadImages = ImageLoadingMode.OnWifi))
+            val value = awaitItem()
+            assertFalse(value)
         }
+    }
 
     @Test
-    fun `given on WiFi mode and connected on metered network when initialized then result is as expected`() =
-        runTest {
-            sut.enabled.drop(1).test {
-                settings.emit(SettingsModel(autoloadImages = ImageLoadingMode.OnWifi))
-                networkState.emit(NetworkState.Connected(true))
-                val value = awaitItem()
-                assertFalse(value)
-            }
+    fun `given on WiFi mode and connected on metered network when initialized then result is as expected`() = runTest {
+        sut.enabled.drop(1).test {
+            settings.emit(SettingsModel(autoloadImages = ImageLoadingMode.OnWifi))
+            networkState.emit(NetworkState.Connected(true))
+            val value = awaitItem()
+            assertFalse(value)
         }
+    }
 
     @Test
-    fun `given on WiFi mode and connected when initialized then result is as expected`() =
-        runTest {
-            sut.enabled.drop(1).test {
-                settings.emit(SettingsModel(autoloadImages = ImageLoadingMode.OnWifi))
-                awaitItem()
-                networkState.emit(NetworkState.Connected(false))
-                val value = awaitItem()
-                assertTrue(value)
-            }
+    fun `given on WiFi mode and connected when initialized then result is as expected`() = runTest {
+        sut.enabled.drop(1).test {
+            settings.emit(SettingsModel(autoloadImages = ImageLoadingMode.OnWifi))
+            awaitItem()
+            networkState.emit(NetworkState.Connected(false))
+            val value = awaitItem()
+            assertTrue(value)
         }
+    }
 }

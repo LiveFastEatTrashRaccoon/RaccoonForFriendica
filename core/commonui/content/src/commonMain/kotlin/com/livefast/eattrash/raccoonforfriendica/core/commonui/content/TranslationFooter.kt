@@ -52,13 +52,13 @@ internal fun TranslationFooter(
                                         onShowOriginal()
                                     },
                                     styles =
-                                        TextLinkStyles(
-                                            style =
-                                                SpanStyle(
-                                                    color = MaterialTheme.colorScheme.primary,
-                                                    textDecoration = TextDecoration.Underline,
-                                                ),
+                                    TextLinkStyles(
+                                        style =
+                                        SpanStyle(
+                                            color = MaterialTheme.colorScheme.primary,
+                                            textDecoration = TextDecoration.Underline,
                                         ),
+                                    ),
                                 ),
                             ) {
                                 append(LocalStrings.current.actionShowOriginal)

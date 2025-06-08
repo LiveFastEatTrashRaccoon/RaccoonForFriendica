@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.mokkery).apply(false)
     alias(libs.plugins.room).apply(false)
     alias(libs.plugins.kotlinx.kover).apply(false)
+    alias(libs.plugins.spotless).apply(false)
 }
 
 tasks.register("clean", Delete::class) {

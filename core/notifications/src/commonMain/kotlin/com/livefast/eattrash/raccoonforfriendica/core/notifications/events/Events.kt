@@ -4,28 +4,16 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
-data class UserUpdatedEvent(
-    val user: UserModel,
-) : NotificationCenterEvent
+data class UserUpdatedEvent(val user: UserModel) : NotificationCenterEvent
 
-data class TimelineEntryCreatedEvent(
-    val entry: TimelineEntryModel,
-) : NotificationCenterEvent
+data class TimelineEntryCreatedEvent(val entry: TimelineEntryModel) : NotificationCenterEvent
 
-data class TimelineEntryUpdatedEvent(
-    val entry: TimelineEntryModel,
-) : NotificationCenterEvent
+data class TimelineEntryUpdatedEvent(val entry: TimelineEntryModel) : NotificationCenterEvent
 
-data class TimelineEntryDeletedEvent(
-    val id: String,
-) : NotificationCenterEvent
+data class TimelineEntryDeletedEvent(val id: String) : NotificationCenterEvent
 
-data class TagUpdatedEvent(
-    val tag: TagModel,
-) : NotificationCenterEvent
+data class TagUpdatedEvent(val tag: TagModel) : NotificationCenterEvent
 
 data object AlbumsUpdatedEvent : NotificationCenterEvent
 
-data class DraftDeletedEvent(
-    val id: String,
-) : NotificationCenterEvent
+data class DraftDeletedEvent(val id: String) : NotificationCenterEvent

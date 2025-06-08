@@ -8,9 +8,7 @@ interface MainMviModel :
     MviModel<MainMviModel.Intent, MainMviModel.UiState, MainMviModel.Effect>,
     ScreenModel {
     sealed interface Intent {
-        data class SetBottomBarOffsetHeightPx(
-            val value: Float,
-        ) : Intent
+        data class SetBottomBarOffsetHeightPx(val value: Float) : Intent
     }
 
     data class UiState(

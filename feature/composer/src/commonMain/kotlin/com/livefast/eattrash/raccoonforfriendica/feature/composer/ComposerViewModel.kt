@@ -87,8 +87,8 @@ class ComposerViewModel(
     private val bbCodeConverter: BBCodeConverter,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
-        initialState = ComposerMviModel.State(),
-    ),
+    initialState = ComposerMviModel.State(),
+),
     ComposerMviModel {
     private var uploadJobs = mutableMapOf<String, Job>()
     private var editedPostId: String? = null
@@ -130,32 +130,32 @@ class ComposerViewModel(
                             pollFeatureSupported = features.supportsPolls,
                             inlineImagesSupported = features.supportsInlineImages,
                             availableVisibilities =
-                                buildList {
-                                    this += Visibility.Public
-                                    if (features.supportsLocalVisibility) {
-                                        this += Visibility.LocalPublic
-                                    }
-                                    this += Visibility.Unlisted
-                                    if (features.supportsLocalVisibility) {
-                                        this += Visibility.LocalUnlisted
-                                    }
-                                    this += Visibility.Private
-                                    this += Visibility.Direct
-                                    if (features.supportsCustomCircles && circles.isNotEmpty()) {
-                                        this += Visibility.Circle()
-                                    }
-                                },
+                            buildList {
+                                this += Visibility.Public
+                                if (features.supportsLocalVisibility) {
+                                    this += Visibility.LocalPublic
+                                }
+                                this += Visibility.Unlisted
+                                if (features.supportsLocalVisibility) {
+                                    this += Visibility.LocalUnlisted
+                                }
+                                this += Visibility.Private
+                                this += Visibility.Direct
+                                if (features.supportsCustomCircles && circles.isNotEmpty()) {
+                                    this += Visibility.Circle()
+                                }
+                            },
                             availableMarkupModes =
-                                buildList {
-                                    this += MarkupMode.PlainText
-                                    if (features.supportsBBCode) {
-                                        this += MarkupMode.BBCode
-                                    }
-                                    this += MarkupMode.HTML
-                                    if (features.supportsMarkdown) {
-                                        this += MarkupMode.Markdown
-                                    }
-                                },
+                            buildList {
+                                this += MarkupMode.PlainText
+                                if (features.supportsBBCode) {
+                                    this += MarkupMode.BBCode
+                                }
+                                this += MarkupMode.HTML
+                                if (features.supportsMarkdown) {
+                                    this += MarkupMode.Markdown
+                                }
+                            },
                         )
                     }
                 }.launchIn(this)
@@ -407,14 +407,14 @@ class ComposerViewModel(
                     updateState {
                         it.copy(
                             poll =
-                                PollModel(
-                                    id = "",
-                                    options =
-                                        buildList {
-                                            this += PollOptionModel(title = "")
-                                            this += PollOptionModel(title = "")
-                                        },
-                                ),
+                            PollModel(
+                                id = "",
+                                options =
+                                buildList {
+                                    this += PollOptionModel(title = "")
+                                    this += PollOptionModel(title = "")
+                                },
+                            ),
                             hasUnsavedChanges = true,
                         )
                     }
@@ -445,15 +445,15 @@ class ComposerViewModel(
                     updateState {
                         it.copy(
                             poll =
-                                it.poll?.let { p ->
-                                    p.copy(
-                                        options =
-                                            buildList {
-                                                addAll(p.options)
-                                                this += PollOptionModel(title = "")
-                                            },
-                                    )
-                                },
+                            it.poll?.let { p ->
+                                p.copy(
+                                    options =
+                                    buildList {
+                                        addAll(p.options)
+                                        this += PollOptionModel(title = "")
+                                    },
+                                )
+                            },
                             hasUnsavedChanges = true,
                         )
                     }
@@ -464,11 +464,11 @@ class ComposerViewModel(
                     updateState {
                         it.copy(
                             poll =
-                                it.poll?.let { p ->
-                                    p.copy(
-                                        options = p.options.filterIndexed { idx, _ -> idx != intent.index },
-                                    )
-                                },
+                            it.poll?.let { p ->
+                                p.copy(
+                                    options = p.options.filterIndexed { idx, _ -> idx != intent.index },
+                                )
+                            },
                             hasUnsavedChanges = true,
                         )
                     }
@@ -479,18 +479,18 @@ class ComposerViewModel(
                     updateState {
                         it.copy(
                             poll =
-                                it.poll?.let { p ->
-                                    p.copy(
-                                        options =
-                                            p.options.mapIndexed { idx, option ->
-                                                if (idx != intent.index) {
-                                                    option
-                                                } else {
-                                                    option.copy(title = intent.title)
-                                                }
-                                            },
-                                    )
-                                },
+                            it.poll?.let { p ->
+                                p.copy(
+                                    options =
+                                    p.options.mapIndexed { idx, option ->
+                                        if (idx != intent.index) {
+                                            option
+                                        } else {
+                                            option.copy(title = intent.title)
+                                        }
+                                    },
+                                )
+                            },
                             hasUnsavedChanges = true,
                         )
                     }
@@ -570,18 +570,18 @@ class ComposerViewModel(
                 hasUnsavedChanges = true,
                 shouldShowMentionSuggestions = shouldShowMentionSuggestions,
                 mentionSuggestions =
-                    if (shouldShowMentionSuggestions && !wasShowingMentionSuggestions) {
-                        emptyList()
-                    } else {
-                        it.mentionSuggestions
-                    },
+                if (shouldShowMentionSuggestions && !wasShowingMentionSuggestions) {
+                    emptyList()
+                } else {
+                    it.mentionSuggestions
+                },
                 shouldShowHashtagSuggestions = shouldShowHashtagSuggestions,
                 hashtagSuggestions =
-                    if (shouldShowHashtagSuggestions && !wasShowingHashtagSuggestions) {
-                        emptyList()
-                    } else {
-                        it.hashtagSuggestions
-                    },
+                if (shouldShowHashtagSuggestions && !wasShowingHashtagSuggestions) {
+                    emptyList()
+                } else {
+                    it.hashtagSuggestions
+                },
             )
         }
     }
@@ -648,10 +648,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun addLink(
-        anchor: String,
-        url: String,
-    ) {
+    private fun addLink(anchor: String, url: String) {
         val markupMode = uiState.value.markupMode
         screenModelScope.launch {
             val before =
@@ -672,11 +669,11 @@ class ComposerViewModel(
                 getNewTextFieldValue(
                     value = uiState.value.bodyValue,
                     additionalPart =
-                        buildString {
-                            append(before)
-                            append(anchor)
-                            append(after)
-                        },
+                    buildString {
+                        append(before)
+                        append(anchor)
+                        append(after)
+                    },
                     offsetAfter = before.length,
                 )
             updateState {
@@ -688,10 +685,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun addMention(
-        handle: String,
-        privateToGroup: Boolean = false,
-    ) {
+    private fun addMention(handle: String, privateToGroup: Boolean = false) {
         screenModelScope.launch {
             val additionalPart =
                 buildString {
@@ -859,11 +853,11 @@ class ComposerViewModel(
                 getNewTextFieldValue(
                     value = value,
                     additionalPart =
-                        buildString {
-                            append(before)
-                            append(selectedText)
-                            append(after)
-                        },
+                    buildString {
+                        append(before)
+                        append(selectedText)
+                        append(after)
+                    },
                     offsetAfter = before.length,
                 )
             updateState {
@@ -923,11 +917,11 @@ class ComposerViewModel(
                 getNewTextFieldValue(
                     value = value,
                     additionalPart =
-                        buildString {
-                            append(before)
-                            append(selectedText)
-                            append(after)
-                        },
+                    buildString {
+                        append(before)
+                        append(selectedText)
+                        append(after)
+                    },
                     offsetAfter = before.length,
                 )
             updateState {
@@ -987,11 +981,11 @@ class ComposerViewModel(
                 getNewTextFieldValue(
                     value = value,
                     additionalPart =
-                        buildString {
-                            append(before)
-                            append(selectedText)
-                            append(after)
-                        },
+                    buildString {
+                        append(before)
+                        append(selectedText)
+                        append(after)
+                    },
                     offsetAfter = before.length,
                 )
             updateState {
@@ -1051,11 +1045,11 @@ class ComposerViewModel(
                 getNewTextFieldValue(
                     value = value,
                     additionalPart =
-                        buildString {
-                            append(before)
-                            append(selectedText)
-                            append(after)
-                        },
+                    buildString {
+                        append(before)
+                        append(selectedText)
+                        append(after)
+                    },
                     offsetAfter = before.length,
                 )
             updateState {
@@ -1115,11 +1109,11 @@ class ComposerViewModel(
                 getNewTextFieldValue(
                     value = value,
                     additionalPart =
-                        buildString {
-                            append(before)
-                            append(selectedText)
-                            append(after)
-                        },
+                    buildString {
+                        append(before)
+                        append(selectedText)
+                        append(after)
+                    },
                     offsetAfter = before.length,
                 )
             updateState {
@@ -1146,10 +1140,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun insertCustomEmoji(
-        fieldType: ComposerFieldType,
-        emoji: EmojiModel,
-    ) {
+    private fun insertCustomEmoji(fieldType: ComposerFieldType, emoji: EmojiModel) {
         screenModelScope.launch {
             val value =
                 when (fieldType) {
@@ -1219,10 +1210,10 @@ class ComposerViewModel(
                 getNewTextFieldValue(
                     value = uiState.value.bodyValue,
                     additionalPart =
-                        buildString {
-                            append(before)
-                            append(after)
-                        },
+                    buildString {
+                        append(before)
+                        append(after)
+                    },
                     offsetAfter = before.length,
                 )
             updateState {
@@ -1234,10 +1225,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun uploadAttachment(
-        byteArray: ByteArray,
-        isInlineImage: Boolean,
-    ) {
+    private fun uploadAttachment(byteArray: ByteArray, isInlineImage: Boolean) {
         screenModelScope.launch {
             if (isInlineImage) {
                 updateState { it.copy(loading = true) }
@@ -1245,12 +1233,12 @@ class ComposerViewModel(
                 updateState {
                     it.copy(
                         attachments =
-                            it.attachments +
-                                AttachmentModel(
-                                    id = PLACEHOLDER_ID,
-                                    url = "",
-                                    loading = true,
-                                ),
+                        it.attachments +
+                            AttachmentModel(
+                                id = PLACEHOLDER_ID,
+                                url = "",
+                                loading = true,
+                            ),
                     )
                 }
             }
@@ -1280,20 +1268,17 @@ class ComposerViewModel(
         }
     }
 
-    private suspend fun updateAttachmentInState(
-        attachmentId: String,
-        block: (AttachmentModel) -> AttachmentModel,
-    ) {
+    private suspend fun updateAttachmentInState(attachmentId: String, block: (AttachmentModel) -> AttachmentModel) {
         updateState {
             it.copy(
                 attachments =
-                    it.attachments.map { attachment ->
-                        if (attachment.id == attachmentId) {
-                            attachment.let(block)
-                        } else {
-                            attachment
-                        }
-                    },
+                it.attachments.map { attachment ->
+                    if (attachment.id == attachmentId) {
+                        attachment.let(block)
+                    } else {
+                        attachment
+                    }
+                },
                 hasUnsavedChanges = true,
             )
         }
@@ -1308,10 +1293,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun updateAttachmentDescription(
-        attachment: AttachmentModel,
-        description: String,
-    ) {
+    private fun updateAttachmentDescription(attachment: AttachmentModel, description: String) {
         screenModelScope.launch {
             val successful =
                 /*
@@ -1399,11 +1381,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun getNewTextFieldValue(
-        value: TextFieldValue,
-        additionalPart: String,
-        offsetAfter: Int,
-    ): TextFieldValue {
+    private fun getNewTextFieldValue(value: TextFieldValue, additionalPart: String, offsetAfter: Int): TextFieldValue {
         val (text, selection) = value.let { it.text to it.selection }
         val newText =
             buildString {
@@ -1506,21 +1484,21 @@ class ComposerViewModel(
             TimelineEntryModel(
                 creator = currentState.author,
                 spoiler =
-                    currentState.spoilerValue.text
-                        .takeIf { currentState.hasSpoiler }
-                        ?.let {
-                            prepareForPreview(text = it, mode = currentState.markupMode)
-                        },
-                title =
-                    currentState.titleValue.text
-                        .takeIf { currentState.hasTitle }
-                        ?.let {
-                            prepareForPreview(text = it, mode = currentState.markupMode)
-                        },
-                content =
-                    currentState.bodyValue.text.let {
+                currentState.spoilerValue.text
+                    .takeIf { currentState.hasSpoiler }
+                    ?.let {
                         prepareForPreview(text = it, mode = currentState.markupMode)
                     },
+                title =
+                currentState.titleValue.text
+                    .takeIf { currentState.hasTitle }
+                    ?.let {
+                        prepareForPreview(text = it, mode = currentState.markupMode)
+                    },
+                content =
+                currentState.bodyValue.text.let {
+                    prepareForPreview(text = it, mode = currentState.markupMode)
+                },
                 poll = currentState.poll,
                 attachments = currentState.attachments,
                 id = localId,
@@ -1529,10 +1507,7 @@ class ComposerViewModel(
         emitEffect(ComposerMviModel.Effect.OpenPreview(entry))
     }
 
-    private suspend fun validate(
-        enableAltTextCheck: Boolean,
-        enableParentVisibilityCheck: Boolean,
-    ): Boolean {
+    private suspend fun validate(enableAltTextCheck: Boolean, enableParentVisibilityCheck: Boolean): Boolean {
         val currentState = uiState.value
         val visibility = currentState.visibility
         val text = currentState.bodyValue.text
@@ -1577,7 +1552,10 @@ class ComposerViewModel(
         }
 
         // Replies should not have higher visibility than parent
-        if (enableParentVisibilityCheck && currentState.inReplyTo != null && visibility > currentState.inReplyTo.visibility) {
+        if (enableParentVisibilityCheck &&
+            currentState.inReplyTo != null &&
+            visibility > currentState.inReplyTo.visibility
+        ) {
             emitEffect(ComposerMviModel.Effect.ValidationError.VisibilityGreaterThanParent)
             return false
         }
@@ -1617,10 +1595,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun insertInlineImage(
-        attachment: AttachmentModel,
-        description: String,
-    ) {
+    private fun insertInlineImage(attachment: AttachmentModel, description: String) {
         screenModelScope.launch {
             val primaryUrl = attachment.url
             val secondaryUrl = attachment.thumbnail ?: attachment.previewUrl ?: primaryUrl
@@ -1649,10 +1624,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun submit(
-        enableAltTextCheck: Boolean,
-        enableParentVisibilityCheck: Boolean,
-    ) {
+    private fun submit(enableAltTextCheck: Boolean, enableParentVisibilityCheck: Boolean) {
         val currentState = uiState.value
         check(!currentState.loading) { return }
 
@@ -1756,16 +1728,16 @@ class ComposerViewModel(
                                     content = text,
                                     title = title,
                                     updated =
-                                        epochMillis().toIso8601Timestamp(withLocalTimezone = false),
+                                    epochMillis().toIso8601Timestamp(withLocalTimezone = false),
                                     spoiler = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
                                     parentId = inReplyToId.takeIf { it.isNotEmpty() },
                                     lang = currentState.lang,
                                     attachments =
-                                        attachmentIds.map {
-                                            AttachmentModel(id = it, url = "")
-                                        },
+                                    attachmentIds.map {
+                                        AttachmentModel(id = it, url = "")
+                                    },
                                     poll = poll,
                                 )
                             if (draftId != null) {

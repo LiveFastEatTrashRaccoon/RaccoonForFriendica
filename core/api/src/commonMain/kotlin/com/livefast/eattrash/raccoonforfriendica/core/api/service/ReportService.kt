@@ -7,7 +7,5 @@ import io.ktor.client.request.forms.FormDataContent
 
 interface ReportService {
     @POST("v1/reports")
-    suspend fun create(
-        @Body data: FormDataContent,
-    ): Response<Unit>
+    suspend fun create(@Body data: FormDataContent): Response<Unit>
 }

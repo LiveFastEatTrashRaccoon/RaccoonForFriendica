@@ -56,8 +56,8 @@ class FavoritesViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<FavoritesMviModel.Intent, FavoritesMviModel.State, FavoritesMviModel.Effect>(
-        initialState = FavoritesMviModel.State(),
-    ),
+    initialState = FavoritesMviModel.State(),
+),
     FavoritesMviModel {
     init {
         screenModelScope.launch {
@@ -68,7 +68,7 @@ class FavoritesViewModel(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
                             lang = settings?.lang,
                         )
@@ -203,28 +203,25 @@ class FavoritesViewModel(
         }
     }
 
-    private suspend fun updateEntryInState(
-        entryId: String,
-        block: (TimelineEntryModel) -> TimelineEntryModel,
-    ) {
+    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
         updateState {
             it.copy(
                 entries =
-                    it.entries.map { entry ->
-                        when {
-                            entry.id == entryId -> {
-                                entry.let(block)
-                            }
-
-                            entry.reblog?.id == entryId -> {
-                                entry.copy(reblog = entry.reblog?.let(block))
-                            }
-
-                            else -> {
-                                entry
-                            }
+                it.entries.map { entry ->
+                    when {
+                        entry.id == entryId -> {
+                            entry.let(block)
                         }
-                    },
+
+                        entry.reblog?.id == entryId -> {
+                            entry.copy(reblog = entry.reblog?.let(block))
+                        }
+
+                        else -> {
+                            entry
+                        }
+                    }
+                },
             )
         }
     }
@@ -372,12 +369,7 @@ class FavoritesViewModel(
         }
     }
 
-    private fun mute(
-        userId: String,
-        entryId: String,
-        duration: Duration,
-        disableNotifications: Boolean,
-    ) {
+    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         screenModelScope.launch {
             val res =
                 userRepository.mute(
@@ -391,10 +383,7 @@ class FavoritesViewModel(
         }
     }
 
-    private fun block(
-        userId: String,
-        entryId: String,
-    ) {
+    private fun block(userId: String, entryId: String) {
         screenModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
@@ -421,10 +410,7 @@ class FavoritesViewModel(
         }
     }
 
-    private fun submitPoll(
-        entry: TimelineEntryModel,
-        choices: List<Int>,
-    ) {
+    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         screenModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }

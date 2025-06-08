@@ -38,10 +38,10 @@ fun UserNotificationButton(
                 Icon(
                     imageVector = status.toIcon(),
                     contentDescription =
-                        when (status) {
-                            NotificationStatus.Disabled -> "Notifications disabled"
-                            NotificationStatus.Enabled -> "Notifications enabled"
-                        },
+                    when (status) {
+                        NotificationStatus.Disabled -> "Notifications disabled"
+                        NotificationStatus.Enabled -> "Notifications enabled"
+                    },
                 )
             }
         } else {

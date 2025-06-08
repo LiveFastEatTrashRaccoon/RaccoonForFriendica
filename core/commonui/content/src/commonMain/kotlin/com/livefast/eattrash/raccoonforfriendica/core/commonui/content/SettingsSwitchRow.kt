@@ -22,22 +22,23 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 fun SettingsSwitchRow(
     title: String,
     value: Boolean,
+    onValueChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
     subtitle: String? = null,
-    onValueChanged: (Boolean) -> Unit,
 ) {
     Row(
         modifier =
-            Modifier
-                .clip(
-                    shape = RoundedCornerShape(CornerSize.xl),
-                ).toggleable(
-                    value = value,
-                    role = Role.Checkbox,
-                    enabled = true,
-                    onValueChange = {
-                        onValueChanged(!value)
-                    },
-                ).padding(horizontal = Spacing.m),
+        modifier
+            .clip(
+                shape = RoundedCornerShape(CornerSize.xl),
+            ).toggleable(
+                value = value,
+                role = Role.Checkbox,
+                enabled = true,
+                onValueChange = {
+                    onValueChange(!value)
+                },
+            ).padding(horizontal = Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(

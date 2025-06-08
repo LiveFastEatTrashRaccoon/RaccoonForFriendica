@@ -21,26 +21,22 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @Composable
-fun LinkBanner(
-    modifier: Modifier = Modifier,
-    url: String,
-    onClick: (() -> Unit)? = null,
-) {
+fun LinkBanner(url: String, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
     if (url.isNotEmpty()) {
         Row(
             modifier =
-                modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(CornerSize.l),
-                    ).clip(
-                        RoundedCornerShape(CornerSize.l),
-                    ).clickable {
-                        onClick?.invoke()
-                    }.padding(
-                        horizontal = Spacing.m,
-                        vertical = Spacing.s,
-                    ),
+            modifier
+                .background(
+                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
+                    shape = RoundedCornerShape(CornerSize.l),
+                ).clip(
+                    RoundedCornerShape(CornerSize.l),
+                ).clickable {
+                    onClick?.invoke()
+                }.padding(
+                    horizontal = Spacing.m,
+                    vertical = Spacing.s,
+                ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Spacing.m),
         ) {

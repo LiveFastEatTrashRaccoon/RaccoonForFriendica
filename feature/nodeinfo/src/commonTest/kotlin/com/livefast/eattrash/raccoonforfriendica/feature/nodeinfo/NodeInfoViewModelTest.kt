@@ -35,10 +35,10 @@ class NodeInfoViewModelTest {
             description = "Instance description",
             contact = UserModel(id = "1", displayName = "Admin"),
             rules =
-                listOf(
-                    RuleModel(id = "1", text = "First rule"),
-                    RuleModel(id = "2", text = "Second rule"),
-                ),
+            listOf(
+                RuleModel(id = "1", text = "First rule"),
+                RuleModel(id = "2", text = "Second rule"),
+            ),
             version = "1.0.0",
         )
     private val nodeInfoRepository =
@@ -113,11 +113,10 @@ class NodeInfoViewModelTest {
         }
     }
 
-    private fun viewModelFactory() =
-        NodeInfoViewModel(
-            nodeInfoRepository = nodeInfoRepository,
-            emojiHelper = emojiHelper,
-            imageAutoloadObserver = imageAutoloadObserver,
-            settingsRepository = settingsRepository,
-        )
+    private fun viewModelFactory() = NodeInfoViewModel(
+        nodeInfoRepository = nodeInfoRepository,
+        emojiHelper = emojiHelper,
+        imageAutoloadObserver = imageAutoloadObserver,
+        settingsRepository = settingsRepository,
+    )
 }

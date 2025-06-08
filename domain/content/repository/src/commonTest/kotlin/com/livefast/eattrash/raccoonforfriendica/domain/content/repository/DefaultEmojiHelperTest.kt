@@ -23,184 +23,179 @@ class DefaultEmojiHelperTest {
         )
 
     @Test
-    fun `given user already has emojis when withEmojisIfMissing then result and interactions are as expected`() =
-        runTest {
-            val emojis =
-                listOf(
-                    EmojiModel("test1", "url1", ""),
-                    EmojiModel("test2", "url2", ""),
-                )
-            val user =
-                UserModel(
-                    id = "1",
-                    handle = "user@$DOMAIN",
-                    displayName = "name :test1:",
-                    bio = "bio :test2:",
-                    emojis = emojis,
-                )
-
-            val res =
-                with(sut) {
-                    user.withEmojisIfMissing()
-                }
-
-            assertEquals(2, res.emojis.size)
-            verifySuspend(VerifyMode.not) {
-                emojiRepository.getAll(node = any())
-            }
-        }
-
-    @Test
-    fun `given user is missing emojis when withEmojisIfMissing then result and interactions are as expected`() =
-        runTest {
-            val emojis =
-                listOf(
-                    EmojiModel("test1", "url1", ""),
-                    EmojiModel("test2", "url2", ""),
-                    EmojiModel("test3", "url3", ""),
-                )
-            everySuspend { emojiRepository.getAll(any()) } returns emojis
-            val user =
-                UserModel(
-                    id = "1",
-                    handle = "user@$DOMAIN",
-                    displayName = "name :test1:",
-                    bio = "bio :test2:",
-                )
-
-            val res =
-                with(sut) {
-                    user.withEmojisIfMissing()
-                }
-
-            assertEquals(2, res.emojis.size)
-            verifySuspend {
-                emojiRepository.getAll(node = DOMAIN)
-            }
-        }
-
-    @Test
-    fun `given post is missing creator emojis when withEmojisIfMissing then result and interactions are as expected`() =
-        runTest {
-            val emojis =
-                listOf(
-                    EmojiModel("test1", "url1", ""),
-                    EmojiModel("test2", "url2", ""),
-                    EmojiModel("test3", "url3", ""),
-                )
-            everySuspend { emojiRepository.getAll(any()) } returns emojis
-            val user =
-                UserModel(
-                    id = "1",
-                    handle = "user@$DOMAIN",
-                    displayName = "name :test1:",
-                    bio = "bio :test2:",
-                )
-            val entry =
-                TimelineEntryModel(
-                    creator = user,
-                    id = "1",
-                    content = "post text",
-                )
-
-            val res =
-                with(sut) {
-                    entry.withEmojisIfMissing()
-                }
-
-            assertEquals(2, res.creator?.emojis?.size)
-            verifySuspend {
-                emojiRepository.getAll(node = DOMAIN)
-            }
-        }
-
-    @Test
-    fun `given post is missing reblog creator emojis when withEmojisIfMissing then result and interactions are as expected`() =
-        runTest {
-            val emojis =
-                listOf(
-                    EmojiModel("test1", "url1", ""),
-                    EmojiModel("test2", "url2", ""),
-                    EmojiModel("test3", "url3", ""),
-                )
-            everySuspend { emojiRepository.getAll(any()) } returns emojis
-            val user =
-                UserModel(
-                    id = "1",
-                    handle = "user@$DOMAIN",
-                    displayName = "name :test1:",
-                    bio = "bio :test2:",
-                )
-            val originalEntry =
-                TimelineEntryModel(
-                    creator = user,
-                    id = "1",
-                    content = "post text",
-                )
-            val entry =
-                TimelineEntryModel(
-                    id = "1",
-                    content = "post text",
-                    reblog = originalEntry,
-                )
-
-            val res =
-                with(sut) {
-                    entry.withEmojisIfMissing()
-                }
-
-            assertEquals(
-                2,
-                res.reblog
-                    ?.creator
-                    ?.emojis
-                    ?.size,
+    fun `given user already has emojis when withEmojisIfMissing then result is as expected`() = runTest {
+        val emojis =
+            listOf(
+                EmojiModel("test1", "url1", ""),
+                EmojiModel("test2", "url2", ""),
             )
-            verifySuspend {
-                emojiRepository.getAll(node = DOMAIN)
+        val user =
+            UserModel(
+                id = "1",
+                handle = "user@$DOMAIN",
+                displayName = "name :test1:",
+                bio = "bio :test2:",
+                emojis = emojis,
+            )
+
+        val res =
+            with(sut) {
+                user.withEmojisIfMissing()
             }
+
+        assertEquals(2, res.emojis.size)
+        verifySuspend(VerifyMode.not) {
+            emojiRepository.getAll(node = any())
         }
+    }
 
     @Test
-    fun `given post is missing poll option emojis when withEmojisIfMissing then result and interactions are as expected`() =
-        runTest {
-            val emojis =
-                listOf(
-                    EmojiModel("test1", "url1", ""),
-                    EmojiModel("test2", "url2", ""),
-                    EmojiModel("test3", "url3", ""),
-                )
-            everySuspend { emojiRepository.getAll(any()) } returns emojis
-            val user =
-                UserModel(
-                    id = "1",
-                    handle = "user@$DOMAIN",
-                )
-            val entry =
-                TimelineEntryModel(
-                    id = "1",
-                    content = "post text",
-                    creator = user,
-                    poll =
-                        PollModel(
-                            id = "1",
-                            options =
-                                listOf(
-                                    PollOptionModel("option :test1:"),
-                                ),
-                        ),
-                )
+    fun `given user is missing emojis when withEmojisIfMissing then result is as expected`() = runTest {
+        val emojis =
+            listOf(
+                EmojiModel("test1", "url1", ""),
+                EmojiModel("test2", "url2", ""),
+                EmojiModel("test3", "url3", ""),
+            )
+        everySuspend { emojiRepository.getAll(any()) } returns emojis
+        val user =
+            UserModel(
+                id = "1",
+                handle = "user@$DOMAIN",
+                displayName = "name :test1:",
+                bio = "bio :test2:",
+            )
 
-            val res =
-                with(sut) {
-                    entry.withEmojisIfMissing()
-                }
-
-            assertEquals(1, res.emojis.size)
-            verifySuspend {
-                emojiRepository.getAll(node = DOMAIN)
+        val res =
+            with(sut) {
+                user.withEmojisIfMissing()
             }
+
+        assertEquals(2, res.emojis.size)
+        verifySuspend {
+            emojiRepository.getAll(node = DOMAIN)
         }
+    }
+
+    @Test
+    fun `given post is missing creator emojis when withEmojisIfMissing then result is as expected`() = runTest {
+        val emojis =
+            listOf(
+                EmojiModel("test1", "url1", ""),
+                EmojiModel("test2", "url2", ""),
+                EmojiModel("test3", "url3", ""),
+            )
+        everySuspend { emojiRepository.getAll(any()) } returns emojis
+        val user =
+            UserModel(
+                id = "1",
+                handle = "user@$DOMAIN",
+                displayName = "name :test1:",
+                bio = "bio :test2:",
+            )
+        val entry =
+            TimelineEntryModel(
+                creator = user,
+                id = "1",
+                content = "post text",
+            )
+
+        val res =
+            with(sut) {
+                entry.withEmojisIfMissing()
+            }
+
+        assertEquals(2, res.creator?.emojis?.size)
+        verifySuspend {
+            emojiRepository.getAll(node = DOMAIN)
+        }
+    }
+
+    @Test
+    fun `given post missing reblog creator emojis when withEmojisIfMissing then result is as expected`() = runTest {
+        val emojis =
+            listOf(
+                EmojiModel("test1", "url1", ""),
+                EmojiModel("test2", "url2", ""),
+                EmojiModel("test3", "url3", ""),
+            )
+        everySuspend { emojiRepository.getAll(any()) } returns emojis
+        val user =
+            UserModel(
+                id = "1",
+                handle = "user@$DOMAIN",
+                displayName = "name :test1:",
+                bio = "bio :test2:",
+            )
+        val originalEntry =
+            TimelineEntryModel(
+                creator = user,
+                id = "1",
+                content = "post text",
+            )
+        val entry =
+            TimelineEntryModel(
+                id = "1",
+                content = "post text",
+                reblog = originalEntry,
+            )
+
+        val res =
+            with(sut) {
+                entry.withEmojisIfMissing()
+            }
+
+        assertEquals(
+            2,
+            res.reblog
+                ?.creator
+                ?.emojis
+                ?.size,
+        )
+        verifySuspend {
+            emojiRepository.getAll(node = DOMAIN)
+        }
+    }
+
+    @Test
+    fun `given post is missing poll option emojis when withEmojisIfMissing then result is as expected`() = runTest {
+        val emojis =
+            listOf(
+                EmojiModel("test1", "url1", ""),
+                EmojiModel("test2", "url2", ""),
+                EmojiModel("test3", "url3", ""),
+            )
+        everySuspend { emojiRepository.getAll(any()) } returns emojis
+        val user =
+            UserModel(
+                id = "1",
+                handle = "user@$DOMAIN",
+            )
+        val entry =
+            TimelineEntryModel(
+                id = "1",
+                content = "post text",
+                creator = user,
+                poll =
+                PollModel(
+                    id = "1",
+                    options =
+                    listOf(
+                        PollOptionModel("option :test1:"),
+                    ),
+                ),
+            )
+
+        val res =
+            with(sut) {
+                entry.withEmojisIfMissing()
+            }
+
+        assertEquals(1, res.emojis.size)
+        verifySuspend {
+            emojiRepository.getAll(node = DOMAIN)
+        }
+    }
 
     companion object {
         private const val DOMAIN = "example.com"

@@ -8,9 +8,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class MainViewModel(
-    private val inboxManager: InboxManager,
-) : DefaultMviModel<MainMviModel.Intent, MainMviModel.UiState, MainMviModel.Effect>(
+class MainViewModel(private val inboxManager: InboxManager) :
+    DefaultMviModel<MainMviModel.Intent, MainMviModel.UiState, MainMviModel.Effect>(
         initialState = MainMviModel.UiState(),
     ),
     MainMviModel {
@@ -35,13 +34,12 @@ class MainViewModel(
         }
     }
 
-    private fun getSections(inboxUnread: Int) =
-        listOf(
-            BottomNavigationSection.Home,
-            BottomNavigationSection.Explore,
-            BottomNavigationSection.Inbox(
-                unreadItems = inboxUnread,
-            ),
-            BottomNavigationSection.Profile,
-        )
+    private fun getSections(inboxUnread: Int) = listOf(
+        BottomNavigationSection.Home,
+        BottomNavigationSection.Explore,
+        BottomNavigationSection.Inbox(
+            unreadItems = inboxUnread,
+        ),
+        BottomNavigationSection.Profile,
+    )
 }

@@ -26,100 +26,94 @@ class DefaultPhotoAlbumRepositoryTest {
     private val sut = DefaultPhotoAlbumRepository(provider = serviceProvider)
 
     @Test
-    fun `when getAll then result is as expected`() =
-        runTest {
-            val list = listOf(FriendicaPhotoAlbum(name = "fake-album"))
-            everySuspend { photoAlbumService.getAll() } returns list
+    fun `when getAll then result is as expected`() = runTest {
+        val list = listOf(FriendicaPhotoAlbum(name = "fake-album"))
+        everySuspend { photoAlbumService.getAll() } returns list
 
-            val res = sut.getAll()
+        val res = sut.getAll()
 
-            assertEquals(list.map { it.toModel() }, res)
-            verifySuspend {
-                photoAlbumService.getAll()
-            }
+        assertEquals(list.map { it.toModel() }, res)
+        verifySuspend {
+            photoAlbumService.getAll()
         }
+    }
 
     @Test
-    fun `when update then result is as expected`() =
-        runTest {
-            everySuspend { photoAlbumService.update(any()) } returns
-                FriendicaApiResult(result = "updated")
+    fun `when update then result is as expected`() = runTest {
+        everySuspend { photoAlbumService.update(any()) } returns
+            FriendicaApiResult(result = "updated")
 
-            val res = sut.update(oldName = "fake-album", newName = "fake-album-new")
+        val res = sut.update(oldName = "fake-album", newName = "fake-album-new")
 
-            assertTrue(res)
-            verifySuspend {
-                photoAlbumService.update(
-                    matching {
-                        it.formData["album"] == "fake-album" && it.formData["album_new"] == "fake-album-new"
-                    },
-                )
-            }
+        assertTrue(res)
+        verifySuspend {
+            photoAlbumService.update(
+                matching {
+                    it.formData["album"] == "fake-album" && it.formData["album_new"] == "fake-album-new"
+                },
+            )
         }
+    }
 
     @Test
-    fun `given error when update then result is as expected`() =
-        runTest {
-            everySuspend { photoAlbumService.update(any()) } returns
-                FriendicaApiResult(result = "ko")
+    fun `given error when update then result is as expected`() = runTest {
+        everySuspend { photoAlbumService.update(any()) } returns
+            FriendicaApiResult(result = "ko")
 
-            val res = sut.update(oldName = "fake-album", newName = "fake-album-new")
+        val res = sut.update(oldName = "fake-album", newName = "fake-album-new")
 
-            assertFalse(res)
-        }
-
-    @Test
-    fun `when delete then result is as expected`() =
-        runTest {
-            everySuspend { photoAlbumService.delete(any()) } returns
-                FriendicaApiResult(result = "deleted")
-
-            val res = sut.delete(name = "fake-album")
-
-            assertTrue(res)
-            verifySuspend {
-                photoAlbumService.delete(
-                    matching {
-                        it.formData["album"] == "fake-album"
-                    },
-                )
-            }
-        }
+        assertFalse(res)
+    }
 
     @Test
-    fun `given error when delete then result is as expected`() =
-        runTest {
-            everySuspend { photoAlbumService.delete(any()) } returns
-                FriendicaApiResult(result = "ko")
+    fun `when delete then result is as expected`() = runTest {
+        everySuspend { photoAlbumService.delete(any()) } returns
+            FriendicaApiResult(result = "deleted")
 
-            val res = sut.delete(name = "fake-album")
+        val res = sut.delete(name = "fake-album")
 
-            assertFalse(res)
+        assertTrue(res)
+        verifySuspend {
+            photoAlbumService.delete(
+                matching {
+                    it.formData["album"] == "fake-album"
+                },
+            )
         }
+    }
 
     @Test
-    fun `when getPhotos then result is as expected`() =
-        runTest {
-            val list = listOf(FriendicaPhoto(id = "0"))
-            everySuspend {
-                photoAlbumService.getPhotos(
-                    album = any(),
-                    maxId = any(),
-                    latestFirst = any(),
-                    limit = any(),
-                )
-            } returns list
+    fun `given error when delete then result is as expected`() = runTest {
+        everySuspend { photoAlbumService.delete(any()) } returns
+            FriendicaApiResult(result = "ko")
 
-            val res = sut.getPhotos(album = "fake-album", pageCursor = null)
+        val res = sut.delete(name = "fake-album")
 
-            assertEquals(list.map { it.toModel() }, res)
-            verifySuspend {
-                photoAlbumService.getPhotos(
-                    album = "fake-album",
-                    maxId = null,
-                    latestFirst = false,
-                    limit = 20,
-                )
-            }
+        assertFalse(res)
+    }
+
+    @Test
+    fun `when getPhotos then result is as expected`() = runTest {
+        val list = listOf(FriendicaPhoto(id = "0"))
+        everySuspend {
+            photoAlbumService.getPhotos(
+                album = any(),
+                maxId = any(),
+                latestFirst = any(),
+                limit = any(),
+            )
+        } returns list
+
+        val res = sut.getPhotos(album = "fake-album", pageCursor = null)
+
+        assertEquals(list.map { it.toModel() }, res)
+        verifySuspend {
+            photoAlbumService.getPhotos(
+                album = "fake-album",
+                maxId = null,
+                latestFirst = false,
+                limit = 20,
+            )
         }
+    }
 }

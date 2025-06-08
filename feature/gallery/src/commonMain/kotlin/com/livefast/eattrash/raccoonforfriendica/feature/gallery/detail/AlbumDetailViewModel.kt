@@ -26,8 +26,8 @@ class AlbumDetailViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<AlbumDetailMviModel.Intent, AlbumDetailMviModel.State, AlbumDetailMviModel.Effect>(
-        initialState = AlbumDetailMviModel.State(),
-    ),
+    initialState = AlbumDetailMviModel.State(),
+),
     AlbumDetailMviModel {
     init {
         screenModelScope.launch {
@@ -45,7 +45,7 @@ class AlbumDetailViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -107,20 +107,17 @@ class AlbumDetailViewModel(
         }
     }
 
-    private suspend fun updateItemInState(
-        id: String,
-        block: (AttachmentModel) -> AttachmentModel,
-    ) {
+    private suspend fun updateItemInState(id: String, block: (AttachmentModel) -> AttachmentModel) {
         updateState {
             it.copy(
                 items =
-                    it.items.map { attachment ->
-                        if (attachment.id == id) {
-                            attachment.let(block)
-                        } else {
-                            attachment
-                        }
-                    },
+                it.items.map { attachment ->
+                    if (attachment.id == id) {
+                        attachment.let(block)
+                    } else {
+                        attachment
+                    }
+                },
             )
         }
     }
@@ -161,10 +158,7 @@ class AlbumDetailViewModel(
         }
     }
 
-    private fun updateDescription(
-        attachment: AttachmentModel,
-        description: String,
-    ) {
+    private fun updateDescription(attachment: AttachmentModel, description: String) {
         screenModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val successful =
@@ -184,10 +178,7 @@ class AlbumDetailViewModel(
         }
     }
 
-    private fun moveToOtherAlbum(
-        attachment: AttachmentModel,
-        otherAlbum: String,
-    ) {
+    private fun moveToOtherAlbum(attachment: AttachmentModel, otherAlbum: String) {
         check(otherAlbum != albumName) { return }
         screenModelScope.launch {
             updateState { it.copy(operationInProgress = true) }

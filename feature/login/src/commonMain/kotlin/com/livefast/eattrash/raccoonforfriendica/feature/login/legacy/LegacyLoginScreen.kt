@@ -113,12 +113,12 @@ class LegacyLoginScreen : Screen {
                     title = {
                         Text(
                             text =
-                                buildString {
-                                    append(LocalStrings.current.buttonLogin)
-                                    append(" (")
-                                    append(LocalStrings.current.loginMethodBasic)
-                                    append(")")
-                                },
+                            buildString {
+                                append(LocalStrings.current.buttonLogin)
+                                append(" (")
+                                append(LocalStrings.current.loginMethodBasic)
+                                append(")")
+                            },
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },
@@ -152,15 +152,15 @@ class LegacyLoginScreen : Screen {
         ) { padding ->
             Column(
                 modifier =
-                    Modifier
-                        .padding(
-                            top = padding.calculateTopPadding(),
-                            start = Spacing.l,
-                            end = Spacing.l,
-                        ).consumeWindowInsets(padding)
-                        .safeImePadding()
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                Modifier
+                    .padding(
+                        top = padding.calculateTopPadding(),
+                        start = Spacing.l,
+                        end = Spacing.l,
+                    ).consumeWindowInsets(padding)
+                    .safeImePadding()
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Spacer(modifier = Modifier.height(Spacing.s))
@@ -168,35 +168,35 @@ class LegacyLoginScreen : Screen {
                 // instance name
                 SpinnerField(
                     modifier =
-                        Modifier.fillMaxWidth(),
+                    Modifier.fillMaxWidth(),
                     label = {
                         Text(text = LocalStrings.current.fieldNodeName)
                     },
                     values =
-                        buildList {
-                            for (instance in DefaultFriendicaInstances) {
-                                this += buildString {
-                                    append(instance.value)
-                                    append("  ")
-                                    append(instance.lang)
-                                } to instance.value
-                            }
-                            this += LocalStrings.current.itemOther to ""
-                        },
+                    buildList {
+                        for (instance in DefaultFriendicaInstances) {
+                            this += buildString {
+                                append(instance.value)
+                                append("  ")
+                                append(instance.lang)
+                            } to instance.value
+                        }
+                        this += LocalStrings.current.itemOther to ""
+                    },
                     value = uiState.nodeName,
                     isError = uiState.nodeNameError != null,
                     keyboardActions =
-                        KeyboardActions(
-                            onNext = {
-                                focusManager.moveFocus(FocusDirection.Down)
-                            },
-                        ),
+                    KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        },
+                    ),
                     keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            autoCorrectEnabled = false,
-                            imeAction = ImeAction.Next,
-                        ),
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        autoCorrectEnabled = false,
+                        imeAction = ImeAction.Next,
+                    ),
                     onValueChange = { value ->
                         model.reduce(LegacyLoginMviModel.Intent.SetNodeName(value))
                     },
@@ -214,18 +214,18 @@ class LegacyLoginScreen : Screen {
                 // user name
                 TextField(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .autofill(
-                                autofillTypes =
-                                    listOf(
-                                        AutofillType.Username,
-                                        AutofillType.EmailAddress,
-                                    ),
-                                onFill = { value ->
-                                    model.reduce(LegacyLoginMviModel.Intent.SetUsername(value))
-                                },
+                    Modifier
+                        .fillMaxWidth()
+                        .autofill(
+                            autofillTypes =
+                            listOf(
+                                AutofillType.Username,
+                                AutofillType.EmailAddress,
                             ),
+                            onFill = { value ->
+                                model.reduce(LegacyLoginMviModel.Intent.SetUsername(value))
+                            },
+                        ),
                     label = {
                         Text(text = LocalStrings.current.fieldUsername)
                     },
@@ -233,17 +233,17 @@ class LegacyLoginScreen : Screen {
                     value = uiState.username,
                     isError = uiState.usernameError != null,
                     keyboardActions =
-                        KeyboardActions(
-                            onNext = {
-                                focusManager.moveFocus(FocusDirection.Down)
-                            },
-                        ),
+                    KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        },
+                    ),
                     keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            autoCorrectEnabled = false,
-                            imeAction = ImeAction.Next,
-                        ),
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        autoCorrectEnabled = false,
+                        imeAction = ImeAction.Next,
+                    ),
                     onValueChange = { value ->
                         model.reduce(LegacyLoginMviModel.Intent.SetUsername(value))
                     },
@@ -264,14 +264,14 @@ class LegacyLoginScreen : Screen {
                 }
                 TextField(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .autofill(
-                                autofillTypes = listOf(AutofillType.Password),
-                                onFill = { value ->
-                                    model.reduce(LegacyLoginMviModel.Intent.SetPassword(value))
-                                },
-                            ),
+                    Modifier
+                        .fillMaxWidth()
+                        .autofill(
+                            autofillTypes = listOf(AutofillType.Password),
+                            onFill = { value ->
+                                model.reduce(LegacyLoginMviModel.Intent.SetPassword(value))
+                            },
+                        ),
                     label = {
                         Text(text = LocalStrings.current.fieldPassword)
                     },
@@ -279,16 +279,16 @@ class LegacyLoginScreen : Screen {
                     value = uiState.password,
                     isError = uiState.passwordError != null,
                     keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Done,
-                        ),
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done,
+                    ),
                     keyboardActions =
-                        KeyboardActions(
-                            onDone = {
-                                model.reduce(LegacyLoginMviModel.Intent.Submit)
-                            },
-                        ),
+                    KeyboardActions(
+                        onDone = {
+                            model.reduce(LegacyLoginMviModel.Intent.Submit)
+                        },
+                    ),
                     onValueChange = { value ->
                         model.reduce(LegacyLoginMviModel.Intent.SetPassword(value))
                     },
@@ -296,20 +296,20 @@ class LegacyLoginScreen : Screen {
                     trailingIcon = {
                         Image(
                             modifier =
-                                Modifier.clickable {
-                                    transformation =
-                                        if (transformation == VisualTransformation.None) {
-                                            PasswordVisualTransformation()
-                                        } else {
-                                            VisualTransformation.None
-                                        }
-                                },
+                            Modifier.clickable {
+                                transformation =
+                                    if (transformation == VisualTransformation.None) {
+                                        PasswordVisualTransformation()
+                                    } else {
+                                        VisualTransformation.None
+                                    }
+                            },
                             imageVector =
-                                if (transformation == VisualTransformation.None) {
-                                    Icons.Default.VisibilityOff
-                                } else {
-                                    Icons.Default.Visibility
-                                },
+                            if (transformation == VisualTransformation.None) {
+                                Icons.Default.VisibilityOff
+                            } else {
+                                Icons.Default.Visibility
+                            },
                             contentDescription = LocalStrings.current.actionToggleReveal,
                             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),
                         )

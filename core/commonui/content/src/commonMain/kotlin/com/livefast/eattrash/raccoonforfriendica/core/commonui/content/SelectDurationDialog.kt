@@ -42,20 +42,21 @@ import kotlin.time.Duration
 fun SelectDurationDialog(
     initialValue: Duration,
     availableValues: List<Duration>,
+    modifier: Modifier = Modifier,
     onClose: ((Duration?) -> Unit)? = null,
 ) {
     var currentSelection by remember { mutableStateOf(initialValue) }
     BasicAlertDialog(
-        modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
+        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onClose?.invoke(null)
         },
     ) {
         Column(
             modifier =
-                Modifier
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                    .padding(Spacing.m),
+            Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                .padding(Spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
@@ -71,28 +72,28 @@ fun SelectDurationDialog(
                 items(availableValues) { value ->
                     Row(
                         modifier =
-                            Modifier
-                                .padding(vertical = Spacing.s, horizontal = Spacing.s)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                ) {
-                                    currentSelection = value
-                                },
+                        Modifier
+                            .padding(vertical = Spacing.s, horizontal = Spacing.s)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                            ) {
+                                currentSelection = value
+                            },
                     ) {
                         Text(
                             text =
-                                if (value.isInfinite()) {
-                                    LocalStrings.current.muteDurationIndefinite
-                                } else {
-                                    value.getPrettyDuration(
-                                        secondsLabel = LocalStrings.current.timeSecondShort,
-                                        minutesLabel = LocalStrings.current.timeMinuteShort,
-                                        hoursLabel = LocalStrings.current.timeHourShort,
-                                        daysLabel = LocalStrings.current.dateDayShort,
-                                        finePrecision = false,
-                                    )
-                                },
+                            if (value.isInfinite()) {
+                                LocalStrings.current.muteDurationIndefinite
+                            } else {
+                                value.getPrettyDuration(
+                                    secondsLabel = LocalStrings.current.timeSecondShort,
+                                    minutesLabel = LocalStrings.current.timeMinuteShort,
+                                    hoursLabel = LocalStrings.current.timeHourShort,
+                                    daysLabel = LocalStrings.current.dateDayShort,
+                                    finePrecision = false,
+                                )
+                            },
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         Spacer(modifier = Modifier.weight(1f))

@@ -70,17 +70,17 @@ fun ContentImage(
 
     Box(
         modifier =
-            modifier.heightIn(min = minHeight, max = maxHeight),
+        modifier.heightIn(min = minHeight, max = maxHeight),
     ) {
         if (!hasFinishedLoadingSuccessfully) {
             BlurredPreview(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(cornerSize))
-                        .clickable {
-                            onClick?.invoke()
-                        },
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(cornerSize))
+                    .clickable {
+                        onClick?.invoke()
+                    },
                 originalWidth = originalWidth,
                 originalHeight = originalHeight,
                 blurHash = blurHash,
@@ -90,12 +90,12 @@ fun ContentImage(
 
         CustomImage(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(cornerSize))
-                    .clickable {
-                        onClick?.invoke()
-                    },
+            Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(cornerSize))
+                .clickable {
+                    onClick?.invoke()
+                },
             url = url,
             autoload = autoload,
             contentDescription = contentDescription,
@@ -115,10 +115,10 @@ fun ContentImage(
 
         Row(
             modifier =
-                Modifier.align(Alignment.BottomEnd).padding(
-                    bottom = Spacing.xxs,
-                    end = Spacing.xs,
-                ),
+            Modifier.align(Alignment.BottomEnd).padding(
+                bottom = Spacing.xxs,
+                end = Spacing.xs,
+            ),
         ) {
             val iconModifier =
                 Modifier
@@ -133,31 +133,31 @@ fun ContentImage(
                     if (showingAltText) {
                         Popup(
                             offset =
-                                IntOffset(
-                                    x = 0,
-                                    y = popupOffset.y.roundToInt() - additionalOffset,
-                                ),
+                            IntOffset(
+                                x = 0,
+                                y = popupOffset.y.roundToInt() - additionalOffset,
+                            ),
                             onDismissRequest = {},
                             content = {
                                 Box(
                                     modifier =
-                                        Modifier
-                                            .clickable(
-                                                interactionSource = remember { MutableInteractionSource() },
-                                                indication = null,
-                                            ) {
-                                                showingAltText = false
-                                            }.padding(Spacing.s)
-                                            .background(
-                                                color =
-                                                    MaterialTheme.colorScheme
-                                                        .surfaceColorAtElevation(5.dp)
-                                                        .copy(alpha = 0.9f),
-                                                shape = RoundedCornerShape(CornerSize.xl),
-                                            ).padding(
-                                                vertical = Spacing.s,
-                                                horizontal = Spacing.m,
-                                            ),
+                                    Modifier
+                                        .padding(Spacing.s)
+                                        .background(
+                                            color =
+                                            MaterialTheme.colorScheme
+                                                .surfaceColorAtElevation(5.dp)
+                                                .copy(alpha = 0.9f),
+                                            shape = RoundedCornerShape(CornerSize.xl),
+                                        ).clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null,
+                                        ) {
+                                            showingAltText = false
+                                        }.padding(
+                                            vertical = Spacing.s,
+                                            horizontal = Spacing.m,
+                                        ),
                                 ) {
                                     Text(
                                         text = contentDescription,
@@ -170,9 +170,9 @@ fun ContentImage(
                     }
                     IconButton(
                         modifier =
-                            Modifier.onGloballyPositioned {
-                                popupOffset = it.positionInParent()
-                            },
+                        Modifier.onGloballyPositioned {
+                            popupOffset = it.positionInParent()
+                        },
                         onClick = {
                             showingAltText = !showingAltText
                         },
@@ -195,11 +195,11 @@ fun ContentImage(
                     Icon(
                         modifier = iconModifier,
                         imageVector =
-                            if (revealing) {
-                                Icons.Default.VisibilityOff
-                            } else {
-                                Icons.Default.Visibility
-                            },
+                        if (revealing) {
+                            Icons.Default.VisibilityOff
+                        } else {
+                            Icons.Default.Visibility
+                        },
                         contentDescription = LocalStrings.current.actionToggleReveal,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )

@@ -26,23 +26,19 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHist
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 
 @Composable
-fun HashtagItem(
-    hashtag: TagModel,
-    modifier: Modifier = Modifier,
-    onOpen: ((String) -> Unit)? = null,
-) {
+fun HashtagItem(hashtag: TagModel, modifier: Modifier = Modifier, onOpen: ((String) -> Unit)? = null) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
     Row(
         modifier =
-            modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    onOpen?.invoke(hashtag.name)
-                }.padding(Spacing.s),
+        modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                onOpen?.invoke(hashtag.name)
+            }.padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -52,10 +48,10 @@ fun HashtagItem(
         ) {
             Text(
                 text =
-                    buildString {
-                        append("#")
-                        append(hashtag.name)
-                    },
+                buildString {
+                    append("#")
+                    append(hashtag.name)
+                },
                 style = MaterialTheme.typography.bodyLarge,
                 color = fullColor,
             )
@@ -72,10 +68,10 @@ fun HashtagItem(
         if (hashtag.history.isNotEmpty()) {
             HashtagChart(
                 modifier =
-                    Modifier
-                        .weight(0.25f)
-                        .padding(end = Spacing.s)
-                        .aspectRatio(3f),
+                Modifier
+                    .weight(0.25f)
+                    .padding(end = Spacing.s)
+                    .aspectRatio(3f),
                 dataset = hashtag.history,
             )
         }
@@ -83,10 +79,7 @@ fun HashtagItem(
 }
 
 @Composable
-private fun HashtagChart(
-    modifier: Modifier = Modifier,
-    dataset: List<HashtagHistoryItem> = emptyList(),
-) {
+private fun HashtagChart(modifier: Modifier = Modifier, dataset: List<HashtagHistoryItem> = emptyList()) {
     val lineColor = MaterialTheme.colorScheme.secondary
     val belowLineColor = lineColor.copy(0.5f)
     val lineWidth = with(LocalDensity.current) { 1.5.dp.toPx() }

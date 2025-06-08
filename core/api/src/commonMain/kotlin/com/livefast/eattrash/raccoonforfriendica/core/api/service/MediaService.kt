@@ -13,23 +13,14 @@ import io.ktor.client.request.forms.MultiPartFormDataContent
 
 interface MediaService {
     @GET("v1/media/{id}")
-    suspend fun getBy(
-        @Path("id") id: String,
-    ): MediaAttachment?
+    suspend fun getBy(@Path("id") id: String): MediaAttachment?
 
     @POST("v2/media")
-    suspend fun create(
-        @Body content: MultiPartFormDataContent,
-    ): MediaAttachment
+    suspend fun create(@Body content: MultiPartFormDataContent): MediaAttachment
 
     @PUT("v1/media/{id}")
-    suspend fun update(
-        @Path("id") id: String,
-        @Body content: FormDataContent,
-    ): MediaAttachment
+    suspend fun update(@Path("id") id: String, @Body content: FormDataContent): MediaAttachment
 
     @DELETE("v1/media/{id}")
-    suspend fun delete(
-        @Path("id") id: String,
-    ): Response<Unit>
+    suspend fun delete(@Path("id") id: String): Response<Unit>
 }

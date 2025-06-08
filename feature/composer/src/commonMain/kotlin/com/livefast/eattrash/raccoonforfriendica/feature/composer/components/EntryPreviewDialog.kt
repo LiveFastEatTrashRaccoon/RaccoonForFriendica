@@ -32,20 +32,21 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 @Composable
 fun EntryPreviewDialog(
     entry: TimelineEntryModel,
+    modifier: Modifier = Modifier,
     autoloadImages: Boolean = true,
     onDismiss: (() -> Unit)? = null,
 ) {
     BasicAlertDialog(
-        modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
+        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onDismiss?.invoke()
         },
     ) {
         Column(
             modifier =
-                Modifier
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                    .padding(Spacing.m),
+            Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                .padding(Spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {

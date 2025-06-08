@@ -53,9 +53,9 @@ internal fun ConfigureNotificationTypeDialog(
     ) {
         Column(
             modifier =
-                Modifier
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                    .padding(Spacing.m),
+            Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                .padding(Spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
@@ -80,19 +80,19 @@ internal fun ConfigureNotificationTypeDialog(
                     val selected = currentSelection.contains(type)
                     Row(
                         modifier =
-                            Modifier
-                                .toggleable(
-                                    value = selected,
-                                    role = Role.Checkbox,
-                                    enabled = true,
-                                    onValueChange = {
-                                        if (selected) {
-                                            currentSelection -= type
-                                        } else {
-                                            currentSelection += type
-                                        }
-                                    },
-                                ).padding(vertical = Spacing.s, horizontal = Spacing.s),
+                        Modifier
+                            .toggleable(
+                                value = selected,
+                                role = Role.Checkbox,
+                                enabled = true,
+                                onValueChange = {
+                                    if (selected) {
+                                        currentSelection -= type
+                                    } else {
+                                        currentSelection += type
+                                    }
+                                },
+                            ).padding(vertical = Spacing.s, horizontal = Spacing.s),
                     ) {
                         Text(
                             text = type.toReadableName(),

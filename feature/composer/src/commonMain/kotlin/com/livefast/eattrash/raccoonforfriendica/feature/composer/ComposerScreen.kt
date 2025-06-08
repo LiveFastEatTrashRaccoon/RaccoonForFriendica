@@ -269,10 +269,10 @@ class ComposerScreen(
 
         Scaffold(
             modifier =
-                Modifier
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .navigationBarsPadding()
-                    .safeImePadding(),
+            Modifier
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .navigationBarsPadding()
+                .safeImePadding(),
             topBar = {
                 TopAppBar(
                     windowInsets = topAppBarState.toWindowInsets(),
@@ -362,22 +362,22 @@ class ComposerScreen(
                                 this +=
                                     CustomOptions.ToggleSpoiler.toOption(
                                         label =
-                                            if (uiState.hasSpoiler) {
-                                                LocalStrings.current.actionRemoveSpoiler
-                                            } else {
-                                                LocalStrings.current.actionAddSpoiler
-                                            },
+                                        if (uiState.hasSpoiler) {
+                                            LocalStrings.current.actionRemoveSpoiler
+                                        } else {
+                                            LocalStrings.current.actionAddSpoiler
+                                        },
                                     )
 
                                 if (uiState.titleFeatureSupported) {
                                     this +=
                                         CustomOptions.ToggleTitle.toOption(
                                             label =
-                                                if (uiState.hasTitle) {
-                                                    LocalStrings.current.actionRemoveTitle
-                                                } else {
-                                                    LocalStrings.current.actionAddTitle
-                                                },
+                                            if (uiState.hasTitle) {
+                                                LocalStrings.current.actionRemoveTitle
+                                            } else {
+                                                LocalStrings.current.actionAddTitle
+                                            },
                                         )
                                 }
 
@@ -385,11 +385,11 @@ class ComposerScreen(
                                     this +=
                                         CustomOptions.TogglePoll.toOption(
                                             label =
-                                                if (uiState.poll != null) {
-                                                    LocalStrings.current.actionRemovePoll
-                                                } else {
-                                                    LocalStrings.current.actionAddPoll
-                                                },
+                                            if (uiState.poll != null) {
+                                                LocalStrings.current.actionRemovePoll
+                                            } else {
+                                                LocalStrings.current.actionAddPoll
+                                            },
                                         )
                                 }
 
@@ -410,9 +410,9 @@ class ComposerScreen(
                             var optionsMenuOpen by remember { mutableStateOf(false) }
                             IconButton(
                                 modifier =
-                                    Modifier.onGloballyPositioned {
-                                        optionsOffset = it.positionInParent()
-                                    },
+                                Modifier.onGloballyPositioned {
+                                    optionsOffset = it.positionInParent()
+                                },
                                 onClick = {
                                     optionsMenuOpen = true
                                 },
@@ -429,12 +429,12 @@ class ComposerScreen(
                                     optionsMenuOpen = false
                                 },
                                 offset =
-                                    with(LocalDensity.current) {
-                                        DpOffset(
-                                            x = optionsOffset.x.toDp(),
-                                            y = optionsOffset.y.toDp(),
-                                        )
-                                    },
+                                with(LocalDensity.current) {
+                                    DpOffset(
+                                        x = optionsOffset.x.toDp(),
+                                        y = optionsOffset.y.toDp(),
+                                    )
+                                },
                             ) {
                                 for (option in options) {
                                     DropdownMenuItem(
@@ -520,9 +520,9 @@ class ComposerScreen(
             bottomBar = {
                 Column(
                     modifier =
-                        Modifier
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .padding(vertical = Spacing.xs),
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(vertical = Spacing.xs),
                 ) {
                     if (uiState.shouldShowMentionSuggestions) {
                         val users = uiState.mentionSuggestions.filter { !it.handle.isNullOrBlank() }
@@ -530,7 +530,7 @@ class ComposerScreen(
                             suggestions = users.map { it.handle.orEmpty() },
                             loading = uiState.mentionSuggestionsLoading,
                             loadingMessage = LocalStrings.current.messageLoadingUsers,
-                            onSelected = { idx ->
+                            onSelect = { idx ->
                                 users[idx].handle?.takeIf { it.isNotEmpty() }?.also { handle ->
                                     model.reduce(ComposerMviModel.Intent.CompleteMention(handle))
                                 }
@@ -542,7 +542,7 @@ class ComposerScreen(
                             suggestions = hashtags.map { it.name },
                             loading = uiState.mentionSuggestionsLoading,
                             loadingMessage = LocalStrings.current.messageLoadingHashtags,
-                            onSelected = { idx ->
+                            onSelect = { idx ->
                                 hashtags[idx].name.also { name ->
                                     model.reduce(ComposerMviModel.Intent.CompleteHashtag(name))
                                 }
@@ -555,79 +555,79 @@ class ComposerScreen(
                         supportsInlineImages = uiState.inlineImagesSupported,
                         hasPoll = uiState.poll != null,
                         publicationType = uiState.publicationType,
-                        onLinkClicked = {
+                        onClickLink = {
                             linkDialogOpen = true
                         },
-                        onAttachmentClicked = {
+                        onClickAttachment = {
                             val limit = uiState.attachmentLimit ?: Int.MAX_VALUE
                             if (uiState.attachments.size < limit) {
                                 imagePickerRequest = ImagePickerRequest.Attachment
                             }
                         },
-                        onInlineImageClicked = {
+                        onClickInlineImage = {
                             imagePickerRequest = ImagePickerRequest.InlineImage
                         },
-                        onBoldClicked = {
+                        onClickBold = {
                             model.reduce(
                                 ComposerMviModel.Intent.AddBoldFormat(
                                     fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
+                                    when {
+                                        hasTitleFocus -> ComposerFieldType.Title
+                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                        else -> ComposerFieldType.Body
+                                    },
                                 ),
                             )
                         },
-                        onItalicClicked = {
+                        onClickItalic = {
                             model.reduce(
                                 ComposerMviModel.Intent.AddItalicFormat(
                                     fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
+                                    when {
+                                        hasTitleFocus -> ComposerFieldType.Title
+                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                        else -> ComposerFieldType.Body
+                                    },
                                 ),
                             )
                         },
-                        onUnderlineClicked = {
+                        onClickUnderline = {
                             model.reduce(
                                 ComposerMviModel.Intent.AddUnderlineFormat(
                                     fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
+                                    when {
+                                        hasTitleFocus -> ComposerFieldType.Title
+                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                        else -> ComposerFieldType.Body
+                                    },
                                 ),
                             )
                         },
-                        onStrikethroughClicked = {
+                        onClickStrikethrough = {
                             model.reduce(
                                 ComposerMviModel.Intent.AddStrikethroughFormat(
                                     fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
+                                    when {
+                                        hasTitleFocus -> ComposerFieldType.Title
+                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                        else -> ComposerFieldType.Body
+                                    },
                                 ),
                             )
                         },
-                        onCodeClicked = {
+                        onClickCode = {
                             model.reduce(
                                 ComposerMviModel.Intent.AddCodeFormat(
                                     fieldType =
-                                        when {
-                                            hasTitleFocus -> ComposerFieldType.Title
-                                            hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                            else -> ComposerFieldType.Body
-                                        },
+                                    when {
+                                        hasTitleFocus -> ComposerFieldType.Title
+                                        hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                        else -> ComposerFieldType.Body
+                                    },
                                 ),
                             )
                         },
-                        onSubmitClicked = {
+                        onSubmit = {
                             model.reduce(ComposerMviModel.Intent.Submit())
                         },
                     )
@@ -636,41 +636,41 @@ class ComposerScreen(
             content = { padding ->
                 Column(
                     modifier =
-                        Modifier
-                            .padding(
-                                top = padding.calculateTopPadding(),
-                                bottom = padding.calculateBottomPadding(),
-                            ).consumeWindowInsets(padding)
-                            .verticalScroll(rememberScrollState()),
+                    Modifier
+                        .padding(
+                            top = padding.calculateTopPadding(),
+                            bottom = padding.calculateBottomPadding(),
+                        ).consumeWindowInsets(padding)
+                        .verticalScroll(rememberScrollState()),
                 ) {
                     if (inReplyToUsername != null && uiState.inReplyTo != null) {
                         InReplyToInfo(
                             modifier =
-                                Modifier.padding(
-                                    start = Spacing.s,
-                                    end = Spacing.s,
-                                    bottom = Spacing.m,
-                                ),
+                            Modifier.padding(
+                                start = Spacing.s,
+                                end = Spacing.s,
+                                bottom = Spacing.m,
+                            ),
                             username = inReplyToUsername,
                         )
                     } else if (!groupUsername.isNullOrBlank()) {
                         CreateInGroupInfo(
                             modifier =
-                                Modifier.padding(
-                                    start = Spacing.s,
-                                    end = Spacing.s,
-                                    bottom = Spacing.m,
-                                ),
+                            Modifier.padding(
+                                start = Spacing.s,
+                                end = Spacing.s,
+                                bottom = Spacing.m,
+                            ),
                             username = groupUsername,
                         )
                     }
 
                     CreatePostHeader(
                         modifier =
-                            Modifier.padding(
-                                horizontal = Spacing.s,
-                                vertical = Spacing.xxs,
-                            ),
+                        Modifier.padding(
+                            horizontal = Spacing.s,
+                            vertical = Spacing.xxs,
+                        ),
                         author = uiState.author,
                         autoloadImages = uiState.autoloadImages,
                         visibility = uiState.visibility,
@@ -703,27 +703,27 @@ class ComposerScreen(
                             }
                         SpoilerTextField(
                             modifier =
-                                Modifier
-                                    .padding(horizontal = Spacing.s, vertical = Spacing.s)
-                                    .clip(RoundedCornerShape(CornerSize.l))
-                                    .height(fieldHeight)
-                                    .onFocusChanged {
-                                        hasSpoilerFieldFocus = it.hasFocus
-                                    },
+                            Modifier
+                                .padding(horizontal = Spacing.s, vertical = Spacing.s)
+                                .clip(RoundedCornerShape(CornerSize.l))
+                                .height(fieldHeight)
+                                .onFocusChanged {
+                                    hasSpoilerFieldFocus = it.hasFocus
+                                },
                             hint = LocalStrings.current.createPostSpoilerPlaceholder,
                             value = uiState.spoilerValue,
                             keyboardOptions =
-                                KeyboardOptions(
-                                    imeAction = ImeAction.Next,
-                                    keyboardType = KeyboardType.Text,
-                                    capitalization = KeyboardCapitalization.Sentences,
-                                ),
+                            KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Text,
+                                capitalization = KeyboardCapitalization.Sentences,
+                            ),
                             keyboardActions =
-                                KeyboardActions(
-                                    onNext = {
-                                        focusManager.moveFocus(FocusDirection.Down)
-                                    },
-                                ),
+                            KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                },
+                            ),
                             onValueChange = {
                                 model.reduce(
                                     ComposerMviModel.Intent.SetFieldValue(
@@ -739,11 +739,11 @@ class ComposerScreen(
                         // post title
                         OutlinedTextField(
                             modifier =
-                                Modifier
-                                    .onFocusChanged {
-                                        hasTitleFocus = it.hasFocus
-                                    }.padding(top = Spacing.s, start = Spacing.xs, end = Spacing.xs)
-                                    .fillMaxWidth(),
+                            Modifier
+                                .onFocusChanged {
+                                    hasTitleFocus = it.hasFocus
+                                }.padding(top = Spacing.s, start = Spacing.xs, end = Spacing.xs)
+                                .fillMaxWidth(),
                             label = {
                                 Text(text = LocalStrings.current.createPostTitlePlaceholder)
                             },
@@ -751,17 +751,17 @@ class ComposerScreen(
                             value = uiState.titleValue,
                             textStyle = MaterialTheme.typography.titleLarge,
                             keyboardOptions =
-                                KeyboardOptions(
-                                    imeAction = ImeAction.Next,
-                                    keyboardType = KeyboardType.Text,
-                                    capitalization = KeyboardCapitalization.Sentences,
-                                ),
+                            KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Text,
+                                capitalization = KeyboardCapitalization.Sentences,
+                            ),
                             keyboardActions =
-                                KeyboardActions(
-                                    onNext = {
-                                        focusManager.moveFocus(FocusDirection.Down)
-                                    },
-                                ),
+                            KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                },
+                            ),
                             onValueChange = { value ->
                                 model.reduce(
                                     ComposerMviModel.Intent.SetFieldValue(
@@ -776,19 +776,19 @@ class ComposerScreen(
                     // post body
                     OutlinedTextField(
                         modifier =
-                            Modifier
-                                .padding(top = Spacing.s, start = Spacing.xs, end = Spacing.xs)
-                                .fillMaxWidth()
-                                .height(400.dp),
+                        Modifier
+                            .padding(top = Spacing.s, start = Spacing.xs, end = Spacing.xs)
+                            .fillMaxWidth()
+                            .height(400.dp),
                         placeholder = {
                             Text(text = LocalStrings.current.createPostBodyPlaceholder)
                         },
                         value = uiState.bodyValue,
                         keyboardOptions =
-                            KeyboardOptions(
-                                keyboardType = KeyboardType.Text,
-                                capitalization = KeyboardCapitalization.Sentences,
-                            ),
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            capitalization = KeyboardCapitalization.Sentences,
+                        ),
                         onValueChange = { value ->
                             model.reduce(
                                 ComposerMviModel.Intent.SetFieldValue(
@@ -803,7 +803,7 @@ class ComposerScreen(
                     SettingsSwitchRow(
                         title = LocalStrings.current.postSensitive,
                         value = uiState.sensitive,
-                        onValueChanged = {
+                        onValueChange = {
                             model.reduce(ComposerMviModel.Intent.SetSensitive(it))
                         },
                     )
@@ -812,11 +812,11 @@ class ComposerScreen(
                     if (uiState.attachments.isNotEmpty()) {
                         AttachmentsGrid(
                             modifier =
-                                Modifier.padding(
-                                    top = Spacing.s,
-                                    start = Spacing.s,
-                                    end = Spacing.s,
-                                ),
+                            Modifier.padding(
+                                top = Spacing.s,
+                                start = Spacing.s,
+                                end = Spacing.s,
+                            ),
                             attachments = uiState.attachments,
                             autoloadImages = uiState.autoloadImages,
                             onDelete = { attachment ->
@@ -865,11 +865,11 @@ class ComposerScreen(
         if (linkDialogOpen) {
             InsertLinkDialog(
                 initialAnchor =
-                    uiState.bodyValue.selection.takeIf { it.length > 0 }?.let { range ->
-                        runCatching {
-                            uiState.bodyValue.text.substring(range.start, range.end)
-                        }.getOrNull()
-                    },
+                uiState.bodyValue.selection.takeIf { it.length > 0 }?.let { range ->
+                    runCatching {
+                        uiState.bodyValue.text.substring(range.start, range.end)
+                    }.getOrNull()
+                },
                 onClose = { link ->
                     linkDialogOpen = false
                     if (link != null) {
@@ -918,20 +918,20 @@ class ComposerScreen(
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
                 title = LocalStrings.current.selectCircleDialogTitle,
                 items =
-                    uiState.availableCircles.map { value ->
-                        CustomModalBottomSheetItem(
-                            label = value.name,
-                            trailingContent = {
-                                Icon(
-                                    modifier = Modifier.size(IconSize.m),
-                                    imageVector = value.type.toIcon(),
-                                    contentDescription = value.type.toReadableName(),
-                                    tint = MaterialTheme.colorScheme.onBackground,
-                                )
-                            },
-                        )
-                    },
-                onSelected = { index ->
+                uiState.availableCircles.map { value ->
+                    CustomModalBottomSheetItem(
+                        label = value.name,
+                        trailingContent = {
+                            Icon(
+                                modifier = Modifier.size(IconSize.m),
+                                imageVector = value.type.toIcon(),
+                                contentDescription = value.type.toReadableName(),
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        },
+                    )
+                },
+                onSelect = { index ->
                     selectCircleDialogOpen = false
                     if (index != null) {
                         val circle = uiState.availableCircles[index]
@@ -963,7 +963,7 @@ class ComposerScreen(
                 onLoadMorePhotos = {
                     model.reduce(ComposerMviModel.Intent.GalleryLoadMorePhotos)
                 },
-                onAlbumChanged = { album ->
+                onChangeAlbum = { album ->
                     model.reduce(ComposerMviModel.Intent.GalleryAlbumSelected(album))
                 },
                 onClose = { attachments ->
@@ -1017,11 +1017,11 @@ class ComposerScreen(
                     model.reduce(
                         ComposerMviModel.Intent.InsertCustomEmoji(
                             fieldType =
-                                when {
-                                    hasTitleFocus -> ComposerFieldType.Title
-                                    hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
-                                    else -> ComposerFieldType.Body
-                                },
+                            when {
+                                hasTitleFocus -> ComposerFieldType.Title
+                                hasSpoilerFieldFocus -> ComposerFieldType.Spoiler
+                                else -> ComposerFieldType.Body
+                            },
                             emoji = emoji,
                         ),
                     )
@@ -1032,18 +1032,18 @@ class ComposerScreen(
         if (confirmBackWithUnsavedChangesDialogOpen) {
             CustomConfirmDialog(
                 title =
-                    if (uiState.publicationType == PublicationType.Draft) {
-                        LocalStrings.current.unsavedDraftTitle
-                    } else {
-                        LocalStrings.current.unsavedChangesTitle
-                    },
+                if (uiState.publicationType == PublicationType.Draft) {
+                    LocalStrings.current.unsavedDraftTitle
+                } else {
+                    LocalStrings.current.unsavedChangesTitle
+                },
                 body = LocalStrings.current.messageAreYouSureExit,
                 confirmButtonLabel =
-                    if (uiState.publicationType == PublicationType.Draft) {
-                        LocalStrings.current.buttonDiscard
-                    } else {
-                        LocalStrings.current.buttonConfirm
-                    },
+                if (uiState.publicationType == PublicationType.Draft) {
+                    LocalStrings.current.buttonDiscard
+                } else {
+                    LocalStrings.current.buttonConfirm
+                },
                 onClose = { confirm ->
                     confirmBackWithUnsavedChangesDialogOpen = false
                     if (confirm) {
@@ -1112,7 +1112,7 @@ class ComposerScreen(
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemMarkupMode,
                 items = modes.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
-                onSelected = { index ->
+                onSelect = { index ->
                     changeMarkupModeBottomSheetOpened = false
                     if (index != null) {
                         val mode = modes[index]

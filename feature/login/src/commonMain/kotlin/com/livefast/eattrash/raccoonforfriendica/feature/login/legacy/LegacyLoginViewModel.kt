@@ -14,8 +14,8 @@ class LegacyLoginViewModel(
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val loginUseCase: LoginUseCase,
 ) : DefaultMviModel<LegacyLoginMviModel.Intent, LegacyLoginMviModel.State, LegacyLoginMviModel.Effect>(
-        initialState = LegacyLoginMviModel.State(),
-    ),
+    initialState = LegacyLoginMviModel.State(),
+),
     LegacyLoginMviModel {
     init {
         screenModelScope.launch {

@@ -73,9 +73,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class AlbumDetailScreen(
-    private val name: String,
-) : Screen {
+class AlbumDetailScreen(private val name: String) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
@@ -170,13 +168,13 @@ class AlbumDetailScreen(
                 AnimatedVisibility(
                     visible = isFabVisible,
                     enter =
-                        slideInVertically(
-                            initialOffsetY = { it * 2 },
-                        ),
+                    slideInVertically(
+                        initialOffsetY = { it * 2 },
+                    ),
                     exit =
-                        slideOutVertically(
-                            targetOffsetY = { it * 2 },
-                        ),
+                    slideOutVertically(
+                        targetOffsetY = { it * 2 },
+                    ),
                 ) {
                     FloatingActionButton(
                         onClick = {
@@ -193,16 +191,16 @@ class AlbumDetailScreen(
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(AlbumDetailMviModel.Intent.Refresh)
@@ -249,17 +247,17 @@ class AlbumDetailScreen(
                                 }
                             },
                             options =
-                                buildList {
-                                    this += OptionId.Delete.toOption()
-                                    this += OptionId.Edit.toOption()
-                                    if (uiState.albums.isNotEmpty()) {
-                                        this +=
-                                            CustomOptions.Move.toOption(
-                                                label = LocalStrings.current.actionMove,
-                                            )
-                                    }
-                                },
-                            onOptionSelected = { optionId ->
+                            buildList {
+                                this += OptionId.Delete.toOption()
+                                this += OptionId.Edit.toOption()
+                                if (uiState.albums.isNotEmpty()) {
+                                    this +=
+                                        CustomOptions.Move.toOption(
+                                            label = LocalStrings.current.actionMove,
+                                        )
+                                }
+                            },
+                            onSelectOption = { optionId ->
                                 when (optionId) {
                                     OptionId.Delete -> attachmentIdToDelete = attachment.id
                                     OptionId.Edit ->
@@ -323,7 +321,7 @@ class AlbumDetailScreen(
             CustomModalBottomSheet(
                 title = LocalStrings.current.actionMove,
                 items = items,
-                onSelected = { idx ->
+                onSelect = { idx ->
                     val attachment = attachmentToMove
                     attachmentToMove = null
                     if (idx != null && attachment != null) {

@@ -21,10 +21,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 @Composable
 fun FeedbackButton(
     imageVector: ImageVector,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     tintColor: Color = MaterialTheme.colorScheme.onBackground,
-    onClick: () -> Unit,
     contentDescription: String? = null,
 ) {
     var zoomed by remember { mutableStateOf(false) }
@@ -34,31 +34,31 @@ fun FeedbackButton(
     )
     Image(
         modifier =
-            modifier
-                .scale(scale)
-                .then(
-                    if (enabled) {
-                        Modifier.pointerInput(Unit) {
-                            detectTapGestures(
-                                onPress = {
-                                    zoomed = true
-                                    tryAwaitRelease()
-                                    zoomed = false
-                                },
-                                onTap = {
-                                    onClick()
-                                },
-                            )
-                        }
-                    } else {
-                        Modifier
-                    },
-                ),
+        modifier
+            .scale(scale)
+            .then(
+                if (enabled) {
+                    Modifier.pointerInput(Unit) {
+                        detectTapGestures(
+                            onPress = {
+                                zoomed = true
+                                tryAwaitRelease()
+                                zoomed = false
+                            },
+                            onTap = {
+                                onClick()
+                            },
+                        )
+                    }
+                } else {
+                    Modifier
+                },
+            ),
         imageVector = imageVector,
         contentDescription = contentDescription,
         colorFilter =
-            ColorFilter.tint(
-                color = tintColor,
-            ),
+        ColorFilter.tint(
+            color = tintColor,
+        ),
     )
 }

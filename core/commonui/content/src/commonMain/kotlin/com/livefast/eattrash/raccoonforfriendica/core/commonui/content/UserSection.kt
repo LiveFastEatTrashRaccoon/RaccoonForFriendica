@@ -14,10 +14,9 @@ sealed interface UserSection {
 }
 
 @Composable
-fun UserSection.toReadableName(): String =
-    when (this) {
-        UserSection.Posts -> LocalStrings.current.accountSectionPosts
-        UserSection.All -> LocalStrings.current.accountSectionAll
-        UserSection.Pinned -> LocalStrings.current.accountSectionPinned
-        UserSection.Media -> LocalStrings.current.accountSectionMedia
-    }
+fun UserSection.toReadableName(): String = when (this) {
+    UserSection.Posts -> LocalStrings.current.accountSectionPosts
+    UserSection.All -> LocalStrings.current.accountSectionAll
+    UserSection.Pinned -> LocalStrings.current.accountSectionPinned
+    UserSection.Media -> LocalStrings.current.accountSectionMedia
+}

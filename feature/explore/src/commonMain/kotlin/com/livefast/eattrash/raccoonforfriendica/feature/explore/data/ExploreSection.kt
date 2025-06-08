@@ -14,10 +14,9 @@ sealed interface ExploreSection {
 }
 
 @Composable
-fun ExploreSection.toReadableName(): String =
-    when (this) {
-        ExploreSection.Posts -> LocalStrings.current.accountSectionPosts
-        ExploreSection.Hashtags -> LocalStrings.current.exploreSectionHashtags
-        ExploreSection.Links -> LocalStrings.current.exploreSectionLinks
-        ExploreSection.Suggestions -> LocalStrings.current.exploreSectionSuggestions
-    }
+fun ExploreSection.toReadableName(): String = when (this) {
+    ExploreSection.Posts -> LocalStrings.current.accountSectionPosts
+    ExploreSection.Hashtags -> LocalStrings.current.exploreSectionHashtags
+    ExploreSection.Links -> LocalStrings.current.exploreSectionLinks
+    ExploreSection.Suggestions -> LocalStrings.current.exploreSectionSuggestions
+}

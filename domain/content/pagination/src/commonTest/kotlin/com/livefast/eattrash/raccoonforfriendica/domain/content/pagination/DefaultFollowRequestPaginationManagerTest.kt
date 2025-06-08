@@ -30,64 +30,61 @@ class DefaultFollowRequestPaginationManagerTest {
         )
 
     @Test
-    fun `given no results when loadNextPage then result is as expected`() =
-        runTest {
-            everySuspend { userRepository.getFollowRequests(any()) } returns ListWithPageCursor()
+    fun `given no results when loadNextPage then result is as expected`() = runTest {
+        everySuspend { userRepository.getFollowRequests(any()) } returns ListWithPageCursor()
 
-            sut.reset()
-            val res = sut.loadNextPage()
+        sut.reset()
+        val res = sut.loadNextPage()
 
-            assertTrue(res.isEmpty())
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                userRepository.getFollowRequests(pageCursor = null)
-            }
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            userRepository.getFollowRequests(pageCursor = null)
         }
+    }
 
     @Test
-    fun `given results when loadNextPage then result is as expected`() =
-        runTest {
-            val elements = listOf(UserModel(id = "1"))
-            everySuspend { userRepository.getFollowRequests(any()) } returns
+    fun `given results when loadNextPage then result is as expected`() = runTest {
+        val elements = listOf(UserModel(id = "1"))
+        everySuspend { userRepository.getFollowRequests(any()) } returns
+            ListWithPageCursor(
+                list = elements,
+                cursor = "1",
+            )
+
+        sut.reset()
+        val res = sut.loadNextPage()
+
+        assertEquals(elements, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            userRepository.getFollowRequests(pageCursor = null)
+        }
+    }
+
+    @Test
+    fun `given can not fetch more when loadNextPage twice then result is as expected`() = runTest {
+        val elements = listOf(UserModel(id = "1"))
+        everySuspend {
+            userRepository.getFollowRequests(any())
+        } sequentiallyReturns
+            listOf(
                 ListWithPageCursor(
                     list = elements,
                     cursor = "1",
-                )
+                ),
+                ListWithPageCursor(),
+            )
 
-            sut.reset()
-            val res = sut.loadNextPage()
+        sut.reset()
+        sut.loadNextPage()
+        val res = sut.loadNextPage()
 
-            assertEquals(elements, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                userRepository.getFollowRequests(pageCursor = null)
-            }
+        assertEquals(elements, res)
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            userRepository.getFollowRequests(pageCursor = null)
+            userRepository.getFollowRequests(pageCursor = "1")
         }
-
-    @Test
-    fun `given can not fetch more when loadNextPage twice then result is as expected`() =
-        runTest {
-            val elements = listOf(UserModel(id = "1"))
-            everySuspend {
-                userRepository.getFollowRequests(any())
-            } sequentiallyReturns
-                listOf(
-                    ListWithPageCursor(
-                        list = elements,
-                        cursor = "1",
-                    ),
-                    ListWithPageCursor(),
-                )
-
-            sut.reset()
-            sut.loadNextPage()
-            val res = sut.loadNextPage()
-
-            assertEquals(elements, res)
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                userRepository.getFollowRequests(pageCursor = null)
-                userRepository.getFollowRequests(pageCursor = "1")
-            }
-        }
+    }
 }

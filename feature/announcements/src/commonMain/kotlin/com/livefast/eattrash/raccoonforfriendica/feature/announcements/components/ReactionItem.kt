@@ -32,30 +32,30 @@ internal fun ReactionItem(
     val shape = RoundedCornerShape(CornerSize.xxl)
     Row(
         modifier =
-            modifier
-                .clip(shape)
-                .clickable {
-                    if (reaction.isMe) {
-                        onRemove?.invoke(reaction.name)
-                    } else {
-                        onAdd?.invoke(reaction.name)
-                    }
-                }.then(
-                    if (reaction.isMe) {
-                        Modifier.background(
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.66f),
-                            shape = shape,
-                        )
-                    } else {
-                        Modifier.background(
-                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
-                            shape = shape,
-                        )
-                    },
-                ).padding(
-                    vertical = Spacing.xs,
-                    horizontal = Spacing.s,
-                ),
+        modifier
+            .clip(shape)
+            .clickable {
+                if (reaction.isMe) {
+                    onRemove?.invoke(reaction.name)
+                } else {
+                    onAdd?.invoke(reaction.name)
+                }
+            }.then(
+                if (reaction.isMe) {
+                    Modifier.background(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.66f),
+                        shape = shape,
+                    )
+                } else {
+                    Modifier.background(
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
+                        shape = shape,
+                    )
+                },
+            ).padding(
+                vertical = Spacing.xs,
+                horizontal = Spacing.s,
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
@@ -67,11 +67,11 @@ internal fun ReactionItem(
                     CircularProgressIndicator(
                         modifier = Modifier.size(IconSize.s),
                         color =
-                            if (reaction.isMe) {
-                                MaterialTheme.colorScheme.onPrimary
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
+                        if (reaction.isMe) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                     )
                 }
 
@@ -95,14 +95,14 @@ internal fun ReactionItem(
             modifier = Modifier.padding(end = Spacing.s),
             text = "${reaction.count}",
             style =
-                MaterialTheme.typography.labelSmall.copy(
-                    fontWeight =
-                        if (reaction.isMe) {
-                            FontWeight.Bold
-                        } else {
-                            FontWeight.Medium
-                        },
-                ),
+            MaterialTheme.typography.labelSmall.copy(
+                fontWeight =
+                if (reaction.isMe) {
+                    FontWeight.Bold
+                } else {
+                    FontWeight.Medium
+                },
+            ),
         )
     }
 }

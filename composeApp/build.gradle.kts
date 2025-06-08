@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.ksp)
     alias(libs.plugins.mokkery)
+    id("com.livefast.eattrash.spotless")
 }
 
 kotlin {
@@ -243,6 +244,21 @@ kover {
                     "*.pushnotifications.utils",
                 )
             }
+        }
+    }
+}
+
+spotless {
+    kotlin {
+        target("*+/App.kt")
+        suppressLintsFor {
+            step = "ktlint"
+            shortCode = "compose:modifier-missing-check"
+        }
+        target("*+/MainViewController.kt")
+        suppressLintsFor {
+            step = "ktlint"
+            shortCode = "standard:function-naming"
         }
     }
 }

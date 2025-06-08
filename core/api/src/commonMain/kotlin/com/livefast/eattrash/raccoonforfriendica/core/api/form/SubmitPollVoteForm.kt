@@ -4,6 +4,4 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SubmitPollVoteForm(
-    @SerialName("choices") val choices: List<Int>,
-)
+data class SubmitPollVoteForm(@SerialName("choices") val choices: List<Int>)

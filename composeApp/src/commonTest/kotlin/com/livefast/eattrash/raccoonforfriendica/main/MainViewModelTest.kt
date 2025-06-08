@@ -65,8 +65,7 @@ class MainViewModelTest {
         assertEquals(bottomBarOffsetHeightPx, state.bottomBarOffsetHeightPx)
     }
 
-    private fun viewModelFactory() =
-        MainViewModel(
-            inboxManager = inboxManager,
-        )
+    private fun viewModelFactory() = MainViewModel(
+        inboxManager = inboxManager,
+    )
 }

@@ -13,10 +13,7 @@ internal class DefaultEmojiRepository(
     private val otherProvider: ServiceProvider,
     private val cache: LruCache<String, List<EmojiModel>> = LruCache.factory(20),
 ) : EmojiRepository {
-    override suspend fun getAll(
-        node: String?,
-        refresh: Boolean,
-    ): List<EmojiModel> {
+    override suspend fun getAll(node: String?, refresh: Boolean): List<EmojiModel> {
         val key = node.orEmpty()
         val cachedValue = cache.get(key)
         return if (cachedValue != null && !refresh) {
@@ -28,17 +25,16 @@ internal class DefaultEmojiRepository(
         }
     }
 
-    private suspend fun retrieve(node: String?): List<EmojiModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val res =
-                    if (node == null) {
-                        provider.instance.getCustomEmojis()
-                    } else {
-                        otherProvider.changeNode(node)
-                        otherProvider.instance.getCustomEmojis()
-                    }
-                res.map { it.toModel() }
-            }.getOrElse { null }
-        }
+    private suspend fun retrieve(node: String?): List<EmojiModel>? = withContext(Dispatchers.IO) {
+        runCatching {
+            val res =
+                if (node == null) {
+                    provider.instance.getCustomEmojis()
+                } else {
+                    otherProvider.changeNode(node)
+                    otherProvider.instance.getCustomEmojis()
+                }
+            res.map { it.toModel() }
+        }.getOrElse { null }
+    }
 }

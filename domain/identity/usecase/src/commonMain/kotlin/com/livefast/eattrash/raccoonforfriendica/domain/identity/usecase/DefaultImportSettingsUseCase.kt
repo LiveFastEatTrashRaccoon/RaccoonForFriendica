@@ -5,9 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class DefaultImportSettingsUseCase(
-    private val settingsRepository: SettingsRepository,
-) : ImportSettingsUseCase {
+internal class DefaultImportSettingsUseCase(private val settingsRepository: SettingsRepository) :
+    ImportSettingsUseCase {
     override suspend fun invoke(content: String) {
         val current = settingsRepository.current.value ?: return
         withContext(Dispatchers.IO) {

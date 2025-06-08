@@ -39,8 +39,8 @@ internal class UserListViewModel(
     private val exportUserList: ExportUserListUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>(
-        initialState = UserListMviModel.State(),
-    ),
+    initialState = UserListMviModel.State(),
+),
     UserListMviModel {
     init {
         screenModelScope.launch {
@@ -69,7 +69,7 @@ internal class UserListViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -172,20 +172,17 @@ internal class UserListViewModel(
         }
     }
 
-    private suspend fun updateUserInState(
-        userId: String,
-        block: (UserModel) -> UserModel,
-    ) {
+    private suspend fun updateUserInState(userId: String, block: (UserModel) -> UserModel) {
         updateState {
             it.copy(
                 users =
-                    it.users.map { user ->
-                        if (user.id == userId) {
-                            user.let(block)
-                        } else {
-                            user
-                        }
-                    },
+                it.users.map { user ->
+                    if (user.id == userId) {
+                        user.let(block)
+                    } else {
+                        user
+                    }
+                },
             )
         }
     }

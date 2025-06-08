@@ -6,9 +6,7 @@ import android.net.Uri
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 
-internal class DefaultCustomTabsHelper(
-    private val context: Context,
-) : CustomTabsHelper {
+internal class DefaultCustomTabsHelper(private val context: Context) : CustomTabsHelper {
     private val packageName: String?
         get() = CustomTabsClient.getPackageName(context, emptyList())
 

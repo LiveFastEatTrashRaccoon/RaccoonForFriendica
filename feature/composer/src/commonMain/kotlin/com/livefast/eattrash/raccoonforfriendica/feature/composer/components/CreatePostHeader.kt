@@ -73,10 +73,10 @@ internal fun CreatePostHeader(
         if (creatorAvatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
-                    Modifier
-                        .padding(Spacing.xxxs)
-                        .size(iconSize)
-                        .clip(RoundedCornerShape(iconSize / 2)),
+                Modifier
+                    .padding(Spacing.xxxs)
+                    .size(iconSize)
+                    .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
                 quality = FilterQuality.Low,
                 contentScale = ContentScale.FillBounds,
@@ -110,18 +110,18 @@ internal fun CreatePostHeader(
         Box {
             Row(
                 modifier =
-                    Modifier
-                        .onGloballyPositioned {
-                            optionsOffset = it.positionInParent()
-                        }.then(
-                            if (changeVisibilityEnabled) {
-                                Modifier.clickable {
-                                    visibilityDropDownOpen = true
-                                }
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .onGloballyPositioned {
+                        optionsOffset = it.positionInParent()
+                    }.then(
+                        if (changeVisibilityEnabled) {
+                            Modifier.clickable {
+                                visibilityDropDownOpen = true
+                            }
+                        } else {
+                            Modifier
+                        },
+                    ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
@@ -148,12 +148,12 @@ internal fun CreatePostHeader(
                     visibilityDropDownOpen = false
                 },
                 offset =
-                    with(LocalDensity.current) {
-                        DpOffset(
-                            x = optionsOffset.x.toDp(),
-                            y = optionsOffset.y.toDp(),
-                        )
-                    },
+                with(LocalDensity.current) {
+                    DpOffset(
+                        x = optionsOffset.x.toDp(),
+                        y = optionsOffset.y.toDp(),
+                    )
+                },
             ) {
                 for (value in availableVisibilities) {
                     DropdownMenuItem(

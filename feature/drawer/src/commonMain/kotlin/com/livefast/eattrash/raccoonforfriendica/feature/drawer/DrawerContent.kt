@@ -149,35 +149,35 @@ class DrawerContent : Screen {
                     DrawerShortcut(
                         title = LocalStrings.current.favoritesTitle,
                         icon = Icons.Default.Favorite,
-                        onSelected = {
+                        onSelect = {
                             handleAction { detailOpener.openFavorites() }
                         },
                     )
                     DrawerShortcut(
                         title = LocalStrings.current.bookmarksTitle,
                         icon = Icons.Default.Bookmarks,
-                        onSelected = {
+                        onSelect = {
                             handleAction { detailOpener.openBookmarks() }
                         },
                     )
                     DrawerShortcut(
                         title = LocalStrings.current.followedHashtagsTitle,
                         icon = Icons.Default.Tag,
-                        onSelected = {
+                        onSelect = {
                             handleAction { detailOpener.openFollowedHashtags() }
                         },
                     )
                     DrawerShortcut(
                         title = LocalStrings.current.followRequestsTitle,
                         icon = Icons.Default.Flaky,
-                        onSelected = {
+                        onSelect = {
                             handleAction { detailOpener.openFollowRequests() }
                         },
                     )
                     DrawerShortcut(
                         title = LocalStrings.current.manageCirclesTitle,
                         icon = Icons.Default.Workspaces,
-                        onSelected = {
+                        onSelect = {
                             handleAction { detailOpener.openCircles() }
                         },
                     )
@@ -185,7 +185,7 @@ class DrawerContent : Screen {
                         DrawerShortcut(
                             title = LocalStrings.current.announcementsTitle,
                             icon = Icons.Default.Campaign,
-                            onSelected = {
+                            onSelect = {
                                 handleAction { detailOpener.openAnnouncements() }
                             },
                         )
@@ -194,7 +194,7 @@ class DrawerContent : Screen {
                         DrawerShortcut(
                             title = LocalStrings.current.directMessagesTitle,
                             icon = Icons.AutoMirrored.Default.Chat,
-                            onSelected = {
+                            onSelect = {
                                 handleAction { detailOpener.openDirectMessages() }
                             },
                         )
@@ -203,7 +203,7 @@ class DrawerContent : Screen {
                         DrawerShortcut(
                             title = LocalStrings.current.galleryTitle,
                             icon = Icons.Default.Dashboard,
-                            onSelected = {
+                            onSelect = {
                                 handleAction { detailOpener.openGallery() }
                             },
                         )
@@ -211,7 +211,7 @@ class DrawerContent : Screen {
                     DrawerShortcut(
                         title = LocalStrings.current.unpublishedTitle,
                         icon = Icons.Default.Drafts,
-                        onSelected = {
+                        onSelect = {
                             handleAction { detailOpener.openUnpublished() }
                         },
                     )
@@ -219,7 +219,7 @@ class DrawerContent : Screen {
                         DrawerShortcut(
                             title = LocalStrings.current.calendarTitle,
                             icon = Icons.Default.CalendarMonth,
-                            onSelected = {
+                            onSelect = {
                                 handleAction { detailOpener.openCalendar() }
                             },
                         )
@@ -227,7 +227,7 @@ class DrawerContent : Screen {
                     DrawerShortcut(
                         title = LocalStrings.current.shortcutsTitle,
                         icon = Icons.Default.TravelExplore,
-                        onSelected = {
+                        onSelect = {
                             handleAction { detailOpener.openShortcuts() }
                         },
                     )
@@ -236,7 +236,7 @@ class DrawerContent : Screen {
                 DrawerShortcut(
                     title = LocalStrings.current.nodeInfoTitle,
                     icon = Icons.Default.Info,
-                    onSelected = {
+                    onSelect = {
                         handleAction { detailOpener.openNodeInfo() }
                     },
                 )
@@ -248,7 +248,7 @@ class DrawerContent : Screen {
                 DrawerShortcut(
                     title = LocalStrings.current.settingsAbout,
                     icon = Icons.AutoMirrored.Default.ContactSupport,
-                    onSelected = {
+                    onSelect = {
                         scope.launch {
                             drawerCoordinator.closeDrawer()
                         }
@@ -259,7 +259,7 @@ class DrawerContent : Screen {
                 DrawerShortcut(
                     title = LocalStrings.current.settingsTitle,
                     icon = Icons.Default.Settings,
-                    onSelected = {
+                    onSelect = {
                         handleAction { detailOpener.openSettings() }
                     },
                 )
@@ -279,9 +279,9 @@ class DrawerContent : Screen {
                             if (avatar.isNotEmpty() && uiState.autoloadImages) {
                                 CustomImage(
                                     modifier =
-                                        Modifier
-                                            .size(avatarSize)
-                                            .clip(RoundedCornerShape(avatarSize / 2)),
+                                    Modifier
+                                        .size(avatarSize)
+                                        .clip(RoundedCornerShape(avatarSize / 2)),
                                     url = avatar,
                                     quality = FilterQuality.Low,
                                     contentScale = ContentScale.FillBounds,
@@ -305,7 +305,7 @@ class DrawerContent : Screen {
                 title = LocalStrings.current.actionSwitchAccount,
                 sheetState = sheetState,
                 items = items,
-                onSelected = { index ->
+                onSelect = { index ->
                     manageAccountsDialogOpened = false
                     if (index != null) {
                         val accounts = uiState.availableAccounts
@@ -327,9 +327,9 @@ class DrawerContent : Screen {
             ) {
                 Column(
                     modifier =
-                        Modifier
-                            .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                            .padding(Spacing.m),
+                    Modifier
+                        .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                        .padding(Spacing.m),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
                 ) {
@@ -359,21 +359,21 @@ class DrawerContent : Screen {
                             }
                         },
                         values =
-                            buildList {
-                                for (instance in DefaultFriendicaInstances) {
-                                    this += buildString {
-                                        append(instance.value)
-                                        append("  ")
-                                        append(instance.lang)
-                                    } to instance.value
-                                }
-                                this += LocalStrings.current.itemOther to ""
-                            },
+                        buildList {
+                            for (instance in DefaultFriendicaInstances) {
+                                this += buildString {
+                                    append(instance.value)
+                                    append("  ")
+                                    append(instance.lang)
+                                } to instance.value
+                            }
+                            this += LocalStrings.current.itemOther to ""
+                        },
                         value = uiState.anonymousChangeNodeName,
                         keyboardOptions =
-                            KeyboardOptions(
-                                keyboardType = KeyboardType.Text,
-                            ),
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                        ),
                         onValueChange = { value ->
                             model.reduce(DrawerMviModel.Intent.SetAnonymousChangeNode(value))
                         },

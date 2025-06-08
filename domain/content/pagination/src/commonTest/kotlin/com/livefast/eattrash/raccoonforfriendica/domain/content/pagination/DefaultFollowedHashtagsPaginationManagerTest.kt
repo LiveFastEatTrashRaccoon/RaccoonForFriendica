@@ -20,64 +20,61 @@ class DefaultFollowedHashtagsPaginationManagerTest {
     private val sut = DefaultFollowedHashtagsPaginationManager(tagRepository = tagRepository)
 
     @Test
-    fun `given no results when loadNextPage then result is as expected`() =
-        runTest {
-            everySuspend { tagRepository.getFollowed(any()) } returns ListWithPageCursor()
+    fun `given no results when loadNextPage then result is as expected`() = runTest {
+        everySuspend { tagRepository.getFollowed(any()) } returns ListWithPageCursor()
 
-            sut.reset()
-            val res = sut.loadNextPage()
+        sut.reset()
+        val res = sut.loadNextPage()
 
-            assertTrue(res.isEmpty())
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                tagRepository.getFollowed(pageCursor = null)
-            }
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            tagRepository.getFollowed(pageCursor = null)
         }
+    }
 
     @Test
-    fun `given results when loadNextPage then result is as expected`() =
-        runTest {
-            val elements =
-                listOf(
-                    TagModel(url = "fake-url", name = "fake-name", following = true),
-                )
-            everySuspend { tagRepository.getFollowed(any()) } returns
-                ListWithPageCursor(list = elements, cursor = "1")
+    fun `given results when loadNextPage then result is as expected`() = runTest {
+        val elements =
+            listOf(
+                TagModel(url = "fake-url", name = "fake-name", following = true),
+            )
+        everySuspend { tagRepository.getFollowed(any()) } returns
+            ListWithPageCursor(list = elements, cursor = "1")
 
-            sut.reset()
-            val res = sut.loadNextPage()
+        sut.reset()
+        val res = sut.loadNextPage()
 
-            assertEquals(elements, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                tagRepository.getFollowed(pageCursor = null)
-            }
+        assertEquals(elements, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            tagRepository.getFollowed(pageCursor = null)
         }
+    }
 
     @Test
-    fun `given can not fetch more when loadNextPage twice then result is as expected`() =
-        runTest {
-            val elements =
-                listOf(
-                    TagModel(url = "fake-url", name = "fake-name", following = true),
-                )
-            everySuspend {
-                tagRepository.getFollowed(any())
-            } sequentiallyReturns
-                listOf(
-                    ListWithPageCursor(list = elements, cursor = "1"),
-                    ListWithPageCursor(),
-                )
+    fun `given can not fetch more when loadNextPage twice then result is as expected`() = runTest {
+        val elements =
+            listOf(
+                TagModel(url = "fake-url", name = "fake-name", following = true),
+            )
+        everySuspend {
+            tagRepository.getFollowed(any())
+        } sequentiallyReturns
+            listOf(
+                ListWithPageCursor(list = elements, cursor = "1"),
+                ListWithPageCursor(),
+            )
 
-            sut.reset()
-            sut.loadNextPage()
-            val res = sut.loadNextPage()
+        sut.reset()
+        sut.loadNextPage()
+        val res = sut.loadNextPage()
 
-            assertEquals(elements, res)
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                tagRepository.getFollowed(pageCursor = null)
-                tagRepository.getFollowed(pageCursor = "1")
-            }
+        assertEquals(elements, res)
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            tagRepository.getFollowed(pageCursor = null)
+            tagRepository.getFollowed(pageCursor = "1")
         }
+    }
 }

@@ -6,7 +6,4 @@ sealed interface MarkerType {
     data object Notifications : MarkerType
 }
 
-data class MarkerModel(
-    val type: MarkerType,
-    val lastReadId: String,
-)
+data class MarkerModel(val type: MarkerType, val lastReadId: String)

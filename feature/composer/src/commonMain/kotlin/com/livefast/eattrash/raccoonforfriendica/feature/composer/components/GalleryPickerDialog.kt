@@ -69,6 +69,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GalleryPickerDialog(
+    modifier: Modifier = Modifier,
     sheetScope: CoroutineScope = rememberCoroutineScope(),
     sheetState: SheetState = rememberModalBottomSheetState(),
     currentAlbum: String? = null,
@@ -78,7 +79,7 @@ fun GalleryPickerDialog(
     loading: Boolean = false,
     onInitialLoad: (() -> Unit)? = null,
     onLoadMorePhotos: (() -> Unit)? = null,
-    onAlbumChanged: ((String) -> Unit)? = null,
+    onChangeAlbum: ((String) -> Unit)? = null,
     photos: List<AttachmentModel> = emptyList(),
     onClose: ((List<AttachmentModel>?) -> Unit)? = null,
 ) {
@@ -95,6 +96,7 @@ fun GalleryPickerDialog(
     }
 
     ModalBottomSheet(
+        modifier = modifier,
         contentWindowInsets = { WindowInsets.navigationBars },
         sheetState = sheetState,
         onDismissRequest = {
@@ -114,9 +116,9 @@ fun GalleryPickerDialog(
                     )
                     Button(
                         modifier =
-                            Modifier
-                                .padding(end = Spacing.s)
-                                .align(Alignment.CenterEnd),
+                        Modifier
+                            .padding(end = Spacing.s)
+                            .align(Alignment.CenterEnd),
                         onClick = {
                             sheetScope
                                 .launch {
@@ -132,14 +134,14 @@ fun GalleryPickerDialog(
                     ) {
                         Text(
                             text =
-                                buildString {
-                                    append(LocalStrings.current.buttonConfirm)
-                                    if (selection.isNotEmpty()) {
-                                        append(" (")
-                                        append(selection.size)
-                                        append(")")
-                                    }
-                                },
+                            buildString {
+                                append(LocalStrings.current.buttonConfirm)
+                                if (selection.isNotEmpty()) {
+                                    append(" (")
+                                    append(selection.size)
+                                    append(")")
+                                }
+                            },
                         )
                     }
                 }
@@ -147,9 +149,9 @@ fun GalleryPickerDialog(
 
                 LazyVerticalStaggeredGrid(
                     modifier =
-                        Modifier
-                            .padding(horizontal = Spacing.s)
-                            .heightIn(min = 500.dp),
+                    Modifier
+                        .padding(horizontal = Spacing.s)
+                        .heightIn(min = 500.dp),
                     state = lazyGridState,
                     columns = StaggeredGridCells.Fixed(count = 2),
                     horizontalArrangement = Arrangement.spacedBy(Spacing.s),
@@ -158,33 +160,33 @@ fun GalleryPickerDialog(
                     item(span = StaggeredGridItemSpan.FullLine) {
                         Row(
                             modifier =
-                                Modifier
-                                    .border(
-                                        width = Dp.Hairline,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                        shape = RoundedCornerShape(CornerSize.xl),
-                                    ).clickable(
-                                        interactionSource = remember { MutableInteractionSource() },
-                                        indication = null,
-                                    ) {
-                                        optionsMenuOpen = !optionsMenuOpen
-                                    },
+                            Modifier
+                                .border(
+                                    width = Dp.Hairline,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    shape = RoundedCornerShape(CornerSize.xl),
+                                ).clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                ) {
+                                    optionsMenuOpen = !optionsMenuOpen
+                                },
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
                                 modifier =
-                                    Modifier
-                                        .weight(1f)
-                                        .padding(start = Spacing.m),
+                                Modifier
+                                    .weight(1f)
+                                    .padding(start = Spacing.m),
                                 text = currentAlbum.orEmpty(),
                                 style = MaterialTheme.typography.titleMedium,
                             )
                             Box {
                                 IconButton(
                                     modifier =
-                                        Modifier.onGloballyPositioned {
-                                            optionsOffset = it.positionInParent()
-                                        },
+                                    Modifier.onGloballyPositioned {
+                                        optionsOffset = it.positionInParent()
+                                    },
                                     onClick = {
                                         optionsMenuOpen = !optionsMenuOpen
                                     },
@@ -201,12 +203,12 @@ fun GalleryPickerDialog(
                                         optionsMenuOpen = false
                                     },
                                     offset =
-                                        with(LocalDensity.current) {
-                                            DpOffset(
-                                                x = optionsOffset.x.toDp(),
-                                                y = optionsOffset.y.toDp(),
-                                            )
-                                        },
+                                    with(LocalDensity.current) {
+                                        DpOffset(
+                                            x = optionsOffset.x.toDp(),
+                                            y = optionsOffset.y.toDp(),
+                                        )
+                                    },
                                 ) {
                                     albums.forEach { album ->
                                         DropdownMenuItem(
@@ -215,7 +217,7 @@ fun GalleryPickerDialog(
                                             },
                                             onClick = {
                                                 optionsMenuOpen = false
-                                                onAlbumChanged?.invoke(album.name)
+                                                onChangeAlbum?.invoke(album.name)
                                             },
                                         )
                                     }
@@ -255,16 +257,16 @@ fun GalleryPickerDialog(
                             if (selectionIndex >= 0) {
                                 Box(
                                     modifier =
-                                        Modifier
-                                            .padding(
-                                                top = Spacing.s,
-                                                end = Spacing.s,
-                                            ).align(Alignment.TopEnd)
-                                            .size(IconSize.s)
-                                            .background(
-                                                color = MaterialTheme.colorScheme.primaryContainer,
-                                                shape = CircleShape,
-                                            ),
+                                    Modifier
+                                        .padding(
+                                            top = Spacing.s,
+                                            end = Spacing.s,
+                                        ).align(Alignment.TopEnd)
+                                        .size(IconSize.s)
+                                        .background(
+                                            color = MaterialTheme.colorScheme.primaryContainer,
+                                            shape = CircleShape,
+                                        ),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(

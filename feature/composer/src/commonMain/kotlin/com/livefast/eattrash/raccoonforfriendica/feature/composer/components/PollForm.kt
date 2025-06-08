@@ -46,11 +46,11 @@ internal fun PollForm(
     ) {
         Text(
             modifier =
-                Modifier.padding(
-                    top = Spacing.m,
-                    start = 10.dp,
-                    end = 10.dp,
-                ),
+            Modifier.padding(
+                top = Spacing.m,
+                start = 10.dp,
+                end = 10.dp,
+            ),
             text = LocalStrings.current.createPostPollSection,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground,
@@ -72,19 +72,19 @@ internal fun PollForm(
     poll.options.forEachIndexed { idx, option ->
         OutlinedTextField(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        vertical = Spacing.xs,
-                        horizontal = Spacing.s,
-                    ),
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    vertical = Spacing.xs,
+                    horizontal = Spacing.s,
+                ),
             label = {
                 Text(
                     text =
-                        buildString {
-                            append(LocalStrings.current.createPostPollOptionLabel)
-                            append(" ${idx + 1}")
-                        },
+                    buildString {
+                        append(LocalStrings.current.createPostPollOptionLabel)
+                        append(" ${idx + 1}")
+                    },
                 )
             },
             textStyle = MaterialTheme.typography.bodySmall,
@@ -94,16 +94,16 @@ internal fun PollForm(
                 onEditOption?.invoke(idx, it)
             },
             keyboardOptions =
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next,
-                ),
+            KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+            ),
             keyboardActions =
-                KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    },
-                ),
+            KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                },
+            ),
             trailingIcon = {
                 IconButton(
                     onClick = {
@@ -121,25 +121,25 @@ internal fun PollForm(
     SettingsSwitchRow(
         title = LocalStrings.current.createPostPollItemMultiple,
         value = poll.multiple,
-        onValueChanged = {
+        onValueChange = {
             onChangeMultiple?.invoke(it)
         },
     )
     SettingsRow(
         title = LocalStrings.current.createPostPollItemExpirationDate,
         value =
-            buildString {
-                if (poll.expiresAt.isNullOrBlank()) {
-                    append(LocalStrings.current.shortUnavailable)
-                } else {
-                    append(
-                        getFormattedDate(
-                            iso8601Timestamp = poll.expiresAt.orEmpty(),
-                            format = "dd/MM/yy HH:mm",
-                        ),
-                    )
-                }
-            },
+        buildString {
+            if (poll.expiresAt.isNullOrBlank()) {
+                append(LocalStrings.current.shortUnavailable)
+            } else {
+                append(
+                    getFormattedDate(
+                        iso8601Timestamp = poll.expiresAt.orEmpty(),
+                        format = "dd/MM/yy HH:mm",
+                    ),
+                )
+            }
+        },
         onTap = {
             onEditExpirationDate?.invoke()
         },

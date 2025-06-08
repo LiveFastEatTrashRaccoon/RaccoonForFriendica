@@ -6,13 +6,7 @@ import androidx.compose.runtime.Stable
 interface ShareHelper {
     val supportsShareImage: Boolean
 
-    fun share(
-        url: String,
-        mimeType: String = "text/plain",
-    )
+    fun share(url: String, mimeType: String = "text/plain")
 
-    fun shareImage(
-        path: Any?,
-        mimeType: String = "image/*",
-    )
+    fun shareImage(path: Any?, mimeType: String = "image/*")
 }

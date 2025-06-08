@@ -44,86 +44,80 @@ class DefaultNotificationCoordinatorTest {
         )
 
     @Test
-    fun `when setupAnonymousUser then interactions are as expected`() =
-        runTest {
-            sut.setupAnonymousUser()
+    fun `when setupAnonymousUser then interactions are as expected`() = runTest {
+        sut.setupAnonymousUser()
 
-            verifySuspend {
-                pullNotificationManager.stop()
-                inboxManager.clearUnreadCount()
-            }
+        verifySuspend {
+            pullNotificationManager.stop()
+            inboxManager.clearUnreadCount()
         }
+    }
 
     @Test
-    fun `given no logged user when mode changes to Pull then interactions are as expected`() =
-        runTest {
-            sut.setupAnonymousUser()
+    fun `given no logged user when mode changes to Pull then interactions are as expected`() = runTest {
+        sut.setupAnonymousUser()
 
-            settingsState.update {
-                SettingsModel(
-                    notificationMode = NotificationMode.Pull,
-                    pullNotificationCheckInterval = 10.minutes,
-                )
-            }
-
-            verify(mode = VerifyMode.not) {
-                pullNotificationManager.setPeriod(any())
-                pullNotificationManager.start()
-            }
+        settingsState.update {
+            SettingsModel(
+                notificationMode = NotificationMode.Pull,
+                pullNotificationCheckInterval = 10.minutes,
+            )
         }
+
+        verify(mode = VerifyMode.not) {
+            pullNotificationManager.setPeriod(any())
+            pullNotificationManager.start()
+        }
+    }
 
     @Test
-    fun `given no logged user when mode changes to Push then interactions are as expected`() =
-        runTest {
-            sut.setupAnonymousUser()
+    fun `given no logged user when mode changes to Push then interactions are as expected`() = runTest {
+        sut.setupAnonymousUser()
 
-            settingsState.update { SettingsModel(notificationMode = NotificationMode.Push) }
+        settingsState.update { SettingsModel(notificationMode = NotificationMode.Push) }
 
-            verifySuspend(mode = VerifyMode.not) {
-                pushNotificationManager.refreshState()
-                pushNotificationManager.startup()
-            }
+        verifySuspend(mode = VerifyMode.not) {
+            pushNotificationManager.refreshState()
+            pushNotificationManager.startup()
         }
+    }
 
     @Test
-    fun `when setupLoggedUser then interactions are as expected`() =
-        runTest {
-            sut.setupLoggedUser()
+    fun `when setupLoggedUser then interactions are as expected`() = runTest {
+        sut.setupLoggedUser()
 
-            verifySuspend {
-                pullNotificationManager.stop()
-                inboxManager.refreshUnreadCount()
-            }
+        verifySuspend {
+            pullNotificationManager.stop()
+            inboxManager.refreshUnreadCount()
         }
+    }
 
     @Test
-    fun `given logged user when mode changes to Pull then interactions are as expected`() =
-        runTest {
-            sut.setupLoggedUser()
+    fun `given logged user when mode changes to Pull then interactions are as expected`() = runTest {
+        sut.setupLoggedUser()
 
-            settingsState.update {
-                SettingsModel(
-                    notificationMode = NotificationMode.Pull,
-                    pullNotificationCheckInterval = 10.minutes,
-                )
-            }
-
-            verify {
-                pullNotificationManager.setPeriod(minutes = 10)
-                pullNotificationManager.start()
-            }
+        settingsState.update {
+            SettingsModel(
+                notificationMode = NotificationMode.Pull,
+                pullNotificationCheckInterval = 10.minutes,
+            )
         }
+
+        verify {
+            pullNotificationManager.setPeriod(minutes = 10)
+            pullNotificationManager.start()
+        }
+    }
 
     @Test
-    fun `given logged user when mode changes to Push then interactions are as expected`() =
-        runTest {
-            sut.setupLoggedUser()
+    fun `given logged user when mode changes to Push then interactions are as expected`() = runTest {
+        sut.setupLoggedUser()
 
-            settingsState.update { SettingsModel(notificationMode = NotificationMode.Push) }
+        settingsState.update { SettingsModel(notificationMode = NotificationMode.Push) }
 
-            verifySuspend {
-                pushNotificationManager.refreshState()
-                pushNotificationManager.startup()
-            }
+        verifySuspend {
+            pushNotificationManager.refreshState()
+            pushNotificationManager.startup()
         }
+    }
 }

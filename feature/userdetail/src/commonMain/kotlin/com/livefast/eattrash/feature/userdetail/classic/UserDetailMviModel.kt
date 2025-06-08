@@ -19,38 +19,25 @@ interface UserDetailMviModel :
 
         data object LoadNextPage : Intent
 
-        data class ChangeSection(
-            val section: UserSection,
-        ) : Intent
+        data class ChangeSection(val section: UserSection) : Intent
 
         data object Follow : Intent
 
         data object Unfollow : Intent
 
-        data class ToggleReblog(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class ToggleReblog(val entry: TimelineEntryModel) : Intent
 
-        data class ToggleFavorite(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class ToggleFavorite(val entry: TimelineEntryModel) : Intent
 
-        data class ToggleDislike(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class ToggleDislike(val entry: TimelineEntryModel) : Intent
 
-        data class ToggleBookmark(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class ToggleBookmark(val entry: TimelineEntryModel) : Intent
 
         data object EnableNotifications : Intent
 
         data object DisableNotifications : Intent
 
-        data class SubmitPollVote(
-            val entry: TimelineEntryModel,
-            val choices: List<Int>,
-        ) : Intent
+        data class SubmitPollVote(val entry: TimelineEntryModel, val choices: List<Int>) : Intent
 
         data class ToggleMute(
             val muted: Boolean,
@@ -58,41 +45,25 @@ interface UserDetailMviModel :
             val disableNotifications: Boolean = true,
         ) : Intent
 
-        data class ToggleBlock(
-            val blocked: Boolean,
-        ) : Intent
+        data class ToggleBlock(val blocked: Boolean) : Intent
 
         data object TogglePersonalNoteEditMode : Intent
 
-        data class SetPersonalNote(
-            val note: String,
-        ) : Intent
+        data class SetPersonalNote(val note: String) : Intent
 
         data object SubmitPersonalNote : Intent
 
-        data class CopyToClipboard(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class CopyToClipboard(val entry: TimelineEntryModel) : Intent
 
-        data class SetRateLimit(
-            val value: Double,
-        ) : Intent
+        data class SetRateLimit(val value: Double) : Intent
 
-        data class ToggleTranslation(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class ToggleTranslation(val entry: TimelineEntryModel) : Intent
 
-        data class WillOpenDetail(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class WillOpenDetail(val entry: TimelineEntryModel) : Intent
 
-        data class AddInstanceShortcut(
-            val node: String,
-        ) : Intent
+        data class AddInstanceShortcut(val node: String) : Intent
 
-        data class OpenInBrowser(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class OpenInBrowser(val entry: TimelineEntryModel) : Intent
     }
 
     data class State(
@@ -123,16 +94,10 @@ interface UserDetailMviModel :
 
         data object Failure : Effect
 
-        data class TriggerCopy(
-            val text: String,
-        ) : Effect
+        data class TriggerCopy(val text: String) : Effect
 
-        data class OpenDetail(
-            val entry: TimelineEntryModel,
-        ) : Effect
+        data class OpenDetail(val entry: TimelineEntryModel) : Effect
 
-        data class OpenUrl(
-            val url: String,
-        ) : Effect
+        data class OpenUrl(val url: String) : Effect
     }
 }

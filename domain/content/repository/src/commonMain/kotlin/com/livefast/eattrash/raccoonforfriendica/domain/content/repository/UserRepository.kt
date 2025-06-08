@@ -7,11 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 interface UserRepository {
     suspend fun getById(id: String): UserModel?
 
-    suspend fun search(
-        query: String,
-        offset: Int,
-        following: Boolean = false,
-    ): List<UserModel>?
+    suspend fun search(query: String, offset: Int, following: Boolean = false): List<UserModel>?
 
     suspend fun getByHandle(handle: String): UserModel?
 
@@ -21,26 +17,13 @@ interface UserRepository {
 
     suspend fun getSuggestions(): List<UserModel>?
 
-    suspend fun getFollowers(
-        id: String,
-        pageCursor: String? = null,
-    ): List<UserModel>?
+    suspend fun getFollowers(id: String, pageCursor: String? = null): List<UserModel>?
 
-    suspend fun getFollowing(
-        id: String,
-        pageCursor: String? = null,
-    ): List<UserModel>?
+    suspend fun getFollowing(id: String, pageCursor: String? = null): List<UserModel>?
 
-    suspend fun searchMyFollowing(
-        query: String,
-        pageCursor: String? = null,
-    ): List<UserModel>?
+    suspend fun searchMyFollowing(query: String, pageCursor: String? = null): List<UserModel>?
 
-    suspend fun follow(
-        id: String,
-        reblogs: Boolean = true,
-        notifications: Boolean = false,
-    ): RelationshipModel?
+    suspend fun follow(id: String, reblogs: Boolean = true, notifications: Boolean = false): RelationshipModel?
 
     suspend fun unfollow(id: String): RelationshipModel?
 
@@ -50,11 +33,7 @@ interface UserRepository {
 
     suspend fun rejectFollowRequest(id: String): Boolean
 
-    suspend fun mute(
-        id: String,
-        durationSeconds: Long = 0,
-        notifications: Boolean = true,
-    ): RelationshipModel?
+    suspend fun mute(id: String, durationSeconds: Long = 0, notifications: Boolean = true): RelationshipModel?
 
     suspend fun unmute(id: String): RelationshipModel?
 
@@ -79,8 +58,5 @@ interface UserRepository {
         fields: Map<String, String>? = null,
     ): UserModel?
 
-    suspend fun updatePersonalNote(
-        id: String,
-        value: String,
-    ): RelationshipModel?
+    suspend fun updatePersonalNote(id: String, value: String): RelationshipModel?
 }

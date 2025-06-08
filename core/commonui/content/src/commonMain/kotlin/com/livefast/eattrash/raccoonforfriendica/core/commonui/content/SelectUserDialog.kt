@@ -55,12 +55,13 @@ import kotlinx.coroutines.flow.map
 @Composable
 fun SelectUserDialog(
     query: String,
+    modifier: Modifier = Modifier,
     users: List<UserModel> = emptyList(),
     loading: Boolean = false,
     canFetchMore: Boolean = false,
     autoloadImages: Boolean = true,
     onLoadMoreUsers: (() -> Unit)? = null,
-    onSearchChanged: ((String) -> Unit)? = null,
+    onSearch: ((String) -> Unit)? = null,
     onClose: ((UserModel?) -> Unit)? = null,
 ) {
     val noUsersDebounced by
@@ -71,16 +72,16 @@ fun SelectUserDialog(
             .collectAsState(false)
 
     BasicAlertDialog(
-        modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
+        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onClose?.invoke(null)
         },
     ) {
         Column(
             modifier =
-                Modifier
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                    .padding(Spacing.m),
+            Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                .padding(Spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
@@ -96,10 +97,10 @@ fun SelectUserDialog(
                 hint = LocalStrings.current.selectUserSearchPlaceholder,
                 value = query,
                 onValueChange = {
-                    onSearchChanged?.invoke(it)
+                    onSearch?.invoke(it)
                 },
                 onClear = {
-                    onSearchChanged?.invoke((""))
+                    onSearch?.invoke((""))
                 },
             )
             Spacer(modifier = Modifier.height(Spacing.xs))
@@ -113,16 +114,16 @@ fun SelectUserDialog(
                             val animatingPart = getAnimatedDots()
                             Text(
                                 modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = Spacing.s, start = Spacing.s),
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = Spacing.s, start = Spacing.s),
                                 text =
-                                    buildString {
-                                        append("🔦")
-                                        append(" ")
-                                        append(LocalStrings.current.messageSearchInitialEmpty)
-                                        append(animatingPart)
-                                    },
+                                buildString {
+                                    append("🔦")
+                                    append(" ")
+                                    append(LocalStrings.current.messageSearchInitialEmpty)
+                                    append(animatingPart)
+                                },
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -182,27 +183,27 @@ private fun UserResultItem(
 
     Row(
         modifier =
-            modifier
-                .clip(
-                    shape = RoundedCornerShape(CornerSize.xxl),
-                ).clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication =
-                        ripple(
-                            color = MaterialTheme.colorScheme.onBackground.copy(0.5f),
-                        ),
-                ) {
-                    onClick?.invoke()
-                }.padding(Spacing.s),
+        modifier
+            .clip(
+                shape = RoundedCornerShape(CornerSize.xxl),
+            ).clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication =
+                ripple(
+                    color = MaterialTheme.colorScheme.onBackground.copy(0.5f),
+                ),
+            ) {
+                onClick?.invoke()
+            }.padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (avatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
-                    Modifier
-                        .size(avatarSize)
-                        .clip(RoundedCornerShape(avatarSize / 2)),
+                Modifier
+                    .size(avatarSize)
+                    .clip(RoundedCornerShape(avatarSize / 2)),
                 url = avatar,
                 quality = FilterQuality.Low,
                 contentScale = ContentScale.FillBounds,

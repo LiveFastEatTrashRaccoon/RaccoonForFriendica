@@ -159,89 +159,85 @@ internal class DefaultSearchPaginationManager(
         return history.map { it }
     }
 
-    private fun List<ExploreItemModel>.updatePaginationData(): List<ExploreItemModel> =
-        apply {
-            lastOrNull()?.also {
-                pageCursor = it.id
-            }
-            canFetchMore = isNotEmpty()
+    private fun List<ExploreItemModel>.updatePaginationData(): List<ExploreItemModel> = apply {
+        lastOrNull()?.also {
+            pageCursor = it.id
         }
+        canFetchMore = isNotEmpty()
+    }
 
-    private fun List<ExploreItemModel>.deduplicate(): List<ExploreItemModel> =
-        filter { e1 ->
-            history.none { e2 -> e1.id == e2.id }
-        }.distinctBy { it.id }
+    private fun List<ExploreItemModel>.deduplicate(): List<ExploreItemModel> = filter { e1 ->
+        history.none { e2 -> e1.id == e2.id }
+    }.distinctBy { it.id }
 
-    private fun List<ExploreItemModel>.filterNsfw(included: Boolean): List<ExploreItemModel> = filter { included || !it.isNsfw }
+    private fun List<ExploreItemModel>.filterNsfw(included: Boolean): List<ExploreItemModel> = filter {
+        included ||
+            !it.isNsfw
+    }
 
-    private suspend fun List<ExploreItemModel>.determineUserRelationshipStatus(): List<ExploreItemModel> =
-        run {
-            val userIds = mapNotNull { e -> (e as? ExploreItemModel.User)?.user?.id }
-            val relationships = userRepository.getRelationships(userIds)
-            map { entry ->
-                if (entry !is ExploreItemModel.User) {
-                    entry
-                } else {
-                    val relationship = relationships?.firstOrNull { rel -> rel.id == entry.user.id }
-                    entry.copy(
-                        user =
-                            entry.user.copy(
-                                relationshipStatus = relationship?.toStatus(),
-                                notificationStatus = relationship?.toNotificationStatus(),
-                            ),
-                    )
-                }
-            }
-        }
-
-    private suspend fun List<ExploreItemModel>.fixupCreatorEmojis(): List<ExploreItemModel> =
-        with(emojiHelper) {
-            map {
-                when (it) {
-                    is ExploreItemModel.Entry -> it.copy(entry = it.entry.withEmojisIfMissing())
-                    is ExploreItemModel.User -> it.copy(user = it.user.withEmojisIfMissing())
-                    else -> it
-                }
-            }
-        }
-
-    private suspend fun List<ExploreItemModel>.fixupInReplyTo(): List<ExploreItemModel> =
-        with(replyHelper) {
-            map {
-                when (it) {
-                    is ExploreItemModel.Entry -> it.copy(entry = it.entry.withInReplyToIfMissing())
-                    else -> it
-                }
-            }
-        }
-
-    private fun List<ExploreItemModel>.filterByStopWords(): List<ExploreItemModel> =
-        filter { item ->
-            when (item) {
-                is ExploreItemModel.Entry ->
-                    stopWords?.takeIf { it.isNotEmpty() }?.let { stopWordList ->
-                        stopWordList.none { word ->
-                            val entryTexts =
-                                listOfNotNull(
-                                    item.entry.content,
-                                    item.entry.title,
-                                    item.entry.reblog?.content,
-                                    item.entry.reblog?.title,
-                                )
-                            entryTexts.any { it.contains(other = word, ignoreCase = true) }
-                        }
-                    } != false
-
-                else -> true
-            }
-        }
-
-    private fun List<ExploreItemModel>.filterGroups(): List<ExploreItemModel> =
-        filter {
-            if (it is ExploreItemModel.User) {
-                it.user.group
+    private suspend fun List<ExploreItemModel>.determineUserRelationshipStatus(): List<ExploreItemModel> = run {
+        val userIds = mapNotNull { e -> (e as? ExploreItemModel.User)?.user?.id }
+        val relationships = userRepository.getRelationships(userIds)
+        map { entry ->
+            if (entry !is ExploreItemModel.User) {
+                entry
             } else {
-                false
+                val relationship = relationships?.firstOrNull { rel -> rel.id == entry.user.id }
+                entry.copy(
+                    user =
+                    entry.user.copy(
+                        relationshipStatus = relationship?.toStatus(),
+                        notificationStatus = relationship?.toNotificationStatus(),
+                    ),
+                )
             }
         }
+    }
+
+    private suspend fun List<ExploreItemModel>.fixupCreatorEmojis(): List<ExploreItemModel> = with(emojiHelper) {
+        map {
+            when (it) {
+                is ExploreItemModel.Entry -> it.copy(entry = it.entry.withEmojisIfMissing())
+                is ExploreItemModel.User -> it.copy(user = it.user.withEmojisIfMissing())
+                else -> it
+            }
+        }
+    }
+
+    private suspend fun List<ExploreItemModel>.fixupInReplyTo(): List<ExploreItemModel> = with(replyHelper) {
+        map {
+            when (it) {
+                is ExploreItemModel.Entry -> it.copy(entry = it.entry.withInReplyToIfMissing())
+                else -> it
+            }
+        }
+    }
+
+    private fun List<ExploreItemModel>.filterByStopWords(): List<ExploreItemModel> = filter { item ->
+        when (item) {
+            is ExploreItemModel.Entry ->
+                stopWords?.takeIf { it.isNotEmpty() }?.let { stopWordList ->
+                    stopWordList.none { word ->
+                        val entryTexts =
+                            listOfNotNull(
+                                item.entry.content,
+                                item.entry.title,
+                                item.entry.reblog?.content,
+                                item.entry.reblog?.title,
+                            )
+                        entryTexts.any { it.contains(other = word, ignoreCase = true) }
+                    }
+                } != false
+
+            else -> true
+        }
+    }
+
+    private fun List<ExploreItemModel>.filterGroups(): List<ExploreItemModel> = filter {
+        if (it is ExploreItemModel.User) {
+            it.user.group
+        } else {
+            false
+        }
+    }
 }

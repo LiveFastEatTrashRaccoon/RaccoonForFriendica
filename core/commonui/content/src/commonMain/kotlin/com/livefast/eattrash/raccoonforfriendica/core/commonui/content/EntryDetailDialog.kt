@@ -42,10 +42,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableN
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntryDetailDialog(
-    entry: TimelineEntryModel,
-    onClose: (() -> Unit)? = null,
-) {
+fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val sourcePlatform = entry.sourcePlatform.orEmpty()
     val sourceProtocol = entry.sourceProtocol.orEmpty()
@@ -53,16 +50,16 @@ fun EntryDetailDialog(
     val updateDate = entry.updated.orEmpty()
 
     BasicAlertDialog(
-        modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
+        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onClose?.invoke()
         },
         content = {
             Column(
                 modifier =
-                    Modifier
-                        .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                        .padding(Spacing.m),
+                Modifier
+                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                    .padding(Spacing.m),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
             ) {
@@ -74,9 +71,9 @@ fun EntryDetailDialog(
 
                 LazyColumn(
                     modifier =
-                        Modifier
-                            .padding(vertical = Spacing.s, horizontal = Spacing.xs)
-                            .heightIn(max = 400.dp),
+                    Modifier
+                        .padding(vertical = Spacing.s, horizontal = Spacing.xs)
+                        .heightIn(max = 400.dp),
                     verticalArrangement = Arrangement.spacedBy(Spacing.s),
                 ) {
                     item {
@@ -93,11 +90,11 @@ fun EntryDetailDialog(
                                 Text(
                                     style = MaterialTheme.typography.labelMedium,
                                     text =
-                                        buildString {
-                                            append("(")
-                                            append(sourceProtocol)
-                                            append(")")
-                                        },
+                                    buildString {
+                                        append("(")
+                                        append(sourceProtocol)
+                                        append(")")
+                                    },
                                     color = fullColor,
                                 )
                             }
@@ -123,9 +120,9 @@ fun EntryDetailDialog(
                                     modifier = Modifier.fillMaxWidth(),
                                     text = it.prettifyHtml(),
                                     style =
-                                        MaterialTheme.typography.titleMedium.copy(
-                                            fontFamily = FontFamily.Monospace,
-                                        ),
+                                    MaterialTheme.typography.titleMedium.copy(
+                                        fontFamily = FontFamily.Monospace,
+                                    ),
                                     color = fullColor,
                                 )
                             }
@@ -139,9 +136,9 @@ fun EntryDetailDialog(
                                     modifier = Modifier.fillMaxWidth(),
                                     text = it.prettifyHtml(),
                                     style =
-                                        MaterialTheme.typography.bodyMedium.copy(
-                                            fontFamily = FontFamily.Monospace,
-                                        ),
+                                    MaterialTheme.typography.bodyMedium.copy(
+                                        fontFamily = FontFamily.Monospace,
+                                    ),
                                     color = fullColor,
                                 )
                             }
@@ -155,9 +152,9 @@ fun EntryDetailDialog(
                                     modifier = Modifier.fillMaxWidth(),
                                     text = it.prettifyHtml(),
                                     style =
-                                        MaterialTheme.typography.bodyMedium.copy(
-                                            fontFamily = FontFamily.Monospace,
-                                        ),
+                                    MaterialTheme.typography.bodyMedium.copy(
+                                        fontFamily = FontFamily.Monospace,
+                                    ),
                                     color = fullColor,
                                 )
                             }
@@ -177,9 +174,9 @@ fun EntryDetailDialog(
                                             modifier = Modifier.fillMaxWidth(),
                                             text = attachment.url,
                                             style =
-                                                MaterialTheme.typography.bodyMedium.copy(
-                                                    fontFamily = FontFamily.Monospace,
-                                                ),
+                                            MaterialTheme.typography.bodyMedium.copy(
+                                                fontFamily = FontFamily.Monospace,
+                                            ),
                                             color = fullColor,
                                         )
                                     }
@@ -205,9 +202,9 @@ fun EntryDetailDialog(
                                 Text(
                                     text = updateDate,
                                     style =
-                                        MaterialTheme.typography.bodyMedium.copy(
-                                            fontFamily = FontFamily.Monospace,
-                                        ),
+                                    MaterialTheme.typography.bodyMedium.copy(
+                                        fontFamily = FontFamily.Monospace,
+                                    ),
                                     color = fullColor,
                                 )
                             }
@@ -230,9 +227,9 @@ fun EntryDetailDialog(
                                 Text(
                                     text = creationDate,
                                     style =
-                                        MaterialTheme.typography.bodyMedium.copy(
-                                            fontFamily = FontFamily.Monospace,
-                                        ),
+                                    MaterialTheme.typography.bodyMedium.copy(
+                                        fontFamily = FontFamily.Monospace,
+                                    ),
                                     color = fullColor,
                                 )
                             }
@@ -249,7 +246,7 @@ fun EntryDetailDialog(
                                 modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
                                 imageVector = Icons.Default.ArrowCircleUp,
                                 contentDescription =
-                                    LocalStrings.current.extendedSocialInfoFavorites(entry.favoriteCount),
+                                LocalStrings.current.extendedSocialInfoFavorites(entry.favoriteCount),
                                 tint = fullColor,
                             )
                             Text(
@@ -262,7 +259,7 @@ fun EntryDetailDialog(
                                 modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
                                 imageVector = Icons.Default.ArrowCircleDown,
                                 contentDescription =
-                                    LocalStrings.current.dislikesCount(entry.dislikesCount),
+                                LocalStrings.current.dislikesCount(entry.dislikesCount),
                                 tint = fullColor,
                             )
                             Text(

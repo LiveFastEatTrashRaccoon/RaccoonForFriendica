@@ -30,13 +30,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @Composable
 fun SettingsRow(
+    title: String,
+    modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     painter: Painter? = null,
-    title: String,
     value: String = "",
     disclosureIndicator: Boolean = false,
     annotatedValue: AnnotatedString = AnnotatedString(""),
-    modifier: Modifier = Modifier,
     subtitle: String? = null,
     onTap: (() -> Unit)? = null,
 ) {
@@ -44,21 +44,21 @@ fun SettingsRow(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ancillaryTextAlpha)
     Row(
         modifier =
-            modifier
-                .clip(
-                    shape = RoundedCornerShape(CornerSize.xl),
-                ).then(
-                    if (onTap != null) {
-                        Modifier.clickable {
-                            onTap()
-                        }
-                    } else {
-                        Modifier
-                    },
-                ).padding(
-                    vertical = 10.dp,
-                    horizontal = Spacing.m,
-                ),
+        modifier
+            .clip(
+                shape = RoundedCornerShape(CornerSize.xl),
+            ).then(
+                if (onTap != null) {
+                    Modifier.clickable {
+                        onTap()
+                    }
+                } else {
+                    Modifier
+                },
+            ).padding(
+                vertical = 10.dp,
+                horizontal = Spacing.m,
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {

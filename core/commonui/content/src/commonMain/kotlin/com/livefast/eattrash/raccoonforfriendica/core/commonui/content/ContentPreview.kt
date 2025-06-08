@@ -40,8 +40,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 @Composable
 fun ContentPreview(
     card: PreviewCardModel,
-    autoloadImages: Boolean = true,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     onOpen: ((String) -> Unit)? = null,
     onOpenImage: ((String) -> Unit)? = null,
 ) {
@@ -57,11 +57,16 @@ fun ContentPreview(
     val cornerSize = CornerSize.xl
     val contentPadding = 12.dp
 
-    if (hasMediaInfo || hasTextualInfo) {
-        Column(
-            modifier =
-                modifier
-                    .clickable(
+    Box(modifier = modifier) {
+        if (hasMediaInfo || hasTextualInfo) {
+            Column(
+                modifier =
+                Modifier
+                    .border(
+                        width = Dp.Hairline,
+                        color = ancillaryColor,
+                        shape = RoundedCornerShape(cornerSize),
+                    ).clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                         onClickLabel = LocalStrings.current.actionOpenLink,
@@ -69,25 +74,21 @@ fun ContentPreview(
                         if (url.isNotEmpty()) {
                             onOpen?.invoke(url)
                         }
-                    }.border(
-                        width = Dp.Hairline,
-                        color = ancillaryColor,
-                        shape = RoundedCornerShape(cornerSize),
-                    ).padding(
+                    }.padding(
                         bottom = contentPadding,
                     ),
-            verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-        ) {
-            if (image.isNotBlank() && autoloadImages) {
-                Box(
-                    modifier =
+                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+            ) {
+                if (image.isNotBlank() && autoloadImages) {
+                    Box(
+                        modifier =
                         Modifier.heightIn(
                             min = 50.dp,
                             max = 200.dp,
                         ),
-                ) {
-                    CustomImage(
-                        modifier =
+                    ) {
+                        CustomImage(
+                            modifier =
                             Modifier
                                 .fillMaxSize()
                                 .clip(
@@ -98,95 +99,96 @@ fun ContentPreview(
                                 ).clickable {
                                     onOpenImage?.invoke(image)
                                 },
-                        url = image,
-                        contentDescription = LocalStrings.current.previewImage,
-                        quality = FilterQuality.Low,
-                        contentScale = ContentScale.FillWidth,
-                    )
-                }
-            } else if (type == PreviewType.Video && url.isNotBlank() && autoloadImages) {
-                Box(
-                    modifier = modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    VideoPlayerPreview(
-                        modifier = Modifier.fillMaxSize(),
-                        url = url,
-                    )
+                            url = image,
+                            contentDescription = LocalStrings.current.previewImage,
+                            quality = FilterQuality.Low,
+                            contentScale = ContentScale.FillWidth,
+                        )
+                    }
+                } else if (type == PreviewType.Video && url.isNotBlank() && autoloadImages) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        VideoPlayerPreview(
+                            modifier = Modifier.fillMaxSize(),
+                            url = url,
+                        )
 
-                    FilledIconButton(
-                        colors =
+                        FilledIconButton(
+                            colors =
                             IconButtonDefaults.filledIconButtonColors().copy(
                                 containerColor = MaterialTheme.colorScheme.onBackground,
                             ),
-                        modifier =
+                            modifier =
                             Modifier
                                 .align(Alignment.Center)
                                 .padding(
                                     start = Spacing.xs,
                                 ),
-                        onClick = {
-                            onOpen?.invoke(url)
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = LocalStrings.current.actionOpenFullScreen,
-                        )
+                            onClick = {
+                                onOpen?.invoke(url)
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = LocalStrings.current.actionOpenFullScreen,
+                            )
+                        }
                     }
                 }
-            }
 
-            Column(
-                modifier =
+                Column(
+                    modifier =
                     Modifier.padding(
                         top = Spacing.s,
                         end = contentPadding,
                         start = contentPadding,
                     ),
-                verticalArrangement = Arrangement.spacedBy(Spacing.s),
-            ) {
-                if (title.isNotBlank()) {
-                    val annotatedTitle =
-                        title.parseHtml(
-                            linkColor = MaterialTheme.colorScheme.primary,
-                            quoteColor =
+                    verticalArrangement = Arrangement.spacedBy(Spacing.s),
+                ) {
+                    if (title.isNotBlank()) {
+                        val annotatedTitle =
+                            title.parseHtml(
+                                linkColor = MaterialTheme.colorScheme.primary,
+                                quoteColor =
                                 MaterialTheme.colorScheme.onBackground.copy(
                                     ancillaryTextAlpha,
                                 ),
+                            )
+                        Text(
+                            text = annotatedTitle,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = fullColor,
                         )
-                    Text(
-                        text = annotatedTitle,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = fullColor,
-                    )
-                }
-                if (description.isNotBlank()) {
-                    val annotatedDescription =
-                        description.parseHtml(
-                            linkColor = MaterialTheme.colorScheme.primary,
-                            quoteColor =
+                    }
+                    if (description.isNotBlank()) {
+                        val annotatedDescription =
+                            description.parseHtml(
+                                linkColor = MaterialTheme.colorScheme.primary,
+                                quoteColor =
                                 MaterialTheme.colorScheme.onBackground.copy(
                                     ancillaryTextAlpha,
                                 ),
+                            )
+                        Text(
+                            text = annotatedDescription,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = ancillaryColor,
                         )
-                    Text(
-                        text = annotatedDescription,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = ancillaryColor,
-                    )
+                    }
                 }
             }
         }
-    }
 
-    if (type == PreviewType.Link && url.isNotEmpty()) {
-        LinkBanner(
-            modifier = Modifier.padding(top = Spacing.s),
-            url = url,
-            onClick = {
-                onOpen?.invoke(url)
-            },
-        )
+        if (type == PreviewType.Link && url.isNotEmpty()) {
+            LinkBanner(
+                modifier = Modifier.padding(top = Spacing.s),
+                url = url,
+                onClick = {
+                    onOpen?.invoke(url)
+                },
+            )
+        }
     }
 }

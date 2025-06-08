@@ -114,10 +114,10 @@ internal class DefaultActiveAccountMonitor(
         get() =
             SettingsModel(
                 markupMode =
-                    if (supportedFeatureRepository.features.value.supportsBBCode) {
-                        MarkupMode.BBCode
-                    } else {
-                        MarkupMode.PlainText
-                    },
+                if (supportedFeatureRepository.features.value.supportsBBCode) {
+                    MarkupMode.BBCode
+                } else {
+                    MarkupMode.PlainText
+                },
             )
 }

@@ -11,9 +11,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-internal class DefaultNotificationRepository(
-    private val provider: ServiceProvider,
-) : NotificationRepository {
+internal class DefaultNotificationRepository(private val provider: ServiceProvider) : NotificationRepository {
     private val mutex = Mutex()
     private val cachedValues: MutableList<NotificationModel> = mutableListOf()
 
@@ -21,50 +19,47 @@ internal class DefaultNotificationRepository(
         types: List<NotificationType>,
         pageCursor: String?,
         refresh: Boolean,
-    ): List<NotificationModel>? =
-        withContext(Dispatchers.IO) {
-            if (refresh) {
-                mutex.withLock {
-                    cachedValues.clear()
-                }
+    ): List<NotificationModel>? = withContext(Dispatchers.IO) {
+        if (refresh) {
+            mutex.withLock {
+                cachedValues.clear()
             }
-            if (pageCursor == null && cachedValues.isNotEmpty()) {
-                return@withContext cachedValues
-            }
-            runCatching {
-                val response =
-                    provider.notifications.get(
-                        types = types.mapNotNull { it.toRawValue() },
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                    )
-                response
-                    .map { it.toModel() }
-                    .also {
-                        if (pageCursor == null) {
-                            mutex.withLock {
-                                cachedValues.addAll(it)
-                            }
+        }
+        if (pageCursor == null && cachedValues.isNotEmpty()) {
+            return@withContext cachedValues
+        }
+        runCatching {
+            val response =
+                provider.notifications.get(
+                    types = types.mapNotNull { it.toRawValue() },
+                    maxId = pageCursor,
+                    limit = DEFAULT_PAGE_SIZE,
+                )
+            response
+                .map { it.toModel() }
+                .also {
+                    if (pageCursor == null) {
+                        mutex.withLock {
+                            cachedValues.addAll(it)
                         }
                     }
-            }.getOrNull()
-        }
+                }
+        }.getOrNull()
+    }
 
-    override suspend fun dismiss(id: String): Boolean =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val res = provider.notifications.dismiss(id)
-                res.isSuccessful
-            }.getOrElse { false }
-        }
+    override suspend fun dismiss(id: String): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            val res = provider.notifications.dismiss(id)
+            res.isSuccessful
+        }.getOrElse { false }
+    }
 
-    override suspend fun dismissAll(): Boolean =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val res = provider.notifications.clear()
-                res.isSuccessful
-            }.getOrElse { false }
-        }
+    override suspend fun dismissAll(): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            val res = provider.notifications.clear()
+            res.isSuccessful
+        }.getOrElse { false }
+    }
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20

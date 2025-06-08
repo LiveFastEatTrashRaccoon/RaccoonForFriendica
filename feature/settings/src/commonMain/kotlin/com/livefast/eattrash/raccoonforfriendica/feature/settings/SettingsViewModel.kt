@@ -70,8 +70,8 @@ class SettingsViewModel(
     private val barColorProvider: BarColorProvider,
     private val customTabsHelper: CustomTabsHelper,
 ) : DefaultMviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>(
-        initialState = SettingsMviModel.State(),
-    ),
+    initialState = SettingsMviModel.State(),
+),
     SettingsMviModel {
     init {
         screenModelScope.launch {
@@ -87,15 +87,15 @@ class SettingsViewModel(
                 it.copy(
                     supportsNotifications = supportsPullNotifications || supportsPushNotifications,
                     availableNotificationModes =
-                        buildList {
-                            if (supportsPushNotifications) {
-                                this += NotificationMode.Push
-                            }
-                            if (supportsPullNotifications) {
-                                this += NotificationMode.Pull
-                            }
-                            this += NotificationMode.Disabled
-                        },
+                    buildList {
+                        if (supportsPushNotifications) {
+                            this += NotificationMode.Push
+                        }
+                        if (supportsPullNotifications) {
+                            this += NotificationMode.Pull
+                        }
+                        this += NotificationMode.Disabled
+                    },
                     availablePushDistributors = pushDistributors,
                     supportsDynamicColors = supportsDynamicColors,
                     availableThemeColors = themeColorRepository.getColors(),
@@ -104,13 +104,13 @@ class SettingsViewModel(
                     pushNotificationPermissionState = pushNotificationPermissionState,
                     isBarThemeSupported = barColorProvider.isBarThemeSupported,
                     availableUrlOpeningModes =
-                        buildList {
-                            this += UrlOpeningMode.Internal
-                            if (supportsCustomTabs) {
-                                this += UrlOpeningMode.CustomTabs
-                            }
-                            this += UrlOpeningMode.External
-                        },
+                    buildList {
+                        this += UrlOpeningMode.Internal
+                        if (supportsCustomTabs) {
+                            this += UrlOpeningMode.CustomTabs
+                        }
+                        this += UrlOpeningMode.External
+                    },
                 )
             }
 
@@ -193,17 +193,17 @@ class SettingsViewModel(
                             it.copy(
                                 dynamicColors = settings.dynamicColors,
                                 defaultTimelineType =
-                                    settings.defaultTimelineType
-                                        .toTimelineType()
-                                        .let { type ->
+                                settings.defaultTimelineType
+                                    .toTimelineType()
+                                    .let { type ->
 
-                                            when (type) {
-                                                is TimelineType.Circle ->
-                                                    type.copy(circle = defaultCircle)
+                                        when (type) {
+                                            is TimelineType.Circle ->
+                                                type.copy(circle = defaultCircle)
 
-                                                else -> type
-                                            }
-                                        },
+                                            else -> type
+                                        }
+                                    },
                                 includeNsfw = settings.includeNsfw,
                                 blurNsfw = settings.blurNsfw,
                                 urlOpeningMode = settings.urlOpeningMode,
@@ -230,23 +230,23 @@ class SettingsViewModel(
                     updateState {
                         it.copy(
                             availableVisibilities =
-                                buildList {
-                                    this += Visibility.Public
-                                    this += Visibility.Unlisted
-                                    this += Visibility.Private
-                                    this += Visibility.Direct
-                                },
+                            buildList {
+                                this += Visibility.Public
+                                this += Visibility.Unlisted
+                                this += Visibility.Private
+                                this += Visibility.Direct
+                            },
                             availableMarkupModes =
-                                buildList {
-                                    this += MarkupMode.PlainText
-                                    if (features.supportsBBCode) {
-                                        this += MarkupMode.BBCode
-                                    }
-                                    this += MarkupMode.HTML
-                                    if (features.supportsMarkdown) {
-                                        this += MarkupMode.Markdown
-                                    }
-                                },
+                            buildList {
+                                this += MarkupMode.PlainText
+                                if (features.supportsBBCode) {
+                                    this += MarkupMode.BBCode
+                                }
+                                this += MarkupMode.HTML
+                                if (features.supportsMarkdown) {
+                                    this += MarkupMode.Markdown
+                                }
+                            },
                         )
                     }
                 }.launchIn(this)

@@ -66,8 +66,8 @@ internal fun DistractionFreeTimelineItem(
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
-    onOptionSelected: ((OptionId) -> Unit)? = null,
-    onOptionsMenuToggled: ((Boolean) -> Unit)? = null,
+    onSelectOption: ((OptionId) -> Unit)? = null,
+    onToggleOptionsMenu: ((Boolean) -> Unit)? = null,
     onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
     onReblog: ((TimelineEntryModel) -> Unit)? = null,
     onReply: ((TimelineEntryModel) -> Unit)? = null,
@@ -137,14 +137,14 @@ internal fun DistractionFreeTimelineItem(
                     Box {
                         IconButton(
                             modifier =
-                                Modifier
-                                    .padding(bottom = Spacing.xs, end = Spacing.s)
-                                    .size(height = IconSize.m, width = IconSize.l)
-                                    .onGloballyPositioned {
-                                        optionsOffset = it.positionInParent()
-                                    }.clearAndSetSemantics { },
+                            Modifier
+                                .padding(bottom = Spacing.xs, end = Spacing.s)
+                                .size(height = IconSize.m, width = IconSize.l)
+                                .onGloballyPositioned {
+                                    optionsOffset = it.positionInParent()
+                                }.clearAndSetSemantics { },
                             onClick = {
-                                onOptionsMenuToggled?.invoke(true)
+                                onToggleOptionsMenu?.invoke(true)
                             },
                         ) {
                             Icon(
@@ -158,15 +158,15 @@ internal fun DistractionFreeTimelineItem(
                         CustomDropDown(
                             expanded = optionsMenuOpen,
                             onDismiss = {
-                                onOptionsMenuToggled?.invoke(false)
+                                onToggleOptionsMenu?.invoke(false)
                             },
                             offset =
-                                with(LocalDensity.current) {
-                                    DpOffset(
-                                        x = optionsOffset.x.toDp(),
-                                        y = optionsOffset.y.toDp(),
-                                    )
-                                },
+                            with(LocalDensity.current) {
+                                DpOffset(
+                                    x = optionsOffset.x.toDp(),
+                                    y = optionsOffset.y.toDp(),
+                                )
+                            },
                         ) {
                             options.forEach { option ->
                                 DropdownMenuItem(
@@ -174,8 +174,8 @@ internal fun DistractionFreeTimelineItem(
                                         Text(option.label)
                                     },
                                     onClick = {
-                                        onOptionsMenuToggled?.invoke(false)
-                                        onOptionSelected?.invoke(option.id)
+                                        onToggleOptionsMenu?.invoke(false)
+                                        onSelectOption?.invoke(option.id)
                                     },
                                 )
                             }
@@ -190,10 +190,10 @@ internal fun DistractionFreeTimelineItem(
         if (spoiler.isNotEmpty()) {
             SpoilerCard(
                 modifier =
-                    Modifier.fillMaxWidth().padding(
-                        vertical = Spacing.s,
-                        horizontal = contentHorizontalPadding,
-                    ),
+                Modifier.fillMaxWidth().padding(
+                    vertical = Spacing.s,
+                    horizontal = contentHorizontalPadding,
+                ),
                 content = spoiler,
                 autoloadImages = autoloadImages,
                 active = spoilerActive,
@@ -215,9 +215,9 @@ internal fun DistractionFreeTimelineItem(
                 if (!title.isNullOrBlank()) {
                     ContentTitle(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .semantics { heading() },
+                        Modifier
+                            .fillMaxWidth()
+                            .semantics { heading() },
                         content = title,
                         maxLines = maxTitleLines,
                         autoloadImages = autoloadImages,
@@ -232,13 +232,13 @@ internal fun DistractionFreeTimelineItem(
                 if (body.isNotBlank()) {
                     ContentBody(
                         modifier =
-                            Modifier.fillMaxWidth().then(
-                                if (title == null) {
-                                    Modifier
-                                } else {
-                                    Modifier.padding(top = Spacing.xxxs)
-                                },
-                            ),
+                        Modifier.fillMaxWidth().then(
+                            if (title == null) {
+                                Modifier
+                            } else {
+                                Modifier.padding(top = Spacing.xxxs)
+                            },
+                        ),
                         content = body,
                         autoloadImages = autoloadImages,
                         maxLines = maxBodyLines,
@@ -267,10 +267,10 @@ internal fun DistractionFreeTimelineItem(
         if (extendedSocialInfoEnabled) {
             ContentExtendedSocialInfo(
                 modifier =
-                    Modifier.padding(
-                        vertical = Spacing.xs,
-                        horizontal = contentHorizontalPadding,
-                    ),
+                Modifier.padding(
+                    vertical = Spacing.xs,
+                    horizontal = contentHorizontalPadding,
+                ),
                 reblogCount = entry.reblogCount,
                 favoriteCount = entry.favoriteCount,
                 onOpenUsersReblog = {
@@ -284,12 +284,12 @@ internal fun DistractionFreeTimelineItem(
 
         TranslationFooter(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = Spacing.xs,
-                        end = Spacing.m,
-                    ),
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = Spacing.xs,
+                    end = Spacing.m,
+                ),
             lang = entry.lang,
             isShowingTranslation = entry.isShowingTranslation,
             provider = entry.translationProvider,
@@ -300,13 +300,13 @@ internal fun DistractionFreeTimelineItem(
         if (actionsEnabled) {
             ContentFooter(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            top = Spacing.xxs,
-                            start = contentHorizontalPadding,
-                            end = contentHorizontalPadding,
-                        ),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = Spacing.xxs,
+                        start = contentHorizontalPadding,
+                        end = contentHorizontalPadding,
+                    ),
                 favoriteCount = entry.favoriteCount,
                 favorite = entry.favorite,
                 favoriteLoading = entry.favoriteLoading,
@@ -321,38 +321,38 @@ internal fun DistractionFreeTimelineItem(
                 dislikeLoading = entry.dislikeLoading,
                 options = options,
                 optionsMenuOpen = optionsMenuOpen,
-                onOptionSelected = onOptionSelected,
-                onOptionsMenuToggled = onOptionsMenuToggled,
+                onSelectOption = onSelectOption,
+                onToggleOptionsMenu = onToggleOptionsMenu,
                 onReply =
-                    if (onReply != null) {
-                        { onReply(entry) }
-                    } else {
-                        null
-                    },
+                if (onReply != null) {
+                    { onReply(entry) }
+                } else {
+                    null
+                },
                 onReblog =
-                    if (onReblog != null) {
-                        { onReblog(entry) }
-                    } else {
-                        null
-                    },
+                if (onReblog != null) {
+                    { onReblog(entry) }
+                } else {
+                    null
+                },
                 onFavorite =
-                    if (onFavorite != null) {
-                        { onFavorite(entry) }
-                    } else {
-                        null
-                    },
+                if (onFavorite != null) {
+                    { onFavorite(entry) }
+                } else {
+                    null
+                },
                 onBookmark =
-                    if (onBookmark != null) {
-                        { onBookmark(entry) }
-                    } else {
-                        null
-                    },
+                if (onBookmark != null) {
+                    { onBookmark(entry) }
+                } else {
+                    null
+                },
                 onDislike =
-                    if (onDislike != null) {
-                        { onDislike(entry) }
-                    } else {
-                        null
-                    },
+                if (onDislike != null) {
+                    { onDislike(entry) }
+                } else {
+                    null
+                },
             )
         } else {
             Spacer(Modifier.height(Spacing.xxs))

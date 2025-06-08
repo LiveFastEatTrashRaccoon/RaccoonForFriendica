@@ -12,49 +12,27 @@ interface EditProfileMviModel :
     ScreenModel,
     MviModel<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect> {
     sealed interface Intent {
-        data class ChangeDisplayName(
-            val value: TextFieldValue,
-        ) : Intent
+        data class ChangeDisplayName(val value: TextFieldValue) : Intent
 
-        data class ChangeBio(
-            val value: TextFieldValue,
-        ) : Intent
+        data class ChangeBio(val value: TextFieldValue) : Intent
 
-        data class ChangeBot(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeBot(val value: Boolean) : Intent
 
-        data class ChangeLocked(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeLocked(val value: Boolean) : Intent
 
-        data class ChangeDiscoverable(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeDiscoverable(val value: Boolean) : Intent
 
-        data class ChangeHideCollections(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeHideCollections(val value: Boolean) : Intent
 
-        data class ChangeNoIndex(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeNoIndex(val value: Boolean) : Intent
 
         data object AddField : Intent
 
-        data class EditField(
-            val index: Int,
-            val key: String,
-            val value: String,
-        ) : Intent
+        data class EditField(val index: Int, val key: String, val value: String) : Intent
 
-        data class RemoveField(
-            val index: Int,
-        ) : Intent
+        data class RemoveField(val index: Int) : Intent
 
-        data class AvatarSelected(
-            val value: ByteArray,
-        ) : Intent {
+        data class AvatarSelected(val value: ByteArray) : Intent {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (other == null || this::class != other::class) return false
@@ -67,9 +45,7 @@ interface EditProfileMviModel :
             override fun hashCode(): Int = value.contentHashCode()
         }
 
-        data class HeaderSelected(
-            val value: ByteArray,
-        ) : Intent {
+        data class HeaderSelected(val value: ByteArray) : Intent {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (other == null || this::class != other::class) return false
@@ -82,10 +58,7 @@ interface EditProfileMviModel :
             override fun hashCode(): Int = value.contentHashCode()
         }
 
-        data class InsertCustomEmoji(
-            val fieldType: EditProfilerFieldType,
-            val emoji: EmojiModel,
-        ) : Intent
+        data class InsertCustomEmoji(val fieldType: EditProfilerFieldType, val emoji: EmojiModel) : Intent
 
         data object DeleteAccount : Intent
 
@@ -176,8 +149,6 @@ interface EditProfileMviModel :
 
         data object Failure : Effect
 
-        data class OpenUrl(
-            val url: String,
-        ) : Effect
+        data class OpenUrl(val url: String) : Effect
     }
 }

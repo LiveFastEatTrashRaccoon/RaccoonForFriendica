@@ -39,6 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadabl
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsertLinkDialog(
+    modifier: Modifier = Modifier,
     initialAnchor: String? = null,
     onClose: ((Pair<String, String>?) -> Unit)? = null,
 ) {
@@ -46,11 +47,11 @@ fun InsertLinkDialog(
         mutableStateOf(
             TextFieldValue(
                 text =
-                    if (!initialAnchor.isNullOrBlank()) {
-                        initialAnchor
-                    } else {
-                        ""
-                    },
+                if (!initialAnchor.isNullOrBlank()) {
+                    initialAnchor
+                } else {
+                    ""
+                },
             ),
         )
     }
@@ -61,16 +62,16 @@ fun InsertLinkDialog(
     var urlError by remember { mutableStateOf<ValidationError?>(null) }
 
     BasicAlertDialog(
-        modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
+        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onClose?.invoke(null)
         },
     ) {
         Column(
             modifier =
-                Modifier
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                    .padding(Spacing.m),
+            Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                .padding(Spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
@@ -84,11 +85,11 @@ fun InsertLinkDialog(
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 colors =
-                    TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                    ),
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                ),
                 label = {
                     Text(
                         text = LocalStrings.current.insertLinkFieldAnchor,
@@ -108,9 +109,9 @@ fun InsertLinkDialog(
                 textStyle = MaterialTheme.typography.bodyMedium,
                 value = anchorTextFieldValue,
                 keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                    ),
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                ),
                 onValueChange = { value ->
                     anchorTextFieldValue = value
                 },
@@ -119,11 +120,11 @@ fun InsertLinkDialog(
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 colors =
-                    TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                    ),
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                ),
                 label = {
                     Text(
                         text = LocalStrings.current.insertLinkFieldUrl,
@@ -143,9 +144,9 @@ fun InsertLinkDialog(
                 textStyle = MaterialTheme.typography.bodyMedium,
                 value = urlTextFieldValue,
                 keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Uri,
-                    ),
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Uri,
+                ),
                 onValueChange = { value ->
                     urlTextFieldValue = value
                 },

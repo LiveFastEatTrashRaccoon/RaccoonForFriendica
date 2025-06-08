@@ -32,29 +32,29 @@ fun CalendarRowPlaceholder(modifier: Modifier = Modifier) {
         ) {
             Box(
                 modifier =
-                    Modifier
-                        .size(IconSize.l)
-                        .clip(CircleShape)
-                        .shimmerEffect(),
+                Modifier
+                    .size(IconSize.l)
+                    .clip(CircleShape)
+                    .shimmerEffect(),
             )
 
             Box(
                 modifier =
-                    Modifier
-                        .height(30.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(CornerSize.s))
-                        .shimmerEffect(),
+                Modifier
+                    .height(30.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(CornerSize.s))
+                    .shimmerEffect(),
             )
         }
 
         Box(
             modifier =
-                Modifier
-                    .height(60.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(CornerSize.s))
-                    .shimmerEffect(),
+            Modifier
+                .height(60.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(CornerSize.s))
+                .shimmerEffect(),
         )
     }
 }

@@ -25,56 +25,53 @@ class DefaultEntryProcessorTest {
         )
 
     @Test
-    fun `given valid user when process URL then interactions are as expected`() =
-        runTest {
-            val entry = TimelineEntryModel(id = "0", content = "")
-            everySuspend { fetchEntry.invoke(any()) } returns entry
-            val url = "https://$HOST/display/$ENTRY_ID"
+    fun `given valid user when process URL then interactions are as expected`() = runTest {
+        val entry = TimelineEntryModel(id = "0", content = "")
+        everySuspend { fetchEntry.invoke(any()) } returns entry
+        val url = "https://$HOST/display/$ENTRY_ID"
 
-            val res = sut.process(url)
+        val res = sut.process(url)
 
-            assertTrue(res)
-            verifySuspend {
-                fetchEntry.invoke(url)
-            }
-            verify {
-                detailOpener.openEntryDetail(entry)
-            }
+        assertTrue(res)
+        verifySuspend {
+            fetchEntry.invoke(url)
         }
+        verify {
+            detailOpener.openEntryDetail(entry)
+        }
+    }
 
     @Test
-    fun `given user not found when process URL then interactions are as expected`() =
-        runTest {
-            everySuspend { fetchEntry.invoke(any()) } returns null
-            val url = "https://$HOST/display/$ENTRY_ID"
+    fun `given user not found when process URL then interactions are as expected`() = runTest {
+        everySuspend { fetchEntry.invoke(any()) } returns null
+        val url = "https://$HOST/display/$ENTRY_ID"
 
-            val res = sut.process(url)
+        val res = sut.process(url)
 
-            assertFalse(res)
-            verifySuspend {
-                fetchEntry.invoke(url)
-            }
-            verify(mode = VerifyMode.not) {
-                detailOpener.openEntryDetail(any())
-            }
+        assertFalse(res)
+        verifySuspend {
+            fetchEntry.invoke(url)
         }
+        verify(mode = VerifyMode.not) {
+            detailOpener.openEntryDetail(any())
+        }
+    }
 
     @Test
-    fun `given invalid URL when process URL then interactions are as expected`() =
-        runTest {
-            everySuspend { fetchEntry.invoke(any()) } returns null
-            val url = "https://$HOST/p/$ENTRY_ID"
+    fun `given invalid URL when process URL then interactions are as expected`() = runTest {
+        everySuspend { fetchEntry.invoke(any()) } returns null
+        val url = "https://$HOST/p/$ENTRY_ID"
 
-            val res = sut.process(url)
+        val res = sut.process(url)
 
-            assertFalse(res)
-            verifySuspend {
-                fetchEntry.invoke(any())
-            }
-            verify(mode = VerifyMode.not) {
-                detailOpener.openEntryDetail(any())
-            }
+        assertFalse(res)
+        verifySuspend {
+            fetchEntry.invoke(any())
         }
+        verify(mode = VerifyMode.not) {
+            detailOpener.openEntryDetail(any())
+        }
+    }
 
     companion object {
         private const val HOST = "example.com"

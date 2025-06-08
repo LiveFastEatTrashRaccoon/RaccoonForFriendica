@@ -6,10 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.attachments
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
 
-internal data class ImageData(
-    val url: String,
-    val description: String? = null,
-)
+internal data class ImageData(val url: String, val description: String? = null)
 
 internal fun extractImageData(html: String): ImageData? {
     var url: String? = null
@@ -39,7 +36,9 @@ internal val TimelineEntryModel.attachmentsToDisplayWithoutInlineImages: List<At
     get() =
         run {
             val inlineImagesData = extractImagesData(content)
-            attachmentsToDisplay.filter { attachment -> inlineImagesData.none { it.description == attachment.description } }
+            attachmentsToDisplay.filter { attachment ->
+                inlineImagesData.none { it.description == attachment.description }
+            }
         }
 
 private fun extractImagesData(html: String): List<ImageData> {

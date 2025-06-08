@@ -18,63 +18,58 @@ class DefaultSettingsRepositoryTest {
     private val sut = DefaultSettingsRepository(settingsDao = dao)
 
     @Test
-    fun `when changeCurrent then value is updated`() =
-        runTest {
-            val settings = SettingsModel(lang = "it")
-            sut.changeCurrent(settings)
+    fun `when changeCurrent then value is updated`() = runTest {
+        val settings = SettingsModel(lang = "it")
+        sut.changeCurrent(settings)
 
-            val res = sut.current.value
-            assertEquals(settings, res)
-        }
-
-    @Test
-    fun `when get then result is as expected`() =
-        runTest {
-            val accountId = 1L
-            everySuspend { dao.getBy(any()) } returns SettingsEntity(lang = "it")
-            val settings = SettingsModel(lang = "it")
-
-            val res = sut.get(accountId)
-
-            assertEquals(settings, res)
-            verifySuspend {
-                dao.getBy(accountId)
-            }
-        }
+        val res = sut.current.value
+        assertEquals(settings, res)
+    }
 
     @Test
-    fun `when create then result is as expected`() =
-        runTest {
-            val settings = SettingsModel(lang = "it", accountId = 1L)
+    fun `when get then result is as expected`() = runTest {
+        val accountId = 1L
+        everySuspend { dao.getBy(any()) } returns SettingsEntity(lang = "it")
+        val settings = SettingsModel(lang = "it")
 
-            sut.create(settings)
+        val res = sut.get(accountId)
 
-            verifySuspend {
-                dao.insert(SettingsEntity(lang = "it", accountId = 1L))
-            }
+        assertEquals(settings, res)
+        verifySuspend {
+            dao.getBy(accountId)
         }
+    }
 
     @Test
-    fun `when update then result is as expected`() =
-        runTest {
-            val settings = SettingsModel(lang = "it", accountId = 1L)
+    fun `when create then result is as expected`() = runTest {
+        val settings = SettingsModel(lang = "it", accountId = 1L)
 
-            sut.update(settings)
+        sut.create(settings)
 
-            verifySuspend {
-                dao.update(SettingsEntity(lang = "it", accountId = 1L))
-            }
+        verifySuspend {
+            dao.insert(SettingsEntity(lang = "it", accountId = 1L))
         }
+    }
 
     @Test
-    fun `when delete then result is as expected`() =
-        runTest {
-            val settings = SettingsModel(lang = "it", accountId = 1L)
+    fun `when update then result is as expected`() = runTest {
+        val settings = SettingsModel(lang = "it", accountId = 1L)
 
-            sut.delete(settings)
+        sut.update(settings)
 
-            verifySuspend {
-                dao.delete(SettingsEntity(lang = "it", accountId = 1L))
-            }
+        verifySuspend {
+            dao.update(SettingsEntity(lang = "it", accountId = 1L))
         }
+    }
+
+    @Test
+    fun `when delete then result is as expected`() = runTest {
+        val settings = SettingsModel(lang = "it", accountId = 1L)
+
+        sut.delete(settings)
+
+        verifySuspend {
+            dao.delete(SettingsEntity(lang = "it", accountId = 1L))
+        }
+    }
 }

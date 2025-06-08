@@ -73,17 +73,17 @@ class NodeInfoScreenTest {
                 MutableStateFlow(
                     NodeInfoMviModel.State(
                         info =
-                            NodeInfoModel(
-                                title = "Instance title",
-                                description = "Instance description",
-                                contact = UserModel(id = "1", displayName = "Admin"),
-                                rules =
-                                    listOf(
-                                        RuleModel(id = "1", text = "First rule"),
-                                        RuleModel(id = "2", text = "Second rule"),
-                                    ),
-                                version = "1.0.0",
+                        NodeInfoModel(
+                            title = "Instance title",
+                            description = "Instance description",
+                            contact = UserModel(id = "1", displayName = "Admin"),
+                            rules =
+                            listOf(
+                                RuleModel(id = "1", text = "First rule"),
+                                RuleModel(id = "2", text = "Second rule"),
                             ),
+                            version = "1.0.0",
+                        ),
                     ),
                 )
 
@@ -114,16 +114,16 @@ class NodeInfoScreenTest {
                 MutableStateFlow(
                     NodeInfoMviModel.State(
                         info =
-                            NodeInfoModel(
-                                title = "Instance title",
-                                description = "Instance description",
-                                rules =
-                                    listOf(
-                                        RuleModel(id = "1", text = "First rule"),
-                                        RuleModel(id = "2", text = "Second rule"),
-                                    ),
-                                version = "1.0.0",
+                        NodeInfoModel(
+                            title = "Instance title",
+                            description = "Instance description",
+                            rules =
+                            listOf(
+                                RuleModel(id = "1", text = "First rule"),
+                                RuleModel(id = "2", text = "Second rule"),
                             ),
+                            version = "1.0.0",
+                        ),
                     ),
                 )
 
@@ -153,12 +153,12 @@ class NodeInfoScreenTest {
                 MutableStateFlow(
                     NodeInfoMviModel.State(
                         info =
-                            NodeInfoModel(
-                                title = "Instance title",
-                                description = "Instance description",
-                                contact = UserModel(id = "1", displayName = "Admin"),
-                                version = "1.0.0",
-                            ),
+                        NodeInfoModel(
+                            title = "Instance title",
+                            description = "Instance description",
+                            contact = UserModel(id = "1", displayName = "Admin"),
+                            version = "1.0.0",
+                        ),
                     ),
                 )
 

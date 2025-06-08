@@ -30,28 +30,28 @@ fun MessageItemPlaceholder(
 
     Box(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(
-                    top =
-                        if (isFirstOfSequence) {
-                            Spacing.xs
-                        } else {
-                            0.dp
-                        },
-                    start = contentHorizontalPadding,
-                    end = contentHorizontalPadding,
-                ),
+        modifier
+            .fillMaxWidth()
+            .padding(
+                top =
+                if (isFirstOfSequence) {
+                    Spacing.xs
+                } else {
+                    0.dp
+                },
+                start = contentHorizontalPadding,
+                end = contentHorizontalPadding,
+            ),
     ) {
         Box(
             modifier =
-                Modifier.then(
-                    if (isMyMessage) {
-                        Modifier.padding(start = fillerSizeDp)
-                    } else {
-                        Modifier.padding(end = fillerSizeDp)
-                    },
-                ),
+            Modifier.then(
+                if (isMyMessage) {
+                    Modifier.padding(start = fillerSizeDp)
+                } else {
+                    Modifier.padding(end = fillerSizeDp)
+                },
+            ),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -61,26 +61,26 @@ fun MessageItemPlaceholder(
                 }
                 Box(
                     modifier =
-                        Modifier
-                            .clip(
-                                RoundedCornerShape(
-                                    topStart = if (isFirstOfSequence || isMyMessage) cornersSize else 0.dp,
-                                    topEnd = if (isFirstOfSequence || !isMyMessage) cornersSize else 0.dp,
-                                    bottomStart = if (isLastOfSequence || isMyMessage) cornersSize else 0.dp,
-                                    bottomEnd = if (isLastOfSequence || !isMyMessage) cornersSize else 0.dp,
-                                ),
-                            ).padding(
-                                vertical = Spacing.s,
-                                horizontal = 12.dp,
+                    Modifier
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = if (isFirstOfSequence || isMyMessage) cornersSize else 0.dp,
+                                topEnd = if (isFirstOfSequence || !isMyMessage) cornersSize else 0.dp,
+                                bottomStart = if (isLastOfSequence || isMyMessage) cornersSize else 0.dp,
+                                bottomEnd = if (isLastOfSequence || !isMyMessage) cornersSize else 0.dp,
                             ),
+                        ).padding(
+                            vertical = Spacing.s,
+                            horizontal = 12.dp,
+                        ),
                 ) {
                     Box(
                         modifier =
-                            Modifier
-                                .height(height)
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(cornersSize))
-                                .shimmerEffect(),
+                        Modifier
+                            .height(height)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(cornersSize))
+                            .shimmerEffect(),
                     )
                 }
             }

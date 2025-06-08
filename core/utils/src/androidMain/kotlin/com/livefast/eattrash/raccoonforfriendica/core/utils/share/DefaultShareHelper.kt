@@ -4,15 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 
-internal class DefaultShareHelper(
-    private val context: Context,
-) : ShareHelper {
+internal class DefaultShareHelper(private val context: Context) : ShareHelper {
     override val supportsShareImage = true
 
-    override fun share(
-        url: String,
-        mimeType: String,
-    ) {
+    override fun share(url: String, mimeType: String) {
         val sendIntent: Intent =
             Intent().apply {
                 action = Intent.ACTION_SEND
@@ -27,10 +22,7 @@ internal class DefaultShareHelper(
         context.startActivity(shareIntent)
     }
 
-    override fun shareImage(
-        path: Any?,
-        mimeType: String,
-    ) {
+    override fun shareImage(path: Any?, mimeType: String) {
         val uri = path as? Uri ?: throw Exception("Path must be an Uri")
         val sendIntent: Intent =
             Intent().apply {

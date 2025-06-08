@@ -13,11 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getColorSche
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
 
 @Composable
-fun AppTheme(
-    useDynamicColors: Boolean,
-    barTheme: UiBarTheme,
-    content: @Composable () -> Unit,
-) {
+fun AppTheme(useDynamicColors: Boolean, barTheme: UiBarTheme, content: @Composable () -> Unit) {
     val repository =
         remember {
             getThemeRepository()

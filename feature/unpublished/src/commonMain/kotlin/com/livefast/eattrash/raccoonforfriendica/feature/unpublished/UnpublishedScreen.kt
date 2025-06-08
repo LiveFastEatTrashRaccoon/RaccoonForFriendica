@@ -132,16 +132,16 @@ class UnpublishedScreen : Screen {
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(UnpublishedMviModel.Intent.Refresh)
@@ -158,15 +158,15 @@ class UnpublishedScreen : Screen {
                             )
                         SectionSelector(
                             modifier =
-                                Modifier
-                                    .background(MaterialTheme.colorScheme.background)
-                                    .padding(
-                                        top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
-                                        bottom = Spacing.s,
-                                    ),
+                            Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .padding(
+                                    top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
+                                    bottom = Spacing.s,
+                                ),
                             titles = titles.map { it.toReadableName() },
                             currentSection = titles.indexOf(uiState.section),
-                            onSectionSelected = {
+                            onSelectSection = {
                                 model.reduce(
                                     UnpublishedMviModel.Intent.ChangeSection(titles[it]),
                                 )
@@ -208,11 +208,11 @@ class UnpublishedScreen : Screen {
                             maxBodyLines = uiState.maxBodyLines,
                             actionsEnabled = false,
                             options =
-                                buildList {
-                                    this += OptionId.Edit.toOption()
-                                    this += OptionId.Delete.toOption()
-                                },
-                            onOptionSelected = { optionId ->
+                            buildList {
+                                this += OptionId.Edit.toOption()
+                                this += OptionId.Delete.toOption()
+                            },
+                            onSelectOption = { optionId ->
                                 when (optionId) {
                                     OptionId.Edit ->
                                         detailOpener.openEditUnpublished(

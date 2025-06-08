@@ -8,11 +8,7 @@ import org.kodein.di.bind
 import org.kodein.di.factory
 import org.kodein.di.instance
 
-data class UserListMviModelParams(
-    val type: UserListType,
-    val userId: String,
-    val entryId: String,
-)
+data class UserListMviModelParams(val type: UserListType, val userId: String, val entryId: String)
 
 val userListModule =
     DI.Module("UserListModule") {

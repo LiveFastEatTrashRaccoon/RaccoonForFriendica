@@ -149,13 +149,13 @@ class GalleryScreen : Screen {
                 AnimatedVisibility(
                     visible = isFabVisible,
                     enter =
-                        slideInVertically(
-                            initialOffsetY = { it * 2 },
-                        ),
+                    slideInVertically(
+                        initialOffsetY = { it * 2 },
+                    ),
                     exit =
-                        slideOutVertically(
-                            targetOffsetY = { it * 2 },
-                        ),
+                    slideOutVertically(
+                        targetOffsetY = { it * 2 },
+                    ),
                 ) {
                     FloatingActionButton(
                         onClick = {
@@ -172,16 +172,16 @@ class GalleryScreen : Screen {
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(GalleryMviModel.Intent.Refresh)
@@ -221,11 +221,11 @@ class GalleryScreen : Screen {
                                 detailOpener.openAlbum(album.name)
                             },
                             options =
-                                buildList {
-                                    this += OptionId.Edit.toOption()
-                                    this += OptionId.Delete.toOption()
-                                },
-                            onOptionSelected = { optionId ->
+                            buildList {
+                                this += OptionId.Edit.toOption()
+                                this += OptionId.Delete.toOption()
+                            },
+                            onSelectOption = { optionId ->
                                 when (optionId) {
                                     OptionId.Edit -> albumToEditName = album.name
                                     OptionId.Delete -> albumToDeleteName = album.name

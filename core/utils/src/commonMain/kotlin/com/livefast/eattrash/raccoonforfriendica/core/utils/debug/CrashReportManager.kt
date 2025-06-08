@@ -14,9 +14,5 @@ interface CrashReportManager {
 
     fun initialize()
 
-    fun collectUserFeedback(
-        tag: CrashReportTag,
-        comment: String,
-        email: String? = null,
-    )
+    fun collectUserFeedback(tag: CrashReportTag, comment: String, email: String? = null)
 }

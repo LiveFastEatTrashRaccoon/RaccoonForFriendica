@@ -123,9 +123,9 @@ internal class DefaultTimelinePaginationManager(
                         is TimelineType.Circle ->
                             timelineRepository.getCircle(
                                 id =
-                                    specification.timelineType.circle
-                                        ?.id
-                                        .orEmpty(),
+                                specification.timelineType.circle
+                                    ?.id
+                                    .orEmpty(),
                                 pageCursor = pageCursor,
                             )
 
@@ -240,14 +240,13 @@ internal class DefaultTimelinePaginationManager(
         }
     }
 
-    override fun extractState(): TimelinePaginationManagerState =
-        DefaultTimelinePaginationManagerState(
-            specification = specification,
-            pageCursor = pageCursor,
-            history = history,
-            userRateLimits = userRateLimits,
-            stopWords = stopWords,
-        )
+    override fun extractState(): TimelinePaginationManagerState = DefaultTimelinePaginationManagerState(
+        specification = specification,
+        pageCursor = pageCursor,
+        history = history,
+        userRateLimits = userRateLimits,
+        stopWords = stopWords,
+    )
 
     override fun restoreState(state: TimelinePaginationManagerState) {
         (state as? DefaultTimelinePaginationManagerState)?.also {
@@ -260,23 +259,20 @@ internal class DefaultTimelinePaginationManager(
         }
     }
 
-    private fun List<TimelineEntryModel>.toListWithPageCursor(): ListWithPageCursor<TimelineEntryModel> =
-        let { list ->
-            val cursor = list.lastOrNull()?.id
-            ListWithPageCursor(list = list, cursor = cursor)
-        }
+    private fun List<TimelineEntryModel>.toListWithPageCursor(): ListWithPageCursor<TimelineEntryModel> = let { list ->
+        val cursor = list.lastOrNull()?.id
+        ListWithPageCursor(list = list, cursor = cursor)
+    }
 
-    private fun ListWithPageCursor<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> =
-        run {
-            pageCursor = cursor
-            canFetchMore = list.isNotEmpty()
-            list
-        }
+    private fun ListWithPageCursor<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> = run {
+        pageCursor = cursor
+        canFetchMore = list.isNotEmpty()
+        list
+    }
 
-    private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> =
-        filter { e1 ->
-            history.none { e2 -> e1.id == e2.id }
-        }.distinctBy { it.safeKey }
+    private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> = filter { e1 ->
+        history.none { e2 -> e1.id == e2.id }
+    }.distinctBy { it.safeKey }
 
     private fun List<TimelineEntryModel>.filterWithRateLimits(): List<TimelineEntryModel> =
         filterIndexed { index, timelineEntryModel ->
@@ -292,58 +288,55 @@ internal class DefaultTimelinePaginationManager(
             rate <= rateLimit
         }
 
-    private fun ListWithPageCursor<TimelineEntryModel>.deduplicate(): ListWithPageCursor<TimelineEntryModel> =
-        run {
-            val newList = list.deduplicate()
-            ListWithPageCursor(
-                list = newList,
-                cursor = newList.lastOrNull()?.id,
-            )
+    private fun ListWithPageCursor<TimelineEntryModel>.deduplicate(): ListWithPageCursor<TimelineEntryModel> = run {
+        val newList = list.deduplicate()
+        ListWithPageCursor(
+            list = newList,
+            cursor = newList.lastOrNull()?.id,
+        )
+    }
+
+    private fun List<TimelineEntryModel>.filterReplies(included: Boolean): List<TimelineEntryModel> = filter {
+        included || it.inReplyTo == null
+    }
+
+    private fun List<TimelineEntryModel>.filterNsfw(included: Boolean): List<TimelineEntryModel> = filter {
+        included ||
+            !it.isNsfw
+    }
+
+    private suspend fun List<TimelineEntryModel>.fixupCreatorEmojis(): List<TimelineEntryModel> = with(emojiHelper) {
+        map {
+            it.withEmojisIfMissing()
         }
+    }
 
-    private fun List<TimelineEntryModel>.filterReplies(included: Boolean): List<TimelineEntryModel> =
-        filter {
-            included || it.inReplyTo == null
+    private suspend fun List<TimelineEntryModel>.fixupInReplyTo(): List<TimelineEntryModel> = with(replyHelper) {
+        map {
+            it.withInReplyToIfMissing()
         }
+    }
 
-    private fun List<TimelineEntryModel>.filterNsfw(included: Boolean): List<TimelineEntryModel> = filter { included || !it.isNsfw }
-
-    private suspend fun List<TimelineEntryModel>.fixupCreatorEmojis(): List<TimelineEntryModel> =
-        with(emojiHelper) {
-            map {
-                it.withEmojisIfMissing()
+    private fun List<TimelineEntryModel>.filterByStopWords(): List<TimelineEntryModel> = filter { entry ->
+        stopWords?.takeIf { it.isNotEmpty() }?.let { stopWordList ->
+            stopWordList.none { word ->
+                val entryTexts =
+                    listOfNotNull(
+                        entry.content,
+                        entry.title,
+                        entry.reblog?.content,
+                        entry.reblog?.title,
+                    )
+                entryTexts.any { it.contains(other = word, ignoreCase = true) }
             }
-        }
+        } ?: true
+    }
 
-    private suspend fun List<TimelineEntryModel>.fixupInReplyTo(): List<TimelineEntryModel> =
-        with(replyHelper) {
-            map {
-                it.withInReplyToIfMissing()
+    private suspend fun List<TimelineEntryModel>.fixumFollowedHashtags(): List<TimelineEntryModel> = this.map { entry ->
+        val tags =
+            entry.tags.map { tag ->
+                tag.copy(following = followedHashtagCache.isFollowed(tag))
             }
-        }
-
-    private fun List<TimelineEntryModel>.filterByStopWords(): List<TimelineEntryModel> =
-        filter { entry ->
-            stopWords?.takeIf { it.isNotEmpty() }?.let { stopWordList ->
-                stopWordList.none { word ->
-                    val entryTexts =
-                        listOfNotNull(
-                            entry.content,
-                            entry.title,
-                            entry.reblog?.content,
-                            entry.reblog?.title,
-                        )
-                    entryTexts.any { it.contains(other = word, ignoreCase = true) }
-                }
-            } ?: true
-        }
-
-    private suspend fun List<TimelineEntryModel>.fixumFollowedHashtags(): List<TimelineEntryModel> =
-        this.map { entry ->
-            val tags =
-                entry.tags.map { tag ->
-                    tag.copy(following = followedHashtagCache.isFollowed(tag))
-                }
-            entry.copy(tags = tags)
-        }
+        entry.copy(tags = tags)
+    }
 }

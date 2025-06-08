@@ -72,7 +72,7 @@ class DefaultCustomUriHandlerTest {
     }
 
     @Test
-    fun `given URL and custom tabs mode and custom tabs not supported when openUri then interactions are as expected`() {
+    fun `given URL and custom tabs mode and feature not supported when openUri then interactions are as expected`() {
         every {
             settingsRepository.current
         } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))
@@ -86,7 +86,7 @@ class DefaultCustomUriHandlerTest {
     }
 
     @Test
-    fun `given URL and custom tabs mode and custom tabs supported when openUri then interactions are as expected`() {
+    fun `given URL and custom tabs mode and feature supported when openUri then interactions are as expected`() {
         every {
             settingsRepository.current
         } returns MutableStateFlow(SettingsModel(urlOpeningMode = UrlOpeningMode.CustomTabs))

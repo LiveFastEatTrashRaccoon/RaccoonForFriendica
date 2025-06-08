@@ -63,9 +63,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternall
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class LoginScreen(
-    private val loginType: Int,
-) : Screen {
+class LoginScreen(private val loginType: Int) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
@@ -146,15 +144,15 @@ class LoginScreen(
         ) { padding ->
             Column(
                 modifier =
-                    Modifier
-                        .padding(
-                            top = padding.calculateTopPadding(),
-                            start = Spacing.l,
-                            end = Spacing.l,
-                        ).consumeWindowInsets(padding)
-                        .safeImePadding()
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                Modifier
+                    .padding(
+                        top = padding.calculateTopPadding(),
+                        start = Spacing.l,
+                        end = Spacing.l,
+                    ).consumeWindowInsets(padding)
+                    .safeImePadding()
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 // instance name text field (with or without spinner)
@@ -191,24 +189,24 @@ class LoginScreen(
                         placeholder = {
                             Text(
                                 text =
-                                    buildString {
-                                        append(LocalStrings.current.exempliGratia)
-                                        append(" ")
-                                        append("friendica.world")
-                                    },
+                                buildString {
+                                    append(LocalStrings.current.exempliGratia)
+                                    append(" ")
+                                    append("friendica.world")
+                                },
                             )
                         },
                         values =
-                            buildList {
-                                for (instance in DefaultFriendicaInstances) {
-                                    this += buildString {
-                                        append(instance.value)
-                                        append("  ")
-                                        append(instance.lang)
-                                    } to instance.value
-                                }
-                                this += LocalStrings.current.itemOther to ""
-                            },
+                        buildList {
+                            for (instance in DefaultFriendicaInstances) {
+                                this += buildString {
+                                    append(instance.value)
+                                    append("  ")
+                                    append(instance.lang)
+                                } to instance.value
+                            }
+                            this += LocalStrings.current.itemOther to ""
+                        },
                         value = uiState.nodeName,
                         isError = uiState.nodeNameError != null,
                         keyboardOptions = keyboardOptions,
@@ -227,11 +225,11 @@ class LoginScreen(
                         placeholder = {
                             Text(
                                 text =
-                                    buildString {
-                                        append(LocalStrings.current.exempliGratia)
-                                        append(" ")
-                                        append("mastodon.social")
-                                    },
+                                buildString {
+                                    append(LocalStrings.current.exempliGratia)
+                                    append(" ")
+                                    append("mastodon.social")
+                                },
                             )
                         },
                         supportingText = supportingText,
@@ -248,35 +246,35 @@ class LoginScreen(
 
                 Text(
                     modifier =
-                        Modifier
-                            .padding(
-                                top = Spacing.xs,
-                                start = Spacing.xxs,
-                                end = Spacing.xxs,
-                            ).fillMaxWidth(),
+                    Modifier
+                        .padding(
+                            top = Spacing.xs,
+                            start = Spacing.xxs,
+                            end = Spacing.xxs,
+                        ).fillMaxWidth(),
                     text =
-                        buildAnnotatedString {
-                            append(LocalStrings.current.messageSignUp1)
-                            append(" ")
-                            withLink(
-                                LinkAnnotation.Clickable(
-                                    tag = "action-sign-up",
-                                    styles =
-                                        TextLinkStyles(
-                                            style =
-                                                SpanStyle(
-                                                    textDecoration = TextDecoration.Underline,
-                                                    color = MaterialTheme.colorScheme.primary,
-                                                ),
-                                        ),
-                                    linkInteractionListener = {
-                                        model.reduce(LoginMviModel.Intent.SignUp)
-                                    },
+                    buildAnnotatedString {
+                        append(LocalStrings.current.messageSignUp1)
+                        append(" ")
+                        withLink(
+                            LinkAnnotation.Clickable(
+                                tag = "action-sign-up",
+                                styles =
+                                TextLinkStyles(
+                                    style =
+                                    SpanStyle(
+                                        textDecoration = TextDecoration.Underline,
+                                        color = MaterialTheme.colorScheme.primary,
+                                    ),
                                 ),
-                            ) {
-                                append(LocalStrings.current.messageSignUp2)
-                            }
-                        },
+                                linkInteractionListener = {
+                                    model.reduce(LoginMviModel.Intent.SignUp)
+                                },
+                            ),
+                        ) {
+                            append(LocalStrings.current.messageSignUp2)
+                        }
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                 )
 

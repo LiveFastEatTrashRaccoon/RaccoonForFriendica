@@ -15,15 +15,11 @@ interface DirectMessageListMviModel :
 
         data object UserSearchLoadNextPage : Intent
 
-        data class UserSearchSetQuery(
-            val query: String,
-        ) : Intent
+        data class UserSearchSetQuery(val query: String) : Intent
 
         data object UserSearchClear : Intent
 
-        data class MarkConversationAsRead(
-            val index: Int,
-        ) : Intent
+        data class MarkConversationAsRead(val index: Int) : Intent
     }
 
     data class State(

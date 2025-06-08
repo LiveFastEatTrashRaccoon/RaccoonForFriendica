@@ -18,11 +18,11 @@ fun ProvideCustomFontScale(content: @Composable () -> Unit) {
     val scaleFactor = currentSettings?.fontScale?.toScaleFactor() ?: 1f
     CompositionLocalProvider(
         value =
-            LocalDensity provides
-                Density(
-                    density = defaultDensity.density,
-                    fontScale = defaultDensity.fontScale * scaleFactor,
-                ),
+        LocalDensity provides
+            Density(
+                density = defaultDensity.density,
+                fontScale = defaultDensity.fontScale * scaleFactor,
+            ),
         content = content,
     )
 }

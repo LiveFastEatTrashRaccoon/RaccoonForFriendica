@@ -21,60 +21,37 @@ import io.ktor.client.request.forms.FormDataContent
 
 interface StatusService {
     @GET("v1/statuses/{id}")
-    suspend fun get(
-        @Path("id") id: String,
-    ): Status
+    suspend fun get(@Path("id") id: String): Status
 
     @GET("v1/statuses/{id}/context")
-    suspend fun getContext(
-        @Path("id") id: String,
-    ): StatusContext
+    suspend fun getContext(@Path("id") id: String): StatusContext
 
     @GET("v1/statuses/{id}/source")
-    suspend fun getSource(
-        @Path("id") id: String,
-    ): StatusSource
+    suspend fun getSource(@Path("id") id: String): StatusSource
 
     @POST("v1/statuses/{id}/reblog")
-    suspend fun reblog(
-        @Path("id") id: String,
-        @Body data: FormDataContent,
-    ): Status
+    suspend fun reblog(@Path("id") id: String, @Body data: FormDataContent): Status
 
     @POST("v1/statuses/{id}/unreblog")
-    suspend fun unreblog(
-        @Path("id") id: String,
-    ): Status
+    suspend fun unreblog(@Path("id") id: String): Status
 
     @POST("v1/statuses/{id}/pin")
-    suspend fun pin(
-        @Path("id") id: String,
-    ): Status
+    suspend fun pin(@Path("id") id: String): Status
 
     @POST("v1/statuses/{id}/unpin")
-    suspend fun unpin(
-        @Path("id") id: String,
-    ): Status
+    suspend fun unpin(@Path("id") id: String): Status
 
     @POST("v1/statuses/{id}/bookmark")
-    suspend fun bookmark(
-        @Path("id") id: String,
-    ): Status
+    suspend fun bookmark(@Path("id") id: String): Status
 
     @POST("v1/statuses/{id}/unbookmark")
-    suspend fun unbookmark(
-        @Path("id") id: String,
-    ): Status
+    suspend fun unbookmark(@Path("id") id: String): Status
 
     @POST("v1/statuses/{id}/favourite")
-    suspend fun favorite(
-        @Path("id") id: String,
-    ): Status
+    suspend fun favorite(@Path("id") id: String): Status
 
     @POST("v1/statuses/{id}/unfavourite")
-    suspend fun unfavorite(
-        @Path("id") id: String,
-    ): Status
+    suspend fun unfavorite(@Path("id") id: String): Status
 
     @GET("v1/statuses/{id}/favourited_by")
     suspend fun getFavoritedBy(
@@ -92,22 +69,14 @@ interface StatusService {
 
     @POST("v1/statuses")
     @Headers("Content-Type: application/json")
-    suspend fun create(
-        @Header("Idempotency-Key") key: String,
-        @Body data: CreateStatusForm,
-    ): Status
+    suspend fun create(@Header("Idempotency-Key") key: String, @Body data: CreateStatusForm): Status
 
     @PUT("v1/statuses/{id}")
     @Headers("Content-Type: application/json")
-    suspend fun update(
-        @Path("id") id: String,
-        @Body data: CreateStatusForm,
-    ): Status
+    suspend fun update(@Path("id") id: String, @Body data: CreateStatusForm): Status
 
     @DELETE("v1/statuses/{id}")
-    suspend fun delete(
-        @Path("id") id: String,
-    ): Response<Unit>
+    suspend fun delete(@Path("id") id: String): Response<Unit>
 
     @GET("v1/scheduled_statuses")
     suspend fun getScheduled(
@@ -117,34 +86,20 @@ interface StatusService {
     ): List<ScheduledStatus>
 
     @GET("v1/scheduled_statuses/{id}")
-    suspend fun getScheduledById(
-        @Path("id") id: String,
-    ): ScheduledStatus
+    suspend fun getScheduledById(@Path("id") id: String): ScheduledStatus
 
     @PUT("v1/scheduled_statuses/{id}")
-    suspend fun updateScheduled(
-        @Path("id") id: String,
-        @Body data: FormDataContent,
-    ): ScheduledStatus
+    suspend fun updateScheduled(@Path("id") id: String, @Body data: FormDataContent): ScheduledStatus
 
     @DELETE("v1/scheduled_statuses/{id}")
-    suspend fun deleteScheduled(
-        @Path("id") id: String,
-    ): Response<Unit>
+    suspend fun deleteScheduled(@Path("id") id: String): Response<Unit>
 
     @POST("friendica/activity/dislike")
-    suspend fun dislike(
-        @Body data: FormDataContent,
-    ): Response<Unit>
+    suspend fun dislike(@Body data: FormDataContent): Response<Unit>
 
     @POST("friendica/activity/undislike")
-    suspend fun undislike(
-        @Body data: FormDataContent,
-    ): Response<Unit>
+    suspend fun undislike(@Body data: FormDataContent): Response<Unit>
 
     @POST("v1/statuses/{id}/translate")
-    suspend fun translate(
-        @Path("id") id: String,
-        @Body data: FormDataContent,
-    ): Translation
+    suspend fun translate(@Path("id") id: String, @Body data: FormDataContent): Translation
 }

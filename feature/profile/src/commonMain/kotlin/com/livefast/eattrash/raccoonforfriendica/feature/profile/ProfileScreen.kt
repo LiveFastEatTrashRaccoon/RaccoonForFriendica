@@ -144,15 +144,15 @@ class ProfileScreen : Screen {
                 content = { padding ->
                     Box(
                         modifier =
-                            Modifier
-                                .padding(padding)
-                                .then(
-                                    if (uiState.hideNavigationBarWhileScrolling) {
-                                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                                    } else {
-                                        Modifier
-                                    },
-                                ),
+                        Modifier
+                            .padding(padding)
+                            .then(
+                                if (uiState.hideNavigationBarWhileScrolling) {
+                                    Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                                } else {
+                                    Modifier
+                                },
+                            ),
                     ) {
                         val screen =
                             if (uiState.currentUserId != null) {
@@ -179,9 +179,9 @@ class ProfileScreen : Screen {
                             if (avatar.isNotEmpty() && uiState.autoloadImages) {
                                 CustomImage(
                                     modifier =
-                                        Modifier
-                                            .size(avatarSize)
-                                            .clip(RoundedCornerShape(avatarSize / 2)),
+                                    Modifier
+                                        .size(avatarSize)
+                                        .clip(RoundedCornerShape(avatarSize / 2)),
                                     url = avatar,
                                     quality = FilterQuality.Low,
                                     contentScale = ContentScale.FillBounds,
@@ -218,7 +218,7 @@ class ProfileScreen : Screen {
                 title = LocalStrings.current.actionSwitchAccount,
                 sheetState = sheetState,
                 items = items,
-                onSelected = { index ->
+                onSelect = { index ->
                     manageAccountsDialogOpened = false
                     if (index != null) {
                         val accounts = uiState.availableAccounts

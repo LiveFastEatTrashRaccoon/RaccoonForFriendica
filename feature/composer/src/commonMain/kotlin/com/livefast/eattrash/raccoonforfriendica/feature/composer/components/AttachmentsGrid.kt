@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,8 +20,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 @Composable
 internal fun AttachmentsGrid(
     attachments: List<AttachmentModel>,
-    autoloadImages: Boolean = true,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     onDelete: ((AttachmentModel) -> Unit)? = null,
     onEditDescription: ((AttachmentModel) -> Unit)? = null,
 ) {
@@ -30,30 +31,32 @@ internal fun AttachmentsGrid(
             attachments.filterIndexed { i, _ -> (i % 2) == 1 },
         )
 
-    Text(
-        modifier =
+    Column(modifier = modifier) {
+        Text(
+            modifier =
             Modifier.padding(
                 top = Spacing.m,
                 start = 10.dp,
                 end = 10.dp,
             ),
-        text = LocalStrings.current.createPostAttachmentsSection,
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onBackground,
-    )
+            text = LocalStrings.current.createPostAttachmentsSection,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
 
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(Spacing.s),
-    ) {
-        for (column in columns) {
-            AttachmentsColumn(
-                modifier = Modifier.weight(0.5f),
-                autoloadImages = autoloadImages,
-                attachments = column,
-                onEditDescription = onEditDescription,
-                onDelete = onDelete,
-            )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+        ) {
+            for (column in columns) {
+                AttachmentsColumn(
+                    modifier = Modifier.weight(0.5f),
+                    autoloadImages = autoloadImages,
+                    attachments = column,
+                    onEditDescription = onEditDescription,
+                    onDelete = onDelete,
+                )
+            }
         }
     }
 }
@@ -75,11 +78,11 @@ private fun AttachmentsColumn(
                 attachment = attachment,
                 autoload = autoloadImages,
                 options =
-                    buildList {
-                        this += OptionId.Edit.toOption()
-                        this += OptionId.Delete.toOption()
-                    },
-                onOptionSelected = { optionId ->
+                buildList {
+                    this += OptionId.Edit.toOption()
+                    this += OptionId.Delete.toOption()
+                },
+                onSelectOption = { optionId ->
                     when (optionId) {
                         OptionId.Edit -> onEditDescription?.invoke(attachment)
                         OptionId.Delete -> onDelete?.invoke(attachment)

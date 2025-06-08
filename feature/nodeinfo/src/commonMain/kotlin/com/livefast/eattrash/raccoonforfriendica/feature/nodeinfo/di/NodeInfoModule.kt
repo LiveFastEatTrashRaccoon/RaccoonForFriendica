@@ -16,7 +16,7 @@ val nodeInfoModule =
                     settingsRepository = instance(),
                     emojiHelper = instance(),
                     imageAutoloadObserver = instance(),
-            )
+                )
+            }
         }
     }
-}

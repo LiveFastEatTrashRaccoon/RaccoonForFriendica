@@ -13,14 +13,10 @@ interface PushService {
     suspend fun get(): PushSubscription?
 
     @POST("v1/push/subscription")
-    suspend fun create(
-        @Body data: FormDataContent,
-    ): PushSubscription?
+    suspend fun create(@Body data: FormDataContent): PushSubscription?
 
     @PUT("v1/push/subscription")
-    suspend fun update(
-        @Body data: FormDataContent,
-    ): PushSubscription?
+    suspend fun update(@Body data: FormDataContent): PushSubscription?
 
     @DELETE("v1/push/subscription")
     suspend fun delete()

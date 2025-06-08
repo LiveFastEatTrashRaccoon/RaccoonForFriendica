@@ -40,22 +40,22 @@ fun SettingsImageInfo(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ancillaryTextAlpha)
     Box(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .clip(
-                    shape = RoundedCornerShape(CornerSize.xl),
-                ).then(
-                    if (onEdit != null) {
-                        Modifier.clickable {
-                            onEdit.invoke()
-                        }
-                    } else {
-                        Modifier
-                    },
-                ).padding(
-                    vertical = Spacing.xs,
-                    horizontal = Spacing.m,
-                ),
+        modifier
+            .fillMaxWidth()
+            .clip(
+                shape = RoundedCornerShape(CornerSize.xl),
+            ).then(
+                if (onEdit != null) {
+                    Modifier.clickable {
+                        onEdit.invoke()
+                    }
+                } else {
+                    Modifier
+                },
+            ).padding(
+                vertical = Spacing.xs,
+                horizontal = Spacing.m,
+            ),
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),

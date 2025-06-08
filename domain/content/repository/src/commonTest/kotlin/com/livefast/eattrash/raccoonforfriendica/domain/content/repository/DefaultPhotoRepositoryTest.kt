@@ -26,99 +26,93 @@ class DefaultPhotoRepositoryTest {
     private val sut = DefaultPhotoRepository(provider = serviceProvider)
 
     @Test
-    fun `when create then result is as expected`() =
-        runTest {
-            val photo = FriendicaPhoto(id = "1")
-            everySuspend { photoService.create(any()) } returns photo
+    fun `when create then result is as expected`() = runTest {
+        val photo = FriendicaPhoto(id = "1")
+        everySuspend { photoService.create(any()) } returns photo
 
-            val bytes = byteArrayOf(0x00.toByte(), 0x01.toByte(), 0x00.toByte())
-            val res =
-                sut.create(
-                    bytes = bytes,
-                    album = "fake-album",
-                    alt = "fake-description",
-                )
+        val bytes = byteArrayOf(0x00.toByte(), 0x01.toByte(), 0x00.toByte())
+        val res =
+            sut.create(
+                bytes = bytes,
+                album = "fake-album",
+                alt = "fake-description",
+            )
 
-            assertEquals(photo.toModel(), res)
-            verifySuspend {
-                photoService.create(any())
-            }
+        assertEquals(photo.toModel(), res)
+        verifySuspend {
+            photoService.create(any())
         }
+    }
 
     @Test
-    fun `given error when create then result is as expected`() =
-        runTest {
-            everySuspend { photoService.create(any()) } throws IOException("Network error")
+    fun `given error when create then result is as expected`() = runTest {
+        everySuspend { photoService.create(any()) } throws IOException("Network error")
 
-            val bytes = byteArrayOf(0x00.toByte(), 0x01.toByte(), 0x00.toByte())
-            val res =
-                sut.create(
-                    bytes = bytes,
-                    album = "fake-album",
-                    alt = "fake-description",
-                )
+        val bytes = byteArrayOf(0x00.toByte(), 0x01.toByte(), 0x00.toByte())
+        val res =
+            sut.create(
+                bytes = bytes,
+                album = "fake-album",
+                alt = "fake-description",
+            )
 
-            assertNull(res)
-            verifySuspend {
-                photoService.create(any())
-            }
+        assertNull(res)
+        verifySuspend {
+            photoService.create(any())
         }
+    }
 
     @Test
-    fun `when update then result is as expected`() =
-        runTest {
-            everySuspend { photoService.update(content = any()) } returns
-                FriendicaApiResult(result = "updated")
+    fun `when update then result is as expected`() = runTest {
+        everySuspend { photoService.update(content = any()) } returns
+            FriendicaApiResult(result = "updated")
 
-            val res =
-                sut.update(
-                    id = "1",
-                    alt = "fake-description",
-                )
+        val res =
+            sut.update(
+                id = "1",
+                alt = "fake-description",
+            )
 
-            assertTrue(res)
-            verifySuspend {
-                photoService.update(content = any())
-            }
+        assertTrue(res)
+        verifySuspend {
+            photoService.update(content = any())
         }
+    }
 
     @Test
-    fun `given error when update then result is as expected`() =
-        runTest {
-            everySuspend { photoService.update(content = any()) } returns
-                FriendicaApiResult(result = "ko")
+    fun `given error when update then result is as expected`() = runTest {
+        everySuspend { photoService.update(content = any()) } returns
+            FriendicaApiResult(result = "ko")
 
-            val res =
-                sut.update(
-                    id = "1",
-                    alt = "fake-description",
-                )
+        val res =
+            sut.update(
+                id = "1",
+                alt = "fake-description",
+            )
 
-            assertFalse(res)
-        }
-
-    @Test
-    fun `when delete then result is as expected`() =
-        runTest {
-            everySuspend { photoService.delete(content = any()) } returns
-                FriendicaApiResult(result = "deleted")
-
-            val res = sut.delete(id = "1")
-
-            assertTrue(res)
-            verifySuspend {
-                photoService.delete(content = any())
-            }
-        }
+        assertFalse(res)
+    }
 
     @Test
-    fun `given error when delete then result is as expected`() =
-        runTest {
-            everySuspend { photoService.delete(content = any()) } returns
-                FriendicaApiResult(result = "ko")
+    fun `when delete then result is as expected`() = runTest {
+        everySuspend { photoService.delete(content = any()) } returns
+            FriendicaApiResult(result = "deleted")
 
-            val res = sut.delete(id = "1")
+        val res = sut.delete(id = "1")
 
-            assertFalse(res)
+        assertTrue(res)
+        verifySuspend {
+            photoService.delete(content = any())
         }
+    }
+
+    @Test
+    fun `given error when delete then result is as expected`() = runTest {
+        everySuspend { photoService.delete(content = any()) } returns
+            FriendicaApiResult(result = "ko")
+
+        val res = sut.delete(id = "1")
+
+        assertFalse(res)
+    }
 }

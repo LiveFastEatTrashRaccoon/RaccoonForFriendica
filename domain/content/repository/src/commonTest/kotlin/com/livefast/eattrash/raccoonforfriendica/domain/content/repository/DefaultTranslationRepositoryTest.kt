@@ -39,209 +39,205 @@ class DefaultTranslationRepositoryTest {
         )
 
     @Test
-    fun `given success when getTranslation then result and interactions are as expected`() =
-        runTest {
-            val entryId = "1"
-            val targetContent = "target content"
-            val targetLang = "it"
-            val provider = "LibreTranslate"
-            everySuspend {
-                statusService.translate(any(), any())
-            } returns
-                Translation(
-                    content = targetContent,
-                    provider = provider,
-                )
-            val entry =
-                TimelineEntryModel(
-                    id = entryId,
-                    content = "source content",
-                )
-
-            val res =
-                sut.getTranslation(
-                    entry = entry,
-                    targetLang = targetLang,
-                )
-
-            assertNotNull(res)
-            assertEquals(targetContent, res.target.content)
-            assertEquals(targetLang, res.target.lang)
-            assertEquals(provider, res.provider)
-            verifySuspend {
-                statusService.translate(
-                    id = entryId,
-                    data =
-                        matching { arg ->
-                            arg.formData["lang"] == targetLang
-                        },
-                )
-            }
-        }
-
-    @Test
-    fun `given entry with poll when getTranslation then result and interactions are as expected`() =
-        runTest {
-            val entryId = "1"
-            val targetContent = "target content"
-            val targetLang = "it"
-            val targetOption = "target option 1"
-            val provider = "LibreTranslate"
-            everySuspend {
-                statusService.translate(any(), any())
-            } returns
-                Translation(
-                    content = targetContent,
-                    provider = provider,
-                    poll =
-                        Poll(
-                            id = "1",
-                            options =
-                                listOf(
-                                    PollOption(title = targetOption),
-                                ),
-                        ),
-                )
-            val entry =
-                TimelineEntryModel(
-                    id = entryId,
-                    content = "source content",
-                    poll =
-                        PollModel(
-                            id = "1",
-                            options =
-                                listOf(
-                                    PollOptionModel(
-                                        title = "source option 1",
-                                    ),
-                                ),
-                        ),
-                )
-
-            val res =
-                sut.getTranslation(
-                    entry = entry,
-                    targetLang = targetLang,
-                )
-
-            assertNotNull(res)
-            assertEquals(targetContent, res.target.content)
-            assertEquals(
-                targetOption,
-                res.target.poll
-                    ?.options
-                    ?.firstOrNull()
-                    ?.title,
+    fun `given success when getTranslation then result and interactions are as expected`() = runTest {
+        val entryId = "1"
+        val targetContent = "target content"
+        val targetLang = "it"
+        val provider = "LibreTranslate"
+        everySuspend {
+            statusService.translate(any(), any())
+        } returns
+            Translation(
+                content = targetContent,
+                provider = provider,
             )
-            assertEquals(targetLang, res.target.lang)
-            assertEquals(provider, res.provider)
-            verifySuspend {
-                statusService.translate(
-                    id = entryId,
-                    data =
-                        matching { arg ->
-                            arg.formData["lang"] == targetLang
-                        },
-                )
-            }
-        }
-
-    @Test
-    fun `given entry with attachment when getTranslation then result and interactions are as expected`() =
-        runTest {
-            val entryId = "1"
-            val targetContent = "target content"
-            val targetLang = "it"
-            val targetDescription = "target description"
-            val provider = "LibreTranslate"
-            everySuspend {
-                statusService.translate(any(), any())
-            } returns
-                Translation(
-                    content = targetContent,
-                    provider = provider,
-                    attachments =
-                        listOf(
-                            MediaAttachment(
-                                id = "1",
-                                type = DtoMediaType.IMAGE,
-                                description = targetDescription,
-                            ),
-                        ),
-                )
-            val entry =
-                TimelineEntryModel(
-                    id = entryId,
-                    content = "source content",
-                    attachments =
-                        listOf(
-                            AttachmentModel(
-                                id = "1",
-                                url = "",
-                                type = MediaType.Image,
-                                description = "source description",
-                            ),
-                        ),
-                )
-
-            val res =
-                sut.getTranslation(
-                    entry = entry,
-                    targetLang = targetLang,
-                )
-
-            assertNotNull(res)
-            assertEquals(targetContent, res.target.content)
-            assertEquals(
-                targetDescription,
-                res.target.attachments
-                    .firstOrNull()
-                    ?.description,
+        val entry =
+            TimelineEntryModel(
+                id = entryId,
+                content = "source content",
             )
-            assertEquals(targetLang, res.target.lang)
-            assertEquals(provider, res.provider)
-            verifySuspend {
-                statusService.translate(
-                    id = entryId,
-                    data =
-                        matching { arg ->
-                            arg.formData["lang"] == targetLang
-                        },
-                )
-            }
+
+        val res =
+            sut.getTranslation(
+                entry = entry,
+                targetLang = targetLang,
+            )
+
+        assertNotNull(res)
+        assertEquals(targetContent, res.target.content)
+        assertEquals(targetLang, res.target.lang)
+        assertEquals(provider, res.provider)
+        verifySuspend {
+            statusService.translate(
+                id = entryId,
+                data =
+                matching { arg ->
+                    arg.formData["lang"] == targetLang
+                },
+            )
         }
+    }
 
     @Test
-    fun `given error when getTranslation then result and interactions are as expected`() =
-        runTest {
-            val entryId = "1"
-            val targetLang = "it"
-            val provider = "LibreTranslate"
-            everySuspend {
-                statusService.translate(any(), any())
-            } throws IOException("Network error")
-            val entry =
-                TimelineEntryModel(
-                    id = entryId,
-                    content = "source content",
-                    translationProvider = provider,
-                )
+    fun `given entry with poll when getTranslation then result and interactions are as expected`() = runTest {
+        val entryId = "1"
+        val targetContent = "target content"
+        val targetLang = "it"
+        val targetOption = "target option 1"
+        val provider = "LibreTranslate"
+        everySuspend {
+            statusService.translate(any(), any())
+        } returns
+            Translation(
+                content = targetContent,
+                provider = provider,
+                poll =
+                Poll(
+                    id = "1",
+                    options =
+                    listOf(
+                        PollOption(title = targetOption),
+                    ),
+                ),
+            )
+        val entry =
+            TimelineEntryModel(
+                id = entryId,
+                content = "source content",
+                poll =
+                PollModel(
+                    id = "1",
+                    options =
+                    listOf(
+                        PollOptionModel(
+                            title = "source option 1",
+                        ),
+                    ),
+                ),
+            )
 
-            val res =
-                sut.getTranslation(
-                    entry = entry,
-                    targetLang = targetLang,
-                )
+        val res =
+            sut.getTranslation(
+                entry = entry,
+                targetLang = targetLang,
+            )
 
-            assertNull(res)
-            verifySuspend {
-                statusService.translate(
-                    id = entryId,
-                    data =
-                        matching { arg ->
-                            arg.formData["lang"] == targetLang
-                        },
-                )
-            }
+        assertNotNull(res)
+        assertEquals(targetContent, res.target.content)
+        assertEquals(
+            targetOption,
+            res.target.poll
+                ?.options
+                ?.firstOrNull()
+                ?.title,
+        )
+        assertEquals(targetLang, res.target.lang)
+        assertEquals(provider, res.provider)
+        verifySuspend {
+            statusService.translate(
+                id = entryId,
+                data =
+                matching { arg ->
+                    arg.formData["lang"] == targetLang
+                },
+            )
         }
+    }
+
+    @Test
+    fun `given entry with attachment when getTranslation then result and interactions are as expected`() = runTest {
+        val entryId = "1"
+        val targetContent = "target content"
+        val targetLang = "it"
+        val targetDescription = "target description"
+        val provider = "LibreTranslate"
+        everySuspend {
+            statusService.translate(any(), any())
+        } returns
+            Translation(
+                content = targetContent,
+                provider = provider,
+                attachments =
+                listOf(
+                    MediaAttachment(
+                        id = "1",
+                        type = DtoMediaType.IMAGE,
+                        description = targetDescription,
+                    ),
+                ),
+            )
+        val entry =
+            TimelineEntryModel(
+                id = entryId,
+                content = "source content",
+                attachments =
+                listOf(
+                    AttachmentModel(
+                        id = "1",
+                        url = "",
+                        type = MediaType.Image,
+                        description = "source description",
+                    ),
+                ),
+            )
+
+        val res =
+            sut.getTranslation(
+                entry = entry,
+                targetLang = targetLang,
+            )
+
+        assertNotNull(res)
+        assertEquals(targetContent, res.target.content)
+        assertEquals(
+            targetDescription,
+            res.target.attachments
+                .firstOrNull()
+                ?.description,
+        )
+        assertEquals(targetLang, res.target.lang)
+        assertEquals(provider, res.provider)
+        verifySuspend {
+            statusService.translate(
+                id = entryId,
+                data =
+                matching { arg ->
+                    arg.formData["lang"] == targetLang
+                },
+            )
+        }
+    }
+
+    @Test
+    fun `given error when getTranslation then result and interactions are as expected`() = runTest {
+        val entryId = "1"
+        val targetLang = "it"
+        val provider = "LibreTranslate"
+        everySuspend {
+            statusService.translate(any(), any())
+        } throws IOException("Network error")
+        val entry =
+            TimelineEntryModel(
+                id = entryId,
+                content = "source content",
+                translationProvider = provider,
+            )
+
+        val res =
+            sut.getTranslation(
+                entry = entry,
+                targetLang = targetLang,
+            )
+
+        assertNull(res)
+        verifySuspend {
+            statusService.translate(
+                id = entryId,
+                data =
+                matching { arg ->
+                    arg.formData["lang"] == targetLang
+                },
+            )
+        }
+    }
 }

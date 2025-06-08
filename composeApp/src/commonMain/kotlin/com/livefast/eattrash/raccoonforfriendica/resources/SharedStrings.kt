@@ -1359,7 +1359,8 @@ class SharedStrings : Strings {
     override fun actionTranslateTo(lang: String): String = stringResource(Res.string.action_translate_to, lang)
 
     @Composable
-    override fun accountFollowing(count: Int): String = pluralStringResource(Res.plurals.account_following, count, count)
+    override fun accountFollowing(count: Int): String =
+        pluralStringResource(Res.plurals.account_following, count, count)
 
     @Composable
     override fun createReportSelectedRules(count: Int): String =
@@ -1377,7 +1378,8 @@ class SharedStrings : Strings {
         pluralStringResource(Res.plurals.extended_social_info_reblogs, count, count)
 
     @Composable
-    override fun hashtagPeopleUsing(count: Int): String = pluralStringResource(Res.plurals.hashtag_people_using, count, count)
+    override fun hashtagPeopleUsing(count: Int): String =
+        pluralStringResource(Res.plurals.hashtag_people_using, count, count)
 
     @Composable
     override fun items(count: Int): String = pluralStringResource(Res.plurals.items, count, count)

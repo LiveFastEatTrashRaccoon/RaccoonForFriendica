@@ -14,8 +14,8 @@ class ShortcutListViewModel(
     private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<ShortcutListMviModel.Intent, ShortcutListMviModel.State, ShortcutListMviModel.Effect>(
-        initialState = ShortcutListMviModel.State(),
-    ),
+    initialState = ShortcutListMviModel.State(),
+),
     ShortcutListMviModel {
     init {
         screenModelScope.launch {
@@ -24,7 +24,7 @@ class ShortcutListViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)

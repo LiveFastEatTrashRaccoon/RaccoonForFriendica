@@ -74,9 +74,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
-class CircleTimelineScreen(
-    val id: String,
-) : Screen {
+class CircleTimelineScreen(val id: String) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
@@ -143,11 +141,11 @@ class CircleTimelineScreen(
                 TopAppBar(
                     windowInsets = topAppBarState.toWindowInsets(),
                     modifier =
-                        Modifier.clickable {
-                            scope.launch {
-                                goBackToTop()
-                            }
-                        },
+                    Modifier.clickable {
+                        scope.launch {
+                            goBackToTop()
+                        }
+                    },
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
@@ -187,22 +185,22 @@ class CircleTimelineScreen(
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(connection)
-                            } else {
-                                Modifier
-                            },
-                        ).then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(connection)
+                        } else {
+                            Modifier
+                        },
+                    ).then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(CircleTimelineMviModel.Intent.Refresh)
@@ -263,118 +261,121 @@ class CircleTimelineScreen(
                                 )
                             },
                             onReblog =
-                                { e: TimelineEntryModel ->
-                                    val timeSinceCreation =
-                                        e.created?.run {
-                                            getDurationFromDateToNow(this)
-                                        } ?: Duration.ZERO
-                                    when {
-                                        !e.reblogged && timeSinceCreation.isOldEntry ->
-                                            confirmReblogEntry = e
+                            { e: TimelineEntryModel ->
+                                val timeSinceCreation =
+                                    e.created?.run {
+                                        getDurationFromDateToNow(this)
+                                    } ?: Duration.ZERO
+                                when {
+                                    !e.reblogged && timeSinceCreation.isOldEntry ->
+                                        confirmReblogEntry = e
 
-                                        else ->
-                                            model.reduce(
-                                                CircleTimelineMviModel.Intent.ToggleReblog(e),
-                                            )
-                                    }
-                                }.takeIf { actionRepository.canReblog(entry.original) },
-                            onBookmark =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(CircleTimelineMviModel.Intent.ToggleBookmark(e))
-                                }.takeIf { actionRepository.canBookmark(entry.original) },
-                            onFavorite =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(CircleTimelineMviModel.Intent.ToggleFavorite(e))
-                                }.takeIf { actionRepository.canFavorite(entry.original) },
-                            onDislike =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(CircleTimelineMviModel.Intent.ToggleDislike(e))
-                                }.takeIf { actionRepository.canDislike(entry.original) },
-                            onReply =
-                                { e: TimelineEntryModel ->
-                                    detailOpener.openComposer(
-                                        inReplyTo = e,
-                                        inReplyToUser = e.creator,
-                                    )
-                                }.takeIf { actionRepository.canReply(entry.original) },
-                            onPollVote =
-                                uiState.currentUserId?.let {
-                                    { e, choices ->
+                                    else ->
                                         model.reduce(
-                                            CircleTimelineMviModel.Intent.SubmitPollVote(
-                                                entry = e,
-                                                choices = choices,
-                                            ),
+                                            CircleTimelineMviModel.Intent.ToggleReblog(e),
                                         )
-                                    }
-                                },
+                                }
+                            }.takeIf { actionRepository.canReblog(entry.original) },
+                            onBookmark =
+                            { e: TimelineEntryModel ->
+                                model.reduce(CircleTimelineMviModel.Intent.ToggleBookmark(e))
+                            }.takeIf { actionRepository.canBookmark(entry.original) },
+                            onFavorite =
+                            { e: TimelineEntryModel ->
+                                model.reduce(CircleTimelineMviModel.Intent.ToggleFavorite(e))
+                            }.takeIf { actionRepository.canFavorite(entry.original) },
+                            onDislike =
+                            { e: TimelineEntryModel ->
+                                model.reduce(CircleTimelineMviModel.Intent.ToggleDislike(e))
+                            }.takeIf { actionRepository.canDislike(entry.original) },
+                            onReply =
+                            { e: TimelineEntryModel ->
+                                detailOpener.openComposer(
+                                    inReplyTo = e,
+                                    inReplyToUser = e.creator,
+                                )
+                            }.takeIf { actionRepository.canReply(entry.original) },
+                            onPollVote =
+                            uiState.currentUserId?.let {
+                                { e, choices ->
+                                    model.reduce(
+                                        CircleTimelineMviModel.Intent.SubmitPollVote(
+                                            entry = e,
+                                            choices = choices,
+                                        ),
+                                    )
+                                }
+                            },
                             onShowOriginal = {
                                 model.reduce(
                                     CircleTimelineMviModel.Intent.ToggleTranslation(entry.original),
                                 )
                             },
                             options =
-                                buildList {
-                                    if (actionRepository.canShare(entry.original)) {
-                                        this += OptionId.Share.toOption()
-                                        this += OptionId.CopyUrl.toOption()
+                            buildList {
+                                if (actionRepository.canShare(entry.original)) {
+                                    this += OptionId.Share.toOption()
+                                    this += OptionId.CopyUrl.toOption()
+                                }
+                                if (actionRepository.canEdit(entry.original)) {
+                                    this += OptionId.Edit.toOption()
+                                }
+                                if (actionRepository.canDelete(entry.original)) {
+                                    this += OptionId.Delete.toOption()
+                                }
+                                if (actionRepository.canTogglePin(entry)) {
+                                    if (entry.pinned) {
+                                        this += OptionId.Unpin.toOption()
+                                    } else {
+                                        this += OptionId.Pin.toOption()
                                     }
-                                    if (actionRepository.canEdit(entry.original)) {
-                                        this += OptionId.Edit.toOption()
-                                    }
-                                    if (actionRepository.canDelete(entry.original)) {
-                                        this += OptionId.Delete.toOption()
-                                    }
-                                    if (actionRepository.canTogglePin(entry)) {
-                                        if (entry.pinned) {
-                                            this += OptionId.Unpin.toOption()
-                                        } else {
-                                            this += OptionId.Pin.toOption()
-                                        }
-                                    }
-                                    if (actionRepository.canMute(entry)) {
-                                        this += OptionId.Mute.toOption()
-                                    }
-                                    if (actionRepository.canBlock(entry)) {
-                                        this += OptionId.Block.toOption()
-                                    }
-                                    if (actionRepository.canReport(entry.original)) {
-                                        this += OptionId.ReportUser.toOption()
-                                        this += OptionId.ReportEntry.toOption()
-                                    }
-                                    if (actionRepository.canQuote(entry.original)) {
-                                        this += OptionId.Quote.toOption()
-                                    }
-                                    this += OptionId.ViewDetails.toOption()
-                                    this += OptionId.CopyToClipboard.toOption()
-                                    val currentLang = uiState.lang.orEmpty()
-                                    if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
-                                        this +=
-                                            Option(
-                                                id = OptionId.Translate,
-                                                label =
-                                                    buildString {
-                                                        append(
-                                                            LocalStrings.current.actionTranslateTo(
-                                                                currentLang,
-                                                            ),
-                                                        )
-                                                        append(" (")
-                                                        append(LocalStrings.current.experimental)
-                                                        append(")")
-                                                    },
-                                            )
-                                    }
-                                    val nodeName = entry.nodeName
-                                    if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
-                                        this +=
-                                            OptionId.AddShortcut.toOption(
-                                                LocalStrings.current.actionShortcut(nodeName),
-                                            )
-                                    }
-                                    this += OptionId.OpenInBrowser.toOption()
-                                },
-                            onOptionSelected = { optionId ->
+                                }
+                                if (actionRepository.canMute(entry)) {
+                                    this += OptionId.Mute.toOption()
+                                }
+                                if (actionRepository.canBlock(entry)) {
+                                    this += OptionId.Block.toOption()
+                                }
+                                if (actionRepository.canReport(entry.original)) {
+                                    this += OptionId.ReportUser.toOption()
+                                    this += OptionId.ReportEntry.toOption()
+                                }
+                                if (actionRepository.canQuote(entry.original)) {
+                                    this += OptionId.Quote.toOption()
+                                }
+                                this += OptionId.ViewDetails.toOption()
+                                this += OptionId.CopyToClipboard.toOption()
+                                val currentLang = uiState.lang.orEmpty()
+                                if (currentLang.isNotEmpty() &&
+                                    entry.lang != currentLang &&
+                                    !entry.isShowingTranslation
+                                ) {
+                                    this +=
+                                        Option(
+                                            id = OptionId.Translate,
+                                            label =
+                                            buildString {
+                                                append(
+                                                    LocalStrings.current.actionTranslateTo(
+                                                        currentLang,
+                                                    ),
+                                                )
+                                                append(" (")
+                                                append(LocalStrings.current.experimental)
+                                                append(")")
+                                            },
+                                        )
+                                }
+                                val nodeName = entry.nodeName
+                                if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
+                                    this +=
+                                        OptionId.AddShortcut.toOption(
+                                            LocalStrings.current.actionShortcut(nodeName),
+                                        )
+                                }
+                                this += OptionId.OpenInBrowser.toOption()
+                            },
+                            onSelectOption = { optionId ->
                                 when (optionId) {
                                     OptionId.Share -> {
                                         val urlString = entry.url.orEmpty()
@@ -531,13 +532,13 @@ class CircleTimelineScreen(
             val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
             CustomConfirmDialog(
                 title =
-                    buildString {
-                        append(LocalStrings.current.actionBlock)
-                        val handle = creator?.handle ?: ""
-                        if (handle.isNotEmpty()) {
-                            append(" @$handle")
-                        }
-                    },
+                buildString {
+                    append(LocalStrings.current.actionBlock)
+                    val handle = creator?.handle ?: ""
+                    if (handle.isNotEmpty()) {
+                        append(" @$handle")
+                    }
+                },
                 onClose = { confirm ->
                     val entryId = confirmBlockEntry?.id
                     confirmBlockEntry = null

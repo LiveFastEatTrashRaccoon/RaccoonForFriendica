@@ -70,8 +70,8 @@ class TimelineViewModel(
     private val followedHashtagCache: FollowedHashtagCache,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>(
-        initialState = TimelineMviModel.State(),
-    ),
+    initialState = TimelineMviModel.State(),
+),
     TimelineMviModel {
     private var circlesRefreshed = false
 
@@ -94,7 +94,7 @@ class TimelineViewModel(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
                             lang = settings?.lang,
                         )
@@ -265,10 +265,7 @@ class TimelineViewModel(
         }
     }
 
-    private suspend fun refresh(
-        initial: Boolean = false,
-        forceRefresh: Boolean = false,
-    ) {
+    private suspend fun refresh(initial: Boolean = false, forceRefresh: Boolean = false) {
         // do not do anything if type is unknown
         val timelineType = uiState.value.timelineType ?: return
 
@@ -336,28 +333,25 @@ class TimelineViewModel(
         }
     }
 
-    private suspend fun updateEntryInState(
-        entryId: String,
-        block: (TimelineEntryModel) -> TimelineEntryModel,
-    ) {
+    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
         updateState {
             it.copy(
                 entries =
-                    it.entries.map { entry ->
-                        when {
-                            entry.id == entryId -> {
-                                entry.let(block)
-                            }
-
-                            entry.reblog?.id == entryId -> {
-                                entry.copy(reblog = entry.reblog?.let(block))
-                            }
-
-                            else -> {
-                                entry
-                            }
+                it.entries.map { entry ->
+                    when {
+                        entry.id == entryId -> {
+                            entry.let(block)
                         }
-                    },
+
+                        entry.reblog?.id == entryId -> {
+                            entry.copy(reblog = entry.reblog?.let(block))
+                        }
+
+                        else -> {
+                            entry
+                        }
+                    }
+                },
             )
         }
     }
@@ -501,12 +495,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun mute(
-        userId: String,
-        entryId: String,
-        duration: Duration,
-        disableNotifications: Boolean,
-    ) {
+    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         screenModelScope.launch {
             val res =
                 userRepository.mute(
@@ -520,10 +509,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun block(
-        userId: String,
-        entryId: String,
-    ) {
+    private fun block(userId: String, entryId: String) {
         screenModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
@@ -550,10 +536,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun submitPoll(
-        entry: TimelineEntryModel,
-        choices: List<Int>,
-    ) {
+    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         screenModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }

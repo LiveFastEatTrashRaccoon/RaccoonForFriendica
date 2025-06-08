@@ -70,8 +70,8 @@ internal fun FullTimelineItem(
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
-    onOptionSelected: ((OptionId) -> Unit)? = null,
-    onOptionsMenuToggled: ((Boolean) -> Unit)? = null,
+    onSelectOption: ((OptionId) -> Unit)? = null,
+    onToggleOptionsMenu: ((Boolean) -> Unit)? = null,
     onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
     onReblog: ((TimelineEntryModel) -> Unit)? = null,
     onReply: ((TimelineEntryModel) -> Unit)? = null,
@@ -141,14 +141,14 @@ internal fun FullTimelineItem(
                     Box {
                         IconButton(
                             modifier =
-                                Modifier
-                                    .padding(bottom = Spacing.xs, end = Spacing.s)
-                                    .size(height = IconSize.m, width = IconSize.l)
-                                    .onGloballyPositioned {
-                                        optionsOffset = it.positionInParent()
-                                    }.clearAndSetSemantics { },
+                            Modifier
+                                .padding(bottom = Spacing.xs, end = Spacing.s)
+                                .size(height = IconSize.m, width = IconSize.l)
+                                .onGloballyPositioned {
+                                    optionsOffset = it.positionInParent()
+                                }.clearAndSetSemantics { },
                             onClick = {
-                                onOptionsMenuToggled?.invoke(true)
+                                onToggleOptionsMenu?.invoke(true)
                             },
                         ) {
                             Icon(
@@ -162,15 +162,15 @@ internal fun FullTimelineItem(
                         CustomDropDown(
                             expanded = optionsMenuOpen,
                             onDismiss = {
-                                onOptionsMenuToggled?.invoke(false)
+                                onToggleOptionsMenu?.invoke(false)
                             },
                             offset =
-                                with(LocalDensity.current) {
-                                    DpOffset(
-                                        x = optionsOffset.x.toDp(),
-                                        y = optionsOffset.y.toDp(),
-                                    )
-                                },
+                            with(LocalDensity.current) {
+                                DpOffset(
+                                    x = optionsOffset.x.toDp(),
+                                    y = optionsOffset.y.toDp(),
+                                )
+                            },
                         ) {
                             options.forEach { option ->
                                 DropdownMenuItem(
@@ -178,8 +178,8 @@ internal fun FullTimelineItem(
                                         Text(option.label)
                                     },
                                     onClick = {
-                                        onOptionsMenuToggled?.invoke(false)
-                                        onOptionSelected?.invoke(option.id)
+                                        onToggleOptionsMenu?.invoke(false)
+                                        onSelectOption?.invoke(option.id)
                                     },
                                 )
                             }
@@ -194,10 +194,10 @@ internal fun FullTimelineItem(
         if (spoiler.isNotEmpty()) {
             SpoilerCard(
                 modifier =
-                    Modifier.fillMaxWidth().padding(
-                        vertical = Spacing.s,
-                        horizontal = contentHorizontalPadding,
-                    ),
+                Modifier.fillMaxWidth().padding(
+                    vertical = Spacing.s,
+                    horizontal = contentHorizontalPadding,
+                ),
                 content = spoiler,
                 autoloadImages = autoloadImages,
                 active = spoilerActive,
@@ -219,9 +219,9 @@ internal fun FullTimelineItem(
                 if (!title.isNullOrBlank()) {
                     ContentTitle(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .semantics { heading() },
+                        Modifier
+                            .fillMaxWidth()
+                            .semantics { heading() },
                         content = title,
                         maxLines = maxTitleLines,
                         autoloadImages = autoloadImages,
@@ -236,13 +236,13 @@ internal fun FullTimelineItem(
                 if (body.isNotBlank()) {
                     ContentBody(
                         modifier =
-                            Modifier.fillMaxWidth().then(
-                                if (title == null) {
-                                    Modifier
-                                } else {
-                                    Modifier.padding(top = Spacing.xxxs)
-                                },
-                            ),
+                        Modifier.fillMaxWidth().then(
+                            if (title == null) {
+                                Modifier
+                            } else {
+                                Modifier.padding(top = Spacing.xxxs)
+                            },
+                        ),
                         content = body,
                         autoloadImages = autoloadImages,
                         maxLines = maxBodyLines,
@@ -260,10 +260,10 @@ internal fun FullTimelineItem(
                 if (visualAttachments.isNotEmpty()) {
                     ContentVisualAttachments(
                         modifier =
-                            Modifier.fillMaxWidth().padding(
-                                top = Spacing.s,
-                                bottom = Spacing.xxxs,
-                            ),
+                        Modifier.fillMaxWidth().padding(
+                            top = Spacing.s,
+                            bottom = Spacing.xxxs,
+                        ),
                         attachments = visualAttachments,
                         blurNsfw = blurNsfw,
                         autoloadImages = autoloadImages,
@@ -295,17 +295,17 @@ internal fun FullTimelineItem(
                 entry.cardToDisplay?.also { preview ->
                     ContentPreview(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(top = Spacing.s),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = Spacing.s),
                         card =
-                            preview.copy(
-                                title =
-                                    preview.title
-                                        .takeIf { !entry.content.startsWith(it) }
-                                        .orEmpty(),
-                                image = preview.image.takeIf { attachments.isEmpty() },
-                            ),
+                        preview.copy(
+                            title =
+                            preview.title
+                                .takeIf { !entry.content.startsWith(it) }
+                                .orEmpty(),
+                            image = preview.image.takeIf { attachments.isEmpty() },
+                        ),
                         autoloadImages = autoloadImages,
                         onOpen = onOpenUrl?.let { block -> { url -> block(url, false) } },
                         onOpenImage = { url ->
@@ -320,10 +320,10 @@ internal fun FullTimelineItem(
         if (extendedSocialInfoEnabled) {
             ContentExtendedSocialInfo(
                 modifier =
-                    Modifier.padding(
-                        vertical = Spacing.xs,
-                        horizontal = contentHorizontalPadding,
-                    ),
+                Modifier.padding(
+                    vertical = Spacing.xs,
+                    horizontal = contentHorizontalPadding,
+                ),
                 reblogCount = entry.reblogCount,
                 favoriteCount = entry.favoriteCount,
                 onOpenUsersReblog = {
@@ -337,12 +337,12 @@ internal fun FullTimelineItem(
 
         TranslationFooter(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = Spacing.xs,
-                        end = Spacing.m,
-                    ),
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = Spacing.xs,
+                    end = Spacing.m,
+                ),
             lang = entry.lang,
             isShowingTranslation = entry.isShowingTranslation,
             provider = entry.translationProvider,
@@ -353,13 +353,13 @@ internal fun FullTimelineItem(
         if (actionsEnabled) {
             ContentFooter(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            top = Spacing.xxs,
-                            start = contentHorizontalPadding,
-                            end = contentHorizontalPadding,
-                        ),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = Spacing.xxs,
+                        start = contentHorizontalPadding,
+                        end = contentHorizontalPadding,
+                    ),
                 favoriteCount = entry.favoriteCount,
                 favorite = entry.favorite,
                 favoriteLoading = entry.favoriteLoading,
@@ -374,38 +374,38 @@ internal fun FullTimelineItem(
                 dislikeLoading = entry.dislikeLoading,
                 options = options,
                 optionsMenuOpen = optionsMenuOpen,
-                onOptionSelected = onOptionSelected,
-                onOptionsMenuToggled = onOptionsMenuToggled,
+                onSelectOption = onSelectOption,
+                onToggleOptionsMenu = onToggleOptionsMenu,
                 onReply =
-                    if (onReply != null) {
-                        { onReply(entry) }
-                    } else {
-                        null
-                    },
+                if (onReply != null) {
+                    { onReply(entry) }
+                } else {
+                    null
+                },
                 onReblog =
-                    if (onReblog != null) {
-                        { onReblog(entry) }
-                    } else {
-                        null
-                    },
+                if (onReblog != null) {
+                    { onReblog(entry) }
+                } else {
+                    null
+                },
                 onFavorite =
-                    if (onFavorite != null) {
-                        { onFavorite(entry) }
-                    } else {
-                        null
-                    },
+                if (onFavorite != null) {
+                    { onFavorite(entry) }
+                } else {
+                    null
+                },
                 onBookmark =
-                    if (onBookmark != null) {
-                        { onBookmark(entry) }
-                    } else {
-                        null
-                    },
+                if (onBookmark != null) {
+                    { onBookmark(entry) }
+                } else {
+                    null
+                },
                 onDislike =
-                    if (onDislike != null) {
-                        { onDislike(entry) }
-                    } else {
-                        null
-                    },
+                if (onDislike != null) {
+                    { onDislike(entry) }
+                } else {
+                    null
+                },
             )
         } else {
             Spacer(Modifier.height(Spacing.xxs))

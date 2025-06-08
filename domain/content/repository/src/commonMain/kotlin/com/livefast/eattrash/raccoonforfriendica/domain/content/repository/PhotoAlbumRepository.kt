@@ -6,16 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumM
 interface PhotoAlbumRepository {
     suspend fun getAll(): List<MediaAlbumModel>?
 
-    suspend fun update(
-        oldName: String,
-        newName: String,
-    ): Boolean
+    suspend fun update(oldName: String, newName: String): Boolean
 
     suspend fun delete(name: String): Boolean
 
-    suspend fun getPhotos(
-        album: String,
-        pageCursor: String?,
-        latestFirst: Boolean = false,
-    ): List<AttachmentModel>?
+    suspend fun getPhotos(album: String, pageCursor: String?, latestFirst: Boolean = false): List<AttachmentModel>?
 }

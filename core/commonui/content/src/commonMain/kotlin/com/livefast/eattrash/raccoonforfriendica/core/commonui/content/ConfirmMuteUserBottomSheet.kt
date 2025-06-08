@@ -85,12 +85,12 @@ fun ConfirmMuteUserBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 text =
-                    buildString {
-                        append(LocalStrings.current.actionMute)
-                        if (userHandle.isNotEmpty()) {
-                            append(" @$userHandle")
-                        }
-                    },
+                buildString {
+                    append(LocalStrings.current.actionMute)
+                    if (userHandle.isNotEmpty()) {
+                        append(" @$userHandle")
+                    }
+                },
                 style = MaterialTheme.typography.titleMedium,
             )
 
@@ -99,17 +99,17 @@ fun ConfirmMuteUserBottomSheet(
             SettingsRow(
                 title = LocalStrings.current.muteDurationItem,
                 value =
-                    if (selectedDuration.isInfinite()) {
-                        LocalStrings.current.muteDurationIndefinite
-                    } else {
-                        selectedDuration.getPrettyDuration(
-                            secondsLabel = LocalStrings.current.timeSecondShort,
-                            minutesLabel = LocalStrings.current.timeMinuteShort,
-                            hoursLabel = LocalStrings.current.timeHourShort,
-                            daysLabel = LocalStrings.current.dateDayShort,
-                            finePrecision = false,
-                        )
-                    },
+                if (selectedDuration.isInfinite()) {
+                    LocalStrings.current.muteDurationIndefinite
+                } else {
+                    selectedDuration.getPrettyDuration(
+                        secondsLabel = LocalStrings.current.timeSecondShort,
+                        minutesLabel = LocalStrings.current.timeMinuteShort,
+                        hoursLabel = LocalStrings.current.timeHourShort,
+                        daysLabel = LocalStrings.current.dateDayShort,
+                        finePrecision = false,
+                    )
+                },
                 onTap = {
                     selectDurationDialogOpened = true
                 },
@@ -117,7 +117,7 @@ fun ConfirmMuteUserBottomSheet(
             SettingsSwitchRow(
                 title = LocalStrings.current.muteDisableNotificationsItem,
                 value = selectedDisableNotifications,
-                onValueChanged = {
+                onValueChange = {
                     selectedDisableNotifications = it
                 },
             )

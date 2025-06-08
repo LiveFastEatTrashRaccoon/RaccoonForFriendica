@@ -16,10 +16,7 @@ internal class DefaultPopulateThreadUseCase(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val emojiHelper: EmojiHelper,
 ) : PopulateThreadUseCase {
-    override suspend fun invoke(
-        entry: TimelineEntryModel,
-        maxDepth: Int,
-    ): List<TimelineEntryModel> {
+    override suspend fun invoke(entry: TimelineEntryModel, maxDepth: Int): List<TimelineEntryModel> {
         val root = ConversationNode(entry)
         populateTree(
             node = root,
@@ -36,12 +33,7 @@ internal class DefaultPopulateThreadUseCase(
         return res.toList()
     }
 
-    private suspend fun populateTree(
-        node: ConversationNode,
-        depth: Int,
-        depthOffset: Int = 0,
-        maxDepth: Int,
-    ): Unit =
+    private suspend fun populateTree(node: ConversationNode, depth: Int, depthOffset: Int = 0, maxDepth: Int): Unit =
         coroutineScope {
             val entry = node.entry
             if (entry.replyCount == 0) {
@@ -67,12 +59,14 @@ internal class DefaultPopulateThreadUseCase(
                     .mapNotNull { child ->
                         // needed because otherwise replies of different depths are included
                         val referenceChild = child.original
-                        if (referenceChild.inReplyTo?.id == entry.id || referenceChild.inReplyTo?.id == entry.reblog?.id) {
+                        if (referenceChild.inReplyTo?.id == entry.id ||
+                            referenceChild.inReplyTo?.id == entry.reblog?.id
+                        ) {
                             ConversationNode(
                                 entry =
-                                    referenceChild.copy(
-                                        depth = depthOffset + depth + 1,
-                                    ),
+                                referenceChild.copy(
+                                    depth = depthOffset + depth + 1,
+                                ),
                             )
                         } else {
                             null
@@ -98,11 +92,10 @@ internal class DefaultPopulateThreadUseCase(
 
     private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> = distinctBy { it.safeKey }
 
-    private fun List<TimelineEntryModel>.populateLoadMore() =
-        mapIndexed { idx, entry ->
-            val hasMoreReplies = entry.replyCount > 0
-            val isNextCommentNotChild =
-                (idx < lastIndex && this[idx + 1].depth <= entry.depth) || idx == lastIndex
-            entry.copy(loadMoreButtonVisible = hasMoreReplies && isNextCommentNotChild)
-        }
+    private fun List<TimelineEntryModel>.populateLoadMore() = mapIndexed { idx, entry ->
+        val hasMoreReplies = entry.replyCount > 0
+        val isNextCommentNotChild =
+            (idx < lastIndex && this[idx + 1].depth <= entry.depth) || idx == lastIndex
+        entry.copy(loadMoreButtonVisible = hasMoreReplies && isNextCommentNotChild)
+    }
 }

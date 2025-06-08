@@ -32,8 +32,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
 internal fun InReplyToInfo(
-    modifier: Modifier = Modifier,
     user: UserModel?,
+    modifier: Modifier = Modifier,
     autoloadImages: Boolean = true,
     iconSize: Dp = IconSize.s,
     onOpenUser: ((UserModel) -> Unit)? = null,
@@ -77,11 +77,11 @@ internal fun InReplyToInfo(
         if (creatorAvatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
-                    Modifier
-                        .size(iconSize)
-                        .then(onOpenUserModifier)
-                        .padding(Spacing.xxxs)
-                        .clip(RoundedCornerShape(iconSize / 2)),
+                Modifier
+                    .size(iconSize)
+                    .then(onOpenUserModifier)
+                    .padding(Spacing.xxxs)
+                    .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
                 quality = FilterQuality.Low,
                 contentScale = ContentScale.FillBounds,

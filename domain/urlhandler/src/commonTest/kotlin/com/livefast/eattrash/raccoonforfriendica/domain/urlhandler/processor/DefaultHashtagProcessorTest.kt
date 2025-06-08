@@ -17,43 +17,40 @@ class DefaultHashtagProcessorTest {
     private val sut = DefaultHashtagProcessor(detailOpener = detailOpener)
 
     @Test
-    fun `given valid URL in format 1 when process URL then interactions are as expected`() =
-        runTest {
-            val url = "https://$HOST/search?tag=$TAG"
+    fun `given valid URL in format 1 when process URL then interactions are as expected`() = runTest {
+        val url = "https://$HOST/search?tag=$TAG"
 
-            val res = sut.process(url)
+        val res = sut.process(url)
 
-            assertTrue(res)
-            verify {
-                detailOpener.openHashtag(TAG)
-            }
+        assertTrue(res)
+        verify {
+            detailOpener.openHashtag(TAG)
         }
+    }
 
     @Test
-    fun `given valid URL in format 2 when process URL then interactions are as expected`() =
-        runTest {
-            val url = "https://$HOST/tags/$TAG"
+    fun `given valid URL in format 2 when process URL then interactions are as expected`() = runTest {
+        val url = "https://$HOST/tags/$TAG"
 
-            val res = sut.process(url)
+        val res = sut.process(url)
 
-            assertTrue(res)
-            verify {
-                detailOpener.openHashtag(TAG)
-            }
+        assertTrue(res)
+        verify {
+            detailOpener.openHashtag(TAG)
         }
+    }
 
     @Test
-    fun `given invalid URL when process URL then interactions are as expected`() =
-        runTest {
-            val url = "https://$HOST/search?q=$TAG"
+    fun `given invalid URL when process URL then interactions are as expected`() = runTest {
+        val url = "https://$HOST/search?q=$TAG"
 
-            val res = sut.process(url)
+        val res = sut.process(url)
 
-            assertFalse(res)
-            verify(mode = VerifyMode.not) {
-                detailOpener.openHashtag(any())
-            }
+        assertFalse(res)
+        verify(mode = VerifyMode.not) {
+            detailOpener.openHashtag(any())
         }
+    }
 
     companion object {
         private const val HOST = "example.com"

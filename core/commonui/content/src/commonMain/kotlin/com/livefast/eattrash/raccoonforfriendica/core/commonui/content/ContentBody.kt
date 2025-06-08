@@ -24,9 +24,9 @@ internal val IMAGE_REGEX = Regex("(<img.*?/?>)|(<a href=\".*?\"><img.*?/?></a>)"
 
 @Composable
 fun ContentBody(
+    modifier: Modifier = Modifier,
     content: String = "",
     color: Color = MaterialTheme.colorScheme.onBackground,
-    modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     autoloadImages: Boolean = true,
     emojis: List<EmojiModel> = emptyList(),
@@ -42,13 +42,13 @@ fun ContentBody(
                     extractImageData(chunk)?.also { data ->
                         CustomImage(
                             modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(vertical = Spacing.s)
-                                    .clip(RoundedCornerShape(CornerSize.xl))
-                                    .clickable {
-                                        onOpenImage?.invoke(data.url)
-                                    },
+                            Modifier
+                                .fillMaxSize()
+                                .padding(vertical = Spacing.s)
+                                .clip(RoundedCornerShape(CornerSize.xl))
+                                .clickable {
+                                    onOpenImage?.invoke(data.url)
+                                },
                             url = data.url,
                             contentDescription = data.description,
                         )
@@ -58,9 +58,9 @@ fun ContentBody(
                         chunk.parseHtml(
                             linkColor = MaterialTheme.colorScheme.primary,
                             quoteColor =
-                                MaterialTheme.colorScheme.onBackground.copy(
-                                    ancillaryTextAlpha,
-                                ),
+                            MaterialTheme.colorScheme.onBackground.copy(
+                                ancillaryTextAlpha,
+                            ),
                         )
                     TextWithCustomEmojis(
                         style = MaterialTheme.typography.bodyMedium.copy(color = color),
@@ -88,29 +88,28 @@ fun ContentBody(
     }
 }
 
-private fun String.splitTextAndImages(): List<String> =
-    buildList {
-        val original = this@splitTextAndImages
-        val matches = IMAGE_REGEX.findAll(original).toList()
-        var index = 0
-        for (match in matches) {
-            val range = match.range
-            val chunkBefore =
-                original
-                    .substring(index, range.first)
-                    .trim()
-                    // remove empty paragraph at the end
-                    .replace(Regex("<p( /)?>\$"), "")
-            add(chunkBefore)
-            val htmlImage = original.substring(range)
-            val data = extractImageData(htmlImage)
-            if (data != null && data.description?.looksLikeAnEmoji != true) {
-                add(htmlImage.trim())
-            }
-            index = range.last + 1
+private fun String.splitTextAndImages(): List<String> = buildList {
+    val original = this@splitTextAndImages
+    val matches = IMAGE_REGEX.findAll(original).toList()
+    var index = 0
+    for (match in matches) {
+        val range = match.range
+        val chunkBefore =
+            original
+                .substring(index, range.first)
+                .trim()
+                // remove empty paragraph at the end
+                .replace(Regex("<p( /)?>\$"), "")
+        add(chunkBefore)
+        val htmlImage = original.substring(range)
+        val data = extractImageData(htmlImage)
+        if (data != null && data.description?.looksLikeAnEmoji != true) {
+            add(htmlImage.trim())
         }
-        if (index < original.length) {
-            val chunkAfter = original.substring(index, original.length).trim()
-            add(chunkAfter)
-        }
+        index = range.last + 1
     }
+    if (index < original.length) {
+        val chunkAfter = original.substring(index, original.length).trim()
+        add(chunkAfter)
+    }
+}

@@ -12,14 +12,9 @@ interface GalleryMviModel :
 
         data object LoadNextPage : Intent
 
-        data class UpdateAlbum(
-            val oldName: String,
-            val newName: String,
-        ) : Intent
+        data class UpdateAlbum(val oldName: String, val newName: String) : Intent
 
-        data class DeleteAlbum(
-            val name: String,
-        ) : Intent
+        data class DeleteAlbum(val name: String) : Intent
     }
 
     data class State(

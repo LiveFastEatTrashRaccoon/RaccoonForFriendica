@@ -44,21 +44,21 @@ fun CalendarRow(
     options: List<Option> = emptyList(),
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onClick: (() -> Unit)? = null,
-    onOptionSelected: ((OptionId) -> Unit)? = null,
+    onSelectOption: ((OptionId) -> Unit)? = null,
 ) {
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
 
     Column(
         modifier =
-            modifier
-                .padding(bottom = Spacing.xxs)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    onClick?.invoke()
-                },
+        modifier
+            .padding(bottom = Spacing.xxs)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                onClick?.invoke()
+            },
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         Row(
@@ -78,9 +78,9 @@ fun CalendarRow(
                 Box {
                     IconButton(
                         modifier =
-                            Modifier.onGloballyPositioned {
-                                optionsOffset = it.positionInParent()
-                            },
+                        Modifier.onGloballyPositioned {
+                            optionsOffset = it.positionInParent()
+                        },
                         onClick = {
                             optionsMenuOpen = true
                         },
@@ -99,12 +99,12 @@ fun CalendarRow(
                             optionsMenuOpen = false
                         },
                         offset =
-                            with(LocalDensity.current) {
-                                DpOffset(
-                                    x = optionsOffset.x.toDp(),
-                                    y = optionsOffset.y.toDp(),
-                                )
-                            },
+                        with(LocalDensity.current) {
+                            DpOffset(
+                                x = optionsOffset.x.toDp(),
+                                y = optionsOffset.y.toDp(),
+                            )
+                        },
                     ) {
                         options.forEach { option ->
                             DropdownMenuItem(
@@ -113,7 +113,7 @@ fun CalendarRow(
                                 },
                                 onClick = {
                                     optionsMenuOpen = false
-                                    onOptionSelected?.invoke(option.id)
+                                    onSelectOption?.invoke(option.id)
                                 },
                             )
                         }

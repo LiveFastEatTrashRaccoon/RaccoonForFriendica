@@ -20,19 +20,17 @@ sealed interface CircleType {
 }
 
 @Composable
-fun CircleType.toIcon(): ImageVector =
-    when (this) {
-        CircleType.Group -> Icons.Default.Group
-        CircleType.Predefined -> Icons.Default.Lightbulb
-        CircleType.UserDefined -> Icons.Default.Workspaces
-        CircleType.Other -> Icons.Default.Circle
-    }
+fun CircleType.toIcon(): ImageVector = when (this) {
+    CircleType.Group -> Icons.Default.Group
+    CircleType.Predefined -> Icons.Default.Lightbulb
+    CircleType.UserDefined -> Icons.Default.Workspaces
+    CircleType.Other -> Icons.Default.Circle
+}
 
 @Composable
-fun CircleType.toReadableName(): String =
-    when (this) {
-        CircleType.Group -> LocalStrings.current.circleTypeGroup
-        CircleType.Predefined -> LocalStrings.current.circleTypePredefined
-        CircleType.UserDefined -> LocalStrings.current.circleTypeUserDefined
-        CircleType.Other -> LocalStrings.current.itemOther
-    }
+fun CircleType.toReadableName(): String = when (this) {
+    CircleType.Group -> LocalStrings.current.circleTypeGroup
+    CircleType.Predefined -> LocalStrings.current.circleTypePredefined
+    CircleType.UserDefined -> LocalStrings.current.circleTypeUserDefined
+    CircleType.Other -> LocalStrings.current.itemOther
+}

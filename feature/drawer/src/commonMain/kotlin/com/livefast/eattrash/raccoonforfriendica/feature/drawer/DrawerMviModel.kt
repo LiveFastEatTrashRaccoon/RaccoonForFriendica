@@ -12,15 +12,11 @@ interface DrawerMviModel :
     ScreenModel,
     MviModel<DrawerMviModel.Intent, DrawerMviModel.State, DrawerMviModel.Effect> {
     sealed interface Intent {
-        data class SetAnonymousChangeNode(
-            val nodeName: String,
-        ) : Intent
+        data class SetAnonymousChangeNode(val nodeName: String) : Intent
 
         data object SubmitAnonymousChangeNode : Intent
 
-        data class SwitchAccount(
-            val account: AccountModel,
-        ) : Intent
+        data class SwitchAccount(val account: AccountModel) : Intent
     }
 
     data class State(

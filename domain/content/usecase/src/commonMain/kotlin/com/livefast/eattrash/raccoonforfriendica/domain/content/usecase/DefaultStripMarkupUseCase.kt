@@ -10,10 +10,7 @@ internal class DefaultStripMarkupUseCase(
     private val bbCodeConverter: BBCodeConverter,
     private val markdownConverter: MarkdownConverter,
 ) : StripMarkupUseCase {
-    override fun invoke(
-        text: String,
-        mode: MarkupMode,
-    ): String {
+    override fun invoke(text: String, mode: MarkupMode): String {
         val rendered =
             when (mode) {
                 MarkupMode.BBCode -> bbCodeConverter.toHtml(text)

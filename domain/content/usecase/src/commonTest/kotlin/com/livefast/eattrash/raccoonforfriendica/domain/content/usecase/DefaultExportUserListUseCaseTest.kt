@@ -20,94 +20,92 @@ class DefaultExportUserListUseCaseTest {
         )
 
     @Test
-    fun `given follower specification when invoke then result is as expected`() =
-        runTest {
-            val chunk1 =
-                listOf(
-                    UserModel(id = "1", handle = "user1"),
-                    UserModel(id = "2", handle = "user2"),
-                )
-            val chunk2 =
-                listOf(
-                    UserModel(id = "3", handle = "user3"),
-                    UserModel(id = "4", handle = "user4"),
-                )
-            everySuspend {
-                userRepository.getFollowers(
-                    id = any(),
-                    pageCursor = any(),
-                )
-            } sequentiallyReturns listOf(chunk1, chunk2, emptyList())
+    fun `given follower specification when invoke then result is as expected`() = runTest {
+        val chunk1 =
+            listOf(
+                UserModel(id = "1", handle = "user1"),
+                UserModel(id = "2", handle = "user2"),
+            )
+        val chunk2 =
+            listOf(
+                UserModel(id = "3", handle = "user3"),
+                UserModel(id = "4", handle = "user4"),
+            )
+        everySuspend {
+            userRepository.getFollowers(
+                id = any(),
+                pageCursor = any(),
+            )
+        } sequentiallyReturns listOf(chunk1, chunk2, emptyList())
 
-            val expected =
-                buildList {
-                    addAll(chunk1)
-                    addAll(chunk2)
-                }.mapNotNull { it.handle }.joinToString("\n")
+        val expected =
+            buildList {
+                addAll(chunk1)
+                addAll(chunk2)
+            }.mapNotNull { it.handle }.joinToString("\n")
 
-            val spec = ExportUserSpecification.Follower(userId = "0")
-            val res = sut(spec)
+        val spec = ExportUserSpecification.Follower(userId = "0")
+        val res = sut(spec)
 
-            assertEquals(expected, res)
-            verifySuspend(VerifyMode.exhaustiveOrder) {
-                userRepository.getFollowers(
-                    id = "0",
-                    pageCursor = null,
-                )
-                userRepository.getFollowers(
-                    id = "0",
-                    pageCursor = "2",
-                )
-                userRepository.getFollowers(
-                    id = "0",
-                    pageCursor = "4",
-                )
-            }
+        assertEquals(expected, res)
+        verifySuspend(VerifyMode.exhaustiveOrder) {
+            userRepository.getFollowers(
+                id = "0",
+                pageCursor = null,
+            )
+            userRepository.getFollowers(
+                id = "0",
+                pageCursor = "2",
+            )
+            userRepository.getFollowers(
+                id = "0",
+                pageCursor = "4",
+            )
         }
+    }
 
     @Test
-    fun `given following specification when invoke then result is as expected`() =
-        runTest {
-            val chunk1 =
-                listOf(
-                    UserModel(id = "1", handle = "user1"),
-                    UserModel(id = "2", handle = "user2"),
-                )
-            val chunk2 =
-                listOf(
-                    UserModel(id = "3", handle = "user3"),
-                    UserModel(id = "4", handle = "user4"),
-                )
-            everySuspend {
-                userRepository.getFollowing(
-                    id = any(),
-                    pageCursor = any(),
-                )
-            } sequentiallyReturns listOf(chunk1, chunk2, emptyList())
+    fun `given following specification when invoke then result is as expected`() = runTest {
+        val chunk1 =
+            listOf(
+                UserModel(id = "1", handle = "user1"),
+                UserModel(id = "2", handle = "user2"),
+            )
+        val chunk2 =
+            listOf(
+                UserModel(id = "3", handle = "user3"),
+                UserModel(id = "4", handle = "user4"),
+            )
+        everySuspend {
+            userRepository.getFollowing(
+                id = any(),
+                pageCursor = any(),
+            )
+        } sequentiallyReturns listOf(chunk1, chunk2, emptyList())
 
-            val expected =
-                buildList {
-                    addAll(chunk1)
-                    addAll(chunk2)
-                }.mapNotNull { it.handle }.joinToString("\n")
+        val expected =
+            buildList {
+                addAll(chunk1)
+                addAll(chunk2)
+            }.mapNotNull { it.handle }.joinToString("\n")
 
-            val spec = ExportUserSpecification.Following(userId = "0")
-            val res = sut(spec)
+        val spec = ExportUserSpecification.Following(userId = "0")
+        val res = sut(spec)
 
-            assertEquals(expected, res)
-            verifySuspend(VerifyMode.exhaustiveOrder) {
-                userRepository.getFollowing(
-                    id = "0",
-                    pageCursor = null,
-                )
-                userRepository.getFollowing(
-                    id = "0",
-                    pageCursor = "2",
-                )
-                userRepository.getFollowing(
-                    id = "0",
-                    pageCursor = "4",
-                )
-            }
+        assertEquals(expected, res)
+        verifySuspend(VerifyMode.exhaustiveOrder) {
+            userRepository.getFollowing(
+                id = "0",
+                pageCursor = null,
+            )
+            userRepository.getFollowing(
+                id = "0",
+                pageCursor = "2",
+            )
+            userRepository.getFollowing(
+                id = "0",
+                pageCursor = "4",
+            )
         }
+    }
 }

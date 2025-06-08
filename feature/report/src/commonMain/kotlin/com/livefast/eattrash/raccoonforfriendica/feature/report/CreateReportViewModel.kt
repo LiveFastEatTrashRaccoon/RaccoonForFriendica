@@ -22,8 +22,8 @@ class CreateReportViewModel(
     private val userCache: LocalItemCache<UserModel>,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
 ) : DefaultMviModel<CreateReportMviModel.Intent, CreateReportMviModel.State, CreateReportMviModel.Effect>(
-        initialState = CreateReportMviModel.State(),
-    ),
+    initialState = CreateReportMviModel.State(),
+),
     CreateReportMviModel {
     init {
         screenModelScope.launch {
@@ -32,14 +32,14 @@ class CreateReportViewModel(
                     updateState {
                         it.copy(
                             availableCategories =
-                                buildList {
-                                    this += ReportCategory.Other
-                                    this += ReportCategory.Spam
-                                    this += ReportCategory.Legal
-                                    if (features.supportReportCategoryRuleViolation) {
-                                        this += ReportCategory.Violation
-                                    }
-                                },
+                            buildList {
+                                this += ReportCategory.Other
+                                this += ReportCategory.Spam
+                                this += ReportCategory.Legal
+                                if (features.supportReportCategoryRuleViolation) {
+                                    this += ReportCategory.Violation
+                                }
+                            },
                         )
                     }
                 }.launchIn(this)

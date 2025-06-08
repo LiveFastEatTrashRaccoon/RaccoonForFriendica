@@ -4,9 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MediaMetadata(
-    @SerialName("original") val original: MediaMetadataItem? = null,
-)
+data class MediaMetadata(@SerialName("original") val original: MediaMetadataItem? = null)
 
 @Serializable
 data class MediaMetadataItem(

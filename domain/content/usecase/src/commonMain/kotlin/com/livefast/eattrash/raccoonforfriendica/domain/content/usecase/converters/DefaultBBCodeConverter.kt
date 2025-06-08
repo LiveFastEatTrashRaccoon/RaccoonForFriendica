@@ -6,50 +6,49 @@ import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
 
 internal class DefaultBBCodeConverter : BBCodeConverter {
-    override fun toHtml(value: String) =
-        value
-            .replace("[h1]", "<h1>")
-            .replace("[/h1]", "</h1>")
-            .replace("[h2]", "<h2>")
-            .replace("[/h2]", "</h2>")
-            .replace("[h3]", "<h3>")
-            .replace("[/h3]", "</h3>")
-            .replace("[h4]", "<h4>")
-            .replace("[/h4]", "</h4>")
-            .replace("[h5]", "<h5>")
-            .replace("[/h5]", "</h5>")
-            .replace("[u]", "<u>")
-            .replace("[/u]", "</u>")
-            .replace("[s]", "<s>")
-            .replace("[/s]", "</s>")
-            .replace("[i]", "<i>")
-            .replace("[/i]", "</i>")
-            .replace("[b]", "<b>")
-            .replace("[/b]", "</b>")
-            .replace("[p]", "<p>")
-            .replace("[/p]", "</p>")
-            .replace("[code]", "<code>")
-            .replace("[/code]", "</code>")
-            .replace("[ul]", "<ul>")
-            .replace("[/ul]", "</ul>")
-            .replace("[ol]", "<ol>")
-            .replace("[/ol]", "</ol>")
-            .replace("[li]", "<li>")
-            .replace("[/li]", "</li>")
-            .replace("[quote]", "<blockquote>")
-            .replace("[/quote]", "</blockquote>")
-            .run {
-                ContentRegexes.BBCODE_SHARE.substituteAllOccurrences(this) { match ->
-                    val url = match.groups["url"]?.value.orEmpty()
-                    append("<a href=\"$url\">$url</a>")
-                }
-            }.run {
-                ContentRegexes.BBCODE_URL.substituteAllOccurrences(this) { match ->
-                    val url = match.groups["url"]?.value.orEmpty()
-                    val anchor = match.groups["anchor"]?.value.orEmpty()
-                    append("<a href=\"$url\">$anchor</a>")
-                }
-            }.replaceNewlines()
+    override fun toHtml(value: String) = value
+        .replace("[h1]", "<h1>")
+        .replace("[/h1]", "</h1>")
+        .replace("[h2]", "<h2>")
+        .replace("[/h2]", "</h2>")
+        .replace("[h3]", "<h3>")
+        .replace("[/h3]", "</h3>")
+        .replace("[h4]", "<h4>")
+        .replace("[/h4]", "</h4>")
+        .replace("[h5]", "<h5>")
+        .replace("[/h5]", "</h5>")
+        .replace("[u]", "<u>")
+        .replace("[/u]", "</u>")
+        .replace("[s]", "<s>")
+        .replace("[/s]", "</s>")
+        .replace("[i]", "<i>")
+        .replace("[/i]", "</i>")
+        .replace("[b]", "<b>")
+        .replace("[/b]", "</b>")
+        .replace("[p]", "<p>")
+        .replace("[/p]", "</p>")
+        .replace("[code]", "<code>")
+        .replace("[/code]", "</code>")
+        .replace("[ul]", "<ul>")
+        .replace("[/ul]", "</ul>")
+        .replace("[ol]", "<ol>")
+        .replace("[/ol]", "</ol>")
+        .replace("[li]", "<li>")
+        .replace("[/li]", "</li>")
+        .replace("[quote]", "<blockquote>")
+        .replace("[/quote]", "</blockquote>")
+        .run {
+            ContentRegexes.BBCODE_SHARE.substituteAllOccurrences(this) { match ->
+                val url = match.groups["url"]?.value.orEmpty()
+                append("<a href=\"$url\">$url</a>")
+            }
+        }.run {
+            ContentRegexes.BBCODE_URL.substituteAllOccurrences(this) { match ->
+                val url = match.groups["url"]?.value.orEmpty()
+                val anchor = match.groups["anchor"]?.value.orEmpty()
+                append("<a href=\"$url\">$anchor</a>")
+            }
+        }.replaceNewlines()
 
     override fun fromHtml(value: String): String {
         val builder = StringBuilder()
@@ -137,9 +136,9 @@ internal class DefaultBBCodeConverter : BBCodeConverter {
                 }.let { stepResult ->
                     Regex("#" + ContentRegexes.BBCODE_URL.pattern).substituteAllOccurrences(stepResult) { match ->
                         val anchor = match.groups["anchor"]?.value.orEmpty()
-                append("#$anchor")
-            }
-        }
+                        append("#$anchor")
+                    }
+                }
 
         return result
     }

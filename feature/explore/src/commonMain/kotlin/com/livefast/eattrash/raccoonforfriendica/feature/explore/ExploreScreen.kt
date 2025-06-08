@@ -206,22 +206,22 @@ class ExploreScreen : Screen {
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(connection)
-                            } else {
-                                Modifier
-                            },
-                        ).then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(connection)
+                        } else {
+                            Modifier
+                        },
+                    ).then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(ExploreMviModel.Intent.Refresh)
@@ -232,18 +232,18 @@ class ExploreScreen : Screen {
                 ) {
                     stickyHeader {
                         SectionSelector(
-                            Modifier
+                            modifier = Modifier
                                 .background(MaterialTheme.colorScheme.background)
                                 .padding(
                                     top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
                                     bottom = Spacing.s,
                                 ),
                             titles =
-                                uiState.availableSections.map {
-                                    it.toReadableName()
-                                },
+                            uiState.availableSections.map {
+                                it.toReadableName()
+                            },
                             currentSection = uiState.availableSections.indexOf(uiState.section),
-                            onSectionSelected = {
+                            onSelectSection = {
                                 model.reduce(
                                     ExploreMviModel.Intent.ChangeSection(uiState.availableSections[it]),
                                 )
@@ -330,51 +330,51 @@ class ExploreScreen : Screen {
                                         )
                                     },
                                     onReblog =
-                                        { e: TimelineEntryModel ->
-                                            val timeSinceCreation =
-                                                e.created?.run {
-                                                    getDurationFromDateToNow(this)
-                                                } ?: Duration.ZERO
-                                            when {
-                                                !e.reblogged && timeSinceCreation.isOldEntry ->
-                                                    confirmReblogEntry = e
+                                    { e: TimelineEntryModel ->
+                                        val timeSinceCreation =
+                                            e.created?.run {
+                                                getDurationFromDateToNow(this)
+                                            } ?: Duration.ZERO
+                                        when {
+                                            !e.reblogged && timeSinceCreation.isOldEntry ->
+                                                confirmReblogEntry = e
 
-                                                else ->
-                                                    model.reduce(
-                                                        ExploreMviModel.Intent.ToggleReblog(e),
-                                                    )
-                                            }
-                                        }.takeIf { actionRepository.canReblog(item.entry.original) },
-                                    onBookmark =
-                                        { e: TimelineEntryModel ->
-                                            model.reduce(ExploreMviModel.Intent.ToggleBookmark(e))
-                                        }.takeIf { actionRepository.canBookmark(item.entry.original) },
-                                    onFavorite =
-                                        { e: TimelineEntryModel ->
-                                            model.reduce(ExploreMviModel.Intent.ToggleFavorite(e))
-                                        }.takeIf { actionRepository.canFavorite(item.entry.original) },
-                                    onDislike =
-                                        { e: TimelineEntryModel ->
-                                            model.reduce(ExploreMviModel.Intent.ToggleDislike(e))
-                                        }.takeIf { actionRepository.canDislike(item.entry.original) },
-                                    onReply =
-                                        { e: TimelineEntryModel ->
-                                            detailOpener.openComposer(
-                                                inReplyTo = e,
-                                                inReplyToUser = e.creator,
-                                            )
-                                        }.takeIf { actionRepository.canReply(item.entry.original) },
-                                    onPollVote =
-                                        uiState.currentUserId?.let {
-                                            { e, choices ->
+                                            else ->
                                                 model.reduce(
-                                                    ExploreMviModel.Intent.SubmitPollVote(
-                                                        entry = e,
-                                                        choices = choices,
-                                                    ),
+                                                    ExploreMviModel.Intent.ToggleReblog(e),
                                                 )
-                                            }
-                                        },
+                                        }
+                                    }.takeIf { actionRepository.canReblog(item.entry.original) },
+                                    onBookmark =
+                                    { e: TimelineEntryModel ->
+                                        model.reduce(ExploreMviModel.Intent.ToggleBookmark(e))
+                                    }.takeIf { actionRepository.canBookmark(item.entry.original) },
+                                    onFavorite =
+                                    { e: TimelineEntryModel ->
+                                        model.reduce(ExploreMviModel.Intent.ToggleFavorite(e))
+                                    }.takeIf { actionRepository.canFavorite(item.entry.original) },
+                                    onDislike =
+                                    { e: TimelineEntryModel ->
+                                        model.reduce(ExploreMviModel.Intent.ToggleDislike(e))
+                                    }.takeIf { actionRepository.canDislike(item.entry.original) },
+                                    onReply =
+                                    { e: TimelineEntryModel ->
+                                        detailOpener.openComposer(
+                                            inReplyTo = e,
+                                            inReplyToUser = e.creator,
+                                        )
+                                    }.takeIf { actionRepository.canReply(item.entry.original) },
+                                    onPollVote =
+                                    uiState.currentUserId?.let {
+                                        { e, choices ->
+                                            model.reduce(
+                                                ExploreMviModel.Intent.SubmitPollVote(
+                                                    entry = e,
+                                                    choices = choices,
+                                                ),
+                                            )
+                                        }
+                                    },
                                     onShowOriginal = {
                                         model.reduce(
                                             ExploreMviModel.Intent.ToggleTranslation(
@@ -383,68 +383,71 @@ class ExploreScreen : Screen {
                                         )
                                     },
                                     options =
-                                        buildList {
-                                            val entry = item.entry
-                                            if (actionRepository.canShare(entry.original)) {
-                                                this += OptionId.Share.toOption()
-                                                this += OptionId.CopyUrl.toOption()
+                                    buildList {
+                                        val entry = item.entry
+                                        if (actionRepository.canShare(entry.original)) {
+                                            this += OptionId.Share.toOption()
+                                            this += OptionId.CopyUrl.toOption()
+                                        }
+                                        if (actionRepository.canEdit(entry.original)) {
+                                            this += OptionId.Edit.toOption()
+                                        }
+                                        if (actionRepository.canDelete(entry.original)) {
+                                            this += OptionId.Delete.toOption()
+                                        }
+                                        if (actionRepository.canTogglePin(entry)) {
+                                            if (entry.pinned) {
+                                                this += OptionId.Unpin.toOption()
+                                            } else {
+                                                this += OptionId.Pin.toOption()
                                             }
-                                            if (actionRepository.canEdit(entry.original)) {
-                                                this += OptionId.Edit.toOption()
-                                            }
-                                            if (actionRepository.canDelete(entry.original)) {
-                                                this += OptionId.Delete.toOption()
-                                            }
-                                            if (actionRepository.canTogglePin(entry)) {
-                                                if (entry.pinned) {
-                                                    this += OptionId.Unpin.toOption()
-                                                } else {
-                                                    this += OptionId.Pin.toOption()
-                                                }
-                                            }
-                                            if (actionRepository.canMute(entry)) {
-                                                this += OptionId.Mute.toOption()
-                                            }
-                                            if (actionRepository.canBlock(entry)) {
-                                                this += OptionId.Block.toOption()
-                                            }
-                                            if (actionRepository.canReport(entry.original)) {
-                                                this += OptionId.ReportUser.toOption()
-                                                this += OptionId.ReportEntry.toOption()
-                                            }
-                                            if (actionRepository.canQuote(entry.original)) {
-                                                this += OptionId.Quote.toOption()
-                                            }
-                                            this += OptionId.ViewDetails.toOption()
-                                            this += OptionId.CopyToClipboard.toOption()
-                                            val currentLang = uiState.lang.orEmpty()
-                                            if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
-                                                this +=
-                                                    Option(
-                                                        id = OptionId.Translate,
-                                                        label =
-                                                            buildString {
-                                                                append(
-                                                                    LocalStrings.current.actionTranslateTo(
-                                                                        currentLang,
-                                                                    ),
-                                                                )
-                                                                append(" (")
-                                                                append(LocalStrings.current.experimental)
-                                                                append(")")
-                                                            },
-                                                    )
-                                            }
-                                            val nodeName = entry.nodeName
-                                            if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
-                                                this +=
-                                                    OptionId.AddShortcut.toOption(
-                                                        LocalStrings.current.actionShortcut(nodeName),
-                                                    )
-                                            }
-                                            this += OptionId.OpenInBrowser.toOption()
-                                        },
-                                    onOptionSelected = { optionId ->
+                                        }
+                                        if (actionRepository.canMute(entry)) {
+                                            this += OptionId.Mute.toOption()
+                                        }
+                                        if (actionRepository.canBlock(entry)) {
+                                            this += OptionId.Block.toOption()
+                                        }
+                                        if (actionRepository.canReport(entry.original)) {
+                                            this += OptionId.ReportUser.toOption()
+                                            this += OptionId.ReportEntry.toOption()
+                                        }
+                                        if (actionRepository.canQuote(entry.original)) {
+                                            this += OptionId.Quote.toOption()
+                                        }
+                                        this += OptionId.ViewDetails.toOption()
+                                        this += OptionId.CopyToClipboard.toOption()
+                                        val currentLang = uiState.lang.orEmpty()
+                                        if (currentLang.isNotEmpty() &&
+                                            entry.lang != currentLang &&
+                                            !entry.isShowingTranslation
+                                        ) {
+                                            this +=
+                                                Option(
+                                                    id = OptionId.Translate,
+                                                    label =
+                                                    buildString {
+                                                        append(
+                                                            LocalStrings.current.actionTranslateTo(
+                                                                currentLang,
+                                                            ),
+                                                        )
+                                                        append(" (")
+                                                        append(LocalStrings.current.experimental)
+                                                        append(")")
+                                                    },
+                                                )
+                                        }
+                                        val nodeName = entry.nodeName
+                                        if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
+                                            this +=
+                                                OptionId.AddShortcut.toOption(
+                                                    LocalStrings.current.actionShortcut(nodeName),
+                                                )
+                                        }
+                                        this += OptionId.OpenInBrowser.toOption()
+                                    },
+                                    onSelectOption = { optionId ->
                                         when (optionId) {
                                             OptionId.Share -> {
                                                 val urlString = item.entry.url.orEmpty()
@@ -562,7 +565,7 @@ class ExploreScreen : Screen {
                                     onClick = {
                                         detailOpener.openUserDetail(item.user)
                                     },
-                                    onRelationshipClicked = { nextAction ->
+                                    onRelationshipClick = { nextAction ->
                                         when (nextAction) {
                                             RelationshipStatusNextAction.AcceptRequest -> {
                                                 detailOpener.openFollowRequests()
@@ -684,13 +687,13 @@ class ExploreScreen : Screen {
             val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
             CustomConfirmDialog(
                 title =
-                    buildString {
-                        append(LocalStrings.current.actionBlock)
-                        val handle = creator?.handle ?: ""
-                        if (handle.isNotEmpty()) {
-                            append(" @$handle")
-                        }
-                    },
+                buildString {
+                    append(LocalStrings.current.actionBlock)
+                    val handle = creator?.handle ?: ""
+                    if (handle.isNotEmpty()) {
+                        append(" @$handle")
+                    }
+                },
                 onClose = { confirm ->
                     val entryId = confirmBlockEntry?.id
                     val creatorId = creator?.id

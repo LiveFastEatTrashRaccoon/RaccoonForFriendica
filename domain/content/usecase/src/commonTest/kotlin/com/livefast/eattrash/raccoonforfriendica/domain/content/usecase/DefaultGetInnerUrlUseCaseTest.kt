@@ -18,39 +18,37 @@ class DefaultGetInnerUrlUseCaseTest {
         )
 
     @Test
-    fun `given base url when invoked then result is as expected`() =
-        runTest {
-            every {
-                apiConfigurationRepository.node
-            } returns mock { every { value } returns FAKE_INSTANCE }
-            val entry = TimelineEntryModel(id = "0", url = FAKE_ENTRY_URL, content = "")
+    fun `given base url when invoked then result is as expected`() = runTest {
+        every {
+            apiConfigurationRepository.node
+        } returns mock { every { value } returns FAKE_INSTANCE }
+        val entry = TimelineEntryModel(id = "0", url = FAKE_ENTRY_URL, content = "")
 
-            val res = sut(entry)
+        val res = sut(entry)
 
-            assertEquals(
-                buildString {
-                    append("https://$FAKE_INSTANCE/search?q=")
-                    append(FAKE_ENTRY_URL)
-                    append("&type=statuses")
-                    append("&resolve=true")
-                    append("&limit=1")
-                },
-                res,
-            )
-        }
+        assertEquals(
+            buildString {
+                append("https://$FAKE_INSTANCE/search?q=")
+                append(FAKE_ENTRY_URL)
+                append("&type=statuses")
+                append("&resolve=true")
+                append("&limit=1")
+            },
+            res,
+        )
+    }
 
     @Test
-    fun `given base url not present when invoked then result is as expected`() =
-        runTest {
-            every {
-                apiConfigurationRepository.node
-            } returns mock { every { value } returns "" }
-            val entry = TimelineEntryModel(id = "0", url = FAKE_ENTRY_URL, content = "")
+    fun `given base url not present when invoked then result is as expected`() = runTest {
+        every {
+            apiConfigurationRepository.node
+        } returns mock { every { value } returns "" }
+        val entry = TimelineEntryModel(id = "0", url = FAKE_ENTRY_URL, content = "")
 
-            val res = sut(entry)
+        val res = sut(entry)
 
-            assertNull(res)
-        }
+        assertNull(res)
+    }
 
     companion object {
         private const val FAKE_INSTANCE = "example.com"

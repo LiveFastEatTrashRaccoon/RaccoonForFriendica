@@ -7,19 +7,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class DefaultAcknowledgementsRepository(
-    private val dataSource: AcknowledgementsRemoteDataSource,
-) : AcknowledgementsRepository {
-    override suspend fun getAll(): List<AcknowledgementModel>? =
-        withContext(Dispatchers.IO) {
-            dataSource.getAcknowledgements()?.map { it.toModel() }
-        }
+internal class DefaultAcknowledgementsRepository(private val dataSource: AcknowledgementsRemoteDataSource) :
+    AcknowledgementsRepository {
+    override suspend fun getAll(): List<AcknowledgementModel>? = withContext(Dispatchers.IO) {
+        dataSource.getAcknowledgements()?.map { it.toModel() }
+    }
 }
 
-private fun Acknowledgement.toModel() =
-    AcknowledgementModel(
-        title = title,
-        url = url,
-        avatar = avatar,
-        subtitle = subtitle,
-    )
+private fun Acknowledgement.toModel() = AcknowledgementModel(
+    title = title,
+    url = url,
+    avatar = avatar,
+    subtitle = subtitle,
+)

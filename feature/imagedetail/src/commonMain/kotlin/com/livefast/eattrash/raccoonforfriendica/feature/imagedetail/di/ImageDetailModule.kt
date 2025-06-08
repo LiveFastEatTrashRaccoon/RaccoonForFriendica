@@ -7,10 +7,7 @@ import org.kodein.di.bind
 import org.kodein.di.factory
 import org.kodein.di.instance
 
-internal data class ImageDetailMviModelParams(
-    val urls: List<String>,
-    val initialIndex: Int = 0,
-)
+internal data class ImageDetailMviModelParams(val urls: List<String>, val initialIndex: Int = 0)
 
 val imageDetailModule =
     DI.Module("ImageDetailModule") {

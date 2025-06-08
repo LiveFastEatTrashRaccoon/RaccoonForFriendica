@@ -55,8 +55,8 @@ class MyAccountViewModel(
     private val getInnerUrl: GetInnerUrlUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
-        initialState = MyAccountMviModel.State(),
-    ),
+    initialState = MyAccountMviModel.State(),
+),
     MyAccountMviModel {
     init {
         screenModelScope.launch {
@@ -78,7 +78,7 @@ class MyAccountViewModel(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
                         )
                     }
@@ -185,10 +185,7 @@ class MyAccountViewModel(
         }
     }
 
-    private suspend fun refresh(
-        initial: Boolean = false,
-        forceRefresh: Boolean = false,
-    ) {
+    private suspend fun refresh(initial: Boolean = false, forceRefresh: Boolean = false) {
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
@@ -239,28 +236,25 @@ class MyAccountViewModel(
         }
     }
 
-    private suspend fun updateEntryInState(
-        entryId: String,
-        block: (TimelineEntryModel) -> TimelineEntryModel,
-    ) {
+    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
         updateState {
             it.copy(
                 entries =
-                    it.entries.map { entry ->
-                        when {
-                            entry.id == entryId -> {
-                                entry.let(block)
-                            }
-
-                            entry.reblog?.id == entryId -> {
-                                entry.copy(reblog = entry.reblog?.let(block))
-                            }
-
-                            else -> {
-                                entry
-                            }
+                it.entries.map { entry ->
+                    when {
+                        entry.id == entryId -> {
+                            entry.let(block)
                         }
-                    },
+
+                        entry.reblog?.id == entryId -> {
+                            entry.copy(reblog = entry.reblog?.let(block))
+                        }
+
+                        else -> {
+                            entry
+                        }
+                    }
+                },
             )
         }
     }

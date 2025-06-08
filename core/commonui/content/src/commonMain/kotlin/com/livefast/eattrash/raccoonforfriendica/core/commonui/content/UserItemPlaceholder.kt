@@ -34,10 +34,10 @@ fun UserItemPlaceholder(
     ) {
         Box(
             modifier =
-                Modifier
-                    .size(IconSize.l)
-                    .clip(CircleShape)
-                    .shimmerEffect(),
+            Modifier
+                .size(IconSize.l)
+                .clip(CircleShape)
+                .shimmerEffect(),
         )
 
         Column(
@@ -46,20 +46,20 @@ fun UserItemPlaceholder(
         ) {
             Box(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(30.dp)
-                        .clip(RoundedCornerShape(CornerSize.s))
-                        .shimmerEffect(),
+                Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+                    .clip(RoundedCornerShape(CornerSize.s))
+                    .shimmerEffect(),
             )
             if (withSubtitle) {
                 Box(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(20.dp)
-                            .clip(RoundedCornerShape(CornerSize.s))
-                            .shimmerEffect(),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(20.dp)
+                        .clip(RoundedCornerShape(CornerSize.s))
+                        .shimmerEffect(),
                 )
             }
         }
@@ -67,11 +67,11 @@ fun UserItemPlaceholder(
         if (withRelationshipButton) {
             Box(
                 modifier =
-                    Modifier
-                        .height(35.dp)
-                        .width(60.dp)
-                        .clip(RoundedCornerShape(CornerSize.xl))
-                        .shimmerEffect(),
+                Modifier
+                    .height(35.dp)
+                    .width(60.dp)
+                    .clip(RoundedCornerShape(CornerSize.xl))
+                    .shimmerEffect(),
             )
         }
     }

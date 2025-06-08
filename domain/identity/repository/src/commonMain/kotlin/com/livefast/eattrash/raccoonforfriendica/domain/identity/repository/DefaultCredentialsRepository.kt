@@ -37,26 +37,21 @@ internal class DefaultCredentialsRepository(
             }
         }
 
-    override suspend fun validate(
-        node: String,
-        credentials: ApiCredentials,
-    ): UserModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                provider.changeNode(node)
-                provider.setAuth(credentials.toServiceCredentials())
-                provider.users.verifyCredentials().toModel()
-            }.getOrNull()
-        }
+    override suspend fun validate(node: String, credentials: ApiCredentials): UserModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            provider.changeNode(node)
+            provider.setAuth(credentials.toServiceCredentials())
+            provider.users.verifyCredentials().toModel()
+        }.getOrNull()
+    }
 
-    override suspend fun validateNode(node: String): Boolean =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                provider.changeNode(node)
-                provider.instance.getInfo()
-                true
-            }.getOrElse { false }
-        }
+    override suspend fun validateNode(node: String): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            provider.changeNode(node)
+            provider.instance.getInfo()
+            true
+        }.getOrElse { false }
+    }
 
     override suspend fun createApplication(
         node: String,
@@ -64,25 +59,21 @@ internal class DefaultCredentialsRepository(
         website: String,
         redirectUri: String,
         scopes: String,
-    ): ClientApplicationModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                provider.changeNode(node)
-                val data =
-                    CreateAppForm(
-                        clientName = clientName,
-                        website = website,
-                        redirectUris = redirectUri,
-                        scopes = scopes,
-                    )
-                provider.apps.create(data).toModel()
-            }.getOrNull()
-        }
+    ): ClientApplicationModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            provider.changeNode(node)
+            val data =
+                CreateAppForm(
+                    clientName = clientName,
+                    website = website,
+                    redirectUris = redirectUri,
+                    scopes = scopes,
+                )
+            provider.apps.create(data).toModel()
+        }.getOrNull()
+    }
 
-    override suspend fun validateApplicationCredentials(
-        node: String,
-        credentials: ApiCredentials,
-    ): Boolean =
+    override suspend fun validateApplicationCredentials(node: String, credentials: ApiCredentials): Boolean =
         withContext(Dispatchers.IO) {
             when (credentials) {
                 is ApiCredentials.HttpBasic -> true
@@ -105,59 +96,55 @@ internal class DefaultCredentialsRepository(
         redirectUri: String,
         grantType: String,
         code: String,
-    ): ApiCredentials? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val data =
-                    FormDataContent(
-                        Parameters.build {
-                            append("client_id", clientId)
-                            append("client_secret", clientSecret)
-                            append("redirect_uri", redirectUri)
-                            append("grant_type", grantType)
-                            append("code", code)
-                        },
-                    )
-                val url =
-                    URLBuilder()
-                        .apply {
-                            protocol = URLProtocol.HTTPS
-                            host = node
-                            path(path)
-                        }.toString()
-                val responseBody =
-                    httpClient
-                        .preparePost(url) {
-                            setBody(data)
-                        }.execute()
-                        .bodyAsText()
-                responseBody.toOauthToken().toModel()
-            }.getOrNull()
-        }
+    ): ApiCredentials? = withContext(Dispatchers.IO) {
+        runCatching {
+            val data =
+                FormDataContent(
+                    Parameters.build {
+                        append("client_id", clientId)
+                        append("client_secret", clientSecret)
+                        append("redirect_uri", redirectUri)
+                        append("grant_type", grantType)
+                        append("code", code)
+                    },
+                )
+            val url =
+                URLBuilder()
+                    .apply {
+                        protocol = URLProtocol.HTTPS
+                        host = node
+                        path(path)
+                    }.toString()
+            val responseBody =
+                httpClient
+                    .preparePost(url) {
+                        setBody(data)
+                    }.execute()
+                    .bodyAsText()
+            responseBody.toOauthToken().toModel()
+        }.getOrNull()
+    }
 }
 
-private fun Application.toModel() =
-    ClientApplicationModel(
-        name = name,
-        webSite = webSite,
-        clientId = clientId,
-        clientSecret = clientSecret,
-    )
+private fun Application.toModel() = ClientApplicationModel(
+    name = name,
+    webSite = webSite,
+    clientId = clientId,
+    clientSecret = clientSecret,
+)
 
-private fun CredentialAccount.toModel() =
-    UserModel(
-        bot = bot,
-        created = createdAt,
-        displayName = displayName,
-        group = group,
-        handle = acct,
-        id = id,
-        username = username,
-        avatar = avatar,
-    )
+private fun CredentialAccount.toModel() = UserModel(
+    bot = bot,
+    created = createdAt,
+    displayName = displayName,
+    group = group,
+    handle = acct,
+    id = id,
+    username = username,
+    avatar = avatar,
+)
 
-private fun OAuthToken.toModel(): ApiCredentials =
-    ApiCredentials.OAuth2(
-        accessToken = accessToken,
-        refreshToken = refreshToken.orEmpty(),
-    )
+private fun OAuthToken.toModel(): ApiCredentials = ApiCredentials.OAuth2(
+    accessToken = accessToken,
+    refreshToken = refreshToken.orEmpty(),
+)

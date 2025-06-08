@@ -62,9 +62,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class CircleMembersScreen(
-    val id: String,
-) : Screen {
+class CircleMembersScreen(val id: String) : Screen {
     override val key: ScreenKey
         get() = super.key + id
 
@@ -138,13 +136,13 @@ class CircleMembersScreen(
                 AnimatedVisibility(
                     visible = isFabVisible,
                     enter =
-                        slideInVertically(
-                            initialOffsetY = { it * 2 },
-                        ),
+                    slideInVertically(
+                        initialOffsetY = { it * 2 },
+                    ),
                     exit =
-                        slideOutVertically(
-                            targetOffsetY = { it * 2 },
-                        ),
+                    slideOutVertically(
+                        targetOffsetY = { it * 2 },
+                    ),
                 ) {
                     FloatingActionButton(
                         onClick = {
@@ -172,16 +170,16 @@ class CircleMembersScreen(
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ).nestedScroll(fabNestedScrollConnection),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ).nestedScroll(fabNestedScrollConnection),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(CircleMembersMviModel.Intent.Refresh)
@@ -211,10 +209,10 @@ class CircleMembersScreen(
                                 detailOpener.openUserDetail(user)
                             },
                             options =
-                                buildList {
-                                    this += OptionId.Delete.toOption()
-                                },
-                            onOptionSelected = { optionId ->
+                            buildList {
+                                this += OptionId.Delete.toOption()
+                            },
+                            onSelectOption = { optionId ->
                                 when (optionId) {
                                     OptionId.Delete -> confirmRemoveUserId = user.id
                                     else -> Unit
@@ -275,7 +273,7 @@ class CircleMembersScreen(
                 onLoadMoreUsers = {
                     model.reduce(CircleMembersMviModel.Intent.UserSearchLoadNextPage)
                 },
-                onSearchChanged = {
+                onSearch = {
                     model.reduce(CircleMembersMviModel.Intent.SetSearchUserQuery(it))
                 },
                 onClose = { values ->

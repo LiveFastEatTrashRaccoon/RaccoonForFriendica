@@ -17,8 +17,8 @@ class CalendarViewModel(
     private val settingsRepository: SettingsRepository,
     private val paginationManager: EventPaginationManager,
 ) : DefaultMviModel<CalendarMviModel.Intent, CalendarMviModel.State, CalendarMviModel.Effect>(
-        initialState = CalendarMviModel.State(),
-    ),
+    initialState = CalendarMviModel.State(),
+),
     CalendarMviModel {
     init {
         screenModelScope.launch {
@@ -32,7 +32,7 @@ class CalendarViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)

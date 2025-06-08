@@ -114,7 +114,7 @@ internal class LoginIntroScreen : Screen {
                 modifier = Modifier.padding(top = Spacing.m),
                 title = LocalStrings.current.loginFriendicaHeader,
                 painter = resources.friendicaLogo,
-                onInfoClicked = {
+                onClickInfo = {
                     uriHandler.openExternally(LoginIntroLinks.ABOUT_FRIENDICA)
                 },
             )
@@ -145,7 +145,7 @@ internal class LoginIntroScreen : Screen {
                                     },
                             )
                     },
-                onOptionSelected = { optionId ->
+                onSelectOption = { optionId ->
                     when (optionId) {
                         CustomOptions.LegacyLogin ->
                             model.reduce(LoginIntroMviModel.Intent.StartLegacyFlow)
@@ -161,7 +161,7 @@ internal class LoginIntroScreen : Screen {
                 modifier = Modifier.padding(top = Spacing.xs),
                 title = LocalStrings.current.loginMastodonHeader,
                 painter = resources.mastodonLogo,
-                onInfoClicked = {
+                onClickInfo = {
                     uriHandler.openExternally(LoginIntroLinks.ABOUT_MASTODON)
                 },
             )
@@ -219,7 +219,7 @@ private fun PlatformHeader(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     painter: Painter? = null,
-    onInfoClicked: (() -> Unit)? = null,
+    onClickInfo: (() -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
 
@@ -249,14 +249,14 @@ private fun PlatformHeader(
             style = MaterialTheme.typography.titleMedium,
             color = fullColor,
         )
-        if (onInfoClicked != null) {
+        if (onClickInfo != null) {
             Icon(
                 modifier =
                     Modifier
                         .padding(end = Spacing.xs)
                         .clip(CircleShape)
                         .clickable {
-                            onInfoClicked()
+                            onClickInfo()
                         },
                 imageVector = Icons.Default.Info,
                 contentDescription = LocalStrings.current.moreInfo,
@@ -272,7 +272,7 @@ private fun PlatformLink(
     underline: Boolean = true,
     onClick: (() -> Unit)? = null,
     options: List<Option> = emptyList(),
-    onOptionSelected: ((OptionId) -> Unit)? = null,
+    onSelectOption: ((OptionId) -> Unit)? = null,
 ) {
     Row(
         modifier =
@@ -342,7 +342,7 @@ private fun PlatformLink(
                                 },
                                 onClick = {
                                     optionsMenuOpen = false
-                                    onOptionSelected?.invoke(option.id)
+                                    onSelectOption?.invoke(option.id)
                                 },
                             )
                         }
