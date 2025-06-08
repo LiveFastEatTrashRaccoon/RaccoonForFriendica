@@ -24,28 +24,27 @@ class DefaultEventRepositoryTest {
         )
 
     @Test
-    fun `when getAll then result is as expected`() =
-        runTest {
-            val list =
-                listOf(
-                    Event(
-                        id = 1,
-                        uri = "",
-                        name = "",
-                        description = "",
-                        startTime = "",
-                    ),
-                )
-            everySuspend { eventService.getAll(any(), any()) } returns list
+    fun `when getAll then result is as expected`() = runTest {
+        val list =
+            listOf(
+                Event(
+                    id = 1,
+                    uri = "",
+                    name = "",
+                    description = "",
+                    startTime = "",
+                ),
+            )
+        everySuspend { eventService.getAll(any(), any()) } returns list
 
-            val res = sut.getAll(pageCursor = "0")
+        val res = sut.getAll(pageCursor = "0")
 
-            assertEquals(list.map { it.toModel() }, res)
-            verifySuspend {
-                eventService.getAll(
-                    maxId = 0,
-                    count = 20,
-                )
-            }
+        assertEquals(list.map { it.toModel() }, res)
+        verifySuspend {
+            eventService.getAll(
+                maxId = 0,
+                count = 20,
+            )
         }
+    }
 }

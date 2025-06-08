@@ -11,15 +11,13 @@ sealed interface NotificationStatus {
     data object Disabled : NotificationStatus
 }
 
-fun RelationshipModel.toNotificationStatus(): NotificationStatus? =
-    when {
-        !following -> null
-        notifying -> NotificationStatus.Enabled
-        else -> NotificationStatus.Disabled
-    }
+fun RelationshipModel.toNotificationStatus(): NotificationStatus? = when {
+    !following -> null
+    notifying -> NotificationStatus.Enabled
+    else -> NotificationStatus.Disabled
+}
 
-fun NotificationStatus.toIcon(): ImageVector =
-    when (this) {
-        NotificationStatus.Disabled -> Icons.Outlined.Notifications
-        NotificationStatus.Enabled -> Icons.Default.NotificationsActive
-    }
+fun NotificationStatus.toIcon(): ImageVector = when (this) {
+    NotificationStatus.Disabled -> Icons.Outlined.Notifications
+    NotificationStatus.Enabled -> Icons.Default.NotificationsActive
+}

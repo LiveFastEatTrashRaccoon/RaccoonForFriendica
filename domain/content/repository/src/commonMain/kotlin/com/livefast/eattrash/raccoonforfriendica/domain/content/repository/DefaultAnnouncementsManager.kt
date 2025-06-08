@@ -4,9 +4,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 
-internal class DefaultAnnouncementsManager(
-    private val announcementRepository: AnnouncementRepository,
-) : AnnouncementsManager {
+internal class DefaultAnnouncementsManager(private val announcementRepository: AnnouncementRepository) :
+    AnnouncementsManager {
     override val unreadCount = MutableStateFlow(0)
 
     override suspend fun clearUnreadCount() {

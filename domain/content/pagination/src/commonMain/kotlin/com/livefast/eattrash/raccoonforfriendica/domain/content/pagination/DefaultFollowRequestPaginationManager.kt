@@ -38,31 +38,27 @@ internal class DefaultFollowRequestPaginationManager(
         }
     }
 
-    private fun ListWithPageCursor<UserModel>.updatePaginationData(): List<UserModel> =
-        run {
-            pageCursor = cursor
-            canFetchMore = list.isNotEmpty()
-            list
-        }
+    private fun ListWithPageCursor<UserModel>.updatePaginationData(): List<UserModel> = run {
+        pageCursor = cursor
+        canFetchMore = list.isNotEmpty()
+        list
+    }
 
-    private fun List<UserModel>.deduplicate(): List<UserModel> =
-        filter { e1 ->
-            history.none { e2 -> e1.id == e2.id }
-        }.distinctBy { it.id }
+    private fun List<UserModel>.deduplicate(): List<UserModel> = filter { e1 ->
+        history.none { e2 -> e1.id == e2.id }
+    }.distinctBy { it.id }
 
-    private fun ListWithPageCursor<UserModel>.deduplicate(): ListWithPageCursor<UserModel> =
-        run {
-            val newList = list.deduplicate()
-            ListWithPageCursor(
-                list = newList,
-                cursor = newList.lastOrNull()?.id,
-            )
-        }
+    private fun ListWithPageCursor<UserModel>.deduplicate(): ListWithPageCursor<UserModel> = run {
+        val newList = list.deduplicate()
+        ListWithPageCursor(
+            list = newList,
+            cursor = newList.lastOrNull()?.id,
+        )
+    }
 
-    private suspend fun List<UserModel>.fixupCreatorEmojis(): List<UserModel> =
-        with(emojiHelper) {
-            map {
-                it.withEmojisIfMissing()
-            }
+    private suspend fun List<UserModel>.fixupCreatorEmojis(): List<UserModel> = with(emojiHelper) {
+        map {
+            it.withEmojisIfMissing()
         }
+    }
 }

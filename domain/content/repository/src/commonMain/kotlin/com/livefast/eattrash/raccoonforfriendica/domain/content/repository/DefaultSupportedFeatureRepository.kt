@@ -5,9 +5,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoMod
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
-internal class DefaultSupportedFeatureRepository(
-    private val nodeInfoRepository: NodeInfoRepository,
-) : SupportedFeatureRepository {
+internal class DefaultSupportedFeatureRepository(private val nodeInfoRepository: NodeInfoRepository) :
+    SupportedFeatureRepository {
     override val features = MutableStateFlow(NodeFeatures())
 
     override suspend fun refresh() {

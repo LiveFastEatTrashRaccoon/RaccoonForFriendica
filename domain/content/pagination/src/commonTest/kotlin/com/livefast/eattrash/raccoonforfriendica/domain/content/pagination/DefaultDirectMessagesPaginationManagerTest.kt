@@ -31,51 +31,49 @@ class DefaultDirectMessagesPaginationManagerTest {
 
     // region All
     @Test
-    fun `given no messages when loadNextPage with All specification then result is as expected`() =
-        runTest {
-            everySuspend {
-                directMessageRepository.getAll(
-                    page = any(),
-                    limit = any(),
-                )
-            } returns emptyList()
+    fun `given no messages when loadNextPage with All specification then result is as expected`() = runTest {
+        everySuspend {
+            directMessageRepository.getAll(
+                page = any(),
+                limit = any(),
+            )
+        } returns emptyList()
 
-            sut.reset(DirectMessagesPaginationSpecification.All)
-            val res = sut.loadNextPage()
+        sut.reset(DirectMessagesPaginationSpecification.All)
+        val res = sut.loadNextPage()
 
-            assertTrue(res.isEmpty())
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                directMessageRepository.getAll(
-                    page = 1,
-                    limit = 40,
-                )
-            }
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            directMessageRepository.getAll(
+                page = 1,
+                limit = 40,
+            )
         }
+    }
 
     @Test
-    fun `given messages when loadNextPage with All specification then result is as expected`() =
-        runTest {
-            val list = listOf(DirectMessageModel(id = "1", sender = UserModel(id = "2")))
-            everySuspend {
-                directMessageRepository.getAll(
-                    page = any(),
-                    limit = any(),
-                )
-            } returns list
+    fun `given messages when loadNextPage with All specification then result is as expected`() = runTest {
+        val list = listOf(DirectMessageModel(id = "1", sender = UserModel(id = "2")))
+        everySuspend {
+            directMessageRepository.getAll(
+                page = any(),
+                limit = any(),
+            )
+        } returns list
 
-            sut.reset(DirectMessagesPaginationSpecification.All)
-            val res = sut.loadNextPage()
+        sut.reset(DirectMessagesPaginationSpecification.All)
+        val res = sut.loadNextPage()
 
-            assertEquals(list, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                directMessageRepository.getAll(
-                    page = 1,
-                    limit = 40,
-                )
-            }
+        assertEquals(list, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            directMessageRepository.getAll(
+                page = 1,
+                limit = 40,
+            )
         }
+    }
 
     @Test
     fun `given can not fetch more when loadNextPage twice with All specification then result is as expected`() =
@@ -113,51 +111,49 @@ class DefaultDirectMessagesPaginationManagerTest {
 
     // region Replies
     @Test
-    fun `given no messages when loadNextPage with Replies specification then result is as expected`() =
-        runTest {
-            everySuspend {
-                directMessageRepository.getReplies(
-                    parentUri = any(),
-                    page = any(),
-                )
-            } returns emptyList()
+    fun `given no messages when loadNextPage with Replies specification then result is as expected`() = runTest {
+        everySuspend {
+            directMessageRepository.getReplies(
+                parentUri = any(),
+                page = any(),
+            )
+        } returns emptyList()
 
-            sut.reset(DirectMessagesPaginationSpecification.Replies(PARENT_URI))
-            val res = sut.loadNextPage()
+        sut.reset(DirectMessagesPaginationSpecification.Replies(PARENT_URI))
+        val res = sut.loadNextPage()
 
-            assertTrue(res.isEmpty())
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                directMessageRepository.getReplies(
-                    parentUri = PARENT_URI,
-                    page = 1,
-                )
-            }
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            directMessageRepository.getReplies(
+                parentUri = PARENT_URI,
+                page = 1,
+            )
         }
+    }
 
     @Test
-    fun `given messages when loadNextPage with Replies specification then result is as expected`() =
-        runTest {
-            val list = listOf(DirectMessageModel(id = "1", sender = UserModel(id = "2")))
-            everySuspend {
-                directMessageRepository.getReplies(
-                    parentUri = any(),
-                    page = any(),
-                )
-            } returns list
+    fun `given messages when loadNextPage with Replies specification then result is as expected`() = runTest {
+        val list = listOf(DirectMessageModel(id = "1", sender = UserModel(id = "2")))
+        everySuspend {
+            directMessageRepository.getReplies(
+                parentUri = any(),
+                page = any(),
+            )
+        } returns list
 
-            sut.reset(DirectMessagesPaginationSpecification.Replies(PARENT_URI))
-            val res = sut.loadNextPage()
+        sut.reset(DirectMessagesPaginationSpecification.Replies(PARENT_URI))
+        val res = sut.loadNextPage()
 
-            assertEquals(list, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                directMessageRepository.getReplies(
-                    parentUri = PARENT_URI,
-                    page = 1,
-                )
-            }
+        assertEquals(list, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            directMessageRepository.getReplies(
+                parentUri = PARENT_URI,
+                page = 1,
+            )
         }
+    }
 
     @Test
     fun `given can not fetch more when loadNextPage twice with Replies specification then result is as expected`() =

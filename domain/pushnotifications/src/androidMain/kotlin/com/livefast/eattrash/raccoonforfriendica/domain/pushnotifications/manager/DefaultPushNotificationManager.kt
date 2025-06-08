@@ -28,10 +28,9 @@ internal class DefaultPushNotificationManager(
 
     private val notificationManager by lazy { context.getSystemService(NotificationManager::class.java) }
 
-    override suspend fun getAvailableDistributors(): List<String> =
-        withContext(dispatcher) {
-            UnifiedPush.getDistributors(context)
-        }
+    override suspend fun getAvailableDistributors(): List<String> = withContext(dispatcher) {
+        UnifiedPush.getDistributors(context)
+    }
 
     override suspend fun refreshState() {
         val account = accountRepository.getActive() ?: return
@@ -84,18 +83,16 @@ internal class DefaultPushNotificationManager(
         }
     }
 
-    override suspend fun saveDistributor(distributor: String) =
-        withContext(dispatcher) {
-            UnifiedPush.saveDistributor(
-                context = context,
-                distributor = distributor,
-            )
-        }
+    override suspend fun saveDistributor(distributor: String) = withContext(dispatcher) {
+        UnifiedPush.saveDistributor(
+            context = context,
+            distributor = distributor,
+        )
+    }
 
-    override suspend fun clearDistributor() =
-        withContext(dispatcher) {
-            UnifiedPush.removeDistributor(context)
-        }
+    override suspend fun clearDistributor() = withContext(dispatcher) {
+        UnifiedPush.removeDistributor(context)
+    }
 
     override suspend fun enable() {
         val account = accountRepository.getActive() ?: return
@@ -113,12 +110,7 @@ internal class DefaultPushNotificationManager(
         _state.update { PushNotificationManagerState.Initializing }
     }
 
-    override suspend fun registerEndpoint(
-        account: AccountModel,
-        endpointUrl: String,
-        pubKey: String,
-        auth: String,
-    ) {
+    override suspend fun registerEndpoint(account: AccountModel, endpointUrl: String, pubKey: String, auth: String) {
         val types = NotificationType.ALL.filter { it.isEnabled(account) }
         val policy = NotificationPolicy.Followed
         val serverKey =
@@ -153,18 +145,16 @@ internal class DefaultPushNotificationManager(
         accountRepository.update(updateAccount)
     }
 
-    private suspend fun getSelectedDistributor(): String? =
-        withContext(dispatcher) {
-            UnifiedPush.getAckDistributor(context)
-        }
+    private suspend fun getSelectedDistributor(): String? = withContext(dispatcher) {
+        UnifiedPush.getAckDistributor(context)
+    }
 
-    private suspend fun registerForPushNotification(account: AccountModel) =
-        withContext(dispatcher) {
-            UnifiedPush.register(
-                context = context,
-                instance = account.channelId,
-            )
-        }
+    private suspend fun registerForPushNotification(account: AccountModel) = withContext(dispatcher) {
+        UnifiedPush.register(
+            context = context,
+            instance = account.channelId,
+        )
+    }
 
     private suspend fun updateSubscription(account: AccountModel) {
         val types = NotificationType.ALL.filter { it.isEnabled(account) }
@@ -178,13 +168,12 @@ internal class DefaultPushNotificationManager(
         accountRepository.update(updateAccount)
     }
 
-    private suspend fun unregisterForPushNotifications(account: AccountModel) =
-        withContext(dispatcher) {
-            UnifiedPush.unregister(
-                context = context,
-                instance = account.channelId,
-            )
-        }
+    private suspend fun unregisterForPushNotifications(account: AccountModel) = withContext(dispatcher) {
+        UnifiedPush.unregister(
+            context = context,
+            instance = account.channelId,
+        )
+    }
 
     private fun NotificationType.isEnabled(account: AccountModel): Boolean {
         val channelId = getChannelId(account) ?: return false
@@ -192,12 +181,11 @@ internal class DefaultPushNotificationManager(
         return channel.importance > NotificationManager.IMPORTANCE_NONE
     }
 
-    private fun NotificationType.getChannelId(account: AccountModel): String? =
-        buildString {
-            val typeSegment = channelIdSegment ?: return null
-            append(typeSegment)
-            append(account.channelId)
-        }
+    private fun NotificationType.getChannelId(account: AccountModel): String? = buildString {
+        val typeSegment = channelIdSegment ?: return null
+        append(typeSegment)
+        append(account.channelId)
+    }
 }
 
 private val AccountModel.channelId: String get() = id.toString()

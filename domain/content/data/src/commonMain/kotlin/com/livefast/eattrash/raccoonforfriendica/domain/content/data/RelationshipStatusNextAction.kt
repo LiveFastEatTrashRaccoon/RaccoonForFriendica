@@ -12,12 +12,11 @@ sealed interface RelationshipStatusNextAction {
     data object AcceptRequest : RelationshipStatusNextAction
 }
 
-fun RelationshipStatus.getNextAction(): RelationshipStatusNextAction =
-    when (this) {
-        RelationshipStatus.Following -> RelationshipStatusNextAction.ConfirmUnfollow
-        RelationshipStatus.FollowsYou -> RelationshipStatusNextAction.Follow
-        RelationshipStatus.MutualFollow -> RelationshipStatusNextAction.ConfirmUnfollow
-        RelationshipStatus.RequestedToOther -> RelationshipStatusNextAction.ConfirmDeleteFollowRequest
-        RelationshipStatus.RequestedToYou -> RelationshipStatusNextAction.AcceptRequest
-        RelationshipStatus.Undetermined -> RelationshipStatusNextAction.Follow
-    }
+fun RelationshipStatus.getNextAction(): RelationshipStatusNextAction = when (this) {
+    RelationshipStatus.Following -> RelationshipStatusNextAction.ConfirmUnfollow
+    RelationshipStatus.FollowsYou -> RelationshipStatusNextAction.Follow
+    RelationshipStatus.MutualFollow -> RelationshipStatusNextAction.ConfirmUnfollow
+    RelationshipStatus.RequestedToOther -> RelationshipStatusNextAction.ConfirmDeleteFollowRequest
+    RelationshipStatus.RequestedToYou -> RelationshipStatusNextAction.AcceptRequest
+    RelationshipStatus.Undetermined -> RelationshipStatusNextAction.Follow
+}

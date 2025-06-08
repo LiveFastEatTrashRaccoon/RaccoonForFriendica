@@ -14,114 +14,105 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class DefaultDraftRepository(
-    private val draftDao: DraftDao,
-    private val provider: ServiceProvider,
-) : DraftRepository {
-    override suspend fun getAll(page: Int): List<TimelineEntryModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                draftDao
-                    .getAll(
-                        offset = page * DEFAULT_PAGE_SIZE,
-                        limit = DEFAULT_PAGE_SIZE,
-                    ).map { it.toModel() }
-            }.getOrNull()
-        }
+internal class DefaultDraftRepository(private val draftDao: DraftDao, private val provider: ServiceProvider) :
+    DraftRepository {
+    override suspend fun getAll(page: Int): List<TimelineEntryModel>? = withContext(Dispatchers.IO) {
+        runCatching {
+            draftDao
+                .getAll(
+                    offset = page * DEFAULT_PAGE_SIZE,
+                    limit = DEFAULT_PAGE_SIZE,
+                ).map { it.toModel() }
+        }.getOrNull()
+    }
 
-    override suspend fun getById(id: String): TimelineEntryModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                draftDao.getBy(id)?.toModel()
-            }.getOrNull()
-        }
+    override suspend fun getById(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            draftDao.getBy(id)?.toModel()
+        }.getOrNull()
+    }
 
-    override suspend fun create(item: TimelineEntryModel): TimelineEntryModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val entity = item.toEntity()
-                draftDao.insert(entity)
-                getById(item.id)
-            }.getOrNull()
-        }
+    override suspend fun create(item: TimelineEntryModel): TimelineEntryModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            val entity = item.toEntity()
+            draftDao.insert(entity)
+            getById(item.id)
+        }.getOrNull()
+    }
 
-    override suspend fun update(item: TimelineEntryModel): TimelineEntryModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val entity = item.toEntity()
-                draftDao.update(entity)
-                getById(item.id)
-            }.getOrNull()
-        }
+    override suspend fun update(item: TimelineEntryModel): TimelineEntryModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            val entity = item.toEntity()
+            draftDao.update(entity)
+            getById(item.id)
+        }.getOrNull()
+    }
 
-    override suspend fun delete(id: String): Boolean =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val entity = DraftEntity(id = id)
-                draftDao.delete(entity)
-                true
-            }.getOrElse { false }
-        }
+    override suspend fun delete(id: String): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            val entity = DraftEntity(id = id)
+            draftDao.delete(entity)
+            true
+        }.getOrElse { false }
+    }
 
-    private suspend fun DraftEntity.toModel() =
-        TimelineEntryModel(
-            id = id,
-            attachments =
-                mediaIds
+    private suspend fun DraftEntity.toModel() = TimelineEntryModel(
+        id = id,
+        attachments =
+        mediaIds
+            ?.split(",")
+            ?.filterNot { it.isEmpty() }
+            ?.mapNotNull { id ->
+                runCatching { provider.media.getBy(id) }.getOrNull()?.toModel()
+            }.orEmpty(),
+        parentId = inReplyToId,
+        lang = lang,
+        localOnly = localOnly,
+        content = text.orEmpty(),
+        sensitive = sensitive == true,
+        spoiler = spoiler,
+        title = title,
+        created = created,
+        visibility = visibility?.toVisibility() ?: Visibility.Public,
+        poll =
+        run {
+            val expire = pollExpiresAt
+            val options =
+                pollOptions
                     ?.split(",")
-                    ?.filterNot { it.isEmpty() }
-                    ?.mapNotNull { id ->
-                        runCatching { provider.media.getBy(id) }.getOrNull()?.toModel()
-                    }.orEmpty(),
-            parentId = inReplyToId,
-            lang = lang,
-            localOnly = localOnly,
-            content = text.orEmpty(),
-            sensitive = sensitive == true,
-            spoiler = spoiler,
-            title = title,
-            created = created,
-            visibility = visibility?.toVisibility() ?: Visibility.Public,
-            poll =
-                run {
-                    val expire = pollExpiresAt
-                    val options =
-                        pollOptions
-                            ?.split(",")
-                            ?.map {
-                                PollOptionModel(title = it)
-                            }.orEmpty()
-                    val multiple = pollMultiple == true
-                    if (options.isEmpty()) {
-                        null
-                    } else {
-                        PollModel(
-                            id = "",
-                            expiresAt = expire,
-                            multiple = multiple,
-                            options = options,
-                        )
-                    }
-                },
-        )
+                    ?.map {
+                        PollOptionModel(title = it)
+                    }.orEmpty()
+            val multiple = pollMultiple == true
+            if (options.isEmpty()) {
+                null
+            } else {
+                PollModel(
+                    id = "",
+                    expiresAt = expire,
+                    multiple = multiple,
+                    options = options,
+                )
+            }
+        },
+    )
 
-    private fun TimelineEntryModel.toEntity() =
-        DraftEntity(
-            id = id,
-            mediaIds = attachments.joinToString(",") { it.id },
-            inReplyToId = parentId,
-            lang = lang,
-            localOnly = localOnly,
-            sensitive = sensitive,
-            spoiler = spoiler,
-            title = title,
-            text = content,
-            created = created,
-            visibility = visibility.toDto(),
-            pollMultiple = poll?.multiple,
-            pollExpiresAt = poll?.expiresAt,
-            pollOptions = poll?.options?.joinToString("m") { it.title },
-        )
+    private fun TimelineEntryModel.toEntity() = DraftEntity(
+        id = id,
+        mediaIds = attachments.joinToString(",") { it.id },
+        inReplyToId = parentId,
+        lang = lang,
+        localOnly = localOnly,
+        sensitive = sensitive,
+        spoiler = spoiler,
+        title = title,
+        text = content,
+        created = created,
+        visibility = visibility.toDto(),
+        pollMultiple = poll?.multiple,
+        pollExpiresAt = poll?.expiresAt,
+        pollOptions = poll?.options?.joinToString("m") { it.title },
+    )
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20

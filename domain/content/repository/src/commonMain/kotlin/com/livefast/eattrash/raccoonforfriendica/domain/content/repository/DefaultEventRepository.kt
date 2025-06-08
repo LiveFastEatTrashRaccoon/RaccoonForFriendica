@@ -7,19 +7,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class DefaultEventRepository(
-    private val provider: ServiceProvider,
-) : EventRepository {
-    override suspend fun getAll(pageCursor: String?): List<EventModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                provider.events
-                    .getAll(
-                        maxId = pageCursor?.toLong(),
-                        count = DEFAULT_PAGE_SIZE,
-                    ).map { it.toModel() }
-            }.getOrNull()
-        }
+internal class DefaultEventRepository(private val provider: ServiceProvider) : EventRepository {
+    override suspend fun getAll(pageCursor: String?): List<EventModel>? = withContext(Dispatchers.IO) {
+        runCatching {
+            provider.events
+                .getAll(
+                    maxId = pageCursor?.toLong(),
+                    count = DEFAULT_PAGE_SIZE,
+                ).map { it.toModel() }
+        }.getOrNull()
+    }
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20

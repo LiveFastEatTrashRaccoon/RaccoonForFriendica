@@ -6,9 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
-internal class DefaultIdentityRepository(
-    private val provider: ServiceProvider,
-) : IdentityRepository {
+internal class DefaultIdentityRepository(private val provider: ServiceProvider) : IdentityRepository {
     override val currentUser = MutableStateFlow<UserModel?>(null)
 
     override suspend fun refreshCurrentUser(userId: String?) {
@@ -25,13 +23,13 @@ internal class DefaultIdentityRepository(
                         displayName = user.displayName,
                         entryCount = user.statusesCount,
                         fields =
-                            user.fields.map {
-                                FieldModel(
-                                    key = it.name,
-                                    value = it.value,
-                                    verified = it.verifiedAt != null,
-                                )
-                            },
+                        user.fields.map {
+                            FieldModel(
+                                key = it.name,
+                                value = it.value,
+                                verified = it.verifiedAt != null,
+                            )
+                        },
                         followers = user.followersCount,
                         following = user.followingCount,
                         group = user.group,

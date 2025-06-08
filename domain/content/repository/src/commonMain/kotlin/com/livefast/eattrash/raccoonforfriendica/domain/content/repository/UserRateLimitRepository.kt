@@ -5,10 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLim
 interface UserRateLimitRepository {
     suspend fun getAll(accountId: Long): List<UserRateLimitModel>
 
-    suspend fun getBy(
-        handle: String,
-        accountId: Long,
-    ): UserRateLimitModel?
+    suspend fun getBy(handle: String, accountId: Long): UserRateLimitModel?
 
     suspend fun create(model: UserRateLimitModel): UserRateLimitModel?
 

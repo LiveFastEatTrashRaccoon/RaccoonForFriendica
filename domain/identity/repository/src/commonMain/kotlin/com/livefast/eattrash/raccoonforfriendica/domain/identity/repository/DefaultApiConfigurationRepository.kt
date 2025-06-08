@@ -41,10 +41,7 @@ internal class DefaultApiConfigurationRepository(
         return validateCredentials(credentials = credentials, node = node)
     }
 
-    private suspend fun validateCredentials(
-        credentials: ApiCredentials?,
-        node: String,
-    ): Boolean =
+    private suspend fun validateCredentials(credentials: ApiCredentials?, node: String): Boolean =
         withTimeoutOrNull(VALIDATE_CREDENTIALS_TIMEOUT) {
             credentials != null &&
                 credentialsRepository.validateApplicationCredentials(

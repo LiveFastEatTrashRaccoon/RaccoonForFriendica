@@ -49,184 +49,176 @@ class DefaultCredentialsRepositoryTest {
         )
 
     @Test
-    fun `given timeline can be retrieved when validateNode then result is as expected`() =
-        runTest {
-            everySuspend { instanceService.getInfo() } returns Instance(domain = "example.com")
-            val node = "test-node"
+    fun `given timeline can be retrieved when validateNode then result is as expected`() = runTest {
+        everySuspend { instanceService.getInfo() } returns Instance(domain = "example.com")
+        val node = "test-node"
 
-            val res = sut.validateNode(node)
+        val res = sut.validateNode(node)
 
-            assertTrue(res)
-            verifySuspend {
-                provider.changeNode(node)
-                instanceService.getInfo()
-            }
+        assertTrue(res)
+        verifySuspend {
+            provider.changeNode(node)
+            instanceService.getInfo()
         }
+    }
 
     @Test
-    fun `given timeline can not be retrieved when validateNode then result is as expected`() =
-        runTest {
-            everySuspend { instanceService.getInfo() } throws
-                IOException("Network call was not successful")
-            val node = "test-node"
+    fun `given timeline can not be retrieved when validateNode then result is as expected`() = runTest {
+        everySuspend { instanceService.getInfo() } throws
+            IOException("Network call was not successful")
+        val node = "test-node"
 
-            val res = sut.validateNode(node)
+        val res = sut.validateNode(node)
 
-            assertFalse(res)
-            verifySuspend {
-                provider.changeNode(node)
-                instanceService.getInfo()
-            }
+        assertFalse(res)
+        verifySuspend {
+            provider.changeNode(node)
+            instanceService.getInfo()
         }
+    }
 
     @Test
-    fun `given valid credentials when validate credentials then result is as expected`() =
-        runTest {
-            val credentials = ApiCredentials.OAuth2("fake-access-token", "")
-            everySuspend { userService.verifyCredentials() } returns
-                CredentialAccount(
-                    id = "fake-user-id",
-                    acct = "fake-username",
-                    username = "fake-username",
-                )
-            val node = "test-node"
-            val user =
-                UserModel(
-                    id = "fake-user-id",
-                    handle = "fake-username",
-                    username = "fake-username",
-                )
-
-            val res = sut.validate(node = node, credentials = credentials)
-
-            assertEquals(res, user)
-            verifySuspend {
-                provider.changeNode(node)
-                provider.setAuth(credentials.toServiceCredentials())
-                userService.verifyCredentials()
-            }
-        }
-
-    @Test
-    fun `given invalid credentials when validate credentials then result is as expected`() =
-        runTest {
-            val credentials = ApiCredentials.OAuth2("fake-access-token", "")
-            everySuspend { userService.verifyCredentials() } throws IOException("Invalid credentials")
-            val node = "test-node"
-
-            val res = sut.validate(node = node, credentials = credentials)
-
-            assertNull(res)
-            verifySuspend {
-                provider.changeNode(node)
-                provider.setAuth(credentials.toServiceCredentials())
-                userService.verifyCredentials()
-            }
-        }
-
-    @Test
-    fun `given network error when createApplication then result is as expected`() =
-        runTest {
-            everySuspend { appService.create(any()) } throws IOException("Network error")
-            val node = "test-node"
-
-            val res =
-                sut.createApplication(
-                    node = node,
-                    clientName = "app-name",
-                    website = "www.example.org",
-                    redirectUri = "app://",
-                    scopes = "read write",
-                )
-
-            assertNull(res)
-            verifySuspend {
-                provider.changeNode(node)
-                appService.create(any())
-            }
-        }
-
-    @Test
-    fun `when createApplication then result is as expected`() =
-        runTest {
-            everySuspend { appService.create(any()) } returns
-                Application(
-                    clientId = "client-id",
-                    clientSecret = "client-secret",
-                    name = "app-name",
-                    webSite = "www.example.org",
-                )
-            val node = "test-node"
-
-            val res =
-                sut.createApplication(
-                    node = node,
-                    clientName = "app-name",
-                    website = "www.example.org",
-                    redirectUri = "app://",
-                    scopes = "read write",
-                )
-
-            assertEquals(
-                ClientApplicationModel(
-                    clientId = "client-id",
-                    clientSecret = "client-secret",
-                    name = "app-name",
-                    webSite = "www.example.org",
-                ),
-                res,
+    fun `given valid credentials when validate credentials then result is as expected`() = runTest {
+        val credentials = ApiCredentials.OAuth2("fake-access-token", "")
+        everySuspend { userService.verifyCredentials() } returns
+            CredentialAccount(
+                id = "fake-user-id",
+                acct = "fake-username",
+                username = "fake-username",
             )
-            verifySuspend {
-                provider.changeNode(node)
-                appService.create(any())
-            }
+        val node = "test-node"
+        val user =
+            UserModel(
+                id = "fake-user-id",
+                handle = "fake-username",
+                username = "fake-username",
+            )
+
+        val res = sut.validate(node = node, credentials = credentials)
+
+        assertEquals(res, user)
+        verifySuspend {
+            provider.changeNode(node)
+            provider.setAuth(credentials.toServiceCredentials())
+            userService.verifyCredentials()
         }
+    }
 
     @Test
-    fun `given valid credentials when validateApplicationCredentials then result is as expected`() =
-        runTest {
-            everySuspend { appService.verifyCredentials() } returns
-                Application(
-                    clientId = "client-id",
-                    clientSecret = "client-secret",
-                    name = "app-name",
-                    webSite = "www.example.org",
-                )
-            val node = "test-node"
-            val credentials = ApiCredentials.OAuth2("fake-access-token", "")
+    fun `given invalid credentials when validate credentials then result is as expected`() = runTest {
+        val credentials = ApiCredentials.OAuth2("fake-access-token", "")
+        everySuspend { userService.verifyCredentials() } throws IOException("Invalid credentials")
+        val node = "test-node"
 
-            val res =
-                sut.validateApplicationCredentials(
-                    node = node,
-                    credentials = credentials,
-                )
+        val res = sut.validate(node = node, credentials = credentials)
 
-            assertTrue(res)
-            verifySuspend {
-                provider.changeNode(node)
-                provider.setAuth(credentials = credentials.toServiceCredentials())
-                appService.verifyCredentials()
-            }
+        assertNull(res)
+        verifySuspend {
+            provider.changeNode(node)
+            provider.setAuth(credentials.toServiceCredentials())
+            userService.verifyCredentials()
         }
+    }
 
     @Test
-    fun `given invalid credentials when validateApplicationCredentials then result is as expected`() =
-        runTest {
-            everySuspend { appService.verifyCredentials() } throws IOException("Not found")
-            val node = "test-node"
-            val credentials = ApiCredentials.OAuth2("fake-access-token", "")
+    fun `given network error when createApplication then result is as expected`() = runTest {
+        everySuspend { appService.create(any()) } throws IOException("Network error")
+        val node = "test-node"
 
-            val res =
-                sut.validateApplicationCredentials(
-                    node = node,
-                    credentials = credentials,
-                )
+        val res =
+            sut.createApplication(
+                node = node,
+                clientName = "app-name",
+                website = "www.example.org",
+                redirectUri = "app://",
+                scopes = "read write",
+            )
 
-            assertFalse(res)
-            verifySuspend {
-                provider.changeNode(node)
-                provider.setAuth(credentials = credentials.toServiceCredentials())
-                appService.verifyCredentials()
-            }
+        assertNull(res)
+        verifySuspend {
+            provider.changeNode(node)
+            appService.create(any())
         }
+    }
+
+    @Test
+    fun `when createApplication then result is as expected`() = runTest {
+        everySuspend { appService.create(any()) } returns
+            Application(
+                clientId = "client-id",
+                clientSecret = "client-secret",
+                name = "app-name",
+                webSite = "www.example.org",
+            )
+        val node = "test-node"
+
+        val res =
+            sut.createApplication(
+                node = node,
+                clientName = "app-name",
+                website = "www.example.org",
+                redirectUri = "app://",
+                scopes = "read write",
+            )
+
+        assertEquals(
+            ClientApplicationModel(
+                clientId = "client-id",
+                clientSecret = "client-secret",
+                name = "app-name",
+                webSite = "www.example.org",
+            ),
+            res,
+        )
+        verifySuspend {
+            provider.changeNode(node)
+            appService.create(any())
+        }
+    }
+
+    @Test
+    fun `given valid credentials when validateApplicationCredentials then result is as expected`() = runTest {
+        everySuspend { appService.verifyCredentials() } returns
+            Application(
+                clientId = "client-id",
+                clientSecret = "client-secret",
+                name = "app-name",
+                webSite = "www.example.org",
+            )
+        val node = "test-node"
+        val credentials = ApiCredentials.OAuth2("fake-access-token", "")
+
+        val res =
+            sut.validateApplicationCredentials(
+                node = node,
+                credentials = credentials,
+            )
+
+        assertTrue(res)
+        verifySuspend {
+            provider.changeNode(node)
+            provider.setAuth(credentials = credentials.toServiceCredentials())
+            appService.verifyCredentials()
+        }
+    }
+
+    @Test
+    fun `given invalid credentials when validateApplicationCredentials then result is as expected`() = runTest {
+        everySuspend { appService.verifyCredentials() } throws IOException("Not found")
+        val node = "test-node"
+        val credentials = ApiCredentials.OAuth2("fake-access-token", "")
+
+        val res =
+            sut.validateApplicationCredentials(
+                node = node,
+                credentials = credentials,
+            )
+
+        assertFalse(res)
+        verifySuspend {
+            provider.changeNode(node)
+            provider.setAuth(credentials = credentials.toServiceCredentials())
+            appService.verifyCredentials()
+        }
+    }
 }

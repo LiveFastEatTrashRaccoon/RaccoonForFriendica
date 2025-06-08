@@ -24,42 +24,40 @@ class DefaultSetupAccountUseCaseTest {
         )
 
     @Test
-    fun `given no accounts when invoke then interactions are as expected`() =
-        runTest {
-            everySuspend { accountRepository.getAll() } returns emptyList()
-            val anonymousAccount = AccountModel(handle = "", id = 1)
-            everySuspend { accountRepository.getBy(handle = any()) } returns anonymousAccount
-            everySuspend { settingsRepository.get(any()) } returns null
+    fun `given no accounts when invoke then interactions are as expected`() = runTest {
+        everySuspend { accountRepository.getAll() } returns emptyList()
+        val anonymousAccount = AccountModel(handle = "", id = 1)
+        everySuspend { accountRepository.getBy(handle = any()) } returns anonymousAccount
+        everySuspend { settingsRepository.get(any()) } returns null
 
-            sut.invoke()
+        sut.invoke()
 
-            verifySuspend {
-                accountRepository.getAll()
-                accountRepository.create(anonymousAccount.copy(id = 0))
-                accountRepository.getBy("")
-                settingsRepository.get(anonymousAccount.id)
-                settingsRepository.create(SettingsModel(accountId = anonymousAccount.id))
-                accountRepository.setActive(anonymousAccount, true)
-            }
+        verifySuspend {
+            accountRepository.getAll()
+            accountRepository.create(anonymousAccount.copy(id = 0))
+            accountRepository.getBy("")
+            settingsRepository.get(anonymousAccount.id)
+            settingsRepository.create(SettingsModel(accountId = anonymousAccount.id))
+            accountRepository.setActive(anonymousAccount, true)
         }
+    }
 
     @Test
-    fun `given existing anonymous account when invoke then interactions are as expected`() =
-        runTest {
-            val anonymousAccount = AccountModel(handle = "", id = 1)
-            everySuspend { accountRepository.getAll() } returns listOf(anonymousAccount)
+    fun `given existing anonymous account when invoke then interactions are as expected`() = runTest {
+        val anonymousAccount = AccountModel(handle = "", id = 1)
+        everySuspend { accountRepository.getAll() } returns listOf(anonymousAccount)
 
-            sut.invoke()
+        sut.invoke()
 
-            verifySuspend {
-                accountRepository.getAll()
-            }
-            verifySuspend(mode = VerifyMode.not) {
-                accountRepository.create(anonymousAccount.copy(id = 0))
-                accountRepository.getBy("")
-                settingsRepository.get(anonymousAccount.id)
-                settingsRepository.create(SettingsModel())
-                accountRepository.setActive(anonymousAccount, true)
-            }
+        verifySuspend {
+            accountRepository.getAll()
         }
+        verifySuspend(mode = VerifyMode.not) {
+            accountRepository.create(anonymousAccount.copy(id = 0))
+            accountRepository.getBy("")
+            settingsRepository.get(anonymousAccount.id)
+            settingsRepository.create(SettingsModel())
+            accountRepository.setActive(anonymousAccount, true)
+        }
+    }
 }

@@ -55,27 +55,24 @@ internal class DefaultDirectMessagesPaginationManager(
         }
     }
 
-    private fun List<DirectMessageModel>.updatePaginationData(): List<DirectMessageModel> =
-        apply {
-            val hasData = isNotEmpty()
-            if (hasData) {
-                page++
-            }
-            canFetchMore = hasData
+    private fun List<DirectMessageModel>.updatePaginationData(): List<DirectMessageModel> = apply {
+        val hasData = isNotEmpty()
+        if (hasData) {
+            page++
         }
+        canFetchMore = hasData
+    }
 
-    private fun List<DirectMessageModel>.deduplicate(): List<DirectMessageModel> =
-        filter { e1 ->
-            history.none { e2 -> e1.id == e2.id }
-        }.distinctBy { it.id }
+    private fun List<DirectMessageModel>.deduplicate(): List<DirectMessageModel> = filter { e1 ->
+        history.none { e2 -> e1.id == e2.id }
+    }.distinctBy { it.id }
 
-    private suspend fun List<DirectMessageModel>.fixupCreatorEmojis(): List<DirectMessageModel> =
-        with(emojiHelper) {
-            map {
-                it.copy(
-                    recipient = it.recipient?.withEmojisIfMissing(),
-                    sender = it.sender?.withEmojisIfMissing(),
-                )
-            }
+    private suspend fun List<DirectMessageModel>.fixupCreatorEmojis(): List<DirectMessageModel> = with(emojiHelper) {
+        map {
+            it.copy(
+                recipient = it.recipient?.withEmojisIfMissing(),
+                sender = it.sender?.withEmojisIfMissing(),
+            )
         }
+    }
 }

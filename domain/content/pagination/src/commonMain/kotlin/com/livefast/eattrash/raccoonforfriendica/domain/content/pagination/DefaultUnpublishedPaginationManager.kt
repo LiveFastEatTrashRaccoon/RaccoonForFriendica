@@ -86,19 +86,17 @@ internal class DefaultUnpublishedPaginationManager(
         }
     }
 
-    private fun List<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> =
-        apply {
-            lastOrNull()?.also {
-                pageCursor = it.id
-            }
-            if (isNotEmpty()) {
-                page++
-            }
-            canFetchMore = isNotEmpty()
+    private fun List<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> = apply {
+        lastOrNull()?.also {
+            pageCursor = it.id
         }
+        if (isNotEmpty()) {
+            page++
+        }
+        canFetchMore = isNotEmpty()
+    }
 
-    private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> =
-        filter { e1 ->
-            history.none { e2 -> e1.id == e2.id }
-        }.distinctBy { it.id }
+    private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> = filter { e1 ->
+        history.none { e2 -> e1.id == e2.id }
+    }.distinctBy { it.id }
 }

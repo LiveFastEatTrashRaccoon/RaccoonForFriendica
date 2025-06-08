@@ -11,14 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class DefaultPhotoRepository(
-    private val provider: ServiceProvider,
-) : PhotoRepository {
-    override suspend fun create(
-        bytes: ByteArray,
-        album: String,
-        alt: String,
-    ): AttachmentModel? =
+internal class DefaultPhotoRepository(private val provider: ServiceProvider) : PhotoRepository {
+    override suspend fun create(bytes: ByteArray, album: String, alt: String): AttachmentModel? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val content =
@@ -28,10 +22,10 @@ internal class DefaultPhotoRepository(
                                 key = "media",
                                 value = bytes,
                                 headers =
-                                    Headers.build {
-                                        append(HttpHeaders.ContentType, "image/*")
-                                        append(HttpHeaders.ContentDisposition, "filename=image.jpeg")
-                                    },
+                                Headers.build {
+                                    append(HttpHeaders.ContentType, "image/*")
+                                    append(HttpHeaders.ContentDisposition, "filename=image.jpeg")
+                                },
                             )
                             append("album", album)
                             append("desc", alt)
@@ -47,50 +41,48 @@ internal class DefaultPhotoRepository(
         album: String,
         newAlbum: String?,
         alt: String,
-    ): Boolean =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val content =
-                    MultiPartFormDataContent(
-                        formData {
-                            append("photo_id", id)
-                            if (bytes != null) {
-                                append(
-                                    key = "media",
-                                    value = bytes,
-                                    headers =
-                                        Headers.build {
-                                            append(HttpHeaders.ContentType, "image/*")
-                                            append(
-                                                HttpHeaders.ContentDisposition,
-                                                "filename=image.jpeg",
-                                            )
-                                        },
-                                )
-                            }
-                            append("album", album)
-                            if (newAlbum != null) {
-                                append("album_new", newAlbum)
-                            }
-                            append("desc", alt)
-                        },
-                    )
-                val res = provider.photo.update(content = content)
-                res.result == "updated"
-            }
-        }.getOrElse { false }
+    ): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            val content =
+                MultiPartFormDataContent(
+                    formData {
+                        append("photo_id", id)
+                        if (bytes != null) {
+                            append(
+                                key = "media",
+                                value = bytes,
+                                headers =
+                                Headers.build {
+                                    append(HttpHeaders.ContentType, "image/*")
+                                    append(
+                                        HttpHeaders.ContentDisposition,
+                                        "filename=image.jpeg",
+                                    )
+                                },
+                            )
+                        }
+                        append("album", album)
+                        if (newAlbum != null) {
+                            append("album_new", newAlbum)
+                        }
+                        append("desc", alt)
+                    },
+                )
+            val res = provider.photo.update(content = content)
+            res.result == "updated"
+        }
+    }.getOrElse { false }
 
-    override suspend fun delete(id: String): Boolean =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val content =
-                    MultiPartFormDataContent(
-                        formData {
-                            append("photo_id", id)
-                        },
-                    )
-                val res = provider.photo.delete(content)
-                res.result == "deleted"
-            }
-        }.getOrElse { false }
+    override suspend fun delete(id: String): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            val content =
+                MultiPartFormDataContent(
+                    formData {
+                        append("photo_id", id)
+                    },
+                )
+            val res = provider.photo.delete(content)
+            res.result == "deleted"
+        }
+    }.getOrElse { false }
 }

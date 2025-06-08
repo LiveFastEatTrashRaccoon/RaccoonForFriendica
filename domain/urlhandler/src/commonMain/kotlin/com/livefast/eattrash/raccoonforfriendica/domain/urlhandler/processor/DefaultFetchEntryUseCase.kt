@@ -6,9 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import kotlinx.coroutines.withTimeoutOrNull
 
-internal class DefaultFetchEntryUseCase(
-    private val searchRepository: SearchRepository,
-) : FetchEntryUseCase {
+internal class DefaultFetchEntryUseCase(private val searchRepository: SearchRepository) : FetchEntryUseCase {
     override suspend fun invoke(url: String): TimelineEntryModel? =
         // wait at most SEARCH_TIMEOUT_MILLIS failing if the request takes longer
         withTimeoutOrNull(SEARCH_TIMEOUT_MILLIS) {

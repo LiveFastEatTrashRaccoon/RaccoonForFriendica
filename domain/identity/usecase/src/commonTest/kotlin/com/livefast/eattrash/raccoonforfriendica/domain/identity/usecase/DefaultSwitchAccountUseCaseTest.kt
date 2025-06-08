@@ -13,14 +13,13 @@ class DefaultSwitchAccountUseCaseTest {
     private val sut = DefaultSwitchAccountUseCase(accountRepository = accountRepository)
 
     @Test
-    fun `when invoke then interactions are as expected`() =
-        runTest {
-            val account = AccountModel(id = 1)
+    fun `when invoke then interactions are as expected`() = runTest {
+        val account = AccountModel(id = 1)
 
-            sut.invoke(account)
+        sut.invoke(account)
 
-            verifySuspend {
-                accountRepository.setActive(account, true)
-            }
+        verifySuspend {
+            accountRepository.setActive(account, true)
         }
+    }
 }

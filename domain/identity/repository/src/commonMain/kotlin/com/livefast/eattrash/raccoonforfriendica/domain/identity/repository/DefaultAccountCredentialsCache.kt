@@ -2,9 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 
-internal class DefaultAccountCredentialsCache(
-    private val keyStore: TemporaryKeyStore,
-) : AccountCredentialsCache {
+internal class DefaultAccountCredentialsCache(private val keyStore: TemporaryKeyStore) : AccountCredentialsCache {
     override fun get(accountId: Long): ApiCredentials? {
         val type = keyStore[getKeyForType(accountId), ""]
         val part1 = keyStore[getKeyForPart1(accountId), ""]
@@ -26,10 +24,7 @@ internal class DefaultAccountCredentialsCache(
         }
     }
 
-    override fun save(
-        accountId: Long,
-        credentials: ApiCredentials,
-    ) {
+    override fun save(accountId: Long, credentials: ApiCredentials) {
         val type: String
         val part1: String
         val part2: String

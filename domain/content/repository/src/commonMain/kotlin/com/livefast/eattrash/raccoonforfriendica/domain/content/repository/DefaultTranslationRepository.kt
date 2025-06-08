@@ -9,56 +9,51 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class DefaultTranslationRepository(
-    private val provider: ServiceProvider,
-) : TranslationRepository {
-    override suspend fun getTranslation(
-        entry: TimelineEntryModel,
-        targetLang: String,
-    ): TranslatedTimelineEntryModel? =
+internal class DefaultTranslationRepository(private val provider: ServiceProvider) : TranslationRepository {
+    override suspend fun getTranslation(entry: TimelineEntryModel, targetLang: String): TranslatedTimelineEntryModel? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val res =
                     provider.statuses.translate(
                         id = entry.id,
                         data =
-                            FormDataContent(
-                                parameters {
-                                    append("lang", targetLang)
-                                },
-                            ),
+                        FormDataContent(
+                            parameters {
+                                append("lang", targetLang)
+                            },
+                        ),
                     )
                 TranslatedTimelineEntryModel(
                     source = entry,
                     target =
-                        entry.copy(
-                            content = res.content,
-                            attachments =
-                                entry.attachments.map { att ->
-                                    val translatedDescription =
-                                        res.attachments.firstOrNull { it.id == att.id }?.description
-                                    att.copy(
-                                        description = translatedDescription ?: att.description,
-                                    )
-                                },
-                            poll =
-                                entry.poll?.copy(
-                                    options =
-                                        entry.poll
+                    entry.copy(
+                        content = res.content,
+                        attachments =
+                        entry.attachments.map { att ->
+                            val translatedDescription =
+                                res.attachments.firstOrNull { it.id == att.id }?.description
+                            att.copy(
+                                description = translatedDescription ?: att.description,
+                            )
+                        },
+                        poll =
+                        entry.poll?.copy(
+                            options =
+                            entry.poll
+                                ?.options
+                                ?.mapIndexed { idx, opt ->
+                                    val translatedTitle =
+                                        res.poll
                                             ?.options
-                                            ?.mapIndexed { idx, opt ->
-                                                val translatedTitle =
-                                                    res.poll
-                                                        ?.options
-                                                        ?.getOrNull(idx)
-                                                        ?.title
-                                                opt.copy(
-                                                    title = translatedTitle ?: opt.title,
-                                                )
-                                            }.orEmpty(),
-                                ),
-                            lang = targetLang,
+                                            ?.getOrNull(idx)
+                                            ?.title
+                                    opt.copy(
+                                        title = translatedTitle ?: opt.title,
+                                    )
+                                }.orEmpty(),
                         ),
+                        lang = targetLang,
+                    ),
                     provider = res.provider,
                 )
             }.getOrNull()

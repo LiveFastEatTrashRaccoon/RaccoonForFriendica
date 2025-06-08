@@ -5,9 +5,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Photo
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-internal class DefaultAlbumPhotoPaginationManager(
-    private val albumRepository: PhotoAlbumRepository,
-) : AlbumPhotoPaginationManager {
+internal class DefaultAlbumPhotoPaginationManager(private val albumRepository: PhotoAlbumRepository) :
+    AlbumPhotoPaginationManager {
     private var specification: AlbumPhotoPaginationSpecification? = null
     private var pageCursor: String? = null
     override var canFetchMore = false
@@ -46,14 +45,12 @@ internal class DefaultAlbumPhotoPaginationManager(
         }
     }
 
-    private fun List<AttachmentModel>.updatePaginationData(): List<AttachmentModel> =
-        apply {
-            pageCursor = lastOrNull()?.id
-            canFetchMore = isNotEmpty()
-        }
+    private fun List<AttachmentModel>.updatePaginationData(): List<AttachmentModel> = apply {
+        pageCursor = lastOrNull()?.id
+        canFetchMore = isNotEmpty()
+    }
 
-    private fun List<AttachmentModel>.deduplicate(): List<AttachmentModel> =
-        filter { e1 ->
-            history.none { e2 -> e1.id == e2.id }
-        }.distinctBy { it.id }
+    private fun List<AttachmentModel>.deduplicate(): List<AttachmentModel> = filter { e1 ->
+        history.none { e2 -> e1.id == e2.id }
+    }.distinctBy { it.id }
 }

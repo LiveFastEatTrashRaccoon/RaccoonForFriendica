@@ -11,41 +11,35 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class DefaultPushNotificationRepository(
-    private val provider: ServiceProvider,
-) : PushNotificationRepository {
+internal class DefaultPushNotificationRepository(private val provider: ServiceProvider) : PushNotificationRepository {
     override suspend fun create(
         endpoint: String,
         pubKey: String,
         auth: String,
         types: List<NotificationType>,
         policy: NotificationPolicy,
-    ): String? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val data =
-                    FormDataContent(
-                        parameters {
-                            append("subscription[endpoint]", endpoint)
-                            append("subscription[keys][p256dh]", pubKey)
-                            append("subscription[keys][auth]", auth)
-                            for (type in NotificationType.ALL) {
-                                append(
-                                    "data[alerts][${type.toRawValue()}]",
-                                    (type in types).toString(),
-                                )
-                            }
-                            append("data[policy]", policy.toDto())
-                        },
-                    )
-                provider.push.create(data)?.serverKey
-            }.getOrNull()
-        }
+    ): String? = withContext(Dispatchers.IO) {
+        runCatching {
+            val data =
+                FormDataContent(
+                    parameters {
+                        append("subscription[endpoint]", endpoint)
+                        append("subscription[keys][p256dh]", pubKey)
+                        append("subscription[keys][auth]", auth)
+                        for (type in NotificationType.ALL) {
+                            append(
+                                "data[alerts][${type.toRawValue()}]",
+                                (type in types).toString(),
+                            )
+                        }
+                        append("data[policy]", policy.toDto())
+                    },
+                )
+            provider.push.create(data)?.serverKey
+        }.getOrNull()
+    }
 
-    override suspend fun update(
-        types: List<NotificationType>,
-        policy: NotificationPolicy,
-    ): String? =
+    override suspend fun update(types: List<NotificationType>, policy: NotificationPolicy): String? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val data =
@@ -64,11 +58,10 @@ internal class DefaultPushNotificationRepository(
             }.getOrNull()
         }
 
-    override suspend fun delete(): Boolean =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                provider.push.delete()
-                true
-            }.getOrElse { false }
-        }
+    override suspend fun delete(): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            provider.push.delete()
+            true
+        }.getOrElse { false }
+    }
 }

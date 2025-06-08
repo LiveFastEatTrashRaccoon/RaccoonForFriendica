@@ -20,12 +20,7 @@ interface PushNotificationManager {
 
     suspend fun disable()
 
-    suspend fun registerEndpoint(
-        account: AccountModel,
-        endpointUrl: String,
-        pubKey: String,
-        auth: String,
-    )
+    suspend fun registerEndpoint(account: AccountModel, endpointUrl: String, pubKey: String, auth: String)
 
     suspend fun unregisterEndpoint(account: AccountModel)
 }

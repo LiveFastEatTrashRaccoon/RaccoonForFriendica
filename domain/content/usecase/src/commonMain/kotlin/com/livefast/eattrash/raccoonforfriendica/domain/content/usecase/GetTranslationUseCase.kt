@@ -4,8 +4,5 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
 
 interface GetTranslationUseCase {
-    suspend operator fun invoke(
-        entry: TimelineEntryModel,
-        targetLang: String,
-    ): TranslatedTimelineEntryModel?
+    suspend operator fun invoke(entry: TimelineEntryModel, targetLang: String): TranslatedTimelineEntryModel?
 }

@@ -19,10 +19,7 @@ internal class DefaultLoginUseCase(
     private val accountCredentialsCache: AccountCredentialsCache,
     private val supportedFeatureRepository: SupportedFeatureRepository,
 ) : LoginUseCase {
-    override suspend fun invoke(
-        node: String,
-        credentials: ApiCredentials,
-    ) {
+    override suspend fun invoke(node: String, credentials: ApiCredentials) {
         apiConfigurationRepository.changeNode(node)
         apiConfigurationRepository.setAuth(credentials)
         val user = credentialsRepository.validate(node = node, credentials = credentials)
@@ -61,11 +58,11 @@ internal class DefaultLoginUseCase(
                         accountId = account.id,
                         // on Friendica, enable BBCode by default
                         markupMode =
-                            if (supportsBBCode) {
-                                MarkupMode.BBCode
-                            } else {
-                                MarkupMode.PlainText
-                            },
+                        if (supportsBBCode) {
+                            MarkupMode.BBCode
+                        } else {
+                            MarkupMode.PlainText
+                        },
                         // on Friendica, enable excludeRepliesFromTimeline
                         excludeRepliesFromTimeline = supportsBBCode,
                     ),

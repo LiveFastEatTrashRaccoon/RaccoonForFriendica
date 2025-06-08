@@ -3,9 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 
-internal class DefaultExportUserListUseCase(
-    private val userRepository: UserRepository,
-) : ExportUserListUseCase {
+internal class DefaultExportUserListUseCase(private val userRepository: UserRepository) : ExportUserListUseCase {
     override suspend fun invoke(specification: ExportUserSpecification): String {
         val users = retrieveUsers(specification)
         return users.mapNotNull { it.toExportData() }.joinToString("\n")

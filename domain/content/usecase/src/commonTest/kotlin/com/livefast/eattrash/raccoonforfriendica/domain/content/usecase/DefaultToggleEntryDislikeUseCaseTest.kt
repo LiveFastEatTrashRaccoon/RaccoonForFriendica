@@ -22,158 +22,151 @@ class DefaultToggleEntryDislikeUseCaseTest {
     private val sut = DefaultToggleEntryDislikeUseCase(entryRepository)
 
     @Test
-    fun `given entry not disliked and not favorite when invoked then result and interactions are as expected`() =
-        runTest {
-            everySuspend { entryRepository.dislike(any()) } returns true
-            val entryId = "1"
-            val entry = TimelineEntryModel(id = entryId, content = "")
+    fun `given entry not disliked not favorite when invoked then result and interactions are as expected`() = runTest {
+        everySuspend { entryRepository.dislike(any()) } returns true
+        val entryId = "1"
+        val entry = TimelineEntryModel(id = entryId, content = "")
 
-            val res = sut(entry)
+        val res = sut(entry)
 
-            assertNotNull(res)
-            assertEquals(1, res.dislikesCount)
-            assertTrue(res.disliked)
-            assertFalse(res.favorite)
-            verifySuspend {
-                entryRepository.dislike(entryId)
-            }
-            verifySuspend(VerifyMode.not) {
-                entryRepository.unfavorite(any())
-            }
+        assertNotNull(res)
+        assertEquals(1, res.dislikesCount)
+        assertTrue(res.disliked)
+        assertFalse(res.favorite)
+        verifySuspend {
+            entryRepository.dislike(entryId)
         }
+        verifySuspend(VerifyMode.not) {
+            entryRepository.unfavorite(any())
+        }
+    }
 
     @Test
-    fun `given entry not disliked and not favorite but dislike error when invoked then result and interactions are as expected`() =
-        runTest {
-            everySuspend { entryRepository.dislike(any()) } returns false
-            val entryId = "1"
-            val entry = TimelineEntryModel(id = entryId, content = "")
+    fun `given dislike error when invoked then result and interactions are as expected`() = runTest {
+        everySuspend { entryRepository.dislike(any()) } returns false
+        val entryId = "1"
+        val entry = TimelineEntryModel(id = entryId, content = "")
 
-            val res = sut(entry)
+        val res = sut(entry)
 
-            assertNull(res)
-            verifySuspend {
-                entryRepository.dislike(entryId)
-            }
-            verifySuspend(VerifyMode.not) {
-                entryRepository.unfavorite(any())
-            }
+        assertNull(res)
+        verifySuspend {
+            entryRepository.dislike(entryId)
         }
+        verifySuspend(VerifyMode.not) {
+            entryRepository.unfavorite(any())
+        }
+    }
 
     @Test
-    fun `given entry not disliked and favorite when invoked then result and interactions are as expected`() =
-        runTest {
-            everySuspend { entryRepository.dislike(any()) } returns true
-            everySuspend { entryRepository.unfavorite(any()) } calls { args ->
-                val entryId: String = args.arg(0)
-                TimelineEntryModel(
-                    id = entryId,
-                    content = "",
-                    favoriteCount = 0,
-                    favorite = false,
-                )
-            }
-            val entryId = "1"
-            val entry =
-                TimelineEntryModel(id = entryId, content = "", favorite = true, favoriteCount = 1)
-
-            val res = sut(entry)
-
-            assertNotNull(res)
-            assertEquals(1, res.dislikesCount)
-            assertTrue(res.disliked)
-            assertFalse(res.favorite)
-            assertEquals(0, res.favoriteCount)
-            verifySuspend {
-                entryRepository.dislike(entryId)
-                entryRepository.unfavorite(entryId)
-            }
+    fun `given entry not disliked and favorite when invoked then result and interactions are as expected`() = runTest {
+        everySuspend { entryRepository.dislike(any()) } returns true
+        everySuspend { entryRepository.unfavorite(any()) } calls { args ->
+            val entryId: String = args.arg(0)
+            TimelineEntryModel(
+                id = entryId,
+                content = "",
+                favoriteCount = 0,
+                favorite = false,
+            )
         }
+        val entryId = "1"
+        val entry =
+            TimelineEntryModel(id = entryId, content = "", favorite = true, favoriteCount = 1)
+
+        val res = sut(entry)
+
+        assertNotNull(res)
+        assertEquals(1, res.dislikesCount)
+        assertTrue(res.disliked)
+        assertFalse(res.favorite)
+        assertEquals(0, res.favoriteCount)
+        verifySuspend {
+            entryRepository.dislike(entryId)
+            entryRepository.unfavorite(entryId)
+        }
+    }
 
     @Test
-    fun `given entry not disliked and favorite but favorite error when invoked then result and interactions are as expected`() =
-        runTest {
-            everySuspend { entryRepository.dislike(any()) } returns true
-            everySuspend { entryRepository.unfavorite(any()) } returns null
-            val entryId = "1"
-            val entry =
-                TimelineEntryModel(id = entryId, content = "", favorite = true, favoriteCount = 1)
+    fun `given favorite error when invoked then result and interactions are as expected`() = runTest {
+        everySuspend { entryRepository.dislike(any()) } returns true
+        everySuspend { entryRepository.unfavorite(any()) } returns null
+        val entryId = "1"
+        val entry =
+            TimelineEntryModel(id = entryId, content = "", favorite = true, favoriteCount = 1)
 
-            val res = sut(entry)
+        val res = sut(entry)
 
-            assertNull(res)
-            verifySuspend {
-                entryRepository.unfavorite(entryId)
-            }
-            verifySuspend(VerifyMode.not) {
-                entryRepository.dislike(entryId)
-            }
+        assertNull(res)
+        verifySuspend {
+            entryRepository.unfavorite(entryId)
         }
+        verifySuspend(VerifyMode.not) {
+            entryRepository.dislike(entryId)
+        }
+    }
 
     @Test
-    fun `given entry not disliked and favorite but dislike error when invoked then result and interactions are as expected`() =
-        runTest {
-            everySuspend { entryRepository.dislike(any()) } returns false
-            everySuspend { entryRepository.unfavorite(any()) } calls { args ->
-                val entryId: String = args.arg(0)
-                TimelineEntryModel(
-                    id = entryId,
-                    content = "",
-                    favoriteCount = 0,
-                    favorite = false,
-                )
-            }
-            val entryId = "1"
-            val entry =
-                TimelineEntryModel(id = entryId, content = "", favorite = true, favoriteCount = 1)
-
-            val res = sut(entry)
-
-            assertNull(res)
-            verifySuspend {
-                entryRepository.unfavorite(entryId)
-                entryRepository.dislike(entryId)
-            }
+    fun `given favorite but dislike error when invoked then result and interactions are as expected`() = runTest {
+        everySuspend { entryRepository.dislike(any()) } returns false
+        everySuspend { entryRepository.unfavorite(any()) } calls { args ->
+            val entryId: String = args.arg(0)
+            TimelineEntryModel(
+                id = entryId,
+                content = "",
+                favoriteCount = 0,
+                favorite = false,
+            )
         }
+        val entryId = "1"
+        val entry =
+            TimelineEntryModel(id = entryId, content = "", favorite = true, favoriteCount = 1)
+
+        val res = sut(entry)
+
+        assertNull(res)
+        verifySuspend {
+            entryRepository.unfavorite(entryId)
+            entryRepository.dislike(entryId)
+        }
+    }
 
     @Test
-    fun `given entry disliked and not favorite when invoked then result and interactions are as expected`() =
-        runTest {
-            everySuspend { entryRepository.undislike(any()) } returns true
-            val entryId = "1"
-            val entry =
-                TimelineEntryModel(id = entryId, content = "", disliked = true, dislikesCount = 1)
+    fun `given entry disliked and not favorite when invoked then result and interactions are as expected`() = runTest {
+        everySuspend { entryRepository.undislike(any()) } returns true
+        val entryId = "1"
+        val entry =
+            TimelineEntryModel(id = entryId, content = "", disliked = true, dislikesCount = 1)
 
-            val res = sut(entry)
+        val res = sut(entry)
 
-            assertNotNull(res)
-            assertEquals(0, res.dislikesCount)
-            assertFalse(res.disliked)
-            assertFalse(res.favorite)
-            verifySuspend {
-                entryRepository.undislike(entryId)
-            }
-            verifySuspend(VerifyMode.not) {
-                entryRepository.unfavorite(any())
-            }
+        assertNotNull(res)
+        assertEquals(0, res.dislikesCount)
+        assertFalse(res.disliked)
+        assertFalse(res.favorite)
+        verifySuspend {
+            entryRepository.undislike(entryId)
         }
+        verifySuspend(VerifyMode.not) {
+            entryRepository.unfavorite(any())
+        }
+    }
 
     @Test
-    fun `given entry disliked and not favorite but dislike error when invoked then result and interactions are as expected`() =
-        runTest {
-            everySuspend { entryRepository.undislike(any()) } returns false
-            val entryId = "1"
-            val entry =
-                TimelineEntryModel(id = entryId, content = "", disliked = true, dislikesCount = 1)
+    fun `given disliked but dislike error when invoked then result and interactions are as expected`() = runTest {
+        everySuspend { entryRepository.undislike(any()) } returns false
+        val entryId = "1"
+        val entry =
+            TimelineEntryModel(id = entryId, content = "", disliked = true, dislikesCount = 1)
 
-            val res = sut(entry)
+        val res = sut(entry)
 
-            assertNull(res)
-            verifySuspend {
-                entryRepository.undislike(entryId)
-            }
-            verifySuspend(VerifyMode.not) {
-                entryRepository.unfavorite(any())
-            }
+        assertNull(res)
+        verifySuspend {
+            entryRepository.undislike(entryId)
         }
+        verifySuspend(VerifyMode.not) {
+            entryRepository.unfavorite(any())
+        }
+    }
 }

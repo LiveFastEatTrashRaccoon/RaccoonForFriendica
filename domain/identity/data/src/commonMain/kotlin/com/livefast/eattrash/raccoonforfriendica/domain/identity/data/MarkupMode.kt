@@ -24,26 +24,23 @@ sealed interface MarkupMode {
 }
 
 @Composable
-fun MarkupMode.toReadableName() =
-    when (this) {
-        MarkupMode.BBCode -> LocalStrings.current.markupModeBBCode
-        MarkupMode.HTML -> LocalStrings.current.markupModeHTML
-        MarkupMode.Markdown -> LocalStrings.current.markupModeMarkdown
-        MarkupMode.PlainText -> LocalStrings.current.markupModePlainText
-    }
+fun MarkupMode.toReadableName() = when (this) {
+    MarkupMode.BBCode -> LocalStrings.current.markupModeBBCode
+    MarkupMode.HTML -> LocalStrings.current.markupModeHTML
+    MarkupMode.Markdown -> LocalStrings.current.markupModeMarkdown
+    MarkupMode.PlainText -> LocalStrings.current.markupModePlainText
+}
 
-fun Int.toMarkupMode(): MarkupMode =
-    when (this) {
-        1 -> MarkupMode.HTML
-        2 -> MarkupMode.BBCode
-        3 -> MarkupMode.Markdown
-        else -> MarkupMode.PlainText
-    }
+fun Int.toMarkupMode(): MarkupMode = when (this) {
+    1 -> MarkupMode.HTML
+    2 -> MarkupMode.BBCode
+    3 -> MarkupMode.Markdown
+    else -> MarkupMode.PlainText
+}
 
-fun MarkupMode.toInt() =
-    when (this) {
-        MarkupMode.HTML -> 1
-        MarkupMode.BBCode -> 2
-        MarkupMode.Markdown -> 3
-        MarkupMode.PlainText -> 0
-    }
+fun MarkupMode.toInt() = when (this) {
+    MarkupMode.HTML -> 1
+    MarkupMode.BBCode -> 2
+    MarkupMode.Markdown -> 3
+    MarkupMode.PlainText -> 0
+}

@@ -12,10 +12,7 @@ internal class DefaultGetTranslationUseCase(
     private val fallbackRepository: TranslationRepository,
     private val stripMarkup: StripMarkupUseCase,
 ) : GetTranslationUseCase {
-    override suspend fun invoke(
-        entry: TimelineEntryModel,
-        targetLang: String,
-    ): TranslatedTimelineEntryModel? {
+    override suspend fun invoke(entry: TimelineEntryModel, targetLang: String): TranslatedTimelineEntryModel? {
         val nativeTranslationSupported =
             supportedFeatureRepository.features.value.supportsTranslation
         val nativeTranslation =
@@ -30,32 +27,33 @@ internal class DefaultGetTranslationUseCase(
         return nativeTranslation
             ?: fallbackRepository.getTranslation(
                 entry =
-                    entry.copy(
-                        title = entry.title?.stripMarkup(),
-                        content = entry.content.stripMarkup(),
-                        spoiler = entry.spoiler?.stripMarkup(),
-                        card =
-                            entry.card?.let { card ->
-                                card.copy(
-                                    title = card.title.stripMarkup(),
-                                    description = card.description.stripMarkup(),
-                                )
-                            },
-                        poll =
-                            entry.poll?.let { poll ->
-                                poll.copy(
-                                    options = poll.options.map { opt -> opt.copy(title = opt.title.stripMarkup()) },
-                                )
-                            },
-                        attachments = entry.attachments.map { att -> att.copy(description = att.description?.stripMarkup()) },
-                    ),
+                entry.copy(
+                    title = entry.title?.stripMarkup(),
+                    content = entry.content.stripMarkup(),
+                    spoiler = entry.spoiler?.stripMarkup(),
+                    card =
+                    entry.card?.let { card ->
+                        card.copy(
+                            title = card.title.stripMarkup(),
+                            description = card.description.stripMarkup(),
+                        )
+                    },
+                    poll =
+                    entry.poll?.let { poll ->
+                        poll.copy(
+                            options = poll.options.map { opt -> opt.copy(title = opt.title.stripMarkup()) },
+                        )
+                    },
+                    attachments = entry.attachments.map { att ->
+                        att.copy(description = att.description?.stripMarkup())
+                    },
+                ),
                 targetLang = targetLang,
             )
     }
 
-    private fun String.stripMarkup(): String =
-        stripMarkup(
-            text = this,
-            mode = MarkupMode.HTML,
-        )
+    private fun String.stripMarkup(): String = stripMarkup(
+        text = this,
+        mode = MarkupMode.HTML,
+    )
 }

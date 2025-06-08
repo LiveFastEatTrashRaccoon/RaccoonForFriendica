@@ -17,7 +17,8 @@ internal class DefaultEntryActionRepository(
 
     override fun canFavorite(entry: TimelineEntryModel): Boolean = isLogged
 
-    override fun canDislike(entry: TimelineEntryModel): Boolean = isLogged && supportedFeatureRepository.features.value.supportsDislike
+    override fun canDislike(entry: TimelineEntryModel): Boolean =
+        isLogged && supportedFeatureRepository.features.value.supportsDislike
 
     override fun canBookmark(entry: TimelineEntryModel): Boolean = isLogged
 
@@ -35,7 +36,8 @@ internal class DefaultEntryActionRepository(
 
     override fun canBlock(entry: TimelineEntryModel): Boolean = entry.isFromOtherUser
 
-    override fun canQuote(entry: TimelineEntryModel): Boolean = supportedFeatureRepository.features.value.supportsEntryShare
+    override fun canQuote(entry: TimelineEntryModel): Boolean =
+        supportedFeatureRepository.features.value.supportsEntryShare
 
     private val TimelineEntryModel.isFromCurrentUser: Boolean
         get() = isLogged && creator?.id == currentUserId

@@ -9,10 +9,7 @@ interface CirclesRepository {
 
     suspend fun get(id: String): CircleModel?
 
-    suspend fun getMembers(
-        id: String,
-        pageCursor: String? = null,
-    ): List<UserModel>?
+    suspend fun getMembers(id: String, pageCursor: String? = null): List<UserModel>?
 
     suspend fun create(
         title: String,
@@ -29,13 +26,7 @@ interface CirclesRepository {
 
     suspend fun delete(id: String): Boolean
 
-    suspend fun addMembers(
-        id: String,
-        userIds: List<String>,
-    ): Boolean
+    suspend fun addMembers(id: String, userIds: List<String>): Boolean
 
-    suspend fun removeMembers(
-        id: String,
-        userIds: List<String>,
-    ): Boolean
+    suspend fun removeMembers(id: String, userIds: List<String>): Boolean
 }

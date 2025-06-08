@@ -21,25 +21,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class DefaultUserRepository(
-    private val provider: ServiceProvider,
-) : UserRepository {
+internal class DefaultUserRepository(private val provider: ServiceProvider) : UserRepository {
     private var cachedUser: UserModel? = null
 
-    override suspend fun getById(id: String): UserModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users.getById(id).toModel()
-                }
-            }.getOrNull()
-        }
+    override suspend fun getById(id: String): UserModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users.getById(id).toModel()
+            }
+        }.getOrNull()
+    }
 
-    override suspend fun search(
-        query: String,
-        offset: Int,
-        following: Boolean,
-    ): List<UserModel>? =
+    override suspend fun search(query: String, offset: Int, following: Boolean): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -54,95 +47,80 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
-    override suspend fun getByHandle(handle: String): UserModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users
-                        .search(
-                            query = handle,
-                            resolve = true,
-                        ).first()
-                        .toModel()
-                }
-            }.getOrNull()
-        }
-
-    override suspend fun getCurrent(refresh: Boolean): UserModel? =
-        withContext(Dispatchers.IO) {
-            if (refresh) {
-                cachedUser = null
+    override suspend fun getByHandle(handle: String): UserModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .search(
+                        query = handle,
+                        resolve = true,
+                    ).first()
+                    .toModel()
             }
-            val fromCache = cachedUser
-            check(fromCache == null) { return@withContext fromCache }
-            runCatching {
-                provider.users.verifyCredentials().toModel()
-            }.getOrNull().also {
-                cachedUser = it
+        }.getOrNull()
+    }
+
+    override suspend fun getCurrent(refresh: Boolean): UserModel? = withContext(Dispatchers.IO) {
+        if (refresh) {
+            cachedUser = null
+        }
+        val fromCache = cachedUser
+        check(fromCache == null) { return@withContext fromCache }
+        runCatching {
+            provider.users.verifyCredentials().toModel()
+        }.getOrNull().also {
+            cachedUser = it
+        }
+    }
+
+    override suspend fun getRelationships(ids: List<String>): List<RelationshipModel>? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .getRelationships(ids)
+                    .map { it.toModel() }
             }
-        }
+        }.getOrNull()
+    }
 
-    override suspend fun getRelationships(ids: List<String>): List<RelationshipModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users
-                        .getRelationships(ids)
-                        .map { it.toModel() }
-                }
-            }.getOrNull()
-        }
+    override suspend fun getSuggestions(): List<UserModel>? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .getSuggestions(
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.user.toModel() }
+            }
+        }.getOrNull()
+    }
 
-    override suspend fun getSuggestions(): List<UserModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users
-                        .getSuggestions(
-                            limit = DEFAULT_PAGE_SIZE,
-                        ).map { it.user.toModel() }
-                }
-            }.getOrNull()
-        }
+    override suspend fun getFollowers(id: String, pageCursor: String?): List<UserModel>? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .getFollowers(
+                        id = id,
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrNull()
+    }
 
-    override suspend fun getFollowers(
-        id: String,
-        pageCursor: String?,
-    ): List<UserModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users
-                        .getFollowers(
-                            id = id,
-                            maxId = pageCursor,
-                            limit = DEFAULT_PAGE_SIZE,
-                        ).map { it.toModel() }
-                }
-            }.getOrNull()
-        }
+    override suspend fun getFollowing(id: String, pageCursor: String?): List<UserModel>? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .getFollowing(
+                        id = id,
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrNull()
+    }
 
-    override suspend fun getFollowing(
-        id: String,
-        pageCursor: String?,
-    ): List<UserModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users
-                        .getFollowing(
-                            id = id,
-                            maxId = pageCursor,
-                            limit = DEFAULT_PAGE_SIZE,
-                        ).map { it.toModel() }
-                }
-            }.getOrNull()
-        }
-
-    override suspend fun searchMyFollowing(
-        query: String,
-        pageCursor: String?,
-    ): List<UserModel>? =
+    override suspend fun searchMyFollowing(query: String, pageCursor: String?): List<UserModel>? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -159,11 +137,7 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
-    override suspend fun follow(
-        id: String,
-        reblogs: Boolean,
-        notifications: Boolean,
-    ): RelationshipModel? =
+    override suspend fun follow(id: String, reblogs: Boolean, notifications: Boolean): RelationshipModel? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -181,14 +155,13 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
-    override suspend fun unfollow(id: String): RelationshipModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users.unfollow(id).toModel()
-                }
-            }.getOrNull()
-        }
+    override suspend fun unfollow(id: String): RelationshipModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users.unfollow(id).toModel()
+            }
+        }.getOrNull()
+    }
 
     override suspend fun getFollowRequests(pageCursor: String?): ListWithPageCursor<UserModel>? =
         withContext(Dispatchers.IO) {
@@ -204,27 +177,21 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
-    override suspend fun acceptFollowRequest(id: String) =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                provider.followRequests.accept(id)
-                true
-            }.getOrElse { false }
-        }
+    override suspend fun acceptFollowRequest(id: String) = withContext(Dispatchers.IO) {
+        runCatching {
+            provider.followRequests.accept(id)
+            true
+        }.getOrElse { false }
+    }
 
-    override suspend fun rejectFollowRequest(id: String) =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                provider.followRequests.reject(id)
-                true
-            }.getOrElse { false }
-        }
+    override suspend fun rejectFollowRequest(id: String) = withContext(Dispatchers.IO) {
+        runCatching {
+            provider.followRequests.reject(id)
+            true
+        }.getOrElse { false }
+    }
 
-    override suspend fun mute(
-        id: String,
-        durationSeconds: Long,
-        notifications: Boolean,
-    ): RelationshipModel? =
+    override suspend fun mute(id: String, durationSeconds: Long, notifications: Boolean): RelationshipModel? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {
@@ -242,58 +209,53 @@ internal class DefaultUserRepository(
             }.getOrNull()
         }
 
-    override suspend fun unmute(id: String): RelationshipModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users.unmute(id).toModel()
-                }
-            }.getOrNull()
-        }
+    override suspend fun unmute(id: String): RelationshipModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users.unmute(id).toModel()
+            }
+        }.getOrNull()
+    }
 
-    override suspend fun block(id: String): RelationshipModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users.block(id).toModel()
-                }
-            }.getOrNull()
-        }
+    override suspend fun block(id: String): RelationshipModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users.block(id).toModel()
+            }
+        }.getOrNull()
+    }
 
-    override suspend fun unblock(id: String): RelationshipModel? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users.unblock(id).toModel()
-                }
-            }.getOrNull()
-        }
+    override suspend fun unblock(id: String): RelationshipModel? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users.unblock(id).toModel()
+            }
+        }.getOrNull()
+    }
 
-    override suspend fun getMuted(pageCursor: String?): List<UserModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users
-                        .getMuted(
-                            maxId = pageCursor,
-                            limit = DEFAULT_PAGE_SIZE,
-                        ).map { it.toModel() }
-                }
-            }.getOrNull()
-        }
+    override suspend fun getMuted(pageCursor: String?): List<UserModel>? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .getMuted(
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrNull()
+    }
 
-    override suspend fun getBlocked(pageCursor: String?): List<UserModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    provider.users
-                        .getBlocked(
-                            maxId = pageCursor,
-                            limit = DEFAULT_PAGE_SIZE,
-                        ).map { it.toModel() }
-                }
-            }.getOrNull()
-        }
+    override suspend fun getBlocked(pageCursor: String?): List<UserModel>? = withContext(Dispatchers.IO) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                provider.users
+                    .getBlocked(
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrNull()
+    }
 
     override suspend fun updateProfile(
         note: String?,
@@ -364,10 +326,10 @@ internal class DefaultUserRepository(
                                 key = "avatar",
                                 value = avatar,
                                 headers =
-                                    Headers.build {
-                                        append(HttpHeaders.ContentType, "image/*")
-                                        append(HttpHeaders.ContentDisposition, "filename=avatar.jpeg")
-                                    },
+                                Headers.build {
+                                    append(HttpHeaders.ContentType, "image/*")
+                                    append(HttpHeaders.ContentDisposition, "filename=avatar.jpeg")
+                                },
                             )
                         },
                     )
@@ -382,10 +344,10 @@ internal class DefaultUserRepository(
                                 key = "header",
                                 value = header,
                                 headers =
-                                    Headers.build {
-                                        append(HttpHeaders.ContentType, "image/*")
-                                        append(HttpHeaders.ContentDisposition, "filename=header.jpeg")
-                                    },
+                                Headers.build {
+                                    append(HttpHeaders.ContentType, "image/*")
+                                    append(HttpHeaders.ContentDisposition, "filename=header.jpeg")
+                                },
                             )
                         },
                     )
@@ -396,10 +358,7 @@ internal class DefaultUserRepository(
         }.getOrNull()
     }
 
-    override suspend fun updatePersonalNote(
-        id: String,
-        value: String,
-    ): RelationshipModel? =
+    override suspend fun updatePersonalNote(id: String, value: String): RelationshipModel? =
         withContext(Dispatchers.IO) {
             runCatching {
                 withContext(Dispatchers.IO) {

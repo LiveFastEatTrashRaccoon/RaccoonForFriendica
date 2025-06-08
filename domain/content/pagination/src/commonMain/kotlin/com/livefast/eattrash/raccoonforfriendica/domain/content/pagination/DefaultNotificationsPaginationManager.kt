@@ -60,55 +60,50 @@ internal class DefaultNotificationsPaginationManager(
         }
     }
 
-    private fun List<NotificationModel>.updatePaginationData(): List<NotificationModel> =
-        apply {
-            lastOrNull()?.also {
-                pageCursor = it.id
-            }
-            canFetchMore = isNotEmpty()
+    private fun List<NotificationModel>.updatePaginationData(): List<NotificationModel> = apply {
+        lastOrNull()?.also {
+            pageCursor = it.id
         }
+        canFetchMore = isNotEmpty()
+    }
 
-    private suspend fun List<NotificationModel>.determineRelationshipStatus(): List<NotificationModel> =
-        run {
-            val userIds = mapNotNull { notification -> notification.user?.id }
-            val relationships = userRepository.getRelationships(userIds)
-            map { notification ->
-                val relationship =
-                    relationships?.firstOrNull { rel -> rel.id == notification.user?.id }
-                notification.copy(
-                    user =
-                        notification.user?.copy(
-                            relationshipStatus = relationship?.toStatus(),
-                            notificationStatus = relationship?.toNotificationStatus(),
-                        ),
-                )
-            }
+    private suspend fun List<NotificationModel>.determineRelationshipStatus(): List<NotificationModel> = run {
+        val userIds = mapNotNull { notification -> notification.user?.id }
+        val relationships = userRepository.getRelationships(userIds)
+        map { notification ->
+            val relationship =
+                relationships?.firstOrNull { rel -> rel.id == notification.user?.id }
+            notification.copy(
+                user =
+                notification.user?.copy(
+                    relationshipStatus = relationship?.toStatus(),
+                    notificationStatus = relationship?.toNotificationStatus(),
+                ),
+            )
         }
+    }
 
-    private fun List<NotificationModel>.deduplicate(): List<NotificationModel> =
-        filter { e1 ->
-            history.none { e2 -> e1.id == e2.id }
-        }.distinctBy { it.id }
+    private fun List<NotificationModel>.deduplicate(): List<NotificationModel> = filter { e1 ->
+        history.none { e2 -> e1.id == e2.id }
+    }.distinctBy { it.id }
 
     private fun List<NotificationModel>.filterNsfw(included: Boolean): List<NotificationModel> =
         filter { included || it.entry?.isNsfw != true }
 
-    private suspend fun List<NotificationModel>.fixupCreatorEmojis(): List<NotificationModel> =
-        with(emojiHelper) {
-            map {
-                it.copy(
-                    user = it.user?.withEmojisIfMissing(),
-                    entry = it.entry?.withEmojisIfMissing(),
-                )
-            }
+    private suspend fun List<NotificationModel>.fixupCreatorEmojis(): List<NotificationModel> = with(emojiHelper) {
+        map {
+            it.copy(
+                user = it.user?.withEmojisIfMissing(),
+                entry = it.entry?.withEmojisIfMissing(),
+            )
         }
+    }
 
-    private suspend fun List<NotificationModel>.fixupInReplyTo(): List<NotificationModel> =
-        with(replyHelper) {
-            map {
-                it.copy(
-                    entry = it.entry?.withInReplyToIfMissing(),
-                )
-            }
+    private suspend fun List<NotificationModel>.fixupInReplyTo(): List<NotificationModel> = with(replyHelper) {
+        map {
+            it.copy(
+                entry = it.entry?.withInReplyToIfMissing(),
+            )
         }
+    }
 }

@@ -3,9 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import kotlinx.coroutines.flow.MutableStateFlow
 
-internal class DefaultTimelineNavigationManager(
-    private val paginationManager: TimelinePaginationManager,
-) : TimelineNavigationManager {
+internal class DefaultTimelineNavigationManager(private val paginationManager: TimelinePaginationManager) :
+    TimelineNavigationManager {
     override val canNavigate = MutableStateFlow(false)
     private var states: MutableList<TimelinePaginationManagerState> = mutableListOf()
 

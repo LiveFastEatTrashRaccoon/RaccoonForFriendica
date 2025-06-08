@@ -6,15 +6,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountMod
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-internal class DefaultAccountRepository(
-    private val accountDao: AccountDao,
-) : AccountRepository {
+internal class DefaultAccountRepository(private val accountDao: AccountDao) : AccountRepository {
     override suspend fun getAll(): List<AccountModel> = accountDao.getAll().map { it.toModel() }
 
-    override fun getAllAsFlow(): Flow<List<AccountModel>> =
-        accountDao.getAllAsFlow().map { list ->
-            list.map { it.toModel() }
-        }
+    override fun getAllAsFlow(): Flow<List<AccountModel>> = accountDao.getAllAsFlow().map { list ->
+        list.map { it.toModel() }
+    }
 
     override suspend fun getBy(id: Long): AccountModel? = accountDao.getBy(id)?.toModel()
 
@@ -22,19 +19,15 @@ internal class DefaultAccountRepository(
 
     override suspend fun getActive(): AccountModel? = accountDao.getActive()?.toModel()
 
-    override fun getActiveAsFlow(): Flow<AccountModel?> =
-        accountDao.getActiveAsFlow().map { list ->
-            list.firstOrNull()?.toModel()
-        }
+    override fun getActiveAsFlow(): Flow<AccountModel?> = accountDao.getActiveAsFlow().map { list ->
+        list.firstOrNull()?.toModel()
+    }
 
     override suspend fun create(account: AccountModel) {
         accountDao.insert(account.toEntity())
     }
 
-    override suspend fun setActive(
-        account: AccountModel,
-        active: Boolean,
-    ) {
+    override suspend fun setActive(account: AccountModel, active: Boolean) {
         val old = accountDao.getActive()
         if (old != null && active) {
             accountDao.replaceActive(
@@ -55,32 +48,30 @@ internal class DefaultAccountRepository(
     }
 }
 
-private fun AccountModel.toEntity() =
-    AccountEntity(
-        id = id,
-        handle = handle,
-        active = active,
-        remoteId = remoteId,
-        avatar = avatar,
-        displayName = displayName,
-        pushAuth = pushAuth,
-        pushServerKey = pushServerKey,
-        pushPubKey = pushPubKey,
-        pushPrivKey = pushPrivKey,
-        unifiedPushUrl = unifiedPushUrl,
-    )
+private fun AccountModel.toEntity() = AccountEntity(
+    id = id,
+    handle = handle,
+    active = active,
+    remoteId = remoteId,
+    avatar = avatar,
+    displayName = displayName,
+    pushAuth = pushAuth,
+    pushServerKey = pushServerKey,
+    pushPubKey = pushPubKey,
+    pushPrivKey = pushPrivKey,
+    unifiedPushUrl = unifiedPushUrl,
+)
 
-private fun AccountEntity.toModel() =
-    AccountModel(
-        id = id,
-        handle = handle,
-        active = active,
-        remoteId = remoteId,
-        avatar = avatar,
-        displayName = displayName,
-        pushAuth = pushAuth,
-        pushServerKey = pushServerKey,
-        pushPubKey = pushPubKey,
-        pushPrivKey = pushPrivKey,
-        unifiedPushUrl = unifiedPushUrl,
-    )
+private fun AccountEntity.toModel() = AccountModel(
+    id = id,
+    handle = handle,
+    active = active,
+    remoteId = remoteId,
+    avatar = avatar,
+    displayName = displayName,
+    pushAuth = pushAuth,
+    pushServerKey = pushServerKey,
+    pushPubKey = pushPubKey,
+    pushPrivKey = pushPrivKey,
+    unifiedPushUrl = unifiedPushUrl,
+)

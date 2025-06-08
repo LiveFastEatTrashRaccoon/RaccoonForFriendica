@@ -36,35 +36,33 @@ class DefaultUnpublishedPaginationManagerTest {
 
     // region Scheduled
     @Test
-    fun `given no results when loadNextPage with Scheduled then result is as expected`() =
-        runTest {
-            everySuspend { scheduledEntryRepository.getAll(any()) } returns emptyList()
+    fun `given no results when loadNextPage with Scheduled then result is as expected`() = runTest {
+        everySuspend { scheduledEntryRepository.getAll(any()) } returns emptyList()
 
-            sut.reset(UnpublishedPaginationSpecification.Scheduled)
-            val res = sut.loadNextPage()
+        sut.reset(UnpublishedPaginationSpecification.Scheduled)
+        val res = sut.loadNextPage()
 
-            assertTrue(res.isEmpty())
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                scheduledEntryRepository.getAll(null)
-            }
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            scheduledEntryRepository.getAll(null)
         }
+    }
 
     @Test
-    fun `given results when loadNextPage with Scheduled then result is as expected`() =
-        runTest {
-            val list = listOf(TimelineEntryModel(id = "1", content = ""))
-            everySuspend { scheduledEntryRepository.getAll(any()) } returns list
+    fun `given results when loadNextPage with Scheduled then result is as expected`() = runTest {
+        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        everySuspend { scheduledEntryRepository.getAll(any()) } returns list
 
-            sut.reset(UnpublishedPaginationSpecification.Scheduled)
-            val res = sut.loadNextPage()
+        sut.reset(UnpublishedPaginationSpecification.Scheduled)
+        val res = sut.loadNextPage()
 
-            assertEquals(list, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                scheduledEntryRepository.getAll(null)
-            }
+        assertEquals(list, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            scheduledEntryRepository.getAll(null)
         }
+    }
 
     @Test
     fun `given can not fetch more results when loadNextPage with Scheduled twice then result is as expected`() =
@@ -88,53 +86,50 @@ class DefaultUnpublishedPaginationManagerTest {
 
     // region Drafts
     @Test
-    fun `given no results when loadNextPage with Drafts then result is as expected`() =
-        runTest {
-            everySuspend { draftRepository.getAll(any()) } returns emptyList()
+    fun `given no results when loadNextPage with Drafts then result is as expected`() = runTest {
+        everySuspend { draftRepository.getAll(any()) } returns emptyList()
 
-            sut.reset(UnpublishedPaginationSpecification.Drafts)
-            val res = sut.loadNextPage()
+        sut.reset(UnpublishedPaginationSpecification.Drafts)
+        val res = sut.loadNextPage()
 
-            assertTrue(res.isEmpty())
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                draftRepository.getAll(0)
-            }
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            draftRepository.getAll(0)
         }
+    }
 
     @Test
-    fun `given results when loadNextPage with Drafts then result is as expected`() =
-        runTest {
-            val list = listOf(TimelineEntryModel(id = "1", content = ""))
-            everySuspend { draftRepository.getAll(any()) } returns list
+    fun `given results when loadNextPage with Drafts then result is as expected`() = runTest {
+        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        everySuspend { draftRepository.getAll(any()) } returns list
 
-            sut.reset(UnpublishedPaginationSpecification.Drafts)
-            val res = sut.loadNextPage()
+        sut.reset(UnpublishedPaginationSpecification.Drafts)
+        val res = sut.loadNextPage()
 
-            assertEquals(list, res)
-            assertTrue(sut.canFetchMore)
-            verifySuspend {
-                draftRepository.getAll(0)
-            }
+        assertEquals(list, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            draftRepository.getAll(0)
         }
+    }
 
     @Test
-    fun `given can not fetch more results when loadNextPage with Drafts twice then result is as expected`() =
-        runTest {
-            val list = listOf(TimelineEntryModel(id = "1", content = ""))
-            everySuspend { draftRepository.getAll(any()) } sequentiallyReturns
-                listOf(list, emptyList())
+    fun `given can not fetch more results when loadNextPage with Drafts twice then result is as expected`() = runTest {
+        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        everySuspend { draftRepository.getAll(any()) } sequentiallyReturns
+            listOf(list, emptyList())
 
-            sut.reset(UnpublishedPaginationSpecification.Drafts)
-            sut.loadNextPage()
-            val res = sut.loadNextPage()
+        sut.reset(UnpublishedPaginationSpecification.Drafts)
+        sut.loadNextPage()
+        val res = sut.loadNextPage()
 
-            assertEquals(list, res)
-            assertFalse(sut.canFetchMore)
-            verifySuspend {
-                draftRepository.getAll(0)
-                draftRepository.getAll(1)
-            }
+        assertEquals(list, res)
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            draftRepository.getAll(0)
+            draftRepository.getAll(1)
         }
+    }
     // endregion
 }

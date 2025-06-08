@@ -6,9 +6,8 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 
-internal class DefaultExportSettingsUseCase(
-    private val settingsRepository: SettingsRepository,
-) : ExportSettingsUseCase {
+internal class DefaultExportSettingsUseCase(private val settingsRepository: SettingsRepository) :
+    ExportSettingsUseCase {
     override suspend fun invoke(): String {
         val settings = settingsRepository.current.value ?: return ""
         return withContext(Dispatchers.IO) {

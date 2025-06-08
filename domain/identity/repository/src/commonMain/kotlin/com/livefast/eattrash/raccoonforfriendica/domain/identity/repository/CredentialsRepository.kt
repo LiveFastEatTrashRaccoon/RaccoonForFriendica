@@ -4,10 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ClientApplicationModel
 
 interface CredentialsRepository {
-    suspend fun validate(
-        node: String,
-        credentials: ApiCredentials,
-    ): UserModel?
+    suspend fun validate(node: String, credentials: ApiCredentials): UserModel?
 
     suspend fun validateNode(node: String): Boolean
 
@@ -19,10 +16,7 @@ interface CredentialsRepository {
         scopes: String,
     ): ClientApplicationModel?
 
-    suspend fun validateApplicationCredentials(
-        node: String,
-        credentials: ApiCredentials,
-    ): Boolean
+    suspend fun validateApplicationCredentials(node: String, credentials: ApiCredentials): Boolean
 
     suspend fun exchangeToken(
         node: String,

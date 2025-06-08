@@ -14,10 +14,9 @@ sealed interface ReportCategory {
 }
 
 @Composable
-fun ReportCategory.toReadableName(): String =
-    when (this) {
-        ReportCategory.Legal -> LocalStrings.current.reportCategoryLegal
-        ReportCategory.Other -> LocalStrings.current.itemOther
-        ReportCategory.Spam -> LocalStrings.current.reportCategorySpam
-        ReportCategory.Violation -> LocalStrings.current.reportCategoryViolation
-    }
+fun ReportCategory.toReadableName(): String = when (this) {
+    ReportCategory.Legal -> LocalStrings.current.reportCategoryLegal
+    ReportCategory.Other -> LocalStrings.current.itemOther
+    ReportCategory.Spam -> LocalStrings.current.reportCategorySpam
+    ReportCategory.Violation -> LocalStrings.current.reportCategoryViolation
+}

@@ -36,15 +36,13 @@ data class SettingsModel(
     val replyDepth: Int = 1,
 )
 
-fun Int.toDomainMaxLines(): Int =
-    when (this) {
-        // interpret null values as unlimited
-        0 -> Int.MAX_VALUE
-        else -> this
-    }
+fun Int.toDomainMaxLines(): Int = when (this) {
+    // interpret null values as unlimited
+    0 -> Int.MAX_VALUE
+    else -> this
+}
 
-fun Int.toSerialMaxLines(): Int =
-    when (this) {
-        Int.MAX_VALUE -> 0
-        else -> this
-    }
+fun Int.toSerialMaxLines(): Int = when (this) {
+    Int.MAX_VALUE -> 0
+    else -> this
+}

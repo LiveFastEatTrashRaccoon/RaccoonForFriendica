@@ -7,13 +7,7 @@ interface AnnouncementRepository {
 
     suspend fun markAsRead(id: String): Boolean
 
-    suspend fun addReaction(
-        id: String,
-        reaction: String,
-    ): Boolean
+    suspend fun addReaction(id: String, reaction: String): Boolean
 
-    suspend fun removeReaction(
-        id: String,
-        reaction: String,
-    ): Boolean
+    suspend fun removeReaction(id: String, reaction: String): Boolean
 }

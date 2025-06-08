@@ -6,8 +6,7 @@ sealed interface NotificationStatusNextAction {
     data object Disable : NotificationStatusNextAction
 }
 
-fun NotificationStatus.getNextAction(): NotificationStatusNextAction =
-    when (this) {
-        NotificationStatus.Disabled -> NotificationStatusNextAction.Enable
-        NotificationStatus.Enabled -> NotificationStatusNextAction.Disable
-    }
+fun NotificationStatus.getNextAction(): NotificationStatusNextAction = when (this) {
+    NotificationStatus.Disabled -> NotificationStatusNextAction.Enable
+    NotificationStatus.Enabled -> NotificationStatusNextAction.Disable
+}

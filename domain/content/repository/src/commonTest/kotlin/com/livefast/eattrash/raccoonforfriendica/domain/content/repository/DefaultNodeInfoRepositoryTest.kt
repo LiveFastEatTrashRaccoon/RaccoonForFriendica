@@ -20,28 +20,26 @@ class DefaultNodeInfoRepositoryTest {
     private val sut = DefaultNodeInfoRepository(provider = serviceProvider)
 
     @Test
-    fun `when getInfo then result is as expected`() =
-        runTest {
-            val instance = Instance(domain = "example.com")
-            everySuspend { instanceService.getInfo() } returns instance
+    fun `when getInfo then result is as expected`() = runTest {
+        val instance = Instance(domain = "example.com")
+        everySuspend { instanceService.getInfo() } returns instance
 
-            val res = sut.getInfo()
+        val res = sut.getInfo()
 
-            assertEquals(instance.toModel(), res)
-        }
+        assertEquals(instance.toModel(), res)
+    }
 
     @Test
-    fun `when getRules then result is as expected`() =
-        runTest {
-            val list =
-                listOf(
-                    InstanceRule(id = "1", text = "rule 1"),
-                    InstanceRule(id = "2", text = "rule 2"),
-                )
-            everySuspend { instanceService.getRules() } returns list
+    fun `when getRules then result is as expected`() = runTest {
+        val list =
+            listOf(
+                InstanceRule(id = "1", text = "rule 1"),
+                InstanceRule(id = "2", text = "rule 2"),
+            )
+        everySuspend { instanceService.getRules() } returns list
 
-            val res = sut.getRules()
+        val res = sut.getRules()
 
-            assertEquals(list.map { it.toModel() }, res)
-        }
+        assertEquals(list.map { it.toModel() }, res)
+    }
 }

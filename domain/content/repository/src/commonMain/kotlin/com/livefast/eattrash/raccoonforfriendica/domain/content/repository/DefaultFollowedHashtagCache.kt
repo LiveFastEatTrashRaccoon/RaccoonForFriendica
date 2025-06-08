@@ -4,9 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-internal class DefaultFollowedHashtagCache(
-    private val tagRepository: TagRepository,
-) : FollowedHashtagCache {
+internal class DefaultFollowedHashtagCache(private val tagRepository: TagRepository) : FollowedHashtagCache {
     private var cache: List<TagModel> = emptyList()
     private val mutex = Mutex()
 
@@ -34,10 +32,9 @@ internal class DefaultFollowedHashtagCache(
         }
     }
 
-    override suspend fun isFollowed(tag: TagModel): Boolean =
-        mutex.withLock {
-            cache.any { it.name == tag.name }
-        }
+    override suspend fun isFollowed(tag: TagModel): Boolean = mutex.withLock {
+        cache.any { it.name == tag.name }
+    }
 
     companion object {
         private const val MAX_ITERATIONS = 20

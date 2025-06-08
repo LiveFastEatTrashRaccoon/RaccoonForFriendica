@@ -19,39 +19,37 @@ class DefaultImportSettingsUseCaseTest {
     private val sut = DefaultImportSettingsUseCase(settingsRepository)
 
     @Test
-    fun `when invoked then interactions are as expected`() =
-        runTest {
-            val settings =
-                SettingsModel(
-                    theme = UiTheme.Dark,
-                )
-            val currentSettings = SettingsModel()
-            every { settingsRepository.current } returns MutableStateFlow(currentSettings)
+    fun `when invoked then interactions are as expected`() = runTest {
+        val settings =
+            SettingsModel(
+                theme = UiTheme.Dark,
+            )
+        val currentSettings = SettingsModel()
+        every { settingsRepository.current } returns MutableStateFlow(currentSettings)
 
-            val serialized = jsonSerializationStrategy.encodeToString(settings.toData())
-            sut(serialized)
+        val serialized = jsonSerializationStrategy.encodeToString(settings.toData())
+        sut(serialized)
 
-            verifySuspend {
-                settingsRepository.update(settings)
-                settingsRepository.changeCurrent(settings)
-            }
+        verifySuspend {
+            settingsRepository.update(settings)
+            settingsRepository.changeCurrent(settings)
         }
+    }
 
     @Test
-    fun `given no settings when invoked then interactions are as expected`() =
-        runTest {
-            val settings =
-                SettingsModel(
-                    theme = UiTheme.Dark,
-                )
-            every { settingsRepository.current } returns MutableStateFlow(null)
+    fun `given no settings when invoked then interactions are as expected`() = runTest {
+        val settings =
+            SettingsModel(
+                theme = UiTheme.Dark,
+            )
+        every { settingsRepository.current } returns MutableStateFlow(null)
 
-            val serialized = jsonSerializationStrategy.encodeToString(settings.toData())
-            sut(serialized)
+        val serialized = jsonSerializationStrategy.encodeToString(settings.toData())
+        sut(serialized)
 
-            verifySuspend(VerifyMode.not) {
-                settingsRepository.update(settings)
-                settingsRepository.changeCurrent(settings)
-            }
+        verifySuspend(VerifyMode.not) {
+            settingsRepository.update(settings)
+            settingsRepository.changeCurrent(settings)
         }
+    }
 }

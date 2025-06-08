@@ -6,9 +6,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-internal class DefaultFollowedHashtagsPaginationManager(
-    private val tagRepository: TagRepository,
-) : FollowedHashtagsPaginationManager {
+internal class DefaultFollowedHashtagsPaginationManager(private val tagRepository: TagRepository) :
+    FollowedHashtagsPaginationManager {
     private var pageCursor: String? = null
     override var canFetchMore: Boolean = true
     private val history = mutableListOf<TagModel>()
@@ -35,15 +34,13 @@ internal class DefaultFollowedHashtagsPaginationManager(
         }
     }
 
-    private fun ListWithPageCursor<TagModel>.updatePaginationData(): List<TagModel> =
-        run {
-            pageCursor = cursor
-            canFetchMore = list.isNotEmpty()
-            list
-        }
+    private fun ListWithPageCursor<TagModel>.updatePaginationData(): List<TagModel> = run {
+        pageCursor = cursor
+        canFetchMore = list.isNotEmpty()
+        list
+    }
 
-    private fun List<TagModel>.deduplicate(): List<TagModel> =
-        filter { e1 ->
-            history.none { e2 -> e1.name == e2.name }
-        }.distinctBy { it.name }
+    private fun List<TagModel>.deduplicate(): List<TagModel> = filter { e1 ->
+        history.none { e2 -> e1.name == e2.name }
+    }.distinctBy { it.name }
 }

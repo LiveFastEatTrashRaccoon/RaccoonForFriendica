@@ -22,36 +22,33 @@ class DefaultStripMarkupUseCaseTest {
         )
 
     @Test
-    fun `given HTML input when invoked then result is as expected`() =
-        runTest {
-            val input = "<h1>Title</h1><p>Text</p>"
+    fun `given HTML input when invoked then result is as expected`() = runTest {
+        val input = "<h1>Title</h1><p>Text</p>"
 
-            val res = sut(text = input, mode = MarkupMode.HTML)
+        val res = sut(text = input, mode = MarkupMode.HTML)
 
-            assertEquals("Title\n\nText", res)
-        }
-
-    @Test
-    fun `given BBCode input when invoked then result is as expected`() =
-        runTest {
-            every { bbCodeConverter.toHtml(any()) } returns "Title\nText"
-            val input = "[h1]Title[/h1][p]Text[/p]"
-
-            val res = sut(text = input, mode = MarkupMode.BBCode)
-
-            assertEquals("Title\nText", res)
-            verify { bbCodeConverter.toHtml(input) }
-        }
+        assertEquals("Title\n\nText", res)
+    }
 
     @Test
-    fun `given Markdown input when invoked then result is as expected`() =
-        runTest {
-            every { markdownConverter.toHtml(any()) } returns "Title\nText"
-            val input = "# Title\nText"
+    fun `given BBCode input when invoked then result is as expected`() = runTest {
+        every { bbCodeConverter.toHtml(any()) } returns "Title\nText"
+        val input = "[h1]Title[/h1][p]Text[/p]"
 
-            val res = sut(text = input, mode = MarkupMode.Markdown)
+        val res = sut(text = input, mode = MarkupMode.BBCode)
 
-            assertEquals("Title\nText", res)
-            verify { markdownConverter.toHtml(input) }
-        }
+        assertEquals("Title\nText", res)
+        verify { bbCodeConverter.toHtml(input) }
+    }
+
+    @Test
+    fun `given Markdown input when invoked then result is as expected`() = runTest {
+        every { markdownConverter.toHtml(any()) } returns "Title\nText"
+        val input = "# Title\nText"
+
+        val res = sut(text = input, mode = MarkupMode.Markdown)
+
+        assertEquals("Title\nText", res)
+        verify { markdownConverter.toHtml(input) }
+    }
 }

@@ -58,36 +58,34 @@ class DefaultContentPreloadManagerTest {
         )
 
     @Test
-    fun `given anonymous account when preload then interactions are as expected`() =
-        runTest {
-            sut.preload()
+    fun `given anonymous account when preload then interactions are as expected`() = runTest {
+        sut.preload()
 
-            verifySuspend {
-                trendingRepository.getHashtags(
-                    offset = 0,
-                    refresh = true,
-                )
-            }
+        verifySuspend {
+            trendingRepository.getHashtags(
+                offset = 0,
+                refresh = true,
+            )
         }
+    }
 
     @Test
-    fun `given remote account when preload then interactions are as expected`() =
-        runTest {
-            val userId = "fake-user-id"
-            sut.preload(userId)
+    fun `given remote account when preload then interactions are as expected`() = runTest {
+        val userId = "fake-user-id"
+        sut.preload(userId)
 
-            verifySuspend {
-                trendingRepository.getHashtags(
-                    offset = 0,
-                    refresh = true,
-                )
-                timelineEntryRepository.getByUser(
-                    userId = userId,
-                    excludeReplies = true,
-                    enableCache = true,
-                    refresh = true,
-                )
-                notificationRepository.getAll(refresh = true)
-            }
+        verifySuspend {
+            trendingRepository.getHashtags(
+                offset = 0,
+                refresh = true,
+            )
+            timelineEntryRepository.getByUser(
+                userId = userId,
+                excludeReplies = true,
+                enableCache = true,
+                refresh = true,
+            )
+            notificationRepository.getAll(refresh = true)
         }
+    }
 }

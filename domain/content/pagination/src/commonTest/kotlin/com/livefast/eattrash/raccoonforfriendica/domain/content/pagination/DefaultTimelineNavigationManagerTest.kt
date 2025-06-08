@@ -23,25 +23,23 @@ class DefaultTimelineNavigationManagerTest {
         DefaultTimelineNavigationManager(paginationManager = paginationManager)
 
     @Test
-    fun whenInitial_thenCanNotNavigate() =
-        runTest {
-            val res = sut.canNavigate.value
-            assertFalse(res)
-        }
+    fun whenInitial_thenCanNotNavigate() = runTest {
+        val res = sut.canNavigate.value
+        assertFalse(res)
+    }
 
     @Test
-    fun whenPush_thenCanNavigate() =
-        runTest {
-            val mockState = mock<TimelinePaginationManagerState>()
-            sut.push(mockState)
+    fun whenPush_thenCanNavigate() = runTest {
+        val mockState = mock<TimelinePaginationManagerState>()
+        sut.push(mockState)
 
-            val res = sut.canNavigate.value
-            assertTrue(res)
+        val res = sut.canNavigate.value
+        assertTrue(res)
 
-            verify {
-                paginationManager.restoreState(mockState)
-            }
+        verify {
+            paginationManager.restoreState(mockState)
         }
+    }
 
     @Test
     fun givenEmpty_whenPop_thenCanNotNavigate() {
@@ -53,139 +51,130 @@ class DefaultTimelineNavigationManagerTest {
     }
 
     @Test
-    fun whenPopWithMoreThanOneState_thenCanNavigate() =
-        runTest {
-            val mockState1 = mock<TimelinePaginationManagerState>()
-            sut.push(mockState1)
-            val mockState2 = mock<TimelinePaginationManagerState>()
-            sut.push(mockState2)
+    fun whenPopWithMoreThanOneState_thenCanNavigate() = runTest {
+        val mockState1 = mock<TimelinePaginationManagerState>()
+        sut.push(mockState1)
+        val mockState2 = mock<TimelinePaginationManagerState>()
+        sut.push(mockState2)
 
-            sut.pop()
-            val res = sut.canNavigate.value
-            assertTrue(res)
+        sut.pop()
+        val res = sut.canNavigate.value
+        assertTrue(res)
 
-            verify(VerifyMode.order) {
-                paginationManager.restoreState(mockState1)
-                paginationManager.restoreState(mockState2)
-                paginationManager.restoreState(mockState1)
-            }
+        verify(VerifyMode.order) {
+            paginationManager.restoreState(mockState1)
+            paginationManager.restoreState(mockState2)
+            paginationManager.restoreState(mockState1)
         }
+    }
 
     @Test
-    fun whenPopWithOneState_thenCanNotNavigate() =
-        runTest {
-            val mockState = mock<TimelinePaginationManagerState>()
-            sut.push(mockState)
+    fun whenPopWithOneState_thenCanNotNavigate() = runTest {
+        val mockState = mock<TimelinePaginationManagerState>()
+        sut.push(mockState)
 
-            sut.pop()
-            val res = sut.canNavigate.value
-            assertFalse(res)
+        sut.pop()
+        val res = sut.canNavigate.value
+        assertFalse(res)
 
-            verify(VerifyMode.order) {
-                paginationManager.restoreState(mockState)
-            }
+        verify(VerifyMode.order) {
+            paginationManager.restoreState(mockState)
         }
+    }
 
     @Test
-    fun givenEmptyHistory_whenGetPrevious_thenResultIsAsExpected() =
-        runTest {
-            every { paginationManager.history } returns emptyList()
+    fun givenEmptyHistory_whenGetPrevious_thenResultIsAsExpected() = runTest {
+        every { paginationManager.history } returns emptyList()
 
-            val res = sut.getPrevious("1")
+        val res = sut.getPrevious("1")
 
-            assertNull(res)
-        }
-
-    @Test
-    fun givenHistory_whenGetPreviousWithFirstId_thenResultIsAsExpected() =
-        runTest {
-            val postId = "1"
-            every { paginationManager.history } returns
-                listOf(TimelineEntryModel(id = postId, content = ""))
-
-            val res = sut.getPrevious(postId)
-
-            assertNull(res)
-        }
+        assertNull(res)
+    }
 
     @Test
-    fun givenHistory_whenGetPreviousWithNotFirstId_thenResultIsAsExpected() =
-        runTest {
-            val otherPostId = "1"
-            val postId = "2"
-            every { paginationManager.history } returns
-                listOf(
-                    TimelineEntryModel(id = otherPostId, content = ""),
-                    TimelineEntryModel(id = postId, content = ""),
-                )
+    fun givenHistory_whenGetPreviousWithFirstId_thenResultIsAsExpected() = runTest {
+        val postId = "1"
+        every { paginationManager.history } returns
+            listOf(TimelineEntryModel(id = postId, content = ""))
 
-            val res = sut.getPrevious(postId)
+        val res = sut.getPrevious(postId)
 
-            assertNotNull(res)
-            assertEquals(otherPostId, res.id)
-        }
+        assertNull(res)
+    }
 
     @Test
-    fun givenEmptyHistory_whenGetNext_thenResultIsAsExpected() =
-        runTest {
-            every { paginationManager.history } returns emptyList()
+    fun givenHistory_whenGetPreviousWithNotFirstId_thenResultIsAsExpected() = runTest {
+        val otherPostId = "1"
+        val postId = "2"
+        every { paginationManager.history } returns
+            listOf(
+                TimelineEntryModel(id = otherPostId, content = ""),
+                TimelineEntryModel(id = postId, content = ""),
+            )
 
-            val res = sut.getNext("1")
+        val res = sut.getPrevious(postId)
 
-            assertNull(res)
-        }
-
-    @Test
-    fun givenHistoryAndCanNotFetchMore_whenGetNextWithLastId_thenResultIsAsExpected() =
-        runTest {
-            val postId = "1"
-            every { paginationManager.history } returns
-                listOf(TimelineEntryModel(id = postId, content = ""))
-            every { paginationManager.canFetchMore } returns false
-
-            val res = sut.getNext(postId)
-
-            assertNull(res)
-            verifySuspend(VerifyMode.not) {
-                paginationManager.loadNextPage()
-            }
-        }
+        assertNotNull(res)
+        assertEquals(otherPostId, res.id)
+    }
 
     @Test
-    fun givenHistoryAndCanFetchMore_whenGetNextWithLastId_thenResultIsAsExpected() =
-        runTest {
-            val postId = "1"
-            val otherPostId = "2"
-            every { paginationManager.history } returns
-                listOf(TimelineEntryModel(id = postId, content = ""))
-            every { paginationManager.canFetchMore } returns true
-            everySuspend { paginationManager.loadNextPage() } returns
-                listOf(TimelineEntryModel(id = otherPostId, content = ""))
+    fun givenEmptyHistory_whenGetNext_thenResultIsAsExpected() = runTest {
+        every { paginationManager.history } returns emptyList()
 
-            val res = sut.getNext(postId)
+        val res = sut.getNext("1")
 
-            assertNotNull(res)
-            assertEquals(otherPostId, res.id)
-
-            verifySuspend {
-                paginationManager.loadNextPage()
-            }
-        }
+        assertNull(res)
+    }
 
     @Test
-    fun givenHistory_whenGetPreviousWithNotLastId_thenResultIsAsExpected() =
-        runTest {
-            val otherPostId = "1"
-            val postId = "2"
-            every { paginationManager.history } returns
-                listOf(
-                    TimelineEntryModel(id = postId, content = ""),
-                    TimelineEntryModel(id = otherPostId, content = ""),
-                )
+    fun givenHistoryAndCanNotFetchMore_whenGetNextWithLastId_thenResultIsAsExpected() = runTest {
+        val postId = "1"
+        every { paginationManager.history } returns
+            listOf(TimelineEntryModel(id = postId, content = ""))
+        every { paginationManager.canFetchMore } returns false
 
-            val res = sut.getNext(postId)
+        val res = sut.getNext(postId)
 
-            assertNotNull(res)
-            assertEquals(otherPostId, res.id)
+        assertNull(res)
+        verifySuspend(VerifyMode.not) {
+            paginationManager.loadNextPage()
         }
+    }
+
+    @Test
+    fun givenHistoryAndCanFetchMore_whenGetNextWithLastId_thenResultIsAsExpected() = runTest {
+        val postId = "1"
+        val otherPostId = "2"
+        every { paginationManager.history } returns
+            listOf(TimelineEntryModel(id = postId, content = ""))
+        every { paginationManager.canFetchMore } returns true
+        everySuspend { paginationManager.loadNextPage() } returns
+            listOf(TimelineEntryModel(id = otherPostId, content = ""))
+
+        val res = sut.getNext(postId)
+
+        assertNotNull(res)
+        assertEquals(otherPostId, res.id)
+
+        verifySuspend {
+            paginationManager.loadNextPage()
+        }
+    }
+
+    @Test
+    fun givenHistory_whenGetPreviousWithNotLastId_thenResultIsAsExpected() = runTest {
+        val otherPostId = "1"
+        val postId = "2"
+        every { paginationManager.history } returns
+            listOf(
+                TimelineEntryModel(id = postId, content = ""),
+                TimelineEntryModel(id = otherPostId, content = ""),
+            )
+
+        val res = sut.getNext(postId)
+
+        assertNotNull(res)
+        assertEquals(otherPostId, res.id)
+    }
 }

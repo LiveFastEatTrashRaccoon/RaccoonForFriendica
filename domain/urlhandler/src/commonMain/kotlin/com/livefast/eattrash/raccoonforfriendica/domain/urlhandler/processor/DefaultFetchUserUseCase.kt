@@ -6,9 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import kotlinx.coroutines.withTimeoutOrNull
 
-internal class DefaultFetchUserUseCase(
-    private val searchRepository: SearchRepository,
-) : FetchUserUseCase {
+internal class DefaultFetchUserUseCase(private val searchRepository: SearchRepository) : FetchUserUseCase {
     override suspend fun invoke(url: String): UserModel? =
         // wait at most SEARCH_TIMEOUT_MILLIS failing if the request takes longer
         withTimeoutOrNull(SEARCH_TIMEOUT_MILLIS) {

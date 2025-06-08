@@ -25,56 +25,53 @@ class DefaultUserProcessorTest {
         )
 
     @Test
-    fun `given valid user when process URL then interactions are as expected`() =
-        runTest {
-            val user = UserModel(id = "0", username = USERNAME)
-            everySuspend { fetchUser.invoke(any()) } returns user
-            val url = "https://$HOST/users/$USERNAME"
+    fun `given valid user when process URL then interactions are as expected`() = runTest {
+        val user = UserModel(id = "0", username = USERNAME)
+        everySuspend { fetchUser.invoke(any()) } returns user
+        val url = "https://$HOST/users/$USERNAME"
 
-            val res = sut.process(url)
+        val res = sut.process(url)
 
-            assertTrue(res)
-            verifySuspend {
-                fetchUser.invoke(url)
-            }
-            verify {
-                detailOpener.openUserDetail(user)
-            }
+        assertTrue(res)
+        verifySuspend {
+            fetchUser.invoke(url)
         }
+        verify {
+            detailOpener.openUserDetail(user)
+        }
+    }
 
     @Test
-    fun `given user not found when process URL then interactions are as expected`() =
-        runTest {
-            everySuspend { fetchUser.invoke(any()) } returns null
-            val url = "https://$HOST/users/$USERNAME"
+    fun `given user not found when process URL then interactions are as expected`() = runTest {
+        everySuspend { fetchUser.invoke(any()) } returns null
+        val url = "https://$HOST/users/$USERNAME"
 
-            val res = sut.process(url)
+        val res = sut.process(url)
 
-            assertFalse(res)
-            verifySuspend {
-                fetchUser.invoke(url)
-            }
-            verify(mode = VerifyMode.not) {
-                detailOpener.openUserDetail(any())
-            }
+        assertFalse(res)
+        verifySuspend {
+            fetchUser.invoke(url)
         }
+        verify(mode = VerifyMode.not) {
+            detailOpener.openUserDetail(any())
+        }
+    }
 
     @Test
-    fun `given invalid URL when process URL then interactions are as expected`() =
-        runTest {
-            everySuspend { fetchUser.invoke(any()) } returns null
-            val url = "https://$HOST/u/$USERNAME"
+    fun `given invalid URL when process URL then interactions are as expected`() = runTest {
+        everySuspend { fetchUser.invoke(any()) } returns null
+        val url = "https://$HOST/u/$USERNAME"
 
-            val res = sut.process(url)
+        val res = sut.process(url)
 
-            assertFalse(res)
-            verifySuspend {
-                fetchUser.invoke(any())
-            }
-            verify(mode = VerifyMode.not) {
-                detailOpener.openUserDetail(any())
-            }
+        assertFalse(res)
+        verifySuspend {
+            fetchUser.invoke(any())
         }
+        verify(mode = VerifyMode.not) {
+            detailOpener.openUserDetail(any())
+        }
+    }
 
     companion object {
         private const val HOST = "example.com"

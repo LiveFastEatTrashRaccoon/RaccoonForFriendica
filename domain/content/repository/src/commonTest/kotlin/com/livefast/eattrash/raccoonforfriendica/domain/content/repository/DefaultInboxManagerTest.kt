@@ -28,80 +28,76 @@ class DefaultInboxManagerTest {
         )
 
     @Test
-    fun `given no results when refreshUnreadCount then count is as expected`() =
-        runTest {
-            val list = emptyList<NotificationModel>()
-            everySuspend { notificationRepository.getAll(any(), any(), any()) } returns list
+    fun `given no results when refreshUnreadCount then count is as expected`() = runTest {
+        val list = emptyList<NotificationModel>()
+        everySuspend { notificationRepository.getAll(any(), any(), any()) } returns list
 
-            sut.refreshUnreadCount()
-            val res = sut.unreadCount.value
+        sut.refreshUnreadCount()
+        val res = sut.unreadCount.value
 
-            assertEquals(0, res)
-            verifySuspend {
-                notificationRepository.getAll(
-                    refresh = true,
-                    pageCursor = null,
-                    types = NotificationType.ALL,
-                )
-            }
+        assertEquals(0, res)
+        verifySuspend {
+            notificationRepository.getAll(
+                refresh = true,
+                pageCursor = null,
+                types = NotificationType.ALL,
+            )
         }
+    }
 
     @Test
-    fun `given results when refreshUnreadCount then count is as expected`() =
-        runTest {
-            val list =
-                listOf(
-                    NotificationModel(id = "1", entry = null),
-                    NotificationModel(id = "2", entry = null),
-                )
-            everySuspend { notificationRepository.getAll(any(), any(), any()) } returns list
+    fun `given results when refreshUnreadCount then count is as expected`() = runTest {
+        val list =
+            listOf(
+                NotificationModel(id = "1", entry = null),
+                NotificationModel(id = "2", entry = null),
+            )
+        everySuspend { notificationRepository.getAll(any(), any(), any()) } returns list
 
-            sut.refreshUnreadCount()
-            val res = sut.unreadCount.value
+        sut.refreshUnreadCount()
+        val res = sut.unreadCount.value
 
-            assertEquals(2, res)
-            verifySuspend {
-                notificationRepository.getAll(
-                    refresh = true,
-                    pageCursor = null,
-                    types = NotificationType.ALL,
-                )
-            }
+        assertEquals(2, res)
+        verifySuspend {
+            notificationRepository.getAll(
+                refresh = true,
+                pageCursor = null,
+                types = NotificationType.ALL,
+            )
         }
+    }
 
     @Test
-    fun `when refreshUnreadCount then count is as expected`() =
-        runTest {
-            val list =
-                listOf(
-                    NotificationModel(id = "1", entry = null),
-                    NotificationModel(id = "2", entry = null),
-                )
-            everySuspend { notificationRepository.getAll(any(), any(), any()) } returns list
-            sut.refreshUnreadCount()
-            val resBefore = sut.unreadCount.value
-            assertEquals(2, resBefore)
+    fun `when refreshUnreadCount then count is as expected`() = runTest {
+        val list =
+            listOf(
+                NotificationModel(id = "1", entry = null),
+                NotificationModel(id = "2", entry = null),
+            )
+        everySuspend { notificationRepository.getAll(any(), any(), any()) } returns list
+        sut.refreshUnreadCount()
+        val resBefore = sut.unreadCount.value
+        assertEquals(2, resBefore)
 
-            sut.clearUnreadCount()
-            val res = sut.unreadCount.value
-            assertEquals(0, res)
-        }
+        sut.clearUnreadCount()
+        val res = sut.unreadCount.value
+        assertEquals(0, res)
+    }
 
     @Test
-    fun `when decrementUnreadCount then count is as expected`() =
-        runTest {
-            val list =
-                listOf(
-                    NotificationModel(id = "1", entry = null),
-                    NotificationModel(id = "2", entry = null),
-                )
-            everySuspend { notificationRepository.getAll(any(), any(), any()) } returns list
-            sut.refreshUnreadCount()
-            val resBefore = sut.unreadCount.value
-            assertEquals(2, resBefore)
+    fun `when decrementUnreadCount then count is as expected`() = runTest {
+        val list =
+            listOf(
+                NotificationModel(id = "1", entry = null),
+                NotificationModel(id = "2", entry = null),
+            )
+        everySuspend { notificationRepository.getAll(any(), any(), any()) } returns list
+        sut.refreshUnreadCount()
+        val resBefore = sut.unreadCount.value
+        assertEquals(2, resBefore)
 
-            sut.decrementUnreadCount()
-            val res = sut.unreadCount.value
-            assertEquals(1, res)
-        }
+        sut.decrementUnreadCount()
+        val res = sut.unreadCount.value
+        assertEquals(1, res)
+    }
 }

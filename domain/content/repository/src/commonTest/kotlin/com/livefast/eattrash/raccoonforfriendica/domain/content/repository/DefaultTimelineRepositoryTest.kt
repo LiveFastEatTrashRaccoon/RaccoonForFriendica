@@ -38,508 +38,493 @@ class DefaultTimelineRepositoryTest {
 
     // region Public
     @Test
-    fun `given error when getPublic then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getPublic(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                    local = any(),
-                )
-            } throws IOException("Network error")
+    fun `given error when getPublic then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getPublic(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                local = any(),
+            )
+        } throws IOException("Network error")
 
-            val res =
-                sut.getPublic(
-                    pageCursor = null,
-                    refresh = true,
-                )
+        val res =
+            sut.getPublic(
+                pageCursor = null,
+                refresh = true,
+            )
 
-            assertNull(res)
-            verifySuspend {
-                timelineService.getPublic(
-                    maxId = null,
-                    minId = null,
-                    limit = 20,
-                    local = false,
-                )
-            }
+        assertNull(res)
+        verifySuspend {
+            timelineService.getPublic(
+                maxId = null,
+                minId = null,
+                limit = 20,
+                local = false,
+            )
         }
+    }
 
     @Test
-    fun `given no results when getPublic then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getPublic(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                    local = any(),
-                )
-            } returns emptyList()
+    fun `given no results when getPublic then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getPublic(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                local = any(),
+            )
+        } returns emptyList()
 
-            val res =
-                sut.getPublic(
-                    pageCursor = null,
-                    refresh = true,
-                )
+        val res =
+            sut.getPublic(
+                pageCursor = null,
+                refresh = true,
+            )
 
-            assertNotNull(res)
-            assertEquals(emptyList(), res)
-            verifySuspend {
-                timelineService.getPublic(
-                    maxId = null,
-                    minId = null,
-                    limit = 20,
-                    local = false,
-                )
-            }
-            verify(VerifyMode.not) {
-                otherProvider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(emptyList(), res)
+        verifySuspend {
+            timelineService.getPublic(
+                maxId = null,
+                minId = null,
+                limit = 20,
+                local = false,
+            )
         }
+        verify(VerifyMode.not) {
+            otherProvider.timeline
+        }
+    }
 
     @Test
-    fun `given results when getPublic then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getPublic(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                    local = any(),
-                )
-            } returns (19 downTo 0).map { Status(id = "$it") }
+    fun `given results when getPublic then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getPublic(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                local = any(),
+            )
+        } returns (19 downTo 0).map { Status(id = "$it") }
 
-            val res =
-                sut.getPublic(
-                    pageCursor = null,
-                    refresh = true,
-                )
+        val res =
+            sut.getPublic(
+                pageCursor = null,
+                refresh = true,
+            )
 
-            assertNotNull(res)
-            assertEquals(20, res.size)
-            assertEquals("0", res.last().id)
-            verifySuspend {
-                timelineService.getPublic(
-                    maxId = null,
-                    minId = null,
-                    limit = 20,
-                    local = false,
-                )
-            }
-            verify(VerifyMode.not) {
-                otherProvider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(20, res.size)
+        assertEquals("0", res.last().id)
+        verifySuspend {
+            timelineService.getPublic(
+                maxId = null,
+                minId = null,
+                limit = 20,
+                local = false,
+            )
         }
+        verify(VerifyMode.not) {
+            otherProvider.timeline
+        }
+    }
 
     @Test
-    fun `given next page when getPublic then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getPublic(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                    local = any(),
-                )
-            } returns (20 downTo 1).map { Status(id = "$it") }
+    fun `given next page when getPublic then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getPublic(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                local = any(),
+            )
+        } returns (20 downTo 1).map { Status(id = "$it") }
 
-            val res =
-                sut.getPublic(
-                    pageCursor = "0",
-                    refresh = true,
-                )
+        val res =
+            sut.getPublic(
+                pageCursor = "0",
+                refresh = true,
+            )
 
-            assertNotNull(res)
-            assertEquals(20, res.size)
-            assertEquals("1", res.last().id)
-            verifySuspend {
-                timelineService.getPublic(
-                    maxId = "0",
-                    minId = null,
-                    limit = 20,
-                    local = false,
-                )
-            }
-            verify(VerifyMode.not) {
-                otherProvider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(20, res.size)
+        assertEquals("1", res.last().id)
+        verifySuspend {
+            timelineService.getPublic(
+                maxId = "0",
+                minId = null,
+                limit = 20,
+                local = false,
+            )
         }
+        verify(VerifyMode.not) {
+            otherProvider.timeline
+        }
+    }
     // endregion
 
     // region Home
     @Test
-    fun `given error when getHome then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getHome(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                )
-            } throws IOException("Network error")
+    fun `given error when getHome then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getHome(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+            )
+        } throws IOException("Network error")
 
-            val res =
-                sut.getHome(
-                    pageCursor = null,
-                    refresh = true,
-                )
+        val res =
+            sut.getHome(
+                pageCursor = null,
+                refresh = true,
+            )
 
-            assertNull(res)
-            verifySuspend {
-                timelineService.getHome(
-                    maxId = null,
-                    minId = null,
-                    limit = 20,
-                )
-            }
+        assertNull(res)
+        verifySuspend {
+            timelineService.getHome(
+                maxId = null,
+                minId = null,
+                limit = 20,
+            )
         }
+    }
 
     @Test
-    fun `given no results when getHome then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getHome(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                )
-            } returns emptyList()
+    fun `given no results when getHome then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getHome(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+            )
+        } returns emptyList()
 
-            val res =
-                sut.getHome(
-                    pageCursor = null,
-                    refresh = true,
-                )
+        val res =
+            sut.getHome(
+                pageCursor = null,
+                refresh = true,
+            )
 
-            assertNotNull(res)
-            assertEquals(emptyList(), res)
-            verifySuspend {
-                timelineService.getHome(
-                    maxId = null,
-                    minId = null,
-                    limit = 20,
-                )
-            }
-            verify(VerifyMode.not) {
-                otherProvider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(emptyList(), res)
+        verifySuspend {
+            timelineService.getHome(
+                maxId = null,
+                minId = null,
+                limit = 20,
+            )
         }
+        verify(VerifyMode.not) {
+            otherProvider.timeline
+        }
+    }
 
     @Test
-    fun `given results when getHome then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getHome(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                )
-            } returns (19 downTo 0).map { Status(id = "$it") }
+    fun `given results when getHome then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getHome(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+            )
+        } returns (19 downTo 0).map { Status(id = "$it") }
 
-            val res =
-                sut.getHome(
-                    pageCursor = null,
-                    refresh = true,
-                )
+        val res =
+            sut.getHome(
+                pageCursor = null,
+                refresh = true,
+            )
 
-            assertNotNull(res)
-            assertEquals(20, res.size)
-            assertEquals("0", res.last().id)
-            verifySuspend {
-                timelineService.getHome(
-                    maxId = null,
-                    minId = null,
-                    limit = 20,
-                )
-            }
-            verify(VerifyMode.not) {
-                otherProvider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(20, res.size)
+        assertEquals("0", res.last().id)
+        verifySuspend {
+            timelineService.getHome(
+                maxId = null,
+                minId = null,
+                limit = 20,
+            )
         }
+        verify(VerifyMode.not) {
+            otherProvider.timeline
+        }
+    }
 
     @Test
-    fun `given next page when getHome then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getHome(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                )
-            } returns (20 downTo 1).map { Status(id = "$it") }
+    fun `given next page when getHome then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getHome(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+            )
+        } returns (20 downTo 1).map { Status(id = "$it") }
 
-            val res =
-                sut.getHome(
-                    pageCursor = "0",
-                    refresh = true,
-                )
+        val res =
+            sut.getHome(
+                pageCursor = "0",
+                refresh = true,
+            )
 
-            assertNotNull(res)
-            assertEquals(20, res.size)
-            assertEquals("1", res.last().id)
-            verifySuspend {
-                timelineService.getHome(
-                    maxId = "0",
-                    minId = null,
-                    limit = 20,
-                )
-            }
-            verify(VerifyMode.not) {
-                otherProvider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(20, res.size)
+        assertEquals("1", res.last().id)
+        verifySuspend {
+            timelineService.getHome(
+                maxId = "0",
+                minId = null,
+                limit = 20,
+            )
         }
+        verify(VerifyMode.not) {
+            otherProvider.timeline
+        }
+    }
     // endregion
 
     // region Local
     @Test
-    fun `given error when getLocal then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getPublic(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                    local = any(),
-                )
-            } throws IOException("Network error")
+    fun `given error when getLocal then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getPublic(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                local = any(),
+            )
+        } throws IOException("Network error")
 
-            val res =
-                sut.getLocal(
-                    pageCursor = null,
-                    refresh = true,
-                )
+        val res =
+            sut.getLocal(
+                pageCursor = null,
+                refresh = true,
+            )
 
-            assertNull(res)
-            verifySuspend {
-                timelineService.getPublic(
-                    maxId = null,
-                    minId = null,
-                    limit = 20,
-                    local = true,
-                )
-            }
+        assertNull(res)
+        verifySuspend {
+            timelineService.getPublic(
+                maxId = null,
+                minId = null,
+                limit = 20,
+                local = true,
+            )
         }
+    }
 
     @Test
-    fun `given no results when getLocal then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getPublic(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                    local = any(),
-                )
-            } returns emptyList()
+    fun `given no results when getLocal then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getPublic(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                local = any(),
+            )
+        } returns emptyList()
 
-            val res =
-                sut.getLocal(
-                    pageCursor = null,
-                    refresh = true,
-                )
+        val res =
+            sut.getLocal(
+                pageCursor = null,
+                refresh = true,
+            )
 
-            assertNotNull(res)
-            assertEquals(emptyList(), res)
-            verifySuspend {
-                timelineService.getPublic(
-                    maxId = null,
-                    minId = null,
-                    limit = 20,
-                    local = true,
-                )
-            }
-            verify(VerifyMode.not) {
-                otherProvider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(emptyList(), res)
+        verifySuspend {
+            timelineService.getPublic(
+                maxId = null,
+                minId = null,
+                limit = 20,
+                local = true,
+            )
         }
+        verify(VerifyMode.not) {
+            otherProvider.timeline
+        }
+    }
 
     @Test
-    fun `given results when getLocal then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getPublic(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                    local = any(),
-                )
-            } returns (19 downTo 0).map { Status(id = "$it") }
+    fun `given results when getLocal then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getPublic(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                local = any(),
+            )
+        } returns (19 downTo 0).map { Status(id = "$it") }
 
-            val res =
-                sut.getLocal(
-                    pageCursor = null,
-                    refresh = true,
-                )
+        val res =
+            sut.getLocal(
+                pageCursor = null,
+                refresh = true,
+            )
 
-            assertNotNull(res)
-            assertEquals(20, res.size)
-            assertEquals("0", res.last().id)
-            verifySuspend {
-                timelineService.getPublic(
-                    maxId = null,
-                    minId = null,
-                    limit = 20,
-                    local = true,
-                )
-            }
-            verify(VerifyMode.not) {
-                otherProvider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(20, res.size)
+        assertEquals("0", res.last().id)
+        verifySuspend {
+            timelineService.getPublic(
+                maxId = null,
+                minId = null,
+                limit = 20,
+                local = true,
+            )
         }
+        verify(VerifyMode.not) {
+            otherProvider.timeline
+        }
+    }
 
     @Test
-    fun `given next page when getLocal then result and interactions are as expected`() =
-        runTest {
-            everySuspend {
-                timelineService.getPublic(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                    local = any(),
-                )
-            } returns (20 downTo 1).map { Status(id = "$it") }
+    fun `given next page when getLocal then result and interactions are as expected`() = runTest {
+        everySuspend {
+            timelineService.getPublic(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                local = any(),
+            )
+        } returns (20 downTo 1).map { Status(id = "$it") }
 
-            val res =
-                sut.getLocal(
-                    pageCursor = "0",
-                    refresh = true,
-                )
+        val res =
+            sut.getLocal(
+                pageCursor = "0",
+                refresh = true,
+            )
 
-            assertNotNull(res)
-            assertEquals(20, res.size)
-            assertEquals("1", res.last().id)
-            verifySuspend {
-                timelineService.getPublic(
-                    maxId = "0",
-                    minId = null,
-                    limit = 20,
-                    local = true,
-                )
-            }
-            verify(VerifyMode.not) {
-                otherProvider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(20, res.size)
+        assertEquals("1", res.last().id)
+        verifySuspend {
+            timelineService.getPublic(
+                maxId = "0",
+                minId = null,
+                limit = 20,
+                local = true,
+            )
         }
+        verify(VerifyMode.not) {
+            otherProvider.timeline
+        }
+    }
 
     @Test
-    fun `given no results when getLocal on foreign instance then result and interactions are as expected`() =
-        runTest {
-            val otherInstance = "node"
-            everySuspend {
-                timelineService.getPublic(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                    local = any(),
-                )
-            } returns emptyList()
+    fun `given no results when getLocal on foreign instance then result and interactions are as expected`() = runTest {
+        val otherInstance = "node"
+        everySuspend {
+            timelineService.getPublic(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                local = any(),
+            )
+        } returns emptyList()
 
-            val res =
-                sut.getLocal(
-                    pageCursor = null,
-                    refresh = true,
-                    otherInstance = otherInstance,
-                )
+        val res =
+            sut.getLocal(
+                pageCursor = null,
+                refresh = true,
+                otherInstance = otherInstance,
+            )
 
-            assertNotNull(res)
-            assertEquals(emptyList(), res)
-            verifySuspend {
-                timelineService.getPublic(
-                    maxId = null,
-                    minId = null,
-                    limit = 20,
-                    local = true,
-                )
-            }
-            verify {
-                otherProvider.changeNode(otherInstance)
-                otherProvider.timeline
-            }
-            verify(VerifyMode.not) {
-                provider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(emptyList(), res)
+        verifySuspend {
+            timelineService.getPublic(
+                maxId = null,
+                minId = null,
+                limit = 20,
+                local = true,
+            )
         }
+        verify {
+            otherProvider.changeNode(otherInstance)
+            otherProvider.timeline
+        }
+        verify(VerifyMode.not) {
+            provider.timeline
+        }
+    }
 
     @Test
-    fun `given results when getLocal on foreign instance then result and interactions are as expected`() =
-        runTest {
-            val otherInstance = "node"
-            everySuspend {
-                timelineService.getPublic(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                    local = any(),
-                )
-            } returns (19 downTo 0).map { Status(id = "$it") }
+    fun `given results when getLocal on foreign instance then result and interactions are as expected`() = runTest {
+        val otherInstance = "node"
+        everySuspend {
+            timelineService.getPublic(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                local = any(),
+            )
+        } returns (19 downTo 0).map { Status(id = "$it") }
 
-            val res =
-                sut.getLocal(
-                    pageCursor = null,
-                    refresh = true,
-                    otherInstance = otherInstance,
-                )
+        val res =
+            sut.getLocal(
+                pageCursor = null,
+                refresh = true,
+                otherInstance = otherInstance,
+            )
 
-            assertNotNull(res)
-            assertEquals(20, res.size)
-            assertEquals("0", res.last().id)
-            verifySuspend {
-                timelineService.getPublic(
-                    maxId = null,
-                    minId = null,
-                    limit = 20,
-                    local = true,
-                )
-            }
-            verify {
-                otherProvider.changeNode(otherInstance)
-                otherProvider.timeline
-            }
-            verify(VerifyMode.not) {
-                provider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(20, res.size)
+        assertEquals("0", res.last().id)
+        verifySuspend {
+            timelineService.getPublic(
+                maxId = null,
+                minId = null,
+                limit = 20,
+                local = true,
+            )
         }
+        verify {
+            otherProvider.changeNode(otherInstance)
+            otherProvider.timeline
+        }
+        verify(VerifyMode.not) {
+            provider.timeline
+        }
+    }
 
     @Test
-    fun `given next page when getLocal on foreign instance then result and interactions are as expected`() =
-        runTest {
-            val otherInstance = "node"
-            everySuspend {
-                timelineService.getPublic(
-                    maxId = any(),
-                    minId = any(),
-                    limit = any(),
-                    local = any(),
-                )
-            } returns (20 downTo 1).map { Status(id = "$it") }
+    fun `given next page when getLocal on foreign instance then result and interactions are as expected`() = runTest {
+        val otherInstance = "node"
+        everySuspend {
+            timelineService.getPublic(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                local = any(),
+            )
+        } returns (20 downTo 1).map { Status(id = "$it") }
 
-            val res =
-                sut.getLocal(
-                    pageCursor = "0",
-                    refresh = true,
-                    otherInstance = otherInstance,
-                )
+        val res =
+            sut.getLocal(
+                pageCursor = "0",
+                refresh = true,
+                otherInstance = otherInstance,
+            )
 
-            assertNotNull(res)
-            assertEquals(20, res.size)
-            assertEquals("1", res.last().id)
-            verifySuspend {
-                timelineService.getPublic(
-                    maxId = "0",
-                    minId = null,
-                    limit = 20,
-                    local = true,
-                )
-            }
-            verify {
-                otherProvider.changeNode(otherInstance)
-                otherProvider.timeline
-            }
-            verify(VerifyMode.not) {
-                provider.timeline
-            }
+        assertNotNull(res)
+        assertEquals(20, res.size)
+        assertEquals("1", res.last().id)
+        verifySuspend {
+            timelineService.getPublic(
+                maxId = "0",
+                minId = null,
+                limit = 20,
+                local = true,
+            )
         }
+        verify {
+            otherProvider.changeNode(otherInstance)
+            otherProvider.timeline
+        }
+        verify(VerifyMode.not) {
+            provider.timeline
+        }
+    }
     // endregion
 }

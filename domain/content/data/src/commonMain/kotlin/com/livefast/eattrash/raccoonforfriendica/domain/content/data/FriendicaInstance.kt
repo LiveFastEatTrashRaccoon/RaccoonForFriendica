@@ -1,10 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
-data class FriendicaInstance(
-    val lang: String = "",
-    val mau: Int = 0,
-    val value: String,
-)
+data class FriendicaInstance(val lang: String = "", val mau: Int = 0, val value: String)
 
 /**
  * List of predefined Friendica instances in the drop-down menu.

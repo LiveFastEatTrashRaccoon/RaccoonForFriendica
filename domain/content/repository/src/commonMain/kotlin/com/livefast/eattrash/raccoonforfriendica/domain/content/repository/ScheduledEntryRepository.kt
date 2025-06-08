@@ -7,10 +7,7 @@ interface ScheduledEntryRepository {
 
     suspend fun getById(id: String): TimelineEntryModel?
 
-    suspend fun update(
-        id: String,
-        date: String,
-    ): TimelineEntryModel?
+    suspend fun update(id: String, date: String): TimelineEntryModel?
 
     suspend fun delete(id: String): Boolean
 }

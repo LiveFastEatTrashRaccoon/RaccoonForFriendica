@@ -6,9 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.Uri
 
 internal interface HashtagProcessor : UrlProcessor
 
-internal class DefaultHashtagProcessor(
-    private val detailOpener: DetailOpener,
-) : HashtagProcessor {
+internal class DefaultHashtagProcessor(private val detailOpener: DetailOpener) : HashtagProcessor {
     override suspend fun process(uri: String): Boolean {
         val tag =
             listOfNotNull(

@@ -5,9 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
-internal class DefaultEmojiHelper(
-    private val repository: EmojiRepository,
-) : EmojiHelper {
+internal class DefaultEmojiHelper(private val repository: EmojiRepository) : EmojiHelper {
     override suspend fun UserModel.withEmojisIfMissing(): UserModel {
         check(emojis.isEmpty()) { return this }
         val texts =
@@ -38,9 +36,9 @@ internal class DefaultEmojiHelper(
         return copy(
             creator = creator?.withEmojisIfMissing(),
             inReplyTo =
-                inReplyTo?.copy(
-                    creator = inReplyTo?.creator?.withEmojisIfMissing(),
-                ),
+            inReplyTo?.copy(
+                creator = inReplyTo?.creator?.withEmojisIfMissing(),
+            ),
             reblog = reblog?.copy(reblog = null)?.withEmojisIfMissing(),
             emojis = emojis + pollOptionsEmojis,
         )
@@ -51,8 +49,7 @@ internal class DefaultEmojiHelper(
     }
 }
 
-private fun List<EmojiModel>.filterContainedIn(vararg texts: String): List<EmojiModel> =
-    filter { emoji ->
-        val occurrence = ":${emoji.code}:"
-        texts.any { it.contains(occurrence) }
-    }
+private fun List<EmojiModel>.filterContainedIn(vararg texts: String): List<EmojiModel> = filter { emoji ->
+    val occurrence = ":${emoji.code}:"
+    texts.any { it.contains(occurrence) }
+}

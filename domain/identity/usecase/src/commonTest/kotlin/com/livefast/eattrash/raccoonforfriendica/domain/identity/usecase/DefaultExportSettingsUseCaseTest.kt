@@ -19,33 +19,31 @@ class DefaultExportSettingsUseCaseTest {
     private val sut = DefaultExportSettingsUseCase(settingsRepository)
 
     @Test
-    fun `when invoked then interactions are as expected`() =
-        runTest {
-            val settings =
-                SettingsModel(
-                    theme = UiTheme.Dark,
-                )
-            every { settingsRepository.current } returns MutableStateFlow(settings)
-            val expected = jsonSerializationStrategy.encodeToString(settings.toData())
+    fun `when invoked then interactions are as expected`() = runTest {
+        val settings =
+            SettingsModel(
+                theme = UiTheme.Dark,
+            )
+        every { settingsRepository.current } returns MutableStateFlow(settings)
+        val expected = jsonSerializationStrategy.encodeToString(settings.toData())
 
-            val res = sut()
-            assertEquals(expected, res)
+        val res = sut()
+        assertEquals(expected, res)
 
-            verify {
-                settingsRepository.current
-            }
+        verify {
+            settingsRepository.current
         }
+    }
 
     @Test
-    fun `given no settings when invoked then interactions are as expected`() =
-        runTest {
-            every { settingsRepository.current } returns MutableStateFlow(null)
+    fun `given no settings when invoked then interactions are as expected`() = runTest {
+        every { settingsRepository.current } returns MutableStateFlow(null)
 
-            val res = sut()
-            assertEquals("", res)
+        val res = sut()
+        assertEquals("", res)
 
-            verify {
-                settingsRepository.current
-            }
+        verify {
+            settingsRepository.current
         }
+    }
 }

@@ -25,88 +25,85 @@ class DefaultFetchEntryUseCaseTest {
         )
 
     @Test
-    fun `given entry found when invoke then result is as expected`() =
-        runTest {
-            val entry = TimelineEntryModel(id = "0", content = "", url = URL)
-            everySuspend {
-                searchRepository.search(
-                    query = any(),
-                    type = any(),
-                    pageCursor = any(),
-                    resolve = any(),
-                )
-            } returns
-                listOf(ExploreItemModel.Entry(entry))
+    fun `given entry found when invoke then result is as expected`() = runTest {
+        val entry = TimelineEntryModel(id = "0", content = "", url = URL)
+        everySuspend {
+            searchRepository.search(
+                query = any(),
+                type = any(),
+                pageCursor = any(),
+                resolve = any(),
+            )
+        } returns
+            listOf(ExploreItemModel.Entry(entry))
 
-            val res = sut.invoke(URL)
+        val res = sut.invoke(URL)
 
-            assertNotNull(res)
-            verifySuspend {
-                searchRepository.search(
-                    query = URL,
-                    type = SearchResultType.Entries,
-                    pageCursor = null,
-                    resolve = true,
-                )
-            }
+        assertNotNull(res)
+        verifySuspend {
+            searchRepository.search(
+                query = URL,
+                type = SearchResultType.Entries,
+                pageCursor = null,
+                resolve = true,
+            )
         }
+    }
 
     @Test
-    fun `given entry not found when invoke then result is as expected`() =
-        runTest {
-            everySuspend {
-                searchRepository.search(
-                    query = any(),
-                    type = any(),
-                    pageCursor = any(),
-                    resolve = any(),
-                )
-            } returns emptyList()
+    fun `given entry not found when invoke then result is as expected`() = runTest {
+        everySuspend {
+            searchRepository.search(
+                query = any(),
+                type = any(),
+                pageCursor = any(),
+                resolve = any(),
+            )
+        } returns emptyList()
 
-            val res = sut.invoke(URL)
+        val res = sut.invoke(URL)
 
-            assertNull(res)
-            verifySuspend {
-                searchRepository.search(
-                    query = URL,
-                    type = SearchResultType.Entries,
-                    pageCursor = null,
-                    resolve = true,
-                )
-            }
+        assertNull(res)
+        verifySuspend {
+            searchRepository.search(
+                query = URL,
+                type = SearchResultType.Entries,
+                pageCursor = null,
+                resolve = true,
+            )
         }
+    }
 
     @Test
-    fun `given request timeout when invoke then result is as expected`() =
-        runTest {
-            everySuspend {
-                searchRepository.search(
-                    query = any(),
-                    type = any(),
-                    pageCursor = any(),
-                    resolve = any(),
-                )
-            } calls {
-                delay(10.seconds)
-                listOf(
-                    ExploreItemModel.Entry(
-                        TimelineEntryModel(id = "0", content = "", url = URL),
-                    ),
-                )
-            }
-
-            val res = sut.invoke(URL)
-
-            assertNull(res)
-            verifySuspend {
-                searchRepository.search(
-                    query = URL,
-                    type = SearchResultType.Entries,
-                    pageCursor = null,
-                    resolve = true,
-                )
-            }
+    fun `given request timeout when invoke then result is as expected`() = runTest {
+        everySuspend {
+            searchRepository.search(
+                query = any(),
+                type = any(),
+                pageCursor = any(),
+                resolve = any(),
+            )
+        } calls {
+            delay(10.seconds)
+            listOf(
+                ExploreItemModel.Entry(
+                    TimelineEntryModel(id = "0", content = "", url = URL),
+                ),
+            )
         }
+
+        val res = sut.invoke(URL)
+
+        assertNull(res)
+        verifySuspend {
+            searchRepository.search(
+                query = URL,
+                type = SearchResultType.Entries,
+                pageCursor = null,
+                resolve = true,
+            )
+        }
+    }
 
     companion object {
         private const val URL = "https://example.com/display/objectId"

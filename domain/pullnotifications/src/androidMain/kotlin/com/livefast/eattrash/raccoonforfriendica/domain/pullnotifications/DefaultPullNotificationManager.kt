@@ -13,9 +13,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
 
-internal class DefaultPullNotificationManager(
-    private val context: Context,
-) : PullNotificationManager {
+internal class DefaultPullNotificationManager(private val context: Context) : PullNotificationManager {
     override val isSupported = true
     override val isBackgroundRestricted: Boolean
         get() =

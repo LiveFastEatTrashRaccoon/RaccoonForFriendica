@@ -23,50 +23,48 @@ class DefaultReplyHelperTest {
         )
 
     @Test
-    fun `given no parent when withInReplyToIfMissing then result is as expected`() =
-        runTest {
-            val entry = TimelineEntryModel(id = "1", content = "content")
+    fun `given no parent when withInReplyToIfMissing then result is as expected`() = runTest {
+        val entry = TimelineEntryModel(id = "1", content = "content")
 
-            val res =
-                with(sut) {
-                    entry.withInReplyToIfMissing()
-                }
-
-            assertEquals(entry, res)
-            verifySuspend(VerifyMode.not) {
-                entryRepository.getById(any())
-                entryCache.get(any())
-                entryCache.put(any(), any())
+        val res =
+            with(sut) {
+                entry.withInReplyToIfMissing()
             }
+
+        assertEquals(entry, res)
+        verifySuspend(VerifyMode.not) {
+            entryRepository.getById(any())
+            entryCache.get(any())
+            entryCache.put(any(), any())
         }
+    }
 
     @Test
-    fun `given parent with content when withInReplyToIfMissing then result is as expected`() =
-        runTest {
-            val parent =
-                TimelineEntryModel(
-                    id = "0",
-                    content = "parent content",
-                )
-            val entry =
-                TimelineEntryModel(
-                    id = "1",
-                    content = "content",
-                    inReplyTo = parent,
-                )
+    fun `given parent with content when withInReplyToIfMissing then result is as expected`() = runTest {
+        val parent =
+            TimelineEntryModel(
+                id = "0",
+                content = "parent content",
+            )
+        val entry =
+            TimelineEntryModel(
+                id = "1",
+                content = "content",
+                inReplyTo = parent,
+            )
 
-            val res =
-                with(sut) {
-                    entry.withInReplyToIfMissing()
-                }
-
-            assertEquals(entry, res)
-            verifySuspend(VerifyMode.not) {
-                entryRepository.getById(any())
-                entryCache.get(any())
-                entryCache.put(any(), any())
+        val res =
+            with(sut) {
+                entry.withInReplyToIfMissing()
             }
+
+        assertEquals(entry, res)
+        verifySuspend(VerifyMode.not) {
+            entryRepository.getById(any())
+            entryCache.get(any())
+            entryCache.put(any(), any())
         }
+    }
 
     @Test
     fun `given parent with empty content and cache hit when withInReplyToIfMissing then result is as expected`() =

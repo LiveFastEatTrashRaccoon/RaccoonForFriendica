@@ -9,9 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class DefaultReportRepository(
-    private val provider: ServiceProvider,
-) : ReportRepository {
+internal class DefaultReportRepository(private val provider: ServiceProvider) : ReportRepository {
     override suspend fun create(
         userId: String,
         entryIds: List<String>?,
@@ -19,28 +17,27 @@ internal class DefaultReportRepository(
         forward: Boolean,
         category: ReportCategory,
         ruleIds: List<String>?,
-    ): Boolean =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val data =
-                    FormDataContent(
-                        Parameters.build {
-                            append("account_id", userId)
-                            if (entryIds != null) {
-                                append("status_ids", entryIds.joinToString(","))
-                            }
-                            append("forward", forward.toString())
-                            append("category", category.toDto())
-                            if (comment != null) {
-                                append("comment", comment)
-                            }
-                            if (ruleIds != null) {
-                                append("rule_ids", ruleIds.joinToString(","))
-                            }
-                        },
-                    )
-                val res = provider.reports.create(data)
-                res.isSuccessful
-            }.getOrElse { false }
-        }
+    ): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            val data =
+                FormDataContent(
+                    Parameters.build {
+                        append("account_id", userId)
+                        if (entryIds != null) {
+                            append("status_ids", entryIds.joinToString(","))
+                        }
+                        append("forward", forward.toString())
+                        append("category", category.toDto())
+                        if (comment != null) {
+                            append("comment", comment)
+                        }
+                        if (ruleIds != null) {
+                            append("rule_ids", ruleIds.joinToString(","))
+                        }
+                    },
+                )
+            val res = provider.reports.create(data)
+            res.isSuccessful
+        }.getOrElse { false }
+    }
 }

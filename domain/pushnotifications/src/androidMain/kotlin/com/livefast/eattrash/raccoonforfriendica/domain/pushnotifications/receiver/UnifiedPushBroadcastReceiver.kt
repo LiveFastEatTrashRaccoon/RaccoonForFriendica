@@ -21,16 +21,11 @@ class UnifiedPushBroadcastReceiver : MessagingReceiver() {
     private val accountRepository by RootDI.di.instance<AccountRepository>()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    override fun onMessage(
-        context: Context,
-        message: PushMessage,
-        instance: String) {
+    override fun onMessage(context: Context, message: PushMessage, instance: String) {
         pullNotificationManager.oneshotCheck()
     }
 
-    override fun onNewEndpoint(
-        context: Context,
-        endpoint: PushEndpoint, instance: String) {
+    override fun onNewEndpoint(context: Context, endpoint: PushEndpoint, instance: String) {
         val accountId = instance.toLongOrNull() ?: return
         scope.launch {
             val account = accountRepository.getBy(accountId) ?: return@launch
@@ -44,9 +39,7 @@ class UnifiedPushBroadcastReceiver : MessagingReceiver() {
         }
     }
 
-    override fun onRegistrationFailed(
-        context: Context,
-        reason: FailedReason, instance: String) {
+    override fun onRegistrationFailed(context: Context, reason: FailedReason, instance: String) {
         val accountId = instance.toLongOrNull() ?: return
         scope.launch {
             val account = accountRepository.getBy(accountId) ?: return@launch
@@ -54,10 +47,7 @@ class UnifiedPushBroadcastReceiver : MessagingReceiver() {
         }
     }
 
-    override fun onUnregistered(
-        context: Context,
-        instance: String,
-    ) {
+    override fun onUnregistered(context: Context, instance: String) {
         val accountId = instance.toLongOrNull() ?: return
         scope.launch {
             val account = accountRepository.getBy(accountId) ?: return@launch

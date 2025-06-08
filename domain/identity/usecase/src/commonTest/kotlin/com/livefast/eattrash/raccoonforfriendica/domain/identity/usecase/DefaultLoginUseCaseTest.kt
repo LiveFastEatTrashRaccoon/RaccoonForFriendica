@@ -48,74 +48,72 @@ class DefaultLoginUseCaseTest {
         )
 
     @Test
-    fun `given invalid credentials when execute then interactions are as expected`() =
-        runTest {
-            everySuspend { credentialsRepository.validate(any(), any()) } returns null
-            val node = "example.com"
-            val credentials = ApiCredentials.OAuth2("fake-access-token", "")
+    fun `given invalid credentials when execute then interactions are as expected`() = runTest {
+        everySuspend { credentialsRepository.validate(any(), any()) } returns null
+        val node = "example.com"
+        val credentials = ApiCredentials.OAuth2("fake-access-token", "")
 
-            assertFailsWith<IllegalStateException> {
-                sut.invoke(node = node, credentials = credentials)
-            }
-
-            verifySuspend {
-                apiConfigurationRepository.changeNode(node)
-                apiConfigurationRepository.setAuth(credentials)
-                credentialsRepository.validate(node, credentials)
-            }
-            verifySuspend(mode = VerifyMode.not) {
-                accountRepository.getBy(handle = any())
-                accountRepository.create(any())
-                accountCredentialsCache.get(any())
-                settingsRepository.get(any())
-                settingsRepository.create(any())
-                supportedFeatureRepository.features
-            }
-        }
-
-    @Test
-    fun `given valid credentials and not existing account when execute then interactions are as expected`() =
-        runTest {
-            val node = "example.com"
-            val username = "fake-username"
-            val userId = "0"
-            everySuspend {
-                credentialsRepository.validate(node = any(), credentials = any())
-            } returns UserModel(id = userId, username = username)
-            val accountData =
-                AccountModel(
-                    id = 1,
-                    handle = "$username@$node",
-                    remoteId = userId,
-                )
-            val credentials = ApiCredentials.OAuth2("fake-access-token", "")
-            everySuspend { accountRepository.getBy(handle = any()) } sequentiallyReturns
-                listOf(
-                    null,
-                    accountData,
-                    AccountModel(),
-                )
-            everySuspend { settingsRepository.get(any()) } returns null
-
+        assertFailsWith<IllegalStateException> {
             sut.invoke(node = node, credentials = credentials)
-
-            verifySuspend {
-                apiConfigurationRepository.changeNode(node)
-                apiConfigurationRepository.setAuth(credentials)
-                credentialsRepository.validate(node, credentials)
-                accountRepository.getBy("$username@$node")
-                accountRepository.create(accountData.copy(id = 0))
-                accountRepository.getBy("$username@$node")
-                accountCredentialsCache.save(accountId = accountData.id, credentials)
-                settingsRepository.get(accountData.id)
-                settingsRepository.create(SettingsModel(accountId = accountData.id))
-                accountRepository.setActive(accountData, true)
-                supportedFeatureRepository.features
-            }
         }
 
+        verifySuspend {
+            apiConfigurationRepository.changeNode(node)
+            apiConfigurationRepository.setAuth(credentials)
+            credentialsRepository.validate(node, credentials)
+        }
+        verifySuspend(mode = VerifyMode.not) {
+            accountRepository.getBy(handle = any())
+            accountRepository.create(any())
+            accountCredentialsCache.get(any())
+            settingsRepository.get(any())
+            settingsRepository.create(any())
+            supportedFeatureRepository.features
+        }
+    }
+
     @Test
-    fun `given valid credentials on Friendica and not existing account when execute then interactions are as expected`() =
+    fun `given valid credentials and not existing account when execute then interactions are as expected`() = runTest {
+        val node = "example.com"
+        val username = "fake-username"
+        val userId = "0"
+        everySuspend {
+            credentialsRepository.validate(node = any(), credentials = any())
+        } returns UserModel(id = userId, username = username)
+        val accountData =
+            AccountModel(
+                id = 1,
+                handle = "$username@$node",
+                remoteId = userId,
+            )
+        val credentials = ApiCredentials.OAuth2("fake-access-token", "")
+        everySuspend { accountRepository.getBy(handle = any()) } sequentiallyReturns
+            listOf(
+                null,
+                accountData,
+                AccountModel(),
+            )
+        everySuspend { settingsRepository.get(any()) } returns null
+
+        sut.invoke(node = node, credentials = credentials)
+
+        verifySuspend {
+            apiConfigurationRepository.changeNode(node)
+            apiConfigurationRepository.setAuth(credentials)
+            credentialsRepository.validate(node, credentials)
+            accountRepository.getBy("$username@$node")
+            accountRepository.create(accountData.copy(id = 0))
+            accountRepository.getBy("$username@$node")
+            accountCredentialsCache.save(accountId = accountData.id, credentials)
+            settingsRepository.get(accountData.id)
+            settingsRepository.create(SettingsModel(accountId = accountData.id))
+            accountRepository.setActive(accountData, true)
+            supportedFeatureRepository.features
+        }
+    }
+
+    @Test
+    fun `given valid Friendica credentials and not existing account when execute then interactions are as expected`() =
         runTest {
             val node = "example.com"
             val username = "fake-username"
@@ -164,40 +162,39 @@ class DefaultLoginUseCaseTest {
         }
 
     @Test
-    fun `given valid credentials and existing account when execute then interactions are as expected`() =
-        runTest {
-            val node = "example.com"
-            val username = "fake-username"
-            val userId = "0"
-            everySuspend {
-                credentialsRepository.validate(node = any(), credentials = any())
-            } returns UserModel(id = userId, username = username)
-            val accountData =
-                AccountModel(
-                    id = 1,
-                    handle = "$username@$node",
-                    remoteId = userId,
-                )
-            val credentials = ApiCredentials.OAuth2("fake-access-token", "")
-            everySuspend { accountRepository.getBy(handle = any()) } returns accountData
-            everySuspend { settingsRepository.get(any()) } returns null
+    fun `given valid credentials and existing account when execute then interactions are as expected`() = runTest {
+        val node = "example.com"
+        val username = "fake-username"
+        val userId = "0"
+        everySuspend {
+            credentialsRepository.validate(node = any(), credentials = any())
+        } returns UserModel(id = userId, username = username)
+        val accountData =
+            AccountModel(
+                id = 1,
+                handle = "$username@$node",
+                remoteId = userId,
+            )
+        val credentials = ApiCredentials.OAuth2("fake-access-token", "")
+        everySuspend { accountRepository.getBy(handle = any()) } returns accountData
+        everySuspend { settingsRepository.get(any()) } returns null
 
-            sut.invoke(node = node, credentials = credentials)
+        sut.invoke(node = node, credentials = credentials)
 
-            verifySuspend {
-                apiConfigurationRepository.changeNode(node)
-                apiConfigurationRepository.setAuth(credentials)
-                credentialsRepository.validate(node, credentials)
-                accountRepository.getBy("$username@$node")
-                accountRepository.getBy("$username@$node")
-                accountCredentialsCache.save(accountId = accountData.id, credentials)
-                settingsRepository.get(accountData.id)
-                settingsRepository.create(SettingsModel(accountId = accountData.id))
-                accountRepository.setActive(accountData, true)
-                supportedFeatureRepository.features
-            }
-            verifySuspend(mode = VerifyMode.not) {
-                accountRepository.create(accountData)
-            }
+        verifySuspend {
+            apiConfigurationRepository.changeNode(node)
+            apiConfigurationRepository.setAuth(credentials)
+            credentialsRepository.validate(node, credentials)
+            accountRepository.getBy("$username@$node")
+            accountRepository.getBy("$username@$node")
+            accountCredentialsCache.save(accountId = accountData.id, credentials)
+            settingsRepository.get(accountData.id)
+            settingsRepository.create(SettingsModel(accountId = accountData.id))
+            accountRepository.setActive(accountData, true)
+            supportedFeatureRepository.features
         }
+        verifySuspend(mode = VerifyMode.not) {
+            accountRepository.create(accountData)
+        }
+    }
 }

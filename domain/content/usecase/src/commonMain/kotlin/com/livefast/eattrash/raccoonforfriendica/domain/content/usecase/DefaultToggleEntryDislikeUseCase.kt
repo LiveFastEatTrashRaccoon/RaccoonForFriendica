@@ -3,9 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 
-internal class DefaultToggleEntryDislikeUseCase(
-    private val entryRepository: TimelineEntryRepository,
-) : ToggleEntryDislikeUseCase {
+internal class DefaultToggleEntryDislikeUseCase(private val entryRepository: TimelineEntryRepository) :
+    ToggleEntryDislikeUseCase {
     override suspend fun invoke(entry: TimelineEntryModel): TimelineEntryModel? {
         val newValue = !entry.disliked
         val entryId = entry.id

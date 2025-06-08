@@ -5,9 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Event
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-internal class DefaultEventPaginationManager(
-    private val eventRepository: EventRepository,
-) : EventPaginationManager {
+internal class DefaultEventPaginationManager(private val eventRepository: EventRepository) : EventPaginationManager {
     private var specification: EventsPaginationSpecification? = null
     private var pageCursor: String? = null
     override var canFetchMore: Boolean = true
@@ -45,16 +43,14 @@ internal class DefaultEventPaginationManager(
         }
     }
 
-    private fun List<EventModel>.updatePaginationData(): List<EventModel> =
-        apply {
-            lastOrNull()?.also {
-                pageCursor = it.id
-            }
-            canFetchMore = isNotEmpty()
+    private fun List<EventModel>.updatePaginationData(): List<EventModel> = apply {
+        lastOrNull()?.also {
+            pageCursor = it.id
         }
+        canFetchMore = isNotEmpty()
+    }
 
-    private fun List<EventModel>.deduplicate(): List<EventModel> =
-        filter { e1 ->
-            history.none { e2 -> e1.id == e2.id }
-        }.distinctBy { it.id }
+    private fun List<EventModel>.deduplicate(): List<EventModel> = filter { e1 ->
+        history.none { e2 -> e1.id == e2.id }
+    }.distinctBy { it.id }
 }

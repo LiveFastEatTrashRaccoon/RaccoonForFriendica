@@ -99,13 +99,13 @@ internal class DefaultUserPaginationManager(
                         .search(
                             query = specification.query,
                             offset =
-                                history
-                                    .indexOfLast { it.id == pageCursor }
-                                    .takeIf { it >= 0 }
-                                    ?.let {
-                                        // offset is count, not index
-                                        it + 1
-                                    } ?: 0,
+                            history
+                                .indexOfLast { it.id == pageCursor }
+                                .takeIf { it >= 0 }
+                                ?.let {
+                                    // offset is count, not index
+                                    it + 1
+                                } ?: 0,
                         )
 
                 UserPaginationSpecification.Blocked ->
@@ -237,43 +237,38 @@ internal class DefaultUserPaginationManager(
         }
     }
 
-    private fun List<UserModel>.updatePaginationData(): List<UserModel> =
-        apply {
-            lastOrNull()?.also {
-                pageCursor = it.id
-            }
-            canFetchMore = isNotEmpty()
+    private fun List<UserModel>.updatePaginationData(): List<UserModel> = apply {
+        lastOrNull()?.also {
+            pageCursor = it.id
         }
+        canFetchMore = isNotEmpty()
+    }
 
-    private suspend fun List<UserModel>.determineRelationshipStatus(): List<UserModel> =
-        run {
-            val userIds = map { user -> user.id }
-            val relationships = userRepository.getRelationships(userIds)
-            map { user ->
-                val relationship = relationships?.firstOrNull { rel -> rel.id == user.id }
-                user.copy(
-                    relationshipStatus = relationship?.toStatus(),
-                    notificationStatus = relationship?.toNotificationStatus(),
-                )
-            }
+    private suspend fun List<UserModel>.determineRelationshipStatus(): List<UserModel> = run {
+        val userIds = map { user -> user.id }
+        val relationships = userRepository.getRelationships(userIds)
+        map { user ->
+            val relationship = relationships?.firstOrNull { rel -> rel.id == user.id }
+            user.copy(
+                relationshipStatus = relationship?.toStatus(),
+                notificationStatus = relationship?.toNotificationStatus(),
+            )
         }
+    }
 
-    private fun List<UserModel>.deduplicate(): List<UserModel> =
-        filter { e1 ->
-            history.none { e2 -> e1.id == e2.id }
-        }.distinctBy { it.id }
+    private fun List<UserModel>.deduplicate(): List<UserModel> = filter { e1 ->
+        history.none { e2 -> e1.id == e2.id }
+    }.distinctBy { it.id }
 
-    private fun List<UserModel>.filter(query: String): List<UserModel> =
-        filter {
-            query.isEmpty() ||
-                it.displayName?.contains(query, ignoreCase = true) == true ||
-                it.username?.contains(query, ignoreCase = true) == true
+    private fun List<UserModel>.filter(query: String): List<UserModel> = filter {
+        query.isEmpty() ||
+            it.displayName?.contains(query, ignoreCase = true) == true ||
+            it.username?.contains(query, ignoreCase = true) == true
+    }
+
+    private suspend fun List<UserModel>.fixupCreatorEmojis(): List<UserModel> = with(emojiHelper) {
+        map {
+            it.withEmojisIfMissing()
         }
-
-    private suspend fun List<UserModel>.fixupCreatorEmojis(): List<UserModel> =
-        with(emojiHelper) {
-            map {
-                it.withEmojisIfMissing()
-            }
-        }
+    }
 }

@@ -10,10 +10,7 @@ sealed interface TimelinePaginationSpecification {
         val refresh: Boolean = false,
     ) : TimelinePaginationSpecification
 
-    data class Hashtag(
-        val hashtag: String,
-        val includeNsfw: Boolean = true,
-    ) : TimelinePaginationSpecification
+    data class Hashtag(val hashtag: String, val includeNsfw: Boolean = true) : TimelinePaginationSpecification
 
     data class User(
         val userId: String,
@@ -26,16 +23,9 @@ sealed interface TimelinePaginationSpecification {
         val refresh: Boolean = false,
     ) : TimelinePaginationSpecification
 
-    data class Forum(
-        val userId: String,
-        val includeNsfw: Boolean = true,
-    ) : TimelinePaginationSpecification
+    data class Forum(val userId: String, val includeNsfw: Boolean = true) : TimelinePaginationSpecification
 
-    data class Favorites(
-        val includeNsfw: Boolean = true,
-    ) : TimelinePaginationSpecification
+    data class Favorites(val includeNsfw: Boolean = true) : TimelinePaginationSpecification
 
-    data class Bookmarks(
-        val includeNsfw: Boolean = true,
-    ) : TimelinePaginationSpecification
+    data class Bookmarks(val includeNsfw: Boolean = true) : TimelinePaginationSpecification
 }
