@@ -25,9 +25,7 @@ sealed interface ComposerFieldType {
 sealed interface PublicationType {
     data object Default : PublicationType
 
-    data class Scheduled(
-        val date: String,
-    ) : PublicationType
+    data class Scheduled(val date: String) : PublicationType
 
     data object Draft : PublicationType
 }
@@ -36,38 +34,21 @@ interface ComposerMviModel :
     ScreenModel,
     MviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect> {
     sealed interface Intent {
-        data class LoadEditedPost(
-            val id: String,
-        ) : Intent
+        data class LoadEditedPost(val id: String) : Intent
 
-        data class LoadScheduled(
-            val id: String,
-        ) : Intent
+        data class LoadScheduled(val id: String) : Intent
 
-        data class LoadDraft(
-            val id: String,
-        ) : Intent
+        data class LoadDraft(val id: String) : Intent
 
-        data class AddShareUrl(
-            val url: String,
-        ) : Intent
+        data class AddShareUrl(val url: String) : Intent
 
-        data class SetFieldValue(
-            val value: TextFieldValue,
-            val fieldType: ComposerFieldType,
-        ) : Intent
+        data class SetFieldValue(val value: TextFieldValue, val fieldType: ComposerFieldType) : Intent
 
-        data class SetVisibility(
-            val visibility: Visibility,
-        ) : Intent
+        data class SetVisibility(val visibility: Visibility) : Intent
 
-        data class SetSensitive(
-            val sensitive: Boolean,
-        ) : Intent
+        data class SetSensitive(val sensitive: Boolean) : Intent
 
-        data class AddAttachment(
-            val byteArray: ByteArray,
-        ) : Intent {
+        data class AddAttachment(val byteArray: ByteArray) : Intent {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (other == null || this::class != other::class) return false
@@ -80,9 +61,7 @@ interface ComposerMviModel :
             override fun hashCode(): Int = byteArray.contentHashCode()
         }
 
-        data class AddInlineImageStep1(
-            val byteArray: ByteArray,
-        ) : Intent {
+        data class AddInlineImageStep1(val byteArray: ByteArray) : Intent {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (other == null || this::class != other::class) return false
@@ -95,96 +74,56 @@ interface ComposerMviModel :
             override fun hashCode(): Int = byteArray.contentHashCode()
         }
 
-        data class AddAttachmentsFromGallery(
-            val attachments: List<AttachmentModel>,
-        ) : Intent
+        data class AddAttachmentsFromGallery(val attachments: List<AttachmentModel>) : Intent
 
-        data class EditAttachmentDescription(
-            val attachment: AttachmentModel,
-            val description: String,
-        ) : Intent
+        data class EditAttachmentDescription(val attachment: AttachmentModel, val description: String) : Intent
 
-        data class AddInlineImageStep2(
-            val attachment: AttachmentModel,
-            val description: String,
-        ) : Intent
+        data class AddInlineImageStep2(val attachment: AttachmentModel, val description: String) : Intent
 
-        data class RemoveAttachment(
-            val attachment: AttachmentModel,
-        ) : Intent
+        data class RemoveAttachment(val attachment: AttachmentModel) : Intent
 
-        data class AddLink(
-            val link: Pair<String, String>,
-        ) : Intent
+        data class AddLink(val link: Pair<String, String>) : Intent
 
         data object UserSearchLoadNextPage : Intent
 
-        data class UserSearchSetQuery(
-            val query: String,
-        ) : Intent
+        data class UserSearchSetQuery(val query: String) : Intent
 
         data object UserSearchClear : Intent
 
-        data class AddMention(
-            val handle: String,
-        ) : Intent
+        data class AddMention(val handle: String) : Intent
 
-        data class CompleteMention(
-            val handle: String,
-        ) : Intent
+        data class CompleteMention(val handle: String) : Intent
 
-        data class CompleteHashtag(
-            val name: String,
-        ) : Intent
+        data class CompleteHashtag(val name: String) : Intent
 
-        data class AddInitialMentions(
-            val initialHandle: String?,
-        ) : Intent
+        data class AddInitialMentions(val initialHandle: String?) : Intent
 
-        data class AddGroupReference(
-            val handle: String,
-        ) : Intent
+        data class AddGroupReference(val handle: String) : Intent
 
-        data class AddBoldFormat(
-            val fieldType: ComposerFieldType,
-        ) : Intent
+        data class AddBoldFormat(val fieldType: ComposerFieldType) : Intent
 
-        data class AddItalicFormat(
-            val fieldType: ComposerFieldType,
-        ) : Intent
+        data class AddItalicFormat(val fieldType: ComposerFieldType) : Intent
 
-        data class AddUnderlineFormat(
-            val fieldType: ComposerFieldType,
-        ) : Intent
+        data class AddUnderlineFormat(val fieldType: ComposerFieldType) : Intent
 
-        data class AddStrikethroughFormat(
-            val fieldType: ComposerFieldType,
-        ) : Intent
+        data class AddStrikethroughFormat(val fieldType: ComposerFieldType) : Intent
 
-        data class AddCodeFormat(
-            val fieldType: ComposerFieldType,
-        ) : Intent
+        data class AddCodeFormat(val fieldType: ComposerFieldType) : Intent
 
         data object ToggleHasSpoiler : Intent
 
         data object ToggleHasTitle : Intent
 
-        data class Submit(
-            val enableAltTextCheck: Boolean = true,
-            val enableParentVisibilityCheck: Boolean = true,
-        ) : Intent
+        data class Submit(val enableAltTextCheck: Boolean = true, val enableParentVisibilityCheck: Boolean = true) :
+            Intent
 
         data object GalleryInitialLoad : Intent
 
         data object GalleryLoadMorePhotos : Intent
 
-        data class GalleryAlbumSelected(
-            val album: String,
-        ) : Intent
+        data class GalleryAlbumSelected(val album: String) : Intent
 
-        data class ChangePublicationType(
-            val type: PublicationType,
-        ) : Intent
+        data class ChangePublicationType(val type: PublicationType) : Intent
 
         data object AddPoll : Intent
 
@@ -192,35 +131,21 @@ interface ComposerMviModel :
 
         data object AddPollOption : Intent
 
-        data class EditPollOption(
-            val index: Int,
-            val title: String,
-        ) : Intent
+        data class EditPollOption(val index: Int, val title: String) : Intent
 
-        data class RemovePollOption(
-            val index: Int,
-        ) : Intent
+        data class RemovePollOption(val index: Int) : Intent
 
-        data class SetPollMultiple(
-            val multiple: Boolean,
-        ) : Intent
+        data class SetPollMultiple(val multiple: Boolean) : Intent
 
-        data class SetPollExpirationDate(
-            val date: String,
-        ) : Intent
+        data class SetPollExpirationDate(val date: String) : Intent
 
-        data class InsertCustomEmoji(
-            val fieldType: ComposerFieldType,
-            val emoji: EmojiModel,
-        ) : Intent
+        data class InsertCustomEmoji(val fieldType: ComposerFieldType, val emoji: EmojiModel) : Intent
 
         data object CreatePreview : Intent
 
         data object InsertList : Intent
 
-        data class ChangeMarkupMode(
-            val mode: MarkupMode,
-        ) : Intent
+        data class ChangeMarkupMode(val mode: MarkupMode) : Intent
     }
 
     data class State(
@@ -288,21 +213,13 @@ interface ComposerMviModel :
 
         data object Success : Effect
 
-        data class Failure(
-            val message: String? = null,
-        ) : Effect
+        data class Failure(val message: String? = null) : Effect
 
-        data class OpenPreview(
-            val entry: TimelineEntryModel,
-        ) : Effect
+        data class OpenPreview(val entry: TimelineEntryModel) : Effect
 
-        data class TriggerAttachmentEdit(
-            val attachment: AttachmentModel,
-        ) : Effect
+        data class TriggerAttachmentEdit(val attachment: AttachmentModel) : Effect
 
-        data class TriggerInlineImageEdit(
-            val attachment: AttachmentModel,
-        ) : Effect
+        data class TriggerInlineImageEdit(val attachment: AttachmentModel) : Effect
     }
 }
 

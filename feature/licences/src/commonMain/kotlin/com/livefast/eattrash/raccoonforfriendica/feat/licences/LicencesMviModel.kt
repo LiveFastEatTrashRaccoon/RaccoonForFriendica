@@ -9,10 +9,7 @@ interface LicencesMviModel :
     MviModel<LicencesMviModel.Intent, LicencesMviModel.State, LicencesMviModel.Effect> {
     sealed interface Intent
 
-    data class State(
-        val items: List<LicenceItem> = emptyList(),
-        val hideNavigationBarWhileScrolling: Boolean = true,
-    )
+    data class State(val items: List<LicenceItem> = emptyList(), val hideNavigationBarWhileScrolling: Boolean = true)
 
     sealed interface Effect
 }

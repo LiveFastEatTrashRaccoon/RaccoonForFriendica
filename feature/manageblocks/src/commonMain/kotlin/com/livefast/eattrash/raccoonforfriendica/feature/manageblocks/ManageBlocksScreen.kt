@@ -153,9 +153,9 @@ class ManageBlocksScreen : Screen {
                                 var optionsMenuOpen by remember { mutableStateOf(false) }
                                 IconButton(
                                     modifier =
-                                        Modifier.onGloballyPositioned {
-                                            optionsOffset = it.positionInParent()
-                                        },
+                                    Modifier.onGloballyPositioned {
+                                        optionsOffset = it.positionInParent()
+                                    },
                                     onClick = {
                                         optionsMenuOpen = true
                                     },
@@ -172,12 +172,12 @@ class ManageBlocksScreen : Screen {
                                         optionsMenuOpen = false
                                     },
                                     offset =
-                                        with(LocalDensity.current) {
-                                            DpOffset(
-                                                x = optionsOffset.x.toDp(),
-                                                y = optionsOffset.y.toDp(),
-                                            )
-                                        },
+                                    with(LocalDensity.current) {
+                                        DpOffset(
+                                            x = optionsOffset.x.toDp(),
+                                            y = optionsOffset.y.toDp(),
+                                        )
+                                    },
                                 ) {
                                     for (option in options) {
                                         DropdownMenuItem(
@@ -213,16 +213,16 @@ class ManageBlocksScreen : Screen {
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(ManageBlocksMviModel.Intent.Refresh)
@@ -241,15 +241,15 @@ class ManageBlocksScreen : Screen {
                             )
                         SectionSelector(
                             modifier =
-                                Modifier
-                                    .background(MaterialTheme.colorScheme.background)
-                                    .padding(
-                                        top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
-                                        bottom = Spacing.s,
-                                    ),
+                            Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .padding(
+                                    top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
+                                    bottom = Spacing.s,
+                                ),
                             titles = sections.map { it.toReadableName() },
                             currentSection = sections.indexOf(uiState.section),
-                            onSectionSelected = {
+                            onSelectSection = {
                                 model.reduce(
                                     ManageBlocksMviModel.Intent.ChangeSection(sections[it]),
                                 )
@@ -287,10 +287,10 @@ class ManageBlocksScreen : Screen {
                                 GenericListItem(
                                     title = item.word,
                                     options =
-                                        buildList {
-                                            this += OptionId.Delete.toOption()
-                                        },
-                                    onOptionSelected = { optionId ->
+                                    buildList {
+                                        this += OptionId.Delete.toOption()
+                                    },
+                                    onSelectOption = { optionId ->
                                         when (optionId) {
                                             OptionId.Delete -> confirmDeleteStopWord = item.word
                                             else -> Unit
@@ -307,24 +307,24 @@ class ManageBlocksScreen : Screen {
                                         detailOpener.openUserDetail(item.user)
                                     },
                                     options =
-                                        buildList {
-                                            when (uiState.section) {
-                                                ManageBlocksSection.Muted -> {
-                                                    this += OptionId.Unmute.toOption()
-                                                }
-
-                                                ManageBlocksSection.Blocked -> {
-                                                    this += OptionId.Unblock.toOption()
-                                                }
-
-                                                ManageBlocksSection.Limited -> {
-                                                    this += OptionId.Edit.toOption()
-                                                }
-
-                                                else -> Unit
+                                    buildList {
+                                        when (uiState.section) {
+                                            ManageBlocksSection.Muted -> {
+                                                this += OptionId.Unmute.toOption()
                                             }
-                                        },
-                                    onOptionSelected = { optionId ->
+
+                                            ManageBlocksSection.Blocked -> {
+                                                this += OptionId.Unblock.toOption()
+                                            }
+
+                                            ManageBlocksSection.Limited -> {
+                                                this += OptionId.Edit.toOption()
+                                            }
+
+                                            else -> Unit
+                                        }
+                                    },
+                                    onSelectOption = { optionId ->
                                         when (optionId) {
                                             OptionId.Unmute -> confirmUnmuteUserId = item.user.id
                                             OptionId.Unblock -> confirmUnblockUserId = item.user.id
@@ -398,26 +398,26 @@ class ManageBlocksScreen : Screen {
             CustomModalBottomSheet(
                 title = LocalStrings.current.actionChangeRateLimit,
                 items =
-                    availableRates.map { rate ->
-                        CustomModalBottomSheetItem(
-                            label =
-                                if (rate < 1.0) {
-                                    "${rate * 100} %"
-                                } else {
-                                    LocalStrings.current.settingsOptionUnlimited
-                                },
-                            trailingContent = {
-                                val selected = rate == changeRateLimitUser?.username?.toDoubleOrNull()
-                                if (selected) {
-                                    Icon(
-                                        imageVector = Icons.Default.RadioButtonChecked,
-                                        contentDescription = LocalStrings.current.itemSelected,
-                                    )
-                                }
-                            },
-                        )
-                    },
-                onSelected = { index ->
+                availableRates.map { rate ->
+                    CustomModalBottomSheetItem(
+                        label =
+                        if (rate < 1.0) {
+                            "${rate * 100} %"
+                        } else {
+                            LocalStrings.current.settingsOptionUnlimited
+                        },
+                        trailingContent = {
+                            val selected = rate == changeRateLimitUser?.username?.toDoubleOrNull()
+                            if (selected) {
+                                Icon(
+                                    imageVector = Icons.Default.RadioButtonChecked,
+                                    contentDescription = LocalStrings.current.itemSelected,
+                                )
+                            }
+                        },
+                    )
+                },
+                onSelect = { index ->
                     val user = changeRateLimitUser
                     changeRateLimitUser = null
                     if (user != null && index != null) {

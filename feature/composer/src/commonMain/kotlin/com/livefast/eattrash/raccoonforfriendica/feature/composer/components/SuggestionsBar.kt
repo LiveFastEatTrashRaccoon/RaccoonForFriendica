@@ -18,20 +18,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedD
 
 @Composable
 internal fun SuggestionsBar(
+    loadingMessage: String,
     modifier: Modifier = Modifier,
     suggestions: List<String> = emptyList(),
-    loadingMessage: String,
     loading: Boolean = false,
-    onSelected: ((Int) -> Unit)? = null,
+    onSelect: ((Int) -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onSurfaceVariant
     val ancillaryColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(ancillaryTextAlpha)
     Row(
         modifier =
-            modifier
-                .height(38.dp)
-                .padding(horizontal = Spacing.xxs)
-                .horizontalScroll(rememberScrollState()),
+        modifier
+            .height(38.dp)
+            .padding(horizontal = Spacing.xxs)
+            .horizontalScroll(rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val animatingPart = getAnimatedDots()
@@ -40,10 +40,10 @@ internal fun SuggestionsBar(
                 Text(
                     modifier = Modifier.padding(Spacing.s),
                     text =
-                        buildString {
-                            append(loadingMessage)
-                            append(animatingPart)
-                        },
+                    buildString {
+                        append(loadingMessage)
+                        append(animatingPart)
+                    },
                     style = MaterialTheme.typography.labelMedium,
                     color = ancillaryColor,
                 )
@@ -52,10 +52,10 @@ internal fun SuggestionsBar(
             suggestions.forEachIndexed { idx, title ->
                 Text(
                     modifier =
-                        Modifier
-                            .clickable {
-                                onSelected?.invoke(idx)
-                            }.padding(Spacing.s),
+                    Modifier
+                        .clickable {
+                            onSelect?.invoke(idx)
+                        }.padding(Spacing.s),
                     text = title,
                     style = MaterialTheme.typography.labelMedium,
                     color = fullColor,

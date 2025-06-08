@@ -5,9 +5,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.repository.AcknowledgementsRepository
 import kotlinx.coroutines.launch
 
-internal class AcknowledgementsViewModel(
-    private val acknowledgementsRepository: AcknowledgementsRepository,
-) : DefaultMviModel<AcknowledgementsMviModel.Intent, AcknowledgementsMviModel.State, AcknowledgementsMviModel.Effect>(
+internal class AcknowledgementsViewModel(private val acknowledgementsRepository: AcknowledgementsRepository) :
+    DefaultMviModel<AcknowledgementsMviModel.Intent, AcknowledgementsMviModel.State, AcknowledgementsMviModel.Effect>(
         initialState = AcknowledgementsMviModel.State(),
     ),
     AcknowledgementsMviModel {

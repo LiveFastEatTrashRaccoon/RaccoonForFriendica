@@ -26,117 +26,63 @@ interface SettingsMviModel :
     ScreenModel,
     MviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect> {
     sealed interface Intent {
-        data class ChangeTheme(
-            val theme: UiTheme,
-        ) : Intent
+        data class ChangeTheme(val theme: UiTheme) : Intent
 
-        data class ChangeLanguage(
-            val lang: String,
-        ) : Intent
+        data class ChangeLanguage(val lang: String) : Intent
 
-        data class ChangeFontFamily(
-            val fontFamily: UiFontFamily,
-        ) : Intent
+        data class ChangeFontFamily(val fontFamily: UiFontFamily) : Intent
 
-        data class ChangeFontScale(
-            val scale: UiFontScale,
-        ) : Intent
+        data class ChangeFontScale(val scale: UiFontScale) : Intent
 
-        data class ChangeDynamicColors(
-            val dynamicColors: Boolean,
-        ) : Intent
+        data class ChangeDynamicColors(val dynamicColors: Boolean) : Intent
 
-        data class ChangeThemeColor(
-            val themeColor: Color?,
-        ) : Intent
+        data class ChangeThemeColor(val themeColor: Color?) : Intent
 
-        data class ChangeDefaultTimelineType(
-            val type: TimelineType,
-        ) : Intent
+        data class ChangeDefaultTimelineType(val type: TimelineType) : Intent
 
-        data class ChangeIncludeNsfw(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeIncludeNsfw(val value: Boolean) : Intent
 
-        data class ChangeBlurNsfw(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeBlurNsfw(val value: Boolean) : Intent
 
-        data class ChangeUrlOpeningMode(
-            val mode: UrlOpeningMode,
-        ) : Intent
+        data class ChangeUrlOpeningMode(val mode: UrlOpeningMode) : Intent
 
-        data class ChangeDefaultPostVisibility(
-            val visibility: Visibility,
-        ) : Intent
+        data class ChangeDefaultPostVisibility(val visibility: Visibility) : Intent
 
-        data class ChangeDefaultReplyVisibility(
-            val visibility: Visibility,
-        ) : Intent
+        data class ChangeDefaultReplyVisibility(val visibility: Visibility) : Intent
 
-        data class ChangeExcludeRepliesFromTimeline(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeExcludeRepliesFromTimeline(val value: Boolean) : Intent
 
-        data class ChangeOpenGroupsInForumModeByDefault(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeOpenGroupsInForumModeByDefault(val value: Boolean) : Intent
 
-        data class ChangeMarkupMode(
-            val mode: MarkupMode,
-        ) : Intent
+        data class ChangeMarkupMode(val mode: MarkupMode) : Intent
 
-        data class ChangeMaxPostBodyLines(
-            val value: Int,
-        ) : Intent
+        data class ChangeMaxPostBodyLines(val value: Int) : Intent
 
-        data class ChangeBackgroundNotificationCheckInterval(
-            val duration: Duration?,
-        ) : Intent
+        data class ChangeBackgroundNotificationCheckInterval(val duration: Duration?) : Intent
 
-        data class ChangeAutoloadImages(
-            val mode: ImageLoadingMode,
-        ) : Intent
+        data class ChangeAutoloadImages(val mode: ImageLoadingMode) : Intent
 
-        data class ChangeNotificationMode(
-            val mode: NotificationMode,
-        ) : Intent
+        data class ChangeNotificationMode(val mode: NotificationMode) : Intent
 
-        data class SelectPushDistributor(
-            val value: String,
-        ) : Intent
+        data class SelectPushDistributor(val value: String) : Intent
 
         data object GrantPushNotificationsPermission : Intent
 
-        data class ChangeCrashReportEnabled(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeCrashReportEnabled(val value: Boolean) : Intent
 
-        data class ChangeHideNavigationBarWhileScrolling(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeHideNavigationBarWhileScrolling(val value: Boolean) : Intent
 
-        data class ChangeAppIcon(
-            val variant: AppIconVariant,
-        ) : Intent
+        data class ChangeAppIcon(val variant: AppIconVariant) : Intent
 
-        data class ChangeBarTheme(
-            val theme: UiBarTheme,
-        ) : Intent
+        data class ChangeBarTheme(val theme: UiBarTheme) : Intent
 
-        data class ChangeTimelineLayout(
-            val layout: TimelineLayout,
-        ) : Intent
+        data class ChangeTimelineLayout(val layout: TimelineLayout) : Intent
 
         data object ExportSettings : Intent
 
-        data class ImportSettings(
-            val content: String,
-        ) : Intent
+        data class ImportSettings(val content: String) : Intent
 
-        data class ChangeReplyDepth(
-            val depth: Int,
-        ) : Intent
+        data class ChangeReplyDepth(val depth: Int) : Intent
     }
 
     data class State(
@@ -187,8 +133,6 @@ interface SettingsMviModel :
     )
 
     sealed interface Effect {
-        data class SaveSettings(
-            val content: String,
-        ) : Effect
+        data class SaveSettings(val content: String) : Effect
     }
 }

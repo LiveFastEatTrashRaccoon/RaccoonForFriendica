@@ -54,7 +54,7 @@ internal fun NotificationItem(
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
-    onUserRelationshipClicked: ((String, RelationshipStatusNextAction) -> Unit)? = null,
+    onClickUserRelationship: ((String, RelationshipStatusNextAction) -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val entry = notification.entry
@@ -99,51 +99,51 @@ internal fun NotificationItem(
             if (!notification.read) {
                 Box(
                     modifier =
-                        Modifier
-                            .size(IconSize.xs)
-                            .padding(2.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.onBackground,
-                                shape = CircleShape,
-                            ),
+                    Modifier
+                        .size(IconSize.xs)
+                        .padding(2.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.onBackground,
+                            shape = CircleShape,
+                        ),
                 )
             }
         }
 
         Box(
             modifier =
-                Modifier
-                    .padding(horizontal = contentHorizontalPadding)
-                    .padding(bottom = Spacing.xs)
-                    .shadow(
-                        elevation = 5.dp,
-                        shape = RoundedCornerShape(CornerSize.l),
-                    ).background(
-                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
-                        shape = RoundedCornerShape(CornerSize.l),
-                    ).clip(RoundedCornerShape(CornerSize.l))
-                    .padding(
-                        start = Spacing.xxs,
-                        end = Spacing.xxs,
-                        top = Spacing.xs,
-                        bottom = Spacing.xs,
-                    ),
+            Modifier
+                .padding(horizontal = contentHorizontalPadding)
+                .padding(bottom = Spacing.xs)
+                .shadow(
+                    elevation = 5.dp,
+                    shape = RoundedCornerShape(CornerSize.l),
+                ).background(
+                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
+                    shape = RoundedCornerShape(CornerSize.l),
+                ).clip(RoundedCornerShape(CornerSize.l))
+                .padding(
+                    start = Spacing.xxs,
+                    end = Spacing.xxs,
+                    top = Spacing.xs,
+                    bottom = Spacing.xs,
+                ),
         ) {
             if (entry != null) {
                 TimelineItem(
                     modifier =
-                        Modifier.padding(
-                            top = Spacing.s,
-                            bottom = Spacing.s,
-                        ),
+                    Modifier.padding(
+                        top = Spacing.s,
+                        bottom = Spacing.s,
+                    ),
                     entry =
-                        entry.let { e ->
-                            // removes source platform indication from inbox
-                            e.copy(
-                                sourcePlatform = null,
-                                reblog = e.reblog?.copy(sourcePlatform = null),
-                            )
-                        },
+                    entry.let { e ->
+                        // removes source platform indication from inbox
+                        e.copy(
+                            sourcePlatform = null,
+                            reblog = e.reblog?.copy(sourcePlatform = null),
+                        )
+                    },
                     layout = TimelineLayout.DistractionFree,
                     blurNsfw = blurNsfw,
                     maxBodyLines = maxBodyLines,
@@ -159,17 +159,17 @@ internal fun NotificationItem(
             } else if (user != null) {
                 NotificationUserInfo(
                     modifier =
-                        Modifier.padding(
-                            bottom = Spacing.m,
-                        ),
+                    Modifier.padding(
+                        bottom = Spacing.m,
+                    ),
                     user = user,
                     autoloadImages = autoloadImages,
                     onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     onOpenUser = {
                         onOpenUser?.invoke(user)
                     },
-                    onRelationshipClicked = { nextAction ->
-                        onUserRelationshipClicked?.invoke(user.id, nextAction)
+                    onClickRelationship = { nextAction ->
+                        onClickUserRelationship?.invoke(user.id, nextAction)
                     },
                 )
             }
@@ -178,29 +178,27 @@ internal fun NotificationItem(
 }
 
 @Composable
-private fun NotificationType.toReadableName(): String =
-    when (this) {
-        NotificationType.Entry -> LocalStrings.current.notificationTypeEntry
-        NotificationType.Favorite -> LocalStrings.current.notificationTypeFavorite
-        NotificationType.Follow -> LocalStrings.current.notificationTypeFollow
-        NotificationType.FollowRequest -> LocalStrings.current.notificationTypeFollowRequest
-        NotificationType.Mention -> LocalStrings.current.notificationTypeMention
-        NotificationType.Poll -> LocalStrings.current.notificationTypePoll
-        NotificationType.Reblog -> LocalStrings.current.notificationTypeReblog
-        NotificationType.Update -> LocalStrings.current.notificationTypeUpdate
-        NotificationType.Unknown -> ""
-    }
+private fun NotificationType.toReadableName(): String = when (this) {
+    NotificationType.Entry -> LocalStrings.current.notificationTypeEntry
+    NotificationType.Favorite -> LocalStrings.current.notificationTypeFavorite
+    NotificationType.Follow -> LocalStrings.current.notificationTypeFollow
+    NotificationType.FollowRequest -> LocalStrings.current.notificationTypeFollowRequest
+    NotificationType.Mention -> LocalStrings.current.notificationTypeMention
+    NotificationType.Poll -> LocalStrings.current.notificationTypePoll
+    NotificationType.Reblog -> LocalStrings.current.notificationTypeReblog
+    NotificationType.Update -> LocalStrings.current.notificationTypeUpdate
+    NotificationType.Unknown -> ""
+}
 
 @Composable
-private fun NotificationType.toIcon(): ImageVector =
-    when (this) {
-        NotificationType.Entry -> Icons.Default.PostAdd
-        NotificationType.Favorite -> Icons.Default.Favorite
-        NotificationType.Follow -> Icons.Default.PersonAdd
-        NotificationType.FollowRequest -> Icons.Default.PersonAdd
-        NotificationType.Mention -> Icons.Default.ChatBubble
-        NotificationType.Poll -> Icons.Default.Poll
-        NotificationType.Reblog -> Icons.Default.Loop
-        NotificationType.Update -> Icons.Default.Edit
-        NotificationType.Unknown -> Icons.Default.QuestionMark
-    }
+private fun NotificationType.toIcon(): ImageVector = when (this) {
+    NotificationType.Entry -> Icons.Default.PostAdd
+    NotificationType.Favorite -> Icons.Default.Favorite
+    NotificationType.Follow -> Icons.Default.PersonAdd
+    NotificationType.FollowRequest -> Icons.Default.PersonAdd
+    NotificationType.Mention -> Icons.Default.ChatBubble
+    NotificationType.Poll -> Icons.Default.Poll
+    NotificationType.Reblog -> Icons.Default.Loop
+    NotificationType.Update -> Icons.Default.Edit
+    NotificationType.Unknown -> Icons.Default.QuestionMark
+}

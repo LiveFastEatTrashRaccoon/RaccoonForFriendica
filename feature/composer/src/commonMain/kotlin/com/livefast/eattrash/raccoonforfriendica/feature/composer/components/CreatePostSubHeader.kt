@@ -12,32 +12,28 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormattedDate
 
 @Composable
-internal fun CreatePostSubHeader(
-    date: String? = null,
-    characters: Int = 0,
-    characterLimit: Int? = null,
-) {
+internal fun CreatePostSubHeader(date: String? = null, characters: Int = 0, characterLimit: Int? = null) {
     Row(
         modifier =
-            Modifier.padding(
-                top = Spacing.s,
-                start = Spacing.s,
-                end = Spacing.s,
-            ),
+        Modifier.padding(
+            top = Spacing.s,
+            start = Spacing.s,
+            end = Spacing.s,
+        ),
     ) {
         if (date != null) {
             Text(
                 text =
-                    buildString {
-                        append(LocalStrings.current.scheduleDateIndication)
-                        append(" ")
-                        append(
-                            getFormattedDate(
-                                iso8601Timestamp = date,
-                                format = "dd/MM/yy HH:mm",
-                            ),
-                        )
-                    },
+                buildString {
+                    append(LocalStrings.current.scheduleDateIndication)
+                    append(" ")
+                    append(
+                        getFormattedDate(
+                            iso8601Timestamp = date,
+                            format = "dd/MM/yy HH:mm",
+                        ),
+                    )
+                },
                 style = MaterialTheme.typography.labelSmall,
             )
         }
@@ -45,11 +41,11 @@ internal fun CreatePostSubHeader(
         if (characterLimit != null) {
             Text(
                 text =
-                    buildString {
-                        append(characters)
-                        append("/")
-                        append(characterLimit)
-                    },
+                buildString {
+                    append(characters)
+                    append("/")
+                    append(characterLimit)
+                },
                 style = MaterialTheme.typography.labelSmall,
             )
         }

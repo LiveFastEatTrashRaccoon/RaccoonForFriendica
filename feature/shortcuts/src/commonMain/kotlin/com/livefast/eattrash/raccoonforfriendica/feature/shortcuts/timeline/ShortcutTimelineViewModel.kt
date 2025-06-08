@@ -51,8 +51,8 @@ class ShortcutTimelineViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<ShortcutTimelineMviModel.Intent, ShortcutTimelineMviModel.State, ShortcutTimelineMviModel.Effect>(
-        initialState = ShortcutTimelineMviModel.State(),
-    ),
+    initialState = ShortcutTimelineMviModel.State(),
+),
     ShortcutTimelineMviModel {
     init {
         screenModelScope.launch {
@@ -65,7 +65,7 @@ class ShortcutTimelineViewModel(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
                             lang = settings?.lang,
                         )
@@ -133,10 +133,7 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private suspend fun refresh(
-        initial: Boolean = false,
-        forceRefresh: Boolean = false,
-    ) {
+    private suspend fun refresh(initial: Boolean = false, forceRefresh: Boolean = false) {
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
@@ -186,38 +183,34 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private suspend fun updateEntryInState(
-        entryId: String,
-        block: (TimelineEntryModel) -> TimelineEntryModel,
-    ) {
+    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
         updateState {
             it.copy(
                 entries =
-                    it.entries.map { entry ->
-                        when {
-                            entry.id == entryId -> entry.let(block)
+                it.entries.map { entry ->
+                    when {
+                        entry.id == entryId -> entry.let(block)
 
-                            entry.reblog?.id == entryId ->
-                                entry.copy(reblog = entry.reblog?.let(block))
+                        entry.reblog?.id == entryId ->
+                            entry.copy(reblog = entry.reblog?.let(block))
 
-                            else -> entry
-                        }
-                    },
+                        else -> entry
+                    }
+                },
             )
         }
     }
 
-    private suspend fun resolveToLocal(entry: TimelineEntryModel): TimelineEntryModel? =
-        entry.url?.let { url ->
-            val results =
-                searchRepository.search(
-                    query = url,
-                    resolve = true,
-                    type = SearchResultType.Entries,
-                )
-            val result = results?.firstOrNull() as? ExploreItemModel.Entry
-            result?.entry
-        }
+    private suspend fun resolveToLocal(entry: TimelineEntryModel): TimelineEntryModel? = entry.url?.let { url ->
+        val results =
+            searchRepository.search(
+                query = url,
+                resolve = true,
+                type = SearchResultType.Entries,
+            )
+        val result = results?.firstOrNull() as? ExploreItemModel.Entry
+        result?.entry
+    }
 
     private fun toggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
@@ -345,10 +338,7 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun submitPoll(
-        entry: TimelineEntryModel,
-        choices: List<Int>,
-    ) {
+    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         screenModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }

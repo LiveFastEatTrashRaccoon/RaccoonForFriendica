@@ -10,6 +10,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListMviModel.Effect
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListMviModel.Intent
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListMviModel.State
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -26,9 +29,9 @@ class DirectMessageListViewModel(
     private val settingsRepository: SettingsRepository,
     private val userPaginationManager: UserPaginationManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<DirectMessageListMviModel.Intent, DirectMessageListMviModel.State, DirectMessageListMviModel.Effect>(
-        initialState = DirectMessageListMviModel.State(),
-    ),
+) : DefaultMviModel<Intent, State, Effect>(
+    initialState = State(),
+),
     DirectMessageListMviModel {
     init {
         screenModelScope.launch {
@@ -46,7 +49,7 @@ class DirectMessageListViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -68,45 +71,45 @@ class DirectMessageListViewModel(
         }
     }
 
-    override fun reduce(intent: DirectMessageListMviModel.Intent) {
+    override fun reduce(intent: Intent) {
         when (intent) {
-            DirectMessageListMviModel.Intent.Refresh ->
+            Intent.Refresh ->
                 screenModelScope.launch {
                     refresh()
                 }
 
-            DirectMessageListMviModel.Intent.LoadNextPage ->
+            Intent.LoadNextPage ->
                 screenModelScope.launch {
                     loadNextPage()
                 }
 
-            is DirectMessageListMviModel.Intent.UserSearchSetQuery ->
+            is Intent.UserSearchSetQuery ->
                 screenModelScope.launch {
                     updateState { it.copy(userSearchQuery = intent.query) }
                 }
 
-            DirectMessageListMviModel.Intent.UserSearchClear ->
+            Intent.UserSearchClear ->
                 screenModelScope.launch {
                     updateState { it.copy(userSearchUsers = emptyList()) }
                 }
 
-            DirectMessageListMviModel.Intent.UserSearchLoadNextPage ->
+            Intent.UserSearchLoadNextPage ->
                 screenModelScope.launch {
                     loadNextPageUsers()
                 }
 
-            is DirectMessageListMviModel.Intent.MarkConversationAsRead ->
+            is Intent.MarkConversationAsRead ->
                 screenModelScope.launch {
                     updateState {
                         it.copy(
                             items =
-                                it.items.mapIndexed { idx, conversation ->
-                                    if (idx == intent.index) {
-                                        conversation.copy(unreadCount = 0)
-                                    } else {
-                                        conversation
-                                    }
-                                },
+                            it.items.mapIndexed { idx, conversation ->
+                                if (idx == intent.index) {
+                                    conversation.copy(unreadCount = 0)
+                                } else {
+                                    conversation
+                                }
+                            },
                         )
                     }
                 }
@@ -161,7 +164,7 @@ class DirectMessageListViewModel(
             )
         }
         if (wasRefreshing) {
-            emitEffect(DirectMessageListMviModel.Effect.BackToTop)
+            emitEffect(Effect.BackToTop)
         }
     }
 

@@ -1,6 +1,7 @@
 plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
     id("com.livefast.eattrash.composeMultiplatform")
+    id("com.livefast.eattrash.spotless")
 }
 
 kotlin {
@@ -31,6 +32,16 @@ kotlin {
                 implementation(projects.domain.identity.usecase)
                 implementation(projects.domain.urlhandler)
             }
+        }
+    }
+}
+
+spotless {
+    kotlin {
+        target("**/ProfileTopAppBarStateWrapper.kt")
+        suppressLintsFor {
+            step = "ktlint"
+            shortCode = "compose:compositionlocal-allowlist"
         }
     }
 }

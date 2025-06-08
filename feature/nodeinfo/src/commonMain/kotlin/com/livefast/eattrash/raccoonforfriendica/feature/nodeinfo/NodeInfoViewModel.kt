@@ -16,8 +16,8 @@ class NodeInfoViewModel(
     private val emojiHelper: EmojiHelper,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<NodeInfoMviModel.Intent, NodeInfoMviModel.State, NodeInfoMviModel.Effect>(
-        initialState = NodeInfoMviModel.State(),
-    ),
+    initialState = NodeInfoMviModel.State(),
+),
     NodeInfoMviModel {
     init {
         screenModelScope.launch {
@@ -35,7 +35,7 @@ class NodeInfoViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -44,9 +44,9 @@ class NodeInfoViewModel(
                 nodeInfoRepository.getInfo()?.let { info ->
                     info.copy(
                         contact =
-                            with(emojiHelper) {
-                                info.contact?.withEmojisIfMissing()
-                            },
+                        with(emojiHelper) {
+                            info.contact?.withEmojisIfMissing()
+                        },
                     )
                 }
             updateState { it.copy(info = nodeInfo) }

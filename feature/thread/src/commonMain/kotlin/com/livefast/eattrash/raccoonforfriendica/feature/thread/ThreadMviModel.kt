@@ -14,29 +14,17 @@ interface ThreadMviModel :
     sealed interface Intent {
         data object Refresh : Intent
 
-        data class ToggleReblog(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class ToggleReblog(val entry: TimelineEntryModel) : Intent
 
-        data class ToggleFavorite(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class ToggleFavorite(val entry: TimelineEntryModel) : Intent
 
-        data class ToggleDislike(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class ToggleDislike(val entry: TimelineEntryModel) : Intent
 
-        data class ToggleBookmark(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class ToggleBookmark(val entry: TimelineEntryModel) : Intent
 
-        data class LoadMoreReplies(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class LoadMoreReplies(val entry: TimelineEntryModel) : Intent
 
-        data class DeleteEntry(
-            val entryId: String,
-        ) : Intent
+        data class DeleteEntry(val entryId: String) : Intent
 
         data class MuteUser(
             val userId: String,
@@ -45,35 +33,19 @@ interface ThreadMviModel :
             val disableNotifications: Boolean = true,
         ) : Intent
 
-        data class BlockUser(
-            val userId: String,
-            val entryId: String,
-        ) : Intent
+        data class BlockUser(val userId: String, val entryId: String) : Intent
 
-        data class SubmitPollVote(
-            val entry: TimelineEntryModel,
-            val choices: List<Int>,
-        ) : Intent
+        data class SubmitPollVote(val entry: TimelineEntryModel, val choices: List<Int>) : Intent
 
-        data class CopyToClipboard(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class CopyToClipboard(val entry: TimelineEntryModel) : Intent
 
-        data class ToggleTranslation(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class ToggleTranslation(val entry: TimelineEntryModel) : Intent
 
-        data class ChangeNavigationIndex(
-            val index: Int,
-        ) : Intent
+        data class ChangeNavigationIndex(val index: Int) : Intent
 
-        data class AddInstanceShortcut(
-            val node: String,
-        ) : Intent
+        data class AddInstanceShortcut(val node: String) : Intent
 
-        data class OpenInBrowser(
-            val entry: TimelineEntryModel,
-        ) : Intent
+        data class OpenInBrowser(val entry: TimelineEntryModel) : Intent
     }
 
     data class State(
@@ -95,12 +67,8 @@ interface ThreadMviModel :
     sealed interface Effect {
         data object PollVoteFailure : Effect
 
-        data class TriggerCopy(
-            val text: String,
-        ) : Effect
+        data class TriggerCopy(val text: String) : Effect
 
-        data class OpenUrl(
-            val url: String,
-        ) : Effect
+        data class OpenUrl(val url: String) : Effect
     }
 }

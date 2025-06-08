@@ -21,8 +21,8 @@ class AnnouncementsViewModel(
     private val announcementsManager: AnnouncementsManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<AnnouncementsMviModel.Intent, AnnouncementsMviModel.State, AnnouncementsMviModel.Effect>(
-        initialState = AnnouncementsMviModel.State(),
-    ),
+    initialState = AnnouncementsMviModel.State(),
+),
     AnnouncementsMviModel {
     init {
         screenModelScope.launch {
@@ -47,7 +47,7 @@ class AnnouncementsViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -105,20 +105,17 @@ class AnnouncementsViewModel(
         }
     }
 
-    private suspend fun updateItemInState(
-        id: String,
-        block: (AnnouncementModel) -> AnnouncementModel,
-    ) {
+    private suspend fun updateItemInState(id: String, block: (AnnouncementModel) -> AnnouncementModel) {
         updateState {
             it.copy(
                 items =
-                    it.items.map { item ->
-                        if (item.id == id) {
-                            item.let(block)
-                        } else {
-                            item
-                        }
-                    },
+                it.items.map { item ->
+                    if (item.id == id) {
+                        item.let(block)
+                    } else {
+                        item
+                    }
+                },
             )
         }
     }
@@ -134,11 +131,7 @@ class AnnouncementsViewModel(
         }
     }
 
-    private suspend fun setReactionLoading(
-        id: String,
-        name: String,
-        loading: Boolean,
-    ) {
+    private suspend fun setReactionLoading(id: String, name: String, loading: Boolean) {
         val newItems =
             uiState.value.items.map {
                 if (it.id == id) {
@@ -174,10 +167,7 @@ class AnnouncementsViewModel(
         updateState { it.copy(items = newItems) }
     }
 
-    private fun addReaction(
-        id: String,
-        name: String,
-    ) {
+    private fun addReaction(id: String, name: String) {
         screenModelScope.launch {
             setReactionLoading(id = id, name = name, loading = true)
             val success = announcementRepository.addReaction(id = id, reaction = name)
@@ -189,10 +179,7 @@ class AnnouncementsViewModel(
         }
     }
 
-    private fun removeReaction(
-        id: String,
-        name: String,
-    ) {
+    private fun removeReaction(id: String, name: String) {
         screenModelScope.launch {
             setReactionLoading(id = id, name = name, loading = true)
             val success = announcementRepository.removeReaction(id = id, reaction = name)

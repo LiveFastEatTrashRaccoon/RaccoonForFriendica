@@ -14,13 +14,9 @@ interface UserListMviModel :
 
         data object LoadNextPage : Intent
 
-        data class Follow(
-            val userId: String,
-        ) : Intent
+        data class Follow(val userId: String) : Intent
 
-        data class Unfollow(
-            val userId: String,
-        ) : Intent
+        data class Unfollow(val userId: String) : Intent
 
         data object Export : Intent
     }
@@ -41,8 +37,6 @@ interface UserListMviModel :
     sealed interface Effect {
         data object BackToTop : Effect
 
-        data class SaveList(
-            val content: String,
-        ) : Effect
+        data class SaveList(val content: String) : Effect
     }
 }

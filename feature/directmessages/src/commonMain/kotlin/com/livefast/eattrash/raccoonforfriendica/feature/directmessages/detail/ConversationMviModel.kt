@@ -14,9 +14,7 @@ interface ConversationMviModel :
 
         data object LoadNextPage : Intent
 
-        data class SetNewMessageValue(
-            val value: TextFieldValue,
-        ) : Intent
+        data class SetNewMessageValue(val value: TextFieldValue) : Intent
 
         data object Submit : Intent
     }

@@ -29,20 +29,20 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.PublicationTyp
 
 @Composable
 internal fun UtilsBar(
+    publicationType: PublicationType,
     modifier: Modifier = Modifier,
     hasPoll: Boolean = false,
     supportsRichEditing: Boolean = true,
     supportsInlineImages: Boolean = false,
-    publicationType: PublicationType,
-    onLinkClicked: (() -> Unit)? = null,
-    onAttachmentClicked: (() -> Unit)? = null,
-    onBoldClicked: (() -> Unit)? = null,
-    onItalicClicked: (() -> Unit)? = null,
-    onUnderlineClicked: (() -> Unit)? = null,
-    onStrikethroughClicked: (() -> Unit)? = null,
-    onCodeClicked: (() -> Unit)? = null,
-    onSubmitClicked: (() -> Unit)? = null,
-    onInlineImageClicked: (() -> Unit)? = null,
+    onClickLink: (() -> Unit)? = null,
+    onClickAttachment: (() -> Unit)? = null,
+    onClickBold: (() -> Unit)? = null,
+    onClickItalic: (() -> Unit)? = null,
+    onClickUnderline: (() -> Unit)? = null,
+    onClickStrikethrough: (() -> Unit)? = null,
+    onClickCode: (() -> Unit)? = null,
+    onClickInlineImage: (() -> Unit)? = null,
+    onSubmit: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier.padding(horizontal = Spacing.xxs),
@@ -56,7 +56,7 @@ internal fun UtilsBar(
             IconButton(
                 enabled = !hasPoll,
                 onClick = {
-                    onAttachmentClicked?.invoke()
+                    onClickAttachment?.invoke()
                 },
             ) {
                 Icon(
@@ -69,7 +69,7 @@ internal fun UtilsBar(
             if (supportsInlineImages) {
                 IconButton(
                     onClick = {
-                        onInlineImageClicked?.invoke()
+                        onClickInlineImage?.invoke()
                     },
                 ) {
                     Icon(
@@ -84,7 +84,7 @@ internal fun UtilsBar(
                 // insert link button
                 IconButton(
                     onClick = {
-                        onLinkClicked?.invoke()
+                        onClickLink?.invoke()
                     },
                 ) {
                     Icon(
@@ -97,7 +97,7 @@ internal fun UtilsBar(
                 // bold format button
                 IconButton(
                     onClick = {
-                        onBoldClicked?.invoke()
+                        onClickBold?.invoke()
                     },
                 ) {
                     Icon(
@@ -110,7 +110,7 @@ internal fun UtilsBar(
                 // italic format button
                 IconButton(
                     onClick = {
-                        onItalicClicked?.invoke()
+                        onClickItalic?.invoke()
                     },
                 ) {
                     Icon(
@@ -123,7 +123,7 @@ internal fun UtilsBar(
                 // underlined format button
                 IconButton(
                     onClick = {
-                        onUnderlineClicked?.invoke()
+                        onClickUnderline?.invoke()
                     },
                 ) {
                     Icon(
@@ -136,7 +136,7 @@ internal fun UtilsBar(
                 // strikethrough format button
                 IconButton(
                     onClick = {
-                        onStrikethroughClicked?.invoke()
+                        onClickStrikethrough?.invoke()
                     },
                 ) {
                     Icon(
@@ -149,7 +149,7 @@ internal fun UtilsBar(
                 // monospace format button
                 IconButton(
                     onClick = {
-                        onCodeClicked?.invoke()
+                        onClickCode?.invoke()
                     },
                 ) {
                     Icon(
@@ -164,16 +164,16 @@ internal fun UtilsBar(
         // send/schedule/save button
         IconButton(
             onClick = {
-                onSubmitClicked?.invoke()
+                onSubmit?.invoke()
             },
         ) {
             Icon(
                 imageVector =
-                    when (publicationType) {
-                        PublicationType.Draft -> Icons.Default.Save
-                        is PublicationType.Scheduled -> Icons.AutoMirrored.Default.ScheduleSend
-                        else -> Icons.AutoMirrored.Default.Send
-                    },
+                when (publicationType) {
+                    PublicationType.Draft -> Icons.Default.Save
+                    is PublicationType.Scheduled -> Icons.AutoMirrored.Default.ScheduleSend
+                    else -> Icons.AutoMirrored.Default.Send
+                },
                 contentDescription = LocalStrings.current.actionSubmit,
                 tint = MaterialTheme.colorScheme.primary,
             )

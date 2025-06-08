@@ -15,10 +15,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 
 @Composable
-internal fun CircleHeader(
-    modifier: Modifier = Modifier,
-    type: CircleType,
-) {
+internal fun CircleHeader(type: CircleType, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.padding(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,

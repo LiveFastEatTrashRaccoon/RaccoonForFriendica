@@ -7,10 +7,7 @@ import org.kodein.di.bind
 import org.kodein.di.factory
 import org.kodein.di.instance
 
-internal data class CreateReportMviModelParams(
-    val userId: String,
-    val entryId: String,
-)
+internal data class CreateReportMviModelParams(val userId: String, val entryId: String)
 
 val reportModule =
     DI.Module("ReportModule") {

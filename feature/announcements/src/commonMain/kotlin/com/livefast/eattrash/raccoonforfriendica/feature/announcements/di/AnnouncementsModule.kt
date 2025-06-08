@@ -18,7 +18,7 @@ val announcementsModule =
                     emojiRepository = instance(),
                     announcementsManager = instance(),
                     imageAutoloadObserver = instance(),
-            )
+                )
+            }
         }
     }
-}

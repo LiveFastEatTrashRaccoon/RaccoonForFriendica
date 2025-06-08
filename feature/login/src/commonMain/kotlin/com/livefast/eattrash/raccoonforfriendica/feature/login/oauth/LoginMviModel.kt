@@ -8,9 +8,7 @@ interface LoginMviModel :
     ScreenModel,
     MviModel<LoginMviModel.Intent, LoginMviModel.State, LoginMviModel.Effect> {
     sealed interface Intent {
-        data class SetNodeName(
-            val name: String,
-        ) : Intent
+        data class SetNodeName(val name: String) : Intent
 
         data object SignUp : Intent
 
@@ -25,18 +23,12 @@ interface LoginMviModel :
     )
 
     sealed interface Effect {
-        data class OpenUrl(
-            val url: String,
-        ) : Effect
+        data class OpenUrl(val url: String) : Effect
 
         data object Success : Effect
 
-        data class Failure(
-            val message: String? = null,
-        ) : Effect
+        data class Failure(val message: String? = null) : Effect
 
-        data class OpenWebRegistration(
-            val url: String,
-        ) : Effect
+        data class OpenWebRegistration(val url: String) : Effect
     }
 }

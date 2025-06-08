@@ -8,9 +8,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.Validatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.isValidEmail
 import kotlinx.coroutines.launch
 
-class UserFeedbackViewModel(
-    private val crashReportManager: CrashReportManager,
-) : DefaultMviModel<UserFeedbackMviModel.Intent, UserFeedbackMviModel.State, UserFeedbackMviModel.Effect>(
+class UserFeedbackViewModel(private val crashReportManager: CrashReportManager) :
+    DefaultMviModel<UserFeedbackMviModel.Intent, UserFeedbackMviModel.State, UserFeedbackMviModel.Effect>(
         initialState = UserFeedbackMviModel.State(),
     ),
     UserFeedbackMviModel {

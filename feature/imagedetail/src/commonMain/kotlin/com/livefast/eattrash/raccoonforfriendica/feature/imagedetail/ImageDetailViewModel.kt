@@ -20,8 +20,8 @@ class ImageDetailViewModel(
     private val galleryHelper: GalleryHelper,
     private val imagePreloadManager: ImagePreloadManager,
 ) : DefaultMviModel<ImageDetailMviModel.Intent, ImageDetailMviModel.UiState, ImageDetailMviModel.Effect>(
-        initialState = ImageDetailMviModel.UiState(),
-    ),
+    initialState = ImageDetailMviModel.UiState(),
+),
     ImageDetailMviModel {
     init {
         screenModelScope.launch {
@@ -122,8 +122,7 @@ class ImageDetailViewModel(
     }
 }
 
-private fun String.extractExtension(): String =
-    let { s ->
-        val idx = s.lastIndexOf(".").takeIf { it >= 0 } ?: s.length
-        s.substring(idx).takeIf { it.isNotEmpty() } ?: ".jpeg"
-    }
+private fun String.extractExtension(): String = let { s ->
+    val idx = s.lastIndexOf(".").takeIf { it >= 0 } ?: s.length
+    s.substring(idx).takeIf { it.isNotEmpty() } ?: ".jpeg"
+}

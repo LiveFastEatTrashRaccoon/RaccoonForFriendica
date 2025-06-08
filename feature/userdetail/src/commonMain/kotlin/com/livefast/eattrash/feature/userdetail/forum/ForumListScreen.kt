@@ -91,9 +91,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
-class ForumListScreen(
-    private val id: String,
-) : Screen {
+class ForumListScreen(private val id: String) : Screen {
     override val key: ScreenKey
         get() = super.key + id
 
@@ -165,14 +163,14 @@ class ForumListScreen(
                     title = {
                         Text(
                             text =
-                                buildString {
-                                    append(LocalStrings.current.topicTitle)
-                                    val name = (uiState.user?.displayName ?: uiState.user?.username ?: "").ellipsize(30)
-                                    if (name.isNotBlank()) {
-                                        append(": ")
-                                        append(name)
-                                    }
-                                },
+                            buildString {
+                                append(LocalStrings.current.topicTitle)
+                                val name = (uiState.user?.displayName ?: uiState.user?.username ?: "").ellipsize(30)
+                                if (name.isNotBlank()) {
+                                    append(": ")
+                                    append(name)
+                                }
+                            },
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.titleMedium,
@@ -212,9 +210,9 @@ class ForumListScreen(
                             var optionsMenuOpen by remember { mutableStateOf(false) }
                             IconButton(
                                 modifier =
-                                    Modifier.onGloballyPositioned {
-                                        optionsOffset = it.positionInParent()
-                                    },
+                                Modifier.onGloballyPositioned {
+                                    optionsOffset = it.positionInParent()
+                                },
                                 onClick = {
                                     optionsMenuOpen = true
                                 },
@@ -231,12 +229,12 @@ class ForumListScreen(
                                     optionsMenuOpen = false
                                 },
                                 offset =
-                                    with(LocalDensity.current) {
-                                        DpOffset(
-                                            x = optionsOffset.x.toDp(),
-                                            y = optionsOffset.y.toDp(),
-                                        )
-                                    },
+                                with(LocalDensity.current) {
+                                    DpOffset(
+                                        x = optionsOffset.x.toDp(),
+                                        y = optionsOffset.y.toDp(),
+                                    )
+                                },
                             ) {
                                 for (option in options) {
                                     DropdownMenuItem(
@@ -278,13 +276,13 @@ class ForumListScreen(
                     AnimatedVisibility(
                         visible = isFabVisible,
                         enter =
-                            slideInVertically(
-                                initialOffsetY = { it * 2 },
-                            ),
+                        slideInVertically(
+                            initialOffsetY = { it * 2 },
+                        ),
                         exit =
-                            slideOutVertically(
-                                targetOffsetY = { it * 2 },
-                            ),
+                        slideOutVertically(
+                            targetOffsetY = { it * 2 },
+                        ),
                     ) {
                         FloatingActionButton(
                             onClick = {
@@ -316,16 +314,16 @@ class ForumListScreen(
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ).nestedScroll(fabNestedScrollConnection),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ).nestedScroll(fabNestedScrollConnection),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(ForumListMviModel.Intent.Refresh)
@@ -377,111 +375,113 @@ class ForumListScreen(
                                 )
                             },
                             onReblog =
-                                { e: TimelineEntryModel ->
-                                    val timeSinceCreation =
-                                        e.created?.run {
-                                            getDurationFromDateToNow(this)
-                                        } ?: Duration.ZERO
-                                    when {
-                                        !e.reblogged && timeSinceCreation.isOldEntry ->
-                                            confirmReblogEntry = e
+                            { e: TimelineEntryModel ->
+                                val timeSinceCreation =
+                                    e.created?.run {
+                                        getDurationFromDateToNow(this)
+                                    } ?: Duration.ZERO
+                                when {
+                                    !e.reblogged && timeSinceCreation.isOldEntry ->
+                                        confirmReblogEntry = e
 
-                                        else ->
-                                            model.reduce(
-                                                ForumListMviModel.Intent.ToggleReblog(e),
-                                            )
-                                    }
-                                }.takeIf { actionRepository.canReblog(entry.original) },
-                            onBookmark =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(ForumListMviModel.Intent.ToggleBookmark(e))
-                                }.takeIf { actionRepository.canBookmark(entry.original) },
-                            onFavorite =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(ForumListMviModel.Intent.ToggleFavorite(e))
-                                }.takeIf { actionRepository.canFavorite(entry.original) },
-                            onDislike =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(ForumListMviModel.Intent.ToggleDislike(e))
-                                }.takeIf { actionRepository.canDislike(entry.original) },
-                            onReply =
-                                { e: TimelineEntryModel ->
-                                    detailOpener.openComposer(
-                                        inReplyTo = e,
-                                        inReplyToUser = e.creator,
-                                    )
-                                }.takeIf { actionRepository.canReply(entry.original) },
-                            onPollVote =
-                                uiState.currentUserId?.let {
-                                    { e, choices ->
+                                    else ->
                                         model.reduce(
-                                            ForumListMviModel.Intent.SubmitPollVote(
-                                                entry = e,
-                                                choices = choices,
-                                            ),
+                                            ForumListMviModel.Intent.ToggleReblog(e),
                                         )
-                                    }
-                                },
+                                }
+                            }.takeIf { actionRepository.canReblog(entry.original) },
+                            onBookmark =
+                            { e: TimelineEntryModel ->
+                                model.reduce(ForumListMviModel.Intent.ToggleBookmark(e))
+                            }.takeIf { actionRepository.canBookmark(entry.original) },
+                            onFavorite =
+                            { e: TimelineEntryModel ->
+                                model.reduce(ForumListMviModel.Intent.ToggleFavorite(e))
+                            }.takeIf { actionRepository.canFavorite(entry.original) },
+                            onDislike =
+                            { e: TimelineEntryModel ->
+                                model.reduce(ForumListMviModel.Intent.ToggleDislike(e))
+                            }.takeIf { actionRepository.canDislike(entry.original) },
+                            onReply =
+                            { e: TimelineEntryModel ->
+                                detailOpener.openComposer(
+                                    inReplyTo = e,
+                                    inReplyToUser = e.creator,
+                                )
+                            }.takeIf { actionRepository.canReply(entry.original) },
+                            onPollVote =
+                            uiState.currentUserId?.let {
+                                { e, choices ->
+                                    model.reduce(
+                                        ForumListMviModel.Intent.SubmitPollVote(
+                                            entry = e,
+                                            choices = choices,
+                                        ),
+                                    )
+                                }
+                            },
                             onShowOriginal = {
                                 model.reduce(
                                     ForumListMviModel.Intent.ToggleTranslation(entry.original),
                                 )
                             },
                             options =
-                                buildList {
-                                    if (actionRepository.canShare(entry.original)) {
-                                        this += OptionId.Share.toOption()
-                                        this += OptionId.CopyUrl.toOption()
-                                    }
-                                    if (actionRepository.canEdit(entry.original)) {
-                                        this += OptionId.Edit.toOption()
-                                    }
-                                    if (actionRepository.canDelete(entry.original)) {
-                                        this += OptionId.Delete.toOption()
-                                    }
-                                    if (actionRepository.canMute(entry)) {
-                                        this += OptionId.Mute.toOption()
-                                    }
-                                    if (actionRepository.canBlock(entry)) {
-                                        this += OptionId.Block.toOption()
-                                    }
-                                    if (actionRepository.canReport(entry.original)) {
-                                        this += OptionId.ReportUser.toOption()
-                                        this += OptionId.ReportEntry.toOption()
-                                    }
-                                    if (actionRepository.canQuote(entry.original)) {
-                                        this += OptionId.Quote.toOption()
-                                    }
-                                    this += OptionId.ViewDetails.toOption()
-                                    this += OptionId.CopyToClipboard.toOption()
-                                    val currentLang = uiState.lang.orEmpty()
-                                    if (currentLang.isNotEmpty() && entry.lang != currentLang && !entry.isShowingTranslation) {
-                                        this +=
-                                            Option(
-                                                id = OptionId.Translate,
-                                                label =
-                                                    buildString {
-                                                        append(
-                                                            LocalStrings.current.actionTranslateTo(
-                                                                currentLang,
-                                                            ),
-                                                        )
-                                                        append(" (")
-                                                        append(LocalStrings.current.experimental)
-                                                        append(")")
-                                                    },
-                                            )
-                                    }
-                                    val nodeName = entry.nodeName
-                                    if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
-                                        this +=
-                                            OptionId.AddShortcut.toOption(
-                                                LocalStrings.current.actionShortcut(nodeName),
-                                            )
-                                    }
-                                    this += OptionId.OpenInBrowser.toOption()
-                                },
-                            onOptionSelected = { optionId ->
+                            buildList {
+                                if (actionRepository.canShare(entry.original)) {
+                                    this += OptionId.Share.toOption()
+                                    this += OptionId.CopyUrl.toOption()
+                                }
+                                if (actionRepository.canEdit(entry.original)) {
+                                    this += OptionId.Edit.toOption()
+                                }
+                                if (actionRepository.canDelete(entry.original)) {
+                                    this += OptionId.Delete.toOption()
+                                }
+                                if (actionRepository.canMute(entry)) {
+                                    this += OptionId.Mute.toOption()
+                                }
+                                if (actionRepository.canBlock(entry)) {
+                                    this += OptionId.Block.toOption()
+                                }
+                                if (actionRepository.canReport(entry.original)) {
+                                    this += OptionId.ReportUser.toOption()
+                                    this += OptionId.ReportEntry.toOption()
+                                }
+                                if (actionRepository.canQuote(entry.original)) {
+                                    this += OptionId.Quote.toOption()
+                                }
+                                this += OptionId.ViewDetails.toOption()
+                                this += OptionId.CopyToClipboard.toOption()
+                                val currentLang = uiState.lang.orEmpty()
+                                if (currentLang.isNotEmpty() && entry.lang != currentLang &&
+                                    !entry.isShowingTranslation
+                                ) {
+                                    this +=
+                                        Option(
+                                            id = OptionId.Translate,
+                                            label =
+                                            buildString {
+                                                append(
+                                                    LocalStrings.current.actionTranslateTo(
+                                                        currentLang,
+                                                    ),
+                                                )
+                                                append(" (")
+                                                append(LocalStrings.current.experimental)
+                                                append(")")
+                                            },
+                                        )
+                                }
+                                val nodeName = entry.nodeName
+                                if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
+                                    this +=
+                                        OptionId.AddShortcut.toOption(
+                                            LocalStrings.current.actionShortcut(nodeName),
+                                        )
+                                }
+                                this += OptionId.OpenInBrowser.toOption()
+                            },
+                            onSelectOption = { optionId ->
                                 when (optionId) {
                                     OptionId.Share -> {
                                         val urlString = entry.url.orEmpty()
@@ -633,13 +633,13 @@ class ForumListScreen(
             val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
             CustomConfirmDialog(
                 title =
-                    buildString {
-                        append(LocalStrings.current.actionBlock)
-                        val handle = creator?.handle ?: ""
-                        if (handle.isNotEmpty()) {
-                            append(" @$handle")
-                        }
-                    },
+                buildString {
+                    append(LocalStrings.current.actionBlock)
+                    val handle = creator?.handle ?: ""
+                    if (handle.isNotEmpty()) {
+                        append(" @$handle")
+                    }
+                },
                 onClose = { confirm ->
                     val entryId = confirmBlockEntry?.id
                     val creatorId = creator?.id

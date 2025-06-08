@@ -12,13 +12,9 @@ interface ProfileMviModel :
     sealed interface Intent {
         data object Logout : Intent
 
-        data class SwitchAccount(
-            val account: AccountModel,
-        ) : Intent
+        data class SwitchAccount(val account: AccountModel) : Intent
 
-        data class DeleteAccount(
-            val account: AccountModel,
-        ) : Intent
+        data class DeleteAccount(val account: AccountModel) : Intent
 
         data object AddAccount : Intent
     }

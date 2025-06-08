@@ -14,13 +14,9 @@ interface FollowRequestsMviModel :
 
         data object LoadNextPage : Intent
 
-        data class Accept(
-            val id: String,
-        ) : Intent
+        data class Accept(val id: String) : Intent
 
-        data class Reject(
-            val id: String,
-        ) : Intent
+        data class Reject(val id: String) : Intent
     }
 
     data class State(

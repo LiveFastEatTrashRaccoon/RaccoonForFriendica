@@ -32,29 +32,29 @@ internal fun NotificationItemPlaceholder(modifier: Modifier = Modifier) {
         ) {
             Box(
                 modifier =
-                    Modifier
-                        .size(IconSize.s)
-                        .clip(CircleShape)
-                        .shimmerEffect(),
+                Modifier
+                    .size(IconSize.s)
+                    .clip(CircleShape)
+                    .shimmerEffect(),
             )
 
             Box(
                 modifier =
-                    Modifier
-                        .height(30.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(CornerSize.s))
-                        .shimmerEffect(),
+                Modifier
+                    .height(30.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(CornerSize.s))
+                    .shimmerEffect(),
             )
         }
 
         Box(
             modifier =
-                Modifier
-                    .height(200.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(CornerSize.s))
-                    .shimmerEffect(),
+            Modifier
+                .height(200.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(CornerSize.s))
+                .shimmerEffect(),
         )
     }
 }

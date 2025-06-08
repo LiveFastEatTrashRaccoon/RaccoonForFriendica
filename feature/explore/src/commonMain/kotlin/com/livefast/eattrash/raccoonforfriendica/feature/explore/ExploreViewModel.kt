@@ -58,8 +58,8 @@ class ExploreViewModel(
     private val getInnerUrl: GetInnerUrlUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect>(
-        initialState = ExploreMviModel.State(),
-    ),
+    initialState = ExploreMviModel.State(),
+),
     ExploreMviModel {
     init {
         screenModelScope.launch {
@@ -70,7 +70,7 @@ class ExploreViewModel(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
                             lang = settings?.lang,
                         )
@@ -91,14 +91,14 @@ class ExploreViewModel(
                     updateState {
                         it.copy(
                             availableSections =
-                                buildList {
-                                    this += ExploreSection.Hashtags
-                                    this += ExploreSection.Posts
-                                    this += ExploreSection.Links
-                                    if (currentUser != null) {
-                                        this += ExploreSection.Suggestions
-                                    }
-                                },
+                            buildList {
+                                this += ExploreSection.Hashtags
+                                this += ExploreSection.Posts
+                                this += ExploreSection.Links
+                                if (currentUser != null) {
+                                    this += ExploreSection.Suggestions
+                                }
+                            },
                             currentUserId = currentUser?.id,
                         )
                     }
@@ -234,22 +234,19 @@ class ExploreViewModel(
         }
     }
 
-    private suspend fun updateUserInState(
-        userId: String,
-        block: (UserModel) -> UserModel,
-    ) {
+    private suspend fun updateUserInState(userId: String, block: (UserModel) -> UserModel) {
         updateState {
             it.copy(
                 items =
-                    it.items.map { item ->
-                        if (item is ExploreItemModel.User && item.user.id == userId) {
-                            item.copy(
-                                user = item.user.let(block),
-                            )
-                        } else {
-                            item
-                        }
-                    },
+                it.items.map { item ->
+                    if (item is ExploreItemModel.User && item.user.id == userId) {
+                        item.copy(
+                            user = item.user.let(block),
+                        )
+                    } else {
+                        item
+                    }
+                },
             )
         }
     }
@@ -304,35 +301,32 @@ class ExploreViewModel(
         }
     }
 
-    private suspend fun updateEntryInState(
-        entryId: String,
-        block: (TimelineEntryModel) -> TimelineEntryModel,
-    ) {
+    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
         updateState {
             it.copy(
                 items =
-                    it.items.map { item ->
-                        when {
-                            item is ExploreItemModel.Entry && item.entry.id == entryId -> {
-                                item.copy(
-                                    entry = item.entry.let(block),
-                                )
-                            }
-
-                            item is ExploreItemModel.Entry && item.entry.reblog?.id == entryId -> {
-                                item.copy(
-                                    entry =
-                                        item.entry.copy(
-                                            reblog = item.entry.reblog?.let(block),
-                                        ),
-                                )
-                            }
-
-                            else -> {
-                                item
-                            }
+                it.items.map { item ->
+                    when {
+                        item is ExploreItemModel.Entry && item.entry.id == entryId -> {
+                            item.copy(
+                                entry = item.entry.let(block),
+                            )
                         }
-                    },
+
+                        item is ExploreItemModel.Entry && item.entry.reblog?.id == entryId -> {
+                            item.copy(
+                                entry =
+                                item.entry.copy(
+                                    reblog = item.entry.reblog?.let(block),
+                                ),
+                            )
+                        }
+
+                        else -> {
+                            item
+                        }
+                    }
+                },
             )
         }
     }
@@ -341,13 +335,13 @@ class ExploreViewModel(
         updateState {
             it.copy(
                 items =
-                    it.items.filter { item ->
-                        when {
-                            item is ExploreItemModel.Entry && item.entry.id == entryId -> false
-                            item is ExploreItemModel.Entry && item.entry.reblog?.id == entryId -> false
-                            else -> true
-                        }
-                    },
+                it.items.filter { item ->
+                    when {
+                        item is ExploreItemModel.Entry && item.entry.id == entryId -> false
+                        item is ExploreItemModel.Entry && item.entry.reblog?.id == entryId -> false
+                        else -> true
+                    }
+                },
             )
         }
     }
@@ -483,12 +477,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun mute(
-        userId: String,
-        entryId: String,
-        duration: Duration,
-        disableNotifications: Boolean,
-    ) {
+    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         screenModelScope.launch {
             val res =
                 userRepository.mute(
@@ -502,10 +491,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun block(
-        userId: String,
-        entryId: String,
-    ) {
+    private fun block(userId: String, entryId: String) {
         screenModelScope.launch {
             val res = userRepository.unblock(userId)
             if (res != null) {
@@ -532,10 +518,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun submitPoll(
-        entry: TimelineEntryModel,
-        choices: List<Int>,
-    ) {
+    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         screenModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }

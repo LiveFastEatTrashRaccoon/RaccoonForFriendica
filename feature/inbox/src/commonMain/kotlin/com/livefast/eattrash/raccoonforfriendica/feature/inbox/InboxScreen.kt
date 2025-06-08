@@ -170,22 +170,22 @@ class InboxScreen : Screen {
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(connection)
-                            } else {
-                                Modifier
-                            },
-                        ).then(
-                            if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(connection)
+                        } else {
+                            Modifier
+                        },
+                    ).then(
+                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(InboxMviModel.Intent.Refresh)
@@ -226,7 +226,7 @@ class InboxScreen : Screen {
                                 detailOpener.openUserDetail(it)
                                 model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
                             },
-                            onUserRelationshipClicked = { userId, nextAction ->
+                            onClickUserRelationship = { userId, nextAction ->
                                 model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
                                 when (nextAction) {
                                     RelationshipStatusNextAction.AcceptRequest -> {
@@ -270,21 +270,25 @@ class InboxScreen : Screen {
                             }
                         }
                     }
-                    if (!uiState.initial && !uiState.loading && !uiState.refreshing && uiState.notifications.isEmpty()) {
+                    if (!uiState.initial &&
+                        !uiState.loading &&
+                        !uiState.refreshing &&
+                        uiState.notifications.isEmpty()
+                    ) {
                         item {
                             Text(
                                 modifier =
-                                    Modifier.fillMaxWidth().padding(
-                                        top = Spacing.m,
-                                        start = Spacing.m,
-                                        end = Spacing.m,
-                                    ),
+                                Modifier.fillMaxWidth().padding(
+                                    top = Spacing.m,
+                                    start = Spacing.m,
+                                    end = Spacing.m,
+                                ),
                                 text =
-                                    if (uiState.currentUserId != null) {
-                                        LocalStrings.current.messageEmptyInbox
-                                    } else {
-                                        LocalStrings.current.messageUserUnlogged
-                                    },
+                                if (uiState.currentUserId != null) {
+                                    LocalStrings.current.messageEmptyInbox
+                                } else {
+                                    LocalStrings.current.messageUserUnlogged
+                                },
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.bodyLarge,
                             )

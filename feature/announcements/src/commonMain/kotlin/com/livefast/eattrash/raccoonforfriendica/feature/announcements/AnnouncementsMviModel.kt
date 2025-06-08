@@ -11,15 +11,9 @@ interface AnnouncementsMviModel :
     sealed interface Intent {
         data object Refresh : Intent
 
-        data class AddReaction(
-            val id: String,
-            val name: String,
-        ) : Intent
+        data class AddReaction(val id: String, val name: String) : Intent
 
-        data class RemoveReaction(
-            val id: String,
-            val name: String,
-        ) : Intent
+        data class RemoveReaction(val id: String, val name: String) : Intent
     }
 
     data class State(

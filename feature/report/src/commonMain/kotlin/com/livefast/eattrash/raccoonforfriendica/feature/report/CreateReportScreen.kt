@@ -58,20 +58,17 @@ import com.livefast.eattrash.raccoonforfriendica.feature.report.di.CreateReportM
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class CreateReportScreen(
-    private val userId: String,
-    private val entryId: String?,
-) : Screen {
+class CreateReportScreen(private val userId: String, private val entryId: String?) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val model: CreateReportMviModel =
             rememberScreenModel(
                 arg =
-                    CreateReportMviModelParams(
-                        userId = userId,
-                        entryId = entryId.orEmpty(),
-                    ),
+                CreateReportMviModelParams(
+                    userId = userId,
+                    entryId = entryId.orEmpty(),
+                ),
             )
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
@@ -101,10 +98,10 @@ class CreateReportScreen(
         Scaffold(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             modifier =
-                Modifier
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .navigationBarsPadding()
-                    .safeImePadding(),
+            Modifier
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .navigationBarsPadding()
+                .safeImePadding(),
             topBar = {
                 TopAppBar(
                     windowInsets = topAppBarState.toWindowInsets(),
@@ -112,18 +109,18 @@ class CreateReportScreen(
                     title = {
                         Text(
                             text =
-                                buildString {
-                                    val author = uiState.user
-                                    if (author != null) {
-                                        if (entryId != null) {
-                                            append(LocalStrings.current.createReportTitleEntry)
-                                        } else {
-                                            append(LocalStrings.current.createReportTitleUser)
-                                        }
-                                        append(" ")
-                                        append(author.handle)
+                            buildString {
+                                val author = uiState.user
+                                if (author != null) {
+                                    if (entryId != null) {
+                                        append(LocalStrings.current.createReportTitleEntry)
+                                    } else {
+                                        append(LocalStrings.current.createReportTitleUser)
                                     }
-                                },
+                                    append(" ")
+                                    append(author.handle)
+                                }
+                            },
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },
@@ -169,11 +166,11 @@ class CreateReportScreen(
         ) { padding ->
             Column(
                 modifier =
-                    Modifier
-                        .padding(
-                            top = padding.calculateTopPadding(),
-                        ).consumeWindowInsets(padding)
-                        .verticalScroll(rememberScrollState()),
+                Modifier
+                    .padding(
+                        top = padding.calculateTopPadding(),
+                    ).consumeWindowInsets(padding)
+                    .verticalScroll(rememberScrollState()),
             ) {
                 // category
                 SettingsRow(
@@ -199,13 +196,13 @@ class CreateReportScreen(
                 // comment body
                 OutlinedTextField(
                     modifier =
-                        Modifier
-                            .padding(
-                                top = Spacing.s,
-                                start = Spacing.xs,
-                                end = Spacing.xs,
-                            ).fillMaxWidth()
-                            .height(300.dp),
+                    Modifier
+                        .padding(
+                            top = Spacing.s,
+                            start = Spacing.xs,
+                            end = Spacing.xs,
+                        ).fillMaxWidth()
+                        .height(300.dp),
                     placeholder = {
                         Text(
                             text = LocalStrings.current.createReportCommentPlaceholder,
@@ -213,10 +210,10 @@ class CreateReportScreen(
                     },
                     value = uiState.commentValue,
                     keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            capitalization = KeyboardCapitalization.Sentences,
-                        ),
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        capitalization = KeyboardCapitalization.Sentences,
+                    ),
                     onValueChange = { value ->
                         model.reduce(
                             CreateReportMviModel.Intent.SetComment(
@@ -230,7 +227,7 @@ class CreateReportScreen(
                 SettingsSwitchRow(
                     title = LocalStrings.current.createReportItemForward,
                     value = uiState.forward,
-                    onValueChanged = {
+                    onValueChange = {
                         model.reduce(CreateReportMviModel.Intent.ChangeForward(it))
                     },
                 )
@@ -244,10 +241,10 @@ class CreateReportScreen(
         if (categoryBottomSheetOpened) {
             CustomModalBottomSheet(
                 items =
-                    uiState.availableCategories.map {
-                        CustomModalBottomSheetItem(label = it.toReadableName())
-                    },
-                onSelected = { idx ->
+                uiState.availableCategories.map {
+                    CustomModalBottomSheetItem(label = it.toReadableName())
+                },
+                onSelect = { idx ->
                     categoryBottomSheetOpened = false
                     val categories = uiState.availableCategories
                     if (idx != null && idx in categories.indices) {

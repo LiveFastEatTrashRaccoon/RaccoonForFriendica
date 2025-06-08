@@ -64,8 +64,8 @@ class EntryDetailViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
-        initialState = EntryDetailMviModel.State(),
-    ),
+    initialState = EntryDetailMviModel.State(),
+),
     EntryDetailMviModel {
     init {
         screenModelScope.launch {
@@ -79,7 +79,7 @@ class EntryDetailViewModel(
                         it.copy(
                             blurNsfw = settings?.blurNsfw ?: true,
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
                             lang = settings?.lang,
                         )
@@ -192,11 +192,11 @@ class EntryDetailViewModel(
                     mainEntry = currentEntry,
                     currentIndex = initialIndex,
                     entries =
-                        if (initial) {
-                            entries
-                        } else {
-                            it.entries
-                        },
+                    if (initial) {
+                        entries
+                    } else {
+                        it.entries
+                    },
                 )
             }
 
@@ -250,13 +250,13 @@ class EntryDetailViewModel(
         updateState {
             it.copy(
                 entries =
-                    it.entries.mapIndexed { idx, entryList ->
-                        if (idx == it.currentIndex) {
-                            currentEntryList
-                        } else {
-                            entryList
-                        }
-                    },
+                it.entries.mapIndexed { idx, entryList ->
+                    if (idx == it.currentIndex) {
+                        currentEntryList
+                    } else {
+                        entryList
+                    }
+                },
                 refreshing = false,
                 initial = false,
                 loading = false,
@@ -264,10 +264,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private suspend fun reconstructAncestors(
-        entry: TimelineEntryModel,
-        rootId: String,
-    ): List<TimelineEntryModel> {
+    private suspend fun reconstructAncestors(entry: TimelineEntryModel, rootId: String): List<TimelineEntryModel> {
         suspend fun buildAncestorsRec(
             entry: TimelineEntryModel,
             list: List<TimelineEntryModel>,
@@ -336,13 +333,13 @@ class EntryDetailViewModel(
             updateState {
                 it.copy(
                     entries =
-                        it.entries.mapIndexed { idx, list ->
-                            if (idx == it.currentIndex) {
-                                replies
-                            } else {
-                                list
-                            }
-                        },
+                    it.entries.mapIndexed { idx, list ->
+                        if (idx == it.currentIndex) {
+                            replies
+                        } else {
+                            list
+                        }
+                    },
                 )
             }
         }
@@ -361,34 +358,31 @@ class EntryDetailViewModel(
         }
     }
 
-    private suspend fun updateEntryInState(
-        entryId: String,
-        block: (TimelineEntryModel) -> TimelineEntryModel,
-    ) {
+    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
         updateState {
             it.copy(
                 entries =
-                    it.entries.mapIndexed { idx, entryList ->
-                        if (idx == uiState.value.currentIndex) {
-                            entryList.map { entry ->
-                                when {
-                                    entry.id == entryId -> {
-                                        entry.let(block)
-                                    }
+                it.entries.mapIndexed { idx, entryList ->
+                    if (idx == uiState.value.currentIndex) {
+                        entryList.map { entry ->
+                            when {
+                                entry.id == entryId -> {
+                                    entry.let(block)
+                                }
 
-                                    entry.reblog?.id == entryId -> {
-                                        entry.copy(reblog = entry.reblog?.let(block))
-                                    }
+                                entry.reblog?.id == entryId -> {
+                                    entry.copy(reblog = entry.reblog?.let(block))
+                                }
 
-                                    else -> {
-                                        entry
-                                    }
+                                else -> {
+                                    entry
                                 }
                             }
-                        } else {
-                            entryList
                         }
-                    },
+                    } else {
+                        entryList
+                    }
+                },
             )
         }
     }
@@ -397,13 +391,13 @@ class EntryDetailViewModel(
         updateState {
             it.copy(
                 entries =
-                    it.entries.mapIndexed { idx, entryList ->
-                        if (idx == it.currentIndex) {
-                            entryList.filter { e -> e.id != entryId && e.reblog?.id != entryId }
-                        } else {
-                            entryList
-                        }
-                    },
+                it.entries.mapIndexed { idx, entryList ->
+                    if (idx == it.currentIndex) {
+                        entryList.filter { e -> e.id != entryId && e.reblog?.id != entryId }
+                    } else {
+                        entryList
+                    }
+                },
             )
         }
     }
@@ -539,12 +533,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun mute(
-        userId: String,
-        entryId: String,
-        duration: Duration,
-        disableNotifications: Boolean,
-    ) {
+    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         screenModelScope.launch {
             val res =
                 userRepository.mute(
@@ -558,10 +547,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun block(
-        userId: String,
-        entryId: String,
-    ) {
+    private fun block(userId: String, entryId: String) {
         screenModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
@@ -588,10 +574,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun submitPoll(
-        entry: TimelineEntryModel,
-        choices: List<Int>,
-    ) {
+    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         screenModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
@@ -745,13 +728,13 @@ class EntryDetailViewModel(
         updateState {
             it.copy(
                 entries =
-                    it.entries.mapIndexed { idx, entryList ->
-                        if (idx == it.currentIndex) {
-                            newEntries
-                        } else {
-                            entryList
-                        }
-                    },
+                it.entries.mapIndexed { idx, entryList ->
+                    if (idx == it.currentIndex) {
+                        newEntries
+                    } else {
+                        entryList
+                    }
+                },
             )
         }
     }

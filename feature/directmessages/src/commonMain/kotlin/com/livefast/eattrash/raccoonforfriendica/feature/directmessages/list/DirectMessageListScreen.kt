@@ -126,13 +126,13 @@ class DirectMessageListScreen : Screen {
                 AnimatedVisibility(
                     visible = isFabVisible,
                     enter =
-                        slideInVertically(
-                            initialOffsetY = { it * 2 },
-                        ),
+                    slideInVertically(
+                        initialOffsetY = { it * 2 },
+                    ),
                     exit =
-                        slideOutVertically(
-                            targetOffsetY = { it * 2 },
-                        ),
+                    slideOutVertically(
+                        targetOffsetY = { it * 2 },
+                    ),
                 ) {
                     FloatingActionButton(
                         onClick = {
@@ -149,16 +149,16 @@ class DirectMessageListScreen : Screen {
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(DirectMessageListMviModel.Intent.Refresh)
@@ -245,7 +245,7 @@ class DirectMessageListScreen : Screen {
                 autoloadImages = uiState.autoloadImages,
                 loading = uiState.userSearchLoading,
                 canFetchMore = uiState.userSearchCanFetchMore,
-                onSearchChanged = {
+                onSearch = {
                     model.reduce(DirectMessageListMviModel.Intent.UserSearchSetQuery(it))
                 },
                 onLoadMoreUsers = {

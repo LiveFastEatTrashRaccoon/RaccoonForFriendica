@@ -10,13 +10,9 @@ interface UserFeedbackMviModel :
     ScreenModel,
     MviModel<UserFeedbackMviModel.Intent, UserFeedbackMviModel.State, UserFeedbackMviModel.Effect> {
     sealed interface Intent {
-        data class SetComment(
-            val comment: String,
-        ) : Intent
+        data class SetComment(val comment: String) : Intent
 
-        data class SetEmail(
-            val email: String,
-        ) : Intent
+        data class SetEmail(val email: String) : Intent
 
         data object Submit : Intent
     }
@@ -32,8 +28,6 @@ interface UserFeedbackMviModel :
     sealed interface Effect {
         data object Success : Effect
 
-        data class Failure(
-            val message: String?,
-        ) : Effect
+        data class Failure(val message: String?) : Effect
     }
 }

@@ -26,8 +26,8 @@ class DrawerViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     accountRepository: AccountRepository,
 ) : DefaultMviModel<DrawerMviModel.Intent, DrawerMviModel.State, DrawerMviModel.Effect>(
-        initialState = DrawerMviModel.State(),
-    ),
+    initialState = DrawerMviModel.State(),
+),
     DrawerMviModel {
     init {
         screenModelScope.launch {

@@ -36,10 +36,10 @@ internal fun AnnouncementCard(
 
     Column(
         modifier =
-            modifier.padding(
-                vertical = Spacing.xxs,
-                horizontal = Spacing.s,
-            ),
+        modifier.padding(
+            vertical = Spacing.xxs,
+            horizontal = Spacing.s,
+        ),
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         // unread indicator
@@ -48,13 +48,13 @@ internal fun AnnouncementCard(
             if (!announcement.read) {
                 Box(
                     modifier =
-                        Modifier
-                            .size(IconSize.xs)
-                            .padding(2.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.onBackground,
-                                shape = CircleShape,
-                            ),
+                    Modifier
+                        .size(IconSize.xs)
+                        .padding(2.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.onBackground,
+                            shape = CircleShape,
+                        ),
                 )
             }
         }
@@ -86,11 +86,11 @@ internal fun AnnouncementCard(
             val date = announcement.published
             Text(
                 text =
-                    buildString {
-                        if (!date.isNullOrBlank()) {
-                            append(date.prettifyDate())
-                        }
-                    },
+                buildString {
+                    if (!date.isNullOrBlank()) {
+                        append(date.prettifyDate())
+                    }
+                },
                 style = MaterialTheme.typography.bodySmall,
                 color = ancillaryColor,
             )

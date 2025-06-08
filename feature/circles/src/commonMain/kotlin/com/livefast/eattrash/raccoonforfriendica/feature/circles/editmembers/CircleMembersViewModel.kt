@@ -29,8 +29,8 @@ class CircleMembersViewModel(
     private val imagePreloadManager: ImagePreloadManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<CircleMembersMviModel.Intent, CircleMembersMviModel.State, CircleMembersMviModel.Effect>(
-        initialState = CircleMembersMviModel.State(),
-    ),
+    initialState = CircleMembersMviModel.State(),
+),
     CircleMembersMviModel {
     init {
         screenModelScope.launch {
@@ -48,7 +48,7 @@ class CircleMembersViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)

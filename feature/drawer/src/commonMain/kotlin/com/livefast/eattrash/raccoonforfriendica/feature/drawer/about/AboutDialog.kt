@@ -45,7 +45,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getAppInfoReposit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutDialog(onClose: (() -> Unit)? = null) {
+fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
     val uriHandler = LocalUriHandler.current
     val appInfoRepository = remember { getAppInfoRepository() }
     val appInfo by appInfoRepository.appInfo.collectAsState()
@@ -57,16 +57,16 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
     }
 
     BasicAlertDialog(
-        modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
+        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onClose?.invoke()
         },
     ) {
         Column(
             modifier =
-                Modifier
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                    .padding(Spacing.m),
+            Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                .padding(Spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -77,9 +77,9 @@ fun AboutDialog(onClose: (() -> Unit)? = null) {
             Spacer(modifier = Modifier.height(Spacing.s))
             LazyColumn(
                 modifier =
-                    Modifier
-                        .padding(vertical = Spacing.s, horizontal = Spacing.m)
-                        .heightIn(max = 400.dp),
+                Modifier
+                    .padding(vertical = Spacing.s, horizontal = Spacing.m)
+                    .heightIn(max = 400.dp),
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
                 item {

@@ -17,8 +17,8 @@ class FollowRequestsViewModel(
     private val settingsRepository: SettingsRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<FollowRequestsMviModel.Intent, FollowRequestsMviModel.State, FollowRequestsMviModel.Effect>(
-        initialState = FollowRequestsMviModel.State(),
-    ),
+    initialState = FollowRequestsMviModel.State(),
+),
     FollowRequestsMviModel {
     init {
         screenModelScope.launch {
@@ -36,7 +36,7 @@ class FollowRequestsViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -88,20 +88,17 @@ class FollowRequestsViewModel(
         }
     }
 
-    private suspend fun updateItemInState(
-        id: String,
-        block: (UserModel) -> UserModel,
-    ) {
+    private suspend fun updateItemInState(id: String, block: (UserModel) -> UserModel) {
         updateState {
             it.copy(
                 items =
-                    it.items.map { user ->
-                        if (user.id == id) {
-                            user.let(block)
-                        } else {
-                            user
-                        }
-                    },
+                it.items.map { user ->
+                    if (user.id == id) {
+                        user.let(block)
+                    } else {
+                        user
+                    }
+                },
             )
         }
     }
@@ -110,7 +107,7 @@ class FollowRequestsViewModel(
         updateState {
             it.copy(
                 items =
-                    it.items.filter { e -> e.id != id },
+                it.items.filter { e -> e.id != id },
             )
         }
     }

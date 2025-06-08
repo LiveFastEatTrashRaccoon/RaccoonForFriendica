@@ -13,13 +13,9 @@ interface AlbumDetailMviModel :
 
         data object LoadNextPage : Intent
 
-        data class Delete(
-            val id: String,
-        ) : Intent
+        data class Delete(val id: String) : Intent
 
-        data class Create(
-            val byteArray: ByteArray,
-        ) : Intent {
+        data class Create(val byteArray: ByteArray) : Intent {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (other == null || this::class != other::class) return false
@@ -32,15 +28,9 @@ interface AlbumDetailMviModel :
             override fun hashCode(): Int = byteArray.contentHashCode()
         }
 
-        data class EditDescription(
-            val attachment: AttachmentModel,
-            val description: String,
-        ) : Intent
+        data class EditDescription(val attachment: AttachmentModel, val description: String) : Intent
 
-        data class Move(
-            val attachment: AttachmentModel,
-            val album: String,
-        ) : Intent
+        data class Move(val attachment: AttachmentModel, val album: String) : Intent
     }
 
     data class State(

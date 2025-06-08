@@ -25,8 +25,8 @@ class ProfileViewModel(
     private val authManager: AuthManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<ProfileMviModel.Intent, ProfileMviModel.State, ProfileMviModel.Effect>(
-        initialState = ProfileMviModel.State(),
-    ),
+    initialState = ProfileMviModel.State(),
+),
     ProfileMviModel {
     init {
         screenModelScope.launch {
@@ -63,7 +63,7 @@ class ProfileViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)

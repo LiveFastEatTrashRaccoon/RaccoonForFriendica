@@ -7,10 +7,7 @@ import org.kodein.di.bind
 import org.kodein.di.factory
 import org.kodein.di.instance
 
-data class ThreadMviModelParams(
-    val entryId: String,
-    val swipeNavigationEnabled: Boolean,
-)
+data class ThreadMviModelParams(val entryId: String, val swipeNavigationEnabled: Boolean)
 
 val threadModule =
     DI.Module("ThreadModule") {

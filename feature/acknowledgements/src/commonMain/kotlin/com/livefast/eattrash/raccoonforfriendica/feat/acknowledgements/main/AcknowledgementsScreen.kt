@@ -81,11 +81,11 @@ class AcknowledgementsScreen : Screen {
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(
-                            top = padding.calculateTopPadding(),
-                        ).nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .fillMaxSize(),
+                Modifier
+                    .padding(
+                        top = padding.calculateTopPadding(),
+                    ).nestedScroll(scrollBehavior.nestedScrollConnection)
+                    .fillMaxSize(),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(AcknowledgementsMviModel.Intent.Refresh)
@@ -93,9 +93,9 @@ class AcknowledgementsScreen : Screen {
             ) {
                 LazyColumn(
                     modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = Spacing.xs),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = Spacing.xs),
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
                     if (uiState.initial) {

@@ -25,8 +25,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
 internal fun NotificationHeaderUserInfo(
-    modifier: Modifier = Modifier,
     user: UserModel,
+    modifier: Modifier = Modifier,
     autoloadImages: Boolean = true,
     onOpenUser: (() -> Unit)? = null,
 ) {
@@ -37,12 +37,12 @@ internal fun NotificationHeaderUserInfo(
     val onOpenUserModifier =
         if (onOpenUser != null) {
             Modifier.clearAndSetSemantics { }
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                onOpenUser.invoke()
-            }
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) {
+                    onOpenUser.invoke()
+                }
         } else {
             Modifier.clearAndSetSemantics { }
         }
@@ -55,10 +55,10 @@ internal fun NotificationHeaderUserInfo(
         if (creatorAvatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
-                    Modifier
-                        .size(iconSize)
-                        .then(onOpenUserModifier)
-                        .clip(RoundedCornerShape(iconSize / 2)),
+                Modifier
+                    .size(iconSize)
+                    .then(onOpenUserModifier)
+                    .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
                 quality = FilterQuality.Low,
                 contentScale = ContentScale.FillBounds,

@@ -14,10 +14,7 @@ interface FollowedHashtagsMviModel :
 
         data object LoadNextPage : Intent
 
-        data class ToggleTagFollow(
-            val name: String,
-            val newValue: Boolean,
-        ) : Intent
+        data class ToggleTagFollow(val name: String, val newValue: Boolean) : Intent
     }
 
     data class State(

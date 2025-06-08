@@ -23,25 +23,26 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 
 @Composable
 internal fun AboutItem(
+    text: String,
+    modifier: Modifier = Modifier,
     painter: Painter? = null,
     icon: ImageVector? = null,
-    text: String,
     textDecoration: TextDecoration = TextDecoration.None,
     value: String = "",
     onClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier =
-            Modifier
-                .padding(
-                    horizontal = Spacing.xs,
-                    vertical = Spacing.s,
-                ).clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    onClick?.invoke()
-                },
+        modifier
+            .padding(
+                horizontal = Spacing.xs,
+                vertical = Spacing.s,
+            ).clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                onClick?.invoke()
+            },
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {

@@ -57,12 +57,13 @@ import kotlinx.coroutines.flow.map
 @Composable
 internal fun CircleAddUserDialog(
     query: String,
+    modifier: Modifier = Modifier,
     users: List<UserModel> = emptyList(),
     autoloadImages: Boolean = true,
     loading: Boolean = false,
     canFetchMore: Boolean = false,
     onLoadMoreUsers: (() -> Unit)? = null,
-    onSearchChanged: ((String) -> Unit)? = null,
+    onSearch: ((String) -> Unit)? = null,
     onClose: ((List<UserModel>?) -> Unit)? = null,
 ) {
     val selectedUsers = remember { mutableStateListOf<UserModel>() }
@@ -74,16 +75,16 @@ internal fun CircleAddUserDialog(
             .collectAsState(false)
 
     BasicAlertDialog(
-        modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
+        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onClose?.invoke(null)
         },
     ) {
         Column(
             modifier =
-                Modifier
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                    .padding(Spacing.m),
+            Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                .padding(Spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
@@ -98,10 +99,10 @@ internal fun CircleAddUserDialog(
                 hint = LocalStrings.current.selectUserSearchPlaceholder,
                 value = query,
                 onValueChange = {
-                    onSearchChanged?.invoke(it)
+                    onSearch?.invoke(it)
                 },
                 onClear = {
-                    onSearchChanged?.invoke((""))
+                    onSearch?.invoke((""))
                 },
             )
             Spacer(modifier = Modifier.height(Spacing.xs))
@@ -115,16 +116,16 @@ internal fun CircleAddUserDialog(
                             val animatingPart = getAnimatedDots()
                             Text(
                                 modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = Spacing.s, start = Spacing.s),
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = Spacing.s, start = Spacing.s),
                                 text =
-                                    buildString {
-                                        append("🔦")
-                                        append(" ")
-                                        append(LocalStrings.current.messageSearchInitialEmpty)
-                                        append(animatingPart)
-                                    },
+                                buildString {
+                                    append("🔦")
+                                    append(" ")
+                                    append(LocalStrings.current.messageSearchInitialEmpty)
+                                    append(animatingPart)
+                                },
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -224,16 +225,16 @@ private fun UserResultItem(
 
     Row(
         modifier =
-            modifier.padding(Spacing.s),
+        modifier.padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (avatar.isNotEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
-                    Modifier
-                        .size(avatarSize)
-                        .clip(RoundedCornerShape(avatarSize / 2)),
+                Modifier
+                    .size(avatarSize)
+                    .clip(RoundedCornerShape(avatarSize / 2)),
                 url = avatar,
                 quality = FilterQuality.Low,
                 contentScale = ContentScale.FillBounds,

@@ -10,10 +10,7 @@ import org.kodein.di.factory
 import org.kodein.di.instance
 import org.kodein.di.provider
 
-internal data class ConversationMviModelParams(
-    val otherUserId: String,
-    val parentUri: String,
-)
+internal data class ConversationMviModelParams(val otherUserId: String, val parentUri: String)
 
 val directMessagesModule =
     DI.Module("DirectMessagesModule") {

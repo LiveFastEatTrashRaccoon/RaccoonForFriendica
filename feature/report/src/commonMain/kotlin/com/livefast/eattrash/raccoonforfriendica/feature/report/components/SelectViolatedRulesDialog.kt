@@ -37,6 +37,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectViolatedRulesDialog(
+    modifier: Modifier = Modifier,
     initialSelection: List<String> = emptyList(),
     rules: List<RuleModel> = emptyList(),
     onClose: ((List<String>?) -> Unit)? = null,
@@ -49,16 +50,16 @@ fun SelectViolatedRulesDialog(
         }
 
     BasicAlertDialog(
-        modifier = Modifier.clip(RoundedCornerShape(CornerSize.xxl)),
+        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onClose?.invoke(null)
         },
     ) {
         Column(
             modifier =
-                Modifier
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                    .padding(Spacing.m),
+            Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+                .padding(Spacing.m),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
         ) {
@@ -76,7 +77,7 @@ fun SelectViolatedRulesDialog(
                     RuleItem(
                         selected = selected,
                         rule = item,
-                        onSelected = {
+                        onSelect = {
                             val ruleId = item.id
                             if (selectedIds.contains(ruleId)) {
                                 selectedIds.remove(ruleId)
@@ -116,7 +117,7 @@ private fun RuleItem(
     rule: RuleModel,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
-    onSelected: (() -> Unit)? = null,
+    onSelect: (() -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
 
@@ -141,7 +142,7 @@ private fun RuleItem(
             modifier = Modifier.size(IconSize.s),
             checked = selected,
             onCheckedChange = {
-                onSelected?.invoke()
+                onSelect?.invoke()
             },
         )
     }

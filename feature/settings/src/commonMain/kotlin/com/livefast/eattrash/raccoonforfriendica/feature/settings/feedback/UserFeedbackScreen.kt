@@ -84,9 +84,9 @@ class UserFeedbackScreen : Screen {
         Scaffold(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             modifier =
-                Modifier
-                    .navigationBarsPadding()
-                    .safeImePadding(),
+            Modifier
+                .navigationBarsPadding()
+                .safeImePadding(),
             topBar = {
                 TopAppBar(
                     windowInsets = topAppBarState.toWindowInsets(),
@@ -139,15 +139,15 @@ class UserFeedbackScreen : Screen {
         ) { padding ->
             Column(
                 modifier =
-                    Modifier
-                        .padding(
-                            top = padding.calculateTopPadding(),
-                            start = Spacing.l,
-                            end = Spacing.l,
-                        ).consumeWindowInsets(padding)
-                        .safeImePadding()
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                Modifier
+                    .padding(
+                        top = padding.calculateTopPadding(),
+                        start = Spacing.l,
+                        end = Spacing.l,
+                    ).consumeWindowInsets(padding)
+                    .safeImePadding()
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(Spacing.s),
             ) {
@@ -161,10 +161,10 @@ class UserFeedbackScreen : Screen {
                     value = uiState.email,
                     isError = uiState.emailError != null,
                     keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            autoCorrectEnabled = false,
-                        ),
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        autoCorrectEnabled = false,
+                    ),
                     onValueChange = { value ->
                         model.reduce(UserFeedbackMviModel.Intent.SetEmail(value))
                     },
@@ -201,10 +201,10 @@ class UserFeedbackScreen : Screen {
                     value = uiState.comment,
                     isError = uiState.commentError != null,
                     keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            capitalization = KeyboardCapitalization.Sentences,
-                        ),
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        capitalization = KeyboardCapitalization.Sentences,
+                    ),
                     placeholder = {
                         Text(
                             text = LocalStrings.current.userFeedbackCommentPlaceholder,

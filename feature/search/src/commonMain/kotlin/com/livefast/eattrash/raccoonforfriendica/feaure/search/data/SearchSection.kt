@@ -14,10 +14,9 @@ sealed interface SearchSection {
 }
 
 @Composable
-fun SearchSection.toReadableName(): String =
-    when (this) {
-        SearchSection.Posts -> LocalStrings.current.accountSectionPosts
-        SearchSection.Users -> LocalStrings.current.searchSectionUsers
-        SearchSection.Hashtags -> LocalStrings.current.exploreSectionHashtags
-        SearchSection.Groups -> LocalStrings.current.circleTypeGroup
-    }
+fun SearchSection.toReadableName(): String = when (this) {
+    SearchSection.Posts -> LocalStrings.current.accountSectionPosts
+    SearchSection.Users -> LocalStrings.current.searchSectionUsers
+    SearchSection.Hashtags -> LocalStrings.current.exploreSectionHashtags
+    SearchSection.Groups -> LocalStrings.current.circleTypeGroup
+}

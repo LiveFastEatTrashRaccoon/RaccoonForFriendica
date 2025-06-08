@@ -30,8 +30,8 @@ class EditProfileViewModel(
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : DefaultMviModel<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect>(
-        initialState = EditProfileMviModel.State(),
-    ),
+    initialState = EditProfileMviModel.State(),
+),
     EditProfileMviModel {
     init {
         screenModelScope.launch {
@@ -49,7 +49,7 @@ class EditProfileViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -186,11 +186,7 @@ class EditProfileViewModel(
         }
     }
 
-    private fun editField(
-        index: Int,
-        key: String,
-        value: String,
-    ) {
+    private fun editField(index: Int, key: String, value: String) {
         screenModelScope.launch {
             updateState {
                 val newFields =
@@ -246,11 +242,7 @@ class EditProfileViewModel(
         }
     }
 
-    private fun getNewTextFieldValue(
-        value: TextFieldValue,
-        additionalPart: String,
-        offsetAfter: Int,
-    ): TextFieldValue {
+    private fun getNewTextFieldValue(value: TextFieldValue, additionalPart: String, offsetAfter: Int): TextFieldValue {
         val (text, selection) = value.let { it.text to it.selection }
         val newText =
             buildString {
@@ -276,10 +268,7 @@ class EditProfileViewModel(
         return value.copy(text = newText, selection = newSelection)
     }
 
-    private fun insertCustomEmoji(
-        fieldType: EditProfilerFieldType,
-        emoji: EmojiModel,
-    ) {
+    private fun insertCustomEmoji(fieldType: EditProfilerFieldType, emoji: EmojiModel) {
         screenModelScope.launch {
             val value =
                 when (fieldType) {

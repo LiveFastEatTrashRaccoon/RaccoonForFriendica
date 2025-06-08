@@ -51,12 +51,12 @@ internal fun ConversationItem(
 
     Column(
         modifier =
-            modifier.clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                onClick?.invoke(parentUri)
-            },
+        modifier.clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null,
+        ) {
+            onClick?.invoke(parentUri)
+        },
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         Row(
@@ -67,9 +67,9 @@ internal fun ConversationItem(
             if (avatar.isNotEmpty() && autoloadImages) {
                 CustomImage(
                     modifier =
-                        Modifier
-                            .size(avatarSize)
-                            .clip(RoundedCornerShape(avatarSize / 2)),
+                    Modifier
+                        .size(avatarSize)
+                        .clip(RoundedCornerShape(avatarSize / 2)),
                     url = avatar,
                     quality = FilterQuality.Low,
                     contentScale = ContentScale.FillBounds,
@@ -126,30 +126,30 @@ internal fun ConversationItem(
 
         Text(
             modifier =
-                Modifier.padding(
-                    top = Spacing.xs,
-                    start = contentPadding,
-                    end = contentPadding,
-                    bottom = Spacing.xs,
-                ),
+            Modifier.padding(
+                top = Spacing.xs,
+                start = contentPadding,
+                end = contentPadding,
+                bottom = Spacing.xs,
+            ),
             text =
-                buildAnnotatedString {
-                    append(LocalStrings.current.messages(conversation.messageCount))
+            buildAnnotatedString {
+                append(LocalStrings.current.messages(conversation.messageCount))
 
-                    if (conversation.unreadCount > 0) {
-                        append(" (")
-                        withStyle(SpanStyle(color = fullColor)) {
-                            append(LocalStrings.current.unreadMessages(conversation.unreadCount))
-                        }
-                        append(")")
+                if (conversation.unreadCount > 0) {
+                    append(" (")
+                    withStyle(SpanStyle(color = fullColor)) {
+                        append(LocalStrings.current.unreadMessages(conversation.unreadCount))
                     }
+                    append(")")
+                }
 
-                    val date = message.created
-                    if (!date.isNullOrEmpty()) {
-                        append(" • ")
-                        append(date.prettifyDate())
-                    }
-                },
+                val date = message.created
+                if (!date.isNullOrEmpty()) {
+                    append(" • ")
+                    append(date.prettifyDate())
+                }
+            },
             style = MaterialTheme.typography.titleSmall,
             color = ancillaryColor,
         )

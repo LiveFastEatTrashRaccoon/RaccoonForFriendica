@@ -23,8 +23,8 @@ class FollowedHashtagsViewModel(
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<FollowedHashtagsMviModel.Intent, FollowedHashtagsMviModel.State, FollowedHashtagsMviModel.Effect>(
-        initialState = FollowedHashtagsMviModel.State(),
-    ),
+    initialState = FollowedHashtagsMviModel.State(),
+),
     FollowedHashtagsMviModel {
     init {
         screenModelScope.launch {
@@ -39,7 +39,7 @@ class FollowedHashtagsViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -104,20 +104,17 @@ class FollowedHashtagsViewModel(
         }
     }
 
-    private suspend fun updateItemInState(
-        name: String,
-        block: (TagModel) -> TagModel,
-    ) {
+    private suspend fun updateItemInState(name: String, block: (TagModel) -> TagModel) {
         updateState {
             it.copy(
                 items =
-                    it.items.map { tag ->
-                        if (tag.name == name) {
-                            tag.let(block)
-                        } else {
-                            tag
-                        }
-                    },
+                it.items.map { tag ->
+                    if (tag.name == name) {
+                        tag.let(block)
+                    } else {
+                        tag
+                    }
+                },
             )
         }
     }
@@ -126,15 +123,12 @@ class FollowedHashtagsViewModel(
         updateState {
             it.copy(
                 items =
-                    it.items.filter { tag -> tag.name != name },
+                it.items.filter { tag -> tag.name != name },
             )
         }
     }
 
-    private fun toggleTagFollow(
-        name: String,
-        follow: Boolean,
-    ) {
+    private fun toggleTagFollow(name: String, follow: Boolean) {
         hapticFeedback.vibrate()
         screenModelScope.launch {
             updateItemInState(name) { it.copy(followingPending = true) }

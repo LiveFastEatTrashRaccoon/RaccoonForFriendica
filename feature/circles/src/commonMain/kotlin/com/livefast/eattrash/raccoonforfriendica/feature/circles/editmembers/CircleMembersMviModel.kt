@@ -11,21 +11,13 @@ interface CircleMembersMviModel :
     sealed interface Intent {
         data object Refresh : Intent
 
-        data class Remove(
-            val userId: String,
-        ) : Intent
+        data class Remove(val userId: String) : Intent
 
-        data class SetSearchUserQuery(
-            val text: String,
-        ) : Intent
+        data class SetSearchUserQuery(val text: String) : Intent
 
-        data class ToggleAddUsersDialog(
-            val opened: Boolean,
-        ) : Intent
+        data class ToggleAddUsersDialog(val opened: Boolean) : Intent
 
-        data class Add(
-            val users: List<UserModel>,
-        ) : Intent
+        data class Add(val users: List<UserModel>) : Intent
 
         data object UserSearchLoadNextPage : Intent
     }

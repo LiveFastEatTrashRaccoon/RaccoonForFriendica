@@ -17,8 +17,8 @@ class GalleryViewModel(
     private val settingsRepository: SettingsRepository,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<GalleryMviModel.Intent, GalleryMviModel.State, GalleryMviModel.Effect>(
-        initialState = GalleryMviModel.State(),
-    ),
+    initialState = GalleryMviModel.State(),
+),
     GalleryMviModel {
     init {
         screenModelScope.launch {
@@ -27,7 +27,7 @@ class GalleryViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -83,28 +83,22 @@ class GalleryViewModel(
         updateState { it.copy(items = it.items.filter { e -> e.name != name }) }
     }
 
-    private suspend fun updateItemInState(
-        name: String,
-        block: (MediaAlbumModel) -> MediaAlbumModel,
-    ) {
+    private suspend fun updateItemInState(name: String, block: (MediaAlbumModel) -> MediaAlbumModel) {
         updateState {
             it.copy(
                 items =
-                    it.items.map { album ->
-                        if (album.name == name) {
-                            album.let(block)
-                        } else {
-                            album
-                        }
-                    },
+                it.items.map { album ->
+                    if (album.name == name) {
+                        album.let(block)
+                    } else {
+                        album
+                    }
+                },
             )
         }
     }
 
-    private fun updateAlbum(
-        oldName: String,
-        newName: String,
-    ) {
+    private fun updateAlbum(oldName: String, newName: String) {
         screenModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val res =

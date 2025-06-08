@@ -12,21 +12,13 @@ interface CreateReportMviModel :
     ScreenModel,
     MviModel<CreateReportMviModel.Intent, CreateReportMviModel.State, CreateReportMviModel.Effect> {
     sealed interface Intent {
-        data class SetComment(
-            val value: TextFieldValue,
-        ) : Intent
+        data class SetComment(val value: TextFieldValue) : Intent
 
-        data class ChangeCategory(
-            val category: ReportCategory,
-        ) : Intent
+        data class ChangeCategory(val category: ReportCategory) : Intent
 
-        data class ChangeViolatedRules(
-            val ruleIds: List<String>,
-        ) : Intent
+        data class ChangeViolatedRules(val ruleIds: List<String>) : Intent
 
-        data class ChangeForward(
-            val value: Boolean,
-        ) : Intent
+        data class ChangeForward(val value: Boolean) : Intent
 
         data object Submit : Intent
     }

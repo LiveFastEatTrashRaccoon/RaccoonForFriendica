@@ -34,21 +34,21 @@ internal fun AcknowledgementItem(
 
     Row(
         modifier =
-            modifier
-                .clip(
-                    shape = RoundedCornerShape(CornerSize.xl),
-                ).then(
-                    if (onClick != null) {
-                        Modifier.clickable {
-                            onClick()
-                        }
-                    } else {
-                        Modifier
-                    },
-                ).padding(
-                    vertical = Spacing.xs,
-                    horizontal = Spacing.s,
-                ),
+        modifier
+            .clip(
+                shape = RoundedCornerShape(CornerSize.xl),
+            ).then(
+                if (onClick != null) {
+                    Modifier.clickable {
+                        onClick()
+                    }
+                } else {
+                    Modifier
+                },
+            ).padding(
+                vertical = Spacing.xs,
+                horizontal = Spacing.s,
+            ),
         horizontalArrangement = Arrangement.spacedBy(Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -56,9 +56,9 @@ internal fun AcknowledgementItem(
             item.avatar.also { url ->
                 CustomImage(
                     modifier =
-                        Modifier
-                            .size(iconSize)
-                            .clip(RoundedCornerShape(iconSize / 2)),
+                    Modifier
+                        .size(iconSize)
+                        .clip(RoundedCornerShape(iconSize / 2)),
                     contentDescription = null,
                     url = url,
                     autoload = true,

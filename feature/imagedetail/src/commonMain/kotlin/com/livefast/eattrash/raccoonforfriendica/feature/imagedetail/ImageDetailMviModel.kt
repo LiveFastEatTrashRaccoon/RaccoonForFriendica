@@ -10,15 +10,11 @@ interface ImageDetailMviModel :
     ScreenModel,
     MviModel<ImageDetailMviModel.Intent, ImageDetailMviModel.UiState, ImageDetailMviModel.Effect> {
     sealed interface Intent {
-        data class ChangeIndex(
-            val index: Int,
-        ) : Intent
+        data class ChangeIndex(val index: Int) : Intent
 
         data object SaveToGallery : Intent
 
-        data class ChangeContentScale(
-            val contentScale: ContentScale,
-        ) : Intent
+        data class ChangeContentScale(val contentScale: ContentScale) : Intent
 
         data object ShareAsUrl : Intent
 

@@ -14,8 +14,8 @@ class EventDetailViewModel(
     eventCache: LocalItemCache<EventModel>,
     private val settingsRepository: SettingsRepository,
 ) : DefaultMviModel<EventDetailMviModel.Intent, EventDetailMviModel.State, EventDetailMviModel.Effect>(
-        initialState = EventDetailMviModel.State(),
-    ),
+    initialState = EventDetailMviModel.State(),
+),
     EventDetailMviModel {
     init {
         screenModelScope.launch {
@@ -24,7 +24,7 @@ class EventDetailViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)

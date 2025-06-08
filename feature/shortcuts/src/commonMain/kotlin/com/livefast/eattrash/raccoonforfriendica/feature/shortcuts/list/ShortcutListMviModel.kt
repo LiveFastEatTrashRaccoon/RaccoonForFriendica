@@ -9,9 +9,7 @@ interface ShortcutListMviModel :
     sealed interface Intent {
         data object Refresh : Intent
 
-        data class Delete(
-            val node: String,
-        ) : Intent
+        data class Delete(val node: String) : Intent
     }
 
     data class State(

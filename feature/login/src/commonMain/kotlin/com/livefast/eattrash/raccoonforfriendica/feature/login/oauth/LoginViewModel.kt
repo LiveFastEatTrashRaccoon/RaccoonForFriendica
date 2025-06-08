@@ -23,8 +23,8 @@ class LoginViewModel(
     private val authManager: AuthManager,
     private val loginUseCase: LoginUseCase,
 ) : DefaultMviModel<LoginMviModel.Intent, LoginMviModel.State, LoginMviModel.Effect>(
-        initialState = LoginMviModel.State(),
-    ),
+    initialState = LoginMviModel.State(),
+),
     LoginMviModel {
     init {
         screenModelScope.launch {
@@ -141,10 +141,7 @@ class LoginViewModel(
     }
 }
 
-private fun getSignupUrl(
-    node: String,
-    type: LoginType,
-) = buildString {
+private fun getSignupUrl(node: String, type: LoginType) = buildString {
     when (type) {
         LoginType.Friendica -> {
             append("https://")

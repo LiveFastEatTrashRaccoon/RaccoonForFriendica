@@ -9,10 +9,7 @@ interface EventDetailMviModel :
     MviModel<EventDetailMviModel.Intent, EventDetailMviModel.State, EventDetailMviModel.Effect> {
     sealed interface Intent
 
-    data class State(
-        val event: EventModel? = null,
-        val hideNavigationBarWhileScrolling: Boolean = true,
-    )
+    data class State(val event: EventModel? = null, val hideNavigationBarWhileScrolling: Boolean = true)
 
     sealed interface Effect
 }

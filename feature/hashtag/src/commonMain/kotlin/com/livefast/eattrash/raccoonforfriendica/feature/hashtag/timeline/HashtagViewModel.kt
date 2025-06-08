@@ -59,8 +59,8 @@ class HashtagViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>(
-        initialState = HashtagMviModel.State(),
-    ),
+    initialState = HashtagMviModel.State(),
+),
     HashtagMviModel {
     init {
         screenModelScope.launch {
@@ -81,7 +81,7 @@ class HashtagViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -211,28 +211,25 @@ class HashtagViewModel(
         }
     }
 
-    private suspend fun updateEntryInState(
-        entryId: String,
-        block: (TimelineEntryModel) -> TimelineEntryModel,
-    ) {
+    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
         updateState {
             it.copy(
                 entries =
-                    it.entries.map { entry ->
-                        when {
-                            entry.id == entryId -> {
-                                entry.let(block)
-                            }
-
-                            entry.reblog?.id == entryId -> {
-                                entry.copy(reblog = entry.reblog?.let(block))
-                            }
-
-                            else -> {
-                                entry
-                            }
+                it.entries.map { entry ->
+                    when {
+                        entry.id == entryId -> {
+                            entry.let(block)
                         }
-                    },
+
+                        entry.reblog?.id == entryId -> {
+                            entry.copy(reblog = entry.reblog?.let(block))
+                        }
+
+                        else -> {
+                            entry
+                        }
+                    }
+                },
             )
         }
     }
@@ -397,12 +394,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun mute(
-        userId: String,
-        entryId: String,
-        duration: Duration,
-        disableNotifications: Boolean,
-    ) {
+    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         screenModelScope.launch {
             val res =
                 userRepository.mute(
@@ -416,10 +408,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun block(
-        userId: String,
-        entryId: String,
-    ) {
+    private fun block(userId: String, entryId: String) {
         screenModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
@@ -446,10 +435,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun submitPoll(
-        entry: TimelineEntryModel,
-        choices: List<Int>,
-    ) {
+    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         screenModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }

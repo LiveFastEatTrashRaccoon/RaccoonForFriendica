@@ -38,8 +38,8 @@ class UnpublishedViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<UnpublishedMviModel.Intent, UnpublishedMviModel.State, UnpublishedMviModel.Effect>(
-        initialState = UnpublishedMviModel.State(),
-    ),
+    initialState = UnpublishedMviModel.State(),
+),
     UnpublishedMviModel {
     init {
         screenModelScope.launch {
@@ -75,7 +75,7 @@ class UnpublishedViewModel(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
                         )
                     }
@@ -167,19 +167,16 @@ class UnpublishedViewModel(
         }
     }
 
-    private suspend fun updateEntryInState(
-        entryId: String,
-        block: (TimelineEntryModel) -> TimelineEntryModel,
-    ) {
+    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
         updateState {
             it.copy(
                 entries =
-                    it.entries.map { entry ->
-                        when {
-                            entry.id == entryId -> entry.let(block)
-                            else -> entry
-                        }
-                    },
+                it.entries.map { entry ->
+                    when {
+                        entry.id == entryId -> entry.let(block)
+                        else -> entry
+                    }
+                },
             )
         }
     }

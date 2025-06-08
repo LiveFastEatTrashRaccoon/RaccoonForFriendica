@@ -126,17 +126,17 @@ class NodeInfoScreen : Screen {
             content = { padding ->
                 LazyColumn(
                     modifier =
-                        Modifier
-                            .testTag(NodeInfoTestTags.COLUMN)
-                            .padding(padding)
-                            .fillMaxWidth()
-                            .then(
-                                if (uiState.hideNavigationBarWhileScrolling) {
-                                    Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                                } else {
-                                    Modifier
-                                },
-                            ),
+                    Modifier
+                        .testTag(NodeInfoTestTags.COLUMN)
+                        .padding(padding)
+                        .fillMaxWidth()
+                        .then(
+                            if (uiState.hideNavigationBarWhileScrolling) {
+                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                            } else {
+                                Modifier
+                            },
+                        ),
                     state = lazyListState,
                     verticalArrangement = Arrangement.spacedBy(Spacing.s),
                 ) {
@@ -223,11 +223,11 @@ class NodeInfoScreen : Screen {
                                 )
                                 ContactUserItem(
                                     modifier =
-                                        Modifier.padding(
-                                            top = Spacing.xs,
-                                            start = Spacing.s,
-                                            end = Spacing.s,
-                                        ),
+                                    Modifier.padding(
+                                        top = Spacing.xs,
+                                        start = Spacing.s,
+                                        end = Spacing.s,
+                                    ),
                                     user = contact,
                                     autoloadImages = uiState.autoloadImages,
                                     onClick = {
@@ -270,8 +270,8 @@ class NodeInfoScreen : Screen {
                             SettingsRow(
                                 title = LocalStrings.current.settingsAboutAppVersion,
                                 value =
-                                    uiState.info?.version
-                                        ?: LocalStrings.current.shortUnavailable,
+                                uiState.info?.version
+                                    ?: LocalStrings.current.shortUnavailable,
                             )
                         }
 
@@ -303,9 +303,9 @@ private fun HeaderItem(
         if (!thumbnail.isNullOrEmpty() && autoloadImages) {
             CustomImage(
                 modifier =
-                    Modifier
-                        .size(thumbnailSize)
-                        .clip(RoundedCornerShape(thumbnailSize / 2)),
+                Modifier
+                    .size(thumbnailSize)
+                    .clip(RoundedCornerShape(thumbnailSize / 2)),
                 url = thumbnail,
                 quality = FilterQuality.Low,
                 contentScale = ContentScale.FillBounds,
@@ -330,8 +330,8 @@ private fun HeaderItem(
 @Composable
 private fun ContactUserItem(
     user: UserModel,
-    autoloadImages: Boolean = true,
     modifier: Modifier = Modifier,
+    autoloadImages: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {
     val avatar = user.avatar.orEmpty()
@@ -346,24 +346,24 @@ private fun ContactUserItem(
     ) {
         Row(
             modifier =
-                Modifier
-                    .clickable {
-                        onClick?.invoke()
-                    }.padding(
-                        start = Spacing.m,
-                        end = Spacing.s,
-                        top = Spacing.s,
-                        bottom = Spacing.s,
-                    ),
+            Modifier
+                .clickable {
+                    onClick?.invoke()
+                }.padding(
+                    start = Spacing.m,
+                    end = Spacing.s,
+                    top = Spacing.s,
+                    bottom = Spacing.s,
+                ),
             horizontalArrangement = Arrangement.spacedBy(Spacing.m),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (avatar.isNotEmpty() && autoloadImages) {
                 CustomImage(
                     modifier =
-                        Modifier
-                            .size(avatarSize)
-                            .clip(RoundedCornerShape(avatarSize / 2)),
+                    Modifier
+                        .size(avatarSize)
+                        .clip(RoundedCornerShape(avatarSize / 2)),
                     url = avatar,
                     quality = FilterQuality.Low,
                     contentScale = ContentScale.FillBounds,
@@ -413,11 +413,7 @@ private fun ContactUserItem(
 }
 
 @Composable
-private fun RuleItem(
-    rule: RuleModel,
-    modifier: Modifier = Modifier,
-    onOpenUrl: ((String) -> Unit)? = null,
-) {
+private fun RuleItem(rule: RuleModel, modifier: Modifier = Modifier, onOpenUrl: ((String) -> Unit)? = null) {
     ContentBody(
         modifier = modifier,
         content = rule.text,

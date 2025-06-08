@@ -140,13 +140,13 @@ class CirclesScreen : Screen {
                 AnimatedVisibility(
                     visible = isFabVisible,
                     enter =
-                        slideInVertically(
-                            initialOffsetY = { it * 2 },
-                        ),
+                    slideInVertically(
+                        initialOffsetY = { it * 2 },
+                    ),
                     exit =
-                        slideOutVertically(
-                            targetOffsetY = { it * 2 },
-                        ),
+                    slideOutVertically(
+                        targetOffsetY = { it * 2 },
+                    ),
                 ) {
                     FloatingActionButton(
                         onClick = {
@@ -174,16 +174,16 @@ class CirclesScreen : Screen {
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ).nestedScroll(fabNestedScrollConnection),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ).nestedScroll(fabNestedScrollConnection),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(CirclesMviModel.Intent.Refresh)
@@ -223,17 +223,17 @@ class CirclesScreen : Screen {
                                         model.reduce(CirclesMviModel.Intent.OpenDetail(item.circle))
                                     },
                                     options =
-                                        buildList {
-                                            if (item.circle.canBeEdited) {
-                                                this += OptionId.Edit.toOption()
-                                                this += OptionId.Delete.toOption()
-                                                this +=
-                                                    CustomOptions.EditMembers.toOption(
-                                                        label = LocalStrings.current.actionEditMembers,
-                                                    )
-                                            }
-                                        },
-                                    onOptionSelected = { optionId ->
+                                    buildList {
+                                        if (item.circle.canBeEdited) {
+                                            this += OptionId.Edit.toOption()
+                                            this += OptionId.Delete.toOption()
+                                            this +=
+                                                CustomOptions.EditMembers.toOption(
+                                                    label = LocalStrings.current.actionEditMembers,
+                                                )
+                                        }
+                                    },
+                                    onSelectOption = { optionId ->
                                         when (optionId) {
                                             OptionId.Edit -> {
                                                 model.reduce(CirclesMviModel.Intent.OpenEditor(item.circle))
@@ -300,7 +300,7 @@ class CirclesScreen : Screen {
         if (editorData != null) {
             CircleEditorDialog(
                 data = editorData,
-                onDataChanged = { newData ->
+                onDataChange = { newData ->
                     model.reduce(CirclesMviModel.Intent.UpdateEditorData(newData))
                 },
                 onClose = { success ->

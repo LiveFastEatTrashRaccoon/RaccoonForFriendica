@@ -66,8 +66,8 @@ class UserDetailViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
 ) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
-        initialState = UserDetailMviModel.State(),
-    ),
+    initialState = UserDetailMviModel.State(),
+),
     UserDetailMviModel {
     init {
         screenModelScope.launch {
@@ -84,7 +84,7 @@ class UserDetailViewModel(
                             blurNsfw = settings?.blurNsfw ?: true,
                             maxBodyLines = settings?.maxPostBodyLines ?: Int.MAX_VALUE,
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                             layout = settings?.timelineLayout ?: TimelineLayout.Full,
                             lang = settings?.lang,
                         )
@@ -199,12 +199,12 @@ class UserDetailViewModel(
         updateState {
             it.copy(
                 user =
-                    user?.copy(
-                        relationshipStatus = relationship?.toStatus(),
-                        notificationStatus = relationship?.toNotificationStatus(),
-                        muted = relationship?.muting == true,
-                        blocked = relationship?.blocking == true,
-                    ),
+                user?.copy(
+                    relationshipStatus = relationship?.toStatus(),
+                    notificationStatus = relationship?.toNotificationStatus(),
+                    muted = relationship?.muting == true,
+                    blocked = relationship?.blocking == true,
+                ),
                 personalNote = relationship?.note,
                 rateLimit = rateLimit,
             )
@@ -268,14 +268,14 @@ class UserDetailViewModel(
             updateState {
                 it.copy(
                     user =
-                        it.user
-                            ?.copy(
-                                relationshipStatus = newStatus,
-                                notificationStatus = newNotificationStatus,
-                                relationshipStatusPending = false,
-                            )?.also { user ->
-                                notificationCenter.send(UserUpdatedEvent(user = user))
-                            },
+                    it.user
+                        ?.copy(
+                            relationshipStatus = newStatus,
+                            notificationStatus = newNotificationStatus,
+                            relationshipStatusPending = false,
+                        )?.also { user ->
+                            notificationCenter.send(UserUpdatedEvent(user = user))
+                        },
                 )
             }
         }
@@ -292,41 +292,38 @@ class UserDetailViewModel(
             updateState {
                 it.copy(
                     user =
-                        it.user
-                            ?.copy(
-                                relationshipStatus = newStatus,
-                                notificationStatus = newNotificationStatus,
-                                relationshipStatusPending = false,
-                            )?.also { user ->
-                                notificationCenter.send(UserUpdatedEvent(user = user))
-                            },
+                    it.user
+                        ?.copy(
+                            relationshipStatus = newStatus,
+                            notificationStatus = newNotificationStatus,
+                            relationshipStatusPending = false,
+                        )?.also { user ->
+                            notificationCenter.send(UserUpdatedEvent(user = user))
+                        },
                 )
             }
         }
     }
 
-    private suspend fun updateEntryInState(
-        entryId: String,
-        block: (TimelineEntryModel) -> TimelineEntryModel,
-    ) {
+    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
         updateState {
             it.copy(
                 entries =
-                    it.entries.map { entry ->
-                        when {
-                            entry.id == entryId -> {
-                                entry.let(block)
-                            }
-
-                            entry.reblog?.id == entryId -> {
-                                entry.copy(reblog = entry.reblog?.let(block))
-                            }
-
-                            else -> {
-                                entry
-                            }
+                it.entries.map { entry ->
+                    when {
+                        entry.id == entryId -> {
+                            entry.let(block)
                         }
-                    },
+
+                        entry.reblog?.id == entryId -> {
+                            entry.copy(reblog = entry.reblog?.let(block))
+                        }
+
+                        else -> {
+                            entry
+                        }
+                    }
+                },
             )
         }
     }
@@ -466,19 +463,16 @@ class UserDetailViewModel(
             updateState {
                 it.copy(
                     user =
-                        it.user?.copy(
-                            notificationStatus = newNotificationStatus,
-                            notificationStatusPending = false,
-                        ),
+                    it.user?.copy(
+                        notificationStatus = newNotificationStatus,
+                        notificationStatusPending = false,
+                    ),
                 )
             }
         }
     }
 
-    private fun submitPoll(
-        entry: TimelineEntryModel,
-        choices: List<Int>,
-    ) {
+    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         screenModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
@@ -500,11 +494,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun toggleMute(
-        muted: Boolean,
-        duration: Duration = Duration.INFINITE,
-        disableNotifications: Boolean,
-    ) {
+    private fun toggleMute(muted: Boolean, duration: Duration = Duration.INFINITE, disableNotifications: Boolean) {
         screenModelScope.launch {
             val relationship =
                 if (muted) {
@@ -520,12 +510,12 @@ class UserDetailViewModel(
                 updateState {
                     it.copy(
                         user =
-                            it.user?.copy(
-                                relationshipStatus = relationship.toStatus(),
-                                notificationStatus = relationship.toNotificationStatus(),
-                                muted = relationship.muting,
-                                blocked = relationship.blocking,
-                            ),
+                        it.user?.copy(
+                            relationshipStatus = relationship.toStatus(),
+                            notificationStatus = relationship.toNotificationStatus(),
+                            muted = relationship.muting,
+                            blocked = relationship.blocking,
+                        ),
                     )
                 }
             }
@@ -544,12 +534,12 @@ class UserDetailViewModel(
                 updateState {
                     it.copy(
                         user =
-                            it.user?.copy(
-                                relationshipStatus = relationship.toStatus(),
-                                notificationStatus = relationship.toNotificationStatus(),
-                                muted = relationship.muting,
-                                blocked = relationship.blocking,
-                            ),
+                        it.user?.copy(
+                            relationshipStatus = relationship.toStatus(),
+                            notificationStatus = relationship.toNotificationStatus(),
+                            muted = relationship.muting,
+                            blocked = relationship.blocking,
+                        ),
                     )
                 }
             }

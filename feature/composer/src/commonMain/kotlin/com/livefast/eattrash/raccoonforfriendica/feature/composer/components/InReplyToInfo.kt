@@ -20,10 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @Composable
-internal fun InReplyToInfo(
-    modifier: Modifier = Modifier,
-    username: String,
-) {
+internal fun InReplyToInfo(username: String, modifier: Modifier = Modifier) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     Row(
@@ -39,13 +36,13 @@ internal fun InReplyToInfo(
         )
         Text(
             text =
-                buildAnnotatedString {
-                    append(LocalStrings.current.timelineEntryInReplyTo)
-                    append(" ")
-                    withStyle(SpanStyle(color = fullColor)) {
-                        append(username)
-                    }
-                },
+            buildAnnotatedString {
+                append(LocalStrings.current.timelineEntryInReplyTo)
+                append(" ")
+                withStyle(SpanStyle(color = fullColor)) {
+                    append(username)
+                }
+            },
             style = MaterialTheme.typography.bodyMedium,
             color = ancillaryColor,
         )

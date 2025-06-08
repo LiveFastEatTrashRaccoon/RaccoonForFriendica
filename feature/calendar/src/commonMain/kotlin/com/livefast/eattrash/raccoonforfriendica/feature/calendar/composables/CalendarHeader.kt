@@ -18,23 +18,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormatte
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarItem
 
 @Composable
-fun CalendarHeader(
-    header: CalendarItem.Header,
-    modifier: Modifier = Modifier,
-) {
+fun CalendarHeader(header: CalendarItem.Header, modifier: Modifier = Modifier) {
     val referenceDate =
         "${header.year}-${header.month.toString().padStart(2, '0')}-01T12:00:00.000Z"
     Box(
         modifier =
-            modifier
-                .border(
-                    width = Dp.Hairline,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    shape = RoundedCornerShape(CornerSize.xl),
-                ).background(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(CornerSize.xl),
-                ).padding(vertical = Spacing.xs),
+        modifier
+            .border(
+                width = Dp.Hairline,
+                color = MaterialTheme.colorScheme.onBackground,
+                shape = RoundedCornerShape(CornerSize.xl),
+            ).background(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(CornerSize.xl),
+            ).padding(vertical = Spacing.xs),
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),

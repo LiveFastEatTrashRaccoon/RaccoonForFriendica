@@ -132,16 +132,16 @@ class ShortcutListScreen : Screen {
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(ShortcutListMviModel.Intent.Refresh)
@@ -176,18 +176,18 @@ class ShortcutListScreen : Screen {
                     ) { item ->
                         GenericListItem(
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(CornerSize.xl))
-                                    .clickable {
-                                        detailOpener.openShortcut(item)
-                                    },
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(CornerSize.xl))
+                                .clickable {
+                                    detailOpener.openShortcut(item)
+                                },
                             title = item,
                             options =
-                                buildList {
-                                    this += OptionId.Delete.toOption()
-                                },
-                            onOptionSelected = { optionId ->
+                            buildList {
+                                this += OptionId.Delete.toOption()
+                            },
+                            onSelectOption = { optionId ->
                                 when (optionId) {
                                     OptionId.Delete -> confirmDeleteItem = item
                                     else -> Unit

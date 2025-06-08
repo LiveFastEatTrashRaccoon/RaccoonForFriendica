@@ -64,9 +64,9 @@ class NewAccountScreen : Screen {
         ) { padding ->
             Box(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth(),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth(),
             ) {
                 Navigator(LoginIntroScreen())
             }

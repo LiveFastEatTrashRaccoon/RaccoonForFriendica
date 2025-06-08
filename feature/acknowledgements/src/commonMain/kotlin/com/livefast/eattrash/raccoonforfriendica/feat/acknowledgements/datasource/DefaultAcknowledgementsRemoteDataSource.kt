@@ -8,9 +8,8 @@ import io.ktor.client.request.request
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
 
-internal class DefaultAcknowledgementsRemoteDataSource(
-    engine: HttpClientEngine = provideHttpClientEngine(),
-) : AcknowledgementsRemoteDataSource {
+internal class DefaultAcknowledgementsRemoteDataSource(engine: HttpClientEngine = provideHttpClientEngine()) :
+    AcknowledgementsRemoteDataSource {
     private val client: HttpClient =
         HttpClient(engine) {
             install(HttpTimeout) {
@@ -20,13 +19,12 @@ internal class DefaultAcknowledgementsRemoteDataSource(
             }
         }
 
-    override suspend fun getAcknowledgements(): List<Acknowledgement>? =
-        runCatching {
-            client.request(JSON_URL).run {
-                val text = bodyAsText()
-                Json.decodeFromString<List<Acknowledgement>>(text)
-            }
-        }.getOrNull()
+    override suspend fun getAcknowledgements(): List<Acknowledgement>? = runCatching {
+        client.request(JSON_URL).run {
+            val text = bodyAsText()
+            Json.decodeFromString<List<Acknowledgement>>(text)
+        }
+    }.getOrNull()
 
     companion object {
         private const val JSON_URL =

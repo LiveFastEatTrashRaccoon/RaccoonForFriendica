@@ -17,13 +17,9 @@ data class CircleEditorData(
 )
 
 sealed interface CircleListItem {
-    data class Header(
-        val type: CircleType,
-    ) : CircleListItem
+    data class Header(val type: CircleType) : CircleListItem
 
-    data class Circle(
-        val circle: CircleModel,
-    ) : CircleListItem
+    data class Circle(val circle: CircleModel) : CircleListItem
 }
 
 interface CirclesMviModel :
@@ -32,25 +28,17 @@ interface CirclesMviModel :
     sealed interface Intent {
         data object Refresh : Intent
 
-        data class OpenEditor(
-            val circle: CircleModel? = null,
-        ) : Intent
+        data class OpenEditor(val circle: CircleModel? = null) : Intent
 
-        data class UpdateEditorData(
-            val data: CircleEditorData,
-        ) : Intent
+        data class UpdateEditorData(val data: CircleEditorData) : Intent
 
         data object DismissEditor : Intent
 
         data object SubmitEditorData : Intent
 
-        data class Delete(
-            val circleId: String,
-        ) : Intent
+        data class Delete(val circleId: String) : Intent
 
-        data class OpenDetail(
-            val circle: CircleModel,
-        ) : Intent
+        data class OpenDetail(val circle: CircleModel) : Intent
     }
 
     data class State(
@@ -66,12 +54,8 @@ interface CirclesMviModel :
     sealed interface Effect {
         data object Failure : Effect
 
-        data class OpenUser(
-            val user: UserModel,
-        ) : Effect
+        data class OpenUser(val user: UserModel) : Effect
 
-        data class OpenCircle(
-            val circle: CircleModel,
-        ) : Effect
+        data class OpenCircle(val circle: CircleModel) : Effect
     }
 }

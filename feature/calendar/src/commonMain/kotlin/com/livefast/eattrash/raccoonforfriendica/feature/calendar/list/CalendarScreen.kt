@@ -125,16 +125,16 @@ class CalendarScreen : Screen {
         ) { padding ->
             PullToRefreshBox(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
                     model.reduce(CalendarMviModel.Intent.Refresh)
@@ -165,10 +165,10 @@ class CalendarScreen : Screen {
                             is CalendarItem.Header ->
                                 CalendarHeader(
                                     modifier =
-                                        Modifier.fillMaxWidth().padding(
-                                            top = if (idx == 0) 0.dp else Spacing.m,
-                                            bottom = Spacing.s,
-                                        ),
+                                    Modifier.fillMaxWidth().padding(
+                                        top = if (idx == 0) 0.dp else Spacing.m,
+                                        bottom = Spacing.s,
+                                    ),
                                     header = item,
                                 )
 
@@ -187,12 +187,13 @@ class CalendarScreen : Screen {
                                         detailOpener.openEvent(event = item.event)
                                     },
                                     options =
-                                        buildList {
-                                            if (calendarHelper.supportsExport) {
-                                                this += SaveToCalendar.toOption(LocalStrings.current.actionSaveToCalendar)
-                                            }
-                                        },
-                                    onOptionSelected = { optionId ->
+                                    buildList {
+                                        if (calendarHelper.supportsExport) {
+                                            this +=
+                                                SaveToCalendar.toOption(LocalStrings.current.actionSaveToCalendar)
+                                        }
+                                    },
+                                    onSelectOption = { optionId ->
                                         when (optionId) {
                                             SaveToCalendar ->
                                                 with(item.event) {
