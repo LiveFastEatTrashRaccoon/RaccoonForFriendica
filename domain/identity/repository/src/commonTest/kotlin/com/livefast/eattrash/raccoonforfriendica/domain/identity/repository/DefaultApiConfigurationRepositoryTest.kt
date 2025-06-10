@@ -5,11 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.Temporar
 import dev.mokkery.MockMode
 import dev.mokkery.answering.calls
 import dev.mokkery.answering.returns
-import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
-import dev.mokkery.verify
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
@@ -21,10 +19,10 @@ import kotlin.time.Duration.Companion.seconds
 class DefaultApiConfigurationRepositoryTest {
     private val keyStore =
         mock<TemporaryKeyStore>(MockMode.autoUnit) {
-            every { get("lastInstance", any<String>()) } returns "default-instance"
-            every { get("lastMethod", any<String>()) } returns "OAuth2"
-            every { get("lastCred1", any<String>()) } returns "fake-access-token"
-            every { get("lastCred2", any<String>()) } returns ""
+            everySuspend { get("lastInstance", any<String>()) } returns "default-instance"
+            everySuspend { get("lastMethod", any<String>()) } returns "OAuth2"
+            everySuspend { get("lastCred1", any<String>()) } returns "fake-access-token"
+            everySuspend { get("lastCred2", any<String>()) } returns ""
         }
 
     private val serviceProvider = mock<ServiceProvider>(MockMode.autoUnit)
@@ -47,7 +45,7 @@ class DefaultApiConfigurationRepositoryTest {
     fun `when change node then interactions are as expected`() = runTest {
         sut.changeNode("new-instance")
 
-        verify {
+        verifySuspend {
             serviceProvider.changeNode("new-instance")
             keyStore.save("lastInstance", "new-instance")
         }
@@ -60,7 +58,7 @@ class DefaultApiConfigurationRepositoryTest {
         sut.setAuth(credentials)
 
         assertTrue(sut.isLogged.value)
-        verify {
+        verifySuspend {
             serviceProvider.setAuth(credentials.toServiceCredentials())
             keyStore.save("lastMethod", "OAuth2")
             keyStore.save("lastCred1", "fake-access-token-2")
@@ -74,7 +72,7 @@ class DefaultApiConfigurationRepositoryTest {
         sut.setAuth(credentials)
 
         assertTrue(sut.isLogged.value)
-        verify {
+        verifySuspend {
             serviceProvider.setAuth(credentials.toServiceCredentials())
             keyStore.save("lastMethod", "HTTPBasic")
             keyStore.save("lastCred1", "fake1")
@@ -87,7 +85,7 @@ class DefaultApiConfigurationRepositoryTest {
         sut.setAuth(null)
 
         assertFalse(sut.isLogged.value)
-        verify {
+        verifySuspend {
             serviceProvider.setAuth()
             keyStore.remove("lastCred1")
             keyStore.remove("lastCred2")
@@ -116,9 +114,9 @@ class DefaultApiConfigurationRepositoryTest {
 
     @Test
     fun `given invalid basic credentials stored when hasCachedAuthCredentials then result is as expected`() = runTest {
-        every { keyStore["lastMethod", any<String>()] } returns "HTTPBasic"
-        every { keyStore["lastCred1", any<String>()] } returns "fake1"
-        every { keyStore["lastCred2", any<String>()] } returns "fake2"
+        everySuspend { keyStore.get("lastMethod", any<String>()) } returns "HTTPBasic"
+        everySuspend { keyStore.get("lastCred1", any<String>()) } returns "fake1"
+        everySuspend { keyStore.get("lastCred2", any<String>()) } returns "fake2"
         everySuspend {
             credentialsRepository.validateApplicationCredentials(
                 node = any(),
