@@ -3,10 +3,10 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 
 internal class DefaultAccountCredentialsCache(private val keyStore: TemporaryKeyStore) : AccountCredentialsCache {
-    override fun get(accountId: Long): ApiCredentials? {
-        val type = keyStore[getKeyForType(accountId), ""]
-        val part1 = keyStore[getKeyForPart1(accountId), ""]
-        val part2 = keyStore[getKeyForPart2(accountId), ""]
+    override suspend fun get(accountId: Long): ApiCredentials? {
+        val type = keyStore.get(getKeyForType(accountId), "")
+        val part1 = keyStore.get(getKeyForPart1(accountId), "")
+        val part2 = keyStore.get(getKeyForPart2(accountId), "")
         return when {
             type == METHOD_BASIC && part1.isNotEmpty() && part2.isNotEmpty() ->
                 ApiCredentials.HttpBasic(
@@ -24,7 +24,7 @@ internal class DefaultAccountCredentialsCache(private val keyStore: TemporaryKey
         }
     }
 
-    override fun save(accountId: Long, credentials: ApiCredentials) {
+    override suspend fun save(accountId: Long, credentials: ApiCredentials) {
         val type: String
         val part1: String
         val part2: String
@@ -46,7 +46,7 @@ internal class DefaultAccountCredentialsCache(private val keyStore: TemporaryKey
         keyStore.save(getKeyForPart2(accountId), part2)
     }
 
-    override fun remove(accountId: Long) {
+    override suspend fun remove(accountId: Long) {
         keyStore.remove(getKeyForType(accountId))
         keyStore.remove(getKeyForPart1(accountId))
         keyStore.remove(getKeyForPart2(accountId))
