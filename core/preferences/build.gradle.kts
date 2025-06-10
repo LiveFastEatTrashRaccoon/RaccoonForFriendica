@@ -16,6 +16,7 @@ kotlin {
             dependencies {
                 implementation(libs.kodein)
                 implementation(libs.multiplatform.settings)
+                implementation(libs.kotlinx.coroutines)
             }
         }
     }
