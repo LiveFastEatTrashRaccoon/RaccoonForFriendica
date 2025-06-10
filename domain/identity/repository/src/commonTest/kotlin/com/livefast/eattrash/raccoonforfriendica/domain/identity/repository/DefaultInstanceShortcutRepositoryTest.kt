@@ -3,10 +3,10 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
-import dev.mokkery.every
+import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
-import dev.mokkery.verify
+import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,12 +21,12 @@ class DefaultInstanceShortcutRepositoryTest {
     @Test
     fun givenNoData_whenGetAll_thenResultAndInteractionsIsAsExpected() = runTest {
         val accountId = 1L
-        every { keyStore.get(any(), any<List<String>>()) } returns emptyList()
+        everySuspend { keyStore.get(any(), any<List<String>>()) } returns emptyList()
 
         val res = sut.getAll(accountId)
 
         assertEquals(emptyList(), res)
-        verify {
+        verifySuspend {
             keyStore.get("$KEY_PREFIX.$accountId.items", emptyList())
         }
     }
@@ -35,12 +35,12 @@ class DefaultInstanceShortcutRepositoryTest {
     fun givenData_whenGetAll_thenResultAndInteractionsIsAsExpected() = runTest {
         val accountId = 1L
         val fakeList = listOf("node")
-        every { keyStore.get(any(), any<List<String>>()) } returns fakeList
+        everySuspend { keyStore.get(any(), any<List<String>>()) } returns fakeList
 
         val res = sut.getAll(accountId)
 
         assertEquals(fakeList, res)
-        verify {
+        verifySuspend {
             keyStore.get("$KEY_PREFIX.$accountId.items", emptyList())
         }
     }
@@ -50,13 +50,13 @@ class DefaultInstanceShortcutRepositoryTest {
         val otherAccountId = 1L
         val accountId = 2L
         val fakeList = listOf("node")
-        every {
+        everySuspend {
             keyStore.get(
                 "$KEY_PREFIX.$otherAccountId.items",
                 any<List<String>>(),
             )
         } returns fakeList
-        every {
+        everySuspend {
             keyStore.get(
                 "$KEY_PREFIX.$accountId.items",
                 any<List<String>>(),
@@ -66,7 +66,7 @@ class DefaultInstanceShortcutRepositoryTest {
         val res = sut.getAll(accountId)
 
         assertEquals(emptyList(), res)
-        verify {
+        verifySuspend {
             keyStore.get("$KEY_PREFIX.$accountId.items", emptyList())
         }
     }
@@ -75,7 +75,7 @@ class DefaultInstanceShortcutRepositoryTest {
     fun whenCreate_thenInteractionsAreAsExpected() = runTest {
         val accountId = 1L
         val node = "node"
-        every {
+        everySuspend {
             keyStore.get(
                 "$KEY_PREFIX.$accountId.items",
                 any<List<String>>(),
@@ -84,7 +84,7 @@ class DefaultInstanceShortcutRepositoryTest {
 
         sut.create(accountId = accountId, node = node)
 
-        verify {
+        verifySuspend {
             keyStore.save("$KEY_PREFIX.$accountId.items", listOf(node))
         }
     }
@@ -94,7 +94,7 @@ class DefaultInstanceShortcutRepositoryTest {
         val accountId = 1L
         val node = "node"
         val fakeList = listOf(node)
-        every {
+        everySuspend {
             keyStore.get(
                 "$KEY_PREFIX.$accountId.items",
                 any<List<String>>(),
@@ -103,7 +103,7 @@ class DefaultInstanceShortcutRepositoryTest {
 
         sut.create(accountId = accountId, node = node)
 
-        verify {
+        verifySuspend {
             keyStore.save("$KEY_PREFIX.$accountId.items", fakeList)
         }
     }
@@ -113,7 +113,7 @@ class DefaultInstanceShortcutRepositoryTest {
         val accountId = 1L
         val node = "node"
         val fakeList = listOf(node)
-        every {
+        everySuspend {
             keyStore.get(
                 "$KEY_PREFIX.$accountId.items",
                 any<List<String>>(),
@@ -122,7 +122,7 @@ class DefaultInstanceShortcutRepositoryTest {
 
         sut.delete(accountId = accountId, node = node)
 
-        verify {
+        verifySuspend {
             keyStore.save("$KEY_PREFIX.$accountId.items", emptyList())
         }
     }
@@ -132,7 +132,7 @@ class DefaultInstanceShortcutRepositoryTest {
         val accountId = 1L
         val node = "node"
         val fakeList = listOf("other")
-        every {
+        everySuspend {
             keyStore.get(
                 "$KEY_PREFIX.$accountId.items",
                 any<List<String>>(),
@@ -141,7 +141,7 @@ class DefaultInstanceShortcutRepositoryTest {
 
         sut.delete(accountId = accountId, node = node)
 
-        verify {
+        verifySuspend {
             keyStore.save("$KEY_PREFIX.$accountId.items", fakeList)
         }
     }

@@ -30,7 +30,7 @@ internal class DefaultInstanceShortcutRepository(private val keyStore: Temporary
 
     private fun getKey(accountId: Long) = "InstanceShortcutRepository.$accountId.items"
 
-    private fun updateValues(accountId: Long, values: List<String>) {
+    private suspend fun updateValues(accountId: Long, values: List<String>) {
         val key = getKey(accountId)
         keyStore.save(key = key, values)
     }
