@@ -4,14 +4,19 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 internal class DefaultAppIconManager(private val context: Context, private val keyStore: TemporaryKeyStore) :
     AppIconManager {
     private val _current = MutableStateFlow<AppIconVariant>(AppIconVariant.Default)
     override val current: StateFlow<AppIconVariant> = _current
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     private val allComponentNames =
         listOf(
@@ -22,8 +27,10 @@ internal class DefaultAppIconManager(private val context: Context, private val k
     override val supportsMultipleIcons = allComponentNames.isNotEmpty()
 
     init {
-        val lastUsedVariant = keyStore[KEY_APP_ICON_VARIANT, 0].toAppIconVariant()
-        _current.update { lastUsedVariant }
+        scope.launch {
+            val lastUsedVariant = keyStore.get(KEY_APP_ICON_VARIANT, 0).toAppIconVariant()
+            _current.update { lastUsedVariant }
+        }
     }
 
     override fun changeIcon(variant: AppIconVariant) {
@@ -43,7 +50,9 @@ internal class DefaultAppIconManager(private val context: Context, private val k
                 )
             }
         }
-        keyStore.save(KEY_APP_ICON_VARIANT, variant.toInt())
+        scope.launch {
+            keyStore.save(KEY_APP_ICON_VARIANT, variant.toInt())
+        }
         _current.update { variant }
     }
 
