@@ -98,17 +98,17 @@ internal class DefaultAuthManager(
         }
     }
 
-    private fun storeInitialData(node: String, clientId: String, clientSecret: String) {
+    private suspend fun storeInitialData(node: String, clientId: String, clientSecret: String) {
         keyStore.save(KEY_LAST_NODE, node)
         keyStore.save(KEY_CLIENT_ID, clientId)
         keyStore.save(KEY_CLIENT_SECRET, clientSecret)
     }
 
-    private fun retrieveNode(): String = keyStore[KEY_LAST_NODE, ""]
+    private suspend fun retrieveNode(): String = keyStore.get(KEY_LAST_NODE, "")
 
-    private fun retrieveClientId(): String = keyStore[KEY_CLIENT_ID, ""]
+    private suspend fun retrieveClientId(): String = keyStore.get(KEY_CLIENT_ID, "")
 
-    private fun retrieveClientSecret(): String = keyStore[KEY_CLIENT_SECRET, ""]
+    private suspend fun retrieveClientSecret(): String = keyStore.get(KEY_CLIENT_SECRET, "")
 
     companion object {
         private const val AUTH_ENDPOINT = "oauth/authorize"
