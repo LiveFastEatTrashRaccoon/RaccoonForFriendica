@@ -3,10 +3,10 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
-import dev.mokkery.every
+import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
-import dev.mokkery.verify
+import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,12 +20,12 @@ class DefaultStopWordRepositoryTest {
 
     @Test
     fun givenNoData_whenGetForAnonymousUser_thenResultAndInteractionsIsAsExpected() = runTest {
-        every { keyStore.get(any(), any<List<String>>()) } returns emptyList()
+        everySuspend { keyStore.get(any(), any<List<String>>()) } returns emptyList()
 
         val res = sut.get(null)
 
         assertEquals(emptyList(), res)
-        verify {
+        verifySuspend {
             keyStore.get("$KEY_PREFIX.items", emptyList())
         }
     }
@@ -33,12 +33,12 @@ class DefaultStopWordRepositoryTest {
     @Test
     fun givenData_whenGetForAnonymousUser_thenResultAndInteractionsIsAsExpected() = runTest {
         val fakeList = listOf("word")
-        every { keyStore.get(any(), any<List<String>>()) } returns fakeList
+        everySuspend { keyStore.get(any(), any<List<String>>()) } returns fakeList
 
         val res = sut.get(null)
 
         assertEquals(fakeList, res)
-        verify {
+        verifySuspend {
             keyStore.get("$KEY_PREFIX.items", emptyList())
         }
     }
@@ -46,12 +46,12 @@ class DefaultStopWordRepositoryTest {
     @Test
     fun givenNoData_whenGetForLoggedUser_thenResultAndInteractionsIsAsExpected() = runTest {
         val accountId = 1L
-        every { keyStore.get(any(), any<List<String>>()) } returns emptyList()
+        everySuspend { keyStore.get(any(), any<List<String>>()) } returns emptyList()
 
         val res = sut.get(accountId)
 
         assertEquals(emptyList(), res)
-        verify {
+        verifySuspend {
             keyStore.get("$KEY_PREFIX.$accountId.items", emptyList())
         }
     }
@@ -60,12 +60,12 @@ class DefaultStopWordRepositoryTest {
     fun givenData_whenGetForLoggedUser_thenResultAndInteractionsIsAsExpected() = runTest {
         val accountId = 1L
         val fakeList = listOf("word")
-        every { keyStore.get(any(), any<List<String>>()) } returns fakeList
+        everySuspend { keyStore.get(any(), any<List<String>>()) } returns fakeList
 
         val res = sut.get(accountId)
 
         assertEquals(fakeList, res)
-        verify {
+        verifySuspend {
             keyStore.get("$KEY_PREFIX.$accountId.items", emptyList())
         }
     }
@@ -75,13 +75,13 @@ class DefaultStopWordRepositoryTest {
         val otherAccountId = 1L
         val accountId = 2L
         val fakeList = listOf("word")
-        every {
+        everySuspend {
             keyStore.get(
                 "$KEY_PREFIX.$otherAccountId.items",
                 any<List<String>>(),
             )
         } returns fakeList
-        every {
+        everySuspend {
             keyStore.get(
                 "$KEY_PREFIX.$accountId.items",
                 any<List<String>>(),
@@ -91,7 +91,7 @@ class DefaultStopWordRepositoryTest {
         val res = sut.get(accountId)
 
         assertEquals(emptyList(), res)
-        verify {
+        verifySuspend {
             keyStore.get("$KEY_PREFIX.$accountId.items", emptyList())
         }
     }
@@ -100,13 +100,13 @@ class DefaultStopWordRepositoryTest {
     fun givenDataForOtherUser_whenGetForAnonymousAccount_thenResultAndInteractionsIsAsExpected() = runTest {
         val otherAccountId = 1
         val fakeList = listOf("word")
-        every {
+        everySuspend {
             keyStore.get(
                 "$KEY_PREFIX.$otherAccountId.items",
                 any<List<String>>(),
             )
         } returns fakeList
-        every {
+        everySuspend {
             keyStore.get(
                 "$KEY_PREFIX.items",
                 any<List<String>>(),
@@ -116,7 +116,7 @@ class DefaultStopWordRepositoryTest {
         val res = sut.get(null)
 
         assertEquals(emptyList(), res)
-        verify {
+        verifySuspend {
             keyStore.get("$KEY_PREFIX.items", emptyList())
         }
     }
@@ -126,7 +126,7 @@ class DefaultStopWordRepositoryTest {
         val fakeList = listOf("word")
         sut.update(accountId = null, items = fakeList)
 
-        verify {
+        verifySuspend {
             keyStore.save("$KEY_PREFIX.items", fakeList)
         }
     }
@@ -138,7 +138,7 @@ class DefaultStopWordRepositoryTest {
 
         sut.update(accountId = accountId, items = fakeList)
 
-        verify {
+        verifySuspend {
             keyStore.save("$KEY_PREFIX.$accountId.items", fakeList)
         }
     }

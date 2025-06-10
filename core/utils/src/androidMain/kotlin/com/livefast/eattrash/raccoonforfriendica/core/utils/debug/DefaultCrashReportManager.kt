@@ -4,32 +4,43 @@ import com.livefast.eattrash.raccoonforfriendica.SentryConfigurationValues
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 internal class DefaultCrashReportManager(private val keyStore: TemporaryKeyStore) : CrashReportManager {
     private val _enabled = MutableStateFlow(false)
     override val enabled: StateFlow<Boolean> = _enabled
     private val _restartRequired = MutableStateFlow(false)
     override val restartRequired: StateFlow<Boolean> = _restartRequired
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     init {
-        _enabled.update {
-            keyStore[KEY_CRASH_REPORT_ENABLED, false]
+        scope.launch {
+            _enabled.update {
+                keyStore.get(KEY_CRASH_REPORT_ENABLED, false)
+            }
         }
     }
 
     override fun enable() {
-        keyStore.save(KEY_CRASH_REPORT_ENABLED, true)
-        _enabled.update { true }
-        _restartRequired.update { true }
+        scope.launch {
+            keyStore.save(KEY_CRASH_REPORT_ENABLED, true)
+            _enabled.update { true }
+            _restartRequired.update { true }
+        }
     }
 
     override fun disable() {
-        keyStore.save(KEY_CRASH_REPORT_ENABLED, false)
-        _enabled.update { false }
-        _restartRequired.update { true }
+        scope.launch {
+            keyStore.save(KEY_CRASH_REPORT_ENABLED, false)
+            _enabled.update { false }
+            _restartRequired.update { true }
+        }
     }
 
     override fun initialize() {

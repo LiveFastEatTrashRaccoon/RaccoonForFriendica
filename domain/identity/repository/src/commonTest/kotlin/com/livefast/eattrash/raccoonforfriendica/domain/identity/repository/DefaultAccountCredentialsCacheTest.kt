@@ -3,10 +3,11 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
-import dev.mokkery.every
+import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
-import dev.mokkery.verify
+import dev.mokkery.verifySuspend
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -14,13 +15,13 @@ import kotlin.test.assertNull
 class DefaultAccountCredentialsCacheTest {
     private val keyStore =
         mock<TemporaryKeyStore>(MockMode.autoUnit) {
-            every { get(any<String>(), any<String>()) } returns ""
+            everySuspend { get(any<String>(), any<String>()) } returns ""
         }
 
     private val sut = DefaultAccountCredentialsCache(keyStore)
 
     @Test
-    fun `given no credentials stored when get then result is as expected`() {
+    fun `given no credentials stored when get then result is as expected`() = runTest {
         val accountId = 1L
 
         val res = sut.get(accountId)
@@ -29,11 +30,11 @@ class DefaultAccountCredentialsCacheTest {
     }
 
     @Test
-    fun `given OAuth credentials stored when get then result is as expected`() {
+    fun `given OAuth credentials stored when get then result is as expected`() = runTest {
         val accountId = 1L
-        every { keyStore[getKey(accountId, "type"), any<String>()] } returns "OAuth2"
-        every { keyStore[getKey(accountId, "part1"), any<String>()] } returns "fake-access-token"
-        every { keyStore[getKey(accountId, "part2"), any<String>()] } returns ""
+        everySuspend { keyStore.get(getKey(accountId, "type"), any<String>()) } returns "OAuth2"
+        everySuspend { keyStore.get(getKey(accountId, "part1"), any<String>()) } returns "fake-access-token"
+        everySuspend { keyStore.get(getKey(accountId, "part2"), any<String>()) } returns ""
 
         val res = sut.get(accountId)
 
@@ -44,11 +45,11 @@ class DefaultAccountCredentialsCacheTest {
     }
 
     @Test
-    fun `given basic credentials stored when get then result is as expected`() {
+    fun `given basic credentials stored when get then result is as expected`() = runTest {
         val accountId = 1L
-        every { keyStore[getKey(accountId, "type"), any<String>()] } returns "HTTPBasic"
-        every { keyStore[getKey(accountId, "part1"), any<String>()] } returns "fake1"
-        every { keyStore[getKey(accountId, "part2"), any<String>()] } returns "fake2"
+        everySuspend { keyStore.get(getKey(accountId, "type"), any<String>()) } returns "HTTPBasic"
+        everySuspend { keyStore.get(getKey(accountId, "part1"), any<String>()) } returns "fake1"
+        everySuspend { keyStore.get(getKey(accountId, "part2"), any<String>()) } returns "fake2"
 
         val res = sut.get(accountId)
 
@@ -56,7 +57,7 @@ class DefaultAccountCredentialsCacheTest {
     }
 
     @Test
-    fun `when save OAuth credentials then interactions are expected`() {
+    fun `when save OAuth credentials then interactions are expected`() = runTest {
         val accountId = 1L
 
         sut.save(
@@ -64,7 +65,7 @@ class DefaultAccountCredentialsCacheTest {
             ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
         )
 
-        verify {
+        verifySuspend {
             keyStore.save(getKey(accountId, "type"), "OAuth2")
             keyStore.save(getKey(accountId, "part1"), "fake-access-token")
             keyStore.save(getKey(accountId, "part2"), "")
@@ -72,7 +73,7 @@ class DefaultAccountCredentialsCacheTest {
     }
 
     @Test
-    fun `when save basic credentials then interactions are expected`() {
+    fun `when save basic credentials then interactions are expected`() = runTest {
         val accountId = 1L
 
         sut.save(
@@ -80,7 +81,7 @@ class DefaultAccountCredentialsCacheTest {
             ApiCredentials.HttpBasic(user = "fake1", pass = "fake2"),
         )
 
-        verify {
+        verifySuspend {
             keyStore.save(getKey(accountId, "type"), "HTTPBasic")
             keyStore.save(getKey(accountId, "part1"), "fake1")
             keyStore.save(getKey(accountId, "part2"), "fake2")
@@ -88,12 +89,12 @@ class DefaultAccountCredentialsCacheTest {
     }
 
     @Test
-    fun `when remove then interactions are expected`() {
+    fun `when remove then interactions are expected`() = runTest {
         val accountId = 1L
 
         sut.remove(accountId)
 
-        verify {
+        verifySuspend {
             keyStore.remove(getKey(accountId, "type"))
             keyStore.remove(getKey(accountId, "part1"))
             keyStore.remove(getKey(accountId, "part2"))

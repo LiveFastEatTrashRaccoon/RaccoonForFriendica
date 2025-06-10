@@ -7,11 +7,12 @@ import kotlinx.coroutines.flow.StateFlow
 interface ApiConfigurationRepository {
     val node: StateFlow<String>
     val isLogged: StateFlow<Boolean>
-    val defaultNode: String
 
-    fun changeNode(value: String)
+    suspend fun getDefaultNode(): String
 
-    fun setAuth(credentials: ApiCredentials? = null)
+    suspend fun changeNode(value: String)
+
+    suspend fun setAuth(credentials: ApiCredentials? = null)
 
     suspend fun hasCachedAuthCredentials(): Boolean
 }

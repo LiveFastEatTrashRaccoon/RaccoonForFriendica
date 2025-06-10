@@ -14,16 +14,16 @@ internal class DefaultApiConfigurationRepository(
     override val node = MutableStateFlow("")
     override val isLogged = MutableStateFlow(false)
 
-    override val defaultNode: String
-        get() = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
+    override suspend fun getDefaultNode(): String =
+        keyStore.get(KEY_LAST_NODE, "").takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
 
-    override fun changeNode(value: String) {
+    override suspend fun changeNode(value: String) {
         node.update { value }
         provider.changeNode(value)
         keyStore.save(KEY_LAST_NODE, value)
     }
 
-    override fun setAuth(credentials: ApiCredentials?) {
+    override suspend fun setAuth(credentials: ApiCredentials?) {
         val serviceCredentials = credentials?.toServiceCredentials()
         provider.setAuth(serviceCredentials)
         if (credentials != null) {
@@ -36,7 +36,7 @@ internal class DefaultApiConfigurationRepository(
     }
 
     override suspend fun hasCachedAuthCredentials(): Boolean {
-        val node = keyStore[KEY_LAST_NODE, ""].takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
+        val node = keyStore.get(KEY_LAST_NODE, "").takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
         val credentials = retrieveFromKeyStore()
         return validateCredentials(credentials = credentials, node = node)
     }
@@ -50,12 +50,12 @@ internal class DefaultApiConfigurationRepository(
                 )
         } == true
 
-    private fun retrieveFromKeyStore(): ApiCredentials? {
-        val method = keyStore[KEY_METHOD, DEFAULT_METHOD]
+    private suspend fun retrieveFromKeyStore(): ApiCredentials? {
+        val method = keyStore.get(KEY_METHOD, DEFAULT_METHOD)
         return when (method) {
             METHOD_BASIC -> {
-                val user = keyStore[KEY_CRED_1, ""]
-                val pass = keyStore[KEY_CRED_2, ""]
+                val user = keyStore.get(KEY_CRED_1, "")
+                val pass = keyStore.get(KEY_CRED_2, "")
                 if (user.isNotEmpty() && pass.isNotEmpty()) {
                     ApiCredentials.HttpBasic(user, pass)
                 } else {
@@ -64,8 +64,8 @@ internal class DefaultApiConfigurationRepository(
             }
 
             METHOD_OAUTH_2 -> {
-                val accessToken = keyStore[KEY_CRED_1, ""]
-                val refreshToken = keyStore[KEY_CRED_2, ""]
+                val accessToken = keyStore.get(KEY_CRED_1, "")
+                val refreshToken = keyStore.get(KEY_CRED_2, "")
                 if (accessToken.isNotEmpty()) {
                     ApiCredentials.OAuth2(accessToken, refreshToken)
                 } else {
@@ -77,7 +77,7 @@ internal class DefaultApiConfigurationRepository(
         }
     }
 
-    private fun saveInKeyStore(credentials: ApiCredentials) {
+    private suspend fun saveInKeyStore(credentials: ApiCredentials) {
         when (credentials) {
             is ApiCredentials.HttpBasic -> {
                 keyStore.save(KEY_CRED_1, credentials.user)
@@ -93,7 +93,7 @@ internal class DefaultApiConfigurationRepository(
         }
     }
 
-    private fun clearKeyStore() {
+    private suspend fun clearKeyStore() {
         keyStore.remove(KEY_CRED_1)
         keyStore.remove(KEY_CRED_2)
     }

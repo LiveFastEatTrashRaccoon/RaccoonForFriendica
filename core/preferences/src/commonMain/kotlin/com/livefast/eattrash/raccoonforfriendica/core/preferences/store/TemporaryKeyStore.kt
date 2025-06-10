@@ -10,7 +10,7 @@ interface TemporaryKeyStore {
      * @param key Key to check
      * @return true if the key store contains the key, false otherwise
      */
-    fun containsKey(key: String): Boolean
+    suspend fun containsKey(key: String): Boolean
 
     /**
      * Save a boolean value in the keystore under a given key.
@@ -18,7 +18,7 @@ interface TemporaryKeyStore {
      * @param key Key
      * @param value Value
      */
-    fun save(key: String, value: Boolean)
+    suspend fun save(key: String, value: Boolean)
 
     /**
      * Retrieve a boolean value from the key store given its key.
@@ -27,7 +27,7 @@ interface TemporaryKeyStore {
      * @param default Default value
      * @return value saved in the keystore or the default one
      */
-    operator fun get(key: String, default: Boolean): Boolean
+    suspend fun get(key: String, default: Boolean): Boolean
 
     /**
      * Save a string value in the keystore under a given key.
@@ -35,7 +35,7 @@ interface TemporaryKeyStore {
      * @param key Key
      * @param value Value
      */
-    fun save(key: String, value: String)
+    suspend fun save(key: String, value: String)
 
     /**
      * Retrieve a string value from the key store given its key.
@@ -44,7 +44,7 @@ interface TemporaryKeyStore {
      * @param default Default value
      * @return value saved in the keystore or the default one
      */
-    operator fun get(key: String, default: String): String
+    suspend fun get(key: String, default: String): String
 
     /**
      * Save an integer value in the keystore under a given key.
@@ -52,7 +52,7 @@ interface TemporaryKeyStore {
      * @param key Key
      * @param value Value
      */
-    fun save(key: String, value: Int)
+    suspend fun save(key: String, value: Int)
 
     /**
      * Retrieve an integer value from the key store given its key.
@@ -61,7 +61,7 @@ interface TemporaryKeyStore {
      * @param default Default value
      * @return value saved in the keystore or the default one
      */
-    operator fun get(key: String, default: Int): Int
+    suspend fun get(key: String, default: Int): Int
 
     /**
      * Save a floating point value in the keystore under a given key.
@@ -69,7 +69,7 @@ interface TemporaryKeyStore {
      * @param key Key
      * @param value Value
      */
-    fun save(key: String, value: Float)
+    suspend fun save(key: String, value: Float)
 
     /**
      * Retrieve a floating point value from the key store given its key.
@@ -78,7 +78,7 @@ interface TemporaryKeyStore {
      * @param default Default value
      * @return value saved in the keystore or the default one
      */
-    operator fun get(key: String, default: Float): Float
+    suspend fun get(key: String, default: Float): Float
 
     /**
      * Save a floating point (double precision) value in the keystore under a given key.
@@ -86,7 +86,7 @@ interface TemporaryKeyStore {
      * @param key Key
      * @param value Value
      */
-    fun save(key: String, value: Double)
+    suspend fun save(key: String, value: Double)
 
     /**
      * Save a long integer value in the keystore under a given key.
@@ -94,7 +94,7 @@ interface TemporaryKeyStore {
      * @param key Key
      * @param value Value
      */
-    fun save(key: String, value: Long)
+    suspend fun save(key: String, value: Long)
 
     /**
      * Retrieve a floating point (double precision) value from the key store given its key.
@@ -103,7 +103,7 @@ interface TemporaryKeyStore {
      * @param default Default value
      * @return value saved in the keystore or the default one
      */
-    operator fun get(key: String, default: Double): Double
+    suspend fun get(key: String, default: Double): Double
 
     /**
      * Retrieve a long integer value from the key store given its key.
@@ -112,25 +112,25 @@ interface TemporaryKeyStore {
      * @param default Default value
      * @return value saved in the keystore or the default one
      */
-    operator fun get(key: String, default: Long): Long
+    suspend fun get(key: String, default: Long): Long
 
     /**
      * Remove the given key from the repository.
      */
-    fun remove(key: String)
+    suspend fun remove(key: String)
 
     /**
      * Removes all entries from the store.
      */
-    fun removeAll()
+    suspend fun removeAll()
 
     /**
      * Retrieve a string list given its key.
      */
-    fun get(key: String, default: List<String> = emptyList(), delimiter: String = ", "): List<String>
+    suspend fun get(key: String, default: List<String> = emptyList(), delimiter: String = ", "): List<String>
 
     /**
      * Save a string list under a given key.
      */
-    fun save(key: String, value: List<String>, delimiter: String = ", ")
+    suspend fun save(key: String, value: List<String>, delimiter: String = ", ")
 }
