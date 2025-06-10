@@ -33,7 +33,7 @@ class DefaultActiveAccountMonitorTest {
     private val accountRepository = mock<AccountRepository>(MockMode.autoUnit)
     private val apiConfigurationRepository =
         mock<ApiConfigurationRepository>(MockMode.autoUnit) {
-            every { defaultNode } returns "default-instance"
+            everySuspend { getDefaultNode() } returns "default-instance"
             every { node } returns MutableStateFlow("test-instance")
         }
     private val identityRepository = mock<IdentityRepository>(MockMode.autoUnit)
@@ -107,7 +107,7 @@ class DefaultActiveAccountMonitorTest {
         every { accountRepository.getActiveAsFlow() } returns accountChannel.receiveAsFlow()
         everySuspend { accountRepository.getActive() } returns account
         val credentials = ApiCredentials.OAuth2("fake-access-token", "")
-        every { accountCredentialsCache.get(any()) } returns credentials
+        everySuspend { accountCredentialsCache.get(any()) } returns credentials
         val settings = SettingsModel()
         everySuspend { settingsRepository.get(any()) } returns settings
 

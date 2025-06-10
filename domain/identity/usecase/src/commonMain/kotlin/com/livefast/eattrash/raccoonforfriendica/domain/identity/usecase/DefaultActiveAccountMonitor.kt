@@ -70,7 +70,7 @@ internal class DefaultActiveAccountMonitor(
     }
 
     private suspend fun process(account: AccountModel?) {
-        val defaultNode = apiConfigurationRepository.defaultNode
+        val defaultNode = apiConfigurationRepository.getDefaultNode()
         if (account == null) {
             apiConfigurationRepository.changeNode(defaultNode)
             apiConfigurationRepository.setAuth(null)
