@@ -38,7 +38,7 @@ room = "2.7.1"
 sentry = "0.12.0"
 spotless = "7.0.4"
 stately = "2.1.0"
-turbine = "1.2.0"
+turbine = "1.2.1"
 unifiedpush = "3.0.9"
 voyager = "1.0.1"
 
