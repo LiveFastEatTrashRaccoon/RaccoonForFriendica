@@ -2,15 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.imageload
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.withContext
 
 internal class DefaultBlurHashRepository(
     private val decoder: BlurHashDecoder,
     private val cache: LruCache<String, ImageBitmap> = LruCache.factory(CACHE_SIZE),
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BlurHashRepository {
     override suspend fun preload(params: BlurHashParams) {
         val key = params.hash
@@ -36,13 +31,12 @@ internal class DefaultBlurHashRepository(
             }
     }
 
-    private suspend fun decode(blurHash: String, width: Int, height: Int): ImageBitmap? = withContext(dispatcher) {
+    private suspend fun decode(blurHash: String, width: Int, height: Int): ImageBitmap? =
         decoder.decode(
             blurHash = blurHash,
             width = width,
             height = height,
         )
-    }
 
     companion object {
         private const val CACHE_SIZE = 20

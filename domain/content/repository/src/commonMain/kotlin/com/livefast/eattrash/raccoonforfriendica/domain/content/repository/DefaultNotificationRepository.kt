@@ -5,11 +5,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toRawValue
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 
 internal class DefaultNotificationRepository(private val provider: ServiceProvider) : NotificationRepository {
     private val mutex = Mutex()
@@ -19,16 +16,16 @@ internal class DefaultNotificationRepository(private val provider: ServiceProvid
         types: List<NotificationType>,
         pageCursor: String?,
         refresh: Boolean,
-    ): List<NotificationModel>? = withContext(Dispatchers.IO) {
+    ): List<NotificationModel>? {
         if (refresh) {
             mutex.withLock {
                 cachedValues.clear()
             }
         }
         if (pageCursor == null && cachedValues.isNotEmpty()) {
-            return@withContext cachedValues
+            return cachedValues
         }
-        runCatching {
+        return runCatching {
             val response =
                 provider.notifications.get(
                     types = types.mapNotNull { it.toRawValue() },
@@ -47,19 +44,15 @@ internal class DefaultNotificationRepository(private val provider: ServiceProvid
         }.getOrNull()
     }
 
-    override suspend fun dismiss(id: String): Boolean = withContext(Dispatchers.IO) {
-        runCatching {
-            val res = provider.notifications.dismiss(id)
-            res.isSuccessful
-        }.getOrElse { false }
-    }
+    override suspend fun dismiss(id: String): Boolean = runCatching {
+        val res = provider.notifications.dismiss(id)
+        res.isSuccessful
+    }.getOrElse { false }
 
-    override suspend fun dismissAll(): Boolean = withContext(Dispatchers.IO) {
-        runCatching {
-            val res = provider.notifications.clear()
-            res.isSuccessful
-        }.getOrElse { false }
-    }
+    override suspend fun dismissAll(): Boolean = runCatching {
+        val res = provider.notifications.clear()
+        res.isSuccessful
+    }.getOrElse { false }
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20

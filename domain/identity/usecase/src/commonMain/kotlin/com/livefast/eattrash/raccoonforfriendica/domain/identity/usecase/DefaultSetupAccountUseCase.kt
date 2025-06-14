@@ -4,15 +4,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountMod
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.withContext
 
 internal class DefaultSetupAccountUseCase(
     private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
 ) : SetupAccountUseCase {
-    override suspend fun invoke() = withContext(Dispatchers.IO) {
+    override suspend fun invoke() {
         val accounts = accountRepository.getAll()
         if (accounts.isEmpty()) {
             // create at least an anonymous account

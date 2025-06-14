@@ -4,6 +4,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.withContext
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow
@@ -33,12 +36,12 @@ internal class DefaultBlurHashDecoder(
         height: Int,
         punch: Float,
         useCache: Boolean,
-    ): ImageBitmap? {
-        check(blurHash != null && blurHash.length >= 6) { return null }
+    ): ImageBitmap? = withContext(Dispatchers.IO) {
+        check(blurHash != null && blurHash.length >= 6) { return@withContext null }
         val numCompEnc = decode83(blurHash, 0, 1)
         val numCompX = (numCompEnc % 9) + 1
         val numCompY = (numCompEnc / 9) + 1
-        check(blurHash.length == 4 + 2 * numCompX * numCompY) { return null }
+        check(blurHash.length == 4 + 2 * numCompX * numCompY) { return@withContext null }
         val maxAcEnc = decode83(blurHash, 1, 2)
         val maxAc = (maxAcEnc + 1) / 166f
         val colors =
@@ -52,7 +55,7 @@ internal class DefaultBlurHashDecoder(
                     decodeAc(colorEnc, maxAc * punch)
                 }
             }
-        return runCatching {
+        runCatching {
             composeBitmap(width, height, numCompX, numCompY, colors, useCache)
         }.getOrNull()
     }
