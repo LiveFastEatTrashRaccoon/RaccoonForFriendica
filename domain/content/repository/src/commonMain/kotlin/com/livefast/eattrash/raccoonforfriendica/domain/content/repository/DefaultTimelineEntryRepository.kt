@@ -17,11 +17,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 
 internal class DefaultTimelineEntryRepository(private val provider: ServiceProvider) : TimelineEntryRepository {
@@ -39,16 +36,16 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
         onlyMedia: Boolean,
         enableCache: Boolean,
         refresh: Boolean,
-    ): List<TimelineEntryModel>? = withContext(Dispatchers.IO) {
+    ): List<TimelineEntryModel>? {
         if (refresh) {
             mutex.withLock {
                 cachedValues.clear()
             }
         }
         if (pageCursor == null && cachedValues.isNotEmpty() && enableCache) {
-            return@withContext cachedValues
+            return cachedValues
         }
-        runCatching {
+        return runCatching {
             provider.users
                 .getStatuses(
                     id = userId,
@@ -69,125 +66,93 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
         }.getOrNull()
     }
 
-    override suspend fun getById(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.statuses.get(id = id).toModelWithReply()
-        }.getOrNull()
-    }
+    override suspend fun getById(id: String): TimelineEntryModel? = runCatching {
+        provider.statuses.get(id = id).toModelWithReply()
+    }.getOrNull()
 
-    override suspend fun getSource(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.statuses.getSource(id = id).toModel()
-        }.getOrNull()
-    }
+    override suspend fun getSource(id: String): TimelineEntryModel? = runCatching {
+        provider.statuses.getSource(id = id).toModel()
+    }.getOrNull()
 
-    override suspend fun getContext(id: String): TimelineContextModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.statuses.getContext(id = id).toModel()
-        }.getOrNull()
-    }
+    override suspend fun getContext(id: String): TimelineContextModel? = runCatching {
+        provider.statuses.getContext(id = id).toModel()
+    }.getOrNull()
 
-    override suspend fun reblog(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            val data =
-                FormDataContent(
-                    parameters {
-                        append("visibility", ContentVisibility.PUBLIC)
-                    },
-                )
-            provider.statuses
-                .reblog(
-                    id = id,
-                    data = data,
-                ).toModelWithReply()
-        }.getOrNull()
-    }
+    override suspend fun reblog(id: String): TimelineEntryModel? = runCatching {
+        val data =
+            FormDataContent(
+                parameters {
+                    append("visibility", ContentVisibility.PUBLIC)
+                },
+            )
+        provider.statuses
+            .reblog(
+                id = id,
+                data = data,
+            ).toModelWithReply()
+    }.getOrNull()
 
-    override suspend fun unreblog(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.statuses.unreblog(id).toModel()
-        }.getOrNull()
-    }
+    override suspend fun unreblog(id: String): TimelineEntryModel? = runCatching {
+        provider.statuses.unreblog(id).toModel()
+    }.getOrNull()
 
-    override suspend fun pin(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.statuses.pin(id).toModel()
-        }.getOrNull()
-    }
+    override suspend fun pin(id: String): TimelineEntryModel? = runCatching {
+        provider.statuses.pin(id).toModel()
+    }.getOrNull()
 
-    override suspend fun unpin(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.statuses.unpin(id).toModel()
-        }.getOrNull()
-    }
+    override suspend fun unpin(id: String): TimelineEntryModel? = runCatching {
+        provider.statuses.unpin(id).toModel()
+    }.getOrNull()
 
-    override suspend fun favorite(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.statuses.favorite(id).toModel()
-        }.getOrNull()
-    }
+    override suspend fun favorite(id: String): TimelineEntryModel? = runCatching {
+        provider.statuses.favorite(id).toModel()
+    }.getOrNull()
 
-    override suspend fun unfavorite(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.statuses.unfavorite(id).toModel()
-        }.getOrNull()
-    }
+    override suspend fun unfavorite(id: String): TimelineEntryModel? = runCatching {
+        provider.statuses.unfavorite(id).toModel()
+    }.getOrNull()
 
-    override suspend fun bookmark(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.statuses.bookmark(id).toModel()
-        }.getOrNull()
-    }
+    override suspend fun bookmark(id: String): TimelineEntryModel? = runCatching {
+        provider.statuses.bookmark(id).toModel()
+    }.getOrNull()
 
-    override suspend fun unbookmark(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.statuses.unbookmark(id).toModel()
-        }.getOrNull()
-    }
+    override suspend fun unbookmark(id: String): TimelineEntryModel? = runCatching {
+        provider.statuses.unbookmark(id).toModel()
+    }.getOrNull()
 
-    override suspend fun getFavorites(pageCursor: String?): List<TimelineEntryModel>? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.users
-                .getFavorites(
-                    maxId = pageCursor,
-                    limit = DEFAULT_PAGE_SIZE,
-                ).map { it.toModelWithReply() }
-        }.getOrNull()
-    }
+    override suspend fun getFavorites(pageCursor: String?): List<TimelineEntryModel>? = runCatching {
+        provider.users
+            .getFavorites(
+                maxId = pageCursor,
+                limit = DEFAULT_PAGE_SIZE,
+            ).map { it.toModelWithReply() }
+    }.getOrNull()
 
-    override suspend fun getBookmarks(pageCursor: String?): List<TimelineEntryModel>? = withContext(Dispatchers.IO) {
-        runCatching {
-            provider.users
-                .getBookmarks(
-                    maxId = pageCursor,
-                    limit = DEFAULT_PAGE_SIZE,
-                ).map { it.toModelWithReply() }
-        }.getOrNull()
-    }
+    override suspend fun getBookmarks(pageCursor: String?): List<TimelineEntryModel>? = runCatching {
+        provider.users
+            .getBookmarks(
+                maxId = pageCursor,
+                limit = DEFAULT_PAGE_SIZE,
+            ).map { it.toModelWithReply() }
+    }.getOrNull()
 
-    override suspend fun getUsersWhoFavorited(id: String, pageCursor: String?): List<UserModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                provider.statuses
-                    .getFavoritedBy(
-                        id = id,
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                    ).map { it.toModel() }
-            }.getOrNull()
-        }
+    override suspend fun getUsersWhoFavorited(id: String, pageCursor: String?): List<UserModel>? = runCatching {
+        provider.statuses
+            .getFavoritedBy(
+                id = id,
+                maxId = pageCursor,
+                limit = DEFAULT_PAGE_SIZE,
+            ).map { it.toModel() }
+    }.getOrNull()
 
-    override suspend fun getUsersWhoReblogged(id: String, pageCursor: String?): List<UserModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                provider.statuses
-                    .getRebloggedBy(
-                        id = id,
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                    ).map { it.toModel() }
-            }.getOrNull()
-        }
+    override suspend fun getUsersWhoReblogged(id: String, pageCursor: String?): List<UserModel>? = runCatching {
+        provider.statuses
+            .getRebloggedBy(
+                id = id,
+                maxId = pageCursor,
+                limit = DEFAULT_PAGE_SIZE,
+            ).map { it.toModel() }
+    }.getOrNull()
 
     override suspend fun create(
         localId: String,
@@ -203,48 +168,46 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
         pollOptions: List<String>?,
         pollExpirationDate: String?,
         pollMultiple: Boolean?,
-    ): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            val pollData =
-                if (pollOptions != null && pollMultiple != null && pollExpirationDate != null) {
-                    val pollDuration =
-                        getDurationFromNowToDate(
-                            pollExpirationDate,
-                        ) ?: Duration.ZERO
-                    CreatePollForm(
-                        options = pollOptions,
-                        multiple = pollMultiple,
-                        expiresIn = pollDuration.inWholeSeconds,
-                    )
-                } else {
-                    null
-                }
-            val data =
-                CreateStatusForm(
-                    status = text,
-                    addons = StatusAddons(title = title.orEmpty()),
-                    mediaIds = mediaIds,
-                    visibility = visibility.toDto(),
-                    sensitive = sensitive,
-                    inReplyTo = inReplyTo,
-                    lang = lang,
-                    spoilerText = spoilerText,
-                    scheduledAt = scheduled,
-                    poll = pollData,
-                    localOnly =
-                    when (visibility) {
-                        Visibility.LocalPublic -> true
-                        Visibility.LocalUnlisted -> true
-                        else -> null
-                    },
+    ): TimelineEntryModel? = runCatching {
+        val pollData =
+            if (pollOptions != null && pollMultiple != null && pollExpirationDate != null) {
+                val pollDuration =
+                    getDurationFromNowToDate(
+                        pollExpirationDate,
+                    ) ?: Duration.ZERO
+                CreatePollForm(
+                    options = pollOptions,
+                    multiple = pollMultiple,
+                    expiresIn = pollDuration.inWholeSeconds,
                 )
-            provider.statuses
-                .create(
-                    key = localId,
-                    data = data,
-                ).toModel()
-        }.getOrNull()
-    }
+            } else {
+                null
+            }
+        val data =
+            CreateStatusForm(
+                status = text,
+                addons = StatusAddons(title = title.orEmpty()),
+                mediaIds = mediaIds,
+                visibility = visibility.toDto(),
+                sensitive = sensitive,
+                inReplyTo = inReplyTo,
+                lang = lang,
+                spoilerText = spoilerText,
+                scheduledAt = scheduled,
+                poll = pollData,
+                localOnly =
+                when (visibility) {
+                    Visibility.LocalPublic -> true
+                    Visibility.LocalUnlisted -> true
+                    else -> null
+                },
+            )
+        provider.statuses
+            .create(
+                key = localId,
+                data = data,
+            ).toModel()
+    }.getOrNull()
 
     override suspend fun update(
         id: String,
@@ -259,94 +222,84 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
         pollOptions: List<String>?,
         pollExpirationDate: String?,
         pollMultiple: Boolean?,
-    ): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            val pollData =
-                if (pollOptions != null && pollMultiple != null && pollExpirationDate != null) {
-                    val pollDuration =
-                        getDurationFromNowToDate(
-                            pollExpirationDate,
-                        ) ?: Duration.ZERO
-                    CreatePollForm(
-                        options = pollOptions,
-                        multiple = pollMultiple,
-                        expiresIn = pollDuration.inWholeSeconds,
-                    )
-                } else {
-                    null
-                }
-            val data =
-                CreateStatusForm(
-                    status = text,
-                    addons = StatusAddons(title = title.orEmpty()),
-                    mediaIds = mediaIds,
-                    visibility = visibility.toDto(),
-                    sensitive = sensitive,
-                    inReplyTo = inReplyTo,
-                    lang = lang,
-                    spoilerText = spoilerText,
-                    poll = pollData,
-                    localOnly =
-                    when (visibility) {
-                        Visibility.LocalPublic -> true
-                        Visibility.LocalUnlisted -> true
-                        else -> null
-                    },
+    ): TimelineEntryModel? = runCatching {
+        val pollData =
+            if (pollOptions != null && pollMultiple != null && pollExpirationDate != null) {
+                val pollDuration =
+                    getDurationFromNowToDate(
+                        pollExpirationDate,
+                    ) ?: Duration.ZERO
+                CreatePollForm(
+                    options = pollOptions,
+                    multiple = pollMultiple,
+                    expiresIn = pollDuration.inWholeSeconds,
                 )
-            provider.statuses
-                .update(
-                    id = id,
-                    data = data,
-                ).toModelWithReply()
-        }.getOrNull()
-    }
+            } else {
+                null
+            }
+        val data =
+            CreateStatusForm(
+                status = text,
+                addons = StatusAddons(title = title.orEmpty()),
+                mediaIds = mediaIds,
+                visibility = visibility.toDto(),
+                sensitive = sensitive,
+                inReplyTo = inReplyTo,
+                lang = lang,
+                spoilerText = spoilerText,
+                poll = pollData,
+                localOnly =
+                when (visibility) {
+                    Visibility.LocalPublic -> true
+                    Visibility.LocalUnlisted -> true
+                    else -> null
+                },
+            )
+        provider.statuses
+            .update(
+                id = id,
+                data = data,
+            ).toModelWithReply()
+    }.getOrNull()
 
-    override suspend fun delete(id: String): Boolean = withContext(Dispatchers.IO) {
-        runCatching {
-            val res = provider.statuses.delete(id)
-            res.isSuccessful
-        }.getOrElse { false }
-    }
+    override suspend fun delete(id: String): Boolean = runCatching {
+        val res = provider.statuses.delete(id)
+        res.isSuccessful
+    }.getOrElse { false }
 
-    override suspend fun submitPoll(pollId: String, choices: List<Int>): PollModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            val data =
-                SubmitPollVoteForm(
-                    choices = choices,
-                )
-            provider.polls
-                .vote(
-                    id = pollId,
-                    data = data,
-                ).toModel()
-        }.getOrNull()
-    }
+    override suspend fun submitPoll(pollId: String, choices: List<Int>): PollModel? = runCatching {
+        val data =
+            SubmitPollVoteForm(
+                choices = choices,
+            )
+        provider.polls
+            .vote(
+                id = pollId,
+                data = data,
+            ).toModel()
+    }.getOrNull()
 
-    override suspend fun dislike(id: String): Boolean = withContext(Dispatchers.IO) {
-        runCatching {
-            val data =
-                FormDataContent(
-                    parameters {
-                        append("id", id)
-                    },
-                )
-            val res = provider.statuses.dislike(data)
-            res.isSuccessful
-        }.getOrElse { false }
-    }
+    override suspend fun dislike(id: String): Boolean = runCatching {
+        val data =
+            FormDataContent(
+                parameters {
+                    append("id", id)
+                },
+            )
+        val res = provider.statuses.dislike(data)
+        res.isSuccessful
+    }.getOrElse { false }
 
-    override suspend fun undislike(id: String): Boolean = withContext(Dispatchers.IO) {
-        runCatching {
-            val data =
-                FormDataContent(
-                    parameters {
-                        append("id", id)
-                    },
-                )
-            val res = provider.statuses.undislike(data)
-            res.isSuccessful
-        }.getOrElse { false }
-    }
+    override suspend fun undislike(id: String): Boolean = runCatching {
+        val data =
+            FormDataContent(
+                parameters {
+                    append("id", id)
+                },
+            )
+        val res = provider.statuses.undislike(data)
+        res.isSuccessful
+    }.getOrElse { false }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20

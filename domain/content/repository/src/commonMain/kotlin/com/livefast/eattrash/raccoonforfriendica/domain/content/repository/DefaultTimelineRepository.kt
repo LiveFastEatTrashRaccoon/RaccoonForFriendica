@@ -5,11 +5,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 
 internal class DefaultTimelineRepository(
     private val provider: ServiceProvider,
@@ -18,67 +15,65 @@ internal class DefaultTimelineRepository(
     private val mutex = Mutex()
     private val cachedValues: MutableList<TimelineEntryModel> = mutableListOf()
 
-    override suspend fun getPublic(pageCursor: String?, refresh: Boolean): List<TimelineEntryModel>? =
-        withContext(Dispatchers.IO) {
-            if (refresh) {
-                mutex.withLock {
-                    cachedValues.clear()
-                }
+    override suspend fun getPublic(pageCursor: String?, refresh: Boolean): List<TimelineEntryModel>? {
+        if (refresh) {
+            mutex.withLock {
+                cachedValues.clear()
             }
-            if (pageCursor == null && cachedValues.isNotEmpty()) {
-                return@withContext cachedValues
-            }
-            runCatching {
-                val response =
-                    provider.timeline.getPublic(
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                    )
-                response
-                    .map { it.toModelWithReply() }
-                    .also {
-                        if (pageCursor == null) {
-                            mutex.withLock {
-                                cachedValues.addAll(it)
-                            }
+        }
+        if (pageCursor == null && cachedValues.isNotEmpty()) {
+            return cachedValues
+        }
+        return runCatching {
+            val response =
+                provider.timeline.getPublic(
+                    maxId = pageCursor,
+                    limit = DEFAULT_PAGE_SIZE,
+                )
+            response
+                .map { it.toModelWithReply() }
+                .also {
+                    if (pageCursor == null) {
+                        mutex.withLock {
+                            cachedValues.addAll(it)
                         }
                     }
-            }.getOrNull()
-        }
+                }
+        }.getOrNull()
+    }
 
-    override suspend fun getHome(pageCursor: String?, refresh: Boolean): List<TimelineEntryModel>? =
-        withContext(Dispatchers.IO) {
-            if (refresh) {
-                mutex.withLock {
-                    cachedValues.clear()
-                }
+    override suspend fun getHome(pageCursor: String?, refresh: Boolean): List<TimelineEntryModel>? {
+        if (refresh) {
+            mutex.withLock {
+                cachedValues.clear()
             }
-            if (pageCursor == null && cachedValues.isNotEmpty()) {
-                return@withContext cachedValues
-            }
-            runCatching {
-                val response =
-                    provider.timeline.getHome(
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                    )
-                response
-                    .map { it.toModelWithReply() }
-                    .also {
-                        if (pageCursor == null) {
-                            mutex.withLock {
-                                cachedValues.addAll(it)
-                            }
+        }
+        if (pageCursor == null && cachedValues.isNotEmpty()) {
+            return cachedValues
+        }
+        return runCatching {
+            val response =
+                provider.timeline.getHome(
+                    maxId = pageCursor,
+                    limit = DEFAULT_PAGE_SIZE,
+                )
+            response
+                .map { it.toModelWithReply() }
+                .also {
+                    if (pageCursor == null) {
+                        mutex.withLock {
+                            cachedValues.addAll(it)
                         }
                     }
-            }.getOrNull()
-        }
+                }
+        }.getOrNull()
+    }
 
     override suspend fun getLocal(
         pageCursor: String?,
         refresh: Boolean,
         otherInstance: String?,
-    ): List<TimelineEntryModel>? = withContext(Dispatchers.IO) {
+    ): List<TimelineEntryModel>? {
         if (otherInstance.isNullOrEmpty()) {
             if (refresh) {
                 mutex.withLock {
@@ -86,9 +81,9 @@ internal class DefaultTimelineRepository(
                 }
             }
             if (pageCursor == null && cachedValues.isNotEmpty()) {
-                return@withContext cachedValues
+                return cachedValues
             }
-            runCatching {
+            return runCatching {
                 val response =
                     provider.timeline.getPublic(
                         maxId = pageCursor,
@@ -106,7 +101,7 @@ internal class DefaultTimelineRepository(
                     }
             }.getOrNull()
         } else {
-            runCatching {
+            return runCatching {
                 otherProvider.changeNode(otherInstance)
                 val response =
                     otherProvider.timeline.getPublic(
@@ -128,32 +123,27 @@ internal class DefaultTimelineRepository(
     }
 
     override suspend fun getHashtag(hashtag: String, pageCursor: String?): ListWithPageCursor<TimelineEntryModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val response =
-                    provider.timeline.getHashtag(
-                        hashtag = hashtag,
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                    )
-                val list = response.body()?.map { it.toModelWithReply() }.orEmpty()
-                val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
-                ListWithPageCursor(list = list, cursor = nextCursor)
-            }.getOrNull()
-        }
+        runCatching {
+            val response =
+                provider.timeline.getHashtag(
+                    hashtag = hashtag,
+                    maxId = pageCursor,
+                    limit = DEFAULT_PAGE_SIZE,
+                )
+            val list = response.body()?.map { it.toModelWithReply() }.orEmpty()
+            val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
+            ListWithPageCursor(list = list, cursor = nextCursor)
+        }.getOrNull()
 
-    override suspend fun getCircle(id: String, pageCursor: String?): List<TimelineEntryModel>? =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                val response =
-                    provider.timeline.getList(
-                        id = id,
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                    )
-                response.map { it.toModelWithReply() }
-            }.getOrNull()
-        }
+    override suspend fun getCircle(id: String, pageCursor: String?): List<TimelineEntryModel>? = runCatching {
+        val response =
+            provider.timeline.getList(
+                id = id,
+                maxId = pageCursor,
+                limit = DEFAULT_PAGE_SIZE,
+            )
+        response.map { it.toModelWithReply() }
+    }.getOrNull()
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20

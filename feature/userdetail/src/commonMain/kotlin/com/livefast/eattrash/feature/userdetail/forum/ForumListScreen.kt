@@ -453,7 +453,8 @@ class ForumListScreen(private val id: String) : Screen {
                                 this += OptionId.ViewDetails.toOption()
                                 this += OptionId.CopyToClipboard.toOption()
                                 val currentLang = uiState.lang.orEmpty()
-                                if (currentLang.isNotEmpty() && entry.lang != currentLang &&
+                                if (currentLang.isNotEmpty() &&
+                                    entry.lang != currentLang &&
                                     !entry.isShowingTranslation
                                 ) {
                                     this +=
@@ -521,6 +522,7 @@ class ForumListScreen(private val id: String) : Screen {
                                                 )
                                             }
                                         }
+
                                     OptionId.Quote -> {
                                         entry.original.also { entryToShare ->
                                             detailOpener.openComposer(
@@ -528,6 +530,7 @@ class ForumListScreen(private val id: String) : Screen {
                                             )
                                         }
                                     }
+
                                     OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                     OptionId.CopyToClipboard ->
                                         model.reduce(ForumListMviModel.Intent.CopyToClipboard(entry.original))
@@ -546,6 +549,7 @@ class ForumListScreen(private val id: String) : Screen {
                                         model.reduce(
                                             ForumListMviModel.Intent.OpenInBrowser(entry),
                                         )
+
                                     else -> Unit
                                 }
                             },

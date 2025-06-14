@@ -10,51 +10,38 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toVisibility
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.withContext
 
 internal class DefaultDraftRepository(private val draftDao: DraftDao, private val provider: ServiceProvider) :
     DraftRepository {
-    override suspend fun getAll(page: Int): List<TimelineEntryModel>? = withContext(Dispatchers.IO) {
-        runCatching {
-            draftDao
-                .getAll(
-                    offset = page * DEFAULT_PAGE_SIZE,
-                    limit = DEFAULT_PAGE_SIZE,
-                ).map { it.toModel() }
-        }.getOrNull()
-    }
+    override suspend fun getAll(page: Int): List<TimelineEntryModel>? = runCatching {
+        draftDao
+            .getAll(
+                offset = page * DEFAULT_PAGE_SIZE,
+                limit = DEFAULT_PAGE_SIZE,
+            ).map { it.toModel() }
+    }.getOrNull()
 
-    override suspend fun getById(id: String): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            draftDao.getBy(id)?.toModel()
-        }.getOrNull()
-    }
+    override suspend fun getById(id: String): TimelineEntryModel? = runCatching {
+        draftDao.getBy(id)?.toModel()
+    }.getOrNull()
 
-    override suspend fun create(item: TimelineEntryModel): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            val entity = item.toEntity()
-            draftDao.insert(entity)
-            getById(item.id)
-        }.getOrNull()
-    }
+    override suspend fun create(item: TimelineEntryModel): TimelineEntryModel? = runCatching {
+        val entity = item.toEntity()
+        draftDao.insert(entity)
+        getById(item.id)
+    }.getOrNull()
 
-    override suspend fun update(item: TimelineEntryModel): TimelineEntryModel? = withContext(Dispatchers.IO) {
-        runCatching {
-            val entity = item.toEntity()
-            draftDao.update(entity)
-            getById(item.id)
-        }.getOrNull()
-    }
+    override suspend fun update(item: TimelineEntryModel): TimelineEntryModel? = runCatching {
+        val entity = item.toEntity()
+        draftDao.update(entity)
+        getById(item.id)
+    }.getOrNull()
 
-    override suspend fun delete(id: String): Boolean = withContext(Dispatchers.IO) {
-        runCatching {
-            val entity = DraftEntity(id = id)
-            draftDao.delete(entity)
-            true
-        }.getOrElse { false }
-    }
+    override suspend fun delete(id: String): Boolean = runCatching {
+        val entity = DraftEntity(id = id)
+        draftDao.delete(entity)
+        true
+    }.getOrElse { false }
 
     private suspend fun DraftEntity.toModel() = TimelineEntryModel(
         id = id,
