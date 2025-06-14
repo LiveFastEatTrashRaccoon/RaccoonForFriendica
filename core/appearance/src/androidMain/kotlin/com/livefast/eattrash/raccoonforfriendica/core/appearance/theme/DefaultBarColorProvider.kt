@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.theme
 
 import android.app.Activity
 import android.os.Build
+import android.view.WindowManager
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,6 +51,12 @@ internal class DefaultBarColorProvider : BarColorProvider {
                         isStatusBarContrastEnforced = true
                     }
                     isNavigationBarContrastEnforced = true
+                }
+                // configure window for consistent behavior across Android versions (see safeImePadding modifier)
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                    setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE,
+                    )
                 }
 
                 val forceLight = baseColor == Color.White
