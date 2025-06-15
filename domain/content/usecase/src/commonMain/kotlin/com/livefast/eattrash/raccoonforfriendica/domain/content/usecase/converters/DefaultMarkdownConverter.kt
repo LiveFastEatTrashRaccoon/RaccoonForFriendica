@@ -57,6 +57,11 @@ internal class DefaultMarkdownConverter : MarkdownConverter {
                 append("<h5>$content</h5>\n")
             }
         }.run {
+            Regex("(?<=^|\n)> (?<text>.*?)(?=\$|\n)").substituteAllOccurrences(this) { match ->
+                val content = match.groups["text"]?.value.orEmpty()
+                append("<blockquote>$content</blockquote>\n")
+            }
+        }.run {
             ContentRegexes.BBCODE_SHARE.substituteAllOccurrences(this) { match ->
                 val url = match.groups["url"]?.value.orEmpty()
                 append(url)
