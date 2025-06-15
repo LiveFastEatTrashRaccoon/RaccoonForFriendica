@@ -1,0 +1,7 @@
+- fix: support for HTML headings
+- fix: Markdown conversion when editing posts
+- fix: handle blockquotes in preview (Markdown)
+- fix: safe IME padding on Android <= 10
+- enhancement: improve pull-style updates
+- refactor: code cleanup
+- chore: update dependencies
