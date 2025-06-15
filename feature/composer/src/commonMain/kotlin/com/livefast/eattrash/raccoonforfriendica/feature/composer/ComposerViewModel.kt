@@ -290,6 +290,7 @@ class ComposerViewModel(
                     byteArray = intent.byteArray,
                     isInlineImage = false,
                 )
+
             is ComposerMviModel.Intent.EditAttachmentDescription ->
                 updateAttachmentDescription(intent.attachment, intent.description)
 
