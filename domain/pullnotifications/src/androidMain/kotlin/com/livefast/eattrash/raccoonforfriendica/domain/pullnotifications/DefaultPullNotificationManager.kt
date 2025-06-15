@@ -5,12 +5,15 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import androidx.work.BackoffPolicy
 import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import java.util.concurrent.TimeUnit
 
 internal class DefaultPullNotificationManager(private val context: Context) : PullNotificationManager {
@@ -33,6 +36,9 @@ internal class DefaultPullNotificationManager(private val context: Context) : Pu
             Constraints
                 .Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresBatteryNotLow(false)
+                .setRequiresCharging(false)
+                .setRequiresDeviceIdle(false)
                 .build()
 
     override fun setPeriod(minutes: Long) {
@@ -56,8 +62,8 @@ internal class DefaultPullNotificationManager(private val context: Context) : Pu
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .setConstraints(constraints)
             .build()
-            .also { req ->
-                WorkManager.getInstance(context).enqueue(req)
+            .also { request ->
+                WorkManager.getInstance(context).enqueue(request)
             }
     }
 
@@ -92,13 +98,24 @@ internal class DefaultPullNotificationManager(private val context: Context) : Pu
             .setInitialDelay(
                 duration = 5,
                 timeUnit = TimeUnit.MINUTES,
-            ).build()
-            .also { req ->
-                WorkManager.getInstance(context).enqueue(req)
+            )
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR,
+                WorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS,
+            )
+            .build()
+            .also { request ->
+                WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                    uniqueWorkName = WORK_NAME,
+                    existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.UPDATE,
+                    request = request,
+                )
             }
     }
 
     companion object {
         private const val TAG = "PullNotificationChecker"
+        private const val WORK_NAME = "periodic_notification_check"
     }
 }
