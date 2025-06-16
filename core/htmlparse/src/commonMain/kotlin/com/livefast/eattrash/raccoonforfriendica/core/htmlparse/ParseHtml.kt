@@ -41,6 +41,14 @@ fun String.parseHtml(linkColor: Color, quoteColor: Color, requiresHtmlDecode: Bo
                         )
                     }
 
+                    "h1", "h2", "h3", "h4", "h5", "h6" -> {
+                        builder.pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
+                        if (builder.length != 0) {
+                            // separate paragraphs with a blank line
+                            builder.appendLine().appendLine()
+                        }
+                    }
+
                     "b", "strong" -> builder.pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
                     "u" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
                     "i", "em" -> builder.pushStyle(SpanStyle(fontStyle = FontStyle.Italic))
@@ -58,6 +66,7 @@ fun String.parseHtml(linkColor: Color, quoteColor: Color, requiresHtmlDecode: Bo
                         } else {
                             builder.append(" • ")
                         }
+
                     "code" -> builder.pushStyle(SpanStyle(fontFamily = FontFamily.Monospace))
                     "blockquote" -> {
                         builder.pushStyle(
@@ -76,6 +85,7 @@ fun String.parseHtml(linkColor: Color, quoteColor: Color, requiresHtmlDecode: Bo
                             ),
                         )
                     }
+
                     "img" -> {
                         val url = attributes["src"]
                         val alt = attributes["alt"]
@@ -85,6 +95,7 @@ fun String.parseHtml(linkColor: Color, quoteColor: Color, requiresHtmlDecode: Bo
                         }
                         builder.append(" />")
                     }
+
                     else -> println("onOpenTag: Unhandled tag $name")
                 }
             }.onCloseTag { name, _ ->
@@ -94,22 +105,30 @@ fun String.parseHtml(linkColor: Color, quoteColor: Color, requiresHtmlDecode: Bo
                         runCatching {
                             builder.pop()
                         }
+
                     "a" ->
                         runCatching {
                             builder.pop() // corresponds to pushStyle
                             builder.pop() // corresponds to pushStringAnnotation
                         }
+
+                    "h1", "h2", "h3", "h4", "h5", "h6" -> {
+                        builder.pop()
+                    }
+
                     "ul" -> Unit
                     "ol" -> {
                         orderedListIndex = 0
                         inOrderedList = false
                     }
+
                     "li" -> builder.appendLine()
                     "blockquote" ->
                         runCatching {
                             builder.pop() // corresponds to pushStyle (ParagraphStyle)
                             builder.pop() // corresponds to pushStyle (SpanStyle)
                         }
+
                     else -> println("onCloseTag: Unhandled tag $name")
                 }
             }.onText { text ->
