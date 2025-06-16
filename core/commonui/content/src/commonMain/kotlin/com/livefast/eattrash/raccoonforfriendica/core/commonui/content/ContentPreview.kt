@@ -57,7 +57,7 @@ fun ContentPreview(
     val cornerSize = CornerSize.xl
     val contentPadding = 12.dp
 
-    Box(modifier = modifier) {
+    Column(modifier = modifier) {
         if (hasMediaInfo || hasTextualInfo) {
             Column(
                 modifier =
