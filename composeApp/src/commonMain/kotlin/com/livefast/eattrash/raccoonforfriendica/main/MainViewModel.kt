@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.main
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import kotlinx.coroutines.flow.launchIn
@@ -9,12 +11,13 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val inboxManager: InboxManager) :
-    DefaultMviModel<MainMviModel.Intent, MainMviModel.UiState, MainMviModel.Effect>(
+    ViewModel(),
+    MviModelDelegate<MainMviModel.Intent, MainMviModel.UiState, MainMviModel.Effect> by DefaultMviModelDelegate(
         initialState = MainMviModel.UiState(),
     ),
     MainMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             inboxManager.unreadCount
                 .onEach { inboxUnread ->
                     updateState {
@@ -27,7 +30,7 @@ class MainViewModel(private val inboxManager: InboxManager) :
     override fun reduce(intent: MainMviModel.Intent) {
         when (intent) {
             is MainMviModel.Intent.SetBottomBarOffsetHeightPx -> {
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(bottomBarOffsetHeightPx = intent.value) }
                 }
             }
