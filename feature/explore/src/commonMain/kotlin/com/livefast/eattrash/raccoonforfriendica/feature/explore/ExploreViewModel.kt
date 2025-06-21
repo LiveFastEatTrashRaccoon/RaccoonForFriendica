@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.explore
 
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
@@ -57,12 +59,13 @@ class ExploreViewModel(
     private val getTranslation: GetTranslationUseCase,
     private val getInnerUrl: GetInnerUrlUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect>(
-    initialState = ExploreMviModel.State(),
-),
-    ExploreMviModel {
+) : ViewModel(),
+    ExploreMviModel,
+    MviModelDelegate<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect> by DefaultMviModelDelegate(
+        initialState = ExploreMviModel.State(),
+    ) {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
@@ -129,7 +132,7 @@ class ExploreViewModel(
     override fun reduce(intent: ExploreMviModel.Intent) {
         when (intent) {
             is ExploreMviModel.Intent.ChangeSection ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     check(!uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(ExploreMviModel.Effect.BackToTop)
@@ -137,12 +140,12 @@ class ExploreViewModel(
                 }
 
             ExploreMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
             ExploreMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
@@ -160,11 +163,13 @@ class ExploreViewModel(
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
+
             is ExploreMviModel.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
+
             is ExploreMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is ExploreMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
             is ExploreMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
@@ -185,10 +190,12 @@ class ExploreViewModel(
 
                 ExploreSection.Links ->
                     ExplorePaginationSpecification.Links
+
                 ExploreSection.Posts ->
                     ExplorePaginationSpecification.Posts(
                         includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                     )
+
                 ExploreSection.Suggestions -> ExplorePaginationSpecification.Suggestions
             },
         )
@@ -253,7 +260,7 @@ class ExploreViewModel(
 
     private fun follow(userId: String) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
                 uiState.value.items
@@ -278,7 +285,7 @@ class ExploreViewModel(
 
     private fun unfollow(userId: String) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
                 uiState.value.items
@@ -348,7 +355,7 @@ class ExploreViewModel(
 
     private fun toggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     reblogLoading = true,
@@ -383,7 +390,7 @@ class ExploreViewModel(
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     favoriteLoading = true,
@@ -409,7 +416,7 @@ class ExploreViewModel(
 
     private fun toggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     dislikeLoading = true,
@@ -435,7 +442,7 @@ class ExploreViewModel(
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     bookmarkLoading = true,
@@ -468,7 +475,7 @@ class ExploreViewModel(
     }
 
     private fun deleteEntry(entryId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
                 notificationCenter.send(TimelineEntryDeletedEvent(entryId))
@@ -478,7 +485,7 @@ class ExploreViewModel(
     }
 
     private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val res =
                 userRepository.mute(
                     id = userId,
@@ -492,7 +499,7 @@ class ExploreViewModel(
     }
 
     private fun block(userId: String, entryId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val res = userRepository.unblock(userId)
             if (res != null) {
                 removeEntryFromState(entryId)
@@ -501,7 +508,7 @@ class ExploreViewModel(
     }
 
     private fun togglePin(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val newEntry =
                 if (entry.pinned) {
                     timelineEntryRepository.unpin(entry.id)
@@ -520,7 +527,7 @@ class ExploreViewModel(
 
     private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
             val newPoll =
                 timelineEntryRepository.submitPoll(
@@ -541,7 +548,7 @@ class ExploreViewModel(
     }
 
     private fun copyToClipboard(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
                 val text =
@@ -561,7 +568,7 @@ class ExploreViewModel(
         val targetLang = uiState.value.lang ?: return
         check(!entry.translationLoading) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
             val isBeingTranslated = !entry.isShowingTranslation
 
@@ -588,7 +595,7 @@ class ExploreViewModel(
     }
 
     private fun addInstanceShortcut(nodeName: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
                     accountId = accountId,
@@ -599,7 +606,7 @@ class ExploreViewModel(
     }
 
     private fun openInBrowser(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
                 emitEffect(ExploreMviModel.Effect.OpenUrl(url))

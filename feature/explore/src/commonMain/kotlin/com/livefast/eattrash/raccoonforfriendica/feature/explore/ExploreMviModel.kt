@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.explore
 
 import androidx.compose.runtime.Stable
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
@@ -10,9 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSec
 import kotlin.time.Duration
 
 @Stable
-interface ExploreMviModel :
-    ScreenModel,
-    MviModel<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect> {
+interface ExploreMviModel : MviModel<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 
