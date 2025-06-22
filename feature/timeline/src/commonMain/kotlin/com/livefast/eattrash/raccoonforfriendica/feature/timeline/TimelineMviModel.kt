@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.timeline
 
 import androidx.compose.runtime.Stable
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -9,9 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineTyp
 import kotlin.time.Duration
 
 @Stable
-interface TimelineMviModel :
-    ScreenModel,
-    MviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect> {
+interface TimelineMviModel : MviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 

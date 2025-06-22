@@ -53,11 +53,11 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -98,7 +98,7 @@ class TimelineScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model: TimelineMviModel = rememberScreenModel()
+        val model: TimelineMviModel = getViewModel<TimelineViewModel>()
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val topAppBarState = rememberTopAppBarState()
@@ -522,15 +522,18 @@ class TimelineScreen : Screen {
                                             )
                                         }
                                     }
+
                                     OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                     OptionId.CopyToClipboard ->
                                         model.reduce(
                                             TimelineMviModel.Intent.CopyToClipboard(entry.original),
                                         )
+
                                     OptionId.Translate ->
                                         model.reduce(
                                             TimelineMviModel.Intent.ToggleTranslation(entry.original),
                                         )
+
                                     OptionId.AddShortcut ->
                                         model.reduce(
                                             TimelineMviModel.Intent.AddInstanceShortcut(entry.nodeName),
