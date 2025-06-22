@@ -43,7 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
@@ -58,6 +57,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toTypography
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomColorPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
@@ -84,6 +84,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.Notificati
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.SettingsViewModelArgs
 import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionsController
 import dev.icerock.moko.permissions.compose.BindEffect
@@ -104,7 +105,7 @@ class SettingsScreen : Screen {
             remember(factory) {
                 factory.createPermissionsController()
             }
-        val model: SettingsMviModel = rememberScreenModel(arg = controller)
+        val model: SettingsMviModel = getViewModel<SettingsViewModel>(arg = SettingsViewModelArgs(controller))
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

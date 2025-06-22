@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.settings
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.ThemeColor
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
@@ -22,9 +21,7 @@ import dev.icerock.moko.permissions.PermissionState
 import kotlin.time.Duration
 
 @Stable
-interface SettingsMviModel :
-    ScreenModel,
-    MviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect> {
+interface SettingsMviModel : MviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect> {
     sealed interface Intent {
         data class ChangeTheme(val theme: UiTheme) : Intent
 
