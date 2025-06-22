@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.timeline
 
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
@@ -50,12 +52,12 @@ class ShortcutTimelineViewModel(
     private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<ShortcutTimelineMviModel.Intent, ShortcutTimelineMviModel.State, ShortcutTimelineMviModel.Effect>(
-    initialState = ShortcutTimelineMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<ShortcutTimelineMviModel.Intent, ShortcutTimelineMviModel.State, ShortcutTimelineMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = ShortcutTimelineMviModel.State()),
     ShortcutTimelineMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(nodeName = node) }
 
             settingsRepository.current
@@ -101,12 +103,12 @@ class ShortcutTimelineViewModel(
     override fun reduce(intent: ShortcutTimelineMviModel.Intent) {
         when (intent) {
             ShortcutTimelineMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
             ShortcutTimelineMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
@@ -124,7 +126,7 @@ class ShortcutTimelineViewModel(
             is ShortcutTimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is ShortcutTimelineMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
             is ShortcutTimelineMviModel.Intent.WillOpenDetail ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
                     emitEffect(ShortcutTimelineMviModel.Effect.OpenDetail(intent.entry))
@@ -214,7 +216,7 @@ class ShortcutTimelineViewModel(
 
     private fun toggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(reblogLoading = true)
             }
@@ -248,7 +250,7 @@ class ShortcutTimelineViewModel(
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     favoriteLoading = true,
@@ -283,7 +285,7 @@ class ShortcutTimelineViewModel(
 
     private fun toggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(dislikeLoading = true)
             }
@@ -307,7 +309,7 @@ class ShortcutTimelineViewModel(
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(bookmarkLoading = true)
             }
@@ -340,7 +342,7 @@ class ShortcutTimelineViewModel(
 
     private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
             val newPoll =
                 resolveToLocal(entry)?.poll?.let { poll ->
@@ -363,7 +365,7 @@ class ShortcutTimelineViewModel(
     }
 
     private fun copyToClipboard(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
                 val text =
@@ -383,7 +385,7 @@ class ShortcutTimelineViewModel(
         val targetLang = uiState.value.lang ?: return
         check(!entry.translationLoading) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
             val isBeingTranslated = !entry.isShowingTranslation
 
@@ -410,7 +412,7 @@ class ShortcutTimelineViewModel(
     }
 
     private fun openInBrowser(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
                 emitEffect(ShortcutTimelineMviModel.Effect.OpenUrl(url))

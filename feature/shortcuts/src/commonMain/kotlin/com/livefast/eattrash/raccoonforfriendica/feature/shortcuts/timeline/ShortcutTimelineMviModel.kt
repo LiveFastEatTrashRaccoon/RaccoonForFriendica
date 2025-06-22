@@ -1,13 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.timeline
 
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 
 interface ShortcutTimelineMviModel :
-    ScreenModel,
     MviModel<ShortcutTimelineMviModel.Intent, ShortcutTimelineMviModel.State, ShortcutTimelineMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
