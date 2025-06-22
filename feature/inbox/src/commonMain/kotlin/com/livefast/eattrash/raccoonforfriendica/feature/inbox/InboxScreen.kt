@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -39,11 +40,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
@@ -63,295 +62,296 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class InboxScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: InboxViewModel = getViewModel()
-        val uiState by model.uiState.collectAsState()
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val connection = navigationCoordinator.getBottomBarScrollConnection()
-        val uriHandler = LocalUriHandler.current
-        val detailOpener = remember { getDetailOpener() }
-        val scope = rememberCoroutineScope()
-        val drawerCoordinator = remember { getDrawerCoordinator() }
-        val lazyListState = rememberLazyListState()
-        var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
-        var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
-        var confirmDismissAllDialogOpen by remember { mutableStateOf(false) }
-        var configureSelectedTypesDialogOpen by remember { mutableStateOf(false) }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun InboxScreen(
+    model: InboxMviModel,
+    modifier: Modifier = Modifier,
+    lazyListState: LazyListState = rememberLazyListState(),
+) {
+    val uiState by model.uiState.collectAsState()
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val connection = navigationCoordinator.getBottomBarScrollConnection()
+    val uriHandler = LocalUriHandler.current
+    val detailOpener = remember { getDetailOpener() }
+    val scope = rememberCoroutineScope()
+    val drawerCoordinator = remember { getDrawerCoordinator() }
+    var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
+    var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
+    var confirmDismissAllDialogOpen by remember { mutableStateOf(false) }
+    var configureSelectedTypesDialogOpen by remember { mutableStateOf(false) }
 
-        suspend fun goBackToTop() {
-            runCatching {
-                lazyListState.scrollToItem(0)
-                topAppBarState.heightOffset = 0f
-                topAppBarState.contentOffset = 0f
-            }
+    suspend fun goBackToTop() {
+        runCatching {
+            lazyListState.scrollToItem(0)
+            topAppBarState.heightOffset = 0f
+            topAppBarState.contentOffset = 0f
         }
+    }
 
-        LaunchedEffect(navigationCoordinator) {
-            navigationCoordinator.onDoubleTabSelection
-                .onEach { section ->
-                    if (section is BottomNavigationSection.Inbox) {
-                        goBackToTop()
-                    }
-                }.launchIn(this)
-        }
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        InboxMviModel.Effect.BackToTop -> goBackToTop()
-                    }
-                }.launchIn(this)
-        }
+    LaunchedEffect(navigationCoordinator) {
+        navigationCoordinator.onDoubleTabSelection
+            .onEach { section ->
+                if (section is BottomNavigationSection.Inbox) {
+                    goBackToTop()
+                }
+            }.launchIn(this)
+    }
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    InboxMviModel.Effect.BackToTop -> goBackToTop()
+                }
+            }.launchIn(this)
+    }
 
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            topBar = {
-                TopAppBar(
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.sectionTitleInbox,
-                            style = MaterialTheme.typography.titleMedium,
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.sectionTitleInbox,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                drawerCoordinator.toggleDrawer()
+                            }
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = LocalStrings.current.actionOpenSideMenu,
                         )
-                    },
-                    navigationIcon = {
+                    }
+                },
+                actions = {
+                    if (uiState.currentUserId != null) {
                         IconButton(
                             onClick = {
-                                scope.launch {
-                                    drawerCoordinator.toggleDrawer()
-                                }
+                                configureSelectedTypesDialogOpen = true
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = LocalStrings.current.actionOpenSideMenu,
+                                imageVector = Icons.Default.FilterList,
+                                contentDescription = LocalStrings.current.actionFilter,
                             )
                         }
-                    },
-                    actions = {
-                        if (uiState.currentUserId != null) {
-                            IconButton(
-                                onClick = {
-                                    configureSelectedTypesDialogOpen = true
-                                },
-                            ) {
+                        IconButton(
+                            enabled = uiState.notifications.isNotEmpty(),
+                            onClick = {
+                                confirmDismissAllDialogOpen = true
+                            },
+                        ) {
+                            if (uiState.markAllAsReadLoading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(IconSize.s),
+                                )
+                            } else {
                                 Icon(
-                                    imageVector = Icons.Default.FilterList,
-                                    contentDescription = LocalStrings.current.actionFilter,
+                                    imageVector = Icons.Default.DoneAll,
+                                    contentDescription = LocalStrings.current.actionDismissAllNotifications,
                                 )
                             }
-                            IconButton(
-                                enabled = uiState.notifications.isNotEmpty(),
-                                onClick = {
-                                    confirmDismissAllDialogOpen = true
-                                },
-                            ) {
-                                if (uiState.markAllAsReadLoading) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(IconSize.s),
-                                    )
-                                } else {
-                                    Icon(
-                                        imageVector = Icons.Default.DoneAll,
-                                        contentDescription = LocalStrings.current.actionDismissAllNotifications,
-                                    )
-                                }
-                            }
                         }
-                    },
-                )
-            },
-        ) { padding ->
-            PullToRefreshBox(
-                modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
-                    .then(
-                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(connection)
-                        } else {
-                            Modifier
-                        },
-                    ).then(
-                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        } else {
-                            Modifier
-                        },
-                    ),
-                isRefreshing = uiState.refreshing,
-                onRefresh = {
-                    model.reduce(InboxMviModel.Intent.Refresh)
+                    }
                 },
+            )
+        },
+    ) { padding ->
+        PullToRefreshBox(
+            modifier =
+            Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .then(
+                    if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(connection)
+                    } else {
+                        Modifier
+                    },
+                ).then(
+                    if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    } else {
+                        Modifier
+                    },
+                ),
+            isRefreshing = uiState.refreshing,
+            onRefresh = {
+                model.reduce(InboxMviModel.Intent.Refresh)
+            },
+        ) {
+            LazyColumn(
+                state = lazyListState,
+                verticalArrangement = Arrangement.spacedBy(Spacing.s),
             ) {
-                LazyColumn(
-                    state = lazyListState,
-                    verticalArrangement = Arrangement.spacedBy(Spacing.s),
-                ) {
-                    if (uiState.initial) {
-                        val placeholderCount = 5
-                        items(placeholderCount) {
-                            NotificationItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                        }
+                if (uiState.initial) {
+                    val placeholderCount = 5
+                    items(placeholderCount) {
+                        NotificationItemPlaceholder(modifier = Modifier.fillMaxWidth())
                     }
+                }
 
-                    itemsIndexed(
-                        items = uiState.notifications,
-                        key = { _, e -> "inbox-${e.type}-${e.id}" },
-                    ) { idx, notification ->
-                        NotificationItem(
-                            notification = notification,
-                            blurNsfw = uiState.blurNsfw,
-                            autoloadImages = uiState.autoloadImages,
-                            maxBodyLines = uiState.maxBodyLines,
-                            onOpenEntry = { entry ->
-                                detailOpener.openEntryDetail(entry.original)
-                                model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
-                            },
-                            onOpenUrl = { url, allowOpenInternal ->
-                                if (allowOpenInternal) {
-                                    uriHandler.openUri(url)
-                                } else {
-                                    uriHandler.openExternally(url)
-                                }
-                            },
-                            onOpenUser = {
-                                detailOpener.openUserDetail(it)
-                                model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
-                            },
-                            onClickUserRelationship = { userId, nextAction ->
-                                model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
-                                when (nextAction) {
-                                    RelationshipStatusNextAction.AcceptRequest -> {
-                                        detailOpener.openFollowRequests()
-                                    }
-
-                                    RelationshipStatusNextAction.ConfirmUnfollow -> {
-                                        confirmUnfollowDialogUserId = userId
-                                    }
-
-                                    RelationshipStatusNextAction.ConfirmDeleteFollowRequest -> {
-                                        confirmDeleteFollowRequestDialogUserId = userId
-                                    }
-
-                                    RelationshipStatusNextAction.Follow -> {
-                                        model.reduce(InboxMviModel.Intent.Follow(userId))
-                                    }
-
-                                    RelationshipStatusNextAction.Unfollow -> {
-                                        model.reduce(InboxMviModel.Intent.Unfollow(userId))
-                                    }
-                                }
-                            },
-                        )
-
-                        val canFetchMore =
-                            !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        val isNearTheEnd = idx.isNearTheEnd(uiState.notifications)
-                        if (isNearTheEnd && canFetchMore) {
-                            model.reduce(InboxMviModel.Intent.LoadNextPage)
-                        }
-                    }
-
-                    item {
-                        if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                ListLoadingIndicator()
+                itemsIndexed(
+                    items = uiState.notifications,
+                    key = { _, e -> "inbox-${e.type}-${e.id}" },
+                ) { idx, notification ->
+                    NotificationItem(
+                        notification = notification,
+                        blurNsfw = uiState.blurNsfw,
+                        autoloadImages = uiState.autoloadImages,
+                        maxBodyLines = uiState.maxBodyLines,
+                        onOpenEntry = { entry ->
+                            detailOpener.openEntryDetail(entry.original)
+                            model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
+                        },
+                        onOpenUrl = { url, allowOpenInternal ->
+                            if (allowOpenInternal) {
+                                uriHandler.openUri(url)
+                            } else {
+                                uriHandler.openExternally(url)
                             }
-                        }
-                    }
-                    if (!uiState.initial &&
-                        !uiState.loading &&
-                        !uiState.refreshing &&
-                        uiState.notifications.isEmpty()
-                    ) {
-                        item {
-                            Text(
-                                modifier =
-                                Modifier.fillMaxWidth().padding(
-                                    top = Spacing.m,
-                                    start = Spacing.m,
-                                    end = Spacing.m,
-                                ),
-                                text =
-                                if (uiState.currentUserId != null) {
-                                    LocalStrings.current.messageEmptyInbox
-                                } else {
-                                    LocalStrings.current.messageUserUnlogged
-                                },
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
-                        }
-                    }
+                        },
+                        onOpenUser = {
+                            detailOpener.openUserDetail(it)
+                            model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
+                        },
+                        onClickUserRelationship = { userId, nextAction ->
+                            model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
+                            when (nextAction) {
+                                RelationshipStatusNextAction.AcceptRequest -> {
+                                    detailOpener.openFollowRequests()
+                                }
 
-                    item {
-                        Spacer(modifier = Modifier.height(Spacing.xxxl))
+                                RelationshipStatusNextAction.ConfirmUnfollow -> {
+                                    confirmUnfollowDialogUserId = userId
+                                }
+
+                                RelationshipStatusNextAction.ConfirmDeleteFollowRequest -> {
+                                    confirmDeleteFollowRequestDialogUserId = userId
+                                }
+
+                                RelationshipStatusNextAction.Follow -> {
+                                    model.reduce(InboxMviModel.Intent.Follow(userId))
+                                }
+
+                                RelationshipStatusNextAction.Unfollow -> {
+                                    model.reduce(InboxMviModel.Intent.Unfollow(userId))
+                                }
+                            }
+                        },
+                    )
+
+                    val canFetchMore =
+                        !uiState.initial && !uiState.loading && uiState.canFetchMore
+                    val isNearTheEnd = idx.isNearTheEnd(uiState.notifications)
+                    if (isNearTheEnd && canFetchMore) {
+                        model.reduce(InboxMviModel.Intent.LoadNextPage)
                     }
+                }
+
+                item {
+                    if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            ListLoadingIndicator()
+                        }
+                    }
+                }
+                if (!uiState.initial &&
+                    !uiState.loading &&
+                    !uiState.refreshing &&
+                    uiState.notifications.isEmpty()
+                ) {
+                    item {
+                        Text(
+                            modifier =
+                            Modifier.fillMaxWidth().padding(
+                                top = Spacing.m,
+                                start = Spacing.m,
+                                end = Spacing.m,
+                            ),
+                            text =
+                            if (uiState.currentUserId != null) {
+                                LocalStrings.current.messageEmptyInbox
+                            } else {
+                                LocalStrings.current.messageUserUnlogged
+                            },
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.xxxl))
                 }
             }
         }
+    }
 
-        if (confirmUnfollowDialogUserId != null) {
-            CustomConfirmDialog(
-                title = LocalStrings.current.actionUnfollow,
-                onClose = { confirm ->
-                    val userId = confirmUnfollowDialogUserId ?: ""
-                    confirmUnfollowDialogUserId = null
-                    if (confirm && userId.isNotEmpty()) {
-                        model.reduce(InboxMviModel.Intent.Unfollow(userId))
-                    }
-                },
-            )
-        }
+    if (confirmUnfollowDialogUserId != null) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionUnfollow,
+            onClose = { confirm ->
+                val userId = confirmUnfollowDialogUserId ?: ""
+                confirmUnfollowDialogUserId = null
+                if (confirm && userId.isNotEmpty()) {
+                    model.reduce(InboxMviModel.Intent.Unfollow(userId))
+                }
+            },
+        )
+    }
 
-        if (confirmDeleteFollowRequestDialogUserId != null) {
-            CustomConfirmDialog(
-                title = LocalStrings.current.actionDeleteFollowRequest,
-                onClose = { confirm ->
-                    val userId = confirmUnfollowDialogUserId ?: ""
-                    confirmDeleteFollowRequestDialogUserId = null
-                    if (confirm && userId.isNotEmpty()) {
-                        model.reduce(InboxMviModel.Intent.Unfollow(userId))
-                    }
-                },
-            )
-        }
+    if (confirmDeleteFollowRequestDialogUserId != null) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionDeleteFollowRequest,
+            onClose = { confirm ->
+                val userId = confirmUnfollowDialogUserId ?: ""
+                confirmDeleteFollowRequestDialogUserId = null
+                if (confirm && userId.isNotEmpty()) {
+                    model.reduce(InboxMviModel.Intent.Unfollow(userId))
+                }
+            },
+        )
+    }
 
-        if (configureSelectedTypesDialogOpen) {
-            ConfigureNotificationTypeDialog(
-                initialSelection = uiState.selectedNotificationTypes,
-                availableTypes = NotificationType.ALL,
-                onClose = { values ->
-                    configureSelectedTypesDialogOpen = false
-                    if (values != null) {
-                        model.reduce(InboxMviModel.Intent.ChangeSelectedNotificationTypes(values))
-                    }
-                },
-            )
-        }
+    if (configureSelectedTypesDialogOpen) {
+        ConfigureNotificationTypeDialog(
+            initialSelection = uiState.selectedNotificationTypes,
+            availableTypes = NotificationType.ALL,
+            onClose = { values ->
+                configureSelectedTypesDialogOpen = false
+                if (values != null) {
+                    model.reduce(InboxMviModel.Intent.ChangeSelectedNotificationTypes(values))
+                }
+            },
+        )
+    }
 
-        if (confirmDismissAllDialogOpen) {
-            CustomConfirmDialog(
-                title = LocalStrings.current.actionDismissAllNotifications,
-                body = LocalStrings.current.messageAreYouSure,
-                onClose = { confirm ->
-                    confirmDismissAllDialogOpen = false
-                    if (confirm) {
-                        model.reduce(InboxMviModel.Intent.DismissAll)
-                    }
-                },
-            )
-        }
+    if (confirmDismissAllDialogOpen) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionDismissAllNotifications,
+            body = LocalStrings.current.messageAreYouSure,
+            onClose = { confirm ->
+                confirmDismissAllDialogOpen = false
+                if (confirm) {
+                    model.reduce(InboxMviModel.Intent.DismissAll)
+                }
+            },
+        )
     }
 }
