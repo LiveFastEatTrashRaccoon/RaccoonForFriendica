@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.userlist
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
@@ -38,12 +40,12 @@ internal class UserListViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val exportUserList: ExportUserListUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>(
-    initialState = UserListMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = UserListMviModel.State()),
     UserListMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -100,12 +102,12 @@ internal class UserListViewModel(
     override fun reduce(intent: UserListMviModel.Intent) {
         when (intent) {
             UserListMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
             UserListMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
             is UserListMviModel.Intent.Follow -> follow(intent.userId)
@@ -189,7 +191,7 @@ internal class UserListViewModel(
 
     private fun follow(userId: String) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser = uiState.value.users.firstOrNull { it.id == userId }
             val newRelationship = userRepository.follow(userId)
@@ -211,7 +213,7 @@ internal class UserListViewModel(
 
     private fun unfollow(userId: String) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser = uiState.value.users.firstOrNull { it.id == userId }
             val newRelationship = userRepository.unfollow(userId)
@@ -239,7 +241,7 @@ internal class UserListViewModel(
                 UserListType.UsersFavorite -> null
                 UserListType.UsersReblog -> null
             } ?: return
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val content = exportUserList(specification)
             updateState { it.copy(operationInProgress = false) }
