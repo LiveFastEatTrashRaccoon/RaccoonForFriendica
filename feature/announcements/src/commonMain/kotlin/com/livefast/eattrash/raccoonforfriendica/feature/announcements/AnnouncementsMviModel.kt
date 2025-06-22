@@ -1,12 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.announcements
 
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AnnouncementModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
 interface AnnouncementsMviModel :
-    ScreenModel,
     MviModel<AnnouncementsMviModel.Intent, AnnouncementsMviModel.State, AnnouncementsMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
