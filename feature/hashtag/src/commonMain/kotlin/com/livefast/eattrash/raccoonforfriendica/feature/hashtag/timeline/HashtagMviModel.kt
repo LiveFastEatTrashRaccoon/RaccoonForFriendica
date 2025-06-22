@@ -1,16 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline
 
 import androidx.compose.runtime.Stable
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import kotlin.time.Duration
 
 @Stable
-interface HashtagMviModel :
-    ScreenModel,
-    MviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect> {
+interface HashtagMviModel : MviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 
