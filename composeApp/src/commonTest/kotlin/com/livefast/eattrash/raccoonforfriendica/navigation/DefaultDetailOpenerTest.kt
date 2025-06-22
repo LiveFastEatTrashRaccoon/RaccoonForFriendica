@@ -23,7 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScr
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline.CircleTimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.ConversationScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
@@ -398,7 +398,7 @@ class DefaultDetailOpenerTest {
         sut.openDirectMessages()
 
         verify {
-            navigationCoordinator.push(any<DirectMessageListScreen>())
+            navigationCoordinator.push(any<ConversationListScreen>())
         }
     }
 

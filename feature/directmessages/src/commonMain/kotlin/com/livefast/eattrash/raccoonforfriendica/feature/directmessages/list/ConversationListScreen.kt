@@ -41,9 +41,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
@@ -58,11 +58,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class DirectMessageListScreen : Screen {
+class ConversationListScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model: DirectMessageListMviModel = rememberScreenModel()
+        val model: ConversationListMviModel = getViewModel<ConversationListViewModel>()
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val detailOpener = remember { getDetailOpener() }
@@ -88,7 +88,7 @@ class DirectMessageListScreen : Screen {
             model.effects
                 .onEach { event ->
                     when (event) {
-                        DirectMessageListMviModel.Effect.BackToTop -> goBackToTop()
+                        ConversationListMviModel.Effect.BackToTop -> goBackToTop()
                     }
                 }.launchIn(this)
         }
@@ -161,7 +161,7 @@ class DirectMessageListScreen : Screen {
                     ),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
-                    model.reduce(DirectMessageListMviModel.Intent.Refresh)
+                    model.reduce(ConversationListMviModel.Intent.Refresh)
                 },
             ) {
                 LazyColumn(
@@ -199,7 +199,7 @@ class DirectMessageListScreen : Screen {
                                 val parentUri = conversation.lastMessage.parentUri
                                 if (parentUri != null) {
                                     model.reduce(
-                                        DirectMessageListMviModel.Intent.MarkConversationAsRead(idx),
+                                        ConversationListMviModel.Intent.MarkConversationAsRead(idx),
                                     )
                                     detailOpener.openConversation(
                                         otherUser = conversation.otherUser,
@@ -216,7 +216,7 @@ class DirectMessageListScreen : Screen {
                             !uiState.initial && !uiState.loading && uiState.canFetchMore
                         val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                         if (isNearTheEnd && canFetchMore) {
-                            model.reduce(DirectMessageListMviModel.Intent.LoadNextPage)
+                            model.reduce(ConversationListMviModel.Intent.LoadNextPage)
                         }
                     }
 
@@ -246,14 +246,14 @@ class DirectMessageListScreen : Screen {
                 loading = uiState.userSearchLoading,
                 canFetchMore = uiState.userSearchCanFetchMore,
                 onSearch = {
-                    model.reduce(DirectMessageListMviModel.Intent.UserSearchSetQuery(it))
+                    model.reduce(ConversationListMviModel.Intent.UserSearchSetQuery(it))
                 },
                 onLoadMoreUsers = {
-                    model.reduce(DirectMessageListMviModel.Intent.UserSearchLoadNextPage)
+                    model.reduce(ConversationListMviModel.Intent.UserSearchLoadNextPage)
                 },
                 onClose = { user ->
-                    model.reduce(DirectMessageListMviModel.Intent.UserSearchSetQuery(""))
-                    model.reduce(DirectMessageListMviModel.Intent.UserSearchClear)
+                    model.reduce(ConversationListMviModel.Intent.UserSearchSetQuery(""))
+                    model.reduce(ConversationListMviModel.Intent.UserSearchClear)
                     selectUserToCreateConversationDialogOpen = false
                     val userId = user?.id
                     if (userId != null) {

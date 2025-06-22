@@ -52,11 +52,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
@@ -68,7 +68,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItem
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItemPlaceholder
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.ConversationMviModelParams
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.ConversationViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -79,12 +79,8 @@ class ConversationScreen(private val otherUserId: String, private val parentUri:
     @Composable
     override fun Content() {
         val model: ConversationMviModel =
-            rememberScreenModel(
-                arg =
-                ConversationMviModelParams(
-                    otherUserId = otherUserId,
-                    parentUri = parentUri,
-                ),
+            getViewModel<ConversationViewModel>(
+                arg = ConversationViewModelArgs(otherUserId = otherUserId, parentUri = parentUri),
             )
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
