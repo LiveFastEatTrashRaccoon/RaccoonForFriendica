@@ -2,8 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.edit
 
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
@@ -29,12 +31,12 @@ class EditProfileViewModel(
     private val settingsRepository: SettingsRepository,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect>(
-    initialState = EditProfileMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = EditProfileMviModel.State()),
     EditProfileMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -79,7 +81,7 @@ class EditProfileViewModel(
     override fun reduce(intent: EditProfileMviModel.Intent) {
         when (intent) {
             is EditProfileMviModel.Intent.ChangeBio ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             bio = intent.value,
@@ -89,7 +91,7 @@ class EditProfileViewModel(
                 }
 
             is EditProfileMviModel.Intent.ChangeBot ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             bot = intent.value,
@@ -99,7 +101,7 @@ class EditProfileViewModel(
                 }
 
             is EditProfileMviModel.Intent.ChangeDiscoverable ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             discoverable = intent.value,
@@ -109,7 +111,7 @@ class EditProfileViewModel(
                 }
 
             is EditProfileMviModel.Intent.ChangeDisplayName ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             displayName = intent.value,
@@ -119,7 +121,7 @@ class EditProfileViewModel(
                 }
 
             is EditProfileMviModel.Intent.ChangeLocked ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             locked = intent.value,
@@ -129,7 +131,7 @@ class EditProfileViewModel(
                 }
 
             is EditProfileMviModel.Intent.ChangeHideCollections ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             hideCollections = intent.value,
@@ -139,7 +141,7 @@ class EditProfileViewModel(
                 }
 
             is EditProfileMviModel.Intent.ChangeNoIndex ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             noIndex = intent.value,
@@ -163,7 +165,7 @@ class EditProfileViewModel(
                 insertCustomEmoji(intent.fieldType, intent.emoji)
 
             EditProfileMviModel.Intent.DeleteAccount ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     val node = apiConfigurationRepository.node.value
                     val url = "https://$node"
                     emitEffect(EditProfileMviModel.Effect.OpenUrl(url))
@@ -174,7 +176,7 @@ class EditProfileViewModel(
     }
 
     private fun addField() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState {
                 val newFields = it.fields + FieldModel("", "")
                 it.copy(
@@ -187,7 +189,7 @@ class EditProfileViewModel(
     }
 
     private fun editField(index: Int, key: String, value: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState {
                 val newFields =
                     it.fields.mapIndexed { idx, field ->
@@ -206,7 +208,7 @@ class EditProfileViewModel(
     }
 
     private fun removeField(index: Int) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState {
                 val newFields = it.fields.filterIndexed { idx, _ -> idx != index }
                 it.copy(
@@ -220,7 +222,7 @@ class EditProfileViewModel(
 
     private fun loadImageAvatar(bytes: ByteArray) {
         check(bytes.isNotEmpty()) { return }
-        screenModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             updateState {
                 it.copy(
                     avatarBytes = bytes,
@@ -232,7 +234,7 @@ class EditProfileViewModel(
 
     private fun loadImageHeader(bytes: ByteArray) {
         check(bytes.isNotEmpty()) { return }
-        screenModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             updateState {
                 it.copy(
                     headerBytes = bytes,
@@ -269,7 +271,7 @@ class EditProfileViewModel(
     }
 
     private fun insertCustomEmoji(fieldType: EditProfilerFieldType, emoji: EmojiModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val value =
                 when (fieldType) {
                     EditProfilerFieldType.DisplayName ->
@@ -309,7 +311,7 @@ class EditProfileViewModel(
                 res
             }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState {
                 it.copy(loading = true)
             }

@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
@@ -24,12 +26,12 @@ class ProfileViewModel(
     private val deleteAccountUseCase: DeleteAccountUseCase,
     private val authManager: AuthManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<ProfileMviModel.Intent, ProfileMviModel.State, ProfileMviModel.Effect>(
-    initialState = ProfileMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<ProfileMviModel.Intent, ProfileMviModel.State, ProfileMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = ProfileMviModel.State()),
     ProfileMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -73,7 +75,7 @@ class ProfileViewModel(
     override fun reduce(intent: ProfileMviModel.Intent) {
         when (intent) {
             ProfileMviModel.Intent.Logout ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     logoutUseCase()
                 }
 
@@ -85,7 +87,7 @@ class ProfileViewModel(
 
     private fun switchAccount(account: AccountModel) {
         check(account.remoteId != uiState.value.currentUserId) { return }
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState {
                 it.copy(loading = true)
             }
@@ -96,7 +98,7 @@ class ProfileViewModel(
 
     private fun deleteAccount(account: AccountModel) {
         check(account.remoteId != uiState.value.currentUserId) { return }
-        screenModelScope.launch {
+        viewModelScope.launch {
             deleteAccountUseCase(account)
         }
     }
