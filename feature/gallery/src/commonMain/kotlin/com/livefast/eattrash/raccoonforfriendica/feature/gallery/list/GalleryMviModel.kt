@@ -1,12 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.gallery.list
 
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 
-interface GalleryMviModel :
-    ScreenModel,
-    MviModel<GalleryMviModel.Intent, GalleryMviModel.State, GalleryMviModel.Effect> {
+interface GalleryMviModel : MviModel<GalleryMviModel.Intent, GalleryMviModel.State, GalleryMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 
