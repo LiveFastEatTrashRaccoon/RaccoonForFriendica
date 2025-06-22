@@ -47,14 +47,13 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
+            implementation(libs.androidx.navigation.compose)
             implementation(libs.coil)
             implementation(libs.compose.multiplatform.media.player)
             implementation(libs.kodein.compose)
             implementation(libs.ktor.client.core)
 
             implementation(libs.voyager.navigator)
-            implementation(libs.voyager.transition)
-            implementation(libs.voyager.tab)
 
             implementation(projects.core.api)
             implementation(projects.core.appearance)
