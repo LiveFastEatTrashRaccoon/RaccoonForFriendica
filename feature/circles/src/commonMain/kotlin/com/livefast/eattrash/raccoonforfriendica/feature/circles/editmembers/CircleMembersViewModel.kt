@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
@@ -28,12 +30,12 @@ class CircleMembersViewModel(
     private val searchPaginationManager: UserPaginationManager,
     private val imagePreloadManager: ImagePreloadManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<CircleMembersMviModel.Intent, CircleMembersMviModel.State, CircleMembersMviModel.Effect>(
-    initialState = CircleMembersMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<CircleMembersMviModel.Intent, CircleMembersMviModel.State, CircleMembersMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = CircleMembersMviModel.State()),
     CircleMembersMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -72,12 +74,12 @@ class CircleMembersViewModel(
     override fun reduce(intent: CircleMembersMviModel.Intent) {
         when (intent) {
             CircleMembersMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
             is CircleMembersMviModel.Intent.ToggleAddUsersDialog ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     if (intent.opened) {
                         refreshSearchUsers("")
                         updateState { it.copy(addUsersDialogOpened = true) }
@@ -93,12 +95,12 @@ class CircleMembersViewModel(
                 }
 
             is CircleMembersMviModel.Intent.SetSearchUserQuery ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(searchUsersQuery = intent.text) }
                 }
 
             CircleMembersMviModel.Intent.UserSearchLoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPageSearchUsers()
                 }
 
@@ -185,7 +187,7 @@ class CircleMembersViewModel(
     }
 
     private fun add(users: List<UserModel>) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val userIds = users.map { it.id }
             val success = circlesRepository.addMembers(id = id, userIds = userIds)
             if (success) {
@@ -197,7 +199,7 @@ class CircleMembersViewModel(
     }
 
     private fun remove(userId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val success = circlesRepository.removeMembers(id = id, userIds = listOf(userId))
             if (success) {
                 removeItemFromState(userId)

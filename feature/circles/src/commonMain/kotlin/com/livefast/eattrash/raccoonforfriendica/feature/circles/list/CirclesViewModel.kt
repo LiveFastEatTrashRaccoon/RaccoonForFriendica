@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.circles.list
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
@@ -17,12 +19,12 @@ class CirclesViewModel(
     private val circlesRepository: CirclesRepository,
     private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository,
-) : DefaultMviModel<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect>(
-    initialState = CirclesMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = CirclesMviModel.State()),
     CirclesMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
@@ -42,12 +44,12 @@ class CirclesViewModel(
     override fun reduce(intent: CirclesMviModel.Intent) {
         when (intent) {
             CirclesMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
             is CirclesMviModel.Intent.OpenEditor ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     val editorData =
                         CircleEditorData(
                             id = intent.circle?.id,
@@ -59,12 +61,12 @@ class CirclesViewModel(
                 }
 
             is CirclesMviModel.Intent.UpdateEditorData ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(editorData = intent.data) }
                 }
 
             CirclesMviModel.Intent.DismissEditor ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(editorData = null) }
                 }
 
@@ -167,7 +169,7 @@ class CirclesViewModel(
     }
 
     private fun delete(id: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val success = circlesRepository.delete(id)
             if (success) {
                 removeItemFromState(id)
@@ -180,7 +182,7 @@ class CirclesViewModel(
     private fun submitEditorData() {
         val data = uiState.value.editorData ?: return
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             val title = data.title
             if (title.isEmpty()) {
                 updateState {
@@ -225,7 +227,7 @@ class CirclesViewModel(
     }
 
     private fun handleOpenDetail(circle: CircleModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             if (circle.type == CircleType.Group) {
                 updateState { it.copy(operationInProgress = true) }
                 val user =

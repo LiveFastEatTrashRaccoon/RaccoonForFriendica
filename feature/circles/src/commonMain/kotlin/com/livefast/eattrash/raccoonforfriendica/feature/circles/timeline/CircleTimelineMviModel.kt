@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline
 
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
@@ -9,7 +8,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineTyp
 import kotlin.time.Duration
 
 interface CircleTimelineMviModel :
-    ScreenModel,
     MviModel<CircleTimelineMviModel.Intent, CircleTimelineMviModel.State, CircleTimelineMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent

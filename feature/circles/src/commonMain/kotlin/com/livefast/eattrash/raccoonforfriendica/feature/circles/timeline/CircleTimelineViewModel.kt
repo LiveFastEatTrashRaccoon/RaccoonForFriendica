@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline
 
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
@@ -14,7 +16,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
@@ -60,12 +61,12 @@ class CircleTimelineViewModel(
     private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<CircleTimelineMviModel.Intent, CircleTimelineMviModel.State, CircleTimelineMviModel.Effect>(
-    initialState = CircleTimelineMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<CircleTimelineMviModel.Intent, CircleTimelineMviModel.State, CircleTimelineMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = CircleTimelineMviModel.State()),
     CircleTimelineMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val circle = circleCache.get(id)
             updateState { it.copy(circle = circle) }
 
@@ -120,12 +121,12 @@ class CircleTimelineViewModel(
     override fun reduce(intent: CircleTimelineMviModel.Intent) {
         when (intent) {
             CircleTimelineMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
             CircleTimelineMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
@@ -158,7 +159,7 @@ class CircleTimelineViewModel(
             is CircleTimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is CircleTimelineMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
             is CircleTimelineMviModel.Intent.WillOpenDetail ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
                     emitEffect(CircleTimelineMviModel.Effect.OpenDetail(intent.entry))
@@ -252,7 +253,7 @@ class CircleTimelineViewModel(
 
     private fun toggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     reblogLoading = true,
@@ -287,7 +288,7 @@ class CircleTimelineViewModel(
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     favoriteLoading = true,
@@ -313,7 +314,7 @@ class CircleTimelineViewModel(
 
     private fun toggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     dislikeLoading = true,
@@ -339,7 +340,7 @@ class CircleTimelineViewModel(
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     bookmarkLoading = true,
@@ -372,7 +373,7 @@ class CircleTimelineViewModel(
     }
 
     private fun deleteEntry(entryId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
                 notificationCenter.send(TimelineEntryDeletedEvent(entryId))
@@ -382,7 +383,7 @@ class CircleTimelineViewModel(
     }
 
     private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val res =
                 userRepository.mute(
                     id = userId,
@@ -396,7 +397,7 @@ class CircleTimelineViewModel(
     }
 
     private fun block(userId: String, entryId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
                 removeEntryFromState(entryId)
@@ -405,7 +406,7 @@ class CircleTimelineViewModel(
     }
 
     private fun togglePin(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val newEntry =
                 if (entry.pinned) {
                     timelineEntryRepository.unpin(entry.id)
@@ -424,7 +425,7 @@ class CircleTimelineViewModel(
 
     private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
             val newPoll =
                 timelineEntryRepository.submitPoll(
@@ -445,7 +446,7 @@ class CircleTimelineViewModel(
     }
 
     private fun copyToClipboard(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
                 val text =
@@ -465,7 +466,7 @@ class CircleTimelineViewModel(
         val targetLang = uiState.value.lang ?: return
         check(!entry.translationLoading) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
             val isBeingTranslated = !entry.isShowingTranslation
 
@@ -492,7 +493,7 @@ class CircleTimelineViewModel(
     }
 
     private fun addInstanceShortcut(nodeName: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
                     accountId = accountId,
@@ -503,7 +504,7 @@ class CircleTimelineViewModel(
     }
 
     private fun openInBrowser(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
                 emitEffect(CircleTimelineMviModel.Effect.OpenUrl(url))
