@@ -10,7 +10,6 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
-import cafe.adriel.voyager.navigator.Navigator
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.testutils.MockStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
@@ -36,13 +35,9 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = KodeinTestApplication::class)
-class NodeInfoScreenTest {
+class NodeInfoScreenScaffoldTest {
     private val uriHandler = mock<UriHandler>()
 
-    private val viewModel =
-        mock<NodeInfoMviModel>(MockMode.autoUnit) {
-            every { uiState }
-        }
     private val navigationCoordinator =
         mock<NavigationCoordinator> {
             every { canPop } returns MutableStateFlow(true)
@@ -57,7 +52,6 @@ class NodeInfoScreenTest {
         KodeinTestRule(
             listOf(
                 DI.Module("NodeInfoScreenTestModule") {
-                    bind<NodeInfoMviModel> { provider { viewModel } }
                     bind<NavigationCoordinator> { provider { navigationCoordinator } }
                     bind<DetailOpener> { provider { detailOpener } }
                 },
@@ -67,27 +61,22 @@ class NodeInfoScreenTest {
     @Test
     fun `given all data present when displayed then content is as expected`() {
         with(composeTestRule) {
-            every {
-                viewModel.uiState
-            } returns
-                MutableStateFlow(
-                    NodeInfoMviModel.State(
-                        info =
-                        NodeInfoModel(
-                            title = "Instance title",
-                            description = "Instance description",
-                            contact = UserModel(id = "1", displayName = "Admin"),
-                            rules =
-                            listOf(
-                                RuleModel(id = "1", text = "First rule"),
-                                RuleModel(id = "2", text = "Second rule"),
-                            ),
-                            version = "1.0.0",
+            setup(
+                NodeInfoMviModel.State(
+                    info =
+                    NodeInfoModel(
+                        title = "Instance title",
+                        description = "Instance description",
+                        contact = UserModel(id = "1", displayName = "Admin"),
+                        rules =
+                        listOf(
+                            RuleModel(id = "1", text = "First rule"),
+                            RuleModel(id = "2", text = "Second rule"),
                         ),
+                        version = "1.0.0",
                     ),
-                )
-
-            setup()
+                ),
+            )
 
             onNodeWithText("Node Info").assertIsDisplayed()
             onNodeWithText("General").assertIsDisplayed()
@@ -108,26 +97,21 @@ class NodeInfoScreenTest {
     @Test
     fun `given no contact when displayed then content is as expected`() {
         with(composeTestRule) {
-            every {
-                viewModel.uiState
-            } returns
-                MutableStateFlow(
-                    NodeInfoMviModel.State(
-                        info =
-                        NodeInfoModel(
-                            title = "Instance title",
-                            description = "Instance description",
-                            rules =
-                            listOf(
-                                RuleModel(id = "1", text = "First rule"),
-                                RuleModel(id = "2", text = "Second rule"),
-                            ),
-                            version = "1.0.0",
+            setup(
+                NodeInfoMviModel.State(
+                    info =
+                    NodeInfoModel(
+                        title = "Instance title",
+                        description = "Instance description",
+                        rules =
+                        listOf(
+                            RuleModel(id = "1", text = "First rule"),
+                            RuleModel(id = "2", text = "Second rule"),
                         ),
+                        version = "1.0.0",
                     ),
-                )
-
-            setup()
+                ),
+            )
 
             onNodeWithText("Node Info").assertIsDisplayed()
             onNodeWithText("General").assertIsDisplayed()
@@ -147,22 +131,17 @@ class NodeInfoScreenTest {
     @Test
     fun `given no rules when displayed then content is as expected`() {
         with(composeTestRule) {
-            every {
-                viewModel.uiState
-            } returns
-                MutableStateFlow(
-                    NodeInfoMviModel.State(
-                        info =
-                        NodeInfoModel(
-                            title = "Instance title",
-                            description = "Instance description",
-                            contact = UserModel(id = "1", displayName = "Admin"),
-                            version = "1.0.0",
-                        ),
+            setup(
+                NodeInfoMviModel.State(
+                    info =
+                    NodeInfoModel(
+                        title = "Instance title",
+                        description = "Instance description",
+                        contact = UserModel(id = "1", displayName = "Admin"),
+                        version = "1.0.0",
                     ),
-                )
-
-            setup()
+                ),
+            )
 
             onNodeWithText("Node Info").assertIsDisplayed()
             onNodeWithText("General").assertIsDisplayed()
@@ -178,7 +157,7 @@ class NodeInfoScreenTest {
         }
     }
 
-    private fun ComposeContentTestRule.setup() {
+    private fun ComposeContentTestRule.setup(state: NodeInfoMviModel.State) {
         setContent {
             CompositionLocalProvider(
                 LocalStrings provides
@@ -194,7 +173,7 @@ class NodeInfoScreenTest {
                     },
                 LocalUriHandler provides uriHandler,
             ) {
-                Navigator(NodeInfoScreen())
+                NodeInfoScreenScaffold(state)
             }
         }
     }

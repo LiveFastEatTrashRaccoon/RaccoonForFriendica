@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
@@ -15,12 +17,12 @@ class NodeInfoViewModel(
     private val settingsRepository: SettingsRepository,
     private val emojiHelper: EmojiHelper,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<NodeInfoMviModel.Intent, NodeInfoMviModel.State, NodeInfoMviModel.Effect>(
-    initialState = NodeInfoMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<NodeInfoMviModel.Intent, NodeInfoMviModel.State, NodeInfoMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = NodeInfoMviModel.State()),
     NodeInfoMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {

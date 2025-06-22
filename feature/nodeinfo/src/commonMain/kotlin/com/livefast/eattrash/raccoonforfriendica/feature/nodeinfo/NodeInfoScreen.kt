@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -48,12 +49,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
@@ -71,218 +72,227 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.launch
 
 class NodeInfoScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model: NodeInfoMviModel = rememberScreenModel()
+        val model: NodeInfoMviModel = getViewModel<NodeInfoViewModel>()
         val uiState by model.uiState.collectAsState()
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val uriHandler = LocalUriHandler.current
-        val detailOpener = remember { getDetailOpener() }
-        val lazyListState = rememberLazyListState()
-        val scope = rememberCoroutineScope()
-
-        suspend fun goBackToTop() {
-            runCatching {
-                lazyListState.scrollToItem(0)
-                topAppBarState.heightOffset = 0f
-                topAppBarState.contentOffset = 0f
-            }
-        }
-
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            topBar = {
-                TopAppBar(
-                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.nodeInfoTitle,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
-                        }
-                    },
-                )
-            },
-            content = { padding ->
-                LazyColumn(
-                    modifier =
-                    Modifier
-                        .testTag(NodeInfoTestTags.COLUMN)
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
-                    state = lazyListState,
-                    verticalArrangement = Arrangement.spacedBy(Spacing.s),
-                ) {
-                    val info = uiState.info
-                    if (info == null) {
-                        item {
-                            UserItemPlaceholder(
-                                modifier = Modifier.padding(horizontal = Spacing.s).fillMaxWidth(),
-                                withRelationshipButton = false,
-                            )
-                        }
-                        item {
-                            GenericPlaceholder(
-                                height = 60.dp,
-                                modifier = Modifier.padding(horizontal = Spacing.s).fillMaxWidth(),
-                            )
-                            GenericPlaceholder(
-                                modifier = Modifier.padding(horizontal = Spacing.s).fillMaxWidth(),
-                            )
-                        }
-                        item {
-                            UserItemPlaceholder(
-                                modifier = Modifier.padding(horizontal = Spacing.s).fillMaxWidth(),
-                                withRelationshipButton = false,
-                            )
-                        }
-                        items(5) {
-                            GenericPlaceholder(
-                                height = 60.dp,
-                                modifier = Modifier.padding(horizontal = Spacing.s).fillMaxWidth(),
-                            )
-                        }
-                    } else {
-                        item {
-                            HeaderItem(
-                                modifier = Modifier.padding(horizontal = Spacing.s),
-                                thumbnail = info.thumbnail,
-                                uri = info.uri,
-                                autoloadImages = uiState.autoloadImages,
-                            )
-                        }
-
-                        item {
-                            SettingsHeader(
-                                title = LocalStrings.current.settingsHeaderGeneral,
-                                icon = Icons.Default.Info,
-                            )
-                        }
-
-                        val title = info.title
-                        if (title != null) {
-                            item {
-                                ContentTitle(
-                                    modifier = Modifier.padding(horizontal = Spacing.m),
-                                    content = title,
-                                    autoloadImages = uiState.autoloadImages,
-                                    onOpenUrl = {
-                                        uriHandler.openUri(it)
-                                    },
-                                )
-                            }
-                        }
-
-                        val description = info.description
-                        if (description != null) {
-                            item {
-                                ContentBody(
-                                    modifier = Modifier.padding(horizontal = Spacing.m),
-                                    content = description,
-                                    autoloadImages = uiState.autoloadImages,
-                                    onOpenUrl = {
-                                        uriHandler.openUri(it)
-                                    },
-                                )
-                            }
-                        }
-
-                        val contact = info.contact
-                        if (contact != null) {
-                            item {
-                                SettingsHeader(
-                                    title = LocalStrings.current.nodeInfoSectionContact,
-                                    icon = Icons.Default.AlternateEmail,
-                                )
-                                ContactUserItem(
-                                    modifier =
-                                    Modifier.padding(
-                                        top = Spacing.xs,
-                                        start = Spacing.s,
-                                        end = Spacing.s,
-                                    ),
-                                    user = contact,
-                                    autoloadImages = uiState.autoloadImages,
-                                    onClick = {
-                                        detailOpener.openUserDetail(contact)
-                                    },
-                                )
-                            }
-                        }
-
-                        val rules =
-                            uiState.info
-                                ?.rules
-                                .orEmpty()
-                        if (rules.isNotEmpty()) {
-                            item {
-                                SettingsHeader(
-                                    title = LocalStrings.current.nodeInfoSectionRules,
-                                    icon = Icons.Default.Shield,
-                                )
-                            }
-                            items(rules) { rule ->
-                                RuleItem(
-                                    modifier = Modifier.padding(horizontal = Spacing.m),
-                                    rule = rule,
-                                    onOpenUrl = {
-                                        uriHandler.openUri(it)
-                                    },
-                                )
-                            }
-                        }
-
-                        item {
-                            SettingsHeader(
-                                title = LocalStrings.current.itemOther,
-                                icon = Icons.Default.Api,
-                            )
-                        }
-
-                        item {
-                            SettingsRow(
-                                title = LocalStrings.current.settingsAboutAppVersion,
-                                value =
-                                uiState.info?.version
-                                    ?: LocalStrings.current.shortUnavailable,
-                            )
-                        }
-
-                        item {
-                            Spacer(modifier = Modifier.height(Spacing.xxl))
-                        }
-                    }
-                }
-            },
+        NodeInfoScreenScaffold(
+            state = uiState,
         )
     }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+@VisibleForTesting
+fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = Modifier) {
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val uriHandler = LocalUriHandler.current
+    val detailOpener = remember { getDetailOpener() }
+    val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
+    suspend fun goBackToTop() {
+        runCatching {
+            lazyListState.scrollToItem(0)
+            topAppBarState.heightOffset = 0f
+            topAppBarState.contentOffset = 0f
+        }
+    }
+
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.nodeInfoTitle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
+                            )
+                        }
+                    }
+                },
+            )
+        },
+        content = { padding ->
+            LazyColumn(
+                modifier =
+                Modifier
+                    .testTag(NodeInfoTestTags.COLUMN)
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (state.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
+                state = lazyListState,
+                verticalArrangement = Arrangement.spacedBy(Spacing.s),
+            ) {
+                val info = state.info
+                if (info == null) {
+                    item {
+                        UserItemPlaceholder(
+                            modifier = Modifier.padding(horizontal = Spacing.s).fillMaxWidth(),
+                            withRelationshipButton = false,
+                        )
+                    }
+                    item {
+                        GenericPlaceholder(
+                            height = 60.dp,
+                            modifier = Modifier.padding(horizontal = Spacing.s).fillMaxWidth(),
+                        )
+                        GenericPlaceholder(
+                            modifier = Modifier.padding(horizontal = Spacing.s).fillMaxWidth(),
+                        )
+                    }
+                    item {
+                        UserItemPlaceholder(
+                            modifier = Modifier.padding(horizontal = Spacing.s).fillMaxWidth(),
+                            withRelationshipButton = false,
+                        )
+                    }
+                    items(5) {
+                        GenericPlaceholder(
+                            height = 60.dp,
+                            modifier = Modifier.padding(horizontal = Spacing.s).fillMaxWidth(),
+                        )
+                    }
+                } else {
+                    item {
+                        HeaderItem(
+                            modifier = Modifier.padding(horizontal = Spacing.s),
+                            thumbnail = info.thumbnail,
+                            uri = info.uri,
+                            autoloadImages = state.autoloadImages,
+                        )
+                    }
+
+                    item {
+                        SettingsHeader(
+                            title = LocalStrings.current.settingsHeaderGeneral,
+                            icon = Icons.Default.Info,
+                        )
+                    }
+
+                    val title = info.title
+                    if (title != null) {
+                        item {
+                            ContentTitle(
+                                modifier = Modifier.padding(horizontal = Spacing.m),
+                                content = title,
+                                autoloadImages = state.autoloadImages,
+                                onOpenUrl = {
+                                    uriHandler.openUri(it)
+                                },
+                            )
+                        }
+                    }
+
+                    val description = info.description
+                    if (description != null) {
+                        item {
+                            ContentBody(
+                                modifier = Modifier.padding(horizontal = Spacing.m),
+                                content = description,
+                                autoloadImages = state.autoloadImages,
+                                onOpenUrl = {
+                                    uriHandler.openUri(it)
+                                },
+                            )
+                        }
+                    }
+
+                    val contact = info.contact
+                    if (contact != null) {
+                        item {
+                            SettingsHeader(
+                                title = LocalStrings.current.nodeInfoSectionContact,
+                                icon = Icons.Default.AlternateEmail,
+                            )
+                            ContactUserItem(
+                                modifier =
+                                Modifier.padding(
+                                    top = Spacing.xs,
+                                    start = Spacing.s,
+                                    end = Spacing.s,
+                                ),
+                                user = contact,
+                                autoloadImages = state.autoloadImages,
+                                onClick = {
+                                    detailOpener.openUserDetail(contact)
+                                },
+                            )
+                        }
+                    }
+
+                    val rules =
+                        state.info
+                            ?.rules
+                            .orEmpty()
+                    if (rules.isNotEmpty()) {
+                        item {
+                            SettingsHeader(
+                                title = LocalStrings.current.nodeInfoSectionRules,
+                                icon = Icons.Default.Shield,
+                            )
+                        }
+                        items(rules) { rule ->
+                            RuleItem(
+                                modifier = Modifier.padding(horizontal = Spacing.m),
+                                rule = rule,
+                                onOpenUrl = {
+                                    uriHandler.openUri(it)
+                                },
+                            )
+                        }
+                    }
+
+                    item {
+                        SettingsHeader(
+                            title = LocalStrings.current.itemOther,
+                            icon = Icons.Default.Api,
+                        )
+                    }
+
+                    item {
+                        SettingsRow(
+                            title = LocalStrings.current.settingsAboutAppVersion,
+                            value =
+                            state.info?.version
+                                ?: LocalStrings.current.shortUnavailable,
+                        )
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(Spacing.xxl))
+                    }
+                }
+            }
+        },
+    )
 }
 
 @Composable
