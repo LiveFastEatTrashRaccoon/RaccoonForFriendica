@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.imagedetail
 
 import androidx.compose.ui.layout.ContentScale
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.download
@@ -19,12 +21,12 @@ class ImageDetailViewModel(
     private val shareHelper: ShareHelper,
     private val galleryHelper: GalleryHelper,
     private val imagePreloadManager: ImagePreloadManager,
-) : DefaultMviModel<ImageDetailMviModel.Intent, ImageDetailMviModel.UiState, ImageDetailMviModel.Effect>(
-    initialState = ImageDetailMviModel.UiState(),
-),
+) : ViewModel(),
+    MviModelDelegate<ImageDetailMviModel.Intent, ImageDetailMviModel.UiState, ImageDetailMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = ImageDetailMviModel.UiState()),
     ImageDetailMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState {
                 it.copy(
                     currentIndex = initialIndex,
@@ -36,9 +38,10 @@ class ImageDetailViewModel(
     override fun reduce(intent: ImageDetailMviModel.Intent) {
         when (intent) {
             is ImageDetailMviModel.Intent.ChangeIndex ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(currentIndex = intent.index) }
                 }
+
             is ImageDetailMviModel.Intent.ChangeContentScale -> changeContentScale(intent.contentScale)
             ImageDetailMviModel.Intent.SaveToGallery -> downloadAndSave()
             ImageDetailMviModel.Intent.ShareAsUrl -> shareAsUrl()
@@ -50,7 +53,7 @@ class ImageDetailViewModel(
         val currentState = uiState.value
         val url = urls[currentState.currentIndex]
         imagePreloadManager.remove(url)
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState {
                 it.copy(contentScale = contentScale)
             }
@@ -59,7 +62,7 @@ class ImageDetailViewModel(
 
     private fun downloadAndSave() {
         check(!uiState.value.loading) { return }
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(loading = true) }
             val currentState = uiState.value
             val url = urls[currentState.currentIndex]
@@ -92,7 +95,7 @@ class ImageDetailViewModel(
 
     private fun shareAsFile() {
         check(!uiState.value.loading) { return }
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(loading = true) }
             val currentState = uiState.value
             val url = urls[currentState.currentIndex]
