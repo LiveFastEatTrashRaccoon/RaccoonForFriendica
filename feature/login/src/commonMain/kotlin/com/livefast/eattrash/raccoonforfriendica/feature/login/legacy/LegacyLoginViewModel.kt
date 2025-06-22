@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.login.legacy
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
@@ -13,12 +15,12 @@ class LegacyLoginViewModel(
     private val credentialsRepository: CredentialsRepository,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val loginUseCase: LoginUseCase,
-) : DefaultMviModel<LegacyLoginMviModel.Intent, LegacyLoginMviModel.State, LegacyLoginMviModel.Effect>(
-    initialState = LegacyLoginMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<LegacyLoginMviModel.Intent, LegacyLoginMviModel.State, LegacyLoginMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = LegacyLoginMviModel.State()),
     LegacyLoginMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val currentNode = apiConfigurationRepository.node.value
             updateState { it.copy(nodeName = currentNode) }
         }
@@ -27,17 +29,17 @@ class LegacyLoginViewModel(
     override fun reduce(intent: LegacyLoginMviModel.Intent) {
         when (intent) {
             is LegacyLoginMviModel.Intent.SetNodeName ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(nodeName = intent.name) }
                 }
 
             is LegacyLoginMviModel.Intent.SetUsername ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(username = intent.username) }
                 }
 
             is LegacyLoginMviModel.Intent.SetPassword ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(password = intent.password) }
                 }
 
@@ -48,7 +50,7 @@ class LegacyLoginViewModel(
     private fun submit() {
         check(!uiState.value.loading) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             val node = uiState.value.nodeName
             val user = uiState.value.username
             val pass = uiState.value.password
