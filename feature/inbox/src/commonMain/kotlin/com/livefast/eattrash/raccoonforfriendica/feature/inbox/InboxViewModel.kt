@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.inbox
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
@@ -40,12 +42,12 @@ class InboxViewModel(
     private val markerRepository: MarkerRepository,
     private val pullNotificationManager: PullNotificationManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>(
-    initialState = InboxMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = InboxMviModel.State()),
     InboxMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState {
@@ -80,17 +82,17 @@ class InboxViewModel(
     override fun reduce(intent: InboxMviModel.Intent) {
         when (intent) {
             InboxMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
             InboxMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
             is InboxMviModel.Intent.ChangeSelectedNotificationTypes ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(selectedNotificationTypes = intent.types, initial = true)
                     }
@@ -203,7 +205,7 @@ class InboxViewModel(
 
     private fun follow(userId: String) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
                 uiState.value.notifications
@@ -225,7 +227,7 @@ class InboxViewModel(
 
     private fun unfollow(userId: String) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
             val currentUser =
                 uiState.value.notifications
@@ -261,7 +263,7 @@ class InboxViewModel(
 
     private fun markAsRead(notification: NotificationModel) {
         check(!notification.read) { return }
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateItemInState(notification.id) { it.copy(read = true) }
             inboxManager.decrementUnreadCount()
         }
@@ -269,7 +271,7 @@ class InboxViewModel(
 
     private fun dismiss(notification: NotificationModel) {
         check(!notification.read) { return }
-        screenModelScope.launch {
+        viewModelScope.launch {
             val success = notificationRepository.dismiss(notification.id)
             if (success) {
                 updateItemInState(notification.id) { it.copy(read = true) }
@@ -279,7 +281,7 @@ class InboxViewModel(
     }
 
     private fun dismissAll() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(markAllAsReadLoading = true) }
             notificationRepository.dismissAll()
             updateState { it.copy(markAllAsReadLoading = false) }
