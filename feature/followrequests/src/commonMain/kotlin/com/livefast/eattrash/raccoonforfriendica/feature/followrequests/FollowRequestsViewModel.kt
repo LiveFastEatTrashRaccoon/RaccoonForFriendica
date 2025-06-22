@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.followrequests
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowRequestPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -16,12 +18,12 @@ class FollowRequestsViewModel(
     private val userRepository: UserRepository,
     private val settingsRepository: SettingsRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<FollowRequestsMviModel.Intent, FollowRequestsMviModel.State, FollowRequestsMviModel.Effect>(
-    initialState = FollowRequestsMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<FollowRequestsMviModel.Intent, FollowRequestsMviModel.State, FollowRequestsMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = FollowRequestsMviModel.State()),
     FollowRequestsMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -50,12 +52,12 @@ class FollowRequestsViewModel(
     override fun reduce(intent: FollowRequestsMviModel.Intent) {
         when (intent) {
             FollowRequestsMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
             FollowRequestsMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
@@ -113,7 +115,7 @@ class FollowRequestsViewModel(
     }
 
     private fun accept(id: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateItemInState(id) { it.copy(relationshipStatusPending = true) }
             val success = userRepository.acceptFollowRequest(id)
             if (success) {
@@ -126,7 +128,7 @@ class FollowRequestsViewModel(
     }
 
     private fun reject(id: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateItemInState(id) { it.copy(relationshipStatusPending = true) }
             val success = userRepository.rejectFollowRequest(id)
             if (success) {
