@@ -10,7 +10,7 @@ kotlin {
             dependencies {
                 implementation(libs.calf)
                 implementation(libs.ksoup.html)
-                implementation(libs.voyager.navigator)
+                implementation(libs.voyager.core)
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.commonui.components)

@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount
 
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
@@ -54,12 +56,12 @@ class MyAccountViewModel(
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getInnerUrl: GetInnerUrlUseCase,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>(
-    initialState = MyAccountMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = MyAccountMviModel.State()),
     MyAccountMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             identityRepository
                 .currentUser
                 .debounce(750)
@@ -147,7 +149,7 @@ class MyAccountViewModel(
     override fun reduce(intent: MyAccountMviModel.Intent) {
         when (intent) {
             is MyAccountMviModel.Intent.ChangeSection ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     check(!uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(MyAccountMviModel.Effect.BackToTop)
@@ -155,12 +157,12 @@ class MyAccountViewModel(
                 }
 
             MyAccountMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
             MyAccountMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     launch {
                         val currentUser = userRepository.getCurrent(refresh = true)
                         updateState { it.copy(user = currentUser) }
@@ -179,7 +181,7 @@ class MyAccountViewModel(
             is MyAccountMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is MyAccountMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
             MyAccountMviModel.Intent.Logout ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     logout()
                 }
         }
@@ -269,7 +271,7 @@ class MyAccountViewModel(
 
     private fun toggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     reblogLoading = true,
@@ -304,7 +306,7 @@ class MyAccountViewModel(
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     favoriteLoading = true,
@@ -330,7 +332,7 @@ class MyAccountViewModel(
 
     private fun toggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     dislikeLoading = true,
@@ -356,7 +358,7 @@ class MyAccountViewModel(
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     bookmarkLoading = true,
@@ -389,7 +391,7 @@ class MyAccountViewModel(
     }
 
     private fun deleteEntry(entryId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
                 notificationCenter.send(TimelineEntryDeletedEvent(entryId))
@@ -401,7 +403,7 @@ class MyAccountViewModel(
     }
 
     private fun togglePin(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val newEntry =
                 if (entry.pinned) {
                     timelineEntryRepository.unpin(entry.id)
@@ -423,7 +425,7 @@ class MyAccountViewModel(
     }
 
     private fun copyToClipboard(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
                 val text =
@@ -440,7 +442,7 @@ class MyAccountViewModel(
     }
 
     private fun openInBrowser(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
                 emitEffect(MyAccountMviModel.Effect.OpenUrl(url))

@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline
 
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TagUpdatedEvent
@@ -13,7 +15,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePrelo
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
@@ -58,12 +59,12 @@ class HashtagViewModel(
     private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>(
-    initialState = HashtagMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = HashtagMviModel.State()),
     HashtagMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
@@ -126,12 +127,12 @@ class HashtagViewModel(
     override fun reduce(intent: HashtagMviModel.Intent) {
         when (intent) {
             HashtagMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
             HashtagMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
@@ -158,7 +159,7 @@ class HashtagViewModel(
             is HashtagMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is HashtagMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
             is HashtagMviModel.Intent.WillOpenDetail ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
                     emitEffect(HashtagMviModel.Effect.OpenDetail(intent.entry))
@@ -244,7 +245,7 @@ class HashtagViewModel(
 
     private fun toggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     reblogLoading = true,
@@ -279,7 +280,7 @@ class HashtagViewModel(
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     favoriteLoading = true,
@@ -305,7 +306,7 @@ class HashtagViewModel(
 
     private fun toggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     dislikeLoading = true,
@@ -331,7 +332,7 @@ class HashtagViewModel(
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     bookmarkLoading = true,
@@ -365,7 +366,7 @@ class HashtagViewModel(
 
     private fun toggleTagFollow(newFollowing: Boolean) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(followingPending = true) }
             val newModel =
                 if (newFollowing) {
@@ -385,7 +386,7 @@ class HashtagViewModel(
     }
 
     private fun deleteEntry(entryId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
                 notificationCenter.send(TimelineEntryDeletedEvent(entryId))
@@ -395,7 +396,7 @@ class HashtagViewModel(
     }
 
     private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val res =
                 userRepository.mute(
                     id = userId,
@@ -409,7 +410,7 @@ class HashtagViewModel(
     }
 
     private fun block(userId: String, entryId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
                 removeEntryFromState(entryId)
@@ -418,7 +419,7 @@ class HashtagViewModel(
     }
 
     private fun togglePin(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val newEntry =
                 if (entry.pinned) {
                     timelineEntryRepository.unpin(entry.id)
@@ -437,7 +438,7 @@ class HashtagViewModel(
 
     private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
             val newPoll =
                 timelineEntryRepository.submitPoll(
@@ -454,7 +455,7 @@ class HashtagViewModel(
     }
 
     private fun copyToClipboard(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
                 val text =
@@ -474,7 +475,7 @@ class HashtagViewModel(
         val targetLang = uiState.value.lang ?: return
         check(!entry.translationLoading) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
             val isBeingTranslated = !entry.isShowingTranslation
 
@@ -501,7 +502,7 @@ class HashtagViewModel(
     }
 
     private fun addInstanceShortcut(nodeName: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
                     accountId = accountId,
@@ -512,7 +513,7 @@ class HashtagViewModel(
     }
 
     private fun openInBrowser(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
                 emitEffect(HashtagMviModel.Effect.OpenUrl(url))

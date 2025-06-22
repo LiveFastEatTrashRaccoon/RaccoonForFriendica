@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ConversationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationSpecification
@@ -10,9 +12,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListMviModel.Effect
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListMviModel.Intent
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.DirectMessageListMviModel.State
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -23,18 +22,18 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
-class DirectMessageListViewModel(
+class ConversationListViewModel(
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val userPaginationManager: UserPaginationManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<Intent, State, Effect>(
-    initialState = State(),
-),
-    DirectMessageListMviModel {
+) : ViewModel(),
+    MviModelDelegate<ConversationListMviModel.Intent, ConversationListMviModel.State, ConversationListMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = ConversationListMviModel.State()),
+    ConversationListMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -71,35 +70,35 @@ class DirectMessageListViewModel(
         }
     }
 
-    override fun reduce(intent: Intent) {
+    override fun reduce(intent: ConversationListMviModel.Intent) {
         when (intent) {
-            Intent.Refresh ->
-                screenModelScope.launch {
+            ConversationListMviModel.Intent.Refresh ->
+                viewModelScope.launch {
                     refresh()
                 }
 
-            Intent.LoadNextPage ->
-                screenModelScope.launch {
+            ConversationListMviModel.Intent.LoadNextPage ->
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
-            is Intent.UserSearchSetQuery ->
-                screenModelScope.launch {
+            is ConversationListMviModel.Intent.UserSearchSetQuery ->
+                viewModelScope.launch {
                     updateState { it.copy(userSearchQuery = intent.query) }
                 }
 
-            Intent.UserSearchClear ->
-                screenModelScope.launch {
+            ConversationListMviModel.Intent.UserSearchClear ->
+                viewModelScope.launch {
                     updateState { it.copy(userSearchUsers = emptyList()) }
                 }
 
-            Intent.UserSearchLoadNextPage ->
-                screenModelScope.launch {
+            ConversationListMviModel.Intent.UserSearchLoadNextPage ->
+                viewModelScope.launch {
                     loadNextPageUsers()
                 }
 
-            is Intent.MarkConversationAsRead ->
-                screenModelScope.launch {
+            is ConversationListMviModel.Intent.MarkConversationAsRead ->
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             items =
@@ -164,7 +163,7 @@ class DirectMessageListViewModel(
             )
         }
         if (wasRefreshing) {
-            emitEffect(Effect.BackToTop)
+            emitEffect(ConversationListMviModel.Effect.BackToTop)
         }
     }
 

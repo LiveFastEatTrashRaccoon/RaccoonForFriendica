@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.gallery.list
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
@@ -16,12 +18,12 @@ class GalleryViewModel(
     private val albumRepository: PhotoAlbumRepository,
     private val settingsRepository: SettingsRepository,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<GalleryMviModel.Intent, GalleryMviModel.State, GalleryMviModel.Effect>(
-    initialState = GalleryMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<GalleryMviModel.Intent, GalleryMviModel.State, GalleryMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = GalleryMviModel.State()),
     GalleryMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
@@ -46,8 +48,8 @@ class GalleryViewModel(
 
     override fun reduce(intent: GalleryMviModel.Intent) {
         when (intent) {
-            GalleryMviModel.Intent.Refresh -> screenModelScope.launch { refresh() }
-            GalleryMviModel.Intent.LoadNextPage -> screenModelScope.launch { loadNextPage() }
+            GalleryMviModel.Intent.Refresh -> viewModelScope.launch { refresh() }
+            GalleryMviModel.Intent.LoadNextPage -> viewModelScope.launch { loadNextPage() }
             is GalleryMviModel.Intent.UpdateAlbum -> updateAlbum(intent.oldName, intent.newName)
             is GalleryMviModel.Intent.DeleteAlbum -> deleteAlbum(intent.name)
         }
@@ -99,7 +101,7 @@ class GalleryViewModel(
     }
 
     private fun updateAlbum(oldName: String, newName: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val res =
                 albumRepository.update(
@@ -116,7 +118,7 @@ class GalleryViewModel(
     }
 
     private fun deleteAlbum(name: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val res = albumRepository.delete(name)
             updateState { it.copy(operationInProgress = false) }

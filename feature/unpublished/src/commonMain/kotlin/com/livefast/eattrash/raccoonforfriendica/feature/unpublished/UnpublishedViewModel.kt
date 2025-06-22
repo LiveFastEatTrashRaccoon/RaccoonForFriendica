@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.unpublished
 
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
@@ -37,12 +39,12 @@ class UnpublishedViewModel(
     private val blurHashRepository: BlurHashRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<UnpublishedMviModel.Intent, UnpublishedMviModel.State, UnpublishedMviModel.Effect>(
-    initialState = UnpublishedMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<UnpublishedMviModel.Intent, UnpublishedMviModel.State, UnpublishedMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = UnpublishedMviModel.State()),
     UnpublishedMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             notificationCenter
                 .subscribe(DraftDeletedEvent::class)
                 .onEach { event ->
@@ -95,7 +97,7 @@ class UnpublishedViewModel(
     override fun reduce(intent: UnpublishedMviModel.Intent) {
         when (intent) {
             is UnpublishedMviModel.Intent.ChangeSection ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     check(!uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(UnpublishedMviModel.Effect.BackToTop)
@@ -104,12 +106,12 @@ class UnpublishedViewModel(
 
             is UnpublishedMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
             UnpublishedMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
             UnpublishedMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
         }
@@ -183,7 +185,7 @@ class UnpublishedViewModel(
 
     private fun deleteEntry(entryId: String) {
         val currentState = uiState.value
-        screenModelScope.launch {
+        viewModelScope.launch {
             val success =
                 when (currentState.section) {
                     UnpublishedType.Scheduled -> scheduledEntryRepository.delete(entryId)

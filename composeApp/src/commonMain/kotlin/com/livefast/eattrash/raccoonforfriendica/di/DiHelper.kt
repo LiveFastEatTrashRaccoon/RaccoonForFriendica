@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.di
 import com.livefast.eattrash.feature.userdetail.di.userDetailModule
 import com.livefast.eattrash.raccoonforfriendica.core.api.di.apiModule
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.appearanceModule
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.viewModelFactoryModule
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.commonUiComponentsModule
 import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.l10nModule
@@ -120,6 +121,7 @@ fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
                 detailOpenerModule,
                 mainModule,
                 resourcesModule,
+                viewModelFactoryModule,
             )
         }
 }

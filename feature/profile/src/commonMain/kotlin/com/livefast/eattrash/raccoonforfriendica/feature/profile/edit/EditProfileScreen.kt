@@ -66,10 +66,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
@@ -92,7 +92,7 @@ class EditProfileScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model: EditProfileMviModel = rememberScreenModel()
+        val model: EditProfileMviModel = getViewModel<EditProfileViewModel>()
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -196,12 +196,12 @@ class EditProfileScreen : Screen {
                                 this +=
                                     CustomOptions.DeleteAccount.toOption(
                                         label =
-                                        buildString {
-                                            append(LocalStrings.current.actionDeleteAccount)
-                                            append(" (")
-                                            append(LocalStrings.current.urlOpeningModeExternal)
-                                            append(")")
-                                        },
+                                            buildString {
+                                                append(LocalStrings.current.actionDeleteAccount)
+                                                append(" (")
+                                                append(LocalStrings.current.urlOpeningModeExternal)
+                                                append(")")
+                                            },
                                     )
                             }
                         if (options.isNotEmpty()) {
@@ -210,9 +210,9 @@ class EditProfileScreen : Screen {
                                 var optionsMenuOpen by remember { mutableStateOf(false) }
                                 IconButton(
                                     modifier =
-                                    Modifier.onGloballyPositioned {
-                                        optionsOffset = it.positionInParent()
-                                    },
+                                        Modifier.onGloballyPositioned {
+                                            optionsOffset = it.positionInParent()
+                                        },
                                     onClick = {
                                         optionsMenuOpen = true
                                     },
@@ -229,12 +229,12 @@ class EditProfileScreen : Screen {
                                         optionsMenuOpen = false
                                     },
                                     offset =
-                                    with(LocalDensity.current) {
-                                        DpOffset(
-                                            x = optionsOffset.x.toDp(),
-                                            y = optionsOffset.y.toDp(),
-                                        )
-                                    },
+                                        with(LocalDensity.current) {
+                                            DpOffset(
+                                                x = optionsOffset.x.toDp(),
+                                                y = optionsOffset.y.toDp(),
+                                            )
+                                        },
                                 ) {
                                     for (option in options) {
                                         DropdownMenuItem(
@@ -287,16 +287,16 @@ class EditProfileScreen : Screen {
         ) { padding ->
             LazyColumn(
                 modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
-                    .then(
-                        if (uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        } else {
-                            Modifier
-                        },
-                    ),
+                    Modifier
+                        .padding(padding)
+                        .fillMaxWidth()
+                        .then(
+                            if (uiState.hideNavigationBarWhileScrolling) {
+                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                            } else {
+                                Modifier
+                            },
+                        ),
                 state = lazyListState,
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
@@ -309,28 +309,28 @@ class EditProfileScreen : Screen {
                 item {
                     OutlinedTextField(
                         modifier =
-                        Modifier
-                            .padding(horizontal = Spacing.s)
-                            .fillMaxWidth()
-                            .onFocusChanged {
-                                hasDisplayNameFocus = it.hasFocus
-                            },
+                            Modifier
+                                .padding(horizontal = Spacing.s)
+                                .fillMaxWidth()
+                                .onFocusChanged {
+                                    hasDisplayNameFocus = it.hasFocus
+                                },
                         label = {
                             Text(text = LocalStrings.current.editProfileItemDisplayName)
                         },
                         value = uiState.displayName,
                         maxLines = 1,
                         keyboardOptions =
-                        KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            keyboardType = KeyboardType.Text,
-                        ),
+                            KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Text,
+                            ),
                         keyboardActions =
-                        KeyboardActions(
-                            onNext = {
-                                focusManager.moveFocus(FocusDirection.Down)
-                            },
-                        ),
+                            KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                },
+                            ),
                         onValueChange = {
                             model.reduce(EditProfileMviModel.Intent.ChangeDisplayName(it))
                         },
@@ -339,28 +339,28 @@ class EditProfileScreen : Screen {
                 item {
                     OutlinedTextField(
                         modifier =
-                        Modifier
-                            .padding(horizontal = Spacing.s)
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .onFocusChanged {
-                                hasBioFocus = it.hasFocus
-                            },
+                            Modifier
+                                .padding(horizontal = Spacing.s)
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .onFocusChanged {
+                                    hasBioFocus = it.hasFocus
+                                },
                         label = {
                             Text(text = LocalStrings.current.editProfileItemBio)
                         },
                         value = uiState.bio,
                         keyboardOptions =
-                        KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            keyboardType = KeyboardType.Text,
-                        ),
+                            KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Text,
+                            ),
                         keyboardActions =
-                        KeyboardActions(
-                            onNext = {
-                                focusManager.moveFocus(FocusDirection.Down)
-                            },
-                        ),
+                            KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                },
+                            ),
                         onValueChange = {
                             model.reduce(EditProfileMviModel.Intent.ChangeBio(it))
                         },
@@ -378,9 +378,9 @@ class EditProfileScreen : Screen {
                     SettingsImageInfo(
                         title = LocalStrings.current.editProfileItemAvatar,
                         imageModifier =
-                        Modifier
-                            .size(avatarSize)
-                            .clip(RoundedCornerShape(avatarSize / 2)),
+                            Modifier
+                                .size(avatarSize)
+                                .clip(RoundedCornerShape(avatarSize / 2)),
                         url = uiState.avatar,
                         autoloadImages = uiState.autoloadImages,
                         bytes = uiState.avatarBytes,
@@ -529,10 +529,10 @@ class EditProfileScreen : Screen {
                     model.reduce(
                         EditProfileMviModel.Intent.InsertCustomEmoji(
                             fieldType =
-                            when {
-                                hasDisplayNameFocus -> EditProfilerFieldType.DisplayName
-                                else -> EditProfilerFieldType.Bio
-                            },
+                                when {
+                                    hasDisplayNameFocus -> EditProfilerFieldType.DisplayName
+                                    else -> EditProfilerFieldType.Bio
+                                },
                             emoji = emoji,
                         ),
                     )

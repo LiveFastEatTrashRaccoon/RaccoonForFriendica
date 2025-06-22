@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.unpublished
 
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -8,7 +7,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Unpublished
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 interface UnpublishedMviModel :
-    ScreenModel,
     MviModel<UnpublishedMviModel.Intent, UnpublishedMviModel.State, UnpublishedMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent

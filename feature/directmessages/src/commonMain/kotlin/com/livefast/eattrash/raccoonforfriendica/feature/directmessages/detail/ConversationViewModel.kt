@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail
 
 import androidx.compose.ui.text.input.TextFieldValue
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
@@ -33,15 +35,15 @@ class ConversationViewModel(
     private val messageRepository: DirectMessageRepository,
     private val userCache: LocalItemCache<UserModel>,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<ConversationMviModel.Intent, ConversationMviModel.State, ConversationMviModel.Effect>(
-    initialState = ConversationMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<ConversationMviModel.Intent, ConversationMviModel.State, ConversationMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = ConversationMviModel.State()),
     ConversationMviModel {
     private var parentUriToUse = parentUri
     private var job: Job? = null
 
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -63,7 +65,7 @@ class ConversationViewModel(
             }
         }
         job =
-            screenModelScope.launch {
+            viewModelScope.launch {
                 while (isActive) {
                     delay(POLLING_INTERVAL)
                     poll()
@@ -71,8 +73,8 @@ class ConversationViewModel(
             }
     }
 
-    override fun onDispose() {
-        super.onDispose()
+    override fun onCleared() {
+        super.onCleared()
         job?.cancel()
         job = null
     }
@@ -80,17 +82,17 @@ class ConversationViewModel(
     override fun reduce(intent: ConversationMviModel.Intent) {
         when (intent) {
             ConversationMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
             ConversationMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
             is ConversationMviModel.Intent.SetNewMessageValue ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(newMessageValue = intent.value) }
                 }
 
@@ -181,7 +183,7 @@ class ConversationViewModel(
         val text = currentState.newMessageValue.text
         check(text.isNotEmpty() && !currentState.sendInProgress) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             val relationshipStatus =
                 userRepository.getRelationships(listOf(otherUserId))?.firstOrNull()?.toStatus()
             if (relationshipStatus !in

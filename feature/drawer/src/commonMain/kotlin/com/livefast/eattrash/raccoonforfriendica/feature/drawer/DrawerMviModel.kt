@@ -1,16 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.drawer
 
 import androidx.compose.runtime.Stable
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 
 @Stable
-interface DrawerMviModel :
-    ScreenModel,
-    MviModel<DrawerMviModel.Intent, DrawerMviModel.State, DrawerMviModel.Effect> {
+interface DrawerMviModel : MviModel<DrawerMviModel.Intent, DrawerMviModel.State, DrawerMviModel.Effect> {
     sealed interface Intent {
         data class SetAnonymousChangeNode(val nodeName: String) : Intent
 

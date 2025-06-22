@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.calendar.list
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.extractDatePart
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EventPaginationManager
@@ -16,12 +18,12 @@ class CalendarViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val paginationManager: EventPaginationManager,
-) : DefaultMviModel<CalendarMviModel.Intent, CalendarMviModel.State, CalendarMviModel.Effect>(
-    initialState = CalendarMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<CalendarMviModel.Intent, CalendarMviModel.State, CalendarMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = CalendarMviModel.State()),
     CalendarMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             identityRepository.currentUser
                 .onEach {
                     refresh(initial = true)
@@ -42,12 +44,12 @@ class CalendarViewModel(
     override fun reduce(intent: CalendarMviModel.Intent) {
         when (intent) {
             CalendarMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
             CalendarMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
         }

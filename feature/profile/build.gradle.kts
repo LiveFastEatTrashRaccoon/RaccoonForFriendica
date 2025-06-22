@@ -9,9 +9,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kodein)
-                implementation(libs.voyager.screenmodel)
                 implementation(libs.voyager.tab)
-                implementation(libs.voyager.kodein)
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.architecture)

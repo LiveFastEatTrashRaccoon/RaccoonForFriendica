@@ -1,13 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list
 
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ConversationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
-interface DirectMessageListMviModel :
-    ScreenModel,
-    MviModel<DirectMessageListMviModel.Intent, DirectMessageListMviModel.State, DirectMessageListMviModel.Effect> {
+interface ConversationListMviModel :
+    MviModel<ConversationListMviModel.Intent, ConversationListMviModel.State, ConversationListMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 

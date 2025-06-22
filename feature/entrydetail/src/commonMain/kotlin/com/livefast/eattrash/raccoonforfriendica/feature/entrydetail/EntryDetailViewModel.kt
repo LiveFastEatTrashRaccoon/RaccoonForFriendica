@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.entrydetail
 
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
@@ -63,12 +65,12 @@ class EntryDetailViewModel(
     private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>(
-    initialState = EntryDetailMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = EntryDetailMviModel.State()),
     EntryDetailMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
@@ -120,8 +122,8 @@ class EntryDetailViewModel(
         }
     }
 
-    override fun onDispose() {
-        super.onDispose()
+    override fun onCleared() {
+        super.onCleared()
         if (swipeNavigationEnabled) {
             timelineNavigationManager.pop()
         }
@@ -130,12 +132,12 @@ class EntryDetailViewModel(
     override fun reduce(intent: EntryDetailMviModel.Intent) {
         when (intent) {
             EntryDetailMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
             is EntryDetailMviModel.Intent.LoadMoreReplies ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadMoreReplies(intent.entry)
                 }
 
@@ -151,17 +153,20 @@ class EntryDetailViewModel(
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
+
             is EntryDetailMviModel.Intent.BlockUser ->
                 block(
                     entryId = intent.entryId,
                     userId = intent.entryId,
                 )
+
             is EntryDetailMviModel.Intent.TogglePin -> togglePin(intent.entry)
             is EntryDetailMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
             is EntryDetailMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
             is EntryDetailMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
             is EntryDetailMviModel.Intent.ChangeNavigationIndex ->
                 changeNavigationIndex(intent.index)
+
             is EntryDetailMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
             is EntryDetailMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
@@ -404,7 +409,7 @@ class EntryDetailViewModel(
 
     private fun toggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     reblogLoading = true,
@@ -439,7 +444,7 @@ class EntryDetailViewModel(
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     favoriteLoading = true,
@@ -465,7 +470,7 @@ class EntryDetailViewModel(
 
     private fun toggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     dislikeLoading = true,
@@ -491,7 +496,7 @@ class EntryDetailViewModel(
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     bookmarkLoading = true,
@@ -524,7 +529,7 @@ class EntryDetailViewModel(
     }
 
     private fun deleteEntry(entryId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
                 notificationCenter.send(TimelineEntryDeletedEvent(entryId))
@@ -534,7 +539,7 @@ class EntryDetailViewModel(
     }
 
     private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val res =
                 userRepository.mute(
                     id = userId,
@@ -548,7 +553,7 @@ class EntryDetailViewModel(
     }
 
     private fun block(userId: String, entryId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
                 removeEntryFromState(entryId)
@@ -557,7 +562,7 @@ class EntryDetailViewModel(
     }
 
     private fun togglePin(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val newEntry =
                 if (entry.pinned) {
                     timelineEntryRepository.unpin(entry.id)
@@ -576,7 +581,7 @@ class EntryDetailViewModel(
 
     private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
             val newPoll =
                 timelineEntryRepository.submitPoll(
@@ -597,7 +602,7 @@ class EntryDetailViewModel(
     }
 
     private fun copyToClipboard(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
                 val text =
@@ -617,7 +622,7 @@ class EntryDetailViewModel(
         val targetLang = uiState.value.lang ?: return
         check(!entry.translationLoading) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
             val isBeingTranslated = !entry.isShowingTranslation
 
@@ -646,7 +651,7 @@ class EntryDetailViewModel(
     private fun changeNavigationIndex(newIndex: Int) {
         check(swipeNavigationEnabled) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState {
                 it.copy(
                     currentIndex = newIndex,
@@ -684,7 +689,7 @@ class EntryDetailViewModel(
     }
 
     private fun addInstanceShortcut(nodeName: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
                     accountId = accountId,
@@ -740,7 +745,7 @@ class EntryDetailViewModel(
     }
 
     private fun openInBrowser(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
                 emitEffect(EntryDetailMviModel.Effect.OpenUrl(url))

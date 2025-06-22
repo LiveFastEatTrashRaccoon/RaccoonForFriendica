@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportTag
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
@@ -9,19 +11,19 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.isValidEm
 import kotlinx.coroutines.launch
 
 class UserFeedbackViewModel(private val crashReportManager: CrashReportManager) :
-    DefaultMviModel<UserFeedbackMviModel.Intent, UserFeedbackMviModel.State, UserFeedbackMviModel.Effect>(
-        initialState = UserFeedbackMviModel.State(),
-    ),
+    ViewModel(),
+    MviModelDelegate<UserFeedbackMviModel.Intent, UserFeedbackMviModel.State, UserFeedbackMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = UserFeedbackMviModel.State()),
     UserFeedbackMviModel {
     override fun reduce(intent: UserFeedbackMviModel.Intent) {
         when (intent) {
             is UserFeedbackMviModel.Intent.SetComment ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(comment = intent.comment) }
                 }
 
             is UserFeedbackMviModel.Intent.SetEmail ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(email = intent.email) }
                 }
 
@@ -30,7 +32,7 @@ class UserFeedbackViewModel(private val crashReportManager: CrashReportManager) 
     }
 
     private fun submit() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val currentState = uiState.value
             val email = currentState.email
             val comment = currentState.comment

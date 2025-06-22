@@ -1,13 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail
 
 import androidx.compose.ui.text.input.TextFieldValue
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 interface ConversationMviModel :
-    ScreenModel,
     MviModel<ConversationMviModel.Intent, ConversationMviModel.State, ConversationMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent

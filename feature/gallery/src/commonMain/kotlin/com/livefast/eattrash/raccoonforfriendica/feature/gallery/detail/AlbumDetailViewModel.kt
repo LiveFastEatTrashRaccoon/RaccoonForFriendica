@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
@@ -25,12 +27,12 @@ class AlbumDetailViewModel(
     private val settingsRepository: SettingsRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<AlbumDetailMviModel.Intent, AlbumDetailMviModel.State, AlbumDetailMviModel.Effect>(
-    initialState = AlbumDetailMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<AlbumDetailMviModel.Intent, AlbumDetailMviModel.State, AlbumDetailMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = AlbumDetailMviModel.State()),
     AlbumDetailMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -66,8 +68,8 @@ class AlbumDetailViewModel(
 
     override fun reduce(intent: AlbumDetailMviModel.Intent) {
         when (intent) {
-            AlbumDetailMviModel.Intent.Refresh -> screenModelScope.launch { refresh() }
-            AlbumDetailMviModel.Intent.LoadNextPage -> screenModelScope.launch { loadNextPage() }
+            AlbumDetailMviModel.Intent.Refresh -> viewModelScope.launch { refresh() }
+            AlbumDetailMviModel.Intent.LoadNextPage -> viewModelScope.launch { loadNextPage() }
             is AlbumDetailMviModel.Intent.Create -> upload(intent.byteArray)
             is AlbumDetailMviModel.Intent.EditDescription ->
                 updateDescription(attachment = intent.attachment, description = intent.description)
@@ -129,7 +131,7 @@ class AlbumDetailViewModel(
     }
 
     private fun upload(byteArray: ByteArray) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val localId = getUuid()
             val originalItems = uiState.value.items
             val newItems =
@@ -159,7 +161,7 @@ class AlbumDetailViewModel(
     }
 
     private fun updateDescription(attachment: AttachmentModel, description: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val successful =
                 photoRepository.update(
@@ -180,7 +182,7 @@ class AlbumDetailViewModel(
 
     private fun moveToOtherAlbum(attachment: AttachmentModel, otherAlbum: String) {
         check(otherAlbum != albumName) { return }
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val successful =
                 photoRepository.update(
@@ -200,7 +202,7 @@ class AlbumDetailViewModel(
     }
 
     private fun delete(id: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val success = photoRepository.delete(id)
             updateState { it.copy(operationInProgress = false) }

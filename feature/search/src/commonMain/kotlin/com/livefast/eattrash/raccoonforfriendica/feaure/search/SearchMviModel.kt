@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feaure.search
 
 import androidx.compose.runtime.Stable
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
@@ -10,9 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSectio
 import kotlin.time.Duration
 
 @Stable
-interface SearchMviModel :
-    ScreenModel,
-    MviModel<SearchMviModel.Intent, SearchMviModel.State, SearchMviModel.Effect> {
+interface SearchMviModel : MviModel<SearchMviModel.Intent, SearchMviModel.State, SearchMviModel.Effect> {
     sealed interface Intent {
         data class SetSearch(val query: String) : Intent
 

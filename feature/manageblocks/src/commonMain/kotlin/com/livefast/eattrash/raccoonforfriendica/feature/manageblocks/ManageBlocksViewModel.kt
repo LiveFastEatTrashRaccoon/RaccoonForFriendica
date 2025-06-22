@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.manageblocks
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
@@ -29,15 +31,15 @@ class ManageBlocksViewModel(
     private val imagePreloadManager: ImagePreloadManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val stopWordRepository: StopWordRepository,
-) : DefaultMviModel<ManageBlocksMviModel.Intent, ManageBlocksMviModel.State, ManageBlocksMviModel.Effect>(
-    initialState = ManageBlocksMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<ManageBlocksMviModel.Intent, ManageBlocksMviModel.State, ManageBlocksMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = ManageBlocksMviModel.State()),
     ManageBlocksMviModel {
     private var originalStopWords: List<String> = emptyList()
     private val mutex = Mutex()
 
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -66,19 +68,19 @@ class ManageBlocksViewModel(
     override fun reduce(intent: ManageBlocksMviModel.Intent) {
         when (intent) {
             is ManageBlocksMviModel.Intent.ChangeSection ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     check(!uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(ManageBlocksMviModel.Effect.BackToTop)
                     refresh(initial = true)
                 }
             ManageBlocksMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     if (uiState.value.section != ManageBlocksSection.StopWords) {
                         loadNextUserPage()
                     }
                 }
-            ManageBlocksMviModel.Intent.Refresh -> screenModelScope.launch { refresh() }
+            ManageBlocksMviModel.Intent.Refresh -> viewModelScope.launch { refresh() }
             is ManageBlocksMviModel.Intent.ToggleMute -> unmute(intent.userId)
             is ManageBlocksMviModel.Intent.ToggleBlock -> unblock(intent.userId)
             is ManageBlocksMviModel.Intent.SetRateLimit ->
@@ -174,7 +176,7 @@ class ManageBlocksViewModel(
     }
 
     private fun unmute(userId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val res = userRepository.unmute(userId)
             if (res != null) {
                 removeUserFromState(userId)
@@ -183,7 +185,7 @@ class ManageBlocksViewModel(
     }
 
     private fun unblock(userId: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val res = userRepository.unblock(userId)
             if (res != null) {
                 removeUserFromState(userId)
@@ -192,7 +194,7 @@ class ManageBlocksViewModel(
     }
 
     private fun setRateLimit(handle: String, value: Double) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val accountId = accountRepository.getActive()?.id ?: return@launch
             val currentRate = userRateLimitRepository.getBy(handle = handle, accountId = accountId)
             when {
@@ -211,7 +213,7 @@ class ManageBlocksViewModel(
 
     private fun addStopWord(word: String) {
         check(word.isNotBlank()) { return }
-        screenModelScope.launch {
+        viewModelScope.launch {
             mutex.withLock {
                 val newValues =
                     if (originalStopWords.contains(word)) {
@@ -228,7 +230,7 @@ class ManageBlocksViewModel(
     }
 
     private fun removeStopWord(word: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             mutex.withLock {
                 val newValues = originalStopWords - word
                 val accountId = accountRepository.getActive()?.id

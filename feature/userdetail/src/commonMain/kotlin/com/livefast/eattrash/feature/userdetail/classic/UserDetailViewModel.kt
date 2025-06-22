@@ -1,8 +1,10 @@
 package com.livefast.eattrash.feature.userdetail.classic
 
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
@@ -65,12 +67,12 @@ class UserDetailViewModel(
     private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>(
-    initialState = UserDetailMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = UserDetailMviModel.State()),
     UserDetailMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             identityRepository.currentUser
                 .onEach { user ->
                     updateState { it.copy(currentUserId = user?.id) }
@@ -120,7 +122,7 @@ class UserDetailViewModel(
     override fun reduce(intent: UserDetailMviModel.Intent) {
         when (intent) {
             is UserDetailMviModel.Intent.ChangeSection ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     check(!uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(UserDetailMviModel.Effect.BackToTop)
@@ -128,12 +130,12 @@ class UserDetailViewModel(
                 }
 
             UserDetailMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
             UserDetailMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
@@ -157,7 +159,7 @@ class UserDetailViewModel(
                 toggleEditPersonalNote()
 
             is UserDetailMviModel.Intent.SetPersonalNote ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(personalNote = intent.note) }
                 }
 
@@ -166,7 +168,7 @@ class UserDetailViewModel(
             is UserDetailMviModel.Intent.SetRateLimit -> setRateLimit(intent.value)
             is UserDetailMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
             is UserDetailMviModel.Intent.WillOpenDetail ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
                     emitEffect(UserDetailMviModel.Effect.OpenDetail(intent.entry))
@@ -259,7 +261,7 @@ class UserDetailViewModel(
 
     private fun follow() {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
             val newRelationship = userRepository.follow(id)
             val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
@@ -283,7 +285,7 @@ class UserDetailViewModel(
 
     private fun unfollow() {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
             val newRelationship = userRepository.unfollow(id)
             val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
@@ -330,7 +332,7 @@ class UserDetailViewModel(
 
     private fun toggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     reblogLoading = true,
@@ -365,7 +367,7 @@ class UserDetailViewModel(
 
     private fun toggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     favoriteLoading = true,
@@ -391,7 +393,7 @@ class UserDetailViewModel(
 
     private fun toggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     dislikeLoading = true,
@@ -417,7 +419,7 @@ class UserDetailViewModel(
 
     private fun toggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) {
                 it.copy(
                     bookmarkLoading = true,
@@ -451,7 +453,7 @@ class UserDetailViewModel(
 
     private fun toggleNotifications(enabled: Boolean) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(notificationStatusPending = true)) }
             val newRelationship =
                 userRepository.follow(
@@ -474,7 +476,7 @@ class UserDetailViewModel(
 
     private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
             val newPoll =
                 timelineEntryRepository.submitPoll(
@@ -495,7 +497,7 @@ class UserDetailViewModel(
     }
 
     private fun toggleMute(muted: Boolean, duration: Duration = Duration.INFINITE, disableNotifications: Boolean) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val relationship =
                 if (muted) {
                     userRepository.mute(
@@ -523,7 +525,7 @@ class UserDetailViewModel(
     }
 
     private fun toggleBlock(blocked: Boolean) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val relationship =
                 if (blocked) {
                     userRepository.block(id)
@@ -547,7 +549,7 @@ class UserDetailViewModel(
     }
 
     private fun toggleEditPersonalNote() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val currentState = uiState.value
             if (!currentState.personalNoteEditEnabled) {
                 updateState {
@@ -567,7 +569,7 @@ class UserDetailViewModel(
 
     private fun updatePersonalNote() {
         val note = uiState.value.personalNote ?: return
-        screenModelScope.launch {
+        viewModelScope.launch {
             val relationShip = userRepository.updatePersonalNote(id, note)
             if (relationShip != null) {
                 updateState {
@@ -580,7 +582,7 @@ class UserDetailViewModel(
     }
 
     private fun copyToClipboard(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
                 val text =
@@ -597,7 +599,7 @@ class UserDetailViewModel(
     }
 
     private fun setRateLimit(value: Double) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val accountId = accountRepository.getActive()?.id ?: return@launch
             val handle = uiState.value.user?.handle ?: return@launch
 
@@ -638,7 +640,7 @@ class UserDetailViewModel(
         val targetLang = uiState.value.lang ?: return
         check(!entry.translationLoading) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
             val isBeingTranslated = !entry.isShowingTranslation
 
@@ -665,7 +667,7 @@ class UserDetailViewModel(
     }
 
     private fun addInstanceShortcut(nodeName: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
                     accountId = accountId,
@@ -676,7 +678,7 @@ class UserDetailViewModel(
     }
 
     private fun openInBrowser(entry: TimelineEntryModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
                 emitEffect(UserDetailMviModel.Effect.OpenUrl(url))

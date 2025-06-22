@@ -53,10 +53,8 @@ kotlin {
             implementation(libs.ktor.client.core)
 
             implementation(libs.voyager.navigator)
-            implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.transition)
             implementation(libs.voyager.tab)
-            implementation(libs.voyager.kodein)
 
             implementation(projects.core.api)
             implementation(projects.core.appearance)

@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.explore
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -43,10 +42,10 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
@@ -89,10 +88,10 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
 class ExploreScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model: ExploreMviModel = rememberScreenModel()
+        val model: ExploreMviModel = getViewModel<ExploreViewModel>()
         val uiState by model.uiState.collectAsState()
         val navigationCoordinator = remember { getNavigationCoordinator() }
         val topAppBarState = rememberTopAppBarState()
@@ -481,10 +480,12 @@ class ExploreScreen : Screen {
                                                 model.reduce(
                                                     ExploreMviModel.Intent.TogglePin(item.entry),
                                                 )
+
                                             OptionId.ReportUser ->
                                                 item.entry.original.creator?.also { userToReport ->
                                                     detailOpener.openCreateReport(user = userToReport)
                                                 }
+
                                             OptionId.ReportEntry ->
                                                 item.entry.original.also { entryToReport ->
                                                     entryToReport.creator?.also { userToReport ->
@@ -494,6 +495,7 @@ class ExploreScreen : Screen {
                                                         )
                                                     }
                                                 }
+
                                             OptionId.ViewDetails -> seeDetailsEntry = item.entry.original
                                             OptionId.Quote -> {
                                                 item.entry.original.also { entryToShare ->
@@ -502,6 +504,7 @@ class ExploreScreen : Screen {
                                                     )
                                                 }
                                             }
+
                                             OptionId.CopyToClipboard ->
                                                 model.reduce(
                                                     ExploreMviModel.Intent.CopyToClipboard(

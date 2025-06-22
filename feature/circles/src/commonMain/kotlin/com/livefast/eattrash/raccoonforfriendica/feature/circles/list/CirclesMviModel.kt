@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.circles.list
 
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
@@ -22,9 +21,7 @@ sealed interface CircleListItem {
     data class Circle(val circle: CircleModel) : CircleListItem
 }
 
-interface CirclesMviModel :
-    ScreenModel,
-    MviModel<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect> {
+interface CirclesMviModel : MviModel<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 

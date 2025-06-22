@@ -1,14 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.userlist
 
 import androidx.compose.runtime.Stable
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Stable
-interface UserListMviModel :
-    ScreenModel,
-    MviModel<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect> {
+interface UserListMviModel : MviModel<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 

@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.announcements
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AnnouncementModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
@@ -20,12 +22,12 @@ class AnnouncementsViewModel(
     private val emojiRepository: EmojiRepository,
     private val announcementsManager: AnnouncementsManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-) : DefaultMviModel<AnnouncementsMviModel.Intent, AnnouncementsMviModel.State, AnnouncementsMviModel.Effect>(
-    initialState = AnnouncementsMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<AnnouncementsMviModel.Intent, AnnouncementsMviModel.State, AnnouncementsMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = AnnouncementsMviModel.State()),
     AnnouncementsMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -66,7 +68,7 @@ class AnnouncementsViewModel(
     override fun reduce(intent: AnnouncementsMviModel.Intent) {
         when (intent) {
             AnnouncementsMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
@@ -168,7 +170,7 @@ class AnnouncementsViewModel(
     }
 
     private fun addReaction(id: String, name: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             setReactionLoading(id = id, name = name, loading = true)
             val success = announcementRepository.addReaction(id = id, reaction = name)
             if (success) {
@@ -180,7 +182,7 @@ class AnnouncementsViewModel(
     }
 
     private fun removeReaction(id: String, name: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             setReactionLoading(id = id, name = name, loading = true)
             val success = announcementRepository.removeReaction(id = id, reaction = name)
             if (success) {

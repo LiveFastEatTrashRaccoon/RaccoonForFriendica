@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.login.oauth
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
@@ -22,12 +24,12 @@ class LoginViewModel(
     private val credentialsRepository: CredentialsRepository,
     private val authManager: AuthManager,
     private val loginUseCase: LoginUseCase,
-) : DefaultMviModel<LoginMviModel.Intent, LoginMviModel.State, LoginMviModel.Effect>(
-    initialState = LoginMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<LoginMviModel.Intent, LoginMviModel.State, LoginMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = LoginMviModel.State()),
     LoginMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             authManager.credentialFlow
                 .debounce(250)
                 .onEach { credentials ->
@@ -47,7 +49,7 @@ class LoginViewModel(
     override fun reduce(intent: LoginMviModel.Intent) {
         when (intent) {
             is LoginMviModel.Intent.SetNodeName ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(nodeName = intent.name) }
                 }
 
@@ -58,7 +60,7 @@ class LoginViewModel(
     }
 
     private fun triggerSignup() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val node = uiState.value.nodeName
             val nodeNameError =
                 if (node.isBlank()) {
@@ -91,7 +93,7 @@ class LoginViewModel(
     private fun submit() {
         check(!uiState.value.loading) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             val node = uiState.value.nodeName
 
             // validate fields

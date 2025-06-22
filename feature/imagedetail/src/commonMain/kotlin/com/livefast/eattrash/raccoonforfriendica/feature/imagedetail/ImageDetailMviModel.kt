@@ -2,12 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.feature.imagedetail
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.layout.ContentScale
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 
 @Stable
 interface ImageDetailMviModel :
-    ScreenModel,
     MviModel<ImageDetailMviModel.Intent, ImageDetailMviModel.UiState, ImageDetailMviModel.Effect> {
     sealed interface Intent {
         data class ChangeIndex(val index: Int) : Intent

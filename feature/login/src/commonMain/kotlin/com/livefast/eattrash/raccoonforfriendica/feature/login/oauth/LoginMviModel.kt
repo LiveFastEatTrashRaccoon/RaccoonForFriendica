@@ -1,12 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.login.oauth
 
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 
-interface LoginMviModel :
-    ScreenModel,
-    MviModel<LoginMviModel.Intent, LoginMviModel.State, LoginMviModel.Effect> {
+interface LoginMviModel : MviModel<LoginMviModel.Intent, LoginMviModel.State, LoginMviModel.Effect> {
     sealed interface Intent {
         data class SetNodeName(val name: String) : Intent
 

@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TagUpdatedEvent
@@ -22,12 +24,12 @@ class FollowedHashtagsViewModel(
     private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<FollowedHashtagsMviModel.Intent, FollowedHashtagsMviModel.State, FollowedHashtagsMviModel.Effect>(
-    initialState = FollowedHashtagsMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<FollowedHashtagsMviModel.Intent, FollowedHashtagsMviModel.State, FollowedHashtagsMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = FollowedHashtagsMviModel.State()),
     FollowedHashtagsMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             notificationCenter
                 .subscribe(TagUpdatedEvent::class)
                 .onEach { event ->
@@ -63,12 +65,12 @@ class FollowedHashtagsViewModel(
     override fun reduce(intent: FollowedHashtagsMviModel.Intent) {
         when (intent) {
             FollowedHashtagsMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
             FollowedHashtagsMviModel.Intent.LoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPage()
                 }
 
@@ -130,7 +132,7 @@ class FollowedHashtagsViewModel(
 
     private fun toggleTagFollow(name: String, follow: Boolean) {
         hapticFeedback.vibrate()
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateItemInState(name) { it.copy(followingPending = true) }
             val newTag =
                 if (!follow) {

@@ -1,13 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.inbox
 
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 
-interface InboxMviModel :
-    ScreenModel,
-    MviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect> {
+interface InboxMviModel : MviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 

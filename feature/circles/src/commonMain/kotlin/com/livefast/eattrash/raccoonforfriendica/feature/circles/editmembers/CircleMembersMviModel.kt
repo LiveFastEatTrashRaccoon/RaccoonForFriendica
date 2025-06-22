@@ -1,12 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers
 
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 interface CircleMembersMviModel :
-    ScreenModel,
     MviModel<CircleMembersMviModel.Intent, CircleMembersMviModel.State, CircleMembersMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent

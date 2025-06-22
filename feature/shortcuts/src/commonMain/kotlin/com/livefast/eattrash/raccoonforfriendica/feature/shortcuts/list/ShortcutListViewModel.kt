@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -13,12 +15,12 @@ class ShortcutListViewModel(
     private val shortcutRepository: InstanceShortcutRepository,
     private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
-) : DefaultMviModel<ShortcutListMviModel.Intent, ShortcutListMviModel.State, ShortcutListMviModel.Effect>(
-    initialState = ShortcutListMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<ShortcutListMviModel.Intent, ShortcutListMviModel.State, ShortcutListMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = ShortcutListMviModel.State()),
     ShortcutListMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
@@ -38,7 +40,7 @@ class ShortcutListViewModel(
     override fun reduce(intent: ShortcutListMviModel.Intent) {
         when (intent) {
             ShortcutListMviModel.Intent.Refresh ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     refresh()
                 }
 
@@ -65,7 +67,7 @@ class ShortcutListViewModel(
     }
 
     private fun delete(node: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState {
                 it.copy(operationInProgress = true)
             }
