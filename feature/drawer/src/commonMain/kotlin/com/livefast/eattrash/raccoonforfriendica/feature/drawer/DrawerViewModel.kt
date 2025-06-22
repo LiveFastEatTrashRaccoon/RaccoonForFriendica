@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.drawer
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
@@ -25,12 +27,12 @@ class DrawerViewModel(
     private val emojiHelper: EmojiHelper,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     accountRepository: AccountRepository,
-) : DefaultMviModel<DrawerMviModel.Intent, DrawerMviModel.State, DrawerMviModel.Effect>(
-    initialState = DrawerMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<DrawerMviModel.Intent, DrawerMviModel.State, DrawerMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = DrawerMviModel.State()),
     DrawerMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             imageAutoloadObserver.enabled
                 .onEach { autoloadImages ->
                     updateState {
@@ -80,7 +82,7 @@ class DrawerViewModel(
     override fun reduce(intent: DrawerMviModel.Intent) {
         when (intent) {
             is DrawerMviModel.Intent.SetAnonymousChangeNode ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(anonymousChangeNodeName = intent.nodeName) }
                 }
 
@@ -91,7 +93,7 @@ class DrawerViewModel(
 
     private fun switchAccount(account: AccountModel) {
         check(account.remoteId != uiState.value.user?.id) { return }
-        screenModelScope.launch {
+        viewModelScope.launch {
             switchAccountUseCase(account)
             emitEffect(DrawerMviModel.Effect.AccountChangeSuccess)
         }
@@ -101,7 +103,7 @@ class DrawerViewModel(
         val isLogged = apiConfigurationRepository.isLogged.value
         check(!isLogged) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             val newNode = uiState.value.anonymousChangeNodeName
 
             // validate fields
