@@ -70,7 +70,7 @@ class DefaultNavigationCoordinatorTest {
 
         sut.setCurrentSection(section)
 
-        val res = sut.currentSection.value
+        val res = sut.currentBottomNavSection.value
         assertEquals(section, res)
     }
 

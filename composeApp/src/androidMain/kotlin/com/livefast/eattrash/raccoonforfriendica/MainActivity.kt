@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
                     check(canGoBackCallback?.invoke() != false) { return }
 
                     // if in home, ask for confirmation
-                    if (navigationCoordinator.currentSection.value == BottomNavigationSection.Home) {
+                    if (navigationCoordinator.currentBottomNavSection.value == BottomNavigationSection.Home) {
                         // asks for confirmation
                         if (!navigationCoordinator.exitMessageVisible.value) {
                             navigationCoordinator.setExitMessageVisible(true)

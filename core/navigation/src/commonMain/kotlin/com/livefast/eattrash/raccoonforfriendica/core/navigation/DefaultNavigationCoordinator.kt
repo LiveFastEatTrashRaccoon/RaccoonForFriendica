@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.navigation.NavController
 import cafe.adriel.voyager.core.screen.Screen
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -16,20 +17,26 @@ import kotlin.time.Duration
 
 internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Dispatchers.Main) :
     NavigationCoordinator {
-    override val currentSection = MutableStateFlow<BottomNavigationSection?>(null)
+    override val currentBottomNavSection = MutableStateFlow<BottomNavigationSection?>(null)
     override val onDoubleTabSelection = MutableSharedFlow<BottomNavigationSection>()
     override val canPop = MutableStateFlow(false)
     override val exitMessageVisible = MutableStateFlow(false)
     override val deepLinkUrl = MutableSharedFlow<String>()
     override val globalMessage = MutableSharedFlow<String>()
 
+    private var bottomNavController: NavController? = null
     private var rootNavigator: NavigatorAdapter? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
     private var canGoBackCallback: (() -> Boolean)? = null
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
 
+    override fun setBottomNavController(controller: NavController) {
+        bottomNavController = controller
+    }
+
     override fun setCurrentSection(section: BottomNavigationSection) {
-        currentSection.getAndUpdate { old ->
+        bottomNavController?.navigate(section)
+        currentBottomNavSection.getAndUpdate { old ->
             if (old == section) {
                 scope.launch {
                     onDoubleTabSelection.emit(section)
