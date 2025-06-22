@@ -3,8 +3,10 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
@@ -86,9 +88,9 @@ class ComposerViewModel(
     private val stripMarkup: StripMarkupUseCase,
     private val bbCodeConverter: BBCodeConverter,
     private val notificationCenter: NotificationCenter = getNotificationCenter(),
-) : DefaultMviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>(
-    initialState = ComposerMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = ComposerMviModel.State()),
     ComposerMviModel {
     private var uploadJobs = mutableMapOf<String, Job>()
     private var editedPostId: String? = null
@@ -102,7 +104,7 @@ class ComposerViewModel(
     }
 
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             uiState
                 .map { it.userSearchQuery }
                 .distinctUntilChanged()
@@ -193,8 +195,8 @@ class ComposerViewModel(
         }
     }
 
-    override fun onDispose() {
-        super.onDispose()
+    override fun onCleared() {
+        super.onCleared()
         uploadJobs.forEach { entry ->
             entry.value.cancel()
         }
@@ -211,7 +213,7 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.AddShareUrl -> addShareUrl(intent.url)
 
             is ComposerMviModel.Intent.LoadScheduled ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     editedPostId = intent.id
                     val entry = entryCache.get(intent.id)
                     if (entry != null) {
@@ -225,7 +227,7 @@ class ComposerViewModel(
                 }
 
             is ComposerMviModel.Intent.LoadDraft ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     draftId = intent.id
                     val entry = entryCache.get(intent.id)
                     if (entry != null) {
@@ -237,7 +239,7 @@ class ComposerViewModel(
                 }
 
             is ComposerMviModel.Intent.SetFieldValue ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     when (intent.fieldType) {
                         ComposerFieldType.Body ->
                             updateBody(intent.value)
@@ -261,7 +263,7 @@ class ComposerViewModel(
                 }
 
             ComposerMviModel.Intent.ToggleHasSpoiler ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             hasSpoiler = !it.hasSpoiler,
@@ -271,12 +273,12 @@ class ComposerViewModel(
                 }
 
             ComposerMviModel.Intent.ToggleHasTitle ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(hasTitle = !it.hasTitle) }
                 }
 
             is ComposerMviModel.Intent.SetVisibility ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             visibility = intent.visibility,
@@ -307,7 +309,7 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.CompleteHashtag -> completeHashtag(intent.name)
 
             is ComposerMviModel.Intent.AddInitialMentions ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     val mentions =
                         buildList {
                             val currentUserHandle =
@@ -342,22 +344,22 @@ class ComposerViewModel(
                 )
 
             is ComposerMviModel.Intent.UserSearchSetQuery ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(userSearchQuery = intent.query) }
                 }
 
             ComposerMviModel.Intent.UserSearchClear ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(userSearchUsers = emptyList()) }
                 }
 
             ComposerMviModel.Intent.UserSearchLoadNextPage ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPageUsers()
                 }
 
             is ComposerMviModel.Intent.SetSensitive ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             sensitive = intent.sensitive,
@@ -375,13 +377,13 @@ class ComposerViewModel(
                 addAttachmentsFromGallery(intent.attachments)
 
             is ComposerMviModel.Intent.GalleryAlbumSelected ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(galleryCurrentAlbum = intent.album) }
                     refreshGalleryPhotos()
                 }
 
             ComposerMviModel.Intent.GalleryInitialLoad ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     val albums = albumRepository.getAll().orEmpty()
                     val currentAlbum = albums.firstOrNull()
                     updateState {
@@ -394,17 +396,17 @@ class ComposerViewModel(
                 }
 
             ComposerMviModel.Intent.GalleryLoadMorePhotos ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     loadNextPageGalleryPhotos()
                 }
 
             is ComposerMviModel.Intent.ChangePublicationType ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(publicationType = intent.type) }
                 }
 
             ComposerMviModel.Intent.AddPoll ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             poll =
@@ -422,7 +424,7 @@ class ComposerViewModel(
                 }
 
             is ComposerMviModel.Intent.SetPollMultiple ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             poll = it.poll?.copy(multiple = intent.multiple),
@@ -432,7 +434,7 @@ class ComposerViewModel(
                 }
 
             is ComposerMviModel.Intent.SetPollExpirationDate ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             poll = it.poll?.copy(expiresAt = intent.date),
@@ -442,7 +444,7 @@ class ComposerViewModel(
                 }
 
             is ComposerMviModel.Intent.AddPollOption ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             poll =
@@ -461,7 +463,7 @@ class ComposerViewModel(
                 }
 
             is ComposerMviModel.Intent.RemovePollOption ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             poll =
@@ -476,7 +478,7 @@ class ComposerViewModel(
                 }
 
             is ComposerMviModel.Intent.EditPollOption ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             poll =
@@ -498,7 +500,7 @@ class ComposerViewModel(
                 }
 
             ComposerMviModel.Intent.RemovePoll ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState {
                         it.copy(
                             poll = null,
@@ -511,7 +513,7 @@ class ComposerViewModel(
                 insertCustomEmoji(intent.fieldType, intent.emoji)
 
             ComposerMviModel.Intent.CreatePreview ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     createPreview()
                 }
 
@@ -592,7 +594,7 @@ class ComposerViewModel(
         if (prefix.isNotEmpty()) {
             mentionSuggestionJob?.cancel()
             mentionSuggestionJob =
-                screenModelScope.launch {
+                viewModelScope.launch {
                     launch {
                         delay(SUGGESTION_DELAY)
                         val users = userRepository.search(prefix, 0).orEmpty()
@@ -613,7 +615,7 @@ class ComposerViewModel(
         if (prefix.isNotEmpty()) {
             hashtagSuggestionJob?.cancel()
             hashtagSuggestionJob =
-                screenModelScope.launch {
+                viewModelScope.launch {
                     launch {
                         delay(SUGGESTION_DELAY)
                         val hashtags =
@@ -637,7 +639,7 @@ class ComposerViewModel(
     }
 
     private fun addAttachmentsFromGallery(attachments: List<AttachmentModel>) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val currentAttachments = uiState.value.attachments
             val attachmentsToAdd =
                 attachments
@@ -651,7 +653,7 @@ class ComposerViewModel(
 
     private fun addLink(anchor: String, url: String) {
         val markupMode = uiState.value.markupMode
-        screenModelScope.launch {
+        viewModelScope.launch {
             val before =
                 when (markupMode) {
                     MarkupMode.HTML -> "<a href='$url'>"
@@ -687,7 +689,7 @@ class ComposerViewModel(
     }
 
     private fun addMention(handle: String, privateToGroup: Boolean = false) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val additionalPart =
                 buildString {
                     if (privateToGroup) {
@@ -714,7 +716,7 @@ class ComposerViewModel(
     }
 
     private fun completeMention(handle: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val additionalPart =
                 buildString {
                     append("@")
@@ -757,7 +759,7 @@ class ComposerViewModel(
     }
 
     private fun completeHashtag(name: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val additionalPart =
                 buildString {
                     append("#")
@@ -800,7 +802,7 @@ class ComposerViewModel(
     }
 
     private fun addShareUrl(url: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val additionalPart =
                 buildString {
                     append("\n")
@@ -823,7 +825,7 @@ class ComposerViewModel(
 
     private fun addBoldFormat(fieldType: ComposerFieldType) {
         val markupMode = uiState.value.markupMode
-        screenModelScope.launch {
+        viewModelScope.launch {
             val value =
                 when (fieldType) {
                     ComposerFieldType.Body ->
@@ -887,7 +889,7 @@ class ComposerViewModel(
 
     private fun addItalicFormat(fieldType: ComposerFieldType) {
         val markupMode = uiState.value.markupMode
-        screenModelScope.launch {
+        viewModelScope.launch {
             val value =
                 when (fieldType) {
                     ComposerFieldType.Body ->
@@ -951,7 +953,7 @@ class ComposerViewModel(
 
     private fun addUnderlineFormat(fieldType: ComposerFieldType) {
         val markupMode = uiState.value.markupMode
-        screenModelScope.launch {
+        viewModelScope.launch {
             val value =
                 when (fieldType) {
                     ComposerFieldType.Body ->
@@ -1015,7 +1017,7 @@ class ComposerViewModel(
 
     private fun addStrikethroughFormat(fieldType: ComposerFieldType) {
         val markupMode = uiState.value.markupMode
-        screenModelScope.launch {
+        viewModelScope.launch {
             val value =
                 when (fieldType) {
                     ComposerFieldType.Body ->
@@ -1079,7 +1081,7 @@ class ComposerViewModel(
 
     private fun addCodeFormat(fieldType: ComposerFieldType) {
         val markupMode = uiState.value.markupMode
-        screenModelScope.launch {
+        viewModelScope.launch {
             val value =
                 when (fieldType) {
                     ComposerFieldType.Body ->
@@ -1142,7 +1144,7 @@ class ComposerViewModel(
     }
 
     private fun insertCustomEmoji(fieldType: ComposerFieldType, emoji: EmojiModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val value =
                 when (fieldType) {
                     ComposerFieldType.Body ->
@@ -1192,7 +1194,7 @@ class ComposerViewModel(
 
     private fun insertList() {
         val markupMode = uiState.value.markupMode
-        screenModelScope.launch {
+        viewModelScope.launch {
             val before =
                 when (markupMode) {
                     MarkupMode.BBCode -> "\n[ul]\n[li]"
@@ -1227,7 +1229,7 @@ class ComposerViewModel(
     }
 
     private fun uploadAttachment(byteArray: ByteArray, isInlineImage: Boolean) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             if (isInlineImage) {
                 updateState { it.copy(loading = true) }
             } else {
@@ -1295,7 +1297,7 @@ class ComposerViewModel(
     }
 
     private fun updateAttachmentDescription(attachment: AttachmentModel, description: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val successful =
                 /*
                  * Before even thinking about "optimizing" this, have a look at:
@@ -1329,7 +1331,7 @@ class ComposerViewModel(
     }
 
     private fun removeAttachment(attachment: AttachmentModel) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             removeAttachmentFromState(attachment.id)
         }
     }
@@ -1410,7 +1412,7 @@ class ComposerViewModel(
 
     private fun loadEditedPost() {
         val id = editedPostId ?: return
-        screenModelScope.launch {
+        viewModelScope.launch {
             updateState { it.copy(loading = true) }
             val entry = timelineEntryRepository.getById(id)
             if (entry != null) {
@@ -1575,7 +1577,7 @@ class ComposerViewModel(
         val oldMode = currentState.markupMode
         check(mode != oldMode) { return }
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             val newTitle =
                 currentState.titleValue.text.let { stripMarkup(text = it, mode = oldMode) }
             val newSpoiler =
@@ -1594,7 +1596,7 @@ class ComposerViewModel(
     }
 
     private fun insertInlineImage(attachment: AttachmentModel, description: String) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val primaryUrl = attachment.url
             val secondaryUrl = attachment.thumbnail ?: attachment.previewUrl ?: primaryUrl
             val additionalPart =
@@ -1645,7 +1647,7 @@ class ComposerViewModel(
         val key = getUuid()
         val publicationType = currentState.publicationType
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             if (
                 !validate(
                     enableAltTextCheck = enableAltTextCheck,

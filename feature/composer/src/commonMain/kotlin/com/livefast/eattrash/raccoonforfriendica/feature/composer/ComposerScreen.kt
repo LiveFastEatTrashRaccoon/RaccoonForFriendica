@@ -57,11 +57,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
@@ -97,6 +97,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.Ins
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.PollForm
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SuggestionsBar
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.ComposerViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -116,7 +117,8 @@ class ComposerScreen(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val model: ComposerMviModel = rememberScreenModel(arg = inReplyToId.orEmpty())
+        val model: ComposerMviModel =
+            getViewModel<ComposerViewModel>(arg = ComposerViewModelArgs(inReplyToId.orEmpty()))
         val uiState by model.uiState.collectAsState()
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.composer
 
 import androidx.compose.ui.text.input.TextFieldValue
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
@@ -30,9 +29,7 @@ sealed interface PublicationType {
     data object Draft : PublicationType
 }
 
-interface ComposerMviModel :
-    ScreenModel,
-    MviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect> {
+interface ComposerMviModel : MviModel<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect> {
     sealed interface Intent {
         data class LoadEditedPost(val id: String) : Intent
 
