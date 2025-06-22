@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -13,12 +15,12 @@ class EventDetailViewModel(
     eventId: String,
     eventCache: LocalItemCache<EventModel>,
     private val settingsRepository: SettingsRepository,
-) : DefaultMviModel<EventDetailMviModel.Intent, EventDetailMviModel.State, EventDetailMviModel.Effect>(
-    initialState = EventDetailMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<EventDetailMviModel.Intent, EventDetailMviModel.State, EventDetailMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = EventDetailMviModel.State()),
     EventDetailMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
