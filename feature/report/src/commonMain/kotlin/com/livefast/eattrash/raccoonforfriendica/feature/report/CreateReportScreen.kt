@@ -40,9 +40,9 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
@@ -54,7 +54,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePaddi
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.report.components.SelectViolatedRulesDialog
-import com.livefast.eattrash.raccoonforfriendica.feature.report.di.CreateReportMviModelParams
+import com.livefast.eattrash.raccoonforfriendica.feature.report.di.CreateReportViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -63,9 +63,9 @@ class CreateReportScreen(private val userId: String, private val entryId: String
     @Composable
     override fun Content() {
         val model: CreateReportMviModel =
-            rememberScreenModel(
+            getViewModel<CreateReportViewModel>(
                 arg =
-                CreateReportMviModelParams(
+                CreateReportViewModelArgs(
                     userId = userId,
                     entryId = entryId.orEmpty(),
                 ),

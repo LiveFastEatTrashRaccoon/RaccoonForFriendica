@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.report
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -21,12 +23,12 @@ class CreateReportViewModel(
     private val reportRepository: ReportRepository,
     private val userCache: LocalItemCache<UserModel>,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
-) : DefaultMviModel<CreateReportMviModel.Intent, CreateReportMviModel.State, CreateReportMviModel.Effect>(
-    initialState = CreateReportMviModel.State(),
-),
+) : ViewModel(),
+    MviModelDelegate<CreateReportMviModel.Intent, CreateReportMviModel.State, CreateReportMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = CreateReportMviModel.State()),
     CreateReportMviModel {
     init {
-        screenModelScope.launch {
+        viewModelScope.launch {
             supportedFeatureRepository.features
                 .onEach { features ->
                     updateState {
@@ -59,22 +61,22 @@ class CreateReportViewModel(
     override fun reduce(intent: CreateReportMviModel.Intent) {
         when (intent) {
             is CreateReportMviModel.Intent.ChangeCategory ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(category = intent.category) }
                 }
 
             is CreateReportMviModel.Intent.ChangeForward ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(forward = intent.value) }
                 }
 
             is CreateReportMviModel.Intent.ChangeViolatedRules ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(violatedRuleIds = intent.ruleIds) }
                 }
 
             is CreateReportMviModel.Intent.SetComment ->
-                screenModelScope.launch {
+                viewModelScope.launch {
                     updateState { it.copy(commentValue = intent.value) }
                 }
 
@@ -88,7 +90,7 @@ class CreateReportViewModel(
         val category = currentState.category
         val ruleIds = currentState.violatedRuleIds
 
-        screenModelScope.launch {
+        viewModelScope.launch {
             if (category == ReportCategory.Violation && ruleIds.isEmpty()) {
                 emitEffect(CreateReportMviModel.Effect.ValidationError.MissingRules)
                 return@launch

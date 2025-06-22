@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.report
 
 import androidx.compose.ui.text.input.TextFieldValue
-import cafe.adriel.voyager.core.model.ScreenModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
@@ -9,7 +8,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 interface CreateReportMviModel :
-    ScreenModel,
     MviModel<CreateReportMviModel.Intent, CreateReportMviModel.State, CreateReportMviModel.Effect> {
     sealed interface Intent {
         data class SetComment(val value: TextFieldValue) : Intent
