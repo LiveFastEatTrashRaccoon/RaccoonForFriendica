@@ -8,7 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Unpublished
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Stable
-interface DetailOpener {
+interface MainRouter {
     fun openUserDetail(user: UserModel)
 
     fun switchUserDetailToClassicMode(user: UserModel)

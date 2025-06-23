@@ -118,7 +118,7 @@ fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
             // shared
             importAll(
                 authModule,
-                detailOpenerModule,
+                mainRouterModule,
                 mainModule,
                 resourcesModule,
                 viewModelFactoryModule,
