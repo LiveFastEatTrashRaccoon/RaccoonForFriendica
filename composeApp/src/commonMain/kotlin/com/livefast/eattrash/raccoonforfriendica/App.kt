@@ -13,11 +13,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
-import cafe.adriel.voyager.navigator.CurrentScreen
-import cafe.adriel.voyager.navigator.Navigator
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
@@ -25,8 +27,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.getL10nManager
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultNavigationAdapter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.VoyagerNavigator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCrashReportManager
@@ -39,7 +42,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.ProvideCustom
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.getCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
-import com.livefast.eattrash.raccoonforfriendica.main.MainScreen
+import com.livefast.eattrash.raccoonforfriendica.navigation.buildNavigationGraph
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
@@ -48,7 +51,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.kodein.di.compose.withDI
 
-@OptIn(FlowPreview::class)
+@OptIn(FlowPreview::class, ExperimentalComposeUiApi::class)
 @Composable
 fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
     // initialize crash reporting as soon as possible
@@ -157,6 +160,11 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
 
     val currentSettings by settingsRepository.current.collectAsState()
     val scope = rememberCoroutineScope()
+    val navController = rememberNavController()
+    LaunchedEffect(navigationCoordinator) {
+        val adapter = DefaultNavigationAdapter(navController)
+        navigationCoordinator.setRootNavigator(adapter)
+    }
 
     AppTheme(
         useDynamicColors = currentSettings?.dynamicColors == true,
@@ -173,32 +181,22 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                         gesturesEnabled = drawerGesturesEnabled,
                         drawerContent = {
                             ModalDrawerSheet {
-                                Navigator(DrawerContent())
+                                DrawerContent()
                             }
                         },
                     ) {
-                        Navigator(
-                            screen = MainScreen,
-                            onBackPressed = {
-                                // if the drawer is open, closes it
-                                if (drawerCoordinator.drawerOpened.value) {
-                                    scope.launch {
-                                        drawerCoordinator.toggleDrawer()
-                                    }
-                                    return@Navigator false
-                                }
-
-                                // otherwise use the screen-provided callback
-                                val callback = navigationCoordinator.getCanGoBackCallback()
-                                callback?.let { it() } ?: true
-                            },
-                        ) { navigator ->
-                            LaunchedEffect(navigationCoordinator) {
-                                val adapter = VoyagerNavigator(navigator)
-                                navigationCoordinator.setRootNavigator(adapter)
+                        val canPop by drawerCoordinator.drawerOpened.collectAsState()
+                        BackHandler(enabled = canPop) {
+                            // if the drawer is open, closes it
+                            scope.launch {
+                                drawerCoordinator.toggleDrawer()
                             }
-
-                            CurrentScreen()
+                        }
+                        NavHost(
+                            navController = navController,
+                            startDestination = Destination.Main,
+                        ) {
+                            buildNavigationGraph()
                         }
                     }
                 }
