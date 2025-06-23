@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.navigation.NavController
 import cafe.adriel.voyager.core.screen.Screen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
@@ -10,12 +11,14 @@ import kotlin.time.Duration
 
 @Stable
 interface NavigationCoordinator {
-    val currentSection: StateFlow<BottomNavigationSection?>
+    val currentBottomNavSection: StateFlow<BottomNavigationSection?>
     val onDoubleTabSelection: Flow<BottomNavigationSection>
     val canPop: StateFlow<Boolean>
     val exitMessageVisible: StateFlow<Boolean>
     val deepLinkUrl: SharedFlow<String>
     val globalMessage: Flow<String>
+
+    fun setBottomNavController(controller: NavController)
 
     fun setCurrentSection(section: BottomNavigationSection)
 

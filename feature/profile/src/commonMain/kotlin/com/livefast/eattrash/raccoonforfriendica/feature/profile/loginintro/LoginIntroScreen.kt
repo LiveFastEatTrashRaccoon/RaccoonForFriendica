@@ -65,149 +65,147 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResour
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 
-internal class LoginIntroScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: LoginIntroMviModel = getViewModel<LoginIntroViewModel>()
-        val uriHandler = LocalUriHandler.current
-        val fullColor = MaterialTheme.colorScheme.onBackground
-        val resources = remember { getCoreResources() }
-        var moreInfoBottomSheetOpened by remember { mutableStateOf(false) }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LoginIntroScreen() {
+    val model: LoginIntroMviModel = getViewModel<LoginIntroViewModel>()
+    val uriHandler = LocalUriHandler.current
+    val fullColor = MaterialTheme.colorScheme.onBackground
+    val resources = remember { getCoreResources() }
+    var moreInfoBottomSheetOpened by remember { mutableStateOf(false) }
 
-        Column(
+    Column(
+        modifier =
+            Modifier
+                .padding(Spacing.s)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(Spacing.s),
+    ) {
+        Text(
+            modifier =
+                Modifier.fillMaxWidth().padding(top = Spacing.m),
+            text = LocalStrings.current.loginTitle,
+            style = MaterialTheme.typography.titleLarge,
+            color = fullColor,
+        )
+        Text(
             modifier =
                 Modifier
-                    .padding(Spacing.s)
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Spacing.s),
+                    .padding(
+                        top = Spacing.s,
+                        start = Spacing.xs,
+                        end = Spacing.xs,
+                    ),
+            text = LocalStrings.current.loginSubtitle,
+            style = MaterialTheme.typography.bodyMedium,
+            color = fullColor,
+        )
+        PlatformLink(
+            title = LocalStrings.current.moreInfo,
+            onClick = {
+                moreInfoBottomSheetOpened = true
+            },
+        )
+
+        PlatformHeader(
+            modifier = Modifier.padding(top = Spacing.m),
+            title = LocalStrings.current.loginFriendicaHeader,
+            painter = resources.friendicaLogo,
+            onClickInfo = {
+                uriHandler.openExternally(LoginIntroLinks.ABOUT_FRIENDICA)
+            },
+        )
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                model.reduce(LoginIntroMviModel.Intent.StartOauth2Flow(LoginType.Friendica))
+            },
         ) {
-            Text(
-                modifier =
-                    Modifier.fillMaxWidth().padding(top = Spacing.m),
-                text = LocalStrings.current.loginTitle,
-                style = MaterialTheme.typography.titleLarge,
-                color = fullColor,
-            )
-            Text(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            top = Spacing.s,
-                            start = Spacing.xs,
-                            end = Spacing.xs,
-                        ),
-                text = LocalStrings.current.loginSubtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = fullColor,
-            )
-            PlatformLink(
-                title = LocalStrings.current.moreInfo,
-                onClick = {
-                    moreInfoBottomSheetOpened = true
-                },
-            )
-
-            PlatformHeader(
-                modifier = Modifier.padding(top = Spacing.m),
-                title = LocalStrings.current.loginFriendicaHeader,
-                painter = resources.friendicaLogo,
-                onClickInfo = {
-                    uriHandler.openExternally(LoginIntroLinks.ABOUT_FRIENDICA)
-                },
-            )
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    model.reduce(LoginIntroMviModel.Intent.StartOauth2Flow(LoginType.Friendica))
-                },
-            ) {
-                Text(text = LocalStrings.current.buttonLogin)
-            }
-
-            PlatformLink(
-                title = LocalStrings.current.helpMeChooseAnInstance,
-                onClick = {
-                    uriHandler.openExternally(LoginIntroLinks.FRIENDICA_INSTANCE_HELP)
-                },
-                options =
-                    buildList {
-                        this +=
-                            CustomOptions.LegacyLogin.toOption(
-                                label =
-                                    buildString {
-                                        append(LocalStrings.current.buttonLogin)
-                                        append(" (")
-                                        append(LocalStrings.current.loginMethodBasic)
-                                        append(")")
-                                    },
-                            )
-                    },
-                onSelectOption = { optionId ->
-                    when (optionId) {
-                        CustomOptions.LegacyLogin ->
-                            model.reduce(LoginIntroMviModel.Intent.StartLegacyFlow)
-
-                        else -> Unit
-                    }
-                },
-            )
-
-            HorizontalDivider(modifier = Modifier.padding(top = Spacing.s))
-
-            PlatformHeader(
-                modifier = Modifier.padding(top = Spacing.xs),
-                title = LocalStrings.current.loginMastodonHeader,
-                painter = resources.mastodonLogo,
-                onClickInfo = {
-                    uriHandler.openExternally(LoginIntroLinks.ABOUT_MASTODON)
-                },
-            )
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    model.reduce(
-                        LoginIntroMviModel.Intent.StartOauth2Flow(LoginType.Mastodon),
-                    )
-                },
-            ) {
-                Text(text = LocalStrings.current.buttonLogin)
-            }
-            PlatformLink(
-                title = LocalStrings.current.helpMeChooseAnInstance,
-                onClick = {
-                    uriHandler.openExternally(LoginIntroLinks.MASTODON_INSTANCE_HELP)
-                },
-            )
+            Text(text = LocalStrings.current.buttonLogin)
         }
 
-        if (moreInfoBottomSheetOpened) {
-            ModalBottomSheet(
-                contentWindowInsets = { WindowInsets.navigationBars },
-                onDismissRequest = {
-                    moreInfoBottomSheetOpened = false
+        PlatformLink(
+            title = LocalStrings.current.helpMeChooseAnInstance,
+            onClick = {
+                uriHandler.openExternally(LoginIntroLinks.FRIENDICA_INSTANCE_HELP)
+            },
+            options =
+                buildList {
+                    this +=
+                        CustomOptions.LegacyLogin.toOption(
+                            label =
+                                buildString {
+                                    append(LocalStrings.current.buttonLogin)
+                                    append(" (")
+                                    append(LocalStrings.current.loginMethodBasic)
+                                    append(")")
+                                },
+                        )
                 },
-            ) {
-                Column(
-                    modifier = Modifier.padding(bottom = Spacing.xs),
-                ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        text = LocalStrings.current.buttonLogin,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = fullColor,
-                    )
-                    Spacer(modifier = Modifier.height(Spacing.s))
-                    Text(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.m),
-                        text = LocalStrings.current.loginMoreInfoBottomSheetContent,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = fullColor,
-                    )
+            onSelectOption = { optionId ->
+                when (optionId) {
+                    CustomOptions.LegacyLogin ->
+                        model.reduce(LoginIntroMviModel.Intent.StartLegacyFlow)
+
+                    else -> Unit
                 }
+            },
+        )
+
+        HorizontalDivider(modifier = Modifier.padding(top = Spacing.s))
+
+        PlatformHeader(
+            modifier = Modifier.padding(top = Spacing.xs),
+            title = LocalStrings.current.loginMastodonHeader,
+            painter = resources.mastodonLogo,
+            onClickInfo = {
+                uriHandler.openExternally(LoginIntroLinks.ABOUT_MASTODON)
+            },
+        )
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                model.reduce(
+                    LoginIntroMviModel.Intent.StartOauth2Flow(LoginType.Mastodon),
+                )
+            },
+        ) {
+            Text(text = LocalStrings.current.buttonLogin)
+        }
+        PlatformLink(
+            title = LocalStrings.current.helpMeChooseAnInstance,
+            onClick = {
+                uriHandler.openExternally(LoginIntroLinks.MASTODON_INSTANCE_HELP)
+            },
+        )
+    }
+
+    if (moreInfoBottomSheetOpened) {
+        ModalBottomSheet(
+            contentWindowInsets = { WindowInsets.navigationBars },
+            onDismissRequest = {
+                moreInfoBottomSheetOpened = false
+            },
+        ) {
+            Column(
+                modifier = Modifier.padding(bottom = Spacing.xs),
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = LocalStrings.current.buttonLogin,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = fullColor,
+                )
+                Spacer(modifier = Modifier.height(Spacing.s))
+                Text(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.m),
+                    text = LocalStrings.current.loginMoreInfoBottomSheetContent,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = fullColor,
+                )
             }
         }
     }

@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.Navigator
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
@@ -64,11 +63,11 @@ class NewAccountScreen : Screen {
         ) { padding ->
             Box(
                 modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxWidth(),
+                    Modifier
+                        .padding(padding)
+                        .fillMaxWidth(),
             ) {
-                Navigator(LoginIntroScreen())
+                LoginIntroScreen()
             }
         }
     }

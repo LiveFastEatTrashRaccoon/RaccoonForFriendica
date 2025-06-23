@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -51,99 +53,104 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoo
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class ProfileScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: ProfileMviModel = getViewModel<ProfileViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val scope = rememberCoroutineScope()
-        val drawerCoordinator = remember { getDrawerCoordinator() }
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val successMessage = LocalStrings.current.messageSuccess
-        var confirmLogoutDialogOpened by remember { mutableStateOf(false) }
-        var manageAccountsDialogOpened by remember { mutableStateOf(false) }
-        var confirmDeleteAccount by remember { mutableStateOf<AccountModel?>(null) }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileScreen(
+    model: ProfileMviModel,
+    myAccountModel: MyAccountMviModel,
+    modifier: Modifier = Modifier,
+    myAccountLazyListState: LazyListState = rememberLazyListState(),
+) {
+    val uiState by model.uiState.collectAsState()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val scope = rememberCoroutineScope()
+    val drawerCoordinator = remember { getDrawerCoordinator() }
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val successMessage = LocalStrings.current.messageSuccess
+    var confirmLogoutDialogOpened by remember { mutableStateOf(false) }
+    var manageAccountsDialogOpened by remember { mutableStateOf(false) }
+    var confirmDeleteAccount by remember { mutableStateOf<AccountModel?>(null) }
 
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        ProfileMviModel.Effect.AccountChangeSuccess ->
-                            navigationCoordinator.showGlobalMessage(successMessage)
-                    }
-                }.launchIn(this)
-        }
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    ProfileMviModel.Effect.AccountChangeSuccess ->
+                        navigationCoordinator.showGlobalMessage(successMessage)
+                }
+            }.launchIn(this)
+    }
 
-        CompositionLocalProvider(
-            LocalProfileTopAppBarStateWrapper provides
-                object : ProfileTopAppBarStateWrapper {
-                    override val topAppBarState: TopAppBarState
-                        get() = topAppBarState
-                },
-        ) {
-            Scaffold(
-                contentWindowInsets = WindowInsets(0, 0, 0, 0),
-                topBar = {
-                    TopAppBar(
-                        windowInsets = topAppBarState.toWindowInsets(),
-                        scrollBehavior = scrollBehavior,
-                        title = {
-                            Text(
-                                text = LocalStrings.current.sectionTitleProfile,
-                                style = MaterialTheme.typography.titleMedium,
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(
-                                onClick = {
-                                    scope.launch {
-                                        drawerCoordinator.toggleDrawer()
-                                    }
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Menu,
-                                    contentDescription = LocalStrings.current.actionOpenSideMenu,
-                                )
-                            }
-                        },
-                        actions = {
-                            IconButton(
-                                onClick = {
-                                    manageAccountsDialogOpened = true
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ManageAccounts,
-                                    contentDescription = LocalStrings.current.actionSwitchAccount,
-                                )
-                            }
-                            if (uiState.currentUserId != null) {
-                                IconButton(
-                                    onClick = {
-                                        confirmLogoutDialogOpened = true
-                                    },
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Default.Logout,
-                                        contentDescription = LocalStrings.current.actionLogout,
-                                    )
+    CompositionLocalProvider(
+        LocalProfileTopAppBarStateWrapper provides
+            object : ProfileTopAppBarStateWrapper {
+                override val topAppBarState: TopAppBarState
+                    get() = topAppBarState
+            },
+    ) {
+        Scaffold(
+            modifier = modifier,
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+            topBar = {
+                TopAppBar(
+                    windowInsets = topAppBarState.toWindowInsets(),
+                    scrollBehavior = scrollBehavior,
+                    title = {
+                        Text(
+                            text = LocalStrings.current.sectionTitleProfile,
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {
+                                scope.launch {
+                                    drawerCoordinator.toggleDrawer()
                                 }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = LocalStrings.current.actionOpenSideMenu,
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(
+                            onClick = {
+                                manageAccountsDialogOpened = true
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ManageAccounts,
+                                contentDescription = LocalStrings.current.actionSwitchAccount,
+                            )
+                        }
+                        if (uiState.currentUserId != null) {
+                            IconButton(
+                                onClick = {
+                                    confirmLogoutDialogOpened = true
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Default.Logout,
+                                    contentDescription = LocalStrings.current.actionLogout,
+                                )
                             }
-                        },
-                    )
-                },
-                content = { padding ->
-                    Box(
-                        modifier =
+                        }
+                    },
+                )
+            },
+            content = { padding ->
+                Box(
+                    modifier =
                         Modifier
                             .padding(padding)
                             .then(
@@ -153,120 +160,120 @@ class ProfileScreen : Screen {
                                     Modifier
                                 },
                             ),
-                    ) {
-                        val screen =
-                            if (uiState.currentUserId != null) {
-                                MyAccountScreen
-                            } else {
-                                LoginIntroScreen()
-                            }
-                        screen.Content()
+                ) {
+                    if (uiState.currentUserId != null) {
+                        MyAccountScreen(
+                            model = myAccountModel,
+                            lazyListState = myAccountLazyListState,
+                        )
+                    } else {
+                        LoginIntroScreen()
                     }
-                },
-            )
-        }
+                }
+            },
+        )
+    }
 
-        if (manageAccountsDialogOpened) {
-            val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-            val items =
-                uiState.availableAccounts.map { account ->
-                    CustomModalBottomSheetItem(
-                        label = account.displayName.orEmpty(),
-                        subtitle = account.handle,
-                        leadingContent = {
-                            val avatar = account.avatar.orEmpty()
-                            val avatarSize = IconSize.xl
-                            if (avatar.isNotEmpty() && uiState.autoloadImages) {
-                                CustomImage(
-                                    modifier =
+    if (manageAccountsDialogOpened) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val items =
+            uiState.availableAccounts.map { account ->
+                CustomModalBottomSheetItem(
+                    label = account.displayName.orEmpty(),
+                    subtitle = account.handle,
+                    leadingContent = {
+                        val avatar = account.avatar.orEmpty()
+                        val avatarSize = IconSize.xl
+                        if (avatar.isNotEmpty() && uiState.autoloadImages) {
+                            CustomImage(
+                                modifier =
                                     Modifier
                                         .size(avatarSize)
                                         .clip(RoundedCornerShape(avatarSize / 2)),
-                                    url = avatar,
-                                    quality = FilterQuality.Low,
-                                    contentScale = ContentScale.FillBounds,
-                                )
-                            } else {
-                                PlaceholderImage(
-                                    size = avatarSize,
-                                    title = account.displayName ?: account.handle,
-                                )
-                            }
-                        },
-                        trailingContent = {
-                            RadioButton(
-                                selected = account.active,
-                                onClick = {},
+                                url = avatar,
+                                quality = FilterQuality.Low,
+                                contentScale = ContentScale.FillBounds,
                             )
-                        },
-                    )
-                } +
-                    CustomModalBottomSheetItem(
-                        label = LocalStrings.current.actionAddNew,
-                        leadingContent = {
-                            IconButton(
-                                onClick = {},
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.AddCircle,
-                                    contentDescription = LocalStrings.current.actionAddNew,
-                                )
-                            }
-                        },
-                    )
-            CustomModalBottomSheet(
-                title = LocalStrings.current.actionSwitchAccount,
-                sheetState = sheetState,
-                items = items,
-                onSelect = { index ->
-                    manageAccountsDialogOpened = false
-                    if (index != null) {
-                        val accounts = uiState.availableAccounts
-                        if (index in accounts.indices) {
-                            val selectedAccount = accounts[index]
-                            model.reduce(ProfileMviModel.Intent.SwitchAccount(selectedAccount))
                         } else {
-                            model.reduce(ProfileMviModel.Intent.AddAccount)
+                            PlaceholderImage(
+                                size = avatarSize,
+                                title = account.displayName ?: account.handle,
+                            )
                         }
+                    },
+                    trailingContent = {
+                        RadioButton(
+                            selected = account.active,
+                            onClick = {},
+                        )
+                    },
+                )
+            } +
+                CustomModalBottomSheetItem(
+                    label = LocalStrings.current.actionAddNew,
+                    leadingContent = {
+                        IconButton(
+                            onClick = {},
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AddCircle,
+                                contentDescription = LocalStrings.current.actionAddNew,
+                            )
+                        }
+                    },
+                )
+        CustomModalBottomSheet(
+            title = LocalStrings.current.actionSwitchAccount,
+            sheetState = sheetState,
+            items = items,
+            onSelect = { index ->
+                manageAccountsDialogOpened = false
+                if (index != null) {
+                    val accounts = uiState.availableAccounts
+                    if (index in accounts.indices) {
+                        val selectedAccount = accounts[index]
+                        model.reduce(ProfileMviModel.Intent.SwitchAccount(selectedAccount))
+                    } else {
+                        model.reduce(ProfileMviModel.Intent.AddAccount)
                     }
-                },
-                onLongPress = { index ->
-                    manageAccountsDialogOpened = false
-                    val selectedAccount = uiState.availableAccounts[index]
-                    if (!selectedAccount.active) {
-                        confirmDeleteAccount = selectedAccount
-                    }
-                },
-            )
-        }
+                }
+            },
+            onLongPress = { index ->
+                manageAccountsDialogOpened = false
+                val selectedAccount = uiState.availableAccounts[index]
+                if (!selectedAccount.active) {
+                    confirmDeleteAccount = selectedAccount
+                }
+            },
+        )
+    }
 
-        if (confirmDeleteAccount != null) {
-            CustomConfirmDialog(
-                title = LocalStrings.current.actionDeleteAccount,
-                onClose = { confirm ->
-                    val account = confirmDeleteAccount
-                    confirmDeleteAccount = null
-                    if (confirm && account != null) {
-                        model.reduce(ProfileMviModel.Intent.DeleteAccount(account))
-                    }
-                },
-            )
-        }
+    if (confirmDeleteAccount != null) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionDeleteAccount,
+            onClose = { confirm ->
+                val account = confirmDeleteAccount
+                confirmDeleteAccount = null
+                if (confirm && account != null) {
+                    model.reduce(ProfileMviModel.Intent.DeleteAccount(account))
+                }
+            },
+        )
+    }
 
-        if (confirmLogoutDialogOpened) {
-            CustomConfirmDialog(
-                title = LocalStrings.current.actionLogout,
-                onClose = { confirm ->
-                    confirmLogoutDialogOpened = false
-                    if (confirm) {
-                        model.reduce(ProfileMviModel.Intent.Logout)
-                    }
-                },
-            )
-        }
+    if (confirmLogoutDialogOpened) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionLogout,
+            onClose = { confirm ->
+                confirmLogoutDialogOpened = false
+                if (confirm) {
+                    model.reduce(ProfileMviModel.Intent.Logout)
+                }
+            },
+        )
+    }
 
-        if (uiState.loading) {
-            ProgressHud()
-        }
+    if (uiState.loading) {
+        ProgressHud()
     }
 }

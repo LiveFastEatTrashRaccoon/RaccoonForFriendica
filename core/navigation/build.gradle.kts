@@ -3,14 +3,15 @@ plugins {
     id("com.livefast.eattrash.composeMultiplatform")
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
+    id("com.livefast.eattrash.serialization")
 }
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.androidx.navigation.compose)
             implementation(libs.kodein)
             implementation(libs.voyager.navigator)
-            implementation(libs.voyager.tab)
 
             implementation(projects.core.di)
             implementation(projects.core.utils)
