@@ -1,8 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.navigation.NavController
-import cafe.adriel.voyager.core.screen.Screen
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,14 +22,13 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
     override val deepLinkUrl = MutableSharedFlow<String>()
     override val globalMessage = MutableSharedFlow<String>()
 
-    private var bottomNavController: NavController? = null
-    private var rootNavigator: NavigatorAdapter? = null
+    private var rootNavController: NavigationAdapter? = null
+    private var bottomNavController: BottomNavigationAdapter? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
-    private var canGoBackCallback: (() -> Boolean)? = null
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
 
-    override fun setBottomNavController(controller: NavController) {
-        bottomNavController = controller
+    override fun setBottomNavigator(adapter: BottomNavigationAdapter) {
+        bottomNavController = adapter
     }
 
     override fun setCurrentSection(section: BottomNavigationSection) {
@@ -46,9 +43,15 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
         }
     }
 
-    override fun setRootNavigator(navigator: NavigatorAdapter) {
-        rootNavigator = navigator
-        canPop.update { navigator.canPop }
+    override fun setRootNavigator(adapter: NavigationAdapter) {
+        rootNavController = adapter
+        refreshCanPop()
+    }
+
+    private fun refreshCanPop() {
+        canPop.update {
+            rootNavController?.canPop ?: false
+        }
     }
 
     override fun setExitMessageVisible(value: Boolean) {
@@ -61,32 +64,23 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
 
     override fun getBottomBarScrollConnection() = bottomBarScrollConnection
 
-    override fun setCanGoBackCallback(value: (() -> Boolean)?) {
-        canGoBackCallback = value
+    override fun push(destination: Destination) {
+        rootNavController?.navigate(destination)
+        refreshCanPop()
     }
 
-    override fun getCanGoBackCallback(): (() -> Boolean)? = canGoBackCallback
-
-    override fun push(screen: Screen) {
-        rootNavigator?.push(screen)
-        canPop.update {
-            rootNavigator?.canPop == true
-        }
-    }
-
-    override fun replace(screen: Screen) {
-        rootNavigator?.replace(screen)
+    override fun replace(destination: Destination) {
+        rootNavController?.navigate(destination, replaceTop = true)
     }
 
     override fun pop() {
-        rootNavigator?.pop()
-        canPop.update {
-            rootNavigator?.canPop == true
-        }
+        rootNavController?.pop()
+        refreshCanPop()
     }
 
     override fun popUntilRoot() {
-        rootNavigator?.popUntilRoot()
+        rootNavController?.popUntilRoot()
+        refreshCanPop()
     }
 
     override suspend fun submitDeeplink(url: String) {
