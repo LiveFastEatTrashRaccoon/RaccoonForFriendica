@@ -42,7 +42,6 @@ spotless = "7.0.4"
 stately = "2.1.0"
 turbine = "1.2.1"
 unifiedpush = "3.0.10"
-voyager = "1.0.1"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -65,6 +64,7 @@ compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", vers
 
 compose-multiplatform-media-player = { module = "network.chaintech:compose-multiplatform-media-player", version.ref = "compose-multiplatform-media-player" }
 compose-gradlePlugin = { module = "org.jetbrains.compose:org.jetbrains.compose.gradle.plugin", version.ref = "compose-plugin" }
+compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler" }
 compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "compose-ui-test" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-ui-test" }
 
@@ -122,9 +122,6 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 unifiedpush = { module = "org.unifiedpush.android:connector", version.ref = "unifiedpush" }
-
-voyager-core = { module = "cafe.adriel.voyager:voyager-core", version.ref = "voyager" }
-voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

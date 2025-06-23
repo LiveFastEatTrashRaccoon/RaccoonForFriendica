@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.kover)
+    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.mokkery)
     id("com.livefast.eattrash.spotless")
@@ -46,14 +47,13 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.compose.ui.backhandler)
 
             implementation(libs.androidx.navigation.compose)
             implementation(libs.coil)
             implementation(libs.compose.multiplatform.media.player)
             implementation(libs.kodein.compose)
             implementation(libs.ktor.client.core)
-
-            implementation(libs.voyager.navigator)
 
             implementation(projects.core.api)
             implementation(projects.core.appearance)
