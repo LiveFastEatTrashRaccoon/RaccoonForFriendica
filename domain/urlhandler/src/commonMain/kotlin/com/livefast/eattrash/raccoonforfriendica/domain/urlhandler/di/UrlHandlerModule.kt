@@ -38,14 +38,14 @@ val urlHandlerModule =
         bind<HashtagProcessor> {
             singleton {
                 DefaultHashtagProcessor(
-                    detailOpener = instance(),
+                    mainRouter = instance(),
                 )
             }
         }
         bind<UserProcessor> {
             singleton {
                 DefaultUserProcessor(
-                    detailOpener = instance(),
+                    mainRouter = instance(),
                     fetchUser = instance(),
                 )
             }
@@ -53,7 +53,7 @@ val urlHandlerModule =
         bind<EntryProcessor> {
             singleton {
                 DefaultEntryProcessor(
-                    detailOpener = instance(),
+                    mainRouter = instance(),
                     fetchEntry = instance(),
                 )
             }
@@ -65,7 +65,7 @@ val urlHandlerModule =
                     defaultHandler = fallback,
                     customTabsHelper = instance(),
                     settingsRepository = instance(),
-                    detailOpener = instance(),
+                    mainRouter = instance(),
                     hashtagProcessor = instance(),
                     userProcessor = instance(),
                     entryProcessor = instance(),

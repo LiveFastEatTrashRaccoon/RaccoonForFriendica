@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.urlhandler
 
 import androidx.compose.ui.platform.UriHandler
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -19,7 +19,7 @@ internal class DefaultCustomUriHandler(
     private val defaultHandler: UriHandler,
     private val customTabsHelper: CustomTabsHelper,
     private val settingsRepository: SettingsRepository,
-    private val detailOpener: DetailOpener,
+    private val mainRouter: MainRouter,
     private val hashtagProcessor: HashtagProcessor,
     private val userProcessor: UserProcessor,
     private val entryProcessor: EntryProcessor,
@@ -60,7 +60,7 @@ internal class DefaultCustomUriHandler(
     private fun openExternalUrl(url: String, mode: UrlOpeningMode) {
         when {
             mode == UrlOpeningMode.Internal ->
-                detailOpener.openInternalWebView(url)
+                mainRouter.openInternalWebView(url)
 
             customTabsHelper.isSupported && mode == UrlOpeningMode.CustomTabs ->
                 customTabsHelper.handle(url)

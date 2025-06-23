@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor
 
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
@@ -16,11 +16,11 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class DefaultEntryProcessorTest {
-    private val detailOpener = mock<DetailOpener>(mode = MockMode.autoUnit)
+    private val mainRouter = mock<MainRouter>(mode = MockMode.autoUnit)
     private val fetchEntry = mock<FetchEntryUseCase>()
     private val sut =
         DefaultEntryProcessor(
-            detailOpener = detailOpener,
+            mainRouter = mainRouter,
             fetchEntry = fetchEntry,
         )
 
@@ -37,7 +37,7 @@ class DefaultEntryProcessorTest {
             fetchEntry.invoke(url)
         }
         verify {
-            detailOpener.openEntryDetail(entry)
+            mainRouter.openEntryDetail(entry)
         }
     }
 
@@ -53,7 +53,7 @@ class DefaultEntryProcessorTest {
             fetchEntry.invoke(url)
         }
         verify(mode = VerifyMode.not) {
-            detailOpener.openEntryDetail(any())
+            mainRouter.openEntryDetail(any())
         }
     }
 
@@ -69,7 +69,7 @@ class DefaultEntryProcessorTest {
             fetchEntry.invoke(any())
         }
         verify(mode = VerifyMode.not) {
-            detailOpener.openEntryDetail(any())
+            mainRouter.openEntryDetail(any())
         }
     }
 
