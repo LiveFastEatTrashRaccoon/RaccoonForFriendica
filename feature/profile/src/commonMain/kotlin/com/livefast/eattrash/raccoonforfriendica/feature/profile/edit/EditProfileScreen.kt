@@ -48,7 +48,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
@@ -65,7 +67,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -88,470 +89,459 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class EditProfileScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: EditProfileMviModel = getViewModel<EditProfileViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val lazyListState = rememberLazyListState()
-        val scope = rememberCoroutineScope()
-        val snackbarHostState = remember { SnackbarHostState() }
-        val galleryHelper = remember { getGalleryHelper() }
-        val uriHandler = LocalUriHandler.current
-        val genericError = LocalStrings.current.messageGenericError
-        val messageSuccess = LocalStrings.current.messageSuccess
-        var confirmBackWithUnsavedChangesDialog by remember { mutableStateOf(false) }
-        var openAvatarPicker by remember { mutableStateOf(false) }
-        var openHeaderPicker by remember { mutableStateOf(false) }
-        val focusManager = LocalFocusManager.current
-        var hasDisplayNameFocus by remember { mutableStateOf(false) }
-        var hasBioFocus by remember { mutableStateOf(false) }
-        var insertEmojiModalOpen by remember { mutableStateOf(false) }
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@Composable
+fun EditProfileScreen(modifier: Modifier = Modifier) {
+    val model: EditProfileMviModel = getViewModel<EditProfileViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val galleryHelper = remember { getGalleryHelper() }
+    val uriHandler = LocalUriHandler.current
+    val genericError = LocalStrings.current.messageGenericError
+    val messageSuccess = LocalStrings.current.messageSuccess
+    var confirmBackWithUnsavedChangesDialog by remember { mutableStateOf(false) }
+    var openAvatarPicker by remember { mutableStateOf(false) }
+    var openHeaderPicker by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+    var hasDisplayNameFocus by remember { mutableStateOf(false) }
+    var hasBioFocus by remember { mutableStateOf(false) }
+    var insertEmojiModalOpen by remember { mutableStateOf(false) }
 
-        fun goBackToTop() {
-            runCatching {
-                scope.launch {
-                    lazyListState.scrollToItem(0)
-                    topAppBarState.heightOffset = 0f
-                    topAppBarState.contentOffset = 0f
-                }
+    fun goBackToTop() {
+        runCatching {
+            scope.launch {
+                lazyListState.scrollToItem(0)
+                topAppBarState.heightOffset = 0f
+                topAppBarState.contentOffset = 0f
             }
         }
+    }
 
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        EditProfileMviModel.Effect.Failure ->
-                            snackbarHostState.showSnackbar(genericError)
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    EditProfileMviModel.Effect.Failure ->
+                        snackbarHostState.showSnackbar(genericError)
 
-                        EditProfileMviModel.Effect.Success ->
-                            snackbarHostState.showSnackbar(messageSuccess)
+                    EditProfileMviModel.Effect.Success ->
+                        snackbarHostState.showSnackbar(messageSuccess)
 
-                        is EditProfileMviModel.Effect.OpenUrl ->
-                            uriHandler.openUri(event.url)
+                    is EditProfileMviModel.Effect.OpenUrl ->
+                        uriHandler.openUri(event.url)
+                }
+            }.launchIn(this)
+    }
+    BackHandler(enabled = uiState.hasUnsavedChanges) {
+        confirmBackWithUnsavedChangesDialog = true
+    }
+
+    Scaffold(
+        modifier = modifier.safeImePadding(),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.editProfileTitle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                if (uiState.hasUnsavedChanges) {
+                                    confirmBackWithUnsavedChangesDialog = true
+                                } else {
+                                    navigationCoordinator.pop()
+                                }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
+                            )
+                        }
                     }
-                }.launchIn(this)
-        }
-        DisposableEffect(key) {
-            navigationCoordinator.setCanGoBackCallback {
-                if (uiState.hasUnsavedChanges) {
-                    confirmBackWithUnsavedChangesDialog = true
-                    return@setCanGoBackCallback false
-                }
-                true
-            }
-            onDispose {
-                navigationCoordinator.setCanGoBackCallback(null)
-            }
-        }
-
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            modifier = Modifier.safeImePadding(),
-            topBar = {
-                TopAppBar(
-                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.editProfileTitle,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
+                },
+                actions = {
+                    val options =
+                        buildList {
+                            if (uiState.availableEmojis.isNotEmpty()) {
+                                this +=
+                                    CustomOptions.InsertCustomEmoji.toOption(
+                                        label = LocalStrings.current.insertEmojiTitle,
+                                    )
+                            }
+                            this +=
+                                CustomOptions.DeleteAccount.toOption(
+                                    label =
+                                        buildString {
+                                            append(LocalStrings.current.actionDeleteAccount)
+                                            append(" (")
+                                            append(LocalStrings.current.urlOpeningModeExternal)
+                                            append(")")
+                                        },
+                                )
+                        }
+                    if (options.isNotEmpty()) {
+                        Box {
+                            var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+                            var optionsMenuOpen by remember { mutableStateOf(false) }
                             IconButton(
+                                modifier =
+                                    Modifier.onGloballyPositioned {
+                                        optionsOffset = it.positionInParent()
+                                    },
                                 onClick = {
-                                    if (uiState.hasUnsavedChanges) {
-                                        confirmBackWithUnsavedChangesDialog = true
-                                    } else {
-                                        navigationCoordinator.pop()
-                                    }
+                                    optionsMenuOpen = true
                                 },
                             ) {
                                 Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = LocalStrings.current.actionOpenOptions,
                                 )
                             }
-                        }
-                    },
-                    actions = {
-                        val options =
-                            buildList {
-                                if (uiState.availableEmojis.isNotEmpty()) {
-                                    this +=
-                                        CustomOptions.InsertCustomEmoji.toOption(
-                                            label = LocalStrings.current.insertEmojiTitle,
+
+                            CustomDropDown(
+                                expanded = optionsMenuOpen,
+                                onDismiss = {
+                                    optionsMenuOpen = false
+                                },
+                                offset =
+                                    with(LocalDensity.current) {
+                                        DpOffset(
+                                            x = optionsOffset.x.toDp(),
+                                            y = optionsOffset.y.toDp(),
                                         )
-                                }
-                                this +=
-                                    CustomOptions.DeleteAccount.toOption(
-                                        label =
-                                            buildString {
-                                                append(LocalStrings.current.actionDeleteAccount)
-                                                append(" (")
-                                                append(LocalStrings.current.urlOpeningModeExternal)
-                                                append(")")
-                                            },
-                                    )
-                            }
-                        if (options.isNotEmpty()) {
-                            Box {
-                                var optionsOffset by remember { mutableStateOf(Offset.Zero) }
-                                var optionsMenuOpen by remember { mutableStateOf(false) }
-                                IconButton(
-                                    modifier =
-                                        Modifier.onGloballyPositioned {
-                                            optionsOffset = it.positionInParent()
-                                        },
-                                    onClick = {
-                                        optionsMenuOpen = true
                                     },
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.MoreVert,
-                                        contentDescription = LocalStrings.current.actionOpenOptions,
-                                    )
-                                }
-
-                                CustomDropDown(
-                                    expanded = optionsMenuOpen,
-                                    onDismiss = {
-                                        optionsMenuOpen = false
-                                    },
-                                    offset =
-                                        with(LocalDensity.current) {
-                                            DpOffset(
-                                                x = optionsOffset.x.toDp(),
-                                                y = optionsOffset.y.toDp(),
-                                            )
+                            ) {
+                                for (option in options) {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(option.label)
                                         },
-                                ) {
-                                    for (option in options) {
-                                        DropdownMenuItem(
-                                            text = {
-                                                Text(option.label)
-                                            },
-                                            onClick = {
-                                                optionsMenuOpen = false
-                                                when (option.id) {
-                                                    CustomOptions.InsertCustomEmoji ->
-                                                        insertEmojiModalOpen = true
+                                        onClick = {
+                                            optionsMenuOpen = false
+                                            when (option.id) {
+                                                CustomOptions.InsertCustomEmoji ->
+                                                    insertEmojiModalOpen = true
 
-                                                    CustomOptions.DeleteAccount -> {
-                                                        model.reduce(
-                                                            EditProfileMviModel.Intent.DeleteAccount,
-                                                        )
-                                                    }
-
-                                                    else -> Unit
+                                                CustomOptions.DeleteAccount -> {
+                                                    model.reduce(
+                                                        EditProfileMviModel.Intent.DeleteAccount,
+                                                    )
                                                 }
-                                            },
-                                        )
-                                    }
+
+                                                else -> Unit
+                                            }
+                                        },
+                                    )
                                 }
                             }
                         }
+                    }
 
-                        Button(
-                            enabled = uiState.hasUnsavedChanges,
+                    Button(
+                        enabled = uiState.hasUnsavedChanges,
+                        onClick = {
+                            model.reduce(EditProfileMviModel.Intent.Submit)
+                        },
+                    ) {
+                        Text(text = LocalStrings.current.buttonSave)
+                    }
+                },
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
+                )
+            }
+        },
+    ) { padding ->
+        LazyColumn(
+            modifier =
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
+            state = lazyListState,
+            verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+        ) {
+            item {
+                SettingsHeader(
+                    icon = Icons.Default.AccountCircle,
+                    title = LocalStrings.current.editProfileSectionPersonal,
+                )
+            }
+            item {
+                OutlinedTextField(
+                    modifier =
+                        Modifier
+                            .padding(horizontal = Spacing.s)
+                            .fillMaxWidth()
+                            .onFocusChanged {
+                                hasDisplayNameFocus = it.hasFocus
+                            },
+                    label = {
+                        Text(text = LocalStrings.current.editProfileItemDisplayName)
+                    },
+                    value = uiState.displayName,
+                    maxLines = 1,
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Text,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            },
+                        ),
+                    onValueChange = {
+                        model.reduce(EditProfileMviModel.Intent.ChangeDisplayName(it))
+                    },
+                )
+            }
+            item {
+                OutlinedTextField(
+                    modifier =
+                        Modifier
+                            .padding(horizontal = Spacing.s)
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .onFocusChanged {
+                                hasBioFocus = it.hasFocus
+                            },
+                    label = {
+                        Text(text = LocalStrings.current.editProfileItemBio)
+                    },
+                    value = uiState.bio,
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Text,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            },
+                        ),
+                    onValueChange = {
+                        model.reduce(EditProfileMviModel.Intent.ChangeBio(it))
+                    },
+                )
+            }
+
+            item {
+                SettingsHeader(
+                    icon = Icons.Default.Camera,
+                    title = LocalStrings.current.editProfileSectionImages,
+                )
+            }
+            item {
+                val avatarSize = IconSize.xxl
+                SettingsImageInfo(
+                    title = LocalStrings.current.editProfileItemAvatar,
+                    imageModifier =
+                        Modifier
+                            .size(avatarSize)
+                            .clip(RoundedCornerShape(avatarSize / 2)),
+                    url = uiState.avatar,
+                    autoloadImages = uiState.autoloadImages,
+                    bytes = uiState.avatarBytes,
+                    onEdit = {
+                        openAvatarPicker = true
+                    },
+                )
+            }
+            item {
+                SettingsImageInfo(
+                    title = LocalStrings.current.editProfileItemHeader,
+                    imageModifier = Modifier.fillMaxWidth().aspectRatio(3.5f),
+                    contentScale = ContentScale.Crop,
+                    url = uiState.header,
+                    autoloadImages = uiState.autoloadImages,
+                    bytes = uiState.headerBytes,
+                    onEdit = {
+                        openHeaderPicker = true
+                    },
+                )
+            }
+
+            item {
+                SettingsHeader(
+                    icon = Icons.Default.ViewAgenda,
+                    title = LocalStrings.current.editProfileSectionFields,
+                    rightButton = {
+                        IconButton(
+                            enabled = uiState.canAddFields,
                             onClick = {
-                                model.reduce(EditProfileMviModel.Intent.Submit)
+                                model.reduce(EditProfileMviModel.Intent.AddField)
                             },
                         ) {
-                            Text(text = LocalStrings.current.buttonSave)
+                            Icon(
+                                imageVector = Icons.Default.AddCircle,
+                                contentDescription = LocalStrings.current.actionAddNew,
+                            )
                         }
                     },
                 )
+            }
+            itemsIndexed(uiState.fields) { idx, field ->
+                EditFieldItem(
+                    modifier = Modifier.padding(horizontal = Spacing.s),
+                    field = field,
+                    onValueChange = { key, value ->
+                        model.reduce(
+                            EditProfileMviModel.Intent.EditField(
+                                index = idx,
+                                key = key,
+                                value = value,
+                            ),
+                        )
+                    },
+                    onDelete = {
+                        model.reduce(EditProfileMviModel.Intent.RemoveField(idx))
+                    },
+                )
+            }
+            item {
+                SettingsHeader(
+                    icon = Icons.Default.BuildCircle,
+                    title = LocalStrings.current.editProfileSectionFlags,
+                )
+            }
+            item {
+                SettingsSwitchRow(
+                    title = LocalStrings.current.editProfileItemBot,
+                    value = uiState.bot,
+                    onValueChange = {
+                        model.reduce(EditProfileMviModel.Intent.ChangeBot(it))
+                    },
+                )
+            }
+            item {
+                SettingsSwitchRow(
+                    title = LocalStrings.current.editProfileItemLocked,
+                    value = uiState.locked,
+                    onValueChange = {
+                        model.reduce(EditProfileMviModel.Intent.ChangeLocked(it))
+                    },
+                )
+            }
+            item {
+                SettingsSwitchRow(
+                    title = LocalStrings.current.editProfileItemDiscoverable,
+                    value = uiState.discoverable,
+                    onValueChange = {
+                        model.reduce(EditProfileMviModel.Intent.ChangeDiscoverable(it))
+                    },
+                )
+            }
+            item {
+                SettingsSwitchRow(
+                    title = LocalStrings.current.editProfileItemHideCollections,
+                    value = uiState.hideCollections,
+                    onValueChange = {
+                        model.reduce(EditProfileMviModel.Intent.ChangeHideCollections(it))
+                    },
+                )
+            }
+            item {
+                SettingsSwitchRow(
+                    title = LocalStrings.current.editProfileItemNoIndex,
+                    value = uiState.noIndex,
+                    onValueChange = {
+                        model.reduce(EditProfileMviModel.Intent.ChangeNoIndex(it))
+                    },
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(Spacing.xxxl))
+            }
+        }
+    }
+
+    if (uiState.loading) {
+        ProgressHud()
+    }
+
+    if (openAvatarPicker) {
+        galleryHelper.getImageFromGallery { bytes ->
+            openAvatarPicker = false
+            if (bytes.isNotEmpty()) {
+                model.reduce(EditProfileMviModel.Intent.AvatarSelected(bytes))
+            }
+        }
+    }
+    if (openHeaderPicker) {
+        galleryHelper.getImageFromGallery { bytes ->
+            openHeaderPicker = false
+            if (bytes.isNotEmpty()) {
+                model.reduce(EditProfileMviModel.Intent.HeaderSelected(bytes))
+            }
+        }
+    }
+
+    if (insertEmojiModalOpen) {
+        InsertEmojiBottomSheet(
+            emojis = uiState.availableEmojis,
+            onClose = {
+                insertEmojiModalOpen = false
             },
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
-                    )
-                }
-            },
-        ) { padding ->
-            LazyColumn(
-                modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth()
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
+            onInsert = { emoji ->
+                model.reduce(
+                    EditProfileMviModel.Intent.InsertCustomEmoji(
+                        fieldType =
+                            when {
+                                hasDisplayNameFocus -> EditProfilerFieldType.DisplayName
+                                else -> EditProfilerFieldType.Bio
                             },
-                        ),
-                state = lazyListState,
-                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-            ) {
-                item {
-                    SettingsHeader(
-                        icon = Icons.Default.AccountCircle,
-                        title = LocalStrings.current.editProfileSectionPersonal,
-                    )
-                }
-                item {
-                    OutlinedTextField(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = Spacing.s)
-                                .fillMaxWidth()
-                                .onFocusChanged {
-                                    hasDisplayNameFocus = it.hasFocus
-                                },
-                        label = {
-                            Text(text = LocalStrings.current.editProfileItemDisplayName)
-                        },
-                        value = uiState.displayName,
-                        maxLines = 1,
-                        keyboardOptions =
-                            KeyboardOptions(
-                                imeAction = ImeAction.Next,
-                                keyboardType = KeyboardType.Text,
-                            ),
-                        keyboardActions =
-                            KeyboardActions(
-                                onNext = {
-                                    focusManager.moveFocus(FocusDirection.Down)
-                                },
-                            ),
-                        onValueChange = {
-                            model.reduce(EditProfileMviModel.Intent.ChangeDisplayName(it))
-                        },
-                    )
-                }
-                item {
-                    OutlinedTextField(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = Spacing.s)
-                                .fillMaxWidth()
-                                .height(200.dp)
-                                .onFocusChanged {
-                                    hasBioFocus = it.hasFocus
-                                },
-                        label = {
-                            Text(text = LocalStrings.current.editProfileItemBio)
-                        },
-                        value = uiState.bio,
-                        keyboardOptions =
-                            KeyboardOptions(
-                                imeAction = ImeAction.Next,
-                                keyboardType = KeyboardType.Text,
-                            ),
-                        keyboardActions =
-                            KeyboardActions(
-                                onNext = {
-                                    focusManager.moveFocus(FocusDirection.Down)
-                                },
-                            ),
-                        onValueChange = {
-                            model.reduce(EditProfileMviModel.Intent.ChangeBio(it))
-                        },
-                    )
-                }
+                        emoji = emoji,
+                    ),
+                )
+            },
+        )
+    }
 
-                item {
-                    SettingsHeader(
-                        icon = Icons.Default.Camera,
-                        title = LocalStrings.current.editProfileSectionImages,
-                    )
+    if (confirmBackWithUnsavedChangesDialog) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.unsavedChangesTitle,
+            body = LocalStrings.current.messageAreYouSureExit,
+            onClose = { confirm ->
+                confirmBackWithUnsavedChangesDialog = false
+                if (confirm) {
+                    navigationCoordinator.pop()
                 }
-                item {
-                    val avatarSize = IconSize.xxl
-                    SettingsImageInfo(
-                        title = LocalStrings.current.editProfileItemAvatar,
-                        imageModifier =
-                            Modifier
-                                .size(avatarSize)
-                                .clip(RoundedCornerShape(avatarSize / 2)),
-                        url = uiState.avatar,
-                        autoloadImages = uiState.autoloadImages,
-                        bytes = uiState.avatarBytes,
-                        onEdit = {
-                            openAvatarPicker = true
-                        },
-                    )
-                }
-                item {
-                    SettingsImageInfo(
-                        title = LocalStrings.current.editProfileItemHeader,
-                        imageModifier = Modifier.fillMaxWidth().aspectRatio(3.5f),
-                        contentScale = ContentScale.Crop,
-                        url = uiState.header,
-                        autoloadImages = uiState.autoloadImages,
-                        bytes = uiState.headerBytes,
-                        onEdit = {
-                            openHeaderPicker = true
-                        },
-                    )
-                }
-
-                item {
-                    SettingsHeader(
-                        icon = Icons.Default.ViewAgenda,
-                        title = LocalStrings.current.editProfileSectionFields,
-                        rightButton = {
-                            IconButton(
-                                enabled = uiState.canAddFields,
-                                onClick = {
-                                    model.reduce(EditProfileMviModel.Intent.AddField)
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.AddCircle,
-                                    contentDescription = LocalStrings.current.actionAddNew,
-                                )
-                            }
-                        },
-                    )
-                }
-                itemsIndexed(uiState.fields) { idx, field ->
-                    EditFieldItem(
-                        modifier = Modifier.padding(horizontal = Spacing.s),
-                        field = field,
-                        onValueChange = { key, value ->
-                            model.reduce(
-                                EditProfileMviModel.Intent.EditField(
-                                    index = idx,
-                                    key = key,
-                                    value = value,
-                                ),
-                            )
-                        },
-                        onDelete = {
-                            model.reduce(EditProfileMviModel.Intent.RemoveField(idx))
-                        },
-                    )
-                }
-                item {
-                    SettingsHeader(
-                        icon = Icons.Default.BuildCircle,
-                        title = LocalStrings.current.editProfileSectionFlags,
-                    )
-                }
-                item {
-                    SettingsSwitchRow(
-                        title = LocalStrings.current.editProfileItemBot,
-                        value = uiState.bot,
-                        onValueChange = {
-                            model.reduce(EditProfileMviModel.Intent.ChangeBot(it))
-                        },
-                    )
-                }
-                item {
-                    SettingsSwitchRow(
-                        title = LocalStrings.current.editProfileItemLocked,
-                        value = uiState.locked,
-                        onValueChange = {
-                            model.reduce(EditProfileMviModel.Intent.ChangeLocked(it))
-                        },
-                    )
-                }
-                item {
-                    SettingsSwitchRow(
-                        title = LocalStrings.current.editProfileItemDiscoverable,
-                        value = uiState.discoverable,
-                        onValueChange = {
-                            model.reduce(EditProfileMviModel.Intent.ChangeDiscoverable(it))
-                        },
-                    )
-                }
-                item {
-                    SettingsSwitchRow(
-                        title = LocalStrings.current.editProfileItemHideCollections,
-                        value = uiState.hideCollections,
-                        onValueChange = {
-                            model.reduce(EditProfileMviModel.Intent.ChangeHideCollections(it))
-                        },
-                    )
-                }
-                item {
-                    SettingsSwitchRow(
-                        title = LocalStrings.current.editProfileItemNoIndex,
-                        value = uiState.noIndex,
-                        onValueChange = {
-                            model.reduce(EditProfileMviModel.Intent.ChangeNoIndex(it))
-                        },
-                    )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(Spacing.xxxl))
-                }
-            }
-        }
-
-        if (uiState.loading) {
-            ProgressHud()
-        }
-
-        if (openAvatarPicker) {
-            galleryHelper.getImageFromGallery { bytes ->
-                openAvatarPicker = false
-                if (bytes.isNotEmpty()) {
-                    model.reduce(EditProfileMviModel.Intent.AvatarSelected(bytes))
-                }
-            }
-        }
-        if (openHeaderPicker) {
-            galleryHelper.getImageFromGallery { bytes ->
-                openHeaderPicker = false
-                if (bytes.isNotEmpty()) {
-                    model.reduce(EditProfileMviModel.Intent.HeaderSelected(bytes))
-                }
-            }
-        }
-
-        if (insertEmojiModalOpen) {
-            InsertEmojiBottomSheet(
-                emojis = uiState.availableEmojis,
-                onClose = {
-                    insertEmojiModalOpen = false
-                },
-                onInsert = { emoji ->
-                    model.reduce(
-                        EditProfileMviModel.Intent.InsertCustomEmoji(
-                            fieldType =
-                                when {
-                                    hasDisplayNameFocus -> EditProfilerFieldType.DisplayName
-                                    else -> EditProfilerFieldType.Bio
-                                },
-                            emoji = emoji,
-                        ),
-                    )
-                },
-            )
-        }
-
-        if (confirmBackWithUnsavedChangesDialog) {
-            CustomConfirmDialog(
-                title = LocalStrings.current.unsavedChangesTitle,
-                body = LocalStrings.current.messageAreYouSureExit,
-                onClose = { confirm ->
-                    confirmBackWithUnsavedChangesDialog = false
-                    if (confirm) {
-                        navigationCoordinator.pop()
-                    }
-                },
-            )
-        }
+            },
+        )
     }
 }
 
