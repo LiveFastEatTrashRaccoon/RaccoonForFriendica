@@ -37,7 +37,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
@@ -52,202 +51,201 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class AnnouncementsScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: AnnouncementsMviModel = getViewModel<AnnouncementsViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val connection = navigationCoordinator.getBottomBarScrollConnection()
-        val uriHandler = LocalUriHandler.current
-        val scope = rememberCoroutineScope()
-        val snackbarHostState = remember { SnackbarHostState() }
-        val lazyListState = rememberLazyListState()
-        var chooseReactionAnnouncementIdBottomSheetOpened by remember { mutableStateOf<String?>(null) }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AnnouncementsScreen(modifier: Modifier = Modifier) {
+    val model: AnnouncementsMviModel = getViewModel<AnnouncementsViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val connection = navigationCoordinator.getBottomBarScrollConnection()
+    val uriHandler = LocalUriHandler.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val lazyListState = rememberLazyListState()
+    var chooseReactionAnnouncementIdBottomSheetOpened by remember { mutableStateOf<String?>(null) }
 
-        suspend fun goBackToTop() {
-            runCatching {
-                lazyListState.scrollToItem(0)
-                topAppBarState.heightOffset = 0f
-                topAppBarState.contentOffset = 0f
-            }
+    suspend fun goBackToTop() {
+        runCatching {
+            lazyListState.scrollToItem(0)
+            topAppBarState.heightOffset = 0f
+            topAppBarState.contentOffset = 0f
         }
+    }
 
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        AnnouncementsMviModel.Effect.BackToTop -> goBackToTop()
-                    }
-                }.launchIn(this)
-        }
-
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            topBar = {
-                TopAppBar(
-                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.announcementsTitle,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
-                        }
-                    },
-                )
-            },
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
-                    )
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    AnnouncementsMviModel.Effect.BackToTop -> goBackToTop()
                 }
-            },
-        ) { padding ->
-            PullToRefreshBox(
-                modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
-                    .then(
-                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(connection)
-                        } else {
-                            Modifier
-                        },
-                    ).then(
-                        if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        } else {
-                            Modifier
-                        },
-                    ),
-                isRefreshing = uiState.refreshing,
-                onRefresh = {
-                    model.reduce(AnnouncementsMviModel.Intent.Refresh)
+            }.launchIn(this)
+    }
+
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.announcementsTitle,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
                 },
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
+                            )
+                        }
+                    }
+                },
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
+                )
+            }
+        },
+    ) { padding ->
+        PullToRefreshBox(
+            modifier =
+            Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .then(
+                    if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(connection)
+                    } else {
+                        Modifier
+                    },
+                ).then(
+                    if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    } else {
+                        Modifier
+                    },
+                ),
+            isRefreshing = uiState.refreshing,
+            onRefresh = {
+                model.reduce(AnnouncementsMviModel.Intent.Refresh)
+            },
+        ) {
+            LazyColumn(
+                state = lazyListState,
             ) {
-                LazyColumn(
-                    state = lazyListState,
-                ) {
-                    if (uiState.initial) {
-                        val placeholderCount = 5
-                        items(placeholderCount) { idx ->
-                            GenericPlaceholder(
-                                modifier = Modifier.fillMaxWidth(),
-                                height = 200.dp,
-                            )
-                            if (idx < placeholderCount - 1) {
-                                TimelineDivider()
-                            }
-                        }
-                    }
-
-                    if (!uiState.initial && !uiState.refreshing && uiState.items.isEmpty()) {
-                        item {
-                            Text(
-                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
-                                text = LocalStrings.current.messageEmptyList,
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
-                        }
-                    }
-
-                    itemsIndexed(
-                        items = uiState.items,
-                        key = { _, e -> "announcements-${e.id}" },
-                    ) { idx, announcement ->
-                        AnnouncementCard(
-                            announcement = announcement,
-                            autoloadImages = uiState.autoloadImages,
-                            onOpenUrl = { url, allowOpenInternal ->
-                                if (allowOpenInternal) {
-                                    uriHandler.openUri(url)
-                                } else {
-                                    uriHandler.openExternally(url)
-                                }
-                            },
-                            onAddNewReaction = {
-                                chooseReactionAnnouncementIdBottomSheetOpened = announcement.id
-                            },
-                            onAddReaction = { name ->
-                                model.reduce(
-                                    AnnouncementsMviModel.Intent.AddReaction(
-                                        id = announcement.id,
-                                        name = name,
-                                    ),
-                                )
-                            },
-                            onRemoveReaction = { name ->
-                                model.reduce(
-                                    AnnouncementsMviModel.Intent.RemoveReaction(
-                                        id = announcement.id,
-                                        name = name,
-                                    ),
-                                )
-                            },
+                if (uiState.initial) {
+                    val placeholderCount = 5
+                    items(placeholderCount) { idx ->
+                        GenericPlaceholder(
+                            modifier = Modifier.fillMaxWidth(),
+                            height = 200.dp,
                         )
-                        if (idx < uiState.items.lastIndex) {
+                        if (idx < placeholderCount - 1) {
                             TimelineDivider()
                         }
                     }
+                }
 
+                if (!uiState.initial && !uiState.refreshing && uiState.items.isEmpty()) {
                     item {
-                        Spacer(modifier = Modifier.height(Spacing.xxxl))
+                        Text(
+                            modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                            text = LocalStrings.current.messageEmptyList,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
                     }
+                }
+
+                itemsIndexed(
+                    items = uiState.items,
+                    key = { _, e -> "announcements-${e.id}" },
+                ) { idx, announcement ->
+                    AnnouncementCard(
+                        announcement = announcement,
+                        autoloadImages = uiState.autoloadImages,
+                        onOpenUrl = { url, allowOpenInternal ->
+                            if (allowOpenInternal) {
+                                uriHandler.openUri(url)
+                            } else {
+                                uriHandler.openExternally(url)
+                            }
+                        },
+                        onAddNewReaction = {
+                            chooseReactionAnnouncementIdBottomSheetOpened = announcement.id
+                        },
+                        onAddReaction = { name ->
+                            model.reduce(
+                                AnnouncementsMviModel.Intent.AddReaction(
+                                    id = announcement.id,
+                                    name = name,
+                                ),
+                            )
+                        },
+                        onRemoveReaction = { name ->
+                            model.reduce(
+                                AnnouncementsMviModel.Intent.RemoveReaction(
+                                    id = announcement.id,
+                                    name = name,
+                                ),
+                            )
+                        },
+                    )
+                    if (idx < uiState.items.lastIndex) {
+                        TimelineDivider()
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.xxxl))
                 }
             }
         }
+    }
 
-        chooseReactionAnnouncementIdBottomSheetOpened?.also { id ->
-            InsertEmojiBottomSheet(
-                emojis = uiState.availableEmojis,
-                withInsertCustom = true,
-                onClose = {
-                    chooseReactionAnnouncementIdBottomSheetOpened = null
-                },
-                onInsert = { emoji ->
-                    chooseReactionAnnouncementIdBottomSheetOpened = null
-                    model.reduce(
-                        AnnouncementsMviModel.Intent.AddReaction(
-                            id = id,
-                            name = emoji.code,
-                        ),
-                    )
-                },
-                onInsertCustom = { name ->
-                    chooseReactionAnnouncementIdBottomSheetOpened = null
-                    model.reduce(
-                        AnnouncementsMviModel.Intent.AddReaction(
-                            id = id,
-                            name = name,
-                        ),
-                    )
-                },
-            )
-        }
+    chooseReactionAnnouncementIdBottomSheetOpened?.also { id ->
+        InsertEmojiBottomSheet(
+            emojis = uiState.availableEmojis,
+            withInsertCustom = true,
+            onClose = {
+                chooseReactionAnnouncementIdBottomSheetOpened = null
+            },
+            onInsert = { emoji ->
+                chooseReactionAnnouncementIdBottomSheetOpened = null
+                model.reduce(
+                    AnnouncementsMviModel.Intent.AddReaction(
+                        id = id,
+                        name = emoji.code,
+                    ),
+                )
+            },
+            onInsertCustom = { name ->
+                chooseReactionAnnouncementIdBottomSheetOpened = null
+                model.reduce(
+                    AnnouncementsMviModel.Intent.AddReaction(
+                        id = id,
+                        name = name,
+                    ),
+                )
+            },
+        )
     }
 }
