@@ -39,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
@@ -58,214 +57,212 @@ import com.livefast.eattrash.raccoonforfriendica.feature.report.di.CreateReportV
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class CreateReportScreen(private val userId: String, private val entryId: String?) : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: CreateReportMviModel =
-            getViewModel<CreateReportViewModel>(
-                arg =
-                CreateReportViewModelArgs(
-                    userId = userId,
-                    entryId = entryId.orEmpty(),
-                ),
-            )
-        val uiState by model.uiState.collectAsState()
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val snackbarHostState = remember { SnackbarHostState() }
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        var categoryBottomSheetOpened by remember { mutableStateOf(false) }
-        var ruleSelectionOpened by remember { mutableStateOf(false) }
-        val genericError = LocalStrings.current.messageGenericError
-        val missingRulesError = LocalStrings.current.messageMissingRules
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Modifier) {
+    val model: CreateReportMviModel =
+        getViewModel<CreateReportViewModel>(
+            arg =
+            CreateReportViewModelArgs(
+                userId = userId,
+                entryId = entryId.orEmpty(),
+            ),
+        )
+    val uiState by model.uiState.collectAsState()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val snackbarHostState = remember { SnackbarHostState() }
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    var categoryBottomSheetOpened by remember { mutableStateOf(false) }
+    var ruleSelectionOpened by remember { mutableStateOf(false) }
+    val genericError = LocalStrings.current.messageGenericError
+    val missingRulesError = LocalStrings.current.messageMissingRules
 
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        CreateReportMviModel.Effect.ValidationError.MissingRules ->
-                            snackbarHostState.showSnackbar(message = missingRulesError)
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    CreateReportMviModel.Effect.ValidationError.MissingRules ->
+                        snackbarHostState.showSnackbar(message = missingRulesError)
 
-                        CreateReportMviModel.Effect.Failure ->
-                            snackbarHostState.showSnackbar(message = genericError)
+                    CreateReportMviModel.Effect.Failure ->
+                        snackbarHostState.showSnackbar(message = genericError)
 
-                        CreateReportMviModel.Effect.Success -> navigationCoordinator.pop()
-                    }
-                }.launchIn(this)
-        }
+                    CreateReportMviModel.Effect.Success -> navigationCoordinator.pop()
+                }
+            }.launchIn(this)
+    }
 
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            modifier =
-            Modifier
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .navigationBarsPadding()
-                .safeImePadding(),
-            topBar = {
-                TopAppBar(
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text =
-                            buildString {
-                                val author = uiState.user
-                                if (author != null) {
-                                    if (entryId != null) {
-                                        append(LocalStrings.current.createReportTitleEntry)
-                                    } else {
-                                        append(LocalStrings.current.createReportTitleUser)
-                                    }
-                                    append(" ")
-                                    append(author.handle)
+    Scaffold(
+        modifier =
+        modifier
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .navigationBarsPadding()
+            .safeImePadding(),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text =
+                        buildString {
+                            val author = uiState.user
+                            if (author != null) {
+                                if (entryId != null) {
+                                    append(LocalStrings.current.createReportTitleEntry)
+                                } else {
+                                    append(LocalStrings.current.createReportTitleUser)
                                 }
-                            },
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
+                                append(" ")
+                                append(author.handle)
                             }
-                        }
-                    },
-                    actions = {
-                        FilledIconButton(
+                        },
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
                             onClick = {
-                                model.reduce(CreateReportMviModel.Intent.Submit)
+                                navigationCoordinator.pop()
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.Send,
-                                contentDescription = LocalStrings.current.actionSubmit,
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
-                    },
-                )
-            },
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
-                    )
-                }
-            },
-        ) { padding ->
-            Column(
-                modifier =
-                Modifier
-                    .padding(
-                        top = padding.calculateTopPadding(),
-                    ).consumeWindowInsets(padding)
-                    .verticalScroll(rememberScrollState()),
-            ) {
-                // category
-                SettingsRow(
-                    title = LocalStrings.current.createReportItemCategory,
-                    value = uiState.category.toReadableName(),
-                    onTap = {
-                        categoryBottomSheetOpened = true
-                    },
-                )
-
-                // violated rules
-                if (uiState.category == ReportCategory.Violation) {
-                    val count = uiState.violatedRuleIds.size
-                    SettingsRow(
-                        title = LocalStrings.current.createReportItemRules,
-                        value = LocalStrings.current.createReportSelectedRules(count),
-                        onTap = {
-                            ruleSelectionOpened = true
+                    }
+                },
+                actions = {
+                    FilledIconButton(
+                        onClick = {
+                            model.reduce(CreateReportMviModel.Intent.Submit)
                         },
-                    )
-                }
-
-                // comment body
-                OutlinedTextField(
-                    modifier =
-                    Modifier
-                        .padding(
-                            top = Spacing.s,
-                            start = Spacing.xs,
-                            end = Spacing.xs,
-                        ).fillMaxWidth()
-                        .height(300.dp),
-                    placeholder = {
-                        Text(
-                            text = LocalStrings.current.createReportCommentPlaceholder,
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.Send,
+                            contentDescription = LocalStrings.current.actionSubmit,
                         )
-                    },
-                    value = uiState.commentValue,
-                    keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        capitalization = KeyboardCapitalization.Sentences,
-                    ),
-                    onValueChange = { value ->
-                        model.reduce(
-                            CreateReportMviModel.Intent.SetComment(
-                                value = value,
-                            ),
-                        )
-                    },
+                    }
+                },
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
                 )
+            }
+        },
+    ) { padding ->
+        Column(
+            modifier =
+            Modifier
+                .padding(
+                    top = padding.calculateTopPadding(),
+                ).consumeWindowInsets(padding)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            // category
+            SettingsRow(
+                title = LocalStrings.current.createReportItemCategory,
+                value = uiState.category.toReadableName(),
+                onTap = {
+                    categoryBottomSheetOpened = true
+                },
+            )
 
-                // forward switch
-                SettingsSwitchRow(
-                    title = LocalStrings.current.createReportItemForward,
-                    value = uiState.forward,
-                    onValueChange = {
-                        model.reduce(CreateReportMviModel.Intent.ChangeForward(it))
+            // violated rules
+            if (uiState.category == ReportCategory.Violation) {
+                val count = uiState.violatedRuleIds.size
+                SettingsRow(
+                    title = LocalStrings.current.createReportItemRules,
+                    value = LocalStrings.current.createReportSelectedRules(count),
+                    onTap = {
+                        ruleSelectionOpened = true
                     },
                 )
             }
-        }
 
-        if (uiState.loading) {
-            ProgressHud()
-        }
-
-        if (categoryBottomSheetOpened) {
-            CustomModalBottomSheet(
-                items =
-                uiState.availableCategories.map {
-                    CustomModalBottomSheetItem(label = it.toReadableName())
+            // comment body
+            OutlinedTextField(
+                modifier =
+                Modifier
+                    .padding(
+                        top = Spacing.s,
+                        start = Spacing.xs,
+                        end = Spacing.xs,
+                    ).fillMaxWidth()
+                    .height(300.dp),
+                placeholder = {
+                    Text(
+                        text = LocalStrings.current.createReportCommentPlaceholder,
+                    )
                 },
-                onSelect = { idx ->
-                    categoryBottomSheetOpened = false
-                    val categories = uiState.availableCategories
-                    if (idx != null && idx in categories.indices) {
-                        val category = categories[idx]
-                        model.reduce(CreateReportMviModel.Intent.ChangeCategory(category))
-                    }
+                value = uiState.commentValue,
+                keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    capitalization = KeyboardCapitalization.Sentences,
+                ),
+                onValueChange = { value ->
+                    model.reduce(
+                        CreateReportMviModel.Intent.SetComment(
+                            value = value,
+                        ),
+                    )
+                },
+            )
+
+            // forward switch
+            SettingsSwitchRow(
+                title = LocalStrings.current.createReportItemForward,
+                value = uiState.forward,
+                onValueChange = {
+                    model.reduce(CreateReportMviModel.Intent.ChangeForward(it))
                 },
             )
         }
+    }
 
-        if (ruleSelectionOpened) {
-            SelectViolatedRulesDialog(
-                initialSelection = uiState.violatedRuleIds,
-                rules = uiState.availableRules,
-                onClose = { ruleIds ->
-                    ruleSelectionOpened = false
-                    if (ruleIds != null) {
-                        model.reduce(CreateReportMviModel.Intent.ChangeViolatedRules(ruleIds))
-                    }
-                },
-            )
-        }
+    if (uiState.loading) {
+        ProgressHud()
+    }
+
+    if (categoryBottomSheetOpened) {
+        CustomModalBottomSheet(
+            items =
+            uiState.availableCategories.map {
+                CustomModalBottomSheetItem(label = it.toReadableName())
+            },
+            onSelect = { idx ->
+                categoryBottomSheetOpened = false
+                val categories = uiState.availableCategories
+                if (idx != null && idx in categories.indices) {
+                    val category = categories[idx]
+                    model.reduce(CreateReportMviModel.Intent.ChangeCategory(category))
+                }
+            },
+        )
+    }
+
+    if (ruleSelectionOpened) {
+        SelectViolatedRulesDialog(
+            initialSelection = uiState.violatedRuleIds,
+            rules = uiState.availableRules,
+            onClose = { ruleIds ->
+                ruleSelectionOpened = false
+                if (ruleIds != null) {
+                    model.reduce(CreateReportMviModel.Intent.ChangeViolatedRules(ruleIds))
+                }
+            },
+        )
     }
 }
