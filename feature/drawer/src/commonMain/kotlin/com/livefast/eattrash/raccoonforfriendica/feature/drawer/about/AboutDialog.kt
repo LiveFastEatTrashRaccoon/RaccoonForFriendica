@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getAppInfoRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +49,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
     val uriHandler = LocalUriHandler.current
     val appInfoRepository = remember { getAppInfoRepository() }
     val appInfo by appInfoRepository.appInfo.collectAsState()
-    val detailOpener = remember { getDetailOpener() }
+    val detailOpener = remember { getMainRouter() }
 
     fun handleAction(block: () -> Unit) {
         onClose?.invoke()

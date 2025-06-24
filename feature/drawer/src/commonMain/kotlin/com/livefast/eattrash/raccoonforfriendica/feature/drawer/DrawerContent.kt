@@ -54,7 +54,6 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -65,8 +64,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
@@ -78,192 +77,188 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class DrawerContent : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: DrawerMviModel = getViewModel<DrawerViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val drawerCoordinator = remember { getDrawerCoordinator() }
-        val detailOpener = remember { getDetailOpener() }
-        val scope = rememberCoroutineScope()
-        var manageAccountsDialogOpened by remember { mutableStateOf(false) }
-        var changeInstanceDialogOpened by remember { mutableStateOf(false) }
-        var aboutDialogOpened by remember { mutableStateOf(false) }
-        val successMessage = LocalStrings.current.messageSuccess
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DrawerContent(modifier: Modifier = Modifier) {
+    val model: DrawerMviModel = getViewModel<DrawerViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val drawerCoordinator = remember { getDrawerCoordinator() }
+    val detailOpener = remember { getMainRouter() }
+    val scope = rememberCoroutineScope()
+    var manageAccountsDialogOpened by remember { mutableStateOf(false) }
+    var changeInstanceDialogOpened by remember { mutableStateOf(false) }
+    var aboutDialogOpened by remember { mutableStateOf(false) }
+    val successMessage = LocalStrings.current.messageSuccess
 
-        fun handleAction(action: suspend () -> Unit) {
-            scope.launch {
-                navigationCoordinator.popUntilRoot()
-                drawerCoordinator.toggleDrawer()
-                delay(50)
-                action()
-            }
+    fun handleAction(action: suspend () -> Unit) {
+        scope.launch {
+            navigationCoordinator.popUntilRoot()
+            drawerCoordinator.toggleDrawer()
+            delay(50)
+            action()
         }
+    }
 
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        DrawerMviModel.Effect.AnonymousChangeNodeSuccess -> {
-                            changeInstanceDialogOpened = false
-                            drawerCoordinator.closeDrawer()
-                            navigationCoordinator.showGlobalMessage(successMessage)
-                        }
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    DrawerMviModel.Effect.AnonymousChangeNodeSuccess -> {
+                        changeInstanceDialogOpened = false
+                        drawerCoordinator.closeDrawer()
+                        navigationCoordinator.showGlobalMessage(successMessage)
+                    }
 
-                        DrawerMviModel.Effect.AccountChangeSuccess -> {
-                            drawerCoordinator.closeDrawer()
-                            navigationCoordinator.showGlobalMessage(successMessage)
-                        }
+                    DrawerMviModel.Effect.AccountChangeSuccess -> {
+                        drawerCoordinator.closeDrawer()
+                        navigationCoordinator.showGlobalMessage(successMessage)
                     }
-                }.launchIn(this)
-        }
+                }
+            }.launchIn(this)
+    }
 
-        ModalDrawerSheet {
-            DrawerHeader(
-                user = uiState.user,
-                autoloadImages = uiState.autoloadImages,
-                node = uiState.node,
-                canSwitchAccount = uiState.availableAccounts.size > 1,
-                onOpenChangeInstance = {
-                    changeInstanceDialogOpened = true
-                },
-                onOpenSwitchAccount = {
-                    manageAccountsDialogOpened = true
-                },
-            )
+    ModalDrawerSheet(modifier = modifier) {
+        DrawerHeader(
+            user = uiState.user,
+            autoloadImages = uiState.autoloadImages,
+            node = uiState.node,
+            canSwitchAccount = uiState.availableAccounts.size > 1,
+            onOpenChangeInstance = {
+                changeInstanceDialogOpened = true
+            },
+            onOpenSwitchAccount = {
+                manageAccountsDialogOpened = true
+            },
+        )
 
-            HorizontalDivider()
+        HorizontalDivider()
 
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
-            ) {
-                if (uiState.user == null) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.s),
-                        text = LocalStrings.current.sidebarAnonymousMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                } else {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
+        ) {
+            if (uiState.user == null) {
+                Text(
+                    modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.s),
+                    text = LocalStrings.current.sidebarAnonymousMessage,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            } else {
+                DrawerShortcut(
+                    title = LocalStrings.current.favoritesTitle,
+                    icon = Icons.Default.Favorite,
+                    onSelect = {
+                        handleAction { detailOpener.openFavorites() }
+                    },
+                )
+                DrawerShortcut(
+                    title = LocalStrings.current.bookmarksTitle,
+                    icon = Icons.Default.Bookmarks,
+                    onSelect = {
+                        handleAction { detailOpener.openBookmarks() }
+                    },
+                )
+                DrawerShortcut(
+                    title = LocalStrings.current.followedHashtagsTitle,
+                    icon = Icons.Default.Tag,
+                    onSelect = {
+                        handleAction { detailOpener.openFollowedHashtags() }
+                    },
+                )
+                DrawerShortcut(
+                    title = LocalStrings.current.followRequestsTitle,
+                    icon = Icons.Default.Flaky,
+                    onSelect = {
+                        handleAction { detailOpener.openFollowRequests() }
+                    },
+                )
+                DrawerShortcut(
+                    title = LocalStrings.current.manageCirclesTitle,
+                    icon = Icons.Default.Workspaces,
+                    onSelect = {
+                        handleAction { detailOpener.openCircles() }
+                    },
+                )
+                if (uiState.hasAnnouncements) {
                     DrawerShortcut(
-                        title = LocalStrings.current.favoritesTitle,
-                        icon = Icons.Default.Favorite,
+                        title = LocalStrings.current.announcementsTitle,
+                        icon = Icons.Default.Campaign,
                         onSelect = {
-                            handleAction { detailOpener.openFavorites() }
-                        },
-                    )
-                    DrawerShortcut(
-                        title = LocalStrings.current.bookmarksTitle,
-                        icon = Icons.Default.Bookmarks,
-                        onSelect = {
-                            handleAction { detailOpener.openBookmarks() }
-                        },
-                    )
-                    DrawerShortcut(
-                        title = LocalStrings.current.followedHashtagsTitle,
-                        icon = Icons.Default.Tag,
-                        onSelect = {
-                            handleAction { detailOpener.openFollowedHashtags() }
-                        },
-                    )
-                    DrawerShortcut(
-                        title = LocalStrings.current.followRequestsTitle,
-                        icon = Icons.Default.Flaky,
-                        onSelect = {
-                            handleAction { detailOpener.openFollowRequests() }
-                        },
-                    )
-                    DrawerShortcut(
-                        title = LocalStrings.current.manageCirclesTitle,
-                        icon = Icons.Default.Workspaces,
-                        onSelect = {
-                            handleAction { detailOpener.openCircles() }
-                        },
-                    )
-                    if (uiState.hasAnnouncements) {
-                        DrawerShortcut(
-                            title = LocalStrings.current.announcementsTitle,
-                            icon = Icons.Default.Campaign,
-                            onSelect = {
-                                handleAction { detailOpener.openAnnouncements() }
-                            },
-                        )
-                    }
-                    if (uiState.hasDirectMessages) {
-                        DrawerShortcut(
-                            title = LocalStrings.current.directMessagesTitle,
-                            icon = Icons.AutoMirrored.Default.Chat,
-                            onSelect = {
-                                handleAction { detailOpener.openDirectMessages() }
-                            },
-                        )
-                    }
-                    if (uiState.hasGallery) {
-                        DrawerShortcut(
-                            title = LocalStrings.current.galleryTitle,
-                            icon = Icons.Default.Dashboard,
-                            onSelect = {
-                                handleAction { detailOpener.openGallery() }
-                            },
-                        )
-                    }
-                    DrawerShortcut(
-                        title = LocalStrings.current.unpublishedTitle,
-                        icon = Icons.Default.Drafts,
-                        onSelect = {
-                            handleAction { detailOpener.openUnpublished() }
-                        },
-                    )
-                    if (uiState.hasCalendar) {
-                        DrawerShortcut(
-                            title = LocalStrings.current.calendarTitle,
-                            icon = Icons.Default.CalendarMonth,
-                            onSelect = {
-                                handleAction { detailOpener.openCalendar() }
-                            },
-                        )
-                    }
-                    DrawerShortcut(
-                        title = LocalStrings.current.shortcutsTitle,
-                        icon = Icons.Default.TravelExplore,
-                        onSelect = {
-                            handleAction { detailOpener.openShortcuts() }
+                            handleAction { detailOpener.openAnnouncements() }
                         },
                     )
                 }
-
+                if (uiState.hasDirectMessages) {
+                    DrawerShortcut(
+                        title = LocalStrings.current.directMessagesTitle,
+                        icon = Icons.AutoMirrored.Default.Chat,
+                        onSelect = {
+                            handleAction { detailOpener.openDirectMessages() }
+                        },
+                    )
+                }
+                if (uiState.hasGallery) {
+                    DrawerShortcut(
+                        title = LocalStrings.current.galleryTitle,
+                        icon = Icons.Default.Dashboard,
+                        onSelect = {
+                            handleAction { detailOpener.openGallery() }
+                        },
+                    )
+                }
                 DrawerShortcut(
-                    title = LocalStrings.current.nodeInfoTitle,
-                    icon = Icons.Default.Info,
+                    title = LocalStrings.current.unpublishedTitle,
+                    icon = Icons.Default.Drafts,
                     onSelect = {
-                        handleAction { detailOpener.openNodeInfo() }
+                        handleAction { detailOpener.openUnpublished() }
                     },
                 )
-
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = Spacing.xs),
-                )
-
+                if (uiState.hasCalendar) {
+                    DrawerShortcut(
+                        title = LocalStrings.current.calendarTitle,
+                        icon = Icons.Default.CalendarMonth,
+                        onSelect = {
+                            handleAction { detailOpener.openCalendar() }
+                        },
+                    )
+                }
                 DrawerShortcut(
-                    title = LocalStrings.current.settingsAbout,
-                    icon = Icons.AutoMirrored.Default.ContactSupport,
+                    title = LocalStrings.current.shortcutsTitle,
+                    icon = Icons.Default.TravelExplore,
                     onSelect = {
-                        scope.launch {
-                            drawerCoordinator.closeDrawer()
-                        }
-                        aboutDialogOpened = true
-                    },
-                )
-
-                DrawerShortcut(
-                    title = LocalStrings.current.settingsTitle,
-                    icon = Icons.Default.Settings,
-                    onSelect = {
-                        handleAction { detailOpener.openSettings() }
+                        handleAction { detailOpener.openShortcuts() }
                     },
                 )
             }
+
+            DrawerShortcut(
+                title = LocalStrings.current.nodeInfoTitle,
+                icon = Icons.Default.Info,
+                onSelect = {
+                    handleAction { detailOpener.openNodeInfo() }
+                },
+            )
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = Spacing.xs))
+
+            DrawerShortcut(
+                title = LocalStrings.current.settingsAbout,
+                icon = Icons.AutoMirrored.Default.ContactSupport,
+                onSelect = {
+                    scope.launch {
+                        drawerCoordinator.closeDrawer()
+                    }
+                    aboutDialogOpened = true
+                },
+            )
+
+            DrawerShortcut(
+                title = LocalStrings.current.settingsTitle,
+                icon = Icons.Default.Settings,
+                onSelect = {
+                    handleAction { detailOpener.openSettings() }
+                },
+            )
         }
 
         if (manageAccountsDialogOpened) {
