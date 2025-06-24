@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -47,169 +46,168 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPl
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class ShortcutListScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: ShortcutListMviModel = getViewModel<ShortcutListViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val lazyListState = rememberLazyListState()
-        val scope = rememberCoroutineScope()
-        val detailOpener = remember { getDetailOpener() }
-        var confirmDeleteItem by remember { mutableStateOf<String?>(null) }
-        val snackbarHostState = remember { SnackbarHostState() }
-        val genericError = LocalStrings.current.messageGenericError
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ShortcutListScreen(modifier: Modifier = Modifier) {
+    val model: ShortcutListMviModel = getViewModel<ShortcutListViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val detailOpener = remember { getMainRouter() }
+    var confirmDeleteItem by remember { mutableStateOf<String?>(null) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val genericError = LocalStrings.current.messageGenericError
 
-        fun goBackToTop() {
-            runCatching {
-                scope.launch {
-                    lazyListState.scrollToItem(0)
-                    topAppBarState.heightOffset = 0f
-                    topAppBarState.contentOffset = 0f
-                }
+    fun goBackToTop() {
+        runCatching {
+            scope.launch {
+                lazyListState.scrollToItem(0)
+                topAppBarState.heightOffset = 0f
+                topAppBarState.contentOffset = 0f
             }
         }
+    }
 
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        ShortcutListMviModel.Effect.Failure ->
-                            snackbarHostState.showSnackbar(genericError)
-                    }
-                }.launchIn(this)
-        }
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    ShortcutListMviModel.Effect.Failure ->
+                        snackbarHostState.showSnackbar(genericError)
+                }
+            }.launchIn(this)
+    }
 
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            topBar = {
-                TopAppBar(
-                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.shortcutsTitle,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
-                        }
-                    },
-                )
-            },
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.shortcutsTitle,
+                        style = MaterialTheme.typography.titleMedium,
                     )
-                }
-            },
-        ) { padding ->
-            PullToRefreshBox(
-                modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
-                    .then(
-                        if (uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        } else {
-                            Modifier
-                        },
-                    ),
-                isRefreshing = uiState.refreshing,
-                onRefresh = {
-                    model.reduce(ShortcutListMviModel.Intent.Refresh)
                 },
-            ) {
-                LazyColumn(
-                    state = lazyListState,
-                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-                ) {
-                    if (uiState.initial) {
-                        items(10) {
-                            GenericPlaceholder(
-                                modifier = Modifier.fillMaxWidth(),
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
-                    }
-
-                    if (!uiState.initial && !uiState.refreshing && uiState.items.isEmpty()) {
-                        item {
-                            Text(
-                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
-                                text = LocalStrings.current.messageEmptyList,
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
-                        }
-                    }
-
-                    items(
-                        items = uiState.items,
-                        key = { e -> "shortcuts-$e" },
-                    ) { item ->
-                        GenericListItem(
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(CornerSize.xl))
-                                .clickable {
-                                    detailOpener.openShortcut(item)
-                                },
-                            title = item,
-                            options =
-                            buildList {
-                                this += OptionId.Delete.toOption()
-                            },
-                            onSelectOption = { optionId ->
-                                when (optionId) {
-                                    OptionId.Delete -> confirmDeleteItem = item
-                                    else -> Unit
-                                }
-                            },
-                        )
-                    }
-                }
-            }
-        }
-
-        if (confirmDeleteItem != null) {
-            CustomConfirmDialog(
-                title = LocalStrings.current.actionDelete,
-                onClose = { confirm ->
-                    val item = confirmDeleteItem
-                    confirmDeleteItem = null
-                    if (confirm && item != null) {
-                        model.reduce(ShortcutListMviModel.Intent.Delete(item))
                     }
                 },
             )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
+                )
+            }
+        },
+    ) { padding ->
+        PullToRefreshBox(
+            modifier =
+            Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .then(
+                    if (uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    } else {
+                        Modifier
+                    },
+                ),
+            isRefreshing = uiState.refreshing,
+            onRefresh = {
+                model.reduce(ShortcutListMviModel.Intent.Refresh)
+            },
+        ) {
+            LazyColumn(
+                state = lazyListState,
+                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+            ) {
+                if (uiState.initial) {
+                    items(10) {
+                        GenericPlaceholder(
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                }
+
+                if (!uiState.initial && !uiState.refreshing && uiState.items.isEmpty()) {
+                    item {
+                        Text(
+                            modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                            text = LocalStrings.current.messageEmptyList,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                }
+
+                items(
+                    items = uiState.items,
+                    key = { e -> "shortcuts-$e" },
+                ) { item ->
+                    GenericListItem(
+                        modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(CornerSize.xl))
+                            .clickable {
+                                detailOpener.openShortcut(item)
+                            },
+                        title = item,
+                        options =
+                        buildList {
+                            this += OptionId.Delete.toOption()
+                        },
+                        onSelectOption = { optionId ->
+                            when (optionId) {
+                                OptionId.Delete -> confirmDeleteItem = item
+                                else -> Unit
+                            }
+                        },
+                    )
+                }
+            }
         }
+    }
+
+    if (confirmDeleteItem != null) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionDelete,
+            onClose = { confirm ->
+                val item = confirmDeleteItem
+                confirmDeleteItem = null
+                if (confirm && item != null) {
+                    model.reduce(ShortcutListMviModel.Intent.Delete(item))
+                }
+            },
+        )
     }
 }
