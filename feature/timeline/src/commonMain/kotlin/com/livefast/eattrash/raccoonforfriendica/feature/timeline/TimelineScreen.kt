@@ -73,8 +73,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
@@ -106,7 +106,7 @@ fun TimelineScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getDetailOpener() }
+    val detailOpener = remember { getMainRouter() }
     val scope = rememberCoroutineScope()
     val drawerCoordinator = remember { getDrawerCoordinator() }
     val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
