@@ -48,7 +48,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -65,21 +64,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsR
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.launch
 
-class NodeInfoScreen : Screen {
-    @Composable
-    override fun Content() {
-        val model: NodeInfoMviModel = getViewModel<NodeInfoViewModel>()
-        val uiState by model.uiState.collectAsState()
-        NodeInfoScreenScaffold(
-            state = uiState,
-        )
-    }
+@Composable
+fun NodeInfoScreen(modifier: Modifier = Modifier) {
+    val model: NodeInfoMviModel = getViewModel<NodeInfoViewModel>()
+    val uiState by model.uiState.collectAsState()
+    NodeInfoScreenScaffold(
+        modifier = modifier,
+        state = uiState,
+    )
 }
 
 @Composable
@@ -90,7 +88,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getDetailOpener() }
+    val detailOpener = remember { getMainRouter() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
