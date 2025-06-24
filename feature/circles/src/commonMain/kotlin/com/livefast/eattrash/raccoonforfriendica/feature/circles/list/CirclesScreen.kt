@@ -42,7 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
@@ -53,7 +52,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomCon
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.canBeEdited
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleEditorDialog
@@ -64,254 +63,258 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class CirclesScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: CirclesMviModel = getViewModel<CirclesViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val lazyListState = rememberLazyListState()
-        val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
-        val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
-        val scope = rememberCoroutineScope()
-        val detailOpener = remember { getDetailOpener() }
-        var confirmDeleteItemId by remember { mutableStateOf<String?>(null) }
-        val snackbarHostState = remember { SnackbarHostState() }
-        val genericError = LocalStrings.current.messageGenericError
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CirclesScreen(modifier: Modifier = Modifier) {
+    val model: CirclesMviModel = getViewModel<CirclesViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val lazyListState = rememberLazyListState()
+    val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
+    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
+    val scope = rememberCoroutineScope()
+    val detailOpener = remember { getMainRouter() }
+    var confirmDeleteItemId by remember { mutableStateOf<String?>(null) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val genericError = LocalStrings.current.messageGenericError
 
-        fun goBackToTop() {
-            runCatching {
-                scope.launch {
-                    lazyListState.scrollToItem(0)
-                    topAppBarState.heightOffset = 0f
-                    topAppBarState.contentOffset = 0f
-                }
+    fun goBackToTop() {
+        runCatching {
+            scope.launch {
+                lazyListState.scrollToItem(0)
+                topAppBarState.heightOffset = 0f
+                topAppBarState.contentOffset = 0f
             }
         }
+    }
 
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        CirclesMviModel.Effect.Failure ->
-                            snackbarHostState.showSnackbar(genericError)
-                        is CirclesMviModel.Effect.OpenUser ->
-                            detailOpener.openUserDetail(event.user)
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    CirclesMviModel.Effect.Failure ->
+                        snackbarHostState.showSnackbar(genericError)
 
-                        is CirclesMviModel.Effect.OpenCircle ->
-                            detailOpener.openCircleTimeline(event.circle)
-                    }
-                }.launchIn(this)
-        }
+                    is CirclesMviModel.Effect.OpenUser ->
+                        detailOpener.openUserDetail(event.user)
 
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            topBar = {
-                TopAppBar(
-                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.manageCirclesTitle,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
-                        }
-                    },
-                )
-            },
-            floatingActionButton = {
-                AnimatedVisibility(
-                    visible = isFabVisible,
-                    enter =
-                    slideInVertically(
-                        initialOffsetY = { it * 2 },
-                    ),
-                    exit =
-                    slideOutVertically(
-                        targetOffsetY = { it * 2 },
-                    ),
-                ) {
-                    FloatingActionButton(
-                        onClick = {
-                            model.reduce(CirclesMviModel.Intent.OpenEditor())
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = LocalStrings.current.actionAddNew,
-                        )
-                    }
+                    is CirclesMviModel.Effect.OpenCircle ->
+                        detailOpener.openCircleTimeline(event.circle)
                 }
-            },
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
+            }.launchIn(this)
+    }
+
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar =
+        {
+            TopAppBar(
+                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.manageCirclesTitle,
+                        style = MaterialTheme.typography.titleMedium,
                     )
-                }
-            },
-        ) { padding ->
-            PullToRefreshBox(
-                modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
-                    .then(
-                        if (uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        } else {
-                            Modifier
-                        },
-                    ).nestedScroll(fabNestedScrollConnection),
-                isRefreshing = uiState.refreshing,
-                onRefresh = {
-                    model.reduce(CirclesMviModel.Intent.Refresh)
                 },
-            ) {
-                LazyColumn(
-                    state = lazyListState,
-                ) {
-                    if (uiState.initial) {
-                        items(20) {
-                            CircleItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                            Spacer(modifier = Modifier.height(Spacing.interItem))
-                        }
-                    }
-
-                    items(
-                        items = uiState.items,
-                        key = { e ->
-                            when (e) {
-                                is CircleListItem.Circle -> "circles-${e.circle.id}"
-                                is CircleListItem.Header -> "circles-${e.type}"
-                            }
-                        },
-                    ) { item ->
-                        when (item) {
-                            is CircleListItem.Header ->
-                                CircleHeader(
-                                    modifier = Modifier.padding(bottom = Spacing.xs),
-                                    type = item.type,
-                                )
-
-                            is CircleListItem.Circle -> {
-                                CircleItem(
-                                    modifier = Modifier.padding(bottom = Spacing.interItem),
-                                    circle = item.circle,
-                                    onClick = {
-                                        model.reduce(CirclesMviModel.Intent.OpenDetail(item.circle))
-                                    },
-                                    options =
-                                    buildList {
-                                        if (item.circle.canBeEdited) {
-                                            this += OptionId.Edit.toOption()
-                                            this += OptionId.Delete.toOption()
-                                            this +=
-                                                CustomOptions.EditMembers.toOption(
-                                                    label = LocalStrings.current.actionEditMembers,
-                                                )
-                                        }
-                                    },
-                                    onSelectOption = { optionId ->
-                                        when (optionId) {
-                                            OptionId.Edit -> {
-                                                model.reduce(CirclesMviModel.Intent.OpenEditor(item.circle))
-                                            }
-                                            CustomOptions.EditMembers -> {
-                                                detailOpener.openCircleEditMembers(item.circle.id)
-                                            }
-
-                                            OptionId.Delete -> confirmDeleteItemId = item.circle.id
-                                            else -> Unit
-                                        }
-                                    },
-                                )
-                            }
-                        }
-                    }
-
-                    item {
-                        if (uiState.loading && !uiState.refreshing) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                ListLoadingIndicator()
-                            }
-                        }
-                    }
-                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
-                        item {
-                            Text(
-                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
-                                text = LocalStrings.current.messageEmptyList,
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.bodyLarge,
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
                     }
-
-                    item {
-                        Spacer(modifier = Modifier.height(Spacing.xxxl))
+                },
+            )
+        },
+        floatingActionButton =
+        {
+            AnimatedVisibility(
+                visible = isFabVisible,
+                enter =
+                slideInVertically(
+                    initialOffsetY = { it * 2 },
+                ),
+                exit =
+                slideOutVertically(
+                    targetOffsetY = { it * 2 },
+                ),
+            ) {
+                FloatingActionButton(
+                    onClick = {
+                        model.reduce(CirclesMviModel.Intent.OpenEditor())
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = LocalStrings.current.actionAddNew,
+                    )
+                }
+            }
+        },
+        snackbarHost =
+        {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
+                )
+            }
+        },
+    ) { padding ->
+        PullToRefreshBox(
+            modifier =
+            Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .then(
+                    if (uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    } else {
+                        Modifier
+                    },
+                ).nestedScroll(fabNestedScrollConnection),
+            isRefreshing = uiState.refreshing,
+            onRefresh = {
+                model.reduce(CirclesMviModel.Intent.Refresh)
+            },
+        ) {
+            LazyColumn(
+                state = lazyListState,
+            ) {
+                if (uiState.initial) {
+                    items(20) {
+                        CircleItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                        Spacer(modifier = Modifier.height(Spacing.interItem))
                     }
+                }
+
+                items(
+                    items = uiState.items,
+                    key = { e ->
+                        when (e) {
+                            is CircleListItem.Circle -> "circles-${e.circle.id}"
+                            is CircleListItem.Header -> "circles-${e.type}"
+                        }
+                    },
+                ) { item ->
+                    when (item) {
+                        is CircleListItem.Header ->
+                            CircleHeader(
+                                modifier = Modifier.padding(bottom = Spacing.xs),
+                                type = item.type,
+                            )
+
+                        is CircleListItem.Circle -> {
+                            CircleItem(
+                                modifier = Modifier.padding(bottom = Spacing.interItem),
+                                circle = item.circle,
+                                onClick = {
+                                    model.reduce(CirclesMviModel.Intent.OpenDetail(item.circle))
+                                },
+                                options =
+                                buildList {
+                                    if (item.circle.canBeEdited) {
+                                        this += OptionId.Edit.toOption()
+                                        this += OptionId.Delete.toOption()
+                                        this +=
+                                            CustomOptions.EditMembers.toOption(
+                                                label = LocalStrings.current.actionEditMembers,
+                                            )
+                                    }
+                                },
+                                onSelectOption = { optionId ->
+                                    when (optionId) {
+                                        OptionId.Edit -> {
+                                            model.reduce(CirclesMviModel.Intent.OpenEditor(item.circle))
+                                        }
+
+                                        CustomOptions.EditMembers -> {
+                                            detailOpener.openCircleEditMembers(item.circle.id)
+                                        }
+
+                                        OptionId.Delete -> confirmDeleteItemId = item.circle.id
+                                        else -> Unit
+                                    }
+                                },
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    if (uiState.loading && !uiState.refreshing) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            ListLoadingIndicator()
+                        }
+                    }
+                }
+                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
+                    item {
+                        Text(
+                            modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                            text = LocalStrings.current.messageEmptyList,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.xxxl))
                 }
             }
         }
+    }
 
-        if (uiState.operationInProgress) {
-            ProgressHud()
-        }
+    if (uiState.operationInProgress) {
+        ProgressHud()
+    }
 
-        if (confirmDeleteItemId != null) {
-            CustomConfirmDialog(
-                title = LocalStrings.current.actionDelete,
-                onClose = { confirm ->
-                    val itemId = confirmDeleteItemId
-                    confirmDeleteItemId = null
-                    if (confirm && itemId != null) {
-                        model.reduce(CirclesMviModel.Intent.Delete(itemId))
-                    }
-                },
-            )
-        }
+    if (confirmDeleteItemId != null) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionDelete,
+            onClose = { confirm ->
+                val itemId = confirmDeleteItemId
+                confirmDeleteItemId = null
+                if (confirm && itemId != null) {
+                    model.reduce(CirclesMviModel.Intent.Delete(itemId))
+                }
+            },
+        )
+    }
 
-        val editorData = uiState.editorData
-        if (editorData != null) {
-            CircleEditorDialog(
-                data = editorData,
-                onDataChange = { newData ->
-                    model.reduce(CirclesMviModel.Intent.UpdateEditorData(newData))
-                },
-                onClose = { success ->
-                    if (success) {
-                        model.reduce(CirclesMviModel.Intent.SubmitEditorData)
-                    } else {
-                        model.reduce(CirclesMviModel.Intent.DismissEditor)
-                    }
-                },
-            )
-        }
+    val editorData = uiState.editorData
+    if (editorData != null) {
+        CircleEditorDialog(
+            data = editorData,
+            onDataChange = { newData ->
+                model.reduce(CirclesMviModel.Intent.UpdateEditorData(newData))
+            },
+            onClose = { success ->
+                if (success) {
+                    model.reduce(CirclesMviModel.Intent.SubmitEditorData)
+                } else {
+                    model.reduce(CirclesMviModel.Intent.DismissEditor)
+                }
+            },
+        )
     }
 }
 
