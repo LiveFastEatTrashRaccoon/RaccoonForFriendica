@@ -30,11 +30,12 @@ import androidx.compose.ui.unit.toSize
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigationItem
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultBottomNavigationAdapter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreScreen
@@ -54,159 +55,159 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.math.roundToInt
 
-object MainScreen : Screen {
-    @Composable
-    override fun Content() {
-        val model: MainMviModel = getViewModel<MainViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val currentSection by navigationCoordinator.currentBottomNavSection.collectAsState()
-        val snackbarHostState = remember { SnackbarHostState() }
-        var bottomBarHeightPx by remember { mutableFloatStateOf(0f) }
-        val bottomNavigationInsetPx = WindowInsets.navigationBars.getBottom(LocalDensity.current)
-        val scrollConnection =
-            remember {
-                object : NestedScrollConnection {
-                    override fun onPreScroll(
-                        available: Offset,
-                        source: NestedScrollSource,
-                    ): Offset {
-                        val delta = available.y
-                        val newOffset =
-                            (uiState.bottomBarOffsetHeightPx + delta).coerceIn(
-                                // 2 times:
-                                // - once for the actual offset due to the translation amount
-                                // - once for the bottom inset artificially applied to NavigationBar
-                                -(bottomBarHeightPx + bottomNavigationInsetPx) * 2,
-                                0f,
-                            )
-                        model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(newOffset))
-                        return Offset.Zero
-                    }
+@Composable
+fun MainScreen(modifier: Modifier = Modifier) {
+    val model: MainMviModel = getViewModel<MainViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val currentSection by navigationCoordinator.currentBottomNavSection.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    var bottomBarHeightPx by remember { mutableFloatStateOf(0f) }
+    val bottomNavigationInsetPx = WindowInsets.navigationBars.getBottom(LocalDensity.current)
+    val scrollConnection =
+        remember {
+            object : NestedScrollConnection {
+                override fun onPreScroll(
+                    available: Offset,
+                    source: NestedScrollSource,
+                ): Offset {
+                    val delta = available.y
+                    val newOffset =
+                        (uiState.bottomBarOffsetHeightPx + delta).coerceIn(
+                            // 2 times:
+                            // - once for the actual offset due to the translation amount
+                            // - once for the bottom inset artificially applied to NavigationBar
+                            -(bottomBarHeightPx + bottomNavigationInsetPx) * 2,
+                            0f,
+                        )
+                    model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(newOffset))
+                    return Offset.Zero
                 }
             }
-        navigationCoordinator.setBottomBarScrollConnection(scrollConnection)
-        val exitMessage = LocalStrings.current.messageConfirmExit
-        val bottomNavController = rememberNavController()
+        }
+    navigationCoordinator.setBottomBarScrollConnection(scrollConnection)
+    val exitMessage = LocalStrings.current.messageConfirmExit
+    val bottomNavController = rememberNavController()
 
-        LaunchedEffect(navigationCoordinator) {
-            if (navigationCoordinator.currentBottomNavSection.value == null) {
-                navigationCoordinator.setCurrentSection(BottomNavigationSection.Home)
-            }
-
-            navigationCoordinator.exitMessageVisible
-                .onEach { visible ->
-                    if (visible) {
-                        snackbarHostState.showSnackbar(message = exitMessage)
-                        navigationCoordinator.setExitMessageVisible(false)
-                    }
-                }.launchIn(this)
-            navigationCoordinator.globalMessage
-                .onEach { message ->
-                    snackbarHostState.showSnackbar(message = message)
-                }.launchIn(this)
-
-            navigationCoordinator.currentBottomNavSection.onEach {
-                // when the current tab changes, reset the bottom bar offset to the default value
-                model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(0f))
-            }.launchIn(this)
-
-            navigationCoordinator.setBottomNavController(bottomNavController)
+    LaunchedEffect(navigationCoordinator) {
+        if (navigationCoordinator.currentBottomNavSection.value == null) {
+            navigationCoordinator.setCurrentSection(BottomNavigationSection.Home)
         }
 
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        modifier =
-                            Modifier
-                                .graphicsLayer {
-                                    translationY =
-                                        (-uiState.bottomBarOffsetHeightPx)
-                                            .coerceAtMost(bottomBarHeightPx - bottomNavigationInsetPx)
-                                },
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
-                    )
+        navigationCoordinator.exitMessageVisible
+            .onEach { visible ->
+                if (visible) {
+                    snackbarHostState.showSnackbar(message = exitMessage)
+                    navigationCoordinator.setExitMessageVisible(false)
                 }
-            },
-            bottomBar = {
-                NavigationBar(
+            }.launchIn(this)
+        navigationCoordinator.globalMessage
+            .onEach { message ->
+                snackbarHostState.showSnackbar(message = message)
+            }.launchIn(this)
+
+        navigationCoordinator.currentBottomNavSection.onEach {
+            // when the current tab changes, reset the bottom bar offset to the default value
+            model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(0f))
+        }.launchIn(this)
+
+        val adapter = DefaultBottomNavigationAdapter(bottomNavController)
+        navigationCoordinator.setBottomNavigator(adapter)
+    }
+
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
                     modifier =
                         Modifier
-                            .onGloballyPositioned {
-                                if (bottomBarHeightPx == 0f) {
-                                    bottomBarHeightPx = it.size.toSize().height
-                                }
-                            }.offset {
-                                IntOffset(
-                                    x = 0,
-                                    y = -uiState.bottomBarOffsetHeightPx.roundToInt(),
-                                )
+                            .graphicsLayer {
+                                translationY =
+                                    (-uiState.bottomBarOffsetHeightPx)
+                                        .coerceAtMost(bottomBarHeightPx - bottomNavigationInsetPx)
                             },
-                    windowInsets =
-                        WindowInsets(
-                            left = 0,
-                            top = 0,
-                            right = 0,
-                            bottom = bottomNavigationInsetPx,
-                        ),
-                    tonalElevation = 0.dp,
-                ) {
-                    for (section in uiState.bottomNavigationSections) {
-                        BottomNavigationItem(
-                            section = section,
-                            selected = section == currentSection,
-                            onClick = {
-                                navigationCoordinator.setCurrentSection(section)
-                            },
-                        )
-                    }
-                }
-            },
-        ) {
-            val timelineModel: TimelineMviModel = getViewModel<TimelineViewModel>()
-            val timelineLazyListState = rememberLazyListState()
-            val exploreModel: ExploreMviModel = getViewModel<ExploreViewModel>()
-            val exploreLazyListState = rememberLazyListState()
-            val inboxModel: InboxMviModel = getViewModel<InboxViewModel>()
-            val inboxLazyListState = rememberLazyListState()
-            val profileModel: ProfileMviModel = getViewModel<ProfileViewModel>()
-            val myAccountModel: MyAccountMviModel = getViewModel<MyAccountViewModel>()
-            val myAccountLazyListState = rememberLazyListState()
-            NavHost(
-                navController = bottomNavController,
-                startDestination = BottomNavigationSection.Home,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
+                )
+            }
+        },
+        bottomBar = {
+            NavigationBar(
+                modifier =
+                    Modifier
+                        .onGloballyPositioned {
+                            if (bottomBarHeightPx == 0f) {
+                                bottomBarHeightPx = it.size.toSize().height
+                            }
+                        }.offset {
+                            IntOffset(
+                                x = 0,
+                                y = -uiState.bottomBarOffsetHeightPx.roundToInt(),
+                            )
+                        },
+                windowInsets =
+                    WindowInsets(
+                        left = 0,
+                        top = 0,
+                        right = 0,
+                        bottom = bottomNavigationInsetPx,
+                    ),
+                tonalElevation = 0.dp,
             ) {
-                composable<BottomNavigationSection.Home> {
-                    TimelineScreen(
-                        model = timelineModel,
-                        lazyListState = timelineLazyListState,
+                for (section in uiState.bottomNavigationSections) {
+                    BottomNavigationItem(
+                        section = section,
+                        selected = section == currentSection,
+                        onClick = {
+                            navigationCoordinator.setCurrentSection(section)
+                        },
                     )
                 }
-                composable<BottomNavigationSection.Explore> {
-                    ExploreScreen(
-                        model = exploreModel,
-                        lazyListState = exploreLazyListState,
-                    )
-                }
-                composable<BottomNavigationSection.Inbox> {
-                    InboxScreen(
-                        model = inboxModel,
-                        lazyListState = inboxLazyListState,
-                    )
-                }
-                composable<BottomNavigationSection.Profile> {
-                    ProfileScreen(
-                        model = profileModel,
-                        myAccountModel = myAccountModel,
-                        myAccountLazyListState = myAccountLazyListState,
-                    )
-                }
+            }
+        },
+    ) {
+        val timelineModel: TimelineMviModel = getViewModel<TimelineViewModel>()
+        val timelineLazyListState = rememberLazyListState()
+        val exploreModel: ExploreMviModel = getViewModel<ExploreViewModel>()
+        val exploreLazyListState = rememberLazyListState()
+        val inboxModel: InboxMviModel = getViewModel<InboxViewModel>()
+        val inboxLazyListState = rememberLazyListState()
+        val profileModel: ProfileMviModel = getViewModel<ProfileViewModel>()
+        val myAccountModel: MyAccountMviModel = getViewModel<MyAccountViewModel>()
+        val myAccountLazyListState = rememberLazyListState()
+        NavHost(
+            navController = bottomNavController,
+            startDestination = BottomNavigationSection.Home,
+        ) {
+            composable<BottomNavigationSection.Home> {
+                TimelineScreen(
+                    model = timelineModel,
+                    lazyListState = timelineLazyListState,
+                )
+            }
+            composable<BottomNavigationSection.Explore> {
+                ExploreScreen(
+                    model = exploreModel,
+                    lazyListState = exploreLazyListState,
+                )
+            }
+            composable<BottomNavigationSection.Inbox> {
+                InboxScreen(
+                    model = inboxModel,
+                    lazyListState = inboxLazyListState,
+                )
+            }
+            composable<BottomNavigationSection.Profile> {
+                ProfileScreen(
+                    model = profileModel,
+                    myAccountModel = myAccountModel,
+                    myAccountLazyListState = myAccountLazyListState,
+                )
             }
         }
     }
