@@ -12,8 +12,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.livefast.eattrash.raccoonforfriendica.auth.DefaultAuthManager
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getAuthManager
 import kotlinx.coroutines.delay
@@ -31,23 +30,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val navigationCoordinator = getNavigationCoordinator()
-        val drawerCoordinator = getDrawerCoordinator()
-
         val backPressedCallback =
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    // is the drawer is opened, close it
-                    if (drawerCoordinator.drawerOpened.value) {
-                        lifecycleScope.launch {
-                            drawerCoordinator.closeDrawer()
-                        }
-                        return
-                    }
-
-                    // back can be prevented by custom callback
-                    val canGoBackCallback = navigationCoordinator.getCanGoBackCallback()
-                    check(canGoBackCallback?.invoke() != false) { return }
-
                     // if in home, ask for confirmation
                     if (navigationCoordinator.currentBottomNavSection.value == BottomNavigationSection.Home) {
                         // asks for confirmation
@@ -136,7 +121,7 @@ class MainActivity : ComponentActivity() {
             when {
                 "text/plain" == intent.type -> {
                     intent.getStringExtra(Intent.EXTRA_TEXT)?.also { content ->
-                        val detailOpener = getDetailOpener()
+                        val detailOpener = getMainRouter()
                         detailOpener.openComposer(initialText = content.trim('"'))
                     }
                 }
@@ -152,7 +137,7 @@ class MainActivity : ComponentActivity() {
                                 it.readBytes()
                             }
                         if (bytes != null) {
-                            val detailOpener = getDetailOpener()
+                            val detailOpener = getMainRouter()
                             detailOpener.openComposer(initialAttachment = bytes)
                         }
                     }

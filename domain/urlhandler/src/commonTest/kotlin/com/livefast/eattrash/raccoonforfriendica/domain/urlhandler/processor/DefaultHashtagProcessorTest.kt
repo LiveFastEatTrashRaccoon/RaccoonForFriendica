@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor
 
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import dev.mokkery.MockMode
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
@@ -12,9 +12,9 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class DefaultHashtagProcessorTest {
-    private val detailOpener = mock<DetailOpener>(mode = MockMode.autoUnit)
+    private val mainRouter = mock<MainRouter>(mode = MockMode.autoUnit)
 
-    private val sut = DefaultHashtagProcessor(detailOpener = detailOpener)
+    private val sut = DefaultHashtagProcessor(mainRouter = mainRouter)
 
     @Test
     fun `given valid URL in format 1 when process URL then interactions are as expected`() = runTest {
@@ -24,7 +24,7 @@ class DefaultHashtagProcessorTest {
 
         assertTrue(res)
         verify {
-            detailOpener.openHashtag(TAG)
+            mainRouter.openHashtag(TAG)
         }
     }
 
@@ -36,7 +36,7 @@ class DefaultHashtagProcessorTest {
 
         assertTrue(res)
         verify {
-            detailOpener.openHashtag(TAG)
+            mainRouter.openHashtag(TAG)
         }
     }
 
@@ -48,7 +48,7 @@ class DefaultHashtagProcessorTest {
 
         assertFalse(res)
         verify(mode = VerifyMode.not) {
-            detailOpener.openHashtag(any())
+            mainRouter.openHashtag(any())
         }
     }
 

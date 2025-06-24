@@ -40,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
@@ -50,7 +49,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPl
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SelectUserDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.ConversationItem
@@ -58,214 +57,213 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class ConversationListScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: ConversationListMviModel = getViewModel<ConversationListViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val detailOpener = remember { getDetailOpener() }
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val lazyListState = rememberLazyListState()
-        val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
-        val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
-        val scope = rememberCoroutineScope()
-        var selectUserToCreateConversationDialogOpen by remember { mutableStateOf(false) }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ConversationListScreen(modifier: Modifier = Modifier) {
+    val model: ConversationListMviModel = getViewModel<ConversationListViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val detailOpener = remember { getMainRouter() }
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val lazyListState = rememberLazyListState()
+    val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
+    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
+    val scope = rememberCoroutineScope()
+    var selectUserToCreateConversationDialogOpen by remember { mutableStateOf(false) }
 
-        fun goBackToTop() {
-            runCatching {
-                scope.launch {
-                    lazyListState.scrollToItem(0)
-                    topAppBarState.heightOffset = 0f
-                    topAppBarState.contentOffset = 0f
-                }
+    fun goBackToTop() {
+        runCatching {
+            scope.launch {
+                lazyListState.scrollToItem(0)
+                topAppBarState.heightOffset = 0f
+                topAppBarState.contentOffset = 0f
             }
         }
+    }
 
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        ConversationListMviModel.Effect.BackToTop -> goBackToTop()
-                    }
-                }.launchIn(this)
-        }
-
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            topBar = {
-                TopAppBar(
-                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.directMessagesTitle,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
-                        }
-                    },
-                )
-            },
-            floatingActionButton = {
-                AnimatedVisibility(
-                    visible = isFabVisible,
-                    enter =
-                    slideInVertically(
-                        initialOffsetY = { it * 2 },
-                    ),
-                    exit =
-                    slideOutVertically(
-                        targetOffsetY = { it * 2 },
-                    ),
-                ) {
-                    FloatingActionButton(
-                        onClick = {
-                            selectUserToCreateConversationDialogOpen = true
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = LocalStrings.current.actionAddNew,
-                        )
-                    }
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    ConversationListMviModel.Effect.BackToTop -> goBackToTop()
                 }
-            },
-        ) { padding ->
-            PullToRefreshBox(
-                modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
-                    .then(
-                        if (uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        } else {
-                            Modifier
-                        },
-                    ),
-                isRefreshing = uiState.refreshing,
-                onRefresh = {
-                    model.reduce(ConversationListMviModel.Intent.Refresh)
-                },
-            ) {
-                LazyColumn(
-                    state = lazyListState,
-                ) {
-                    if (uiState.initial) {
-                        val placeholderCount = 10
-                        items(placeholderCount) { idx ->
-                            GenericPlaceholder(height = 120.dp)
-                            if (idx < placeholderCount - 1) {
-                                TimelineDivider()
-                            }
-                        }
-                    }
+            }.launchIn(this)
+    }
 
-                    if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
-                        item {
-                            Text(
-                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
-                                text = LocalStrings.current.messageEmptyList,
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.bodyLarge,
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.directMessagesTitle,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
                     }
-
-                    itemsIndexed(
-                        items = uiState.items,
-                        key = { _, e -> "direct-message-list-${e.lastMessage.id}" },
-                    ) { idx, conversation ->
-                        ConversationItem(
-                            conversation = conversation,
-                            autoloadImages = uiState.autoloadImages,
-                            onClick = {
-                                val parentUri = conversation.lastMessage.parentUri
-                                if (parentUri != null) {
-                                    model.reduce(
-                                        ConversationListMviModel.Intent.MarkConversationAsRead(idx),
-                                    )
-                                    detailOpener.openConversation(
-                                        otherUser = conversation.otherUser,
-                                        parentUri = parentUri,
-                                    )
-                                }
-                            },
-                        )
-                        if (idx < uiState.items.lastIndex) {
+                },
+            )
+        },
+        floatingActionButton = {
+            AnimatedVisibility(
+                visible = isFabVisible,
+                enter =
+                slideInVertically(
+                    initialOffsetY = { it * 2 },
+                ),
+                exit =
+                slideOutVertically(
+                    targetOffsetY = { it * 2 },
+                ),
+            ) {
+                FloatingActionButton(
+                    onClick = {
+                        selectUserToCreateConversationDialogOpen = true
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = LocalStrings.current.actionAddNew,
+                    )
+                }
+            }
+        },
+    ) { padding ->
+        PullToRefreshBox(
+            modifier =
+            Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .then(
+                    if (uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    } else {
+                        Modifier
+                    },
+                ),
+            isRefreshing = uiState.refreshing,
+            onRefresh = {
+                model.reduce(ConversationListMviModel.Intent.Refresh)
+            },
+        ) {
+            LazyColumn(
+                state = lazyListState,
+            ) {
+                if (uiState.initial) {
+                    val placeholderCount = 10
+                    items(placeholderCount) { idx ->
+                        GenericPlaceholder(height = 120.dp)
+                        if (idx < placeholderCount - 1) {
                             TimelineDivider()
                         }
-
-                        val canFetchMore =
-                            !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        val isNearTheEnd = idx.isNearTheEnd(uiState.items)
-                        if (isNearTheEnd && canFetchMore) {
-                            model.reduce(ConversationListMviModel.Intent.LoadNextPage)
-                        }
                     }
+                }
 
+                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
                     item {
-                        if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                ListLoadingIndicator()
+                        Text(
+                            modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                            text = LocalStrings.current.messageEmptyList,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                }
+
+                itemsIndexed(
+                    items = uiState.items,
+                    key = { _, e -> "direct-message-list-${e.lastMessage.id}" },
+                ) { idx, conversation ->
+                    ConversationItem(
+                        conversation = conversation,
+                        autoloadImages = uiState.autoloadImages,
+                        onClick = {
+                            val parentUri = conversation.lastMessage.parentUri
+                            if (parentUri != null) {
+                                model.reduce(
+                                    ConversationListMviModel.Intent.MarkConversationAsRead(idx),
+                                )
+                                detailOpener.openConversation(
+                                    otherUser = conversation.otherUser,
+                                    parentUri = parentUri,
+                                )
                             }
-                        }
+                        },
+                    )
+                    if (idx < uiState.items.lastIndex) {
+                        TimelineDivider()
                     }
 
-                    item {
-                        Spacer(modifier = Modifier.height(Spacing.xxxl))
+                    val canFetchMore =
+                        !uiState.initial && !uiState.loading && uiState.canFetchMore
+                    val isNearTheEnd = idx.isNearTheEnd(uiState.items)
+                    if (isNearTheEnd && canFetchMore) {
+                        model.reduce(ConversationListMviModel.Intent.LoadNextPage)
                     }
+                }
+
+                item {
+                    if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            ListLoadingIndicator()
+                        }
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.xxxl))
                 }
             }
         }
+    }
 
-        if (selectUserToCreateConversationDialogOpen) {
-            SelectUserDialog(
-                query = uiState.userSearchQuery,
-                users = uiState.userSearchUsers,
-                autoloadImages = uiState.autoloadImages,
-                loading = uiState.userSearchLoading,
-                canFetchMore = uiState.userSearchCanFetchMore,
-                onSearch = {
-                    model.reduce(ConversationListMviModel.Intent.UserSearchSetQuery(it))
-                },
-                onLoadMoreUsers = {
-                    model.reduce(ConversationListMviModel.Intent.UserSearchLoadNextPage)
-                },
-                onClose = { user ->
-                    model.reduce(ConversationListMviModel.Intent.UserSearchSetQuery(""))
-                    model.reduce(ConversationListMviModel.Intent.UserSearchClear)
-                    selectUserToCreateConversationDialogOpen = false
-                    val userId = user?.id
-                    if (userId != null) {
-                        val existingConversation =
-                            uiState.items.firstOrNull { it.otherUser.id == userId }
-                        detailOpener.openConversation(
-                            otherUser = user,
-                            parentUri = existingConversation?.lastMessage?.parentUri.orEmpty(),
-                        )
-                    }
-                },
-            )
-        }
+    if (selectUserToCreateConversationDialogOpen) {
+        SelectUserDialog(
+            query = uiState.userSearchQuery,
+            users = uiState.userSearchUsers,
+            autoloadImages = uiState.autoloadImages,
+            loading = uiState.userSearchLoading,
+            canFetchMore = uiState.userSearchCanFetchMore,
+            onSearch = {
+                model.reduce(ConversationListMviModel.Intent.UserSearchSetQuery(it))
+            },
+            onLoadMoreUsers = {
+                model.reduce(ConversationListMviModel.Intent.UserSearchLoadNextPage)
+            },
+            onClose = { user ->
+                model.reduce(ConversationListMviModel.Intent.UserSearchSetQuery(""))
+                model.reduce(ConversationListMviModel.Intent.UserSearchClear)
+                selectUserToCreateConversationDialogOpen = false
+                val userId = user?.id
+                if (userId != null) {
+                    val existingConversation =
+                        uiState.items.firstOrNull { it.otherUser.id == userId }
+                    detailOpener.openConversation(
+                        otherUser = user,
+                        parentUri = existingConversation?.lastMessage?.parentUri.orEmpty(),
+                    )
+                }
+            },
+        )
     }
 }

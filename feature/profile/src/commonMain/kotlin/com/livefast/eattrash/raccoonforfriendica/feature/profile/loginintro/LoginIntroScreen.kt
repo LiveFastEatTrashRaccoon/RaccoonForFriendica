@@ -50,7 +50,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -67,7 +66,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternall
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginIntroScreen() {
+fun LoginIntroScreen(modifier: Modifier = Modifier) {
     val model: LoginIntroMviModel = getViewModel<LoginIntroViewModel>()
     val uriHandler = LocalUriHandler.current
     val fullColor = MaterialTheme.colorScheme.onBackground
@@ -76,7 +75,7 @@ fun LoginIntroScreen() {
 
     Column(
         modifier =
-            Modifier
+            modifier
                 .padding(Spacing.s)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),

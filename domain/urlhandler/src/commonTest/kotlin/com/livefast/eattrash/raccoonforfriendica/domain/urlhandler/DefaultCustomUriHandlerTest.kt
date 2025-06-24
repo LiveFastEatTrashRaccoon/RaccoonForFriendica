@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.urlhandler
 
 import androidx.compose.ui.platform.UriHandler
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
@@ -25,7 +25,7 @@ import kotlin.test.Test
 
 class DefaultCustomUriHandlerTest {
     private val defaultHandler = mock<UriHandler>(mode = MockMode.autoUnit)
-    private val detailOpener = mock<DetailOpener>(mode = MockMode.autoUnit)
+    private val mainRouter = mock<MainRouter>(mode = MockMode.autoUnit)
     private val customTabsHelper =
         mock<CustomTabsHelper>(mode = MockMode.autoUnit) {
             every { isSupported } returns false
@@ -53,7 +53,7 @@ class DefaultCustomUriHandlerTest {
             defaultHandler = defaultHandler,
             customTabsHelper = customTabsHelper,
             settingsRepository = settingsRepository,
-            detailOpener = detailOpener,
+            mainRouter = mainRouter,
             hashtagProcessor = hashtagProcessor,
             userProcessor = userProcessor,
             entryProcessor = entryProcessor,
@@ -110,7 +110,7 @@ class DefaultCustomUriHandlerTest {
         sut.openUri(url)
 
         verify {
-            detailOpener.openInternalWebView(url)
+            mainRouter.openInternalWebView(url)
         }
     }
 

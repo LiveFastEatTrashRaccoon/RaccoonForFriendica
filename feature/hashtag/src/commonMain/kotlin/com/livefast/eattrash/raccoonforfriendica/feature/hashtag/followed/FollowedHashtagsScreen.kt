@@ -32,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
@@ -42,160 +41,159 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.FollowHas
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import kotlinx.coroutines.launch
 
-class FollowedHashtagsScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: FollowedHashtagsMviModel = getViewModel<FollowedHashtagsViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val detailOpener = remember { getDetailOpener() }
-        val lazyListState = rememberLazyListState()
-        val scope = rememberCoroutineScope()
-        var confirmUnfollowHashtagName by remember { mutableStateOf<String?>(null) }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FollowedHashtagsScreen(modifier: Modifier = Modifier) {
+    val model: FollowedHashtagsMviModel = getViewModel<FollowedHashtagsViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val detailOpener = remember { getMainRouter() }
+    val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    var confirmUnfollowHashtagName by remember { mutableStateOf<String?>(null) }
 
-        fun goBackToTop() {
-            runCatching {
-                scope.launch {
-                    lazyListState.scrollToItem(0)
-                    topAppBarState.heightOffset = 0f
-                    topAppBarState.contentOffset = 0f
-                }
+    fun goBackToTop() {
+        runCatching {
+            scope.launch {
+                lazyListState.scrollToItem(0)
+                topAppBarState.heightOffset = 0f
+                topAppBarState.contentOffset = 0f
             }
         }
+    }
 
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            topBar = {
-                TopAppBar(
-                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.followedHashtagsTitle,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
-                        }
-                    },
-                )
-            },
-        ) { padding ->
-            PullToRefreshBox(
-                modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
-                    .then(
-                        if (uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        } else {
-                            Modifier
-                        },
-                    ),
-                isRefreshing = uiState.refreshing,
-                onRefresh = {
-                    model.reduce(FollowedHashtagsMviModel.Intent.Refresh)
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.followedHashtagsTitle,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
                 },
-            ) {
-                LazyColumn(
-                    state = lazyListState,
-                ) {
-                    if (uiState.initial) {
-                        val placeholderCount = 5
-                        items(placeholderCount) { idx ->
-                            GenericPlaceholder(modifier = Modifier.fillMaxWidth())
-                            if (idx < placeholderCount - 1) {
-                                TimelineDivider()
-                            }
-                        }
-                    }
-                    itemsIndexed(
-                        items = uiState.items,
-                        key = { _, e -> "followed-hashtag-${e.name}" },
-                    ) { idx, tag ->
-                        // use item with button
-                        FollowHashtagItem(
-                            hashtag = tag,
-                            onOpen = {
-                                detailOpener.openHashtag(tag.name)
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
                             },
-                            onToggleFollow = { newFollow ->
-                                if (newFollow) {
-                                    model.reduce(
-                                        FollowedHashtagsMviModel.Intent.ToggleTagFollow(
-                                            tag.name,
-                                            newFollow,
-                                        ),
-                                    )
-                                } else {
-                                    confirmUnfollowHashtagName = tag.name
-                                }
-                            },
-                        )
-
-                        val canFetchMore =
-                            !uiState.initial && !uiState.loading && uiState.canFetchMore
-                        val isNearTheEnd = idx.isNearTheEnd(uiState.items)
-                        if (isNearTheEnd && canFetchMore) {
-                            model.reduce(FollowedHashtagsMviModel.Intent.LoadNextPage)
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
+                            )
                         }
-                    }
-
-                    item {
-                        if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                ListLoadingIndicator()
-                            }
-                        }
-                    }
-
-                    item {
-                        Spacer(modifier = Modifier.height(Spacing.xxxl))
-                    }
-                }
-            }
-        }
-
-        if (confirmUnfollowHashtagName != null) {
-            CustomConfirmDialog(
-                title = LocalStrings.current.actionUnfollow,
-                onClose = { confirm ->
-                    val oldTag = confirmUnfollowHashtagName
-                    confirmUnfollowHashtagName = null
-                    if (confirm && oldTag != null) {
-                        model.reduce(
-                            FollowedHashtagsMviModel.Intent.ToggleTagFollow(
-                                name = oldTag,
-                                newValue = false,
-                            ),
-                        )
                     }
                 },
             )
+        },
+    ) { padding ->
+        PullToRefreshBox(
+            modifier =
+            Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .then(
+                    if (uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    } else {
+                        Modifier
+                    },
+                ),
+            isRefreshing = uiState.refreshing,
+            onRefresh = {
+                model.reduce(FollowedHashtagsMviModel.Intent.Refresh)
+            },
+        ) {
+            LazyColumn(
+                state = lazyListState,
+            ) {
+                if (uiState.initial) {
+                    val placeholderCount = 5
+                    items(placeholderCount) { idx ->
+                        GenericPlaceholder(modifier = Modifier.fillMaxWidth())
+                        if (idx < placeholderCount - 1) {
+                            TimelineDivider()
+                        }
+                    }
+                }
+                itemsIndexed(
+                    items = uiState.items,
+                    key = { _, e -> "followed-hashtag-${e.name}" },
+                ) { idx, tag ->
+                    // use item with button
+                    FollowHashtagItem(
+                        hashtag = tag,
+                        onOpen = {
+                            detailOpener.openHashtag(tag.name)
+                        },
+                        onToggleFollow = { newFollow ->
+                            if (newFollow) {
+                                model.reduce(
+                                    FollowedHashtagsMviModel.Intent.ToggleTagFollow(
+                                        tag.name,
+                                        newFollow,
+                                    ),
+                                )
+                            } else {
+                                confirmUnfollowHashtagName = tag.name
+                            }
+                        },
+                    )
+
+                    val canFetchMore =
+                        !uiState.initial && !uiState.loading && uiState.canFetchMore
+                    val isNearTheEnd = idx.isNearTheEnd(uiState.items)
+                    if (isNearTheEnd && canFetchMore) {
+                        model.reduce(FollowedHashtagsMviModel.Intent.LoadNextPage)
+                    }
+                }
+
+                item {
+                    if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            ListLoadingIndicator()
+                        }
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.xxxl))
+                }
+            }
         }
+    }
+
+    if (confirmUnfollowHashtagName != null) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionUnfollow,
+            onClose = { confirm ->
+                val oldTag = confirmUnfollowHashtagName
+                confirmUnfollowHashtagName = null
+                if (confirm && oldTag != null) {
+                    model.reduce(
+                        FollowedHashtagsMviModel.Intent.ToggleTagFollow(
+                            name = oldTag,
+                            newValue = false,
+                        ),
+                    )
+                }
+            },
+        )
     }
 }

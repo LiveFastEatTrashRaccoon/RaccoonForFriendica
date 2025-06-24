@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.auth
 
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
@@ -7,9 +8,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Auth
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.toInt
-import com.livefast.eattrash.raccoonforfriendica.feature.login.legacy.LegacyLoginScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.newaccount.NewAccountScreen
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
@@ -24,18 +22,15 @@ internal class DefaultAuthManager(
     override val credentialFlow = MutableSharedFlow<ApiCredentials>()
 
     override fun openLogin(type: LoginType) {
-        val screen = LoginScreen(type.toInt())
-        navigationCoordinator.push(screen)
+        navigationCoordinator.push(Destination.Login(type.toInt()))
     }
 
     override fun openLegacyLogin() {
-        val screen = LegacyLoginScreen()
-        navigationCoordinator.push(screen)
+        navigationCoordinator.push(Destination.LegacyLogin)
     }
 
     override fun openNewAccount() {
-        val screen = NewAccountScreen()
-        navigationCoordinator.push(screen)
+        navigationCoordinator.push(Destination.NewAccount)
     }
 
     override suspend fun startOAuthFlow(node: String): String {

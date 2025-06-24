@@ -12,7 +12,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.testutils.MockStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.testutils.KodeinTestApplication
 import com.livefast.eattrash.raccoonforfriendica.core.testutils.KodeinTestRule
@@ -42,7 +42,7 @@ class NodeInfoScreenScaffoldTest {
         mock<NavigationCoordinator> {
             every { canPop } returns MutableStateFlow(true)
         }
-    private val detailOpener = mock<DetailOpener>(MockMode.autoUnit)
+    private val mainRouter = mock<MainRouter>(MockMode.autoUnit)
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -53,7 +53,7 @@ class NodeInfoScreenScaffoldTest {
             listOf(
                 DI.Module("NodeInfoScreenTestModule") {
                     bind<NavigationCoordinator> { provider { navigationCoordinator } }
-                    bind<DetailOpener> { provider { detailOpener } }
+                    bind<MainRouter> { provider { mainRouter } }
                 },
             ),
         )

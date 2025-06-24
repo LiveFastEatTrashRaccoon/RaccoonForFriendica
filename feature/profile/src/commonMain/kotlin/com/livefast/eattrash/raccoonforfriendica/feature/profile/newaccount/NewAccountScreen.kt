@@ -18,57 +18,55 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
 
-class NewAccountScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val navigationCoordinator = remember { getNavigationCoordinator() }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NewAccountScreen(modifier: Modifier = Modifier) {
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val navigationCoordinator = remember { getNavigationCoordinator() }
 
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            topBar = {
-                TopAppBar(
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.newAccountTitle,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.newAccountTitle,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
+                            )
                         }
-                    },
-                )
-            },
-        ) { padding ->
-            Box(
-                modifier =
-                    Modifier
-                        .padding(padding)
-                        .fillMaxWidth(),
-            ) {
-                LoginIntroScreen()
-            }
+                    }
+                },
+            )
+        },
+    ) { padding ->
+        Box(
+            modifier =
+                Modifier
+                    .padding(padding)
+                    .fillMaxWidth(),
+        ) {
+            LoginIntroScreen()
         }
     }
 }

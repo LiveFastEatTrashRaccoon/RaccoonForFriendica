@@ -1,13 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import app.cash.turbine.test
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -44,15 +38,6 @@ class DefaultNavigationCoordinatorTest {
     @AfterTest
     fun teardown() {
         Dispatchers.resetMain()
-    }
-
-    @Test
-    fun `when setCanGoBackCallback then result is as expected`() = runTest {
-        val callback = { true }
-        sut.setCanGoBackCallback(callback)
-
-        val res = sut.getCanGoBackCallback()
-        assertEquals(callback, res)
     }
 
     @Test
@@ -93,7 +78,7 @@ class DefaultNavigationCoordinatorTest {
         val initial = sut.canPop.value
         assertFalse(initial)
         val navigator =
-            mock<NavigatorAdapter>(MockMode.autoUnit) {
+            mock<NavigationAdapter>(MockMode.autoUnit) {
                 every { canPop } returns true
             }
 
@@ -129,66 +114,50 @@ class DefaultNavigationCoordinatorTest {
 
     @Test
     fun `when push then interactions are as expected`() = runTest {
-        val screen =
-            object : Screen {
-                override val key: ScreenKey = "new"
-
-                @Composable
-                override fun Content() {
-                    Box(modifier = Modifier.fillMaxSize())
-                }
-            }
+        val destination = Destination.Settings
         val navigator =
-            mock<NavigatorAdapter>(MockMode.autoUnit) {
+            mock<NavigationAdapter>(MockMode.autoUnit) {
                 every { canPop } returns true
             }
         sut.setRootNavigator(navigator)
 
         launch {
-            sut.push(screen)
+            sut.push(destination)
         }
         advanceTimeBy(DELAY)
 
         val canPop = sut.canPop.value
         assertTrue(canPop)
         verify {
-            navigator.push(screen)
+            navigator.navigate(destination)
         }
     }
 
     @Test
     fun `when replace then interactions are as expected`() = runTest {
-        val screen =
-            object : Screen {
-                override val key: ScreenKey = "new"
-
-                @Composable
-                override fun Content() {
-                    Box(modifier = Modifier.fillMaxSize())
-                }
-            }
+        val destination = Destination.Settings
         val navigator =
-            mock<NavigatorAdapter>(MockMode.autoUnit) {
+            mock<NavigationAdapter>(MockMode.autoUnit) {
                 every { canPop } returns true
             }
         sut.setRootNavigator(navigator)
 
         launch {
-            sut.replace(screen)
+            sut.replace(destination)
         }
         advanceTimeBy(DELAY)
 
         val canPop = sut.canPop.value
         assertTrue(canPop)
         verify {
-            navigator.replace(screen)
+            navigator.navigate(destination = destination, replaceTop = true)
         }
     }
 
     @Test
     fun `when pop then interactions are as expected`() = runTest {
         val navigator =
-            mock<NavigatorAdapter>(MockMode.autoUnit) {
+            mock<NavigationAdapter>(MockMode.autoUnit) {
                 every { canPop } returns false
             }
         sut.setRootNavigator(navigator)
@@ -208,7 +177,7 @@ class DefaultNavigationCoordinatorTest {
     @Test
     fun `when popUntilRoot then interactions are as expected`() = runTest {
         val navigator =
-            mock<NavigatorAdapter>(MockMode.autoUnit) {
+            mock<NavigationAdapter>(MockMode.autoUnit) {
                 every { canPop } returns false
             }
         sut.setRootNavigator(navigator)

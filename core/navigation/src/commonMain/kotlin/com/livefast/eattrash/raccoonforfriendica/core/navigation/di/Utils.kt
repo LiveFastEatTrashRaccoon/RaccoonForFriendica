@@ -1,8 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import org.kodein.di.instance
 
@@ -16,7 +16,7 @@ fun getDrawerCoordinator(): DrawerCoordinator {
     return res
 }
 
-fun getDetailOpener(): DetailOpener {
-    val res by RootDI.di.instance<DetailOpener>()
+fun getMainRouter(): MainRouter {
+    val res by RootDI.di.instance<MainRouter>()
     return res
 }

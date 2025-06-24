@@ -47,8 +47,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
@@ -75,7 +75,7 @@ fun InboxScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getDetailOpener() }
+    val detailOpener = remember { getMainRouter() }
     val scope = rememberCoroutineScope()
     val drawerCoordinator = remember { getDrawerCoordinator() }
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }

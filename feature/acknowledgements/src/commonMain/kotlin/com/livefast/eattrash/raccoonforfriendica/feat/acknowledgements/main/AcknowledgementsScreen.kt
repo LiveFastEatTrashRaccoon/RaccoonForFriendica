@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
@@ -38,98 +37,97 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.components.AcknowledgementItem
 import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.components.AcknowledgementItemPlaceholder
 
-class AcknowledgementsScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: AcknowledgementsMviModel = getViewModel<AcknowledgementsViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val uriHandler = LocalUriHandler.current
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AcknowledgementsScreen(modifier: Modifier = Modifier) {
+    val model: AcknowledgementsMviModel = getViewModel<AcknowledgementsViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val uriHandler = LocalUriHandler.current
 
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            topBar = {
-                TopAppBar(
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            modifier = Modifier.padding(horizontal = Spacing.s),
-                            text = LocalStrings.current.settingsAboutAcknowledgements,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = null,
-                                )
-                            }
-                        }
-                    },
-                )
-            },
-        ) { padding ->
-            PullToRefreshBox(
-                modifier =
-                Modifier
-                    .padding(
-                        top = padding.calculateTopPadding(),
-                    ).nestedScroll(scrollBehavior.nestedScrollConnection)
-                    .fillMaxSize(),
-                isRefreshing = uiState.refreshing,
-                onRefresh = {
-                    model.reduce(AcknowledgementsMviModel.Intent.Refresh)
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        modifier = Modifier.padding(horizontal = Spacing.s),
+                        text = LocalStrings.current.settingsAboutAcknowledgements,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
                 },
-            ) {
-                LazyColumn(
-                    modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = Spacing.xs),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-                ) {
-                    if (uiState.initial) {
-                        items(5) {
-                            AcknowledgementItemPlaceholder()
-                        }
-                    }
-                    items(uiState.items) { item ->
-                        AcknowledgementItem(
-                            modifier = Modifier.fillMaxWidth(),
-                            item = item,
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
                             onClick = {
-                                if (!item.url.isNullOrEmpty()) {
-                                    uriHandler.openUri(item.url)
-                                }
+                                navigationCoordinator.pop()
                             },
-                        )
-                    }
-
-                    if (!uiState.initial && uiState.items.isEmpty()) {
-                        item {
-                            Text(
-                                modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
-                                textAlign = TextAlign.Center,
-                                text = LocalStrings.current.messageEmptyList,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onBackground,
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = null,
                             )
                         }
                     }
-
-                    item {
-                        Spacer(modifier = Modifier.height(Spacing.xxxl))
+                },
+            )
+        },
+    ) { padding ->
+        PullToRefreshBox(
+            modifier =
+            Modifier
+                .padding(
+                    top = padding.calculateTopPadding(),
+                ).nestedScroll(scrollBehavior.nestedScrollConnection)
+                .fillMaxSize(),
+            isRefreshing = uiState.refreshing,
+            onRefresh = {
+                model.reduce(AcknowledgementsMviModel.Intent.Refresh)
+            },
+        ) {
+            LazyColumn(
+                modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = Spacing.xs),
+                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+            ) {
+                if (uiState.initial) {
+                    items(5) {
+                        AcknowledgementItemPlaceholder()
                     }
+                }
+                items(uiState.items) { item ->
+                    AcknowledgementItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        item = item,
+                        onClick = {
+                            if (!item.url.isNullOrEmpty()) {
+                                uriHandler.openUri(item.url)
+                            }
+                        },
+                    )
+                }
+
+                if (!uiState.initial && uiState.items.isEmpty()) {
+                    item {
+                        Text(
+                            modifier = Modifier.fillMaxWidth().padding(top = Spacing.xs),
+                            textAlign = TextAlign.Center,
+                            text = LocalStrings.current.messageEmptyList,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.xxxl))
                 }
             }
         }

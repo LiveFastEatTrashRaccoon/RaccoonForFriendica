@@ -3,12 +3,16 @@ package com.livefast.eattrash.raccoonforfriendica.navigation
 import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -57,7 +61,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlin.test.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DefaultDetailOpenerTest {
+class DefaultMainRouterTest {
     private val navigationCoordinator =
         mock<NavigationCoordinator>(mode = MockMode.autoUnit)
     private val identityRepository =
@@ -73,7 +77,7 @@ class DefaultDetailOpenerTest {
     private val eventCache = mock<LocalItemCache<EventModel>>(mode = MockMode.autoUnit)
     private val circleCache = mock<LocalItemCache<CircleModel>>(mode = MockMode.autoUnit)
     private val sut =
-        DefaultDetailOpener(
+        DefaultMainRouter(
             navigationCoordinator = navigationCoordinator,
             identityRepository = identityRepository,
             settingsRepository = settingsRepository,
@@ -89,7 +93,7 @@ class DefaultDetailOpenerTest {
         sut.openUserDetail(user = UserModel(id = "1"))
 
         verify {
-            navigationCoordinator.push(any<UserDetailScreen>())
+            navigationCoordinator.push(Destination.UserDetail("1"))
         }
     }
 
@@ -98,7 +102,7 @@ class DefaultDetailOpenerTest {
         sut.openUserDetail(user = UserModel(id = "1", group = true))
 
         verify {
-            navigationCoordinator.push(any<ForumListScreen>())
+            navigationCoordinator.push(Destination.ForumList("1"))
         }
     }
 
@@ -112,7 +116,7 @@ class DefaultDetailOpenerTest {
         sut.openUserDetail(user = UserModel(id = "1", group = true))
 
         verify {
-            navigationCoordinator.push(any<ForumListScreen>())
+            navigationCoordinator.push(Destination.UserDetail("1"))
         }
     }
 
@@ -121,7 +125,7 @@ class DefaultDetailOpenerTest {
         sut.switchUserDetailToClassicMode(user = UserModel(id = "1", group = true))
 
         verify {
-            navigationCoordinator.replace(any<UserDetailScreen>())
+            navigationCoordinator.replace(Destination.UserDetail("1"))
         }
     }
 
@@ -130,7 +134,7 @@ class DefaultDetailOpenerTest {
         sut.switchUserDetailToForumMode(user = UserModel(id = "1", group = true))
 
         verify {
-            navigationCoordinator.replace(any<ForumListScreen>())
+            navigationCoordinator.replace(Destination.ForumList("1"))
         }
     }
 
@@ -139,7 +143,7 @@ class DefaultDetailOpenerTest {
         sut.openEntryDetail(entry = TimelineEntryModel(id = "0", content = ""))
 
         verify {
-            navigationCoordinator.push(any<EntryDetailScreen>())
+            navigationCoordinator.push(Destination.EntryDetail("0", swipeNavigationEnabled = false))
         }
     }
 
@@ -151,7 +155,7 @@ class DefaultDetailOpenerTest {
         )
 
         verify {
-            navigationCoordinator.replace(any<EntryDetailScreen>())
+            navigationCoordinator.replace(Destination.EntryDetail("0", swipeNavigationEnabled = false))
         }
     }
 
@@ -163,7 +167,7 @@ class DefaultDetailOpenerTest {
         )
 
         verify {
-            navigationCoordinator.push(any<EntryDetailScreen>())
+            navigationCoordinator.push(Destination.EntryDetail("0", swipeNavigationEnabled = true))
         }
     }
 
@@ -172,7 +176,7 @@ class DefaultDetailOpenerTest {
         sut.openSettings()
 
         verify {
-            navigationCoordinator.push(any<SettingsScreen>())
+            navigationCoordinator.push(Destination.Settings)
         }
     }
 
@@ -181,25 +185,25 @@ class DefaultDetailOpenerTest {
         sut.openHashtag(tag = "tag")
 
         verify {
-            navigationCoordinator.push(any<HashtagScreen>())
+            navigationCoordinator.push(Destination.HashTag("tag"))
         }
     }
 
     @Test
     fun `when openFollowers then interactions are as expected`() {
-        sut.openFollowers(user = UserModel(id = ""))
+        sut.openFollowers(user = UserModel(id = "1"))
 
         verify {
-            navigationCoordinator.push(any<UserListScreen>())
+            navigationCoordinator.push(Destination.UserList(type = UserListType.Follower.toInt(), userId = "1"))
         }
     }
 
     @Test
     fun `when openFollowing then interactions are as expected`() {
-        sut.openFollowing(user = UserModel(id = ""))
+        sut.openFollowing(user = UserModel(id = "1"))
 
         verify {
-            navigationCoordinator.push(any<UserListScreen>())
+            navigationCoordinator.push(Destination.UserList(type = UserListType.Following.toInt(), userId = "1"))
         }
     }
 
@@ -208,7 +212,7 @@ class DefaultDetailOpenerTest {
         sut.openFavorites()
 
         verify {
-            navigationCoordinator.push(any<FavoritesScreen>())
+            navigationCoordinator.push(Destination.Favorites(FavoritesType.Favorites.toInt()))
         }
     }
 
@@ -217,7 +221,7 @@ class DefaultDetailOpenerTest {
         sut.openBookmarks()
 
         verify {
-            navigationCoordinator.push(any<FavoritesScreen>())
+            navigationCoordinator.push(Destination.Favorites(FavoritesType.Bookmarks.toInt()))
         }
     }
 
@@ -226,7 +230,7 @@ class DefaultDetailOpenerTest {
         sut.openFollowedHashtags()
 
         verify {
-            navigationCoordinator.push(any<FollowedHashtagsScreen>())
+            navigationCoordinator.push(Destination.FollowedHashtags)
         }
     }
 
@@ -235,7 +239,13 @@ class DefaultDetailOpenerTest {
         sut.openEntryUsersFavorite(entryId = "1", count = 1)
 
         verify {
-            navigationCoordinator.push(any<UserListScreen>())
+            navigationCoordinator.push(
+                Destination.UserList(
+                    type = UserListType.UsersFavorite.toInt(),
+                    entryId = "1",
+                    infoCount = 1,
+                ),
+            )
         }
     }
 
@@ -244,7 +254,13 @@ class DefaultDetailOpenerTest {
         sut.openEntryUsersReblog(entryId = "1", count = 1)
 
         verify {
-            navigationCoordinator.push(any<UserListScreen>())
+            navigationCoordinator.push(
+                Destination.UserList(
+                    type = UserListType.UsersReblog.toInt(),
+                    entryId = "1",
+                    infoCount = 1,
+                ),
+            )
         }
     }
 
@@ -253,7 +269,7 @@ class DefaultDetailOpenerTest {
         sut.openComposer()
 
         verify {
-            navigationCoordinator.push(any<ComposerScreen>())
+            navigationCoordinator.push(Destination.Composer())
         }
     }
 
@@ -269,7 +285,7 @@ class DefaultDetailOpenerTest {
         verifySuspend {
             entryCache.put(entry.id, entry)
             userCache.put(user.id, user)
-            navigationCoordinator.push(any<ComposerScreen>())
+            navigationCoordinator.push(Destination.Composer(inReplyToId = entry.id))
         }
     }
 
@@ -283,7 +299,7 @@ class DefaultDetailOpenerTest {
 
         verifySuspend {
             entryCache.put(entry.id, entry)
-            navigationCoordinator.push(any<ComposerScreen>())
+            navigationCoordinator.push(Destination.Composer(scheduledPostId = entry.id))
         }
     }
 
@@ -292,7 +308,7 @@ class DefaultDetailOpenerTest {
         sut.openSearch()
 
         verify {
-            navigationCoordinator.push(any<SearchScreen>())
+            navigationCoordinator.push(Destination.Search)
         }
     }
 
@@ -303,7 +319,7 @@ class DefaultDetailOpenerTest {
 
         verifySuspend {
             entryCache.put(entry.id, entry)
-            navigationCoordinator.push(any<ThreadScreen>())
+            navigationCoordinator.push(Destination.Thread(entryId = entry.id, swipeNavigationEnabled = false))
         }
     }
 
@@ -314,7 +330,7 @@ class DefaultDetailOpenerTest {
 
         verifySuspend {
             entryCache.put(entry.id, entry)
-            navigationCoordinator.push(any<ThreadScreen>())
+            navigationCoordinator.push(Destination.Thread(entryId = entry.id, swipeNavigationEnabled = true))
         }
     }
 
@@ -324,7 +340,7 @@ class DefaultDetailOpenerTest {
         sut.openImageDetail(urls = urls, initialIndex = 0)
 
         verify {
-            navigationCoordinator.push(any<ImageDetailScreen>())
+            navigationCoordinator.push(Destination.ImageDetail(urls = urls, initialIndex = 0))
         }
     }
 
@@ -333,7 +349,7 @@ class DefaultDetailOpenerTest {
         sut.openBlockedAndMuted()
 
         verify {
-            navigationCoordinator.push(any<ManageBlocksScreen>())
+            navigationCoordinator.push(Destination.ManageBlocks)
         }
     }
 
@@ -342,7 +358,7 @@ class DefaultDetailOpenerTest {
         sut.openCircles()
 
         verify {
-            navigationCoordinator.push(any<CirclesScreen>())
+            navigationCoordinator.push(Destination.Circles)
         }
     }
 
@@ -351,7 +367,7 @@ class DefaultDetailOpenerTest {
         sut.openCircleEditMembers(groupId = "1")
 
         verify {
-            navigationCoordinator.push(any<CircleMembersScreen>())
+            navigationCoordinator.push(Destination.CircleMembers("1"))
         }
     }
 
@@ -362,7 +378,7 @@ class DefaultDetailOpenerTest {
 
         verifySuspend {
             circleCache.put(circle.id, circle)
-            navigationCoordinator.push(any<CircleTimelineScreen>())
+            navigationCoordinator.push(Destination.CircleTimeline(circle.id))
         }
     }
 
@@ -371,7 +387,7 @@ class DefaultDetailOpenerTest {
         sut.openFollowRequests()
 
         verify {
-            navigationCoordinator.push(any<FollowRequestsScreen>())
+            navigationCoordinator.push(Destination.FollowRequests)
         }
     }
 
@@ -380,7 +396,7 @@ class DefaultDetailOpenerTest {
         sut.openEditProfile()
 
         verify {
-            navigationCoordinator.push(any<EditProfileScreen>())
+            navigationCoordinator.push(Destination.EditProfile)
         }
     }
 
@@ -389,7 +405,7 @@ class DefaultDetailOpenerTest {
         sut.openNodeInfo()
 
         verify {
-            navigationCoordinator.push(any<NodeInfoScreen>())
+            navigationCoordinator.push(Destination.NodeInfo)
         }
     }
 
@@ -398,7 +414,7 @@ class DefaultDetailOpenerTest {
         sut.openDirectMessages()
 
         verify {
-            navigationCoordinator.push(any<ConversationListScreen>())
+            navigationCoordinator.push(Destination.ConversationList)
         }
     }
 
@@ -406,11 +422,11 @@ class DefaultDetailOpenerTest {
     fun `when openConversation then interactions are as expected`() {
         sut.openConversation(
             otherUser = UserModel(id = "1"),
-            parentUri = "",
+            parentUri = "fake-url",
         )
 
         verify {
-            navigationCoordinator.push(any<ConversationScreen>())
+            navigationCoordinator.push(Destination.Conversation(otherUserId = "1", parentUri = "fake-url"))
         }
     }
 
@@ -419,7 +435,7 @@ class DefaultDetailOpenerTest {
         sut.openGallery()
 
         verify {
-            navigationCoordinator.push(any<GalleryScreen>())
+            navigationCoordinator.push(Destination.Gallery)
         }
     }
 
@@ -428,7 +444,7 @@ class DefaultDetailOpenerTest {
         sut.openAlbum(name = "album")
 
         verify {
-            navigationCoordinator.push(any<AlbumDetailScreen>())
+            navigationCoordinator.push(Destination.AlbumDetail("album"))
         }
     }
 
@@ -437,7 +453,7 @@ class DefaultDetailOpenerTest {
         sut.openUnpublished()
 
         verify {
-            navigationCoordinator.push(any<UnpublishedScreen>())
+            navigationCoordinator.push(Destination.Unpublished)
         }
     }
 
@@ -446,7 +462,7 @@ class DefaultDetailOpenerTest {
         sut.openCreateReport(user = UserModel(id = "1"))
 
         verify {
-            navigationCoordinator.push(any<CreateReportScreen>())
+            navigationCoordinator.push(Destination.CreateReport("1"))
         }
     }
 
@@ -458,7 +474,7 @@ class DefaultDetailOpenerTest {
         )
 
         verify {
-            navigationCoordinator.push(any<CreateReportScreen>())
+            navigationCoordinator.push(Destination.CreateReport(userId = "1", entryId = "2"))
         }
     }
 
@@ -467,7 +483,7 @@ class DefaultDetailOpenerTest {
         sut.openUserFeedback()
 
         verify {
-            navigationCoordinator.push(any<UserFeedbackScreen>())
+            navigationCoordinator.push(Destination.UserFeedback)
         }
     }
 
@@ -476,7 +492,7 @@ class DefaultDetailOpenerTest {
         sut.openCalendar()
 
         verify {
-            navigationCoordinator.push(any<CalendarScreen>())
+            navigationCoordinator.push(Destination.Calendar)
         }
     }
 
@@ -494,7 +510,7 @@ class DefaultDetailOpenerTest {
 
         verifySuspend {
             eventCache.put("0", event)
-            navigationCoordinator.push(any<EventDetailScreen>())
+            navigationCoordinator.push(Destination.EventDetail(event.id))
         }
     }
 
@@ -503,16 +519,17 @@ class DefaultDetailOpenerTest {
         sut.openLicences()
 
         verify {
-            navigationCoordinator.push(any<LicencesScreen>())
+            navigationCoordinator.push(Destination.Licences)
         }
     }
 
     @Test
     fun `when openInternalWebView then interactions are as expected`() {
-        sut.openInternalWebView("https://www.google.com")
+        val url = "https://www.google.com"
+        sut.openInternalWebView(url)
 
         verify {
-            navigationCoordinator.push(any<WebViewScreen>())
+            navigationCoordinator.push(Destination.WebView(url))
         }
     }
 
@@ -521,7 +538,7 @@ class DefaultDetailOpenerTest {
         sut.openAnnouncements()
 
         verify {
-            navigationCoordinator.push(any<AnnouncementsScreen>())
+            navigationCoordinator.push(Destination.Announcements)
         }
     }
 
@@ -530,7 +547,7 @@ class DefaultDetailOpenerTest {
         sut.openAcknowledgements()
 
         verify {
-            navigationCoordinator.push(any<AcknowledgementsScreen>())
+            navigationCoordinator.push(Destination.Acknowledgements)
         }
     }
 
@@ -539,7 +556,7 @@ class DefaultDetailOpenerTest {
         sut.openShortcuts()
 
         verify {
-            navigationCoordinator.push(any<ShortcutListScreen>())
+            navigationCoordinator.push(Destination.ShortcutList)
         }
     }
 
@@ -548,7 +565,7 @@ class DefaultDetailOpenerTest {
         sut.openShortcut("node")
 
         verify {
-            navigationCoordinator.push(any<ShortcutTimelineScreen>())
+            navigationCoordinator.push(Destination.ShortcutTimeline("node"))
         }
     }
 }

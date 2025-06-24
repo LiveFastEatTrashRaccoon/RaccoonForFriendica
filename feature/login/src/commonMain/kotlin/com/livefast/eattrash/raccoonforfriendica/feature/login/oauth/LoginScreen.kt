@@ -47,7 +47,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -64,240 +63,238 @@ import com.livefast.eattrash.raccoonforfriendica.feature.login.di.LoginViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class LoginScreen(private val loginType: Int) : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: LoginMviModel = getViewModel<LoginViewModel>(arg = LoginViewModelArgs(loginType.toLoginType()))
-        val uiState by model.uiState.collectAsState()
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val snackbarHostState = remember { SnackbarHostState() }
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val uriHandler = LocalUriHandler.current
-        val focusManager = LocalFocusManager.current
-        val genericError = LocalStrings.current.messageGenericError
-        val successMessage = LocalStrings.current.messageSuccess
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
+    val model: LoginMviModel = getViewModel<LoginViewModel>(arg = LoginViewModelArgs(loginType.toLoginType()))
+    val uiState by model.uiState.collectAsState()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val snackbarHostState = remember { SnackbarHostState() }
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val uriHandler = LocalUriHandler.current
+    val focusManager = LocalFocusManager.current
+    val genericError = LocalStrings.current.messageGenericError
+    val successMessage = LocalStrings.current.messageSuccess
 
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        is LoginMviModel.Effect.OpenUrl -> uriHandler.openUri(event.url)
-                        is LoginMviModel.Effect.Failure ->
-                            snackbarHostState.showSnackbar(
-                                message = event.message ?: genericError,
-                            )
-
-                        LoginMviModel.Effect.Success -> {
-                            snackbarHostState.showSnackbar(
-                                message = successMessage,
-                            )
-                            navigationCoordinator.popUntilRoot()
-                        }
-
-                        is LoginMviModel.Effect.OpenWebRegistration ->
-                            uriHandler.openExternally(event.url)
-                    }
-                }.launchIn(this)
-        }
-
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            modifier = Modifier.navigationBarsPadding(),
-            topBar = {
-                TopAppBar(
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.buttonLogin,
-                            style = MaterialTheme.typography.titleMedium,
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    is LoginMviModel.Effect.OpenUrl -> uriHandler.openUri(event.url)
+                    is LoginMviModel.Effect.Failure ->
+                        snackbarHostState.showSnackbar(
+                            message = event.message ?: genericError,
                         )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
+
+                    LoginMviModel.Effect.Success -> {
+                        snackbarHostState.showSnackbar(
+                            message = successMessage,
+                        )
+                        navigationCoordinator.popUntilRoot()
+                    }
+
+                    is LoginMviModel.Effect.OpenWebRegistration ->
+                        uriHandler.openExternally(event.url)
+                }
+            }.launchIn(this)
+    }
+
+    Scaffold(
+        modifier = modifier.navigationBarsPadding(),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.buttonLogin,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
+                            )
                         }
+                    }
+                },
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
+                )
+            }
+        },
+    ) { padding ->
+        Column(
+            modifier =
+            Modifier
+                .padding(
+                    top = padding.calculateTopPadding(),
+                    start = Spacing.l,
+                    end = Spacing.l,
+                ).consumeWindowInsets(padding)
+                .safeImePadding()
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            // instance name text field (with or without spinner)
+            val keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    autoCorrectEnabled = false,
+                    imeAction = ImeAction.Done,
+                )
+            val keyboardActions =
+                KeyboardActions(
+                    onNext = {
+                        model.reduce(LoginMviModel.Intent.Submit)
                     },
                 )
-            },
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
+            val label = @Composable {
+                Text(
+                    text = LocalStrings.current.fieldNodeName,
+                )
+            }
+            val supportingText = @Composable {
+                val error = uiState.nodeNameError
+                if (error != null) {
+                    Text(
+                        text = error.toReadableMessage(),
+                        color = MaterialTheme.colorScheme.error,
                     )
                 }
-            },
-        ) { padding ->
-            Column(
+            }
+            if (uiState.useDropDown) {
+                SpinnerField(
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
+                    label = label,
+                    placeholder = {
+                        Text(
+                            text =
+                            buildString {
+                                append(LocalStrings.current.exempliGratia)
+                                append(" ")
+                                append("friendica.world")
+                            },
+                        )
+                    },
+                    values =
+                    buildList {
+                        for (instance in DefaultFriendicaInstances) {
+                            this += buildString {
+                                append(instance.value)
+                                append("  ")
+                                append(instance.lang)
+                            } to instance.value
+                        }
+                        this += LocalStrings.current.itemOther to ""
+                    },
+                    value = uiState.nodeName,
+                    isError = uiState.nodeNameError != null,
+                    keyboardOptions = keyboardOptions,
+                    keyboardActions =
+                    keyboardActions,
+                    onValueChange = { value ->
+                        model.reduce(LoginMviModel.Intent.SetNodeName(value))
+                    },
+                    supportingText = supportingText,
+                )
+            } else {
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
+                    value = uiState.nodeName,
+                    label = label,
+                    placeholder = {
+                        Text(
+                            text =
+                            buildString {
+                                append(LocalStrings.current.exempliGratia)
+                                append(" ")
+                                append("mastodon.social")
+                            },
+                        )
+                    },
+                    supportingText = supportingText,
+                    singleLine = true,
+                    isError = uiState.nodeNameError != null,
+                    keyboardOptions =
+                    keyboardOptions,
+                    keyboardActions = keyboardActions,
+                    onValueChange = { value ->
+                        model.reduce(LoginMviModel.Intent.SetNodeName(value))
+                    },
+                )
+            }
+
+            Text(
                 modifier =
                 Modifier
                     .padding(
-                        top = padding.calculateTopPadding(),
-                        start = Spacing.l,
-                        end = Spacing.l,
-                    ).consumeWindowInsets(padding)
-                    .safeImePadding()
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                        top = Spacing.xs,
+                        start = Spacing.xxs,
+                        end = Spacing.xxs,
+                    ).fillMaxWidth(),
+                text =
+                buildAnnotatedString {
+                    append(LocalStrings.current.messageSignUp1)
+                    append(" ")
+                    withLink(
+                        LinkAnnotation.Clickable(
+                            tag = "action-sign-up",
+                            styles =
+                            TextLinkStyles(
+                                style =
+                                SpanStyle(
+                                    textDecoration = TextDecoration.Underline,
+                                    color = MaterialTheme.colorScheme.primary,
+                                ),
+                            ),
+                            linkInteractionListener = {
+                                model.reduce(LoginMviModel.Intent.SignUp)
+                            },
+                        ),
+                    ) {
+                        append(LocalStrings.current.messageSignUp2)
+                    }
+                },
+                style = MaterialTheme.typography.bodyMedium,
+            )
+
+            Button(
+                modifier = Modifier.padding(top = Spacing.l),
+                onClick = {
+                    focusManager.clearFocus()
+                    model.reduce(LoginMviModel.Intent.Submit)
+                },
             ) {
-                // instance name text field (with or without spinner)
-                val keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        autoCorrectEnabled = false,
-                        imeAction = ImeAction.Done,
-                    )
-                val keyboardActions =
-                    KeyboardActions(
-                        onNext = {
-                            model.reduce(LoginMviModel.Intent.Submit)
-                        },
-                    )
-                val label = @Composable {
-                    Text(
-                        text = LocalStrings.current.fieldNodeName,
-                    )
-                }
-                val supportingText = @Composable {
-                    val error = uiState.nodeNameError
-                    if (error != null) {
-                        Text(
-                            text = error.toReadableMessage(),
-                            color = MaterialTheme.colorScheme.error,
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (uiState.loading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(IconSize.s),
+                            color = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
-                }
-                if (uiState.useDropDown) {
-                    SpinnerField(
-                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
-                        label = label,
-                        placeholder = {
-                            Text(
-                                text =
-                                buildString {
-                                    append(LocalStrings.current.exempliGratia)
-                                    append(" ")
-                                    append("friendica.world")
-                                },
-                            )
-                        },
-                        values =
-                        buildList {
-                            for (instance in DefaultFriendicaInstances) {
-                                this += buildString {
-                                    append(instance.value)
-                                    append("  ")
-                                    append(instance.lang)
-                                } to instance.value
-                            }
-                            this += LocalStrings.current.itemOther to ""
-                        },
-                        value = uiState.nodeName,
-                        isError = uiState.nodeNameError != null,
-                        keyboardOptions = keyboardOptions,
-                        keyboardActions =
-                        keyboardActions,
-                        onValueChange = { value ->
-                            model.reduce(LoginMviModel.Intent.SetNodeName(value))
-                        },
-                        supportingText = supportingText,
-                    )
-                } else {
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
-                        value = uiState.nodeName,
-                        label = label,
-                        placeholder = {
-                            Text(
-                                text =
-                                buildString {
-                                    append(LocalStrings.current.exempliGratia)
-                                    append(" ")
-                                    append("mastodon.social")
-                                },
-                            )
-                        },
-                        supportingText = supportingText,
-                        singleLine = true,
-                        isError = uiState.nodeNameError != null,
-                        keyboardOptions =
-                        keyboardOptions,
-                        keyboardActions = keyboardActions,
-                        onValueChange = { value ->
-                            model.reduce(LoginMviModel.Intent.SetNodeName(value))
-                        },
-                    )
-                }
-
-                Text(
-                    modifier =
-                    Modifier
-                        .padding(
-                            top = Spacing.xs,
-                            start = Spacing.xxs,
-                            end = Spacing.xxs,
-                        ).fillMaxWidth(),
-                    text =
-                    buildAnnotatedString {
-                        append(LocalStrings.current.messageSignUp1)
-                        append(" ")
-                        withLink(
-                            LinkAnnotation.Clickable(
-                                tag = "action-sign-up",
-                                styles =
-                                TextLinkStyles(
-                                    style =
-                                    SpanStyle(
-                                        textDecoration = TextDecoration.Underline,
-                                        color = MaterialTheme.colorScheme.primary,
-                                    ),
-                                ),
-                                linkInteractionListener = {
-                                    model.reduce(LoginMviModel.Intent.SignUp)
-                                },
-                            ),
-                        ) {
-                            append(LocalStrings.current.messageSignUp2)
-                        }
-                    },
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-
-                Button(
-                    modifier = Modifier.padding(top = Spacing.l),
-                    onClick = {
-                        focusManager.clearFocus()
-                        model.reduce(LoginMviModel.Intent.Submit)
-                    },
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(Spacing.s),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        if (uiState.loading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(IconSize.s),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                            )
-                        }
-                        Text(LocalStrings.current.buttonConfirm)
-                    }
+                    Text(LocalStrings.current.buttonConfirm)
                 }
             }
         }
