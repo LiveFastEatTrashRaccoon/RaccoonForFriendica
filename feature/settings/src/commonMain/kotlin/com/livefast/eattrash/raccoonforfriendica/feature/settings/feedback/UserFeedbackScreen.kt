@@ -40,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
@@ -52,182 +51,180 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadabl
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class UserFeedbackScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: UserFeedbackMviModel = getViewModel<UserFeedbackViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val snackbarHostState = remember { SnackbarHostState() }
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val genericError = LocalStrings.current.messageGenericError
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun UserFeedbackScreen(modifier: Modifier = Modifier) {
+    val model: UserFeedbackMviModel = getViewModel<UserFeedbackViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val snackbarHostState = remember { SnackbarHostState() }
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val genericError = LocalStrings.current.messageGenericError
 
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        is UserFeedbackMviModel.Effect.Failure -> {
-                            snackbarHostState.showSnackbar(
-                                message = event.message ?: genericError,
-                            )
-                        }
-
-                        UserFeedbackMviModel.Effect.Success -> {
-                            navigationCoordinator.pop()
-                        }
-                    }
-                }.launchIn(this)
-        }
-
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            modifier =
-            Modifier
-                .navigationBarsPadding()
-                .safeImePadding(),
-            topBar = {
-                TopAppBar(
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.settingsAboutReportIssue,
-                            style = MaterialTheme.typography.titleMedium,
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    is UserFeedbackMviModel.Effect.Failure -> {
+                        snackbarHostState.showSnackbar(
+                            message = event.message ?: genericError,
                         )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
-                        }
-                    },
-                    actions = {
-                        FilledIconButton(
+                    }
+
+                    UserFeedbackMviModel.Effect.Success -> {
+                        navigationCoordinator.pop()
+                    }
+                }
+            }.launchIn(this)
+    }
+
+    Scaffold(
+        modifier =
+        modifier
+            .navigationBarsPadding()
+            .safeImePadding(),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.settingsAboutReportIssue,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
                             onClick = {
-                                model.reduce(UserFeedbackMviModel.Intent.Submit)
+                                navigationCoordinator.pop()
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.Send,
-                                contentDescription = LocalStrings.current.actionSubmit,
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
-                    },
-                )
-            },
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
-                    )
-                }
-            },
-        ) { padding ->
-            Column(
-                modifier =
-                Modifier
-                    .padding(
-                        top = padding.calculateTopPadding(),
-                        start = Spacing.l,
-                        end = Spacing.l,
-                    ).consumeWindowInsets(padding)
-                    .safeImePadding()
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(Spacing.s),
-            ) {
-                Spacer(modifier = Modifier.height(Spacing.s))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text(text = LocalStrings.current.userFeedbackFieldEmail)
-                    },
-                    singleLine = true,
-                    value = uiState.email,
-                    isError = uiState.emailError != null,
-                    keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        autoCorrectEnabled = false,
-                    ),
-                    onValueChange = { value ->
-                        model.reduce(UserFeedbackMviModel.Intent.SetEmail(value))
-                    },
-                    supportingText = {
-                        val error = uiState.emailError
-                        if (error != null) {
-                            Text(
-                                text = error.toReadableMessage(),
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        if (uiState.email.isNotEmpty()) {
-                            IconButton(
-                                onClick = {
-                                    model.reduce(UserFeedbackMviModel.Intent.SetEmail(""))
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Clear,
-                                    contentDescription = LocalStrings.current.actionClear,
-                                )
-                            }
-                        }
-                    },
-                )
-
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth().height(300.dp),
-                    label = {
-                        Text(text = LocalStrings.current.userFeedbackFieldComment)
-                    },
-                    value = uiState.comment,
-                    isError = uiState.commentError != null,
-                    keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        capitalization = KeyboardCapitalization.Sentences,
-                    ),
-                    placeholder = {
-                        Text(
-                            text = LocalStrings.current.userFeedbackCommentPlaceholder,
+                    }
+                },
+                actions = {
+                    FilledIconButton(
+                        onClick = {
+                            model.reduce(UserFeedbackMviModel.Intent.Submit)
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.Send,
+                            contentDescription = LocalStrings.current.actionSubmit,
                         )
-                    },
-                    onValueChange = { value ->
-                        model.reduce(UserFeedbackMviModel.Intent.SetComment(value))
-                    },
-                    supportingText = {
-                        val error = uiState.commentError
-                        if (error != null) {
-                            Text(
-                                text = error.toReadableMessage(),
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                    },
+                    }
+                },
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
                 )
             }
-        }
+        },
+    ) { padding ->
+        Column(
+            modifier =
+            Modifier
+                .padding(
+                    top = padding.calculateTopPadding(),
+                    start = Spacing.l,
+                    end = Spacing.l,
+                ).consumeWindowInsets(padding)
+                .safeImePadding()
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(Spacing.s),
+        ) {
+            Spacer(modifier = Modifier.height(Spacing.s))
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                label = {
+                    Text(text = LocalStrings.current.userFeedbackFieldEmail)
+                },
+                singleLine = true,
+                value = uiState.email,
+                isError = uiState.emailError != null,
+                keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    autoCorrectEnabled = false,
+                ),
+                onValueChange = { value ->
+                    model.reduce(UserFeedbackMviModel.Intent.SetEmail(value))
+                },
+                supportingText = {
+                    val error = uiState.emailError
+                    if (error != null) {
+                        Text(
+                            text = error.toReadableMessage(),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                },
+                trailingIcon = {
+                    if (uiState.email.isNotEmpty()) {
+                        IconButton(
+                            onClick = {
+                                model.reduce(UserFeedbackMviModel.Intent.SetEmail(""))
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = LocalStrings.current.actionClear,
+                            )
+                        }
+                    }
+                },
+            )
 
-        if (uiState.loading) {
-            ProgressHud()
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth().height(300.dp),
+                label = {
+                    Text(text = LocalStrings.current.userFeedbackFieldComment)
+                },
+                value = uiState.comment,
+                isError = uiState.commentError != null,
+                keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    capitalization = KeyboardCapitalization.Sentences,
+                ),
+                placeholder = {
+                    Text(
+                        text = LocalStrings.current.userFeedbackCommentPlaceholder,
+                    )
+                },
+                onValueChange = { value ->
+                    model.reduce(UserFeedbackMviModel.Intent.SetComment(value))
+                },
+                supportingText = {
+                    val error = uiState.commentError
+                    if (error != null) {
+                        Text(
+                            text = error.toReadableMessage(),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                },
+            )
         }
+    }
+
+    if (uiState.loading) {
+        ProgressHud()
     }
 }
