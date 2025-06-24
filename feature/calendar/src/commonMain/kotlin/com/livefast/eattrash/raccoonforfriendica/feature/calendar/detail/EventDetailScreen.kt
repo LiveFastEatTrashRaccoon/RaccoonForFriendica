@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
@@ -46,127 +45,126 @@ import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.Ca
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.di.EventDetailViewModelArgs
 import kotlinx.coroutines.launch
 
-class EventDetailScreen(private val eventId: String) : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: EventDetailMviModel = getViewModel<EventDetailViewModel>(arg = EventDetailViewModelArgs(eventId))
-        val uiState by model.uiState.collectAsState()
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val uriHandler = LocalUriHandler.current
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val lazyListState = rememberLazyListState()
-        val scope = rememberCoroutineScope()
-        val snackbarHostState = remember { SnackbarHostState() }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EventDetailScreen(eventId: String, modifier: Modifier = Modifier) {
+    val model: EventDetailMviModel = getViewModel<EventDetailViewModel>(arg = EventDetailViewModelArgs(eventId))
+    val uiState by model.uiState.collectAsState()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val uriHandler = LocalUriHandler.current
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-        fun goBackToTop() {
-            runCatching {
-                scope.launch {
-                    lazyListState.scrollToItem(0)
-                    topAppBarState.heightOffset = 0f
-                    topAppBarState.contentOffset = 0f
-                }
+    fun goBackToTop() {
+        runCatching {
+            scope.launch {
+                lazyListState.scrollToItem(0)
+                topAppBarState.heightOffset = 0f
+                topAppBarState.contentOffset = 0f
             }
         }
+    }
 
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            topBar = {
-                TopAppBar(
-                    modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = uiState.event?.title.orEmpty(),
-                            style = MaterialTheme.typography.titleMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = uiState.event?.title.orEmpty(),
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                },
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
+                            )
                         }
-                    },
+                    }
+                },
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
                 )
-            },
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
+            }
+        },
+    ) { padding ->
+        Box(
+            modifier =
+            Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .then(
+                    if (uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    } else {
+                        Modifier
+                    },
+                ),
+        ) {
+            LazyColumn(
+                state = lazyListState,
+                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+            ) {
+                uiState.event?.title?.also { title ->
+                    item {
+                        ContentTitle(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.s),
+                            content = title,
+                            onOpenUrl = {
+                                uriHandler.openUri(it)
+                            },
+                        )
+                    }
+                }
+
+                item {
+                    CalendarEventFooter(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.s),
+                        startDate = uiState.event?.startTime,
+                        endDate = uiState.event?.endTime,
+                        place = uiState.event?.place,
                     )
                 }
-            },
-        ) { padding ->
-            Box(
-                modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
-                    .then(
-                        if (uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        } else {
-                            Modifier
-                        },
-                    ),
-            ) {
-                LazyColumn(
-                    state = lazyListState,
-                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-                ) {
-                    uiState.event?.title?.also { title ->
-                        item {
-                            ContentTitle(
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.s),
-                                content = title,
-                                onOpenUrl = {
-                                    uriHandler.openUri(it)
-                                },
-                            )
-                        }
-                    }
 
+                uiState.event?.description?.also { title ->
                     item {
-                        CalendarEventFooter(
+                        TimelineDivider()
+
+                        ContentBody(
                             modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.s),
-                            startDate = uiState.event?.startTime,
-                            endDate = uiState.event?.endTime,
-                            place = uiState.event?.place,
+                            content = title,
+                            onOpenUrl = {
+                                uriHandler.openUri(it)
+                            },
                         )
                     }
-
-                    uiState.event?.description?.also { title ->
-                        item {
-                            TimelineDivider()
-
-                            ContentBody(
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.s),
-                                content = title,
-                                onOpenUrl = {
-                                    uriHandler.openUri(it)
-                                },
-                            )
-                        }
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(Spacing.xxl))
-                    }
+                }
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.xxl))
                 }
             }
         }
