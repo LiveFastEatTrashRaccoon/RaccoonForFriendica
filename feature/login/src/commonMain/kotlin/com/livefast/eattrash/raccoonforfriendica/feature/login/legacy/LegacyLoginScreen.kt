@@ -53,7 +53,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -68,281 +67,279 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFrie
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class LegacyLoginScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val model: LegacyLoginMviModel = getViewModel<LegacyLoginViewModel>()
-        val uiState by model.uiState.collectAsState()
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val snackbarHostState = remember { SnackbarHostState() }
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val genericError = LocalStrings.current.messageGenericError
-        val successMessage = LocalStrings.current.messageSuccess
-        val focusManager = LocalFocusManager.current
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LegacyLoginScreen(modifier: Modifier = Modifier) {
+    val model: LegacyLoginMviModel = getViewModel<LegacyLoginViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val snackbarHostState = remember { SnackbarHostState() }
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val genericError = LocalStrings.current.messageGenericError
+    val successMessage = LocalStrings.current.messageSuccess
+    val focusManager = LocalFocusManager.current
 
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { event ->
-                    when (event) {
-                        is LegacyLoginMviModel.Effect.Failure -> {
-                            snackbarHostState.showSnackbar(
-                                message = event.message ?: genericError,
-                            )
-                        }
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    is LegacyLoginMviModel.Effect.Failure -> {
+                        snackbarHostState.showSnackbar(
+                            message = event.message ?: genericError,
+                        )
+                    }
 
-                        LegacyLoginMviModel.Effect.Success -> {
-                            snackbarHostState.showSnackbar(
-                                message = successMessage,
+                    LegacyLoginMviModel.Effect.Success -> {
+                        snackbarHostState.showSnackbar(
+                            message = successMessage,
+                        )
+                        navigationCoordinator.pop()
+                    }
+                }
+            }.launchIn(this)
+    }
+
+    Scaffold(
+        modifier = modifier.navigationBarsPadding(),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text =
+                        buildString {
+                            append(LocalStrings.current.buttonLogin)
+                            append(" (")
+                            append(LocalStrings.current.loginMethodBasic)
+                            append(")")
+                        },
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
                             )
-                            navigationCoordinator.pop()
                         }
                     }
-                }.launchIn(this)
-        }
-
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            modifier = Modifier.navigationBarsPadding(),
-            topBar = {
-                TopAppBar(
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text =
-                            buildString {
-                                append(LocalStrings.current.buttonLogin)
-                                append(" (")
-                                append(LocalStrings.current.loginMethodBasic)
-                                append(")")
-                            },
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
-                        }
-                    },
+                },
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
                 )
-            },
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
-                    )
-                }
-            },
-        ) { padding ->
-            Column(
+            }
+        },
+    ) { padding ->
+        Column(
+            modifier =
+            Modifier
+                .padding(
+                    top = padding.calculateTopPadding(),
+                    start = Spacing.l,
+                    end = Spacing.l,
+                ).consumeWindowInsets(padding)
+                .safeImePadding()
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.height(Spacing.s))
+
+            // instance name
+            SpinnerField(
+                modifier =
+                Modifier.fillMaxWidth(),
+                label = {
+                    Text(text = LocalStrings.current.fieldNodeName)
+                },
+                values =
+                buildList {
+                    for (instance in DefaultFriendicaInstances) {
+                        this += buildString {
+                            append(instance.value)
+                            append("  ")
+                            append(instance.lang)
+                        } to instance.value
+                    }
+                    this += LocalStrings.current.itemOther to ""
+                },
+                value = uiState.nodeName,
+                isError = uiState.nodeNameError != null,
+                keyboardActions =
+                KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    },
+                ),
+                keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    autoCorrectEnabled = false,
+                    imeAction = ImeAction.Next,
+                ),
+                onValueChange = { value ->
+                    model.reduce(LegacyLoginMviModel.Intent.SetNodeName(value))
+                },
+                supportingText = {
+                    val error = uiState.nodeNameError
+                    if (error != null) {
+                        Text(
+                            text = error.toReadableMessage(),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                },
+            )
+
+            // user name
+            TextField(
                 modifier =
                 Modifier
-                    .padding(
-                        top = padding.calculateTopPadding(),
-                        start = Spacing.l,
-                        end = Spacing.l,
-                    ).consumeWindowInsets(padding)
-                    .safeImePadding()
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Spacer(modifier = Modifier.height(Spacing.s))
-
-                // instance name
-                SpinnerField(
-                    modifier =
-                    Modifier.fillMaxWidth(),
-                    label = {
-                        Text(text = LocalStrings.current.fieldNodeName)
-                    },
-                    values =
-                    buildList {
-                        for (instance in DefaultFriendicaInstances) {
-                            this += buildString {
-                                append(instance.value)
-                                append("  ")
-                                append(instance.lang)
-                            } to instance.value
-                        }
-                        this += LocalStrings.current.itemOther to ""
-                    },
-                    value = uiState.nodeName,
-                    isError = uiState.nodeNameError != null,
-                    keyboardActions =
-                    KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        },
-                    ),
-                    keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        autoCorrectEnabled = false,
-                        imeAction = ImeAction.Next,
-                    ),
-                    onValueChange = { value ->
-                        model.reduce(LegacyLoginMviModel.Intent.SetNodeName(value))
-                    },
-                    supportingText = {
-                        val error = uiState.nodeNameError
-                        if (error != null) {
-                            Text(
-                                text = error.toReadableMessage(),
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                    },
-                )
-
-                // user name
-                TextField(
-                    modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .autofill(
-                            autofillTypes =
-                            listOf(
-                                AutofillType.Username,
-                                AutofillType.EmailAddress,
-                            ),
-                            onFill = { value ->
-                                model.reduce(LegacyLoginMviModel.Intent.SetUsername(value))
-                            },
+                    .autofill(
+                        autofillTypes =
+                        listOf(
+                            AutofillType.Username,
+                            AutofillType.EmailAddress,
                         ),
-                    label = {
-                        Text(text = LocalStrings.current.fieldUsername)
-                    },
-                    singleLine = true,
-                    value = uiState.username,
-                    isError = uiState.usernameError != null,
-                    keyboardActions =
-                    KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
+                        onFill = { value ->
+                            model.reduce(LegacyLoginMviModel.Intent.SetUsername(value))
                         },
                     ),
-                    keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        autoCorrectEnabled = false,
-                        imeAction = ImeAction.Next,
-                    ),
-                    onValueChange = { value ->
-                        model.reduce(LegacyLoginMviModel.Intent.SetUsername(value))
+                label = {
+                    Text(text = LocalStrings.current.fieldUsername)
+                },
+                singleLine = true,
+                value = uiState.username,
+                isError = uiState.usernameError != null,
+                keyboardActions =
+                KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
                     },
-                    supportingText = {
-                        val error = uiState.usernameError
-                        if (error != null) {
-                            Text(
-                                text = error.toReadableMessage(),
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                    },
-                )
-
-                // password
-                var transformation: VisualTransformation by remember {
-                    mutableStateOf(PasswordVisualTransformation())
-                }
-                TextField(
-                    modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .autofill(
-                            autofillTypes = listOf(AutofillType.Password),
-                            onFill = { value ->
-                                model.reduce(LegacyLoginMviModel.Intent.SetPassword(value))
-                            },
-                        ),
-                    label = {
-                        Text(text = LocalStrings.current.fieldPassword)
-                    },
-                    singleLine = true,
-                    value = uiState.password,
-                    isError = uiState.passwordError != null,
-                    keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done,
-                    ),
-                    keyboardActions =
-                    KeyboardActions(
-                        onDone = {
-                            model.reduce(LegacyLoginMviModel.Intent.Submit)
-                        },
-                    ),
-                    onValueChange = { value ->
-                        model.reduce(LegacyLoginMviModel.Intent.SetPassword(value))
-                    },
-                    visualTransformation = transformation,
-                    trailingIcon = {
-                        Image(
-                            modifier =
-                            Modifier.clickable {
-                                transformation =
-                                    if (transformation == VisualTransformation.None) {
-                                        PasswordVisualTransformation()
-                                    } else {
-                                        VisualTransformation.None
-                                    }
-                            },
-                            imageVector =
-                            if (transformation == VisualTransformation.None) {
-                                Icons.Default.VisibilityOff
-                            } else {
-                                Icons.Default.Visibility
-                            },
-                            contentDescription = LocalStrings.current.actionToggleReveal,
-                            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),
+                ),
+                keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    autoCorrectEnabled = false,
+                    imeAction = ImeAction.Next,
+                ),
+                onValueChange = { value ->
+                    model.reduce(LegacyLoginMviModel.Intent.SetUsername(value))
+                },
+                supportingText = {
+                    val error = uiState.usernameError
+                    if (error != null) {
+                        Text(
+                            text = error.toReadableMessage(),
+                            color = MaterialTheme.colorScheme.error,
                         )
-                    },
-                    supportingText = {
-                        val error = uiState.passwordError
-                        if (error != null) {
-                            Text(
-                                text = error.toReadableMessage(),
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                    },
-                )
+                    }
+                },
+            )
 
-                Button(
-                    modifier = Modifier.padding(top = Spacing.l),
-                    onClick = {
-                        focusManager.clearFocus()
+            // password
+            var transformation: VisualTransformation by remember {
+                mutableStateOf(PasswordVisualTransformation())
+            }
+            TextField(
+                modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .autofill(
+                        autofillTypes = listOf(AutofillType.Password),
+                        onFill = { value ->
+                            model.reduce(LegacyLoginMviModel.Intent.SetPassword(value))
+                        },
+                    ),
+                label = {
+                    Text(text = LocalStrings.current.fieldPassword)
+                },
+                singleLine = true,
+                value = uiState.password,
+                isError = uiState.passwordError != null,
+                keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions =
+                KeyboardActions(
+                    onDone = {
                         model.reduce(LegacyLoginMviModel.Intent.Submit)
                     },
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(Spacing.s),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        if (uiState.loading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(IconSize.s),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                            )
-                        }
-                        Text(LocalStrings.current.buttonConfirm)
+                ),
+                onValueChange = { value ->
+                    model.reduce(LegacyLoginMviModel.Intent.SetPassword(value))
+                },
+                visualTransformation = transformation,
+                trailingIcon = {
+                    Image(
+                        modifier =
+                        Modifier.clickable {
+                            transformation =
+                                if (transformation == VisualTransformation.None) {
+                                    PasswordVisualTransformation()
+                                } else {
+                                    VisualTransformation.None
+                                }
+                        },
+                        imageVector =
+                        if (transformation == VisualTransformation.None) {
+                            Icons.Default.VisibilityOff
+                        } else {
+                            Icons.Default.Visibility
+                        },
+                        contentDescription = LocalStrings.current.actionToggleReveal,
+                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),
+                    )
+                },
+                supportingText = {
+                    val error = uiState.passwordError
+                    if (error != null) {
+                        Text(
+                            text = error.toReadableMessage(),
+                            color = MaterialTheme.colorScheme.error,
+                        )
                     }
+                },
+            )
+
+            Button(
+                modifier = Modifier.padding(top = Spacing.l),
+                onClick = {
+                    focusManager.clearFocus()
+                    model.reduce(LegacyLoginMviModel.Intent.Submit)
+                },
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (uiState.loading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(IconSize.s),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
+                    Text(LocalStrings.current.buttonConfirm)
                 }
             }
         }
