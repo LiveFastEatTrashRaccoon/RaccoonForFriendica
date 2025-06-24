@@ -42,7 +42,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import cafe.adriel.voyager.core.screen.Screen
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
@@ -70,7 +69,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDetailOpener
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
@@ -96,587 +95,564 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
-class SettingsScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
-        val controller: PermissionsController =
-            remember(factory) {
-                factory.createPermissionsController()
-            }
-        val model: SettingsMviModel = getViewModel<SettingsViewModel>(arg = SettingsViewModelArgs(controller))
-        val uiState by model.uiState.collectAsState()
-        val topAppBarState = rememberTopAppBarState()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-        val navigationCoordinator = remember { getNavigationCoordinator() }
-        val detailOpener = remember { getDetailOpener() }
-        val coreResources = remember { getCoreResources() }
-        val scope = rememberCoroutineScope()
-        val fileSystemManager = remember { getFileSystemManager() }
-        val snackbarHostState = remember { SnackbarHostState() }
-        val successMessage = LocalStrings.current.messageSuccess
-        val errorMessage = LocalStrings.current.messageGenericError
-        var languageBottomSheetOpened by remember { mutableStateOf(false) }
-        var themeBottomSheetOpened by remember { mutableStateOf(false) }
-        var fontFamilyBottomSheetOpened by remember { mutableStateOf(false) }
-        var fontScaleBottomSheetOpened by remember { mutableStateOf(false) }
-        var themeColorBottomSheetOpened by remember { mutableStateOf(false) }
-        var defaultTimelineTypeBottomSheetOpened by remember { mutableStateOf(false) }
-        var urlOpeningModeBottomSheetOpened by remember { mutableStateOf(false) }
-        var customColorPickerDialogOpened by remember { mutableStateOf(false) }
-        var defaultPostVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
-        var defaultReplyVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
-        var markupModeBottomSheetOpened by remember { mutableStateOf(false) }
-        var maxPostBodyLinesBottomSheetOpened by remember { mutableStateOf(false) }
-        var backgroundNotificationCheckIntervalDialogOpened by remember { mutableStateOf(false) }
-        var notificationModeBottomSheetOpened by remember { mutableStateOf(false) }
-        var pushNotificationDistributorBottomSheetOpened by remember { mutableStateOf(false) }
-        var imageLoadingModeBottomSheetOpened by remember { mutableStateOf(false) }
-        var appIconBottomSheetOpened by remember { mutableStateOf(false) }
-        var barThemeBottomSheetOpened by remember { mutableStateOf(false) }
-        var fileInputOpened by remember { mutableStateOf(false) }
-        var settingsContent by remember { mutableStateOf<String?>(null) }
-        var timelineLayoutBottomSheetOpened by remember { mutableStateOf(false) }
-        var replyDepthBottoSheepOpened by remember { mutableStateOf(false) }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsScreen(modifier: Modifier = Modifier) {
+    val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
+    val controller: PermissionsController =
+        remember(factory) {
+            factory.createPermissionsController()
+        }
+    val model: SettingsMviModel = getViewModel<SettingsViewModel>(arg = SettingsViewModelArgs(controller))
+    val uiState by model.uiState.collectAsState()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val detailOpener = remember { getMainRouter() }
+    val coreResources = remember { getCoreResources() }
+    val scope = rememberCoroutineScope()
+    val fileSystemManager = remember { getFileSystemManager() }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val successMessage = LocalStrings.current.messageSuccess
+    val errorMessage = LocalStrings.current.messageGenericError
+    var languageBottomSheetOpened by remember { mutableStateOf(false) }
+    var themeBottomSheetOpened by remember { mutableStateOf(false) }
+    var fontFamilyBottomSheetOpened by remember { mutableStateOf(false) }
+    var fontScaleBottomSheetOpened by remember { mutableStateOf(false) }
+    var themeColorBottomSheetOpened by remember { mutableStateOf(false) }
+    var defaultTimelineTypeBottomSheetOpened by remember { mutableStateOf(false) }
+    var urlOpeningModeBottomSheetOpened by remember { mutableStateOf(false) }
+    var customColorPickerDialogOpened by remember { mutableStateOf(false) }
+    var defaultPostVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
+    var defaultReplyVisibilityBottomSheetOpened by remember { mutableStateOf(false) }
+    var markupModeBottomSheetOpened by remember { mutableStateOf(false) }
+    var maxPostBodyLinesBottomSheetOpened by remember { mutableStateOf(false) }
+    var backgroundNotificationCheckIntervalDialogOpened by remember { mutableStateOf(false) }
+    var notificationModeBottomSheetOpened by remember { mutableStateOf(false) }
+    var pushNotificationDistributorBottomSheetOpened by remember { mutableStateOf(false) }
+    var imageLoadingModeBottomSheetOpened by remember { mutableStateOf(false) }
+    var appIconBottomSheetOpened by remember { mutableStateOf(false) }
+    var barThemeBottomSheetOpened by remember { mutableStateOf(false) }
+    var fileInputOpened by remember { mutableStateOf(false) }
+    var settingsContent by remember { mutableStateOf<String?>(null) }
+    var timelineLayoutBottomSheetOpened by remember { mutableStateOf(false) }
+    var replyDepthBottoSheepOpened by remember { mutableStateOf(false) }
 
-        BindEffect(permissionsController = controller)
-        LaunchedEffect(model) {
-            model.effects
-                .onEach { evt ->
-                    when (evt) {
-                        is SettingsMviModel.Effect.SaveSettings -> {
-                            settingsContent = evt.content
+    BindEffect(permissionsController = controller)
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { evt ->
+                when (evt) {
+                    is SettingsMviModel.Effect.SaveSettings -> {
+                        settingsContent = evt.content
+                    }
+                }
+            }.launchIn(this)
+    }
+
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            TopAppBar(
+                windowInsets = topAppBarState.toWindowInsets(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.settingsTitle,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    if (navigationCoordinator.canPop.value) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
+                            )
                         }
                     }
-                }.launchIn(this)
-        }
-
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            topBar = {
-                TopAppBar(
-                    windowInsets = topAppBarState.toWindowInsets(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.settingsTitle,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (navigationCoordinator.canPop.value) {
-                            IconButton(
-                                onClick = {
-                                    navigationCoordinator.pop()
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = LocalStrings.current.actionGoBack,
-                                )
-                            }
-                        }
-                    },
+                },
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
                 )
-            },
-            snackbarHost = {
-                SnackbarHost(snackbarHostState) { data ->
-                    Snackbar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
-                    )
-                }
-            },
-            content = { padding ->
-                Box(
-                    modifier =
-                    Modifier
-                        .padding(padding)
-                        .then(
-                            if (uiState.hideNavigationBarWhileScrolling) {
-                                Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                            } else {
-                                Modifier
-                            },
-                        ),
+            }
+        },
+        content = { padding ->
+            Box(
+                modifier =
+                Modifier
+                    .padding(padding)
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
+            ) {
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
                 ) {
-                    Column(
-                        modifier = Modifier.verticalScroll(rememberScrollState()),
-                    ) {
-                        // General section
-                        SettingsHeader(
-                            title = LocalStrings.current.settingsHeaderGeneral,
-                            icon = Icons.Default.Settings,
-                        )
-                        SettingsRow(
-                            title = LocalStrings.current.settingsItemLanguage,
-                            value =
-                            buildString {
-                                append(uiState.lang.toLanguageName().orEmpty())
-                                append("  ")
-                                append(uiState.lang.toLanguageFlag().orEmpty())
-                            },
-                            onTap = {
-                                languageBottomSheetOpened = true
-                            },
-                        )
-                        SettingsRow(
-                            title = LocalStrings.current.settingsItemDefaultTimelineType,
-                            value = uiState.defaultTimelineType.toReadableName(),
-                            onTap = {
-                                defaultTimelineTypeBottomSheetOpened = true
-                            },
-                        )
-                        SettingsRow(
-                            title = LocalStrings.current.settingsItemDefaultPostVisibility,
-                            value = uiState.defaultPostVisibility.toReadableName(),
-                            onTap = {
-                                defaultPostVisibilityBottomSheetOpened = true
-                            },
-                        )
-                        SettingsRow(
-                            title = LocalStrings.current.settingsItemDefaultReplyVisibility,
-                            value = uiState.defaultReplyVisibility.toReadableName(),
-                            onTap = {
-                                defaultReplyVisibilityBottomSheetOpened = true
-                            },
-                        )
-                        SettingsRow(
-                            title = LocalStrings.current.settingsItemUrlOpeningMode,
-                            value = uiState.urlOpeningMode.toReadableName(),
-                            onTap = {
-                                urlOpeningModeBottomSheetOpened = true
-                            },
-                        )
-                        SettingsSwitchRow(
-                            title = LocalStrings.current.settingsItemExcludeRepliesFromTimeline,
-                            value = uiState.excludeRepliesFromTimeline,
-                            onValueChange = {
-                                model.reduce(
-                                    SettingsMviModel.Intent.ChangeExcludeRepliesFromTimeline(it),
-                                )
-                            },
-                        )
-                        SettingsSwitchRow(
-                            title = LocalStrings.current.settingsItemOpenGroupsInForumModeByDefault,
-                            value = uiState.openGroupsInForumModeByDefault,
-                            onValueChange = {
-                                model.reduce(
-                                    SettingsMviModel.Intent.ChangeOpenGroupsInForumModeByDefault(it),
-                                )
-                            },
-                        )
-                        SettingsRow(
-                            title = LocalStrings.current.settingsAutoloadImages,
-                            value = uiState.imageLoadingMode.toReadableName(),
-                            onTap = {
-                                imageLoadingModeBottomSheetOpened = true
-                            },
-                        )
-
-                        if (uiState.isLogged) {
-                            SettingsRow(
-                                title = LocalStrings.current.settingsItemMarkupMode,
-                                value = uiState.markupMode.toReadableName(),
-                                onTap = {
-                                    markupModeBottomSheetOpened = true
-                                },
+                    // General section
+                    SettingsHeader(
+                        title = LocalStrings.current.settingsHeaderGeneral,
+                        icon = Icons.Default.Settings,
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemLanguage,
+                        value =
+                        buildString {
+                            append(uiState.lang.toLanguageName().orEmpty())
+                            append("  ")
+                            append(uiState.lang.toLanguageFlag().orEmpty())
+                        },
+                        onTap = {
+                            languageBottomSheetOpened = true
+                        },
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemDefaultTimelineType,
+                        value = uiState.defaultTimelineType.toReadableName(),
+                        onTap = {
+                            defaultTimelineTypeBottomSheetOpened = true
+                        },
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemDefaultPostVisibility,
+                        value = uiState.defaultPostVisibility.toReadableName(),
+                        onTap = {
+                            defaultPostVisibilityBottomSheetOpened = true
+                        },
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemDefaultReplyVisibility,
+                        value = uiState.defaultReplyVisibility.toReadableName(),
+                        onTap = {
+                            defaultReplyVisibilityBottomSheetOpened = true
+                        },
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemUrlOpeningMode,
+                        value = uiState.urlOpeningMode.toReadableName(),
+                        onTap = {
+                            urlOpeningModeBottomSheetOpened = true
+                        },
+                    )
+                    SettingsSwitchRow(
+                        title = LocalStrings.current.settingsItemExcludeRepliesFromTimeline,
+                        value = uiState.excludeRepliesFromTimeline,
+                        onValueChange = {
+                            model.reduce(
+                                SettingsMviModel.Intent.ChangeExcludeRepliesFromTimeline(it),
                             )
-                        }
-
-                        SettingsRow(
-                            title = LocalStrings.current.settingsItemMaxPostBodyLines,
-                            value = uiState.maxPostBodyLines.toMaxBodyLinesReadableName(),
-                            onTap = {
-                                maxPostBodyLinesBottomSheetOpened = true
-                            },
-                        )
-
-                        if (uiState.isLogged && uiState.supportsNotifications) {
-                            SettingsRow(
-                                title = LocalStrings.current.settingsItemNotificationMode,
-                                value = uiState.notificationMode.toReadableName(),
-                                onTap = {
-                                    notificationModeBottomSheetOpened = true
-                                },
+                        },
+                    )
+                    SettingsSwitchRow(
+                        title = LocalStrings.current.settingsItemOpenGroupsInForumModeByDefault,
+                        value = uiState.openGroupsInForumModeByDefault,
+                        onValueChange = {
+                            model.reduce(
+                                SettingsMviModel.Intent.ChangeOpenGroupsInForumModeByDefault(it),
                             )
-                            if (uiState.notificationMode == NotificationMode.Pull) {
-                                SettingsRow(
-                                    title = LocalStrings.current.settingsOptionBackgroundNotificationCheck,
-                                    subtitle =
-                                    if (uiState.pullNotificationsRestricted) {
-                                        LocalStrings.current.settingsSubtitleBackgroundNotificationRestricted
-                                    } else {
-                                        LocalStrings.current.settingsSubtitleBackgroundNotificationNotRestricted
-                                    },
-                                    value =
-                                    uiState.backgroundNotificationCheckInterval?.getPrettyDuration(
-                                        secondsLabel = LocalStrings.current.timeSecondShort,
-                                        minutesLabel = LocalStrings.current.timeMinuteShort,
-                                        hoursLabel = LocalStrings.current.timeHourShort,
-                                        daysLabel = LocalStrings.current.dateDayShort,
-                                        finePrecision = false,
-                                    ) ?: LocalStrings.current.durationNever,
-                                    onTap = {
-                                        backgroundNotificationCheckIntervalDialogOpened = true
-                                    },
-                                )
-                            }
-                            if (uiState.notificationMode == NotificationMode.Push) {
-                                val permissionState = uiState.pushNotificationPermissionState
-                                when (permissionState) {
-                                    PermissionState.NotGranted,
-                                    PermissionState.Denied,
-                                    ->
-                                        SettingsRow(
-                                            title = LocalStrings.current.settingsPushNotificationPermissionNotGranted,
-                                            value = LocalStrings.current.actionGrantPermission,
-                                            onTap = {
-                                                model.reduce(SettingsMviModel.Intent.GrantPushNotificationsPermission)
-                                            },
-                                        )
+                        },
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsAutoloadImages,
+                        value = uiState.imageLoadingMode.toReadableName(),
+                        onTap = {
+                            imageLoadingModeBottomSheetOpened = true
+                        },
+                    )
 
-                                    PermissionState.DeniedAlways ->
-                                        SettingsRow(
-                                            title = LocalStrings.current
-                                                .settingsPushNotificationPermissionDeniedPermanently,
-                                            value = LocalStrings.current.actionOpenSettings,
-                                            onTap = {
-                                            },
-                                        )
+                    if (uiState.isLogged) {
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemMarkupMode,
+                            value = uiState.markupMode.toReadableName(),
+                            onTap = {
+                                markupModeBottomSheetOpened = true
+                            },
+                        )
+                    }
 
-                                    else -> Unit
-                                }
-                                SettingsRow(
-                                    title = LocalStrings.current.settingsItemPushNotificationState,
-                                    value = uiState.pushNotificationState.toReadableName(),
-                                    onTap =
-                                    {
-                                        pushNotificationDistributorBottomSheetOpened = true
-                                    }.takeIf {
-                                        uiState.pushNotificationState ==
-                                            PushNotificationManagerState.NoDistributorSelected
-                                    },
-                                )
-                            }
-                        }
-                        SettingsRow(
-                            title = LocalStrings.current.settingsItemConversationReplyDepth,
-                            value = uiState.replyDepth.toString(),
-                            onTap = {
-                                replyDepthBottoSheepOpened = true
-                            },
-                        )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemMaxPostBodyLines,
+                        value = uiState.maxPostBodyLines.toMaxBodyLinesReadableName(),
+                        onTap = {
+                            maxPostBodyLinesBottomSheetOpened = true
+                        },
+                    )
 
-                        // Look & feel section
-                        SettingsHeader(
-                            title = LocalStrings.current.settingsHeaderLookAndFeel,
-                            icon = Icons.Default.Style,
-                        )
+                    if (uiState.isLogged && uiState.supportsNotifications) {
                         SettingsRow(
-                            title = LocalStrings.current.settingsItemTimelineLayout,
-                            value = uiState.timelineLayout.toReadableName(),
+                            title = LocalStrings.current.settingsItemNotificationMode,
+                            value = uiState.notificationMode.toReadableName(),
                             onTap = {
-                                timelineLayoutBottomSheetOpened = true
+                                notificationModeBottomSheetOpened = true
                             },
                         )
-                        SettingsRow(
-                            title = LocalStrings.current.settingsItemTheme,
-                            value = uiState.theme.toReadableName(),
-                            onTap = {
-                                themeBottomSheetOpened = true
-                            },
-                        )
-                        SettingsRow(
-                            title = LocalStrings.current.settingsItemFontFamily,
-                            value = uiState.fontFamily.toReadableName(),
-                            onTap = {
-                                fontFamilyBottomSheetOpened = true
-                            },
-                        )
-                        SettingsRow(
-                            title = LocalStrings.current.settingsItemFontScale,
-                            value = uiState.fontScale.toReadableName(),
-                            onTap = {
-                                fontScaleBottomSheetOpened = true
-                            },
-                        )
-                        SettingsColorRow(
-                            title = LocalStrings.current.settingsItemThemeColor,
-                            subtitle = LocalStrings.current.settingsItemThemeColorSubtitle,
-                            value = uiState.themeColor ?: MaterialTheme.colorScheme.primary,
-                            onTap = {
-                                themeColorBottomSheetOpened = true
-                            },
-                        )
-                        if (uiState.supportsDynamicColors) {
-                            SettingsSwitchRow(
-                                title = LocalStrings.current.settingsItemDynamicColors,
-                                subtitle = LocalStrings.current.settingsItemDynamicColorsSubtitle,
-                                value = uiState.dynamicColors,
-                                onValueChange = {
-                                    model.reduce(SettingsMviModel.Intent.ChangeDynamicColors(it))
-                                },
-                            )
-                        }
-                        SettingsSwitchRow(
-                            title = LocalStrings.current.settingsItemHideNavigationBarWhileScrolling,
-                            value = uiState.hideNavigationBarWhileScrolling,
-                            onValueChange = {
-                                model.reduce(
-                                    SettingsMviModel.Intent.ChangeHideNavigationBarWhileScrolling(it),
-                                )
-                            },
-                        )
-                        if (uiState.appIconChangeSupported) {
+                        if (uiState.notificationMode == NotificationMode.Pull) {
                             SettingsRow(
-                                title = LocalStrings.current.settingsItemAppIcon,
+                                title = LocalStrings.current.settingsOptionBackgroundNotificationCheck,
                                 subtitle =
-                                if (uiState.appIconRestartRequired) {
-                                    LocalStrings.current.messageRestartToApplyChanges
+                                if (uiState.pullNotificationsRestricted) {
+                                    LocalStrings.current.settingsSubtitleBackgroundNotificationRestricted
                                 } else {
-                                    null
+                                    LocalStrings.current.settingsSubtitleBackgroundNotificationNotRestricted
                                 },
-                                value = uiState.appIconVariant.toReadableName(),
+                                value =
+                                uiState.backgroundNotificationCheckInterval?.getPrettyDuration(
+                                    secondsLabel = LocalStrings.current.timeSecondShort,
+                                    minutesLabel = LocalStrings.current.timeMinuteShort,
+                                    hoursLabel = LocalStrings.current.timeHourShort,
+                                    daysLabel = LocalStrings.current.dateDayShort,
+                                    finePrecision = false,
+                                ) ?: LocalStrings.current.durationNever,
                                 onTap = {
-                                    appIconBottomSheetOpened = true
+                                    backgroundNotificationCheckIntervalDialogOpened = true
                                 },
                             )
                         }
-                        if (uiState.isBarThemeSupported) {
-                            SettingsRow(
-                                title = LocalStrings.current.settingsItemBarTheme,
-                                value = uiState.barTheme.toReadableName(),
-                                onTap = {
-                                    barThemeBottomSheetOpened = true
-                                },
-                            )
-                        }
+                        if (uiState.notificationMode == NotificationMode.Push) {
+                            val permissionState = uiState.pushNotificationPermissionState
+                            when (permissionState) {
+                                PermissionState.NotGranted,
+                                PermissionState.Denied,
+                                ->
+                                    SettingsRow(
+                                        title = LocalStrings.current.settingsPushNotificationPermissionNotGranted,
+                                        value = LocalStrings.current.actionGrantPermission,
+                                        onTap = {
+                                            model.reduce(SettingsMviModel.Intent.GrantPushNotificationsPermission)
+                                        },
+                                    )
 
-                        // NSFW section
-                        SettingsHeader(
-                            icon = Icons.Default.Explicit,
-                            title = LocalStrings.current.settingsHeaderNsfw,
-                        )
-                        if (uiState.isLogged) {
+                                PermissionState.DeniedAlways ->
+                                    SettingsRow(
+                                        title = LocalStrings.current
+                                            .settingsPushNotificationPermissionDeniedPermanently,
+                                        value = LocalStrings.current.actionOpenSettings,
+                                        onTap = {
+                                        },
+                                    )
+
+                                else -> Unit
+                            }
                             SettingsRow(
-                                title = LocalStrings.current.settingsItemBlockedAndMuted,
-                                disclosureIndicator = true,
-                                onTap = {
-                                    detailOpener.openBlockedAndMuted()
+                                title = LocalStrings.current.settingsItemPushNotificationState,
+                                value = uiState.pushNotificationState.toReadableName(),
+                                onTap =
+                                {
+                                    pushNotificationDistributorBottomSheetOpened = true
+                                }.takeIf {
+                                    uiState.pushNotificationState ==
+                                        PushNotificationManagerState.NoDistributorSelected
                                 },
                             )
                         }
+                    }
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemConversationReplyDepth,
+                        value = uiState.replyDepth.toString(),
+                        onTap = {
+                            replyDepthBottoSheepOpened = true
+                        },
+                    )
+
+                    // Look & feel section
+                    SettingsHeader(
+                        title = LocalStrings.current.settingsHeaderLookAndFeel,
+                        icon = Icons.Default.Style,
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemTimelineLayout,
+                        value = uiState.timelineLayout.toReadableName(),
+                        onTap = {
+                            timelineLayoutBottomSheetOpened = true
+                        },
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemTheme,
+                        value = uiState.theme.toReadableName(),
+                        onTap = {
+                            themeBottomSheetOpened = true
+                        },
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemFontFamily,
+                        value = uiState.fontFamily.toReadableName(),
+                        onTap = {
+                            fontFamilyBottomSheetOpened = true
+                        },
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemFontScale,
+                        value = uiState.fontScale.toReadableName(),
+                        onTap = {
+                            fontScaleBottomSheetOpened = true
+                        },
+                    )
+                    SettingsColorRow(
+                        title = LocalStrings.current.settingsItemThemeColor,
+                        subtitle = LocalStrings.current.settingsItemThemeColorSubtitle,
+                        value = uiState.themeColor ?: MaterialTheme.colorScheme.primary,
+                        onTap = {
+                            themeColorBottomSheetOpened = true
+                        },
+                    )
+                    if (uiState.supportsDynamicColors) {
                         SettingsSwitchRow(
-                            title = LocalStrings.current.settingsItemIncludeNsfw,
-                            value = uiState.includeNsfw,
+                            title = LocalStrings.current.settingsItemDynamicColors,
+                            subtitle = LocalStrings.current.settingsItemDynamicColorsSubtitle,
+                            value = uiState.dynamicColors,
                             onValueChange = {
-                                model.reduce(SettingsMviModel.Intent.ChangeIncludeNsfw(it))
+                                model.reduce(SettingsMviModel.Intent.ChangeDynamicColors(it))
                             },
                         )
-                        SettingsSwitchRow(
-                            title = LocalStrings.current.settingsItemBlurNsfw,
-                            value = uiState.blurNsfw,
-                            onValueChange = {
-                                model.reduce(SettingsMviModel.Intent.ChangeBlurNsfw(it))
-                            },
-                        )
-
-                        // Debug section
-                        SettingsHeader(
-                            icon = Icons.Default.BugReport,
-                            title = LocalStrings.current.settingsSectionDebug,
-                        )
-                        SettingsSwitchRow(
-                            title = LocalStrings.current.settingsItemCrashReportEnabled,
+                    }
+                    SettingsSwitchRow(
+                        title = LocalStrings.current.settingsItemHideNavigationBarWhileScrolling,
+                        value = uiState.hideNavigationBarWhileScrolling,
+                        onValueChange = {
+                            model.reduce(
+                                SettingsMviModel.Intent.ChangeHideNavigationBarWhileScrolling(it),
+                            )
+                        },
+                    )
+                    if (uiState.appIconChangeSupported) {
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemAppIcon,
                             subtitle =
-                            if (uiState.crashReportRestartRequired) {
+                            if (uiState.appIconRestartRequired) {
                                 LocalStrings.current.messageRestartToApplyChanges
                             } else {
                                 null
                             },
-                            value = uiState.crashReportEnabled,
-                            onValueChange = {
-                                model.reduce(SettingsMviModel.Intent.ChangeCrashReportEnabled(it))
+                            value = uiState.appIconVariant.toReadableName(),
+                            onTap = {
+                                appIconBottomSheetOpened = true
                             },
                         )
-
-                        // Other section
-                        if (uiState.supportSettingsImportExport) {
-                            SettingsHeader(
-                                icon = Icons.Default.Handyman,
-                                title = LocalStrings.current.itemOther,
-                            )
-                            SettingsRow(
-                                title = LocalStrings.current.settingsItemExport,
-                                onTap = {
-                                    model.reduce(SettingsMviModel.Intent.ExportSettings)
-                                },
-                            )
-                            SettingsRow(
-                                title = LocalStrings.current.settingsItemImport,
-                                onTap = {
-                                    fileInputOpened = true
-                                },
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(Spacing.xxxl))
                     }
+                    if (uiState.isBarThemeSupported) {
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemBarTheme,
+                            value = uiState.barTheme.toReadableName(),
+                            onTap = {
+                                barThemeBottomSheetOpened = true
+                            },
+                        )
+                    }
+
+                    // NSFW section
+                    SettingsHeader(
+                        icon = Icons.Default.Explicit,
+                        title = LocalStrings.current.settingsHeaderNsfw,
+                    )
+                    if (uiState.isLogged) {
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemBlockedAndMuted,
+                            disclosureIndicator = true,
+                            onTap = {
+                                detailOpener.openBlockedAndMuted()
+                            },
+                        )
+                    }
+                    SettingsSwitchRow(
+                        title = LocalStrings.current.settingsItemIncludeNsfw,
+                        value = uiState.includeNsfw,
+                        onValueChange = {
+                            model.reduce(SettingsMviModel.Intent.ChangeIncludeNsfw(it))
+                        },
+                    )
+                    SettingsSwitchRow(
+                        title = LocalStrings.current.settingsItemBlurNsfw,
+                        value = uiState.blurNsfw,
+                        onValueChange = {
+                            model.reduce(SettingsMviModel.Intent.ChangeBlurNsfw(it))
+                        },
+                    )
+
+                    // Debug section
+                    SettingsHeader(
+                        icon = Icons.Default.BugReport,
+                        title = LocalStrings.current.settingsSectionDebug,
+                    )
+                    SettingsSwitchRow(
+                        title = LocalStrings.current.settingsItemCrashReportEnabled,
+                        subtitle =
+                        if (uiState.crashReportRestartRequired) {
+                            LocalStrings.current.messageRestartToApplyChanges
+                        } else {
+                            null
+                        },
+                        value = uiState.crashReportEnabled,
+                        onValueChange = {
+                            model.reduce(SettingsMviModel.Intent.ChangeCrashReportEnabled(it))
+                        },
+                    )
+
+                    // Other section
+                    if (uiState.supportSettingsImportExport) {
+                        SettingsHeader(
+                            icon = Icons.Default.Handyman,
+                            title = LocalStrings.current.itemOther,
+                        )
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemExport,
+                            onTap = {
+                                model.reduce(SettingsMviModel.Intent.ExportSettings)
+                            },
+                        )
+                        SettingsRow(
+                            title = LocalStrings.current.settingsItemImport,
+                            onTap = {
+                                fileInputOpened = true
+                            },
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(Spacing.xxxl))
+                }
+            }
+        },
+    )
+
+    if (uiState.loading) {
+        ProgressHud()
+    }
+
+    if (languageBottomSheetOpened) {
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemLanguage,
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            items =
+            Locales.AVAILABLE_LANGUAGES.map { lang ->
+                CustomModalBottomSheetItem(
+                    label = lang.toLanguageName().orEmpty(),
+                    trailingContent = {
+                        Text(
+                            text = lang.toLanguageFlag().orEmpty(),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    },
+                )
+            },
+            onSelect = { index ->
+                languageBottomSheetOpened = false
+                if (index != null) {
+                    val value = Locales.AVAILABLE_LANGUAGES[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeLanguage(value))
                 }
             },
         )
+    }
 
-        if (uiState.loading) {
-            ProgressHud()
-        }
-
-        if (languageBottomSheetOpened) {
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemLanguage,
-                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                items =
-                Locales.AVAILABLE_LANGUAGES.map { lang ->
-                    CustomModalBottomSheetItem(
-                        label = lang.toLanguageName().orEmpty(),
-                        trailingContent = {
-                            Text(
-                                text = lang.toLanguageFlag().orEmpty(),
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
-                        },
-                    )
-                },
-                onSelect = { index ->
-                    languageBottomSheetOpened = false
-                    if (index != null) {
-                        val value = Locales.AVAILABLE_LANGUAGES[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeLanguage(value))
-                    }
-                },
-            )
-        }
-
-        if (themeBottomSheetOpened) {
-            val themes = listOf(UiTheme.Light, UiTheme.Dark, UiTheme.Black, UiTheme.Default)
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemTheme,
-                items =
-                themes.map { theme ->
-                    CustomModalBottomSheetItem(
-                        label = theme.toReadableName(),
-                        trailingContent = {
-                            Icon(
-                                modifier = Modifier.size(IconSize.m),
-                                imageVector = theme.toIcon(),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
-                        },
-                    )
-                },
-                onSelect = { index ->
-                    themeBottomSheetOpened = false
-                    if (index != null) {
-                        val value = themes[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeTheme(value))
-                    }
-                },
-            )
-        }
-
-        if (fontFamilyBottomSheetOpened) {
-            val fonts =
-                listOf(
-                    UiFontFamily.AtkinsonHyperlegible,
-                    UiFontFamily.Exo2,
-                    UiFontFamily.NotoSans,
-                    UiFontFamily.Default,
+    if (themeBottomSheetOpened) {
+        val themes = listOf(UiTheme.Light, UiTheme.Dark, UiTheme.Black, UiTheme.Default)
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemTheme,
+            items =
+            themes.map { theme ->
+                CustomModalBottomSheetItem(
+                    label = theme.toReadableName(),
+                    trailingContent = {
+                        Icon(
+                            modifier = Modifier.size(IconSize.m),
+                            imageVector = theme.toIcon(),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    },
                 )
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemFontFamily,
-                items =
-                fonts.map { family ->
-                    CustomModalBottomSheetItem(
-                        label = family.toReadableName(),
-                        customLabelStyle = family.toTypography().bodyLarge,
-                    )
-                },
-                onSelect = { index ->
-                    fontFamilyBottomSheetOpened = false
-                    if (index != null) {
-                        val value = fonts[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeFontFamily(value))
-                    }
-                },
-            )
-        }
+            },
+            onSelect = { index ->
+                themeBottomSheetOpened = false
+                if (index != null) {
+                    val value = themes[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeTheme(value))
+                }
+            },
+        )
+    }
 
-        if (fontScaleBottomSheetOpened) {
-            val fontScales =
-                listOf(
-                    UiFontScale.Largest,
-                    UiFontScale.Larger,
-                    UiFontScale.Normal,
-                    UiFontScale.Smaller,
-                    UiFontScale.Smallest,
+    if (fontFamilyBottomSheetOpened) {
+        val fonts =
+            listOf(
+                UiFontFamily.AtkinsonHyperlegible,
+                UiFontFamily.Exo2,
+                UiFontFamily.NotoSans,
+                UiFontFamily.Default,
+            )
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemFontFamily,
+            items =
+            fonts.map { family ->
+                CustomModalBottomSheetItem(
+                    label = family.toReadableName(),
+                    customLabelStyle = family.toTypography().bodyLarge,
                 )
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemFontScale,
-                items =
-                fontScales.map {
-                    CustomModalBottomSheetItem(
-                        label = it.toReadableName(),
-                        customLabelStyle =
-                        MaterialTheme.typography.bodyLarge.let { s ->
-                            s.copy(fontSize = s.fontSize * it.toScaleFactor())
-                        },
-                    )
-                },
-                onSelect = { index ->
-                    fontScaleBottomSheetOpened = false
-                    if (index != null) {
-                        val scale = fontScales[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeFontScale(scale))
-                    }
-                },
-            )
-        }
+            },
+            onSelect = { index ->
+                fontFamilyBottomSheetOpened = false
+                if (index != null) {
+                    val value = fonts[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeFontFamily(value))
+                }
+            },
+        )
+    }
 
-        if (themeColorBottomSheetOpened) {
-            val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-            CustomModalBottomSheet(
-                sheetState = state,
-                title = LocalStrings.current.settingsItemTheme,
-                items =
-                buildList {
-                    this +=
-                        uiState.availableThemeColors.map { theme ->
-                            CustomModalBottomSheetItem(
-                                leadingContent = {
-                                    Box(
-                                        modifier =
-                                        Modifier
-                                            .padding(start = Spacing.xs)
-                                            .size(IconSize.m)
-                                            .background(
-                                                color = theme.toColor(),
-                                                shape = CircleShape,
-                                            ),
-                                    )
-                                },
-                                label = theme.toReadableName(),
-                                trailingContent = {
-                                    Text(
-                                        text = theme.toEmoji(),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                    )
-                                },
-                            )
-                        }
-                    this +=
+    if (fontScaleBottomSheetOpened) {
+        val fontScales =
+            listOf(
+                UiFontScale.Largest,
+                UiFontScale.Larger,
+                UiFontScale.Normal,
+                UiFontScale.Smaller,
+                UiFontScale.Smallest,
+            )
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemFontScale,
+            items =
+            fontScales.map {
+                CustomModalBottomSheetItem(
+                    label = it.toReadableName(),
+                    customLabelStyle =
+                    MaterialTheme.typography.bodyLarge.let { s ->
+                        s.copy(fontSize = s.fontSize * it.toScaleFactor())
+                    },
+                )
+            },
+            onSelect = { index ->
+                fontScaleBottomSheetOpened = false
+                if (index != null) {
+                    val scale = fontScales[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeFontScale(scale))
+                }
+            },
+        )
+    }
+
+    if (themeColorBottomSheetOpened) {
+        val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        CustomModalBottomSheet(
+            sheetState = state,
+            title = LocalStrings.current.settingsItemTheme,
+            items =
+            buildList {
+                this +=
+                    uiState.availableThemeColors.map { theme ->
                         CustomModalBottomSheetItem(
                             leadingContent = {
                                 Box(
@@ -685,409 +661,431 @@ class SettingsScreen : Screen {
                                         .padding(start = Spacing.xs)
                                         .size(IconSize.m)
                                         .background(
-                                            color =
-                                            uiState.themeColor
-                                                ?: MaterialTheme.colorScheme.primary,
+                                            color = theme.toColor(),
                                             shape = CircleShape,
                                         ),
                                 )
                             },
-                            label = LocalStrings.current.customOption,
+                            label = theme.toReadableName(),
                             trailingContent = {
                                 Text(
-                                    text = "🎨",
+                                    text = theme.toEmoji(),
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
                             },
                         )
-                },
-                onSelect = { index ->
-                    themeColorBottomSheetOpened = false
-                    if (index != null) {
-                        if (index in uiState.availableThemeColors.indices) {
-                            // theme color selected
-                            val value = uiState.availableThemeColors[index]
-                            model.reduce(SettingsMviModel.Intent.ChangeThemeColor(value.toColor()))
-                        } else {
-                            // custom color selected
-                            customColorPickerDialogOpened = true
-                        }
                     }
-                },
-            )
-        }
-
-        if (customColorPickerDialogOpened) {
-            CustomColorPickerDialog(
-                initialValue = uiState.themeColor ?: MaterialTheme.colorScheme.primary,
-                onClose = { newColor ->
-                    customColorPickerDialogOpened = false
-                    if (newColor != null) {
-                        model.reduce(SettingsMviModel.Intent.ChangeThemeColor(newColor))
-                    }
-                },
-            )
-        }
-
-        if (defaultTimelineTypeBottomSheetOpened) {
-            CustomModalBottomSheet(
-                title = LocalStrings.current.feedTypeTitle,
-                items =
-                uiState.availableTimelineTypes.map {
-                    CustomModalBottomSheetItem(
-                        label = it.toReadableName(),
-                        trailingContent = {
-                            Icon(
-                                modifier = Modifier.size(IconSize.m),
-                                imageVector = it.toIcon(),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
-                        },
-                    )
-                },
-                onSelect = { index ->
-                    defaultTimelineTypeBottomSheetOpened = false
-                    if (index != null) {
-                        val type = uiState.availableTimelineTypes[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeDefaultTimelineType(type))
-                    }
-                },
-            )
-        }
-
-        if (urlOpeningModeBottomSheetOpened) {
-            val types = uiState.availableUrlOpeningModes
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemUrlOpeningMode,
-                items = types.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
-                onSelect = { index ->
-                    urlOpeningModeBottomSheetOpened = false
-                    if (index != null) {
-                        val type = types[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeUrlOpeningMode(type))
-                    }
-                },
-            )
-        }
-
-        if (defaultPostVisibilityBottomSheetOpened) {
-            val types = uiState.availableVisibilities
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemDefaultPostVisibility,
-                items =
-                types.map {
-                    CustomModalBottomSheetItem(
-                        label = it.toReadableName(),
-                        trailingContent = {
-                            Icon(
-                                modifier = Modifier.size(IconSize.m),
-                                imageVector = it.toIcon(),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
-                        },
-                    )
-                },
-                onSelect = { index ->
-                    defaultPostVisibilityBottomSheetOpened = false
-                    if (index != null) {
-                        val type = types[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeDefaultPostVisibility(type))
-                    }
-                },
-            )
-        }
-
-        if (defaultReplyVisibilityBottomSheetOpened) {
-            val types = uiState.availableVisibilities
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemDefaultReplyVisibility,
-                items =
-                types.map {
-                    CustomModalBottomSheetItem(
-                        label = it.toReadableName(),
-                        trailingContent = {
-                            Icon(
-                                modifier = Modifier.size(IconSize.m),
-                                imageVector = it.toIcon(),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
-                        },
-                    )
-                },
-                onSelect = { index ->
-                    defaultReplyVisibilityBottomSheetOpened = false
-                    if (index != null) {
-                        val type = types[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeDefaultReplyVisibility(type))
-                    }
-                },
-            )
-        }
-
-        if (markupModeBottomSheetOpened) {
-            val modes = uiState.availableMarkupModes
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemMarkupMode,
-                items = modes.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
-                onSelect = { index ->
-                    markupModeBottomSheetOpened = false
-                    if (index != null) {
-                        val mode = modes[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeMarkupMode(mode))
-                    }
-                },
-            )
-        }
-
-        if (maxPostBodyLinesBottomSheetOpened) {
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemMaxPostBodyLines,
-                items = MAX_POST_BODY_LINES_OPTIONS.map {
-                    CustomModalBottomSheetItem(label = it.toMaxBodyLinesReadableName())
-                },
-                onSelect = { index ->
-                    maxPostBodyLinesBottomSheetOpened = false
-                    if (index != null) {
-                        val value = MAX_POST_BODY_LINES_OPTIONS[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeMaxPostBodyLines(value))
-                    }
-                },
-            )
-        }
-
-        if (backgroundNotificationCheckIntervalDialogOpened) {
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsOptionBackgroundNotificationCheck,
-                items =
-                BACKGROUND_NOTIFICATION_CHECK_INTERVALS.map {
-                    CustomModalBottomSheetItem(
-                        label =
-                        it?.getPrettyDuration(
-                            secondsLabel = LocalStrings.current.timeSecondShort,
-                            minutesLabel = LocalStrings.current.timeMinuteShort,
-                            hoursLabel = LocalStrings.current.timeHourShort,
-                            daysLabel = LocalStrings.current.dateDayShort,
-                            finePrecision = false,
-                        ) ?: LocalStrings.current.durationNever,
-                    )
-                },
-                onSelect = { index ->
-                    backgroundNotificationCheckIntervalDialogOpened = false
-                    if (index != null) {
-                        val value = BACKGROUND_NOTIFICATION_CHECK_INTERVALS[index]
-                        model.reduce(
-                            SettingsMviModel.Intent.ChangeBackgroundNotificationCheckInterval(value),
-                        )
-                    }
-                },
-            )
-        }
-
-        if (notificationModeBottomSheetOpened) {
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemNotificationMode,
-                items =
-                uiState.availableNotificationModes.map {
-                    CustomModalBottomSheetItem(
-                        label = it.toReadableName(),
-                        trailingContent = {
-                            Text(
-                                text =
-                                when (it) {
-                                    NotificationMode.Disabled -> ""
-                                    NotificationMode.Pull ->
-                                        LocalStrings.current.settingsNotificationModePullExplanation
-
-                                    NotificationMode.Push ->
-                                        buildString {
-                                            append(LocalStrings.current.settingsNotificationModePushExplanation)
-                                            append(" (")
-                                            append(LocalStrings.current.experimental)
-                                            append(")")
-                                        }
-                                },
-                            )
-                        },
-                    )
-                },
-                onSelect = { index ->
-                    notificationModeBottomSheetOpened = false
-                    if (index != null) {
-                        val mode = uiState.availableNotificationModes[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeNotificationMode(mode))
-                    }
-                },
-            )
-        }
-
-        if (pushNotificationDistributorBottomSheetOpened) {
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsPushNotificationStateNoDistributorSelected,
-                items =
-                uiState.availablePushDistributors.map {
-                    CustomModalBottomSheetItem(label = it)
-                },
-                onSelect = { index ->
-                    pushNotificationDistributorBottomSheetOpened = false
-                    if (index != null) {
-                        val distributor = uiState.availablePushDistributors[index]
-                        model.reduce(SettingsMviModel.Intent.SelectPushDistributor(distributor))
-                    }
-                },
-            )
-        }
-
-        if (imageLoadingModeBottomSheetOpened) {
-            val values =
-                listOf(
-                    ImageLoadingMode.Always,
-                    ImageLoadingMode.OnDemand,
-                    ImageLoadingMode.OnWifi,
-                )
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsAutoloadImages,
-                items =
-                values.map {
-                    CustomModalBottomSheetItem(
-                        label = it.toReadableName(),
-                    )
-                },
-                onSelect = { index ->
-                    imageLoadingModeBottomSheetOpened = false
-                    if (index != null) {
-                        model.reduce(
-                            SettingsMviModel.Intent.ChangeAutoloadImages(values[index]),
-                        )
-                    }
-                },
-            )
-        }
-
-        if (appIconBottomSheetOpened) {
-            val values =
-                listOf(
-                    AppIconVariant.Default,
-                    AppIconVariant.Alt,
-                )
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemAppIcon,
-                items =
-                values.map { value ->
+                this +=
                     CustomModalBottomSheetItem(
                         leadingContent = {
-                            val painter =
-                                when (value) {
-                                    AppIconVariant.Alt -> coreResources.appIconAlt
-                                    else -> coreResources.appIconDefault
-                                }
-                            Image(
-                                modifier = Modifier.size(IconSize.m),
-                                painter = painter,
-                                contentDescription = null,
+                            Box(
+                                modifier =
+                                Modifier
+                                    .padding(start = Spacing.xs)
+                                    .size(IconSize.m)
+                                    .background(
+                                        color =
+                                        uiState.themeColor
+                                            ?: MaterialTheme.colorScheme.primary,
+                                        shape = CircleShape,
+                                    ),
                             )
                         },
-                        label = value.toReadableName(),
-                    )
-                },
-                onSelect = { index ->
-                    appIconBottomSheetOpened = false
-                    if (index != null) {
-                        val value = values[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeAppIcon(value))
-                    }
-                },
-            )
-        }
-
-        if (fileInputOpened) {
-            fileSystemManager.readFromFile(mimeTypes = arrayOf(SETTINGS_MIME_TYPE)) { content ->
-                if (content != null) {
-                    model.reduce(SettingsMviModel.Intent.ImportSettings(content))
-                }
-                fileInputOpened = false
-            }
-        }
-
-        if (barThemeBottomSheetOpened) {
-            val values =
-                listOf(
-                    UiBarTheme.Transparent,
-                    UiBarTheme.Opaque,
-                    UiBarTheme.Solid,
-                )
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemBarTheme,
-                items =
-                values.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
-                onSelect = { index ->
-                    barThemeBottomSheetOpened = false
-                    if (index != null) {
-                        model.reduce(
-                            SettingsMviModel.Intent.ChangeBarTheme(values[index]),
-                        )
-                    }
-                },
-            )
-        }
-
-        if (timelineLayoutBottomSheetOpened) {
-            val values =
-                listOf(
-                    TimelineLayout.Full,
-                    TimelineLayout.Compact,
-                    TimelineLayout.DistractionFree,
-                    TimelineLayout.Card,
-                )
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemTimelineLayout,
-                items =
-                values.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
-                onSelect = { index ->
-                    timelineLayoutBottomSheetOpened = false
-                    if (index != null) {
-                        model.reduce(
-                            SettingsMviModel.Intent.ChangeTimelineLayout(values[index]),
-                        )
-                    }
-                },
-            )
-        }
-
-        settingsContent?.also { content ->
-            fileSystemManager.writeToFile(
-                mimeType = SETTINGS_MIME_TYPE,
-                name = SETTINGS_FILE_NAME,
-                data = content,
-            ) { success ->
-                scope.launch {
-                    snackbarHostState.showSnackbar(
-                        if (success) {
-                            successMessage
-                        } else {
-                            errorMessage
+                        label = LocalStrings.current.customOption,
+                        trailingContent = {
+                            Text(
+                                text = "🎨",
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
                         },
                     )
-                }
-                settingsContent = null
-            }
-        }
-
-        if (replyDepthBottoSheepOpened) {
-            CustomModalBottomSheet(
-                title = LocalStrings.current.settingsItemConversationReplyDepth,
-                items = REPLY_DEPTH_VALUES.map { CustomModalBottomSheetItem(label = it.toString()) },
-                onSelect = { index ->
-                    replyDepthBottoSheepOpened = false
-                    if (index != null) {
-                        val value = REPLY_DEPTH_VALUES[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeReplyDepth(value))
+            },
+            onSelect = { index ->
+                themeColorBottomSheetOpened = false
+                if (index != null) {
+                    if (index in uiState.availableThemeColors.indices) {
+                        // theme color selected
+                        val value = uiState.availableThemeColors[index]
+                        model.reduce(SettingsMviModel.Intent.ChangeThemeColor(value.toColor()))
+                    } else {
+                        // custom color selected
+                        customColorPickerDialogOpened = true
                     }
-                },
+                }
+            },
+        )
+    }
+
+    if (customColorPickerDialogOpened) {
+        CustomColorPickerDialog(
+            initialValue = uiState.themeColor ?: MaterialTheme.colorScheme.primary,
+            onClose = { newColor ->
+                customColorPickerDialogOpened = false
+                if (newColor != null) {
+                    model.reduce(SettingsMviModel.Intent.ChangeThemeColor(newColor))
+                }
+            },
+        )
+    }
+
+    if (defaultTimelineTypeBottomSheetOpened) {
+        CustomModalBottomSheet(
+            title = LocalStrings.current.feedTypeTitle,
+            items =
+            uiState.availableTimelineTypes.map {
+                CustomModalBottomSheetItem(
+                    label = it.toReadableName(),
+                    trailingContent = {
+                        Icon(
+                            modifier = Modifier.size(IconSize.m),
+                            imageVector = it.toIcon(),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    },
+                )
+            },
+            onSelect = { index ->
+                defaultTimelineTypeBottomSheetOpened = false
+                if (index != null) {
+                    val type = uiState.availableTimelineTypes[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeDefaultTimelineType(type))
+                }
+            },
+        )
+    }
+
+    if (urlOpeningModeBottomSheetOpened) {
+        val types = uiState.availableUrlOpeningModes
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemUrlOpeningMode,
+            items = types.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+            onSelect = { index ->
+                urlOpeningModeBottomSheetOpened = false
+                if (index != null) {
+                    val type = types[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeUrlOpeningMode(type))
+                }
+            },
+        )
+    }
+
+    if (defaultPostVisibilityBottomSheetOpened) {
+        val types = uiState.availableVisibilities
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemDefaultPostVisibility,
+            items =
+            types.map {
+                CustomModalBottomSheetItem(
+                    label = it.toReadableName(),
+                    trailingContent = {
+                        Icon(
+                            modifier = Modifier.size(IconSize.m),
+                            imageVector = it.toIcon(),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    },
+                )
+            },
+            onSelect = { index ->
+                defaultPostVisibilityBottomSheetOpened = false
+                if (index != null) {
+                    val type = types[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeDefaultPostVisibility(type))
+                }
+            },
+        )
+    }
+
+    if (defaultReplyVisibilityBottomSheetOpened) {
+        val types = uiState.availableVisibilities
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemDefaultReplyVisibility,
+            items =
+            types.map {
+                CustomModalBottomSheetItem(
+                    label = it.toReadableName(),
+                    trailingContent = {
+                        Icon(
+                            modifier = Modifier.size(IconSize.m),
+                            imageVector = it.toIcon(),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    },
+                )
+            },
+            onSelect = { index ->
+                defaultReplyVisibilityBottomSheetOpened = false
+                if (index != null) {
+                    val type = types[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeDefaultReplyVisibility(type))
+                }
+            },
+        )
+    }
+
+    if (markupModeBottomSheetOpened) {
+        val modes = uiState.availableMarkupModes
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemMarkupMode,
+            items = modes.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+            onSelect = { index ->
+                markupModeBottomSheetOpened = false
+                if (index != null) {
+                    val mode = modes[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeMarkupMode(mode))
+                }
+            },
+        )
+    }
+
+    if (maxPostBodyLinesBottomSheetOpened) {
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemMaxPostBodyLines,
+            items = MAX_POST_BODY_LINES_OPTIONS.map {
+                CustomModalBottomSheetItem(label = it.toMaxBodyLinesReadableName())
+            },
+            onSelect = { index ->
+                maxPostBodyLinesBottomSheetOpened = false
+                if (index != null) {
+                    val value = MAX_POST_BODY_LINES_OPTIONS[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeMaxPostBodyLines(value))
+                }
+            },
+        )
+    }
+
+    if (backgroundNotificationCheckIntervalDialogOpened) {
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsOptionBackgroundNotificationCheck,
+            items =
+            BACKGROUND_NOTIFICATION_CHECK_INTERVALS.map {
+                CustomModalBottomSheetItem(
+                    label =
+                    it?.getPrettyDuration(
+                        secondsLabel = LocalStrings.current.timeSecondShort,
+                        minutesLabel = LocalStrings.current.timeMinuteShort,
+                        hoursLabel = LocalStrings.current.timeHourShort,
+                        daysLabel = LocalStrings.current.dateDayShort,
+                        finePrecision = false,
+                    ) ?: LocalStrings.current.durationNever,
+                )
+            },
+            onSelect = { index ->
+                backgroundNotificationCheckIntervalDialogOpened = false
+                if (index != null) {
+                    val value = BACKGROUND_NOTIFICATION_CHECK_INTERVALS[index]
+                    model.reduce(
+                        SettingsMviModel.Intent.ChangeBackgroundNotificationCheckInterval(value),
+                    )
+                }
+            },
+        )
+    }
+
+    if (notificationModeBottomSheetOpened) {
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemNotificationMode,
+            items =
+            uiState.availableNotificationModes.map {
+                CustomModalBottomSheetItem(
+                    label = it.toReadableName(),
+                    trailingContent = {
+                        Text(
+                            text =
+                            when (it) {
+                                NotificationMode.Disabled -> ""
+                                NotificationMode.Pull ->
+                                    LocalStrings.current.settingsNotificationModePullExplanation
+
+                                NotificationMode.Push ->
+                                    buildString {
+                                        append(LocalStrings.current.settingsNotificationModePushExplanation)
+                                        append(" (")
+                                        append(LocalStrings.current.experimental)
+                                        append(")")
+                                    }
+                            },
+                        )
+                    },
+                )
+            },
+            onSelect = { index ->
+                notificationModeBottomSheetOpened = false
+                if (index != null) {
+                    val mode = uiState.availableNotificationModes[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeNotificationMode(mode))
+                }
+            },
+        )
+    }
+
+    if (pushNotificationDistributorBottomSheetOpened) {
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsPushNotificationStateNoDistributorSelected,
+            items =
+            uiState.availablePushDistributors.map {
+                CustomModalBottomSheetItem(label = it)
+            },
+            onSelect = { index ->
+                pushNotificationDistributorBottomSheetOpened = false
+                if (index != null) {
+                    val distributor = uiState.availablePushDistributors[index]
+                    model.reduce(SettingsMviModel.Intent.SelectPushDistributor(distributor))
+                }
+            },
+        )
+    }
+
+    if (imageLoadingModeBottomSheetOpened) {
+        val values =
+            listOf(
+                ImageLoadingMode.Always,
+                ImageLoadingMode.OnDemand,
+                ImageLoadingMode.OnWifi,
             )
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsAutoloadImages,
+            items =
+            values.map {
+                CustomModalBottomSheetItem(
+                    label = it.toReadableName(),
+                )
+            },
+            onSelect = { index ->
+                imageLoadingModeBottomSheetOpened = false
+                if (index != null) {
+                    model.reduce(
+                        SettingsMviModel.Intent.ChangeAutoloadImages(values[index]),
+                    )
+                }
+            },
+        )
+    }
+
+    if (appIconBottomSheetOpened) {
+        val values =
+            listOf(
+                AppIconVariant.Default,
+                AppIconVariant.Alt,
+            )
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemAppIcon,
+            items =
+            values.map { value ->
+                CustomModalBottomSheetItem(
+                    leadingContent = {
+                        val painter =
+                            when (value) {
+                                AppIconVariant.Alt -> coreResources.appIconAlt
+                                else -> coreResources.appIconDefault
+                            }
+                        Image(
+                            modifier = Modifier.size(IconSize.m),
+                            painter = painter,
+                            contentDescription = null,
+                        )
+                    },
+                    label = value.toReadableName(),
+                )
+            },
+            onSelect = { index ->
+                appIconBottomSheetOpened = false
+                if (index != null) {
+                    val value = values[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeAppIcon(value))
+                }
+            },
+        )
+    }
+
+    if (fileInputOpened) {
+        fileSystemManager.readFromFile(mimeTypes = arrayOf(SETTINGS_MIME_TYPE)) { content ->
+            if (content != null) {
+                model.reduce(SettingsMviModel.Intent.ImportSettings(content))
+            }
+            fileInputOpened = false
         }
+    }
+
+    if (barThemeBottomSheetOpened) {
+        val values =
+            listOf(
+                UiBarTheme.Transparent,
+                UiBarTheme.Opaque,
+                UiBarTheme.Solid,
+            )
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemBarTheme,
+            items =
+            values.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+            onSelect = { index ->
+                barThemeBottomSheetOpened = false
+                if (index != null) {
+                    model.reduce(
+                        SettingsMviModel.Intent.ChangeBarTheme(values[index]),
+                    )
+                }
+            },
+        )
+    }
+
+    if (timelineLayoutBottomSheetOpened) {
+        val values =
+            listOf(
+                TimelineLayout.Full,
+                TimelineLayout.Compact,
+                TimelineLayout.DistractionFree,
+                TimelineLayout.Card,
+            )
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemTimelineLayout,
+            items =
+            values.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+            onSelect = { index ->
+                timelineLayoutBottomSheetOpened = false
+                if (index != null) {
+                    model.reduce(
+                        SettingsMviModel.Intent.ChangeTimelineLayout(values[index]),
+                    )
+                }
+            },
+        )
+    }
+
+    settingsContent?.also { content ->
+        fileSystemManager.writeToFile(
+            mimeType = SETTINGS_MIME_TYPE,
+            name = SETTINGS_FILE_NAME,
+            data = content,
+        ) { success ->
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    if (success) {
+                        successMessage
+                    } else {
+                        errorMessage
+                    },
+                )
+            }
+            settingsContent = null
+        }
+    }
+
+    if (replyDepthBottoSheepOpened) {
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemConversationReplyDepth,
+            items = REPLY_DEPTH_VALUES.map { CustomModalBottomSheetItem(label = it.toString()) },
+            onSelect = { index ->
+                replyDepthBottoSheepOpened = false
+                if (index != null) {
+                    val value = REPLY_DEPTH_VALUES[index]
+                    model.reduce(SettingsMviModel.Intent.ChangeReplyDepth(value))
+                }
+            },
+        )
     }
 }
 
