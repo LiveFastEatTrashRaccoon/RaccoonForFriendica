@@ -75,7 +75,7 @@ fun CirclesScreen(modifier: Modifier = Modifier) {
     val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val scope = rememberCoroutineScope()
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     var confirmDeleteItemId by remember { mutableStateOf<String?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
     val genericError = LocalStrings.current.messageGenericError
@@ -98,10 +98,10 @@ fun CirclesScreen(modifier: Modifier = Modifier) {
                         snackbarHostState.showSnackbar(genericError)
 
                     is CirclesMviModel.Effect.OpenUser ->
-                        detailOpener.openUserDetail(event.user)
+                        mainRouter.openUserDetail(event.user)
 
                     is CirclesMviModel.Effect.OpenCircle ->
-                        detailOpener.openCircleTimeline(event.circle)
+                        mainRouter.openCircleTimeline(event.circle)
                 }
             }.launchIn(this)
     }
@@ -243,7 +243,7 @@ fun CirclesScreen(modifier: Modifier = Modifier) {
                                         }
 
                                         CustomOptions.EditMembers -> {
-                                            detailOpener.openCircleEditMembers(item.circle.id)
+                                            mainRouter.openCircleEditMembers(item.circle.id)
                                         }
 
                                         OptionId.Delete -> confirmDeleteItemId = item.circle.id

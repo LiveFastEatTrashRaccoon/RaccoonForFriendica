@@ -63,7 +63,7 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val uriHandler = LocalUriHandler.current
-    val detailOpener = getMainRouter()
+    val mainRouter = remember { getMainRouter() }
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -183,7 +183,7 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
                                     }
                                 },
                                 onClick = {
-                                    detailOpener.openEvent(event = item.event)
+                                    mainRouter.openEvent(event = item.event)
                                 },
                                 options =
                                 buildList {

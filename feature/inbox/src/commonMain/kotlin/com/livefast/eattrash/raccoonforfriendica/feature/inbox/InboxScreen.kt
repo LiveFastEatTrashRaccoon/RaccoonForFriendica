@@ -75,7 +75,7 @@ fun InboxScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val scope = rememberCoroutineScope()
     val drawerCoordinator = remember { getDrawerCoordinator() }
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
@@ -213,7 +213,7 @@ fun InboxScreen(
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
                         onOpenEntry = { entry ->
-                            detailOpener.openEntryDetail(entry.original)
+                            mainRouter.openEntryDetail(entry.original)
                             model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
@@ -224,14 +224,14 @@ fun InboxScreen(
                             }
                         },
                         onOpenUser = {
-                            detailOpener.openUserDetail(it)
+                            mainRouter.openUserDetail(it)
                             model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
                         },
                         onClickUserRelationship = { userId, nextAction ->
                             model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
                             when (nextAction) {
                                 RelationshipStatusNextAction.AcceptRequest -> {
-                                    detailOpener.openFollowRequests()
+                                    mainRouter.openFollowRequests()
                                 }
 
                                 RelationshipStatusNextAction.ConfirmUnfollow -> {

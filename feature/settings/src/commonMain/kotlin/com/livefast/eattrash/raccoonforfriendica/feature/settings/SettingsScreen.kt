@@ -108,7 +108,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = remember { getNavigationCoordinator() }
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val coreResources = remember { getCoreResources() }
     val scope = rememberCoroutineScope()
     val fileSystemManager = remember { getFileSystemManager() }
@@ -464,7 +464,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                             title = LocalStrings.current.settingsItemBlockedAndMuted,
                             disclosureIndicator = true,
                             onTap = {
-                                detailOpener.openBlockedAndMuted()
+                                mainRouter.openBlockedAndMuted()
                             },
                         )
                     }

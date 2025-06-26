@@ -63,7 +63,7 @@ fun ConversationListScreen(modifier: Modifier = Modifier) {
     val model: ConversationListMviModel = getViewModel<ConversationListViewModel>()
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = remember { getNavigationCoordinator() }
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val lazyListState = rememberLazyListState()
@@ -200,7 +200,7 @@ fun ConversationListScreen(modifier: Modifier = Modifier) {
                                 model.reduce(
                                     ConversationListMviModel.Intent.MarkConversationAsRead(idx),
                                 )
-                                detailOpener.openConversation(
+                                mainRouter.openConversation(
                                     otherUser = conversation.otherUser,
                                     parentUri = parentUri,
                                 )
@@ -258,7 +258,7 @@ fun ConversationListScreen(modifier: Modifier = Modifier) {
                 if (userId != null) {
                     val existingConversation =
                         uiState.items.firstOrNull { it.otherUser.id == userId }
-                    detailOpener.openConversation(
+                    mainRouter.openConversation(
                         otherUser = user,
                         parentUri = existingConversation?.lastMessage?.parentUri.orEmpty(),
                     )

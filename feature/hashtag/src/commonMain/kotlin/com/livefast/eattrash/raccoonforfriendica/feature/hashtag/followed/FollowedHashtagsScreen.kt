@@ -54,7 +54,7 @@ fun FollowedHashtagsScreen(modifier: Modifier = Modifier) {
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     var confirmUnfollowHashtagName by remember { mutableStateOf<String?>(null) }
@@ -137,7 +137,7 @@ fun FollowedHashtagsScreen(modifier: Modifier = Modifier) {
                     FollowHashtagItem(
                         hashtag = tag,
                         onOpen = {
-                            detailOpener.openHashtag(tag.name)
+                            mainRouter.openHashtag(tag.name)
                         },
                         onToggleFollow = { newFollow ->
                             if (newFollow) {

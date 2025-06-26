@@ -99,7 +99,7 @@ fun ExploreScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val scope = rememberCoroutineScope()
     val drawerCoordinator = remember { getDrawerCoordinator() }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -180,7 +180,7 @@ fun ExploreScreen(
                         // only logged users can call the v2/search API
                         IconButton(
                             onClick = {
-                                detailOpener.openSearch()
+                                mainRouter.openSearch()
                             },
                         ) {
                             Icon(
@@ -310,7 +310,7 @@ fun ExploreScreen(
                                 autoloadImages = uiState.autoloadImages,
                                 maxBodyLines = uiState.maxBodyLines,
                                 onClick = { e ->
-                                    detailOpener.openEntryDetail(e)
+                                    mainRouter.openEntryDetail(e)
                                 },
                                 onOpenUrl = { url, allowOpenInternal ->
                                     if (allowOpenInternal) {
@@ -320,10 +320,10 @@ fun ExploreScreen(
                                     }
                                 },
                                 onOpenUser = {
-                                    detailOpener.openUserDetail(it)
+                                    mainRouter.openUserDetail(it)
                                 },
                                 onOpenImage = { urls, imageIdx, videoIndices ->
-                                    detailOpener.openImageDetail(
+                                    mainRouter.openImageDetail(
                                         urls = urls,
                                         initialIndex = imageIdx,
                                         videoIndices = videoIndices,
@@ -359,7 +359,7 @@ fun ExploreScreen(
                                 }.takeIf { actionRepository.canDislike(item.entry.original) },
                                 onReply =
                                 { e: TimelineEntryModel ->
-                                    detailOpener.openComposer(
+                                    mainRouter.openComposer(
                                         inReplyTo = e,
                                         inReplyToUser = e.creator,
                                     )
@@ -466,7 +466,7 @@ fun ExploreScreen(
 
                                         OptionId.Edit -> {
                                             item.entry.original.also { entryToEdit ->
-                                                detailOpener.openComposer(
+                                                mainRouter.openComposer(
                                                     inReplyTo = entryToEdit.inReplyTo,
                                                     inReplyToUser = entryToEdit.inReplyTo?.creator,
                                                     editedPostId = entryToEdit.id,
@@ -484,13 +484,13 @@ fun ExploreScreen(
 
                                         OptionId.ReportUser ->
                                             item.entry.original.creator?.also { userToReport ->
-                                                detailOpener.openCreateReport(user = userToReport)
+                                                mainRouter.openCreateReport(user = userToReport)
                                             }
 
                                         OptionId.ReportEntry ->
                                             item.entry.original.also { entryToReport ->
                                                 entryToReport.creator?.also { userToReport ->
-                                                    detailOpener.openCreateReport(
+                                                    mainRouter.openCreateReport(
                                                         user = userToReport,
                                                         entry = entryToReport,
                                                     )
@@ -500,7 +500,7 @@ fun ExploreScreen(
                                         OptionId.ViewDetails -> seeDetailsEntry = item.entry.original
                                         OptionId.Quote -> {
                                             item.entry.original.also { entryToShare ->
-                                                detailOpener.openComposer(
+                                                mainRouter.openComposer(
                                                     urlToShare = entryToShare.url,
                                                 )
                                             }
@@ -545,7 +545,7 @@ fun ExploreScreen(
                             HashtagItem(
                                 hashtag = item.hashtag,
                                 onOpen = {
-                                    detailOpener.openHashtag(it)
+                                    mainRouter.openHashtag(it)
                                 },
                             )
                             Spacer(modifier = Modifier.height(Spacing.interItem))
@@ -567,12 +567,12 @@ fun ExploreScreen(
                                 user = item.user,
                                 autoloadImages = uiState.autoloadImages,
                                 onClick = {
-                                    detailOpener.openUserDetail(item.user)
+                                    mainRouter.openUserDetail(item.user)
                                 },
                                 onRelationshipClick = { nextAction ->
                                     when (nextAction) {
                                         RelationshipStatusNextAction.AcceptRequest -> {
-                                            detailOpener.openFollowRequests()
+                                            mainRouter.openFollowRequests()
                                         }
 
                                         RelationshipStatusNextAction.ConfirmUnfollow -> {

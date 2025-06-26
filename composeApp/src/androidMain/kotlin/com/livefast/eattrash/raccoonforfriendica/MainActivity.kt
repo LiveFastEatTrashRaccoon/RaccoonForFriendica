@@ -116,13 +116,13 @@ class MainActivity : ComponentActivity() {
 
     private fun handleIncomingAttachment(intent: Intent) {
         lifecycleScope.launch {
-            // if the root navigator has not been set yet, rootNavigator?.push does nothing
+            // workaround: wait until the root NavigationAdapter has been set
             delay(750)
+            val mainRouter = getMainRouter()
             when {
                 "text/plain" == intent.type -> {
                     intent.getStringExtra(Intent.EXTRA_TEXT)?.also { content ->
-                        val detailOpener = getMainRouter()
-                        detailOpener.openComposer(initialText = content.trim('"'))
+                        mainRouter.openComposer(initialText = content.trim('"'))
                     }
                 }
 
@@ -132,13 +132,9 @@ class MainActivity : ComponentActivity() {
                     } else {
                         intent.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
                     }?.also { uri ->
-                        val bytes =
-                            contentResolver.openInputStream(uri)?.use {
-                                it.readBytes()
-                            }
+                        val bytes = contentResolver.openInputStream(uri)?.use { it.readBytes() }
                         if (bytes != null) {
-                            val detailOpener = getMainRouter()
-                            detailOpener.openComposer(initialAttachment = bytes)
+                            mainRouter.openComposer(initialAttachment = bytes)
                         }
                     }
                 }

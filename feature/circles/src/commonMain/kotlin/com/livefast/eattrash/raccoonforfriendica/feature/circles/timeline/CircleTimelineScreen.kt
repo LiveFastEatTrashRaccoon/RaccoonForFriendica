@@ -85,7 +85,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -123,7 +123,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                     }
 
                     is CircleTimelineMviModel.Effect.OpenDetail -> {
-                        detailOpener.openEntryDetail(
+                        mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
                         )
@@ -252,10 +252,10 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                             }
                         },
                         onOpenUser = {
-                            detailOpener.openUserDetail(it)
+                            mainRouter.openUserDetail(it)
                         },
                         onOpenImage = { urls, imageIdx, videoIndices ->
-                            detailOpener.openImageDetail(
+                            mainRouter.openImageDetail(
                                 urls = urls,
                                 initialIndex = imageIdx,
                                 videoIndices = videoIndices,
@@ -291,7 +291,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                         }.takeIf { actionRepository.canDislike(entry.original) },
                         onReply =
                         { e: TimelineEntryModel ->
-                            detailOpener.openComposer(
+                            mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
@@ -393,7 +393,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
 
                                 OptionId.Edit -> {
                                     entry.original.also { entryToEdit ->
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             inReplyTo = entryToEdit.inReplyTo,
                                             inReplyToUser = entryToEdit.inReplyTo?.creator,
                                             editedPostId = entryToEdit.id,
@@ -409,13 +409,13 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
 
                                 OptionId.ReportUser ->
                                     entry.original.creator?.also { userToReport ->
-                                        detailOpener.openCreateReport(user = userToReport)
+                                        mainRouter.openCreateReport(user = userToReport)
                                     }
 
                                 OptionId.ReportEntry ->
                                     entry.original.also { entryToReport ->
                                         entryToReport.creator?.also { userToReport ->
-                                            detailOpener.openCreateReport(
+                                            mainRouter.openCreateReport(
                                                 user = userToReport,
                                                 entry = entryToReport,
                                             )
@@ -424,7 +424,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
 
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             urlToShare = entryToShare.url,
                                         )
                                     }

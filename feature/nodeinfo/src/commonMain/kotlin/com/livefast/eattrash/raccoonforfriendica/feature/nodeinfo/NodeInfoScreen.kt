@@ -88,7 +88,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
@@ -240,7 +240,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                                 user = contact,
                                 autoloadImages = state.autoloadImages,
                                 onClick = {
-                                    detailOpener.openUserDetail(contact)
+                                    mainRouter.openUserDetail(contact)
                                 },
                             )
                         }

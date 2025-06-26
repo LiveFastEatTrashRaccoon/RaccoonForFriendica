@@ -49,7 +49,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
     val uriHandler = LocalUriHandler.current
     val appInfoRepository = remember { getAppInfoRepository() }
     val appInfo by appInfoRepository.appInfo.collectAsState()
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
 
     fun handleAction(block: () -> Unit) {
         onClose?.invoke()
@@ -104,7 +104,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                     Button(
                         onClick = {
                             handleAction {
-                                detailOpener.openUserFeedback()
+                                mainRouter.openUserFeedback()
                             }
                         },
                     ) {
@@ -180,7 +180,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                         textDecoration = TextDecoration.Underline,
                         onClick = {
                             handleAction {
-                                detailOpener.openAcknowledgements()
+                                mainRouter.openAcknowledgements()
                             }
                         },
                     )
@@ -192,7 +192,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                         textDecoration = TextDecoration.Underline,
                         onClick = {
                             handleAction {
-                                detailOpener.openLicences()
+                                mainRouter.openLicences()
                             }
                         },
                     )

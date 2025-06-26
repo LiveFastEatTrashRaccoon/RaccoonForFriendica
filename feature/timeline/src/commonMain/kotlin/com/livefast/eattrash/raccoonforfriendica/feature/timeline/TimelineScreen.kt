@@ -106,7 +106,7 @@ fun TimelineScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val scope = rememberCoroutineScope()
     val drawerCoordinator = remember { getDrawerCoordinator() }
     val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
@@ -148,7 +148,7 @@ fun TimelineScreen(
                     }
 
                     is TimelineMviModel.Effect.OpenDetail ->
-                        detailOpener.openEntryDetail(
+                        mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
                         )
@@ -204,7 +204,7 @@ fun TimelineScreen(
                         IconButton(
                             onClick = {
                                 scope.launch {
-                                    detailOpener.openAnnouncements()
+                                    mainRouter.openAnnouncements()
                                 }
                             },
                         ) {
@@ -255,7 +255,7 @@ fun TimelineScreen(
                             bottom = Dimensions.floatingActionButtonBottomInset + bottomNavigationInset,
                         ),
                         onClick = {
-                            detailOpener.openComposer()
+                            mainRouter.openComposer()
                         },
                     ) {
                         Icon(
@@ -346,10 +346,10 @@ fun TimelineScreen(
                             }
                         },
                         onOpenUser = {
-                            detailOpener.openUserDetail(it)
+                            mainRouter.openUserDetail(it)
                         },
                         onOpenImage = { urls, imageIdx, videoIndices ->
-                            detailOpener.openImageDetail(
+                            mainRouter.openImageDetail(
                                 urls = urls,
                                 initialIndex = imageIdx,
                                 videoIndices = videoIndices,
@@ -385,7 +385,7 @@ fun TimelineScreen(
                         }.takeIf { actionRepository.canDislike(entry.original) },
                         onReply =
                         { e: TimelineEntryModel ->
-                            detailOpener.openComposer(
+                            mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
@@ -487,7 +487,7 @@ fun TimelineScreen(
 
                                 OptionId.Edit -> {
                                     entry.original.also { entryToEdit ->
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             inReplyTo = entryToEdit.inReplyTo,
                                             inReplyToUser = entryToEdit.inReplyTo?.creator,
                                             editedPostId = entryToEdit.id,
@@ -503,13 +503,13 @@ fun TimelineScreen(
 
                                 OptionId.ReportUser ->
                                     entry.original.creator?.also { userToReport ->
-                                        detailOpener.openCreateReport(user = userToReport)
+                                        mainRouter.openCreateReport(user = userToReport)
                                     }
 
                                 OptionId.ReportEntry ->
                                     entry.original.also { entryToReport ->
                                         entryToReport.creator?.also { userToReport ->
-                                            detailOpener.openCreateReport(
+                                            mainRouter.openCreateReport(
                                                 user = userToReport,
                                                 entry = entryToReport,
                                             )
@@ -518,7 +518,7 @@ fun TimelineScreen(
 
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             urlToShare = entryToShare.url,
                                         )
                                     }

@@ -99,7 +99,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
@@ -137,7 +137,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                     }
 
                     is ForumListMviModel.Effect.OpenDetail -> {
-                        detailOpener.openThread(
+                        mainRouter.openThread(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
                         )
@@ -242,7 +242,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                                         when (option.id) {
                                             CustomOptions.SwitchToClassicMode -> {
                                                 uiState.user?.also { user ->
-                                                    detailOpener.switchUserDetailToClassicMode(
+                                                    mainRouter.switchUserDetailToClassicMode(
                                                         user,
                                                     )
                                                 }
@@ -282,7 +282,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            detailOpener.openComposer(
+                            mainRouter.openComposer(
                                 inReplyToUser = uiState.user,
                                 inGroup = true,
                             )
@@ -361,10 +361,10 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                             }
                         },
                         onOpenUser = {
-                            detailOpener.openUserDetail(it)
+                            mainRouter.openUserDetail(it)
                         },
                         onOpenImage = { urls, imageIdx, videoIndices ->
-                            detailOpener.openImageDetail(
+                            mainRouter.openImageDetail(
                                 urls = urls,
                                 initialIndex = imageIdx,
                                 videoIndices = videoIndices,
@@ -400,7 +400,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                         }.takeIf { actionRepository.canDislike(entry.original) },
                         onReply =
                         { e: TimelineEntryModel ->
-                            detailOpener.openComposer(
+                            mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
@@ -494,7 +494,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                                 }
 
                                 OptionId.Edit -> {
-                                    detailOpener.openComposer(
+                                    mainRouter.openComposer(
                                         inReplyToUser = entry.creator,
                                         editedPostId = entry.reblog?.id,
                                         inGroup = true,
@@ -506,13 +506,13 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                                 OptionId.Block -> confirmBlockEntry = entry
                                 OptionId.ReportUser ->
                                     entry.original.creator?.also { userToReport ->
-                                        detailOpener.openCreateReport(user = userToReport)
+                                        mainRouter.openCreateReport(user = userToReport)
                                     }
 
                                 OptionId.ReportEntry ->
                                     entry.original.also { entryToReport ->
                                         entryToReport.creator?.also { userToReport ->
-                                            detailOpener.openCreateReport(
+                                            mainRouter.openCreateReport(
                                                 user = userToReport,
                                                 entry = entryToReport,
                                             )
@@ -521,7 +521,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
 
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             urlToShare = entryToShare.url,
                                         )
                                     }
