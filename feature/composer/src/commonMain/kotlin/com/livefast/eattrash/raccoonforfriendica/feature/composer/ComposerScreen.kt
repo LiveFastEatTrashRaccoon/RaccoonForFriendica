@@ -84,6 +84,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.getAttachmentCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
@@ -115,7 +116,6 @@ fun ComposerScreen(
     draftId: String? = null,
     urlToShare: String? = null,
     initialText: String? = null,
-    initialAttachment: ByteArray? = null,
 ) {
     val model: ComposerMviModel = getViewModel<ComposerViewModel>(arg = ComposerViewModelArgs(inReplyToId.orEmpty()))
     val uiState by model.uiState.collectAsState()
@@ -124,6 +124,7 @@ fun ComposerScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val galleryHelper = remember { getGalleryHelper() }
+    val attachmentCache = remember { getAttachmentCache() }
     val focusManager = LocalFocusManager.current
     val missingDataError = LocalStrings.current.messagePostEmptyText
     val invalidVisibilityError = LocalStrings.current.messagePostInvalidVisibility
@@ -177,6 +178,9 @@ fun ComposerScreen(
     var changeMarkupModeBottomSheetOpened by remember { mutableStateOf(false) }
 
     LaunchedEffect(model) {
+        val initialAttachment = attachmentCache.get()
+        attachmentCache.clear()
+
         when {
             draftId != null ->
                 model.reduce(ComposerMviModel.Intent.LoadDraft(draftId))
