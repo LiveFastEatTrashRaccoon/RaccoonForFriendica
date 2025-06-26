@@ -19,6 +19,7 @@ internal val mainRouterModule =
                     entryCache = instance(),
                     eventCache = instance(),
                     circleCache = instance(),
+                    attachmentCache = instance(),
                 )
             }
         }
