@@ -91,7 +91,7 @@ fun UserListScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = remember { getNavigationCoordinator() }
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val fileSystemManager = remember { getFileSystemManager() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -325,12 +325,12 @@ fun UserListScreen(
                         user = user,
                         autoloadImages = uiState.autoloadImages,
                         onClick = {
-                            detailOpener.openUserDetail(user)
+                            mainRouter.openUserDetail(user)
                         },
                         onRelationshipClick = { nextAction ->
                             when (nextAction) {
                                 RelationshipStatusNextAction.AcceptRequest -> {
-                                    detailOpener.openFollowRequests()
+                                    mainRouter.openFollowRequests()
                                 }
 
                                 RelationshipStatusNextAction.ConfirmUnfollow -> {

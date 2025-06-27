@@ -84,7 +84,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
     val snackbarHostState = remember { SnackbarHostState() }
     val lazyGridState = rememberLazyStaggeredGridState()
     val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val galleryHelper = remember { getGalleryHelper() }
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val scope = rememberCoroutineScope()
@@ -243,7 +243,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                         onClick = {
                             val url = attachment.thumbnail ?: attachment.url
                             if (url.isNotEmpty()) {
-                                detailOpener.openImageDetail(url)
+                                mainRouter.openImageDetail(url)
                             }
                         },
                         options =

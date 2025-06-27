@@ -63,7 +63,7 @@ fun UnpublishedScreen(modifier: Modifier = Modifier) {
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -213,7 +213,7 @@ fun UnpublishedScreen(modifier: Modifier = Modifier) {
                         onSelectOption = { optionId ->
                             when (optionId) {
                                 OptionId.Edit ->
-                                    detailOpener.openEditUnpublished(
+                                    mainRouter.openEditUnpublished(
                                         entry = entry,
                                         type = uiState.section,
                                     )

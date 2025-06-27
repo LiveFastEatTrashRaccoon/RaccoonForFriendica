@@ -123,7 +123,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val lazyListState = rememberLazyListState()
     val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
@@ -183,7 +183,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                     }
 
                     is UserDetailMviModel.Effect.OpenDetail -> {
-                        detailOpener.openEntryDetail(
+                        mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
                         )
@@ -344,12 +344,12 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
 
                                                 OptionId.ReportUser ->
                                                     uiState.user?.also { userToReport ->
-                                                        detailOpener.openCreateReport(user = userToReport)
+                                                        mainRouter.openCreateReport(user = userToReport)
                                                     }
 
                                                 CustomOptions.SwitchToForumMode -> {
                                                     uiState.user?.also { user ->
-                                                        detailOpener.switchUserDetailToForumMode(user)
+                                                        mainRouter.switchUserDetailToForumMode(user)
                                                     }
                                                 }
 
@@ -392,7 +392,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
             ) {
                 FloatingActionButton(
                     onClick = {
-                        detailOpener.openComposer(
+                        mainRouter.openComposer(
                             inReplyToUser = uiState.user,
                         )
                     },
@@ -449,12 +449,12 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                                 }
                             },
                             onOpenImage = { url ->
-                                detailOpener.openImageDetail(url)
+                                mainRouter.openImageDetail(url)
                             },
                             onRelationshipClick = { nextAction ->
                                 when (nextAction) {
                                     RelationshipStatusNextAction.AcceptRequest -> {
-                                        detailOpener.openFollowRequests()
+                                        mainRouter.openFollowRequests()
                                     }
 
                                     RelationshipStatusNextAction.ConfirmUnfollow -> {
@@ -487,12 +487,12 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                             },
                             onOpenFollowers = {
                                 uiState.user?.also { user ->
-                                    detailOpener.openFollowers(user)
+                                    mainRouter.openFollowers(user)
                                 }
                             },
                             onOpenFollowing = {
                                 uiState.user?.also { user ->
-                                    detailOpener.openFollowing(user)
+                                    mainRouter.openFollowing(user)
                                 }
                             },
                         )
@@ -618,11 +618,11 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                         },
                         onOpenUser = { user ->
                             if (user.id != uiState.user?.id) {
-                                detailOpener.openUserDetail(user)
+                                mainRouter.openUserDetail(user)
                             }
                         },
                         onOpenImage = { urls, imageIdx, videoIndices ->
-                            detailOpener.openImageDetail(
+                            mainRouter.openImageDetail(
                                 urls = urls,
                                 initialIndex = imageIdx,
                                 videoIndices = videoIndices,
@@ -658,7 +658,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                         }.takeIf { actionRepository.canDislike(entry.original) },
                         onReply =
                         { e: TimelineEntryModel ->
-                            detailOpener.openComposer(
+                            mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
@@ -743,7 +743,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                                 OptionId.ReportEntry ->
                                     entry.original.also { entryToReport ->
                                         entryToReport.creator?.also { userToReport ->
-                                            detailOpener.openCreateReport(
+                                            mainRouter.openCreateReport(
                                                 user = userToReport,
                                                 entry = entryToReport,
                                             )
@@ -753,7 +753,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                                 OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             urlToShare = entryToShare.url,
                                         )
                                     }

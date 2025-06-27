@@ -6,9 +6,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AttachmentCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultAnnouncementRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultAnnouncementsManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultAttachmentCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultCirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultDirectMessageRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultDraftRepository
@@ -295,6 +297,11 @@ val contentRepositoryModule =
                 DefaultFollowedHashtagCache(
                     tagRepository = instance(),
                 )
+            }
+        }
+        bind<AttachmentCache> {
+            singleton {
+                DefaultAttachmentCache()
             }
         }
     }

@@ -75,7 +75,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier) {
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val genericError = LocalStrings.current.messageGenericError
     var confirmRemoveUserId by remember { mutableStateOf<String?>(null) }
 
@@ -203,7 +203,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier) {
                         user = user,
                         autoloadImages = uiState.autoloadImages,
                         onClick = {
-                            detailOpener.openUserDetail(user)
+                            mainRouter.openUserDetail(user)
                         },
                         options =
                         buildList {

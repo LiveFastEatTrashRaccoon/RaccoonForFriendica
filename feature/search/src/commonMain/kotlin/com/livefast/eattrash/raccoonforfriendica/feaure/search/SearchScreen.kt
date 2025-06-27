@@ -96,7 +96,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -316,7 +316,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                                 autoloadImages = uiState.autoloadImages,
                                 maxBodyLines = uiState.maxBodyLines,
                                 onClick = { e ->
-                                    detailOpener.openEntryDetail(e)
+                                    mainRouter.openEntryDetail(e)
                                 },
                                 onOpenUrl = { url, allowOpenInternal ->
                                     if (allowOpenInternal) {
@@ -326,10 +326,10 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                                     }
                                 },
                                 onOpenUser = {
-                                    detailOpener.openUserDetail(it)
+                                    mainRouter.openUserDetail(it)
                                 },
                                 onOpenImage = { urls, imageIdx, videoIndices ->
-                                    detailOpener.openImageDetail(
+                                    mainRouter.openImageDetail(
                                         urls = urls,
                                         initialIndex = imageIdx,
                                         videoIndices = videoIndices,
@@ -365,7 +365,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                                 }.takeIf { actionRepository.canDislike(item.entry.original) },
                                 onReply =
                                 { e: TimelineEntryModel ->
-                                    detailOpener.openComposer(
+                                    mainRouter.openComposer(
                                         inReplyTo = e,
                                         inReplyToUser = e.creator,
                                     )
@@ -473,7 +473,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                                                 item.entry.reblog
                                                     ?: item.entry
                                                 ).also { entryToEdit ->
-                                                detailOpener.openComposer(
+                                                mainRouter.openComposer(
                                                     inReplyTo = entryToEdit.inReplyTo,
                                                     inReplyToUser = entryToEdit.inReplyTo?.creator,
                                                     editedPostId = entryToEdit.id,
@@ -491,13 +491,13 @@ fun SearchScreen(modifier: Modifier = Modifier) {
 
                                         OptionId.ReportUser ->
                                             item.entry.original.creator?.also { userToReport ->
-                                                detailOpener.openCreateReport(user = userToReport)
+                                                mainRouter.openCreateReport(user = userToReport)
                                             }
 
                                         OptionId.ReportEntry ->
                                             item.entry.original.also { entryToReport ->
                                                 entryToReport.creator?.also { userToReport ->
-                                                    detailOpener.openCreateReport(
+                                                    mainRouter.openCreateReport(
                                                         user = userToReport,
                                                         entry = entryToReport,
                                                     )
@@ -507,7 +507,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                                         OptionId.ViewDetails -> seeDetailsEntry = item.entry.original
                                         OptionId.Quote -> {
                                             item.entry.original.also { entryToShare ->
-                                                detailOpener.openComposer(
+                                                mainRouter.openComposer(
                                                     urlToShare = entryToShare.url,
                                                 )
                                             }
@@ -552,7 +552,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                             HashtagItem(
                                 hashtag = item.hashtag,
                                 onOpen = {
-                                    detailOpener.openHashtag(it)
+                                    mainRouter.openHashtag(it)
                                 },
                             )
                             Spacer(modifier = Modifier.height(Spacing.interItem))
@@ -563,12 +563,12 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                                 user = item.user,
                                 autoloadImages = uiState.autoloadImages,
                                 onClick = {
-                                    detailOpener.openUserDetail(item.user)
+                                    mainRouter.openUserDetail(item.user)
                                 },
                                 onRelationshipClick = { nextAction ->
                                     when (nextAction) {
                                         RelationshipStatusNextAction.AcceptRequest -> {
-                                            detailOpener.openFollowRequests()
+                                            mainRouter.openFollowRequests()
                                         }
 
                                         RelationshipStatusNextAction.ConfirmUnfollow -> {

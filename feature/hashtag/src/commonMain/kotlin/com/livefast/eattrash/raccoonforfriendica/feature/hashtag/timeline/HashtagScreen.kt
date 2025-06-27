@@ -83,7 +83,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -120,7 +120,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier) {
                     }
 
                     is HashtagMviModel.Effect.OpenDetail -> {
-                        detailOpener.openEntryDetail(
+                        mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
                         )
@@ -254,10 +254,10 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier) {
                             }
                         },
                         onOpenUser = {
-                            detailOpener.openUserDetail(it)
+                            mainRouter.openUserDetail(it)
                         },
                         onOpenImage = { urls, imageIdx, videoIndices ->
-                            detailOpener.openImageDetail(
+                            mainRouter.openImageDetail(
                                 urls = urls,
                                 initialIndex = imageIdx,
                                 videoIndices = videoIndices,
@@ -293,7 +293,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier) {
                         }.takeIf { actionRepository.canDislike(entry.original) },
                         onReply =
                         { e: TimelineEntryModel ->
-                            detailOpener.openComposer(
+                            mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
@@ -395,7 +395,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier) {
 
                                 OptionId.Edit -> {
                                     entry.original.also { entryToEdit ->
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             inReplyTo = entryToEdit.inReplyTo,
                                             inReplyToUser = entryToEdit.inReplyTo?.creator,
                                             editedPostId = entryToEdit.id,
@@ -411,13 +411,13 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier) {
 
                                 OptionId.ReportUser ->
                                     entry.original.creator?.also { userToReport ->
-                                        detailOpener.openCreateReport(user = userToReport)
+                                        mainRouter.openCreateReport(user = userToReport)
                                     }
 
                                 OptionId.ReportEntry ->
                                     entry.original.also { entryToReport ->
                                         entryToReport.creator?.also { userToReport ->
-                                            detailOpener.openCreateReport(
+                                            mainRouter.openCreateReport(
                                                 user = userToReport,
                                                 entry = entryToReport,
                                             )
@@ -427,7 +427,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier) {
                                 OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             urlToShare = entryToShare.url,
                                         )
                                     }

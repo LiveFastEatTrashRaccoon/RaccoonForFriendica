@@ -83,7 +83,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -121,7 +121,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                     }
 
                     is ShortcutTimelineMviModel.Effect.OpenDetail -> {
-                        detailOpener.openEntryDetail(
+                        mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
                         )
@@ -255,10 +255,10 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                             }
                         },
                         onOpenUser = {
-                            detailOpener.openUserDetail(it)
+                            mainRouter.openUserDetail(it)
                         },
                         onOpenImage = { urls, imageIdx, videoIndices ->
-                            detailOpener.openImageDetail(
+                            mainRouter.openImageDetail(
                                 urls = urls,
                                 initialIndex = imageIdx,
                                 videoIndices = videoIndices,
@@ -294,7 +294,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                         }.takeIf { actionRepository.canDislike(entry.original) },
                         onReply =
                         { e: TimelineEntryModel ->
-                            detailOpener.openComposer(
+                            mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
@@ -366,7 +366,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
 
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             urlToShare = entryToShare.url,
                                         )
                                     }

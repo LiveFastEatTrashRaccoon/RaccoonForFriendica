@@ -89,7 +89,7 @@ fun MyAccountScreen(
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val shareHelper = remember { getShareHelper() }
@@ -192,7 +192,7 @@ fun MyAccountScreen(
                         },
                         onOpenFollowers = {
                             uiState.user?.also { user ->
-                                detailOpener.openFollowers(
+                                mainRouter.openFollowers(
                                     user = user,
                                     enableExport = true,
                                 )
@@ -200,14 +200,14 @@ fun MyAccountScreen(
                         },
                         onOpenFollowing = {
                             uiState.user?.also { user ->
-                                detailOpener.openFollowing(
+                                mainRouter.openFollowing(
                                     user = user,
                                     enableExport = true,
                                 )
                             }
                         },
                         onEditClick = {
-                            detailOpener.openEditProfile()
+                            mainRouter.openEditProfile()
                         },
                     )
                 }
@@ -374,7 +374,7 @@ fun MyAccountScreen(
                     pollEnabled = false,
                     maxBodyLines = uiState.maxBodyLines,
                     onClick = { e ->
-                        detailOpener.openEntryDetail(e)
+                        mainRouter.openEntryDetail(e)
                     },
                     onOpenUrl = { url, allowOpenInternal ->
                         if (allowOpenInternal) {
@@ -384,10 +384,10 @@ fun MyAccountScreen(
                         }
                     },
                     onOpenUser = {
-                        detailOpener.openUserDetail(it)
+                        mainRouter.openUserDetail(it)
                     },
                     onOpenImage = { urls, imageIdx, videoIndices ->
-                        detailOpener.openImageDetail(
+                        mainRouter.openImageDetail(
                             urls = urls,
                             initialIndex = imageIdx,
                             videoIndices = videoIndices,
@@ -407,7 +407,7 @@ fun MyAccountScreen(
                         }.takeIf { actionRepository.canDislike(entry.original) },
                     onReply =
                         { e: TimelineEntryModel ->
-                            detailOpener.openComposer(
+                            mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
@@ -443,14 +443,14 @@ fun MyAccountScreen(
                             OptionId.Edit -> {
                                 if (entry.creator?.group == true) {
                                     // edit the original post reblogged by the group
-                                    detailOpener.openComposer(
+                                    mainRouter.openComposer(
                                         inReplyTo = entry.inReplyTo,
                                         inReplyToUser = entry.creator,
                                         editedPostId = entry.reblog?.id,
                                         inGroup = true,
                                     )
                                 } else {
-                                    detailOpener.openComposer(
+                                    mainRouter.openComposer(
                                         inReplyTo = entry.inReplyTo,
                                         inReplyToUser = entry.inReplyTo?.creator,
                                         editedPostId = entry.id,
@@ -480,7 +480,7 @@ fun MyAccountScreen(
                             OptionId.ViewDetails -> seeDetailsEntry = entry.original
                             OptionId.Quote -> {
                                 entry.original.also { entryToShare ->
-                                    detailOpener.openComposer(
+                                    mainRouter.openComposer(
                                         urlToShare = entryToShare.url,
                                     )
                                 }

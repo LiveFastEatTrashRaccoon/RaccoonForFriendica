@@ -69,7 +69,7 @@ fun GalleryScreen(modifier: Modifier = Modifier) {
     val model: GalleryMviModel = getViewModel<GalleryViewModel>()
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = remember { getNavigationCoordinator() }
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
@@ -217,7 +217,7 @@ fun GalleryScreen(modifier: Modifier = Modifier) {
                     MediaAlbumItem(
                         album = album,
                         onClick = {
-                            detailOpener.openAlbum(album.name)
+                            mainRouter.openAlbum(album.name)
                         },
                         options =
                         buildList {
@@ -273,7 +273,7 @@ fun GalleryScreen(modifier: Modifier = Modifier) {
             onClose = { name ->
                 createDialogOpened = false
                 if (!name.isNullOrBlank()) {
-                    detailOpener.openAlbum(name = name)
+                    mainRouter.openAlbum(name = name)
                 }
             },
         )

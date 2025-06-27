@@ -52,7 +52,7 @@ fun FollowRequestsScreen(modifier: Modifier = Modifier) {
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
@@ -153,7 +153,7 @@ fun FollowRequestsScreen(modifier: Modifier = Modifier) {
                             model.reduce(FollowRequestsMviModel.Intent.Reject(user.id))
                         },
                         onClick = {
-                            detailOpener.openUserDetail(user)
+                            mainRouter.openUserDetail(user)
                         },
                     )
 

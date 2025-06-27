@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Unpublished
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AttachmentCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -29,6 +30,7 @@ class DefaultMainRouter(
     private val entryCache: LocalItemCache<TimelineEntryModel>,
     private val eventCache: LocalItemCache<EventModel>,
     private val circleCache: LocalItemCache<CircleModel>,
+    private val attachmentCache: AttachmentCache,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : MainRouter {
     private val currentUserId: String? get() = identityRepository.currentUser.value?.id
@@ -163,7 +165,9 @@ class DefaultMainRouter(
             }
         }
         val isGroup = inReplyToUser?.group == true && inGroup
-        // TODO: handle initialAttachment with cache
+        if (initialAttachment != null) {
+            attachmentCache.put(initialAttachment)
+        }
         navigationCoordinator.push(
             Destination.Composer(
                 inReplyToId = inReplyTo?.id,

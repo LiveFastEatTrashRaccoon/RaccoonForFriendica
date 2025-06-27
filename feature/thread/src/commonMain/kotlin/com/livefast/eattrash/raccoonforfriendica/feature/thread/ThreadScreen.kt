@@ -110,7 +110,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val scope = rememberCoroutineScope()
     val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
@@ -199,7 +199,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                         onClick = {
                             val mainEntry = uiState.mainEntries.getOrNull(uiState.currentIndex)
                             if (mainEntry != null) {
-                                detailOpener.openComposer(
+                                mainRouter.openComposer(
                                     inReplyTo = mainEntry,
                                     inReplyToUser = mainEntry.creator,
                                 )
@@ -310,10 +310,10 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                     }
                                 },
                                 onOpenUser = {
-                                    detailOpener.openUserDetail(it)
+                                    mainRouter.openUserDetail(it)
                                 },
                                 onOpenImage = { urls, imageIdx, videoIndices ->
-                                    detailOpener.openImageDetail(
+                                    mainRouter.openImageDetail(
                                         urls = urls,
                                         initialIndex = imageIdx,
                                         videoIndices = videoIndices,
@@ -356,13 +356,13 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                     actionRepository.canDislike(entry)
                                 },
                                 onOpenUsersFavorite = { e ->
-                                    detailOpener.openEntryUsersFavorite(
+                                    mainRouter.openEntryUsersFavorite(
                                         entryId = e.id,
                                         count = e.favoriteCount,
                                     )
                                 },
                                 onOpenUsersReblog = { e ->
-                                    detailOpener.openEntryUsersReblog(
+                                    mainRouter.openEntryUsersReblog(
                                         entryId = e.id,
                                         count = e.reblogCount,
                                     )
@@ -370,7 +370,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                 onReply =
                                 uiState.currentUserId?.let {
                                     { e ->
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             inReplyTo = e,
                                             inReplyToUser = e.creator,
                                         )
@@ -456,7 +456,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
 
                                         OptionId.Quote -> {
                                             entry.original.also { entryToShare ->
-                                                detailOpener.openComposer(
+                                                mainRouter.openComposer(
                                                     urlToShare = entryToShare.url,
                                                 )
                                             }
@@ -526,10 +526,10 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                 }
                             },
                             onOpenUser = {
-                                detailOpener.openUserDetail(it)
+                                mainRouter.openUserDetail(it)
                             },
                             onOpenImage = { urls, imageIdx, videoIndices ->
-                                detailOpener.openImageDetail(
+                                mainRouter.openImageDetail(
                                     urls = urls,
                                     initialIndex = imageIdx,
                                     videoIndices = videoIndices,
@@ -565,7 +565,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                             }.takeIf { actionRepository.canDislike(entry.original) },
                             onReply =
                             { e: TimelineEntryModel ->
-                                detailOpener.openComposer(
+                                mainRouter.openComposer(
                                     inReplyTo = e,
                                     inReplyToUser = e.creator,
                                 )
@@ -650,7 +650,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                     }
 
                                     OptionId.Edit -> {
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             inReplyToUser = entry.creator,
                                             editedPostId = entry.reblog?.id,
                                             inGroup = true,
@@ -662,13 +662,13 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                     OptionId.Block -> confirmBlockEntry = entry
                                     OptionId.ReportUser ->
                                         entry.original.creator?.also { userToReport ->
-                                            detailOpener.openCreateReport(user = userToReport)
+                                            mainRouter.openCreateReport(user = userToReport)
                                         }
 
                                     OptionId.ReportEntry ->
                                         entry.original.also { entryToReport ->
                                             entryToReport.creator?.also { userToReport ->
-                                                detailOpener.openCreateReport(
+                                                mainRouter.openCreateReport(
                                                     user = userToReport,
                                                     entry = entryToReport,
                                                 )
@@ -678,7 +678,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                     OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                     OptionId.Quote -> {
                                         entry.original.also { entryToShare ->
-                                            detailOpener.openComposer(
+                                            mainRouter.openComposer(
                                                 urlToShare = entryToShare.url,
                                             )
                                         }

@@ -105,7 +105,7 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val uriHandler = LocalUriHandler.current
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val scope = rememberCoroutineScope()
@@ -208,7 +208,7 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
                         onClick = {
                             val entry = uiState.mainEntry
                             if (entry != null) {
-                                detailOpener.openComposer(
+                                mainRouter.openComposer(
                                     inReplyTo = entry,
                                     inReplyToUser = entry.creator,
                                 )
@@ -374,7 +374,7 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
 
                                     OptionId.Edit -> {
                                         entry.original.also { entryToEdit ->
-                                            detailOpener.openComposer(
+                                            mainRouter.openComposer(
                                                 inReplyTo = entryToEdit.inReplyTo,
                                                 inReplyToUser = entryToEdit.inReplyTo?.creator,
                                                 editedPostId = entryToEdit.id,
@@ -394,13 +394,13 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
 
                                     OptionId.ReportUser ->
                                         entry.original.creator?.also { userToReport ->
-                                            detailOpener.openCreateReport(user = userToReport)
+                                            mainRouter.openCreateReport(user = userToReport)
                                         }
 
                                     OptionId.ReportEntry ->
                                         entry.original.also { entryToReport ->
                                             entryToReport.creator?.also { userToReport ->
-                                                detailOpener.openCreateReport(
+                                                mainRouter.openCreateReport(
                                                     user = userToReport,
                                                     entry = entryToReport,
                                                 )
@@ -410,7 +410,7 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                     OptionId.ViewDetails -> seeDetailsEntry = entry.original
                                     OptionId.Quote -> {
                                         entry.original.also { entryToShare ->
-                                            detailOpener.openComposer(
+                                            mainRouter.openComposer(
                                                 urlToShare = entryToShare.url,
                                             )
                                         }
@@ -490,17 +490,17 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                         },
                                         onClick = { e ->
                                             if (e.id != uiState.mainEntry?.id) {
-                                                detailOpener.openEntryDetail(
+                                                mainRouter.openEntryDetail(
                                                     entry = e,
                                                     replaceTop = true,
                                                 )
                                             }
                                         },
                                         onOpenUser = {
-                                            detailOpener.openUserDetail(it)
+                                            mainRouter.openUserDetail(it)
                                         },
                                         onOpenImage = { urls, imageIdx, videoIndices ->
-                                            detailOpener.openImageDetail(
+                                            mainRouter.openImageDetail(
                                                 urls = urls,
                                                 initialIndex = imageIdx,
                                                 videoIndices = videoIndices,
@@ -549,20 +549,20 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                             )
                                         }.takeIf { actionRepository.canDislike(entry.original) },
                                         onOpenUsersFavorite = { e ->
-                                            detailOpener.openEntryUsersFavorite(
+                                            mainRouter.openEntryUsersFavorite(
                                                 entryId = e.id,
                                                 count = e.favoriteCount,
                                             )
                                         },
                                         onOpenUsersReblog = { e ->
-                                            detailOpener.openEntryUsersReblog(
+                                            mainRouter.openEntryUsersReblog(
                                                 entryId = e.id,
                                                 count = e.reblogCount,
                                             )
                                         },
                                         onReply =
                                         { e: TimelineEntryModel ->
-                                            detailOpener.openComposer(
+                                            mainRouter.openComposer(
                                                 inReplyTo = e,
                                                 inReplyToUser = e.creator,
                                             )
@@ -618,17 +618,17 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                     },
                                     onClick = { e ->
                                         if (e.id != uiState.mainEntry?.id) {
-                                            detailOpener.openEntryDetail(
+                                            mainRouter.openEntryDetail(
                                                 entry = entry,
                                                 replaceTop = true,
                                             )
                                         }
                                     },
                                     onOpenUser = {
-                                        detailOpener.openUserDetail(it)
+                                        mainRouter.openUserDetail(it)
                                     },
                                     onOpenImage = { urls, imageIdx, videoIndices ->
-                                        detailOpener.openImageDetail(
+                                        mainRouter.openImageDetail(
                                             urls = urls,
                                             initialIndex = imageIdx,
                                             videoIndices = videoIndices,
@@ -663,20 +663,20 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                         model.reduce(EntryDetailMviModel.Intent.ToggleDislike(e))
                                     }.takeIf { actionRepository.canDislike(entry.original) },
                                     onOpenUsersFavorite = { e ->
-                                        detailOpener.openEntryUsersFavorite(
+                                        mainRouter.openEntryUsersFavorite(
                                             entryId = e.id,
                                             count = e.favoriteCount,
                                         )
                                     },
                                     onOpenUsersReblog = { e ->
-                                        detailOpener.openEntryUsersReblog(
+                                        mainRouter.openEntryUsersReblog(
                                             entryId = e.id,
                                             count = e.reblogCount,
                                         )
                                     },
                                     onReply =
                                     { e: TimelineEntryModel ->
-                                        detailOpener.openComposer(
+                                        mainRouter.openComposer(
                                             inReplyTo = e,
                                             inReplyToUser = e.creator,
                                         )

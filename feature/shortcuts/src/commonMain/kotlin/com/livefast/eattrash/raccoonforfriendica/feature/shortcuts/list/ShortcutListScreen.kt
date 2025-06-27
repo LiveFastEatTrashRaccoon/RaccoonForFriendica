@@ -62,7 +62,7 @@ fun ShortcutListScreen(modifier: Modifier = Modifier) {
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     var confirmDeleteItem by remember { mutableStateOf<String?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
     val genericError = LocalStrings.current.messageGenericError
@@ -179,7 +179,7 @@ fun ShortcutListScreen(modifier: Modifier = Modifier) {
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(CornerSize.xl))
                             .clickable {
-                                detailOpener.openShortcut(item)
+                                mainRouter.openShortcut(item)
                             },
                         title = item,
                         options =

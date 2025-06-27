@@ -84,7 +84,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val drawerCoordinator = remember { getDrawerCoordinator() }
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val scope = rememberCoroutineScope()
     var manageAccountsDialogOpened by remember { mutableStateOf(false) }
     var changeInstanceDialogOpened by remember { mutableStateOf(false) }
@@ -148,35 +148,35 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                     title = LocalStrings.current.favoritesTitle,
                     icon = Icons.Default.Favorite,
                     onSelect = {
-                        handleAction { detailOpener.openFavorites() }
+                        handleAction { mainRouter.openFavorites() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.bookmarksTitle,
                     icon = Icons.Default.Bookmarks,
                     onSelect = {
-                        handleAction { detailOpener.openBookmarks() }
+                        handleAction { mainRouter.openBookmarks() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.followedHashtagsTitle,
                     icon = Icons.Default.Tag,
                     onSelect = {
-                        handleAction { detailOpener.openFollowedHashtags() }
+                        handleAction { mainRouter.openFollowedHashtags() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.followRequestsTitle,
                     icon = Icons.Default.Flaky,
                     onSelect = {
-                        handleAction { detailOpener.openFollowRequests() }
+                        handleAction { mainRouter.openFollowRequests() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.manageCirclesTitle,
                     icon = Icons.Default.Workspaces,
                     onSelect = {
-                        handleAction { detailOpener.openCircles() }
+                        handleAction { mainRouter.openCircles() }
                     },
                 )
                 if (uiState.hasAnnouncements) {
@@ -184,7 +184,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                         title = LocalStrings.current.announcementsTitle,
                         icon = Icons.Default.Campaign,
                         onSelect = {
-                            handleAction { detailOpener.openAnnouncements() }
+                            handleAction { mainRouter.openAnnouncements() }
                         },
                     )
                 }
@@ -193,7 +193,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                         title = LocalStrings.current.directMessagesTitle,
                         icon = Icons.AutoMirrored.Default.Chat,
                         onSelect = {
-                            handleAction { detailOpener.openDirectMessages() }
+                            handleAction { mainRouter.openDirectMessages() }
                         },
                     )
                 }
@@ -202,7 +202,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                         title = LocalStrings.current.galleryTitle,
                         icon = Icons.Default.Dashboard,
                         onSelect = {
-                            handleAction { detailOpener.openGallery() }
+                            handleAction { mainRouter.openGallery() }
                         },
                     )
                 }
@@ -210,7 +210,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                     title = LocalStrings.current.unpublishedTitle,
                     icon = Icons.Default.Drafts,
                     onSelect = {
-                        handleAction { detailOpener.openUnpublished() }
+                        handleAction { mainRouter.openUnpublished() }
                     },
                 )
                 if (uiState.hasCalendar) {
@@ -218,7 +218,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                         title = LocalStrings.current.calendarTitle,
                         icon = Icons.Default.CalendarMonth,
                         onSelect = {
-                            handleAction { detailOpener.openCalendar() }
+                            handleAction { mainRouter.openCalendar() }
                         },
                     )
                 }
@@ -226,7 +226,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                     title = LocalStrings.current.shortcutsTitle,
                     icon = Icons.Default.TravelExplore,
                     onSelect = {
-                        handleAction { detailOpener.openShortcuts() }
+                        handleAction { mainRouter.openShortcuts() }
                     },
                 )
             }
@@ -235,7 +235,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 title = LocalStrings.current.nodeInfoTitle,
                 icon = Icons.Default.Info,
                 onSelect = {
-                    handleAction { detailOpener.openNodeInfo() }
+                    handleAction { mainRouter.openNodeInfo() }
                 },
             )
 
@@ -256,7 +256,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 title = LocalStrings.current.settingsTitle,
                 icon = Icons.Default.Settings,
                 onSelect = {
-                    handleAction { detailOpener.openSettings() }
+                    handleAction { mainRouter.openSettings() }
                 },
             )
         }

@@ -83,7 +83,7 @@ fun ManageBlocksScreen(modifier: Modifier = Modifier) {
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val detailOpener = remember { getMainRouter() }
+    val mainRouter = remember { getMainRouter() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -302,7 +302,7 @@ fun ManageBlocksScreen(modifier: Modifier = Modifier) {
                                 autoloadImages = uiState.autoloadImages,
                                 withSubtitle = uiState.section != ManageBlocksSection.Limited,
                                 onClick = {
-                                    detailOpener.openUserDetail(item.user)
+                                    mainRouter.openUserDetail(item.user)
                                 },
                                 options =
                                 buildList {

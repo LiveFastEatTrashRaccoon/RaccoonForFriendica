@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Unpublished
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AttachmentCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -76,6 +77,7 @@ class DefaultMainRouterTest {
     private val entryCache = mock<LocalItemCache<TimelineEntryModel>>(mode = MockMode.autoUnit)
     private val eventCache = mock<LocalItemCache<EventModel>>(mode = MockMode.autoUnit)
     private val circleCache = mock<LocalItemCache<CircleModel>>(mode = MockMode.autoUnit)
+    private val attachmentCache = mock<AttachmentCache>(mode = MockMode.autoUnit)
     private val sut =
         DefaultMainRouter(
             navigationCoordinator = navigationCoordinator,
@@ -85,6 +87,7 @@ class DefaultMainRouterTest {
             entryCache = entryCache,
             eventCache = eventCache,
             circleCache = circleCache,
+            attachmentCache = attachmentCache,
             dispatcher = UnconfinedTestDispatcher(),
         )
 
