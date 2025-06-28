@@ -9,9 +9,14 @@ kotlin {
     sourceSets {
         val androidMain by getting {
             dependencies {
-                implementation(libs.unifiedpush.get().toString()) {
+                implementation(
+                    libs.unifiedpush.connector
+                        .get()
+                        .toString(),
+                ) {
                     exclude("com.google.crypto.tink", "tink")
                 }
+                implementation(libs.unifiedpush.fcm.distributor)
             }
         }
         val commonMain by getting {
