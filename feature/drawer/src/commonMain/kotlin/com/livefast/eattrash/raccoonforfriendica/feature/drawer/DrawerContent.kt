@@ -72,7 +72,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFrie
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.about.AboutDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerShortcut
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -95,7 +94,6 @@ fun DrawerContent(modifier: Modifier = Modifier) {
         scope.launch {
             navigationCoordinator.popUntilRoot()
             drawerCoordinator.toggleDrawer()
-            delay(50)
             action()
         }
     }

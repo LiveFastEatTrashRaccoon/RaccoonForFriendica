@@ -10,11 +10,14 @@ import dev.mokkery.mock
 import dev.mokkery.verify
 import dev.mokkery.verify.VerifyMode
 import dev.mokkery.verifySuspend
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultEntryProcessorTest {
     private val mainRouter = mock<MainRouter>(mode = MockMode.autoUnit)
     private val fetchEntry = mock<FetchEntryUseCase>()
@@ -22,6 +25,7 @@ class DefaultEntryProcessorTest {
         DefaultEntryProcessor(
             mainRouter = mainRouter,
             fetchEntry = fetchEntry,
+            dispatcher = UnconfinedTestDispatcher(),
         )
 
     @Test

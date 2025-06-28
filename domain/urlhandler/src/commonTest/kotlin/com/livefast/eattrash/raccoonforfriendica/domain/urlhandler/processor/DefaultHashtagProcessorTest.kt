@@ -6,15 +6,21 @@ import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify
 import dev.mokkery.verify.VerifyMode
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultHashtagProcessorTest {
     private val mainRouter = mock<MainRouter>(mode = MockMode.autoUnit)
 
-    private val sut = DefaultHashtagProcessor(mainRouter = mainRouter)
+    private val sut = DefaultHashtagProcessor(
+        mainRouter = mainRouter,
+        dispatcher = UnconfinedTestDispatcher(),
+    )
 
     @Test
     fun `given valid URL in format 1 when process URL then interactions are as expected`() = runTest {
