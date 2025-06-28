@@ -13,24 +13,23 @@ interface NavigationAdapter {
 }
 
 class DefaultNavigationAdapter(private val navController: NavController) : NavigationAdapter {
-    override var canPop: Boolean = false
+    override val canPop: Boolean get() = navController.currentBackStack.value.size > 1
 
     override fun navigate(destination: Destination, replaceTop: Boolean) {
-        if (replaceTop) {
+        if (replaceTop && canPop) {
             navController.popBackStack()
         }
         navController.navigate(destination)
-        canPop = navController.currentBackStack.value.size > 1
     }
 
     override fun pop() {
+        if (!canPop) {
+            return
+        }
         navController.popBackStack()
-        canPop = navController.currentBackStack.value.size > 1
     }
 
     override fun popUntilRoot() {
-        do {
-            pop()
-        } while (canPop)
+        navController.popBackStack(route = Destination.Main, inclusive = false)
     }
 }
