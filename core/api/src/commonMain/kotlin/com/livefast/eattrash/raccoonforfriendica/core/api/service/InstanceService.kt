@@ -6,7 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.InstanceRule
 import de.jensklingenberg.ktorfit.http.GET
 
 interface InstanceService {
-    @GET("v1/instance")
+    @GET("v2/instance")
     suspend fun getInfo(): Instance
 
     @GET("v1/instance/rules")
