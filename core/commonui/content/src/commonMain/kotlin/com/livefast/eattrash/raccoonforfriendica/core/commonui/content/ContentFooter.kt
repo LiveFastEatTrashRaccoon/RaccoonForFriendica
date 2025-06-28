@@ -114,17 +114,17 @@ fun ContentFooter(
                 FooterItem(
                     modifier = itemModifier,
                     icon =
-                        if (canLikeAndDislike) {
-                            Icons.Outlined.ThumbUp
-                        } else {
-                            Icons.Default.FavoriteBorder
-                        },
+                    if (canLikeAndDislike) {
+                        Icons.Outlined.ThumbUp
+                    } else {
+                        Icons.Default.FavoriteBorder
+                    },
                     toggledIcon =
-                        if (canLikeAndDislike) {
-                            Icons.Default.ThumbUp
-                        } else {
-                            Icons.Default.Favorite
-                        },
+                    if (canLikeAndDislike) {
+                        Icons.Default.ThumbUp
+                    } else {
+                        Icons.Default.Favorite
+                    },
                     contentDescription = null,
                     value = favoriteCount,
                     toggled = favorite,
@@ -157,10 +157,9 @@ fun ContentFooter(
             }
         }
 
-
         if (options.isNotEmpty()) {
             Box(
-                modifier = Modifier.padding(horizontal = Spacing.s)
+                modifier = Modifier.padding(horizontal = Spacing.s),
             ) {
                 IconButton(
                     modifier =
