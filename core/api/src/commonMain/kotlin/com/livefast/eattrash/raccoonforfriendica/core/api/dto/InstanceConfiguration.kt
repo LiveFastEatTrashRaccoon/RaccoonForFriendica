@@ -4,4 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class InstanceConfiguration(@SerialName("statuses") val statuses: InstanceConfigurationStatuses? = null)
+data class InstanceConfiguration(
+    @SerialName("statuses") val statuses: InstanceConfigurationStatuses? = null,
+    @SerialName("vapid") val vapid: VapidKey? = null,
+)
