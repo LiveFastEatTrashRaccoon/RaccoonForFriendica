@@ -111,7 +111,7 @@ internal fun NavGraphBuilder.buildNavigationGraph() {
             swipeNavigationEnabled = destination.swipeNavigationEnabled,
         )
     }
-    composable<Destination.Thread> {
+    composable<Destination.ImageDetail> {
         val route: Destination.ImageDetail = it.toRoute()
         ImageDetailScreen(
             urls = route.urls,
