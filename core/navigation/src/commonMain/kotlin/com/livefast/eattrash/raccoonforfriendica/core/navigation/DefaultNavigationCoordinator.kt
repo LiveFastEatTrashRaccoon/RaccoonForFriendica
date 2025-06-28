@@ -48,10 +48,9 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
         refreshCanPop()
     }
 
-    private fun refreshCanPop() {
-        canPop.update {
-            rootNavController?.canPop ?: false
-        }
+    override fun popUntilRoot() {
+        rootNavController?.popUntilRoot()
+        refreshCanPop()
     }
 
     override fun setExitMessageVisible(value: Boolean) {
@@ -78,11 +77,6 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
         refreshCanPop()
     }
 
-    override fun popUntilRoot() {
-        rootNavController?.popUntilRoot()
-        refreshCanPop()
-    }
-
     override suspend fun submitDeeplink(url: String) {
         delay(750)
         deepLinkUrl.emit(url)
@@ -92,6 +86,12 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
         scope.launch {
             delay(delay)
             globalMessage.emit(message)
+        }
+    }
+
+    private fun refreshCanPop() {
+        canPop.update {
+            rootNavController?.canPop ?: false
         }
     }
 }
