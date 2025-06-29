@@ -48,7 +48,6 @@ internal class DefaultPullNotificationManager(private val context: Context) : Pu
     override fun start() {
         WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
 
-        createNotificationChannel()
         // check immediately with an expedited one-time request
         oneshotCheck()
 
@@ -57,6 +56,7 @@ internal class DefaultPullNotificationManager(private val context: Context) : Pu
     }
 
     override fun oneshotCheck() {
+        createNotificationChannelIfNeeded()
         OneTimeWorkRequestBuilder<CheckNotificationWorker>()
             .addTag(TAG)
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
@@ -75,18 +75,18 @@ internal class DefaultPullNotificationManager(private val context: Context) : Pu
         notificationManager.cancelAll()
     }
 
-    private fun createNotificationChannel() {
-        val descriptionText = ""
+    private fun createNotificationChannelIfNeeded() {
         val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel =
-            NotificationChannel(
-                NotificationConstants.CHANNEL_ID,
-                NotificationConstants.CHANNEL_NAME,
-                importance,
-            ).apply {
-                description = descriptionText
-            }
-        notificationManager.createNotificationChannel(channel)
+        val existingChannel = notificationManager.getNotificationChannel(NotificationConstants.CHANNEL_ID)
+        if (existingChannel == null) {
+            val channel =
+                NotificationChannel(
+                    NotificationConstants.CHANNEL_ID,
+                    NotificationConstants.CHANNEL_NAME,
+                    importance,
+                )
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
     private fun periodicCheck() {
