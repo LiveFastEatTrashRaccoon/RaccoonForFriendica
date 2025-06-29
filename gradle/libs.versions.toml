@@ -42,7 +42,6 @@ spotless = "7.0.4"
 stately = "2.1.0"
 turbine = "1.2.1"
 unifiedpush-connector = "3.0.10"
-unifiedpush-fcm-distributor = "3.0.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -123,7 +122,6 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 unifiedpush-connector = { module = "org.unifiedpush.android:connector", version.ref = "unifiedpush-connector" }
-unifiedpush-fcm-distributor = { module = "org.unifiedpush.android:embedded-fcm-distributor", version.ref = "unifiedpush-fcm-distributor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

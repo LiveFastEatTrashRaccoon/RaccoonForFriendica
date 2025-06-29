@@ -410,15 +410,16 @@ internal fun Instance.toModel() = NodeInfoModel(
     activeUsers = usage?.users?.activeMonth,
     attachmentLimit = configuration?.statuses?.maxMediaAttachments,
     characterLimit = configuration?.statuses?.maxCharacters,
-    contact = contactAccount?.toModel(),
+    contact = contact?.account?.toModel(),
     description = description,
     domain = domain,
     languages = languages,
     rules = rules.map { it.toModel() },
     sourceUrl = sourceUrl,
-    thumbnail = thumbnail,
+    thumbnail = thumbnail?.url,
     title = title,
     uri = uri,
+    vapidKey = configuration?.vapid?.publicKey,
     version = version,
 )
 

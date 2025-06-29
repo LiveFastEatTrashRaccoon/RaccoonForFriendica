@@ -9,8 +9,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.Strings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.getStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.kodein.di.instance
@@ -19,7 +20,8 @@ import java.util.Collections.max
 internal class CheckNotificationWorker(private val context: Context, parameters: WorkerParameters) :
     CoroutineWorker(context, parameters) {
     private val inboxManager by RootDI.di.instance<InboxManager>()
-    private val strings by RootDI.di.instance<Strings>()
+    private val settingsRepository by RootDI.di.instance<SettingsRepository>()
+    private val strings = getStrings(settingsRepository.current.value?.lang ?: "en")
     private val notificationManager: NotificationManager
         get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -43,21 +45,25 @@ internal class CheckNotificationWorker(private val context: Context, parameters:
     }
 
     private suspend fun sendNotification(count: Int) {
-        val notification =
-            Notification
-                .Builder(context, NotificationConstants.CHANNEL_ID)
-                .setContentTitle(strings.unreadNotificationTitle())
-                .setContentText(strings.unreadNotificationBody(count))
-                .setSmallIcon(R.drawable.ic_monochrome)
-                .setContentIntent(getPendingIntent())
-                .setNumber(count)
-                .build()
-        val notificationId = getNextNotificationId()
-        notificationManager.notify(
-            NotificationConstants.NOTIFICATION_TAG,
-            notificationId,
-            notification,
-        )
+        try {
+            val notification =
+                Notification
+                    .Builder(context, NotificationConstants.CHANNEL_ID)
+                    .setContentTitle(strings.unreadNotificationTitle())
+                    .setContentText(strings.unreadNotificationBody(count))
+                    .setSmallIcon(R.drawable.ic_monochrome)
+                    .setContentIntent(getPendingIntent())
+                    .setNumber(count)
+                    .build()
+            val notificationId = getNextNotificationId()
+            notificationManager.notify(
+                NotificationConstants.NOTIFICATION_TAG,
+                notificationId,
+                notification,
+            )
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 
     private fun getPendingIntent(): PendingIntent {
@@ -66,6 +72,7 @@ internal class CheckNotificationWorker(private val context: Context, parameters:
                 context,
                 Class.forName(ACTIVITY_NAME),
             ).apply {
+                putExtra(InboxManager.OPEN_INBOX_AT_STARTUP, true)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
         return PendingIntent.getActivity(

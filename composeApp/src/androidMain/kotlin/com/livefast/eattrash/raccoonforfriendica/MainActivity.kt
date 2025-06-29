@@ -14,6 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.auth.DefaultAuthManager
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getAuthManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -85,6 +86,7 @@ class MainActivity : ComponentActivity() {
     private fun handleIntent(intent: Intent) {
         when {
             intent.action == Intent.ACTION_SEND -> handleIncomingAttachment(intent)
+            intent.getBooleanExtra(InboxManager.OPEN_INBOX_AT_STARTUP, false) -> handleOpenInboxAtStartup()
             else -> intent.data?.also { handleIncomingUrl(it) }
         }
     }
@@ -117,7 +119,7 @@ class MainActivity : ComponentActivity() {
     private fun handleIncomingAttachment(intent: Intent) {
         lifecycleScope.launch {
             // workaround: wait until the root NavigationAdapter has been set
-            delay(750)
+            delay(NAVIGATION_WARMUP)
             val mainRouter = getMainRouter()
             when {
                 "text/plain" == intent.type -> {
@@ -140,5 +142,19 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun handleOpenInboxAtStartup() {
+        lifecycleScope.launch {
+            // workaround: wait until the root NavigationAdapter has been set
+            delay(NAVIGATION_WARMUP)
+            val navigationCoordinator = getNavigationCoordinator()
+            navigationCoordinator.popUntilRoot()
+            navigationCoordinator.setCurrentSection(BottomNavigationSection.Inbox())
+        }
+    }
+
+    companion object {
+        private const val NAVIGATION_WARMUP = 750L
     }
 }

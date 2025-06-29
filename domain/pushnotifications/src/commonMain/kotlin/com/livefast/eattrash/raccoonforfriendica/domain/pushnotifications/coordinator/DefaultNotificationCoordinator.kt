@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.Notificati
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,9 @@ internal class DefaultNotificationCoordinator(
         stopMonitoringNotificationMode()
         stopMonitoringPullNotificationCheckInterval()
         pullNotificationManager.stop()
+        if (pushNotificationManager.state.value == PushNotificationManagerState.Enabled) {
+            pushNotificationManager.disable()
+        }
         inboxManager.clearUnreadCount()
     }
 
@@ -80,10 +84,7 @@ internal class DefaultNotificationCoordinator(
                             pushNotificationManager.startup()
                         }
 
-                        else -> {
-                            stopMonitoringNotificationMode()
-                            stopMonitoringPullNotificationCheckInterval()
-                        }
+                        else -> Unit
                     }
                 }.launchIn(scope)
     }

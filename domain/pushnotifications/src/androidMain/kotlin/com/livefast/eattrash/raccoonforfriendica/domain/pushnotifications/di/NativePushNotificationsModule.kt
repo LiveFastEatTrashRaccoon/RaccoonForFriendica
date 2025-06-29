@@ -17,6 +17,7 @@ internal actual val nativePushNotificationsModule =
                     context = instance(),
                     pushNotificationRepository = instance(),
                     accountRepository = instance(),
+                    nodeInfoRepository = instance(),
                 )
             }
         }

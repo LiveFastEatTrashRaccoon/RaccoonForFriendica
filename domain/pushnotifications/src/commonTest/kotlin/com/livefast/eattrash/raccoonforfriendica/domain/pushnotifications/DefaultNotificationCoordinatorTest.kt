@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.coordinator.DefaultNotificationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -31,7 +32,9 @@ class DefaultNotificationCoordinatorTest {
         }
     private val inboxManager = mock<InboxManager>(mode = MockMode.autoUnit)
     private val pullNotificationManager = mock<PullNotificationManager>(mode = MockMode.autoUnit)
-    private val pushNotificationManager = mock<PushNotificationManager>(mode = MockMode.autoUnit)
+    private val pushNotificationManager = mock<PushNotificationManager>(mode = MockMode.autoUnit) {
+        every { state } returns MutableStateFlow(PushNotificationManagerState.Idle)
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val sut =
