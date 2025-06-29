@@ -16,7 +16,6 @@ kotlin {
                 ) {
                     exclude("com.google.crypto.tink", "tink")
                 }
-                implementation(libs.unifiedpush.fcm.distributor)
             }
         }
         val commonMain by getting {
