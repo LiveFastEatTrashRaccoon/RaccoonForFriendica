@@ -1,0 +1,4 @@
+- enhancement: UnifiedPush integration
+- fix: option button position in timeline cards
+- refactor: complete navigation rewrite
+- chore: update dependencies
