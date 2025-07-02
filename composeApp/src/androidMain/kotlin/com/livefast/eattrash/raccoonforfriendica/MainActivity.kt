@@ -119,7 +119,7 @@ class MainActivity : ComponentActivity() {
     private fun handleIncomingAttachment(intent: Intent) {
         lifecycleScope.launch {
             // workaround: wait until the root NavigationAdapter has been set
-            delay(NAVIGATION_WARMUP)
+            delay(750L)
             val mainRouter = getMainRouter()
             when {
                 "text/plain" == intent.type -> {
@@ -147,14 +147,10 @@ class MainActivity : ComponentActivity() {
     private fun handleOpenInboxAtStartup() {
         lifecycleScope.launch {
             // workaround: wait until the root NavigationAdapter has been set
-            delay(NAVIGATION_WARMUP)
+            delay(1000L)
             val navigationCoordinator = getNavigationCoordinator()
             navigationCoordinator.popUntilRoot()
             navigationCoordinator.setCurrentSection(BottomNavigationSection.Inbox())
         }
-    }
-
-    companion object {
-        private const val NAVIGATION_WARMUP = 750L
     }
 }
