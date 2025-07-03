@@ -128,13 +128,6 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                         )
                     this +=
                         LicenceItem(
-                            type = LicenceItemType.Library,
-                            title = "Ktorfit",
-                            subtitle = "A HTTP client/Kotlin Symbol Processor for Kotlin Multiplatform",
-                            url = LicenceUrls.KTORFIT,
-                        )
-                    this +=
-                        LicenceItem(
                             type = LicenceItemType.Resource,
                             title = "Mastodon logo",
                             subtitle = "Logo of the Mastodon project",
