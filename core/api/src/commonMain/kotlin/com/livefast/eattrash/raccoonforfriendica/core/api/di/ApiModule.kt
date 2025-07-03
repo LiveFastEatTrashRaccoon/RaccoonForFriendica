@@ -11,6 +11,8 @@ import org.kodein.di.bind
 import org.kodein.di.instance
 import org.kodein.di.singleton
 
+internal data class ServiceCreationArgs(val baseUrl: String, val client: HttpClient)
+
 val apiModule =
     DI.Module("ApiModule") {
         bind<HttpClientEngine> {
