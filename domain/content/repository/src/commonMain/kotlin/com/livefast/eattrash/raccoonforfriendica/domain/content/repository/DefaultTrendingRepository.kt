@@ -10,8 +10,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.json.Json
 
-internal class DefaultTrendingRepository(private val provider: ServiceProvider) : TrendingRepository {
+internal class DefaultTrendingRepository(private val provider: ServiceProvider, private val json: Json) :
+    TrendingRepository {
     private val mutex = Mutex()
     private val cachedTags: MutableList<TagModel> = mutableListOf()
 
@@ -62,8 +64,8 @@ internal class DefaultTrendingRepository(private val provider: ServiceProvider) 
                 )
         // workaround for a server bug which inserts empty arrays "[]," among valid results
         // (at least on some Friendica versions)
-        val body = response.raw().bodyAsText().replace("[],", "")
-        TrendsLink.fromJson(body).map { it.toModel() }
+        val body = response.bodyAsText().replace("[],", "")
+        json.decodeFromString<List<TrendsLink>>(body).map { it.toModel() }
     }.getOrNull()
 
     companion object {

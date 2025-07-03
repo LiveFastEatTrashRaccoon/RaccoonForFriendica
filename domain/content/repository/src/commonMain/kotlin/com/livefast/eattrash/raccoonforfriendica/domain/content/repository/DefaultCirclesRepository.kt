@@ -19,11 +19,7 @@ internal class DefaultCirclesRepository(private val provider: ServiceProvider) :
     }.getOrNull()
 
     override suspend fun getMembers(id: String, pageCursor: String?): List<UserModel>? = runCatching {
-        provider.lists
-            .getMembers(
-                id = id,
-                maxId = pageCursor,
-            ).map { it.toModel() }
+        provider.lists.getMembers(id = id, maxId = pageCursor).map { it.toModel() }
     }.getOrNull()
 
     override suspend fun create(title: String, replyPolicy: CircleReplyPolicy, exclusive: Boolean): CircleModel? =
@@ -50,27 +46,18 @@ internal class DefaultCirclesRepository(private val provider: ServiceProvider) :
                 replyPolicy = replyPolicy.toDto(),
                 exclusive = exclusive,
             )
-        provider.lists
-            .update(
-                id = id,
-                data = data,
-            ).toModel()
+        provider.lists.update(id = id, data = data).toModel()
     }.getOrNull()
 
-    override suspend fun delete(id: String): Boolean = runCatching {
-        val res = provider.lists.delete(id)
-        res.isSuccessful
-    }.getOrElse { false }
+    override suspend fun delete(id: String): Boolean = provider.lists.delete(id)
 
-    override suspend fun addMembers(id: String, userIds: List<String>): Boolean = runCatching {
+    override suspend fun addMembers(id: String, userIds: List<String>): Boolean {
         val data = EditListMembersForm(accountIds = userIds)
-        val res = provider.lists.addMembers(id = id, data = data)
-        res.isSuccessful
-    }.getOrElse { false }
+        return provider.lists.addMembers(id = id, data = data)
+    }
 
-    override suspend fun removeMembers(id: String, userIds: List<String>): Boolean = runCatching {
+    override suspend fun removeMembers(id: String, userIds: List<String>): Boolean {
         val data = EditListMembersForm(accountIds = userIds)
-        val res = provider.lists.removeMembers(id = id, data = data)
-        res.isSuccessful
-    }.getOrElse { false }
+        return provider.lists.removeMembers(id = id, data = data)
+    }
 }

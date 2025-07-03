@@ -8,7 +8,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Relationshi
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.client.request.forms.FormDataContent
@@ -119,14 +118,12 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
     }.getOrNull()
 
     override suspend fun getFollowRequests(pageCursor: String?): ListWithPageCursor<UserModel>? = runCatching {
-        val response =
+        val (list, cursor) =
             provider.followRequests.getAll(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             )
-        val list: List<UserModel> = response.body()?.map { it.toModel() }.orEmpty()
-        val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
-        ListWithPageCursor(list = list, cursor = nextCursor)
+        ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
     }.getOrNull()
 
     override suspend fun acceptFollowRequest(id: String) = runCatching {

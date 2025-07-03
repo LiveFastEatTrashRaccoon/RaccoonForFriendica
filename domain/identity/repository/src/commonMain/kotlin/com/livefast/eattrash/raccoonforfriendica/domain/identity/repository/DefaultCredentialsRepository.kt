@@ -3,7 +3,6 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Application
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.OAuthToken
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.toOauthToken
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateAppForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
@@ -20,9 +19,11 @@ import io.ktor.http.Parameters
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
+import kotlinx.serialization.json.Json
 
 internal class DefaultCredentialsRepository(
     private val provider: ServiceProvider,
+    private val json: Json,
     engine: HttpClientEngine = provideHttpClientEngine(),
 ) : CredentialsRepository {
     private val httpClient =
@@ -105,11 +106,9 @@ internal class DefaultCredentialsRepository(
                 }.toString()
         val responseBody =
             httpClient
-                .preparePost(url) {
-                    setBody(data)
-                }.execute()
+                .preparePost(url) { setBody(data) }.execute()
                 .bodyAsText()
-        responseBody.toOauthToken().toModel()
+        json.decodeFromString<OAuthToken>(responseBody).toModel()
     }.getOrNull()
 }
 

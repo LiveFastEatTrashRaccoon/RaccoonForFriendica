@@ -44,15 +44,9 @@ internal class DefaultNotificationRepository(private val provider: ServiceProvid
         }.getOrNull()
     }
 
-    override suspend fun dismiss(id: String): Boolean = runCatching {
-        val res = provider.notifications.dismiss(id)
-        res.isSuccessful
-    }.getOrElse { false }
+    override suspend fun dismiss(id: String): Boolean = provider.notifications.dismiss(id)
 
-    override suspend fun dismissAll(): Boolean = runCatching {
-        val res = provider.notifications.clear()
-        res.isSuccessful
-    }.getOrElse { false }
+    override suspend fun dismissAll(): Boolean = provider.notifications.clear()
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20

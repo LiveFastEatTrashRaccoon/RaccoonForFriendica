@@ -262,10 +262,7 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
             ).toModelWithReply()
     }.getOrNull()
 
-    override suspend fun delete(id: String): Boolean = runCatching {
-        val res = provider.statuses.delete(id)
-        res.isSuccessful
-    }.getOrElse { false }
+    override suspend fun delete(id: String): Boolean = provider.statuses.delete(id)
 
     override suspend fun submitPoll(pollId: String, choices: List<Int>): PollModel? = runCatching {
         val data =
@@ -279,27 +276,25 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
             ).toModel()
     }.getOrNull()
 
-    override suspend fun dislike(id: String): Boolean = runCatching {
+    override suspend fun dislike(id: String): Boolean {
         val data =
             FormDataContent(
                 parameters {
                     append("id", id)
                 },
             )
-        val res = provider.statuses.dislike(data)
-        res.isSuccessful
-    }.getOrElse { false }
+        return provider.statuses.dislike(data)
+    }
 
-    override suspend fun undislike(id: String): Boolean = runCatching {
+    override suspend fun undislike(id: String): Boolean {
         val data =
             FormDataContent(
                 parameters {
                     append("id", id)
                 },
             )
-        val res = provider.statuses.undislike(data)
-        res.isSuccessful
-    }.getOrElse { false }
+        return provider.statuses.undislike(data)
+    }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20

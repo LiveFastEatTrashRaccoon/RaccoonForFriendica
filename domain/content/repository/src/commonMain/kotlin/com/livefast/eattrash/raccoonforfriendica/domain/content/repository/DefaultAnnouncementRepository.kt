@@ -33,26 +33,11 @@ internal class DefaultAnnouncementRepository(private val provider: ServiceProvid
         }.getOrNull()
     }
 
-    override suspend fun markAsRead(id: String): Boolean = runCatching {
-        val res = provider.announcements.dismiss(id)
-        res.isSuccessful
-    }.getOrElse { false }
+    override suspend fun markAsRead(id: String): Boolean = provider.announcements.dismiss(id)
 
-    override suspend fun addReaction(id: String, reaction: String): Boolean = runCatching {
-        val res =
-            provider.announcements.addReaction(
-                id = id,
-                name = reaction,
-            )
-        res.isSuccessful
-    }.getOrElse { false }
+    override suspend fun addReaction(id: String, reaction: String): Boolean =
+        provider.announcements.addReaction(id = id, name = reaction)
 
-    override suspend fun removeReaction(id: String, reaction: String): Boolean = runCatching {
-        val res =
-            provider.announcements.removeReaction(
-                id = id,
-                name = reaction,
-            )
-        res.isSuccessful
-    }.getOrElse { false }
+    override suspend fun removeReaction(id: String, reaction: String): Boolean =
+        provider.announcements.removeReaction(id = id, name = reaction)
 }

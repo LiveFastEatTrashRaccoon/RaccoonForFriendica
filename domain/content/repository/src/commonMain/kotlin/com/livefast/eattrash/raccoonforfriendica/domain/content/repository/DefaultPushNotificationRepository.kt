@@ -31,7 +31,7 @@ internal class DefaultPushNotificationRepository(private val provider: ServicePr
                     append("data[policy]", policy.toDto())
                 },
             )
-        provider.push.create(data)?.serverKey
+        provider.push.create(data).serverKey
     }.getOrNull()
 
     override suspend fun update(types: List<NotificationType>, policy: NotificationPolicy): String? = runCatching {
@@ -47,7 +47,7 @@ internal class DefaultPushNotificationRepository(private val provider: ServicePr
                     append("data[policy]", policy.toDto())
                 },
             )
-        provider.push.update(data)?.serverKey
+        provider.push.update(data).serverKey
     }.getOrNull()
 
     override suspend fun delete(): Boolean = runCatching {
