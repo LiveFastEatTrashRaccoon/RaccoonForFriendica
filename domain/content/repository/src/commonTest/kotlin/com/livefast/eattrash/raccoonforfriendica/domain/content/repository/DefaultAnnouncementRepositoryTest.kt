@@ -11,7 +11,6 @@ import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode
 import dev.mokkery.verifySuspend
-import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -69,7 +68,7 @@ class DefaultAnnouncementRepositoryTest {
 
     @Test
     fun `given success when markAsRead then result is as expected`() = runTest {
-        everySuspend { announcementService.dismiss(any()) } returns mockResponse(res = Unit)
+        everySuspend { announcementService.dismiss(any()) } returns true
 
         val res = sut.markAsRead(id = "1")
 
@@ -81,8 +80,7 @@ class DefaultAnnouncementRepositoryTest {
 
     @Test
     fun `given error when markAsRead then result is as expected`() = runTest {
-        everySuspend { announcementService.dismiss(any()) } returns
-            mockResponse(statusCode = HttpStatusCode.InternalServerError)
+        everySuspend { announcementService.dismiss(any()) } returns false
 
         val res = sut.markAsRead(id = "1")
 
@@ -95,11 +93,8 @@ class DefaultAnnouncementRepositoryTest {
     @Test
     fun `given success when addReaction then result is as expected`() = runTest {
         everySuspend {
-            announcementService.addReaction(
-                id = any(),
-                name = any(),
-            )
-        } returns mockResponse(res = Unit)
+            announcementService.addReaction(id = any(), name = any())
+        } returns true
 
         val res = sut.addReaction(id = "1", reaction = "🦝")
 
@@ -112,11 +107,8 @@ class DefaultAnnouncementRepositoryTest {
     @Test
     fun `given error when addReaction then result is as expected`() = runTest {
         everySuspend {
-            announcementService.addReaction(
-                id = any(),
-                name = any(),
-            )
-        } returns mockResponse(statusCode = HttpStatusCode.InternalServerError)
+            announcementService.addReaction(id = any(), name = any())
+        } returns false
 
         val res = sut.addReaction(id = "1", reaction = "🦝")
 
@@ -129,11 +121,8 @@ class DefaultAnnouncementRepositoryTest {
     @Test
     fun `given success when removeReaction then result is as expected`() = runTest {
         everySuspend {
-            announcementService.removeReaction(
-                id = any(),
-                name = any(),
-            )
-        } returns mockResponse(res = Unit)
+            announcementService.removeReaction(id = any(), name = any())
+        } returns true
 
         val res = sut.removeReaction(id = "1", reaction = "🦝")
 
@@ -146,11 +135,8 @@ class DefaultAnnouncementRepositoryTest {
     @Test
     fun `given error when removeReaction then result is as expected`() = runTest {
         everySuspend {
-            announcementService.removeReaction(
-                id = any(),
-                name = any(),
-            )
-        } returns mockResponse(statusCode = HttpStatusCode.InternalServerError)
+            announcementService.removeReaction(id = any(), name = any())
+        } returns false
 
         val res = sut.removeReaction(id = "1", reaction = "🦝")
 

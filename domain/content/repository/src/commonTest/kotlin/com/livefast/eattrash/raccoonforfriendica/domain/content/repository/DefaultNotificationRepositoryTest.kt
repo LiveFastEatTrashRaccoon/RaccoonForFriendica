@@ -13,7 +13,6 @@ import dev.mokkery.matcher.matching
 import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode
 import dev.mokkery.verifySuspend
-import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -175,7 +174,7 @@ class DefaultNotificationRepositoryTest {
 
     @Test
     fun `when dismiss then result is as expected`() = runTest {
-        everySuspend { notificationService.dismiss(any()) } returns mockResponse(res = Unit)
+        everySuspend { notificationService.dismiss(any()) } returns true
 
         val res = sut.dismiss("1")
 
@@ -187,8 +186,7 @@ class DefaultNotificationRepositoryTest {
 
     @Test
     fun `given error when dismiss then result is as expected`() = runTest {
-        everySuspend { notificationService.dismiss(any()) } returns
-            mockResponse(statusCode = HttpStatusCode.InternalServerError)
+        everySuspend { notificationService.dismiss(any()) } returns false
 
         val res = sut.dismiss("1")
 
@@ -200,7 +198,7 @@ class DefaultNotificationRepositoryTest {
 
     @Test
     fun `when dismissAll then result is as expected`() = runTest {
-        everySuspend { notificationService.clear() } returns mockResponse(res = Unit)
+        everySuspend { notificationService.clear() } returns true
 
         val res = sut.dismissAll()
 
@@ -212,8 +210,7 @@ class DefaultNotificationRepositoryTest {
 
     @Test
     fun `given error when dismissAll then result is as expected`() = runTest {
-        everySuspend { notificationService.clear() } returns
-            mockResponse(statusCode = HttpStatusCode.InternalServerError)
+        everySuspend { notificationService.clear() } returns false
 
         val res = sut.dismissAll()
 

@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCard
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.throws
+import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
@@ -23,7 +24,9 @@ class FallbackTranslationRepositoryTest {
     private val service = mock<InnerTranslationService>()
     private val sut =
         FallbackTranslationRepository(
-            service = service,
+            provider = mock {
+                every { translationService } returns service
+            },
         )
 
     @Test
@@ -35,7 +38,7 @@ class FallbackTranslationRepositoryTest {
         val sourceContent = "source content"
         everySuspend {
             service.translate(any(), any(), any())
-        } returns targetContent
+        } returns Result.success(targetContent)
         val entry =
             TimelineEntryModel(
                 id = "1",
@@ -76,7 +79,7 @@ class FallbackTranslationRepositoryTest {
             val sourceCardDescription = "source card description"
             everySuspend {
                 service.translate(any(), any(), any())
-            } returns targetText
+            } returns Result.success(targetText)
             val entry =
                 TimelineEntryModel(
                     id = "1",
@@ -154,7 +157,7 @@ class FallbackTranslationRepositoryTest {
         val sourceOption = "source option 1"
         everySuspend {
             service.translate(any(), any(), any())
-        } returns targetText
+        } returns Result.success(targetText)
         val entry =
             TimelineEntryModel(
                 id = "1",
@@ -209,7 +212,7 @@ class FallbackTranslationRepositoryTest {
         val sourceDescription = "source description"
         everySuspend {
             service.translate(any(), any(), any())
-        } returns targetText
+        } returns Result.success(targetText)
         val entry =
             TimelineEntryModel(
                 id = "1",

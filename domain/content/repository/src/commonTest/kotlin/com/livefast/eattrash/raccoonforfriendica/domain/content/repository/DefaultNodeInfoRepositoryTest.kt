@@ -10,6 +10,7 @@ import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -17,7 +18,10 @@ class DefaultNodeInfoRepositoryTest {
     private val instanceService = mock<InstanceService>()
     private val serviceProvider =
         mock<ServiceProvider> { every { instance } returns instanceService }
-    private val sut = DefaultNodeInfoRepository(provider = serviceProvider)
+    private val sut = DefaultNodeInfoRepository(
+        provider = serviceProvider,
+        json = Json,
+    )
 
     @Test
     fun `when getInfo then result is as expected`() = runTest {
