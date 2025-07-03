@@ -30,7 +30,6 @@ ksp = "2.1.21-2.0.2"
 ktlint = "1.6.0"
 ktlint-compose-rules = "0.4.22"
 ktor = "3.1.3"
-ktorfit = "2.5.2"
 materialKolor = "2.1.1"
 mokkery = "2.8.0"
 moko = "0.19.1"
@@ -96,8 +95,6 @@ ktor-contentnegotiation = { module = "io.ktor:ktor-client-content-negotiation", 
 ktor-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
-ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfit" }
-ktorfit-converters-response = { module = "de.jensklingenberg.ktorfit:ktorfit-converters-response", version.ref = "ktorfit" }
 
 ksp-gradlePlugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 
@@ -137,8 +134,6 @@ kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-
-ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 
