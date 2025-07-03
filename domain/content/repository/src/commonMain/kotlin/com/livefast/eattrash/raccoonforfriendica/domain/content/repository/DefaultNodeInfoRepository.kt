@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NodeInfoUtils
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NodeInfo
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
@@ -9,10 +9,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
+import kotlinx.serialization.json.Json
 
 internal class DefaultNodeInfoRepository(
     private val provider: ServiceProvider,
     private val client: HttpClient = HttpClient(provideHttpClientEngine()),
+    private val json: Json,
 ) : NodeInfoRepository {
     override suspend fun getInfo(): NodeInfoModel? {
         val instanceInfo =
@@ -34,18 +36,17 @@ internal class DefaultNodeInfoRepository(
         provider.instance.getRules().map { it.toModel() }
     }.getOrNull()
 
-    private suspend fun extractSoftwareName(): String? {
+    private suspend fun extractSoftwareName(): String {
         val linksJson =
             client.get("https://${provider.currentNode}/.well-known/nodeinfo").bodyAsText()
         val url =
-            NodeInfoUtils
-                .linksFromJson(linksJson)
+            json.decodeFromString<NodeInfo>(linksJson)
                 .links
                 .lastOrNull()
                 ?.href
                 .orEmpty()
         val dataJson = client.get(url).bodyAsText()
-        val data = NodeInfoUtils.dataFromJson(dataJson)
+        val data = json.decodeFromString<Map<String, Any?>>(dataJson)
         val softwareInfo = data["software"] as? Map<*, *>
         return softwareInfo?.get("name").toString().trim('"')
     }

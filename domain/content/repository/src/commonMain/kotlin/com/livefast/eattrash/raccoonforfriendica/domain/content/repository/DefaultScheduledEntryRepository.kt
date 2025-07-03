@@ -33,10 +33,7 @@ internal class DefaultScheduledEntryRepository(private val provider: ServiceProv
             ).toModel()
     }.getOrNull()
 
-    override suspend fun delete(id: String): Boolean = runCatching {
-        val res = provider.statuses.deleteScheduled(id)
-        res.isSuccessful
-    }.getOrElse { false }
+    override suspend fun delete(id: String): Boolean = provider.statuses.deleteScheduled(id)
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20

@@ -14,7 +14,6 @@ import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
-import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -91,7 +90,7 @@ class DefaultCirclesRepositoryTest {
     @Test
     fun `when update then result is as expected`() = runTest {
         val list = UserList(id = "1")
-        everySuspend { listService.update(any(), any()) } returns list
+        everySuspend { listService.update(id = any(), data = any()) } returns list
 
         val res =
             sut.update(
@@ -115,7 +114,7 @@ class DefaultCirclesRepositoryTest {
 
     @Test
     fun `when delete then result is as expected`() = runTest {
-        everySuspend { listService.delete(any()) } returns mockResponse(res = Unit)
+        everySuspend { listService.delete(any()) } returns true
 
         val res = sut.delete(id = "1")
 
@@ -127,8 +126,7 @@ class DefaultCirclesRepositoryTest {
 
     @Test
     fun `given error when delete then result is as expected`() = runTest {
-        everySuspend { listService.delete(any()) } returns
-            mockResponse(statusCode = HttpStatusCode.InternalServerError)
+        everySuspend { listService.delete(any()) } returns false
 
         val res = sut.delete(id = "1")
 
@@ -140,7 +138,7 @@ class DefaultCirclesRepositoryTest {
 
     @Test
     fun `when addMembers then result is as expected`() = runTest {
-        everySuspend { listService.addMembers(any(), any()) } returns mockResponse(res = Unit)
+        everySuspend { listService.addMembers(any(), any()) } returns true
         val accountIds = listOf("2", "3")
 
         val res = sut.addMembers("1", accountIds)
@@ -157,11 +155,8 @@ class DefaultCirclesRepositoryTest {
     @Test
     fun `when removeMembers then result is as expected`() = runTest {
         everySuspend {
-            listService.removeMembers(
-                any(),
-                any(),
-            )
-        } returns mockResponse(res = Unit)
+            listService.removeMembers(id = any(), data = any())
+        } returns true
         val accountIds = listOf("2", "3")
 
         val res = sut.removeMembers("1", accountIds)

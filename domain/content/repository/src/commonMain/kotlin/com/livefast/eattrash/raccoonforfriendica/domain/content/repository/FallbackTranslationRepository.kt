@@ -1,10 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.InnerTranslationService
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
 
-internal class FallbackTranslationRepository(private val service: InnerTranslationService) : TranslationRepository {
+internal class FallbackTranslationRepository(private val provider: ServiceProvider) : TranslationRepository {
     override suspend fun getTranslation(entry: TimelineEntryModel, targetLang: String): TranslatedTimelineEntryModel? =
         runCatching {
             TranslatedTimelineEntryModel(
@@ -71,11 +71,12 @@ internal class FallbackTranslationRepository(private val service: InnerTranslati
             )
         }.getOrNull()
 
-    private suspend fun String.translate(sourceLang: String?, targetLang: String): String = service.translate(
-        sourceText = this,
-        sourceLang = sourceLang ?: DEFAULT_LANG,
-        targetLang = targetLang,
-    ) ?: this
+    private suspend fun String.translate(sourceLang: String?, targetLang: String): String =
+        provider.translationService.translate(
+            sourceText = this,
+            sourceLang = sourceLang ?: DEFAULT_LANG,
+            targetLang = targetLang,
+        ).getOrElse { this }
 
     companion object {
         private const val PROVIDER_NAME = "TAS"

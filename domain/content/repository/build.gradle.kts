@@ -2,6 +2,7 @@ plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
+    id("com.livefast.eattrash.serialization")
 }
 
 kotlin {
@@ -9,8 +10,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kodein)
-                implementation(libs.ktorfit.lib)
-                implementation(libs.ktorfit.converters.response)
+                implementation(libs.kotlinx.coroutines)
+                implementation(libs.ktor.client.core)
 
                 implementation(projects.core.api)
                 implementation(projects.core.di)

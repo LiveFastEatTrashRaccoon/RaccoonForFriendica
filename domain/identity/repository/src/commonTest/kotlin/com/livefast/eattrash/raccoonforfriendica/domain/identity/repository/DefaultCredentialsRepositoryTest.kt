@@ -21,6 +21,7 @@ import io.ktor.client.engine.HttpClientEngine
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -46,6 +47,7 @@ class DefaultCredentialsRepositoryTest {
         DefaultCredentialsRepository(
             provider = provider,
             engine = engine,
+            json = Json,
         )
 
     @Test

@@ -14,7 +14,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 internal class DefaultMediaRepository(private val provider: ServiceProvider) : MediaRepository {
     override suspend fun getBy(id: String): AttachmentModel? = runCatching {
-        provider.media.getBy(id)?.toModel()
+        provider.media.getBy(id).toModel()
     }.getOrNull()
 
     override suspend fun create(bytes: ByteArray, album: String, alt: String): AttachmentModel? = runCatching {
@@ -61,8 +61,5 @@ internal class DefaultMediaRepository(private val provider: ServiceProvider) : M
         true
     }.getOrElse { false }
 
-    override suspend fun delete(id: String): Boolean = runCatching {
-        val res = provider.media.delete(id = id)
-        res.isSuccessful
-    }.getOrElse { false }
+    override suspend fun delete(id: String): Boolean = provider.media.delete(id = id)
 }

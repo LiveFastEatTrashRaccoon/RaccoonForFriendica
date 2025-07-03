@@ -169,6 +169,7 @@ val contentRepositoryModule =
             singleton {
                 DefaultNodeInfoRepository(
                     provider = instance(tag = "default"),
+                    json = instance(),
                 )
             }
         }
@@ -261,6 +262,7 @@ val contentRepositoryModule =
             singleton {
                 DefaultTrendingRepository(
                     provider = instance(tag = "default"),
+                    json = instance(),
                 )
             }
         }
@@ -288,7 +290,7 @@ val contentRepositoryModule =
         bind<TranslationRepository>(tag = "fallback") {
             singleton {
                 FallbackTranslationRepository(
-                    service = instance(),
+                    provider = instance(tag = "default"),
                 )
             }
         }

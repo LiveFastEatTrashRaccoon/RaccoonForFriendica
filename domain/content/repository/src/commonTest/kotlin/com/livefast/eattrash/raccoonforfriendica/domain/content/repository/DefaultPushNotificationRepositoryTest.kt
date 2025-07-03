@@ -5,7 +5,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PushService
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
-import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.throws
 import dev.mokkery.every
@@ -23,7 +22,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class DefaultPushNotificationRepositoryTest {
-    private val pushService = mock<PushService>(MockMode.autoUnit)
+    private val pushService = mock<PushService>()
     private val serviceProvider =
         mock<ServiceProvider> {
             every { push } returns pushService
@@ -179,6 +178,8 @@ class DefaultPushNotificationRepositoryTest {
 
     @Test
     fun `when delete then result is as expected`() = runTest {
+        everySuspend { pushService.delete() } returns true
+
         val res = sut.delete()
 
         assertTrue(res)

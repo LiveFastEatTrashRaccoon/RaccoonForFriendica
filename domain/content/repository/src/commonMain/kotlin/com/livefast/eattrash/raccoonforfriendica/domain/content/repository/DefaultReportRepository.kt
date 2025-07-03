@@ -14,7 +14,7 @@ internal class DefaultReportRepository(private val provider: ServiceProvider) : 
         forward: Boolean,
         category: ReportCategory,
         ruleIds: List<String>?,
-    ): Boolean = runCatching {
+    ): Boolean {
         val data =
             FormDataContent(
                 Parameters.build {
@@ -32,7 +32,6 @@ internal class DefaultReportRepository(private val provider: ServiceProvider) : 
                     }
                 },
             )
-        val res = provider.reports.create(data)
-        res.isSuccessful
-    }.getOrElse { false }
+        return provider.reports.create(data)
+    }
 }

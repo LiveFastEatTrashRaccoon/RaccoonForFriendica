@@ -2,17 +2,12 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
-import de.jensklingenberg.ktorfit.Response
-import de.jensklingenberg.ktorfit.http.GET
-import de.jensklingenberg.ktorfit.http.Query
+import io.ktor.client.statement.HttpResponse
 
 interface TrendsService {
-    @GET("v1/trends/tags")
-    suspend fun getHashtags(@Query("offset") offset: Int, @Query("limit") limit: Int = 20): List<Tag>
+    suspend fun getHashtags(offset: Int, limit: Int = 20): List<Tag>
 
-    @GET("v1/trends/statuses")
-    suspend fun getStatuses(@Query("offset") offset: Int, @Query("limit") limit: Int = 20): List<Status>
+    suspend fun getStatuses(offset: Int, limit: Int = 20): List<Status>
 
-    @GET("v1/trends/links")
-    suspend fun getLinks(@Query("offset") offset: Int, @Query("limit") limit: Int = 20): Response<Any>
+    suspend fun getLinks(offset: Int, limit: Int = 20): HttpResponse
 }

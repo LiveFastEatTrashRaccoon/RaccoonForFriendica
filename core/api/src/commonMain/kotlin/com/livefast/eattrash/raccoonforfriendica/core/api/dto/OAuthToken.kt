@@ -8,5 +8,3 @@ data class OAuthToken(
     @SerialName("access_token") val accessToken: String,
     @SerialName("refresh_token") val refreshToken: String? = null,
 )
-
-fun String.toOauthToken() = JsonSerializer.decodeFromString<OAuthToken>(this)

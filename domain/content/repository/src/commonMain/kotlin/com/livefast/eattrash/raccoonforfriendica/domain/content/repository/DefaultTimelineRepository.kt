@@ -3,7 +3,6 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.extractNextIdFromResponseLinkHeader
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -124,15 +123,13 @@ internal class DefaultTimelineRepository(
 
     override suspend fun getHashtag(hashtag: String, pageCursor: String?): ListWithPageCursor<TimelineEntryModel>? =
         runCatching {
-            val response =
+            val (list, cursor) =
                 provider.timeline.getHashtag(
                     hashtag = hashtag,
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-            val list = response.body()?.map { it.toModelWithReply() }.orEmpty()
-            val nextCursor: String? = response.extractNextIdFromResponseLinkHeader()
-            ListWithPageCursor(list = list, cursor = nextCursor)
+            ListWithPageCursor(list = list.map { it.toModelWithReply() }, cursor = cursor)
         }.getOrNull()
 
     override suspend fun getCircle(id: String, pageCursor: String?): List<TimelineEntryModel>? = runCatching {

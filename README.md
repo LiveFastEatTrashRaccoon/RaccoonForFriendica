@@ -204,7 +204,7 @@ The app is under ongoing development, here is a list of the features that are be
 - [x] photo gallery (Friendica only)
 - [x] advanced media visualization (videos, GIFs, multiple images, audio)
 - [x] scheduled posts and local drafts
-- [x] create reports for posts/users 
+- [x] create reports for posts/users
 - [x] support custom emojis
 - [x] event calendar (Friendica only, creating events is not supported via API)
 - [x] pull notifications with background checks
@@ -227,7 +227,7 @@ For the main app:
 - [Connectivity](https://github.com/jordond/connectivity) to detect network state changes;
 - [Kodein](https://github.com/kosi-libs/Kodein) for dependency injection;
 - [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing;
-- [Ktor](https://ktor.io/) and [Ktorfit](https://foso.github.io/Ktorfit) for networking;
+- [Ktor](https://ktor.io/) for networking;
 - [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings) for encrypted shared
   preferences;
 - [MaterialKolor](https://github.com/jordond/MaterialKolor) for custom theme generation;
