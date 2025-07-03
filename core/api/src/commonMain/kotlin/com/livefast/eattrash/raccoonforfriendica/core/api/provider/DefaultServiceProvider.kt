@@ -1,10 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.di.ServiceCreationArgs
+import com.livefast.eattrash.raccoonforfriendica.core.api.di.getService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AnnouncementService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.EventService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.InnerTranslationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.InstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.MarkerService
@@ -21,32 +24,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TagsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createAnnouncementService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createAppService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createDirectMessageService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createEventService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createFollowRequestService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createInstanceService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createListService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createMarkerService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createMediaService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createNotificationService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoAlbumService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPhotoService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPollService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createPushService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createReportService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createSearchService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createStatusService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createTagsService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createTimelineService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createTrendsService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.createUserService
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.defaultLogger
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
-import de.jensklingenberg.ktorfit.Ktorfit
-import de.jensklingenberg.ktorfit.converter.ResponseConverterFactory
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
@@ -59,12 +39,14 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 internal class DefaultServiceProvider(
     private val factory: HttpClientEngine = provideHttpClientEngine(),
     private val appInfoRepository: AppInfoRepository,
+    private val json: Json,
 ) : ServiceProvider {
     companion object {
         private const val REAM_NAME = "Friendica"
@@ -91,10 +73,11 @@ internal class DefaultServiceProvider(
     override lateinit var statuses: StatusService
     override lateinit var tags: TagsService
     override lateinit var timeline: TimelineService
+    override lateinit var translationService: InnerTranslationService
     override lateinit var trends: TrendsService
     override lateinit var users: UserService
 
-    private val baseUrl: String get() = "https://$currentNode/api/"
+    private val baseUrl: String get() = "https://$currentNode/api"
 
     override fun changeNode(value: String) {
         if (currentNode != value) {
@@ -112,6 +95,7 @@ internal class DefaultServiceProvider(
             HttpClient(factory) {
                 defaultRequest {
                     url {
+                        protocol = URLProtocol.HTTPS
                         host = currentNode
                     }
                 }
@@ -165,33 +149,28 @@ internal class DefaultServiceProvider(
                     )
                 }
             }
-        val ktorfit =
-            Ktorfit
-                .Builder()
-                .baseUrl(baseUrl)
-                .httpClient(client)
-                .converterFactories(ResponseConverterFactory())
-                .build()
-        announcements = ktorfit.createAnnouncementService()
-        apps = ktorfit.createAppService()
-        directMessage = ktorfit.createDirectMessageService()
-        events = ktorfit.createEventService()
-        followRequests = ktorfit.createFollowRequestService()
-        instance = ktorfit.createInstanceService()
-        lists = ktorfit.createListService()
-        markers = ktorfit.createMarkerService()
-        media = ktorfit.createMediaService()
-        notifications = ktorfit.createNotificationService()
-        photo = ktorfit.createPhotoService()
-        photoAlbum = ktorfit.createPhotoAlbumService()
-        polls = ktorfit.createPollService()
-        push = ktorfit.createPushService()
-        reports = ktorfit.createReportService()
-        search = ktorfit.createSearchService()
-        statuses = ktorfit.createStatusService()
-        tags = ktorfit.createTagsService()
-        timeline = ktorfit.createTimelineService()
-        trends = ktorfit.createTrendsService()
-        users = ktorfit.createUserService()
+        val creationArgs = ServiceCreationArgs(baseUrl = baseUrl, client = client)
+        announcements = getService(creationArgs)
+        apps = getService(creationArgs)
+        directMessage = getService(creationArgs)
+        events = getService(creationArgs)
+        followRequests = getService(creationArgs)
+        instance = getService(creationArgs)
+        lists = getService(creationArgs)
+        markers = getService(creationArgs)
+        media = getService(creationArgs)
+        notifications = getService(creationArgs)
+        photo = getService(creationArgs)
+        photoAlbum = getService(creationArgs)
+        polls = getService(creationArgs)
+        push = getService(creationArgs)
+        reports = getService(creationArgs)
+        search = getService(creationArgs)
+        statuses = getService(creationArgs)
+        tags = getService(creationArgs)
+        timeline = getService(creationArgs)
+        translationService = getService(creationArgs)
+        trends = getService(creationArgs)
+        users = getService(creationArgs)
     }
 }

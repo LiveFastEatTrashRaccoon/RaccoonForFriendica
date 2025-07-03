@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.EventService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.InnerTranslationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.InstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.MarkerService
@@ -43,6 +44,7 @@ interface ServiceProvider {
     val statuses: StatusService
     val tags: TagsService
     val timeline: TimelineService
+    val translationService: InnerTranslationService
     val trends: TrendsService
     val users: UserService
 
