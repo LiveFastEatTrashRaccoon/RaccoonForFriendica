@@ -15,7 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.navigation.compose.NavHost
@@ -186,7 +186,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                         },
                     ) {
                         val canPop by drawerCoordinator.drawerOpened.collectAsState()
-                        BackHandler(enabled = canPop) {
+                        PredictiveBackHandler(enabled = canPop) {
                             // if the drawer is open, closes it
                             scope.launch {
                                 drawerCoordinator.toggleDrawer()

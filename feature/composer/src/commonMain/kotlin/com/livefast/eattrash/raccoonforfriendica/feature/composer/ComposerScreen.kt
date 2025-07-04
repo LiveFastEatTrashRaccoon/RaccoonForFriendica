@@ -42,7 +42,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
@@ -259,7 +259,7 @@ fun ComposerScreen(
         }.launchIn(this)
     }
 
-    BackHandler(enabled = uiState.hasUnsavedChanges) {
+    PredictiveBackHandler(enabled = uiState.hasUnsavedChanges) {
         if (uiState.hasUnsavedChanges) {
             confirmBackWithUnsavedChangesDialogOpen = true
         }
