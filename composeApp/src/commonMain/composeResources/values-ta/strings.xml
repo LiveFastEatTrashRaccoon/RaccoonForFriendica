@@ -366,7 +366,7 @@
     <string name="action_report_user">பயனர் புகாரளிக்கவும்</string>
     <string name="action_reveal_content">உள்ளடக்கத்தை வெளிப்படுத்துங்கள்</string>
     <string name="action_save">சேமி</string>
-    <string name="action_save_draft">வரைவை சேமிக்கவும்</string>
+    <string name="action_save_draft">வரைவு முறை</string>
     <string name="settings_theme_light">ஒளி</string>
     <string name="settings_title">அமைப்புகள்</string>
     <string name="share_as_file">கோப்பாக பகிரவும்</string>
@@ -429,7 +429,7 @@
     </plurals>
     <plurals name="account_following">
         <item quantity="one">%1$d பின்தொடர்வது</item>
-        <item quantity="other">%1$d பின்தொடர்வது</item>
+        <item quantity="other">%1$d பின்தொடர்வன</item>
     </plurals>
     <plurals name="create_report_selected_rules">
         <item quantity="one">%1$d விதி தேர்ந்தெடுக்கப்பட்டது</item>
@@ -472,4 +472,13 @@
         <item quantity="other">உங்கள் at இல் %1$d உருப்படிகள் உள்ளன</item>
     </plurals>
     <string name="manage_blocks_section_stop_words">சொற்கள்</string>
+    <string name="action_insert_inline_image">உட்பொதிக்கப்பட்ட படத்தை செருகவும்</string>
+    <string name="action_open_in_browser">உலாவியில் திற</string>
+    <string name="button_discard">நிராகரி</string>
+    <string name="image_field_alt_text">மாற்று உரை</string>
+    <string name="settings_item_conversation_reply_depth">உரையாடல் பதில் ஆழம்</string>
+    <string name="unsaved_draft_title">சேமிக்கப்படாத வரைவு</string>
+    <string name="action_shortcut">%1$sக்கு குறுக்குவழி</string>
+    <string name="shortcuts_title">குறுக்குவழிகள்</string>
+    <string name="message_no_public_timeline">ஒருவேளை இந்த நிகழ்வு அதன் பொது காலவரிசையை அம்பலப்படுத்தாது.</string>
 </resources>
