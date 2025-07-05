@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -83,83 +84,88 @@ fun ContentFooter(
             horizontal = Spacing.xxs,
         ),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Row(
-            modifier = Modifier.weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            if (onReply != null) {
-                FooterItem(
-                    modifier = itemModifier,
-                    icon = Icons.AutoMirrored.Default.Reply,
-                    contentDescription = null,
-                    value = replyCount,
-                    onClick = onReply,
-                )
-            }
-            if (onReblog != null) {
-                FooterItem(
-                    modifier = itemModifier,
-                    icon = Icons.Outlined.RocketLaunch,
-                    toggledIcon = Icons.Filled.RocketLaunch,
-                    contentDescription = null,
-                    value = reblogCount,
-                    toggled = reblogged,
-                    loading = reblogLoading,
-                    onClick = onReblog,
-                )
-            }
-            if (onFavorite != null) {
-                FooterItem(
-                    modifier = itemModifier,
-                    icon =
-                    if (canLikeAndDislike) {
-                        Icons.Outlined.ThumbUp
-                    } else {
-                        Icons.Default.FavoriteBorder
-                    },
-                    toggledIcon =
-                    if (canLikeAndDislike) {
-                        Icons.Default.ThumbUp
-                    } else {
-                        Icons.Default.Favorite
-                    },
-                    contentDescription = null,
-                    value = favoriteCount,
-                    toggled = favorite,
-                    loading = favoriteLoading,
-                    onClick = onFavorite,
-                )
-            }
-            if (onDislike != null) {
-                FooterItem(
-                    modifier = itemModifier,
-                    icon = Icons.Outlined.ThumbDown,
-                    toggledIcon = Icons.Default.ThumbDown,
-                    contentDescription = null,
-                    value = dislikeCount,
-                    toggled = disliked,
-                    loading = dislikeLoading,
-                    onClick = onDislike,
-                )
-            }
-            if (onBookmark != null) {
-                FooterItem(
-                    modifier = itemModifier,
-                    icon = Icons.Default.BookmarkBorder,
-                    toggledIcon = Icons.Default.Bookmark,
-                    contentDescription = null,
-                    toggled = bookmarked,
-                    loading = bookmarkLoading,
-                    onClick = onBookmark,
-                )
-            }
+        if (onReply != null) {
+            FooterItem(
+                modifier = itemModifier,
+                icon = Icons.AutoMirrored.Default.Reply,
+                contentDescription = null,
+                value = replyCount,
+                onClick = onReply,
+            )
+        }
+        if (onReblog != null) {
+            FooterItem(
+                modifier = itemModifier,
+                icon = Icons.Outlined.RocketLaunch,
+                toggledIcon = Icons.Filled.RocketLaunch,
+                contentDescription = null,
+                value = reblogCount,
+                toggled = reblogged,
+                loading = reblogLoading,
+                onClick = onReblog,
+            )
+        }
+        if (onFavorite != null) {
+            FooterItem(
+                modifier = itemModifier,
+                icon =
+                if (canLikeAndDislike) {
+                    Icons.Outlined.ThumbUp
+                } else {
+                    Icons.Default.FavoriteBorder
+                },
+                toggledIcon =
+                if (canLikeAndDislike) {
+                    Icons.Default.ThumbUp
+                } else {
+                    Icons.Default.Favorite
+                },
+                contentDescription = null,
+                value = favoriteCount,
+                toggled = favorite,
+                loading = favoriteLoading,
+                onClick = onFavorite,
+            )
+        }
+        if (onDislike != null) {
+            FooterItem(
+                modifier = itemModifier,
+                icon = Icons.Outlined.ThumbDown,
+                toggledIcon = Icons.Default.ThumbDown,
+                contentDescription = null,
+                value = dislikeCount,
+                toggled = disliked,
+                loading = dislikeLoading,
+                onClick = onDislike,
+            )
+        }
+        if (onBookmark != null) {
+            FooterItem(
+                modifier = itemModifier,
+                icon = Icons.Default.BookmarkBorder,
+                toggledIcon = Icons.Default.Bookmark,
+                contentDescription = null,
+                toggled = bookmarked,
+                loading = bookmarkLoading,
+                onClick = onBookmark,
+            )
         }
 
         if (options.isNotEmpty()) {
+            val noPreviousActions = listOf(
+                onReblog,
+                onReply,
+                onBookmark,
+                onFavorite,
+                onDislike,
+            ).all { it == null }
+            if (noPreviousActions) {
+                Spacer(Modifier.weight(1f))
+            }
             Box(
-                modifier = Modifier.padding(horizontal = Spacing.s),
+                modifier = itemModifier,
             ) {
                 IconButton(
                     modifier =
