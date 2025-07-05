@@ -26,7 +26,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.defaultLogger
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
-import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
@@ -44,9 +43,8 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 internal class DefaultServiceProvider(
-    private val factory: HttpClientEngine = provideHttpClientEngine(),
+    private val factory: HttpClientEngine,
     private val appInfoRepository: AppInfoRepository,
-    private val json: Json,
 ) : ServiceProvider {
     companion object {
         private const val REAM_NAME = "Friendica"
