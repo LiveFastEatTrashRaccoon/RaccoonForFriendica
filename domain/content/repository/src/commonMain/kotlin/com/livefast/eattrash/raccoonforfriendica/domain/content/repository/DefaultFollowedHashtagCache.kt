@@ -14,13 +14,14 @@ internal class DefaultFollowedHashtagCache(private val tagRepository: TagReposit
         mutex.withLock {
             var cursor: String? = null
             var canFetchMore = true
-            var iter = 0
-            while (canFetchMore && iter < MAX_ITERATIONS) {
-                tagRepository.getFollowed(cursor)?.also { res ->
+            while (canFetchMore) {
+                val res = tagRepository.getFollowed(cursor)
+                if (res != null) {
                     cache += res.list
                     cursor = res.cursor
                     canFetchMore = res.list.isNotEmpty()
-                    iter++
+                } else {
+                    canFetchMore = false
                 }
             }
         }
@@ -34,9 +35,5 @@ internal class DefaultFollowedHashtagCache(private val tagRepository: TagReposit
 
     override suspend fun isFollowed(tag: TagModel): Boolean = mutex.withLock {
         cache.any { it.name == tag.name }
-    }
-
-    companion object {
-        private const val MAX_ITERATIONS = 20
     }
 }
