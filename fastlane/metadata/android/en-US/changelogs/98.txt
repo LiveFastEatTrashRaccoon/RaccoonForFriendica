@@ -1,0 +1,4 @@
+- fix: post footer layout
+- fix: initial loading for anonymous users
+- fix: resolved some navigation issues
+- chore: update dependencies
