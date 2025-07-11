@@ -119,6 +119,6 @@ internal class DefaultColorSchemeProvider(private val context: Context) : ColorS
     }
 
     companion object {
-        private val defaultStyle = PaletteStyle.Rainbow
+        private val defaultStyle = PaletteStyle.Expressive
     }
 }
