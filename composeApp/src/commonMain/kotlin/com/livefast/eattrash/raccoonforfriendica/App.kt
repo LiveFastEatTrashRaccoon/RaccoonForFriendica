@@ -1,8 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -12,9 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
@@ -70,6 +66,10 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val drawerCoordinator = remember { getDrawerCoordinator() }
     val drawerGesturesEnabled by drawerCoordinator.gesturesEnabled.collectAsState()
+    val currentSettings by settingsRepository.current.collectAsState()
+    val scope = rememberCoroutineScope()
+    val navController = rememberNavController()
+    val fallbackUriHandler = LocalUriHandler.current
 
     LaunchedEffect(settingsRepository) {
         var isInitialized = false
@@ -105,14 +105,11 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
         setupAccountUseCase()
     }
 
-    LaunchedEffect(drawerCoordinator) {
+    LaunchedEffect(drawerState.isOpen) {
         // centralizes the information about drawer opening
-        snapshotFlow {
-            drawerState.isClosed
-        }.onEach { closed ->
-            drawerCoordinator.changeDrawerOpened(!closed)
-        }.launchIn(this)
-
+        drawerCoordinator.changeDrawerOpened(drawerState.isOpen)
+    }
+    LaunchedEffect(drawerCoordinator) {
         drawerCoordinator.events
             .onEach { evt ->
                 when (evt) {
@@ -141,7 +138,6 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
             }.launchIn(this)
     }
 
-    val fallbackUriHandler = LocalUriHandler.current
     LaunchedEffect(navigationCoordinator) {
         val customUriHandler = getCustomUriHandler(fallbackUriHandler)
         navigationCoordinator.deepLinkUrl
@@ -151,6 +147,11 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
             }.launchIn(this)
     }
 
+    LaunchedEffect(navigationCoordinator) {
+        val adapter = DefaultNavigationAdapter(navController)
+        navigationCoordinator.setRootNavigator(adapter)
+    }
+
     DisposableEffect(networkStateObserver) {
         networkStateObserver.start()
         onDispose {
@@ -158,40 +159,29 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
         }
     }
 
-    val currentSettings by settingsRepository.current.collectAsState()
-    val scope = rememberCoroutineScope()
-    val navController = rememberNavController()
-    LaunchedEffect(navigationCoordinator) {
-        val adapter = DefaultNavigationAdapter(navController)
-        navigationCoordinator.setRootNavigator(adapter)
-    }
-
     AppTheme(
         useDynamicColors = currentSettings?.dynamicColors == true,
         barTheme = currentSettings?.barTheme ?: UiBarTheme.Transparent,
     ) {
         ProvideCustomUriHandler {
-            ProvideCustomFontScale {
-                ProvideStrings(
-                    lang = currentSettings?.lang ?: Locales.EN,
-                ) {
-                    ModalNavigationDrawer(
-                        modifier = Modifier.fillMaxSize(),
-                        drawerState = drawerState,
-                        gesturesEnabled = drawerGesturesEnabled,
-                        drawerContent = {
-                            ModalDrawerSheet {
-                                DrawerContent()
-                            }
-                        },
-                    ) {
-                        val canPop by drawerCoordinator.drawerOpened.collectAsState()
-                        PredictiveBackHandler(enabled = canPop) {
-                            // if the drawer is open, closes it
-                            scope.launch {
-                                drawerCoordinator.toggleDrawer()
-                            }
+            ProvideStrings(lang = currentSettings?.lang ?: Locales.EN) {
+                ModalNavigationDrawer(
+                    drawerState = drawerState,
+                    gesturesEnabled = drawerGesturesEnabled,
+                    drawerContent = {
+                        ProvideCustomFontScale {
+                            DrawerContent()
                         }
+                    },
+                ) {
+                    val canPop by drawerCoordinator.drawerOpened.collectAsState()
+                    PredictiveBackHandler(enabled = canPop) {
+                        // if the drawer is open, closes it
+                        scope.launch {
+                            drawerCoordinator.toggleDrawer()
+                        }
+                    }
+                    ProvideCustomFontScale {
                         NavHost(
                             navController = navController,
                             startDestination = Destination.Main,
