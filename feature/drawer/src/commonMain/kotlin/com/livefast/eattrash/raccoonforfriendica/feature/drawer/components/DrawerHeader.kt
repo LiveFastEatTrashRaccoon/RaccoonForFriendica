@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.drawer.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +39,7 @@ internal fun DrawerHeader(
     autoloadImages: Boolean = true,
     onOpenChangeInstance: (() -> Unit)? = null,
     onOpenSwitchAccount: (() -> Unit)? = null,
+    onOpenProfile: (() -> Unit)? = null,
 ) {
     val avatarSize = 52.dp
     val fullColor = MaterialTheme.colorScheme.onBackground
@@ -56,10 +58,13 @@ internal fun DrawerHeader(
         if (user != null) {
             val username = user.displayName ?: user.username ?: ""
             val userAvatar = user.avatar.orEmpty()
+            val baseAvatarModifier = Modifier.clickable {
+                onOpenProfile?.invoke()
+            }
             if (userAvatar.isNotEmpty() && autoloadImages) {
                 CustomImage(
                     modifier =
-                    Modifier
+                    baseAvatarModifier
                         .padding(Spacing.xxxs)
                         .size(avatarSize)
                         .clip(RoundedCornerShape(avatarSize / 2)),
@@ -69,6 +74,7 @@ internal fun DrawerHeader(
                 )
             } else {
                 PlaceholderImage(
+                    modifier = baseAvatarModifier,
                     size = avatarSize,
                     title = username,
                 )
