@@ -32,12 +32,13 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
     }
 
     override fun setCurrentSection(section: BottomNavigationSection) {
-        bottomNavController?.navigate(section)
         currentBottomNavSection.getAndUpdate { old ->
             if (old == section) {
                 scope.launch {
                     onDoubleTabSelection.emit(section)
                 }
+            } else {
+                bottomNavController?.navigate(section)
             }
             section
         }
