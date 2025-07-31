@@ -1,3 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="account_age">Kasutajakonto vanus</string>
+    <string name="account_section_all">Postitused ja vastused</string>
+    <string name="account_section_media">Meedium</string>
+    <string name="account_section_pinned">Esiletõstetud</string>
+    <string name="account_section_posts">Postitused</string>
+    <string name="action_accept">Nõustu</string>
+    <string name="action_add_image">Lisa pilt</string>
+    <string name="action_add_image_from_gallery">Lisa pilt (pildigaleriist)</string>
+    <string name="action_add_new">Lisa uus</string>
+    <string name="action_add_poll">Lisa küsitlus</string>
+    <string name="action_add_reaction">Reageeri</string>
+    <string name="action_add_spoiler">Lisa spoiler</string>
+    <string name="action_add_title">Lisa pealkiri</string>
+    <string name="action_add_to_bookmarks">Lisa järjehoidjaks</string>
+    <string name="action_add_to_favorites">Lisa lemmikuks</string>
+    <string name="action_block">Blokeeri</string>
+    <string name="action_cancel_edit_personal_note">Katkesta muutmismärge</string>
+    <string name="action_change_markup_mode">Muuda märgistuskeele tüüpi</string>
+    <string name="action_change_rate_limit">Muuda päringute piiri</string>
+    <string name="action_change_visibility">Muuda nähtavust</string>
+    <string name="action_clear">Tühjenda</string>
+    <string name="action_copy_to_clipboard">Kopeeri lõikelauale</string>
+    <string name="action_copy_url">Kopeeri link</string>
+    <string name="action_create_thread_in_group">Postita</string>
+    <string name="action_delete">Kustuta</string>
+    <string name="action_delete_account">Kustuta kasutajakonto</string>
+    <string name="action_delete_follow_request">Katkesta jälgimispäring</string>
 </resources>
