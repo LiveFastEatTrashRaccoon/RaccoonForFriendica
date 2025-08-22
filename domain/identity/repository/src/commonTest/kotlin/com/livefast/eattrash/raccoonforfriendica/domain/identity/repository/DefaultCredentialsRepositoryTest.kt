@@ -66,8 +66,7 @@ class DefaultCredentialsRepositoryTest {
 
     @Test
     fun `given timeline can not be retrieved when validateNode then result is as expected`() = runTest {
-        everySuspend { instanceService.getInfo() } throws
-            IOException("Network call was not successful")
+        everySuspend { instanceService.getInfo() } throws IOException("Network call was not successful")
         val node = "test-node"
 
         val res = sut.validateNode(node)
