@@ -22,7 +22,7 @@ internal class DefaultAnnouncementRepository(private val provider: ServiceProvid
         }
 
         return runCatching {
-            val response = provider.announcements.getAll()
+            val response = provider.announcement.getAll()
             response
                 .map { it.toModel() }
                 .also {
@@ -33,11 +33,11 @@ internal class DefaultAnnouncementRepository(private val provider: ServiceProvid
         }.getOrNull()
     }
 
-    override suspend fun markAsRead(id: String): Boolean = provider.announcements.dismiss(id)
+    override suspend fun markAsRead(id: String): Boolean = provider.announcement.dismiss(id)
 
     override suspend fun addReaction(id: String, reaction: String): Boolean =
-        provider.announcements.addReaction(id = id, name = reaction)
+        provider.announcement.addReaction(id = id, name = reaction)
 
     override suspend fun removeReaction(id: String, reaction: String): Boolean =
-        provider.announcements.removeReaction(id = id, name = reaction)
+        provider.announcement.removeReaction(id = id, name = reaction)
 }

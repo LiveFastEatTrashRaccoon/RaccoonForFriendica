@@ -72,7 +72,7 @@ internal class FallbackTranslationRepository(private val provider: ServiceProvid
         }.getOrNull()
 
     private suspend fun String.translate(sourceLang: String?, targetLang: String): String =
-        provider.translationService.translate(
+        provider.translation.translate(
             sourceText = this,
             sourceLang = sourceLang ?: DEFAULT_LANG,
             targetLang = targetLang,

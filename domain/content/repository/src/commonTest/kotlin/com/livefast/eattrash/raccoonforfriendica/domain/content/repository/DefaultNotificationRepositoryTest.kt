@@ -23,7 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType a
 class DefaultNotificationRepositoryTest {
     private val notificationService = mock<NotificationService>()
     private val serviceProvider =
-        mock<ServiceProvider> { every { notifications } returns notificationService }
+        mock<ServiceProvider> { every { notification } returns notificationService }
     private val sut = DefaultNotificationRepository(provider = serviceProvider)
 
     @Test

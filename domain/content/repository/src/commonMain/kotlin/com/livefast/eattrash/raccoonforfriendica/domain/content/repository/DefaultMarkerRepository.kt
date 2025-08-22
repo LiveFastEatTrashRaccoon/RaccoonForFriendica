@@ -16,7 +16,7 @@ internal class DefaultMarkerRepository(private val provider: ServiceProvider) : 
             cachedValues[type]
         } else {
             runCatching {
-                provider.markers
+                provider.marker
                     .get(timelines = listOf(type.toDto()))
                     .toModel()
                     .firstOrNull { it.type == type }
@@ -32,7 +32,7 @@ internal class DefaultMarkerRepository(private val provider: ServiceProvider) : 
                     append(name = fieldName, value = id)
                 },
             )
-        provider.markers
+        provider.marker
             .update(data)
             .toModel()
             .firstOrNull { it.type == type }

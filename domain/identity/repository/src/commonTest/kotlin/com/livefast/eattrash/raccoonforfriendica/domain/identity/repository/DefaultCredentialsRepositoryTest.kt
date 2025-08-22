@@ -39,8 +39,8 @@ class DefaultCredentialsRepositoryTest {
     private val provider =
         mock<ServiceProvider>(mode = MockMode.autoUnit) {
             every { instance } returns instanceService
-            every { users } returns userService
-            every { apps } returns appService
+            every { user } returns userService
+            every { app } returns appService
         }
 
     private val sut =

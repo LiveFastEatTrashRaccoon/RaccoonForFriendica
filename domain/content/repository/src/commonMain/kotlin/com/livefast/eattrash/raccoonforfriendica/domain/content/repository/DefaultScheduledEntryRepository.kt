@@ -8,7 +8,7 @@ import io.ktor.http.parameters
 
 internal class DefaultScheduledEntryRepository(private val provider: ServiceProvider) : ScheduledEntryRepository {
     override suspend fun getAll(pageCursor: String?): List<TimelineEntryModel>? = runCatching {
-        provider.statuses
+        provider.status
             .getScheduled(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
@@ -16,7 +16,7 @@ internal class DefaultScheduledEntryRepository(private val provider: ServiceProv
     }.getOrNull()
 
     override suspend fun getById(id: String): TimelineEntryModel? = runCatching {
-        provider.statuses.getScheduledById(id).toModel()
+        provider.status.getScheduledById(id).toModel()
     }.getOrNull()
 
     override suspend fun update(id: String, date: String): TimelineEntryModel? = runCatching {
@@ -26,14 +26,14 @@ internal class DefaultScheduledEntryRepository(private val provider: ServiceProv
                     append("scheduled_at", date)
                 },
             )
-        provider.statuses
+        provider.status
             .updateScheduled(
                 id = id,
                 data = data,
             ).toModel()
     }.getOrNull()
 
-    override suspend fun delete(id: String): Boolean = provider.statuses.deleteScheduled(id)
+    override suspend fun delete(id: String): Boolean = provider.status.deleteScheduled(id)
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20

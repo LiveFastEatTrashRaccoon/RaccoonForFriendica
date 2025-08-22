@@ -52,28 +52,28 @@ internal class DefaultServiceProvider(
 
     override var currentNode: String = ""
 
-    override lateinit var announcements: AnnouncementService
-    override lateinit var apps: AppService
+    override lateinit var announcement: AnnouncementService
+    override lateinit var app: AppService
     override lateinit var directMessage: DirectMessageService
-    override lateinit var events: EventService
-    override lateinit var followRequests: FollowRequestService
+    override lateinit var event: EventService
+    override lateinit var followRequest: FollowRequestService
     override lateinit var instance: InstanceService
-    override lateinit var lists: ListService
-    override lateinit var markers: MarkerService
+    override lateinit var list: ListService
+    override lateinit var marker: MarkerService
     override lateinit var media: MediaService
-    override lateinit var notifications: NotificationService
+    override lateinit var notification: NotificationService
     override lateinit var photo: PhotoService
     override lateinit var photoAlbum: PhotoAlbumService
-    override lateinit var polls: PollService
+    override lateinit var poll: PollService
     override lateinit var push: PushService
-    override lateinit var reports: ReportService
+    override lateinit var report: ReportService
     override lateinit var search: SearchService
-    override lateinit var statuses: StatusService
-    override lateinit var tags: TagsService
+    override lateinit var status: StatusService
+    override lateinit var tag: TagsService
     override lateinit var timeline: TimelineService
-    override lateinit var translationService: InnerTranslationService
-    override lateinit var trends: TrendsService
-    override lateinit var users: UserService
+    override lateinit var translation: InnerTranslationService
+    override lateinit var trend: TrendsService
+    override lateinit var user: UserService
 
     private val baseUrl: String get() = "https://$currentNode/api"
 
@@ -148,27 +148,27 @@ internal class DefaultServiceProvider(
                 }
             }
         val creationArgs = ServiceCreationArgs(baseUrl = baseUrl, client = client)
-        announcements = getService(creationArgs)
-        apps = getService(creationArgs)
+        announcement = getService(creationArgs)
+        app = getService(creationArgs)
         directMessage = getService(creationArgs)
         events = getService(creationArgs)
-        followRequests = getService(creationArgs)
+        followRequest = getService(creationArgs)
         instance = getService(creationArgs)
-        lists = getService(creationArgs)
-        markers = getService(creationArgs)
+        list = getService(creationArgs)
+        marker = getService(creationArgs)
         media = getService(creationArgs)
-        notifications = getService(creationArgs)
+        notification = getService(creationArgs)
         photo = getService(creationArgs)
         photoAlbum = getService(creationArgs)
-        polls = getService(creationArgs)
+        poll = getService(creationArgs)
         push = getService(creationArgs)
-        reports = getService(creationArgs)
+        report = getService(creationArgs)
         search = getService(creationArgs)
-        statuses = getService(creationArgs)
-        tags = getService(creationArgs)
+        status = getService(creationArgs)
+        tag = getService(creationArgs)
         timeline = getService(creationArgs)
-        translationService = getService(creationArgs)
-        trends = getService(creationArgs)
-        users = getService(creationArgs)
+        translation = getService(creationArgs)
+        trend = getService(creationArgs)
+        user = getService(creationArgs)
     }
 }

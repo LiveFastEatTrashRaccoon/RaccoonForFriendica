@@ -25,28 +25,28 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 
 interface ServiceProvider {
     val currentNode: String
-    val announcements: AnnouncementService
-    val apps: AppService
+    val announcement: AnnouncementService
+    val app: AppService
     val directMessage: DirectMessageService
-    val events: EventService
-    val followRequests: FollowRequestService
+    val event: EventService
+    val followRequest: FollowRequestService
     val instance: InstanceService
-    val lists: ListService
-    val markers: MarkerService
+    val list: ListService
+    val marker: MarkerService
     val media: MediaService
-    val notifications: NotificationService
+    val notification: NotificationService
     val photo: PhotoService
     val photoAlbum: PhotoAlbumService
-    val polls: PollService
+    val poll: PollService
     val push: PushService
-    val reports: ReportService
+    val report: ReportService
     val search: SearchService
-    val statuses: StatusService
-    val tags: TagsService
+    val status: StatusService
+    val tag: TagsService
     val timeline: TimelineService
-    val translationService: InnerTranslationService
-    val trends: TrendsService
-    val users: UserService
+    val translation: InnerTranslationService
+    val trend: TrendsService
+    val user: UserService
 
     fun changeNode(value: String)
 

@@ -38,7 +38,7 @@ internal class DefaultCredentialsRepository(
     override suspend fun validate(node: String, credentials: ApiCredentials): UserModel? = runCatching {
         provider.changeNode(node)
         provider.setAuth(credentials.toServiceCredentials())
-        provider.users.verifyCredentials().toModel()
+        provider.user.verifyCredentials().toModel()
     }.getOrNull()
 
     override suspend fun validateNode(node: String): Boolean = runCatching {
@@ -62,7 +62,7 @@ internal class DefaultCredentialsRepository(
                 redirectUris = redirectUri,
                 scopes = scopes,
             )
-        provider.apps.create(data).toModel()
+        provider.app.create(data).toModel()
     }.getOrNull()
 
     override suspend fun validateApplicationCredentials(node: String, credentials: ApiCredentials): Boolean =
@@ -72,7 +72,7 @@ internal class DefaultCredentialsRepository(
                 runCatching {
                     provider.changeNode(node)
                     provider.setAuth(credentials.toServiceCredentials())
-                    provider.apps.verifyCredentials().toModel()
+                    provider.app.verifyCredentials().toModel()
                     true
                 }.getOrElse { false }
             }

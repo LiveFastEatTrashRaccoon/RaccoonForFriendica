@@ -10,7 +10,7 @@ internal class DefaultTranslationRepository(private val provider: ServiceProvide
     override suspend fun getTranslation(entry: TimelineEntryModel, targetLang: String): TranslatedTimelineEntryModel? =
         runCatching {
             val res =
-                provider.statuses.translate(
+                provider.status.translate(
                     id = entry.id,
                     data =
                     FormDataContent(

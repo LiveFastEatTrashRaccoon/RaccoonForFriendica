@@ -32,6 +32,6 @@ internal class DefaultReportRepository(private val provider: ServiceProvider) : 
                     }
                 },
             )
-        return provider.reports.create(data)
+        return provider.report.create(data)
     }
 }
