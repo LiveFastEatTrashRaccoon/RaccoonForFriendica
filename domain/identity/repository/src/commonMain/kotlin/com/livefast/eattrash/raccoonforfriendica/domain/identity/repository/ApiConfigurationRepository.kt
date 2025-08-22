@@ -15,4 +15,6 @@ interface ApiConfigurationRepository {
     suspend fun setAuth(credentials: ApiCredentials? = null)
 
     suspend fun hasCachedAuthCredentials(): Boolean
+
+    suspend fun refresh(): Result<Unit>
 }
