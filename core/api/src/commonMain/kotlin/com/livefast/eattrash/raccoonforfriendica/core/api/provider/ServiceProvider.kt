@@ -22,6 +22,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TagsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
+import kotlinx.coroutines.flow.Flow
+
+sealed interface ServiceProviderEvent {
+    data object Unauthorized : ServiceProviderEvent
+}
 
 interface ServiceProvider {
     val currentNode: String
@@ -47,6 +52,8 @@ interface ServiceProvider {
     val translation: InnerTranslationService
     val trend: TrendsService
     val user: UserService
+
+    val events: Flow<ServiceProviderEvent>
 
     fun changeNode(value: String)
 

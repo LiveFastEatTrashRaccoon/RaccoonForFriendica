@@ -28,6 +28,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.utils.defaultLogger
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
@@ -38,8 +41,12 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
 
 internal class DefaultServiceProvider(
@@ -51,6 +58,8 @@ internal class DefaultServiceProvider(
     }
 
     override var currentNode: String = ""
+    private val _events = MutableSharedFlow<ServiceProviderEvent>()
+    override val events: Flow<ServiceProviderEvent> = _events.asSharedFlow()
 
     override lateinit var announcement: AnnouncementService
     override lateinit var app: AppService
@@ -102,6 +111,10 @@ internal class DefaultServiceProvider(
                     connectTimeoutMillis = 30_000
                     socketTimeoutMillis = 30_000
                 }
+                install(HttpRequestRetry) {
+                    retryOnServerErrors(maxRetries = 3)
+                    exponentialDelay()
+                }
                 install(Auth) {
                     when (credentials) {
                         is ServiceCredentials.Basic -> {
@@ -146,12 +159,22 @@ internal class DefaultServiceProvider(
                         },
                     )
                 }
+
+                HttpResponseValidator {
+                    handleResponseException { exception, _ ->
+                        if (exception is ClientRequestException &&
+                            exception.response.status == HttpStatusCode.Unauthorized
+                        ) {
+                            _events.tryEmit(ServiceProviderEvent.Unauthorized)
+                        }
+                    }
+                }
             }
         val creationArgs = ServiceCreationArgs(baseUrl = baseUrl, client = client)
         announcement = getService(creationArgs)
         app = getService(creationArgs)
         directMessage = getService(creationArgs)
-        events = getService(creationArgs)
+        event = getService(creationArgs)
         followRequest = getService(creationArgs)
         instance = getService(creationArgs)
         list = getService(creationArgs)
