@@ -13,5 +13,7 @@ interface AuthManager {
 
     suspend fun performTokenExchange(url: String)
 
+    suspend fun performRefresh(refreshToken: String): ApiCredentials?
+
     fun openNewAccount()
 }
