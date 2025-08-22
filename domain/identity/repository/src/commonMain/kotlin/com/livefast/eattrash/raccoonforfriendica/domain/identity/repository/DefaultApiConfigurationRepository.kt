@@ -10,6 +10,7 @@ internal class DefaultApiConfigurationRepository(
     private val provider: ServiceProvider,
     private val keyStore: TemporaryKeyStore,
     private val credentialsRepository: CredentialsRepository,
+    private val authManager: AuthManager,
 ) : ApiConfigurationRepository {
     override val node = MutableStateFlow("")
     override val isLogged = MutableStateFlow(false)
@@ -39,6 +40,16 @@ internal class DefaultApiConfigurationRepository(
         val node = keyStore.get(KEY_LAST_NODE, "").takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
         val credentials = retrieveFromKeyStore()
         return validateCredentials(credentials = credentials, node = node)
+    }
+
+    override suspend fun refresh() = runCatching {
+        val oldCredentials = retrieveFromKeyStore()
+        check(oldCredentials is ApiCredentials.OAuth2)
+
+        val newCredentials = authManager.performRefresh(refreshToken = oldCredentials.refreshToken)
+        checkNotNull(newCredentials)
+
+        setAuth(newCredentials)
     }
 
     private suspend fun validateCredentials(credentials: ApiCredentials?, node: String): Boolean =

@@ -6,7 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 
 internal class DefaultEventRepository(private val provider: ServiceProvider) : EventRepository {
     override suspend fun getAll(pageCursor: String?): List<EventModel>? = runCatching {
-        provider.events
+        provider.event
             .getAll(
                 maxId = pageCursor?.toLong(),
                 count = DEFAULT_PAGE_SIZE,

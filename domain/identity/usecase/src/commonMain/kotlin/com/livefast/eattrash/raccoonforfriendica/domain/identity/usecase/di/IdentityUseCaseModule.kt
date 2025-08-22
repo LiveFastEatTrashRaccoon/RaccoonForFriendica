@@ -41,6 +41,8 @@ val identityUseCaseModule =
                     notificationCoordinator = instance(),
                     announcementsManager = instance(),
                     followedHashtagCache = instance(),
+                    serviceProvider = instance(tag = "default"),
+                    logout = instance(),
                 )
             }
         }

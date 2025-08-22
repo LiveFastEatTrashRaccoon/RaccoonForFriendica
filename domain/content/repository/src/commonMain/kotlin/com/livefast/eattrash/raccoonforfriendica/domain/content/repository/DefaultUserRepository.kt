@@ -21,11 +21,11 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
     private var cachedUser: UserModel? = null
 
     override suspend fun getById(id: String): UserModel? = runCatching {
-        provider.users.getById(id).toModel()
+        provider.user.getById(id).toModel()
     }.getOrNull()
 
     override suspend fun search(query: String, offset: Int, following: Boolean): List<UserModel>? = runCatching {
-        provider.users
+        provider.user
             .search(
                 query = query,
                 offset = offset,
@@ -35,7 +35,7 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
     }.getOrNull()
 
     override suspend fun getByHandle(handle: String): UserModel? = runCatching {
-        provider.users
+        provider.user
             .search(
                 query = handle,
                 resolve = true,
@@ -50,27 +50,27 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
         val fromCache = cachedUser
         check(fromCache == null) { return fromCache }
         return runCatching {
-            provider.users.verifyCredentials().toModel()
+            provider.user.verifyCredentials().toModel()
         }.getOrNull().also {
             cachedUser = it
         }
     }
 
     override suspend fun getRelationships(ids: List<String>): List<RelationshipModel>? = runCatching {
-        provider.users
+        provider.user
             .getRelationships(ids)
             .map { it.toModel() }
     }.getOrNull()
 
     override suspend fun getSuggestions(): List<UserModel>? = runCatching {
-        provider.users
+        provider.user
             .getSuggestions(
                 limit = DEFAULT_PAGE_SIZE,
             ).map { it.user.toModel() }
     }.getOrNull()
 
     override suspend fun getFollowers(id: String, pageCursor: String?): List<UserModel>? = runCatching {
-        provider.users
+        provider.user
             .getFollowers(
                 id = id,
                 maxId = pageCursor,
@@ -79,7 +79,7 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
     }.getOrNull()
 
     override suspend fun getFollowing(id: String, pageCursor: String?): List<UserModel>? = runCatching {
-        provider.users
+        provider.user
             .getFollowing(
                 id = id,
                 maxId = pageCursor,
@@ -106,7 +106,7 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
                     reblogs = reblogs,
                     notify = notifications,
                 )
-            provider.users
+            provider.user
                 .follow(
                     id = id,
                     data = data,
@@ -114,12 +114,12 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
         }.getOrNull()
 
     override suspend fun unfollow(id: String): RelationshipModel? = runCatching {
-        provider.users.unfollow(id).toModel()
+        provider.user.unfollow(id).toModel()
     }.getOrNull()
 
     override suspend fun getFollowRequests(pageCursor: String?): ListWithPageCursor<UserModel>? = runCatching {
         val (list, cursor) =
-            provider.followRequests.getAll(
+            provider.followRequest.getAll(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             )
@@ -127,12 +127,12 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
     }.getOrNull()
 
     override suspend fun acceptFollowRequest(id: String) = runCatching {
-        provider.followRequests.accept(id)
+        provider.followRequest.accept(id)
         true
     }.getOrElse { false }
 
     override suspend fun rejectFollowRequest(id: String) = runCatching {
-        provider.followRequests.reject(id)
+        provider.followRequest.reject(id)
         true
     }.getOrElse { false }
 
@@ -143,7 +143,7 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
                     duration = durationSeconds,
                     notifications = notifications,
                 )
-            provider.users
+            provider.user
                 .mute(
                     id = id,
                     data = data,
@@ -151,19 +151,19 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
         }.getOrNull()
 
     override suspend fun unmute(id: String): RelationshipModel? = runCatching {
-        provider.users.unmute(id).toModel()
+        provider.user.unmute(id).toModel()
     }.getOrNull()
 
     override suspend fun block(id: String): RelationshipModel? = runCatching {
-        provider.users.block(id).toModel()
+        provider.user.block(id).toModel()
     }.getOrNull()
 
     override suspend fun unblock(id: String): RelationshipModel? = runCatching {
-        provider.users.unblock(id).toModel()
+        provider.user.unblock(id).toModel()
     }.getOrNull()
 
     override suspend fun getMuted(pageCursor: String?): List<UserModel>? = runCatching {
-        provider.users
+        provider.user
             .getMuted(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
@@ -171,7 +171,7 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
     }.getOrNull()
 
     override suspend fun getBlocked(pageCursor: String?): List<UserModel>? = runCatching {
-        provider.users
+        provider.user
             .getBlocked(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
@@ -235,7 +235,7 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
                     }
                 },
             )
-        result = provider.users.updateProfile(formData)
+        result = provider.user.updateProfile(formData)
 
         // images
         if (avatar != null) {
@@ -253,7 +253,7 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
                         )
                     },
                 )
-            result = provider.users.updateProfileImage(multipartFormData)
+            result = provider.user.updateProfileImage(multipartFormData)
         }
 
         if (header != null) {
@@ -271,7 +271,7 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
                         )
                     },
                 )
-            result = provider.users.updateProfileImage(multipartFormData)
+            result = provider.user.updateProfileImage(multipartFormData)
         }
 
         result.toModel()
@@ -284,7 +284,7 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
                     append("comment", value)
                 },
             )
-        provider.users.updatePersonalNote(id = id, data = data).toModel()
+        provider.user.updatePersonalNote(id = id, data = data).toModel()
     }.getOrNull()
 
     companion object {

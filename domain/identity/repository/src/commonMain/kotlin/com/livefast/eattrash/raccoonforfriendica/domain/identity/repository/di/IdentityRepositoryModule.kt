@@ -45,6 +45,7 @@ val identityRepositoryModule =
                     provider = instance(tag = "default"),
                     keyStore = instance(),
                     credentialsRepository = instance(),
+                    authManager = instance(),
                 )
             }
         }

@@ -34,15 +34,19 @@ class DefaultApiConfigurationRepositoryTest {
             } returns true
         }
 
+    private val authManager = mock<AuthManager>()
+
     private val sut =
         DefaultApiConfigurationRepository(
             provider = serviceProvider,
             keyStore = keyStore,
             credentialsRepository = credentialsRepository,
+            authManager = authManager,
         )
 
+    // region changeNode
     @Test
-    fun `when change node then interactions are as expected`() = runTest {
+    fun `when changeNode then interactions are as expected`() = runTest {
         sut.changeNode("new-instance")
 
         verifySuspend {
@@ -50,11 +54,12 @@ class DefaultApiConfigurationRepositoryTest {
             keyStore.save("lastInstance", "new-instance")
         }
     }
+    // endregion
 
+    // region setAuth
     @Test
     fun `when setAuth with OAuth credentials then interactions are as expected`() = runTest {
-        val credentials =
-            ApiCredentials.OAuth2(accessToken = "fake-access-token-2", refreshToken = "")
+        val credentials = ApiCredentials.OAuth2(accessToken = "fake-access-token-2", refreshToken = "")
         sut.setAuth(credentials)
 
         assertTrue(sut.isLogged.value)
@@ -91,7 +96,9 @@ class DefaultApiConfigurationRepositoryTest {
             keyStore.remove("lastCred2")
         }
     }
+    // endregion
 
+    // region hasCachedAuthCredentials
     @Test
     fun `given invalid OAuth credentials stored when hasCachedAuthCredentials then result is as expected`() = runTest {
         everySuspend {
@@ -170,4 +177,52 @@ class DefaultApiConfigurationRepositoryTest {
             )
         }
     }
+    // endregion
+
+    // region refresh
+    @Test
+    fun `given previous OAuth2 credentials when refresh then result is success`() = runTest {
+        val refreshToken = "fake-refresh-token"
+        everySuspend { keyStore.get("lastCred2", any<String>()) } returns refreshToken
+        everySuspend {
+            authManager.performRefresh(any())
+        } returns ApiCredentials.OAuth2(accessToken = "fake-access-token-2", refreshToken = refreshToken)
+        val credentials = ApiCredentials.OAuth2(accessToken = "fake-access-token-1", refreshToken = refreshToken)
+        sut.setAuth(credentials)
+
+        val res = sut.refresh()
+
+        assertTrue(res.isSuccess)
+        verifySuspend {
+            authManager.performRefresh(refreshToken)
+        }
+    }
+
+    @Test
+    fun `given no previous OAuth2 credentials when refresh then result is failure`() = runTest {
+        val credentials =
+            ApiCredentials.OAuth2(accessToken = "fake-access-token-1", refreshToken = "fake-refresh-token")
+        sut.setAuth(credentials)
+
+        val res = sut.refresh()
+
+        assertTrue(res.isFailure)
+    }
+
+    @Test
+    fun `given failure when refresh then result is failure`() = runTest {
+        val refreshToken = "fake-refresh-token"
+        everySuspend { keyStore.get("lastCred2", any<String>()) } returns refreshToken
+        everySuspend { authManager.performRefresh(any()) } returns null
+        val credentials = ApiCredentials.OAuth2(accessToken = "fake-access-token-1", refreshToken = refreshToken)
+        sut.setAuth(credentials)
+
+        val res = sut.refresh()
+
+        assertTrue(res.isFailure)
+        verifySuspend {
+            authManager.performRefresh(refreshToken)
+        }
+    }
+    // endregion
 }

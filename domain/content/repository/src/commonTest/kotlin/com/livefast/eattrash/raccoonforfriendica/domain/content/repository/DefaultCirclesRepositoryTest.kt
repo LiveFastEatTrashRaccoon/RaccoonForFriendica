@@ -24,7 +24,7 @@ class DefaultCirclesRepositoryTest {
     private val listService = mock<ListService>()
     private val serviceProvider =
         mock<ServiceProvider> {
-            every { lists } returns listService
+            every { list } returns listService
         }
     private val sut = DefaultCirclesRepository(provider = serviceProvider)
 

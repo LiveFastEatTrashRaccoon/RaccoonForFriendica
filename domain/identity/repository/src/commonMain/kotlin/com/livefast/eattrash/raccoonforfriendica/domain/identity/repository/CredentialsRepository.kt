@@ -27,4 +27,13 @@ interface CredentialsRepository {
         grantType: String,
         code: String,
     ): ApiCredentials?
+
+    suspend fun issueNewToken(
+        node: String,
+        path: String,
+        clientId: String,
+        clientSecret: String,
+        grantType: String,
+        refreshToken: String,
+    ): ApiCredentials?
 }

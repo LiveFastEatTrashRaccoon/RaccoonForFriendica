@@ -38,7 +38,7 @@ internal class DefaultCredentialsRepository(
     override suspend fun validate(node: String, credentials: ApiCredentials): UserModel? = runCatching {
         provider.changeNode(node)
         provider.setAuth(credentials.toServiceCredentials())
-        provider.users.verifyCredentials().toModel()
+        provider.user.verifyCredentials().toModel()
     }.getOrNull()
 
     override suspend fun validateNode(node: String): Boolean = runCatching {
@@ -62,7 +62,7 @@ internal class DefaultCredentialsRepository(
                 redirectUris = redirectUri,
                 scopes = scopes,
             )
-        provider.apps.create(data).toModel()
+        provider.app.create(data).toModel()
     }.getOrNull()
 
     override suspend fun validateApplicationCredentials(node: String, credentials: ApiCredentials): Boolean =
@@ -72,7 +72,7 @@ internal class DefaultCredentialsRepository(
                 runCatching {
                     provider.changeNode(node)
                     provider.setAuth(credentials.toServiceCredentials())
-                    provider.apps.verifyCredentials().toModel()
+                    provider.app.verifyCredentials().toModel()
                     true
                 }.getOrElse { false }
             }
@@ -90,11 +90,11 @@ internal class DefaultCredentialsRepository(
         val data =
             FormDataContent(
                 Parameters.build {
-                    append("client_id", clientId)
-                    append("client_secret", clientSecret)
-                    append("redirect_uri", redirectUri)
-                    append("grant_type", grantType)
-                    append("code", code)
+                    append(QUERY_PARAM_CLIENT_ID, clientId)
+                    append(QUERY_PARAM_CLIENT_SECRET, clientSecret)
+                    append(QUERY_PARAM_REDIRECT_URI, redirectUri)
+                    append(QUERY_PARAM_GRANT_TYPE, grantType)
+                    append(QUERY_PARAM_CODE, code)
                 },
             )
         val url =
@@ -108,8 +108,58 @@ internal class DefaultCredentialsRepository(
             httpClient
                 .preparePost(url) { setBody(data) }.execute()
                 .bodyAsText()
-        json.decodeFromString<OAuthToken>(responseBody).toModel()
+        json.decodeFromString<OAuthToken>(responseBody).also {
+            println("---> got access token (1) ${it.accessToken}")
+            println("---> got refresh token (1) ${it.refreshToken}")
+        }.toModel()
     }.getOrNull()
+
+    override suspend fun issueNewToken(
+        node: String,
+        path: String,
+        clientId: String,
+        clientSecret: String,
+        grantType: String,
+        refreshToken: String,
+    ): ApiCredentials? = runCatching {
+        val data =
+            FormDataContent(
+                Parameters.build {
+                    append(QUERY_PARAM_CLIENT_ID, clientId)
+                    append(QUERY_PARAM_CLIENT_SECRET, clientSecret)
+                    append(QUERY_PARAM_GRANT_TYPE, grantType)
+                    append(QUERY_PARAM_REFRESH_TOKEN, refreshToken)
+                },
+            )
+        val url =
+            URLBuilder()
+                .apply {
+                    protocol = URLProtocol.HTTPS
+                    host = node
+                    path(path)
+                }.toString()
+        val responseBody =
+            httpClient
+                .preparePost(url) {
+                    setBody(data)
+                }.execute()
+                .bodyAsText()
+        json.decodeFromString<OAuthToken>(responseBody)
+            .copy(refreshToken = refreshToken)
+            .also {
+                println("---> got access token (2) ${it.accessToken}")
+            }
+            .toModel()
+    }.getOrNull()
+
+    companion object {
+        private const val QUERY_PARAM_CLIENT_ID = "client_id"
+        private const val QUERY_PARAM_CLIENT_SECRET = "client_secret"
+        private const val QUERY_PARAM_GRANT_TYPE = "grant_type"
+        private const val QUERY_PARAM_REDIRECT_URI = "redirect_uri"
+        private const val QUERY_PARAM_CODE = "code"
+        private const val QUERY_PARAM_REFRESH_TOKEN = "refresh_token"
+    }
 }
 
 private fun Application.toModel() = ClientApplicationModel(

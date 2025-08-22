@@ -46,7 +46,7 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
             return cachedValues
         }
         return runCatching {
-            provider.users
+            provider.user
                 .getStatuses(
                     id = userId,
                     excludeReblogs = excludeReblogs,
@@ -67,15 +67,15 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
     }
 
     override suspend fun getById(id: String): TimelineEntryModel? = runCatching {
-        provider.statuses.get(id = id).toModelWithReply()
+        provider.status.get(id = id).toModelWithReply()
     }.getOrNull()
 
     override suspend fun getSource(id: String): TimelineEntryModel? = runCatching {
-        provider.statuses.getSource(id = id).toModel()
+        provider.status.getSource(id = id).toModel()
     }.getOrNull()
 
     override suspend fun getContext(id: String): TimelineContextModel? = runCatching {
-        provider.statuses.getContext(id = id).toModel()
+        provider.status.getContext(id = id).toModel()
     }.getOrNull()
 
     override suspend fun reblog(id: String): TimelineEntryModel? = runCatching {
@@ -85,7 +85,7 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
                     append("visibility", ContentVisibility.PUBLIC)
                 },
             )
-        provider.statuses
+        provider.status
             .reblog(
                 id = id,
                 data = data,
@@ -93,35 +93,35 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
     }.getOrNull()
 
     override suspend fun unreblog(id: String): TimelineEntryModel? = runCatching {
-        provider.statuses.unreblog(id).toModel()
+        provider.status.unreblog(id).toModel()
     }.getOrNull()
 
     override suspend fun pin(id: String): TimelineEntryModel? = runCatching {
-        provider.statuses.pin(id).toModel()
+        provider.status.pin(id).toModel()
     }.getOrNull()
 
     override suspend fun unpin(id: String): TimelineEntryModel? = runCatching {
-        provider.statuses.unpin(id).toModel()
+        provider.status.unpin(id).toModel()
     }.getOrNull()
 
     override suspend fun favorite(id: String): TimelineEntryModel? = runCatching {
-        provider.statuses.favorite(id).toModel()
+        provider.status.favorite(id).toModel()
     }.getOrNull()
 
     override suspend fun unfavorite(id: String): TimelineEntryModel? = runCatching {
-        provider.statuses.unfavorite(id).toModel()
+        provider.status.unfavorite(id).toModel()
     }.getOrNull()
 
     override suspend fun bookmark(id: String): TimelineEntryModel? = runCatching {
-        provider.statuses.bookmark(id).toModel()
+        provider.status.bookmark(id).toModel()
     }.getOrNull()
 
     override suspend fun unbookmark(id: String): TimelineEntryModel? = runCatching {
-        provider.statuses.unbookmark(id).toModel()
+        provider.status.unbookmark(id).toModel()
     }.getOrNull()
 
     override suspend fun getFavorites(pageCursor: String?): List<TimelineEntryModel>? = runCatching {
-        provider.users
+        provider.user
             .getFavorites(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
@@ -129,7 +129,7 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
     }.getOrNull()
 
     override suspend fun getBookmarks(pageCursor: String?): List<TimelineEntryModel>? = runCatching {
-        provider.users
+        provider.user
             .getBookmarks(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
@@ -137,7 +137,7 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
     }.getOrNull()
 
     override suspend fun getUsersWhoFavorited(id: String, pageCursor: String?): List<UserModel>? = runCatching {
-        provider.statuses
+        provider.status
             .getFavoritedBy(
                 id = id,
                 maxId = pageCursor,
@@ -146,7 +146,7 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
     }.getOrNull()
 
     override suspend fun getUsersWhoReblogged(id: String, pageCursor: String?): List<UserModel>? = runCatching {
-        provider.statuses
+        provider.status
             .getRebloggedBy(
                 id = id,
                 maxId = pageCursor,
@@ -202,7 +202,7 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
                     else -> null
                 },
             )
-        provider.statuses
+        provider.status
             .create(
                 key = localId,
                 data = data,
@@ -255,21 +255,21 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
                     else -> null
                 },
             )
-        provider.statuses
+        provider.status
             .update(
                 id = id,
                 data = data,
             ).toModelWithReply()
     }.getOrNull()
 
-    override suspend fun delete(id: String): Boolean = provider.statuses.delete(id)
+    override suspend fun delete(id: String): Boolean = provider.status.delete(id)
 
     override suspend fun submitPoll(pollId: String, choices: List<Int>): PollModel? = runCatching {
         val data =
             SubmitPollVoteForm(
                 choices = choices,
             )
-        provider.polls
+        provider.poll
             .vote(
                 id = pollId,
                 data = data,
@@ -283,7 +283,7 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
                     append("id", id)
                 },
             )
-        return provider.statuses.dislike(data)
+        return provider.status.dislike(data)
     }
 
     override suspend fun undislike(id: String): Boolean {
@@ -293,7 +293,7 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
                     append("id", id)
                 },
             )
-        return provider.statuses.undislike(data)
+        return provider.status.undislike(data)
     }
 
     companion object {

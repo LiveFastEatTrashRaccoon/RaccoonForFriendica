@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProviderEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
@@ -21,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -37,22 +40,38 @@ internal class DefaultActiveAccountMonitor(
     private val notificationCoordinator: NotificationCoordinator,
     private val announcementsManager: AnnouncementsManager,
     private val followedHashtagCache: FollowedHashtagCache,
+    private val serviceProvider: ServiceProvider,
+    private val logout: LogoutUseCase,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ActiveAccountMonitor {
     private val scope = CoroutineScope(SupervisorJob() + coroutineDispatcher)
 
     override fun start() {
         scope.launch {
+            // listen for active account changes
             accountRepository
                 .getActiveAsFlow()
                 .distinctUntilChanged()
                 .onEach { account ->
                     process(account)
                 }.launchIn(this)
+
+            // listen for node changes
             apiConfigurationRepository.node
                 .onEach {
                     if (accountRepository.getActive()?.remoteId.isNullOrEmpty()) {
                         process(null)
+                    }
+                }.launchIn(this)
+
+            // listen for Unauthorized events (to try refreshing or log out)
+            serviceProvider.events
+                .filterIsInstance<ServiceProviderEvent.Unauthorized>()
+                .onEach {
+                    val result = apiConfigurationRepository.refresh()
+                    // nothing more to do
+                    if (result.isFailure) {
+                        logout()
                     }
                 }.launchIn(this)
         }
