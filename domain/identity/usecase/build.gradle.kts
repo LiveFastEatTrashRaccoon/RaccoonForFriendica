@@ -19,6 +19,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines)
                 implementation(libs.kotlinx.serialization.json)
 
+                implementation(projects.core.api)
                 implementation(projects.core.appearance)
                 implementation(projects.core.di)
                 implementation(projects.core.l10n)
