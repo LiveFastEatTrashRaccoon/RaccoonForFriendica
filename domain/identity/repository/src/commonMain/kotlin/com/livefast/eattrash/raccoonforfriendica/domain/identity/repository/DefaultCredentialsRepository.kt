@@ -108,10 +108,7 @@ internal class DefaultCredentialsRepository(
             httpClient
                 .preparePost(url) { setBody(data) }.execute()
                 .bodyAsText()
-        json.decodeFromString<OAuthToken>(responseBody).also {
-            println("---> got access token (1) ${it.accessToken}")
-            println("---> got refresh token (1) ${it.refreshToken}")
-        }.toModel()
+        json.decodeFromString<OAuthToken>(responseBody).toModel()
     }.getOrNull()
 
     override suspend fun issueNewToken(
@@ -146,9 +143,6 @@ internal class DefaultCredentialsRepository(
                 .bodyAsText()
         json.decodeFromString<OAuthToken>(responseBody)
             .copy(refreshToken = refreshToken)
-            .also {
-                println("---> got access token (2) ${it.accessToken}")
-            }
             .toModel()
     }.getOrNull()
 
