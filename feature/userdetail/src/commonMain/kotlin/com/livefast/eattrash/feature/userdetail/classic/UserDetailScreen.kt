@@ -51,11 +51,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
@@ -94,6 +93,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
@@ -139,7 +139,8 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
         },
     )
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
+    val clipboardHelper = remember { getClipboardHelper(clipboard) }
     val genericError = LocalStrings.current.messageGenericError
     val focusManager = LocalFocusManager.current
     var confirmUnfollowDialogOpen by remember { mutableStateOf(false) }
@@ -178,7 +179,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                         snackbarHostState.showSnackbar(genericError)
 
                     is UserDetailMviModel.Effect.TriggerCopy -> {
-                        clipboardManager.setText(AnnotatedString(event.text))
+                        clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
@@ -732,11 +733,9 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
 
                                 OptionId.CopyUrl -> {
                                     val urlString = entry.url.orEmpty()
-                                    clipboardManager.setText(AnnotatedString(urlString))
                                     scope.launch {
-                                        snackbarHostState.showSnackbar(
-                                            copyToClipboardSuccess,
-                                        )
+                                        clipboardHelper.setText(urlString)
+                                        snackbarHostState.showSnackbar(copyToClipboardSuccess)
                                     }
                                 }
 

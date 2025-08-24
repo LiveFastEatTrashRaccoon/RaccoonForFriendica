@@ -47,10 +47,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
@@ -77,6 +76,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoo
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -119,7 +119,8 @@ fun TimelineScreen(
     val shareHelper = remember { getShareHelper() }
     val actionRepository = remember { getEntryActionRepository() }
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
+    val clipboardHelper = remember { getClipboardHelper(clipboard) }
     var timelineTypeSelectorOpen by remember { mutableStateOf(false) }
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
     var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
@@ -143,7 +144,7 @@ fun TimelineScreen(
                     TimelineMviModel.Effect.BackToTop -> goBackToTop()
                     TimelineMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
                     is TimelineMviModel.Effect.TriggerCopy -> {
-                        clipboardManager.setText(AnnotatedString(event.text))
+                        clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
@@ -479,8 +480,8 @@ fun TimelineScreen(
 
                                 OptionId.CopyUrl -> {
                                     val urlString = entry.url.orEmpty()
-                                    clipboardManager.setText(AnnotatedString(urlString))
                                     scope.launch {
+                                        clipboardHelper.setText(urlString)
                                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                                     }
                                 }

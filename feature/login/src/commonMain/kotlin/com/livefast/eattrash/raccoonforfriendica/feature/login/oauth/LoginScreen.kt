@@ -83,14 +83,10 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
                 when (event) {
                     is LoginMviModel.Effect.OpenUrl -> uriHandler.openUri(event.url)
                     is LoginMviModel.Effect.Failure ->
-                        snackbarHostState.showSnackbar(
-                            message = event.message ?: genericError,
-                        )
+                        snackbarHostState.showSnackbar(message = event.message ?: genericError)
 
                     LoginMviModel.Effect.Success -> {
-                        snackbarHostState.showSnackbar(
-                            message = successMessage,
-                        )
+                        snackbarHostState.showSnackbar(message = successMessage)
                         navigationCoordinator.popUntilRoot()
                     }
 

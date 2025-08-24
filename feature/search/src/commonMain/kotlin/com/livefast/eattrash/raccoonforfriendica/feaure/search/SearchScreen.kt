@@ -39,9 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -69,6 +68,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRoute
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
@@ -104,7 +104,8 @@ fun SearchScreen(modifier: Modifier = Modifier) {
     val actionRepository = remember { getEntryActionRepository() }
     val searchFieldFocusRequester = remember { FocusRequester() }
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
+    val clipboardHelper = remember { getClipboardHelper(clipboard) }
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
@@ -129,7 +130,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                     SearchMviModel.Effect.BackToTop -> goBackToTop()
                     SearchMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
                     is SearchMviModel.Effect.TriggerCopy -> {
-                        clipboardManager.setText(AnnotatedString(event.text))
+                        clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
@@ -462,8 +463,8 @@ fun SearchScreen(modifier: Modifier = Modifier) {
 
                                         OptionId.CopyUrl -> {
                                             val urlString = item.entry.url.orEmpty()
-                                            clipboardManager.setText(AnnotatedString(urlString))
                                             scope.launch {
+                                                clipboardHelper.setText(urlString)
                                                 snackbarHostState.showSnackbar(copyToClipboardSuccess)
                                             }
                                         }
