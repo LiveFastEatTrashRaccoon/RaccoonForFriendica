@@ -20,7 +20,7 @@ import kotlin.test.assertEquals
 
 class DefaultMarkerRepositoryTest {
     private val markerService = mock<MarkerService>()
-    private val serviceProvider = mock<ServiceProvider> { every { markers } returns markerService }
+    private val serviceProvider = mock<ServiceProvider> { every { marker } returns markerService }
     private val sut =
         DefaultMarkerRepository(
             provider = serviceProvider,

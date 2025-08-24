@@ -90,14 +90,10 @@ fun ImageDetailScreen(
             .onEach {
                 when (it) {
                     ImageDetailMviModel.Effect.ShareSuccess ->
-                        snackbarHostState.showSnackbar(
-                            successMessage,
-                        )
+                        snackbarHostState.showSnackbar(successMessage)
 
                     ImageDetailMviModel.Effect.ShareFailure ->
-                        snackbarHostState.showSnackbar(
-                            errorMessage,
-                        )
+                        snackbarHostState.showSnackbar(errorMessage)
                 }
             }.launchIn(this)
     }

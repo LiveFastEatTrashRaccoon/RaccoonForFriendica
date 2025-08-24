@@ -22,7 +22,7 @@ class DefaultIdentityRepositoryTest {
     private val userService = mock<UserService>(mode = MockMode.autoUnit)
     private val provider =
         mock<ServiceProvider> {
-            every { users } returns userService
+            every { user } returns userService
         }
     private val sut = DefaultIdentityRepository(provider = provider)
 

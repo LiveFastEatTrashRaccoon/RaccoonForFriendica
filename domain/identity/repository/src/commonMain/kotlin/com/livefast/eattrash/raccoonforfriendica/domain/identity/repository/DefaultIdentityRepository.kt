@@ -14,7 +14,7 @@ internal class DefaultIdentityRepository(private val provider: ServiceProvider) 
             currentUser.update { null }
         } else {
             try {
-                val user = provider.users.getById(userId)
+                val user = provider.user.getById(userId)
                 currentUser.update {
                     UserModel(
                         avatar = user.avatar,

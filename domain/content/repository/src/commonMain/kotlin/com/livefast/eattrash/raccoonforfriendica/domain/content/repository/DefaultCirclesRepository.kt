@@ -11,15 +11,15 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 
 internal class DefaultCirclesRepository(private val provider: ServiceProvider) : CirclesRepository {
     override suspend fun getAll(): List<CircleModel>? = runCatching {
-        provider.lists.getAll().map { it.toModel() }
+        provider.list.getAll().map { it.toModel() }
     }.getOrNull()
 
     override suspend fun get(id: String): CircleModel? = runCatching {
-        provider.lists.getBy(id).toModel()
+        provider.list.getBy(id).toModel()
     }.getOrNull()
 
     override suspend fun getMembers(id: String, pageCursor: String?): List<UserModel>? = runCatching {
-        provider.lists.getMembers(id = id, maxId = pageCursor).map { it.toModel() }
+        provider.list.getMembers(id = id, maxId = pageCursor).map { it.toModel() }
     }.getOrNull()
 
     override suspend fun create(title: String, replyPolicy: CircleReplyPolicy, exclusive: Boolean): CircleModel? =
@@ -31,7 +31,7 @@ internal class DefaultCirclesRepository(private val provider: ServiceProvider) :
                     replyPolicy = replyPolicy.toDto(),
                     exclusive = exclusive,
                 )
-            provider.lists.create(data).toModel()
+            provider.list.create(data).toModel()
         }.getOrNull()
 
     override suspend fun update(
@@ -46,18 +46,18 @@ internal class DefaultCirclesRepository(private val provider: ServiceProvider) :
                 replyPolicy = replyPolicy.toDto(),
                 exclusive = exclusive,
             )
-        provider.lists.update(id = id, data = data).toModel()
+        provider.list.update(id = id, data = data).toModel()
     }.getOrNull()
 
-    override suspend fun delete(id: String): Boolean = provider.lists.delete(id)
+    override suspend fun delete(id: String): Boolean = provider.list.delete(id)
 
     override suspend fun addMembers(id: String, userIds: List<String>): Boolean {
         val data = EditListMembersForm(accountIds = userIds)
-        return provider.lists.addMembers(id = id, data = data)
+        return provider.list.addMembers(id = id, data = data)
     }
 
     override suspend fun removeMembers(id: String, userIds: List<String>): Boolean {
         val data = EditListMembersForm(accountIds = userIds)
-        return provider.lists.removeMembers(id = id, data = data)
+        return provider.list.removeMembers(id = id, data = data)
     }
 }

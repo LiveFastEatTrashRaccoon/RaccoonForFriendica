@@ -17,7 +17,7 @@ import kotlin.test.assertEquals
 class DefaultEventRepositoryTest {
     private val eventService = mock<EventService>()
     private val serviceProvider =
-        mock<ServiceProvider> { every { events } returns eventService }
+        mock<ServiceProvider> { every { this@mock.event } returns eventService }
     private val sut =
         DefaultEventRepository(
             provider = serviceProvider,

@@ -85,15 +85,11 @@ fun LegacyLoginScreen(modifier: Modifier = Modifier) {
             .onEach { event ->
                 when (event) {
                     is LegacyLoginMviModel.Effect.Failure -> {
-                        snackbarHostState.showSnackbar(
-                            message = event.message ?: genericError,
-                        )
+                        snackbarHostState.showSnackbar(message = event.message ?: genericError)
                     }
 
                     LegacyLoginMviModel.Effect.Success -> {
-                        snackbarHostState.showSnackbar(
-                            message = successMessage,
-                        )
+                        snackbarHostState.showSnackbar(message = successMessage)
                         navigationCoordinator.pop()
                     }
                 }

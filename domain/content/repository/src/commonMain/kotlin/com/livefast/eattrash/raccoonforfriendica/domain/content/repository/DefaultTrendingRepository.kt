@@ -19,7 +19,7 @@ internal class DefaultTrendingRepository(private val provider: ServiceProvider, 
 
     override suspend fun getEntries(offset: Int): List<TimelineEntryModel>? = runCatching {
         val response =
-            provider.trends
+            provider.trend
                 .getStatuses(
                     offset = offset,
                     limit = DEFAULT_PAGE_SIZE,
@@ -38,7 +38,7 @@ internal class DefaultTrendingRepository(private val provider: ServiceProvider, 
         }
         return runCatching {
             val response =
-                provider.trends
+                provider.trend
                     .getHashtags(
                         offset = offset,
                         limit = DEFAULT_PAGE_SIZE,
@@ -57,7 +57,7 @@ internal class DefaultTrendingRepository(private val provider: ServiceProvider, 
 
     override suspend fun getLinks(offset: Int): List<LinkModel>? = runCatching {
         val response =
-            provider.trends
+            provider.trend
                 .getLinks(
                     offset = offset,
                     limit = DEFAULT_PAGE_SIZE,

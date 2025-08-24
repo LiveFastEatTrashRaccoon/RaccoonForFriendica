@@ -31,7 +31,7 @@ class DefaultTranslationRepositoryTest {
     private val statusService = mock<StatusService>()
     private val serviceProvider =
         mock<ServiceProvider> {
-            every { statuses } returns statusService
+            every { status } returns statusService
         }
     private val sut =
         DefaultTranslationRepository(

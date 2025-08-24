@@ -28,6 +28,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.utils.defaultLogger
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
@@ -38,8 +41,12 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
 
 internal class DefaultServiceProvider(
@@ -51,29 +58,31 @@ internal class DefaultServiceProvider(
     }
 
     override var currentNode: String = ""
+    private val _events = MutableSharedFlow<ServiceProviderEvent>()
+    override val events: Flow<ServiceProviderEvent> = _events.asSharedFlow()
 
-    override lateinit var announcements: AnnouncementService
-    override lateinit var apps: AppService
+    override lateinit var announcement: AnnouncementService
+    override lateinit var app: AppService
     override lateinit var directMessage: DirectMessageService
-    override lateinit var events: EventService
-    override lateinit var followRequests: FollowRequestService
+    override lateinit var event: EventService
+    override lateinit var followRequest: FollowRequestService
     override lateinit var instance: InstanceService
-    override lateinit var lists: ListService
-    override lateinit var markers: MarkerService
+    override lateinit var list: ListService
+    override lateinit var marker: MarkerService
     override lateinit var media: MediaService
-    override lateinit var notifications: NotificationService
+    override lateinit var notification: NotificationService
     override lateinit var photo: PhotoService
     override lateinit var photoAlbum: PhotoAlbumService
-    override lateinit var polls: PollService
+    override lateinit var poll: PollService
     override lateinit var push: PushService
-    override lateinit var reports: ReportService
+    override lateinit var report: ReportService
     override lateinit var search: SearchService
-    override lateinit var statuses: StatusService
-    override lateinit var tags: TagsService
+    override lateinit var status: StatusService
+    override lateinit var tag: TagsService
     override lateinit var timeline: TimelineService
-    override lateinit var translationService: InnerTranslationService
-    override lateinit var trends: TrendsService
-    override lateinit var users: UserService
+    override lateinit var translation: InnerTranslationService
+    override lateinit var trend: TrendsService
+    override lateinit var user: UserService
 
     private val baseUrl: String get() = "https://$currentNode/api"
 
@@ -101,6 +110,10 @@ internal class DefaultServiceProvider(
                     requestTimeoutMillis = 600_000
                     connectTimeoutMillis = 30_000
                     socketTimeoutMillis = 30_000
+                }
+                install(HttpRequestRetry) {
+                    retryOnServerErrors(maxRetries = 3)
+                    exponentialDelay()
                 }
                 install(Auth) {
                     when (credentials) {
@@ -146,29 +159,39 @@ internal class DefaultServiceProvider(
                         },
                     )
                 }
+
+                HttpResponseValidator {
+                    handleResponseException { exception, _ ->
+                        if (exception is ClientRequestException &&
+                            exception.response.status == HttpStatusCode.Unauthorized
+                        ) {
+                            _events.tryEmit(ServiceProviderEvent.Unauthorized)
+                        }
+                    }
+                }
             }
         val creationArgs = ServiceCreationArgs(baseUrl = baseUrl, client = client)
-        announcements = getService(creationArgs)
-        apps = getService(creationArgs)
+        announcement = getService(creationArgs)
+        app = getService(creationArgs)
         directMessage = getService(creationArgs)
-        events = getService(creationArgs)
-        followRequests = getService(creationArgs)
+        event = getService(creationArgs)
+        followRequest = getService(creationArgs)
         instance = getService(creationArgs)
-        lists = getService(creationArgs)
-        markers = getService(creationArgs)
+        list = getService(creationArgs)
+        marker = getService(creationArgs)
         media = getService(creationArgs)
-        notifications = getService(creationArgs)
+        notification = getService(creationArgs)
         photo = getService(creationArgs)
         photoAlbum = getService(creationArgs)
-        polls = getService(creationArgs)
+        poll = getService(creationArgs)
         push = getService(creationArgs)
-        reports = getService(creationArgs)
+        report = getService(creationArgs)
         search = getService(creationArgs)
-        statuses = getService(creationArgs)
-        tags = getService(creationArgs)
+        status = getService(creationArgs)
+        tag = getService(creationArgs)
         timeline = getService(creationArgs)
-        translationService = getService(creationArgs)
-        trends = getService(creationArgs)
-        users = getService(creationArgs)
+        translation = getService(creationArgs)
+        trend = getService(creationArgs)
+        user = getService(creationArgs)
     }
 }

@@ -34,10 +34,20 @@ internal class DefaultSupportedFeatureRepository(private val nodeInfoRepository:
 }
 
 private val NodeInfoModel?.isFriendica: Boolean
-    get() = this?.software?.lowercase() == "friendica"
+    get() = this?.software?.lowercase() == SoftwareNames.FRIENDICA ||
+        this?.version?.lowercase()?.contains(SoftwareNames.FRIENDICA) == true
 
 private val NodeInfoModel?.isGoToSocial: Boolean
-    get() = this?.software?.lowercase() == "gotosocial"
+    get() = this?.software?.lowercase() == SoftwareNames.GO_TO_SOCIAL
 
 private val NodeInfoModel?.isHomeTown: Boolean
-    get() = this?.software?.lowercase() == "hometown"
+    get() = this?.software?.lowercase() == SoftwareNames.HOMETOWN
+
+/**
+ * Instance type names.
+ */
+private object SoftwareNames {
+    const val FRIENDICA = "friendica"
+    const val GO_TO_SOCIAL = "gotosocial"
+    const val HOMETOWN = "hometown"
+}

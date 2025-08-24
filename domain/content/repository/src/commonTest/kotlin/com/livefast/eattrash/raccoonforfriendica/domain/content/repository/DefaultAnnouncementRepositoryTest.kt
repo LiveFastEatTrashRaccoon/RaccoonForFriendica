@@ -21,7 +21,7 @@ class DefaultAnnouncementRepositoryTest {
     private val announcementService = mock<AnnouncementService>()
     private val serviceProvider =
         mock<ServiceProvider> {
-            every { announcements } returns announcementService
+            every { announcement } returns announcementService
         }
     private val sut = DefaultAnnouncementRepository(provider = serviceProvider)
 

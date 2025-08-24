@@ -1,0 +1,5 @@
+- feat: open profile from drawer header
+- fix: drawer flicker and back from top bar
+- chore: migrate to Material 3 Expressive theme
+- chore: update l10n (et)
+- chore: update dependencies

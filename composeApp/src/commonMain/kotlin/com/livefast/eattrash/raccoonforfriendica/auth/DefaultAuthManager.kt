@@ -85,12 +85,33 @@ internal class DefaultAuthManager(
                 clientId = clientId,
                 clientSecret = clientSecret,
                 redirectUri = REDIRECT_URI,
-                grantType = GRANT_TYPE,
+                grantType = GRANT_TYPE_ACCESS_TOKEN,
                 code = code,
             )
         if (credentials != null) {
             credentialFlow.emit(credentials)
         }
+    }
+
+    override suspend fun performRefresh(refreshToken: String): ApiCredentials? {
+        val node = retrieveNode()
+        val clientId = retrieveClientId()
+        val clientSecret = retrieveClientSecret()
+        require(refreshToken.isNotEmpty()) { "Invalid refresh token" }
+        check(node.isNotEmpty()) { "Unable to retrieve node name" }
+        check(clientId.isNotEmpty()) { "Unable to retrieve client ID" }
+        check(clientSecret.isNotEmpty()) { "Unable to retrieve client secret" }
+
+        val credentials =
+            credentialsRepository.issueNewToken(
+                node = node,
+                path = TOKEN_ENDPOINT,
+                clientId = clientId,
+                clientSecret = clientSecret,
+                grantType = GRANT_TYPE_REFRESH_TOKEN,
+                refreshToken = refreshToken,
+            )
+        return credentials
     }
 
     private suspend fun storeInitialData(node: String, clientId: String, clientSecret: String) {
@@ -115,7 +136,8 @@ internal class DefaultAuthManager(
         const val REDIRECT_SCHEME = "raccoonforfriendica"
         const val REDIRECT_HOST = "auth"
         private const val REDIRECT_URI = "$REDIRECT_SCHEME://$REDIRECT_HOST"
-        private const val GRANT_TYPE = "authorization_code"
+        private const val GRANT_TYPE_ACCESS_TOKEN = "authorization_code"
+        private const val GRANT_TYPE_REFRESH_TOKEN = "refresh_token"
         private const val KEY_CLIENT_ID = "lastAuthClientId"
         private const val KEY_CLIENT_SECRET = "lastAuthClientSecret"
         private const val KEY_LAST_NODE = "lastAuthInstance"

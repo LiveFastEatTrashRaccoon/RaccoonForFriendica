@@ -25,7 +25,7 @@ class FallbackTranslationRepositoryTest {
     private val sut =
         FallbackTranslationRepository(
             provider = mock {
-                every { translationService } returns service
+                every { translation } returns service
             },
         )
 

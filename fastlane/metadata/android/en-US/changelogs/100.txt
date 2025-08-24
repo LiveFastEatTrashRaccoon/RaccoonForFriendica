@@ -1,0 +1,4 @@
+- fix: opening sections from drawer menu
+- fix: instance type detection
+- fix: avoid potential startup crashes
+- enhancement: improve handling of expired tokens
