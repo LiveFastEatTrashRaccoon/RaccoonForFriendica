@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
+import androidx.compose.ui.platform.Clipboard
 import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.CalendarHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.clipboard.ClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
@@ -48,5 +50,10 @@ fun getCalendarHelper(): CalendarHelper {
 
 fun getNetworkStateObserver(): NetworkStateObserver {
     val res by RootDI.di.instance<NetworkStateObserver>()
+    return res
+}
+
+fun getClipboardHelper(clipboard: Clipboard): ClipboardHelper {
+    val res by RootDI.di.instance<Clipboard, ClipboardHelper>(arg = clipboard)
     return res
 }

@@ -21,6 +21,7 @@ val utilsModule =
             nativeAppIconModule,
             nativeAppInfoModule,
             nativeCalendarModule,
+            nativeClipboardModule,
             nativeDebugModule,
             nativeFileSystemModule,
             nativeGalleryModule,

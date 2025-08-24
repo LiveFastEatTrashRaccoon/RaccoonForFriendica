@@ -67,9 +67,7 @@ fun UserFeedbackScreen(modifier: Modifier = Modifier) {
             .onEach { event ->
                 when (event) {
                     is UserFeedbackMviModel.Effect.Failure -> {
-                        snackbarHostState.showSnackbar(
-                            message = event.message ?: genericError,
-                        )
+                        snackbarHostState.showSnackbar(message = event.message ?: genericError)
                     }
 
                     UserFeedbackMviModel.Effect.Success -> {

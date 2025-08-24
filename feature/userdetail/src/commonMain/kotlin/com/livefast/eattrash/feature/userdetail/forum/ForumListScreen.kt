@@ -46,10 +46,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
@@ -74,6 +73,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
@@ -108,7 +108,8 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
     val shareHelper = remember { getShareHelper() }
     val actionRepository = remember { getEntryActionRepository() }
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
+    val clipboardHelper = remember { getClipboardHelper(clipboard) }
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
     var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
@@ -132,7 +133,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                 when (event) {
                     ForumListMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
                     is ForumListMviModel.Effect.TriggerCopy -> {
-                        clipboardManager.setText(AnnotatedString(event.text))
+                        clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
@@ -487,8 +488,8 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
 
                                 OptionId.CopyUrl -> {
                                     val urlString = entry.url.orEmpty()
-                                    clipboardManager.setText(AnnotatedString(urlString))
                                     scope.launch {
+                                        clipboardHelper.setText(urlString)
                                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                                     }
                                 }

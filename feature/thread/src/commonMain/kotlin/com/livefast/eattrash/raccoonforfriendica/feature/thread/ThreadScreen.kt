@@ -53,9 +53,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
@@ -80,6 +79,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
@@ -118,7 +118,8 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
     val shareHelper = remember { getShareHelper() }
     val actionRepository = remember { getEntryActionRepository() }
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
+    val clipboardHelper = remember { getClipboardHelper(clipboard) }
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
     var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
@@ -143,7 +144,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                 when (event) {
                     ThreadMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
                     is ThreadMviModel.Effect.TriggerCopy -> {
-                        clipboardManager.setText(AnnotatedString(event.text))
+                        clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
@@ -442,11 +443,9 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
 
                                         OptionId.CopyUrl -> {
                                             val urlString = entry.url.orEmpty()
-                                            clipboardManager.setText(AnnotatedString(urlString))
                                             scope.launch {
-                                                snackbarHostState.showSnackbar(
-                                                    copyToClipboardSuccess,
-                                                )
+                                                clipboardHelper.setText(urlString)
+                                                snackbarHostState.showSnackbar(copyToClipboardSuccess)
                                             }
                                         }
 
@@ -641,11 +640,9 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
 
                                     OptionId.CopyUrl -> {
                                         val urlString = entry.url.orEmpty()
-                                        clipboardManager.setText(AnnotatedString(urlString))
                                         scope.launch {
-                                            snackbarHostState.showSnackbar(
-                                                copyToClipboardSuccess,
-                                            )
+                                            clipboardHelper.setText(urlString)
+                                            snackbarHostState.showSnackbar(copyToClipboardSuccess)
                                         }
                                     }
 
