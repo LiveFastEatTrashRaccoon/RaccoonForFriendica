@@ -102,4 +102,6 @@ interface MainRouter {
     fun openShortcuts()
 
     fun openShortcut(node: String)
+
+    fun openManageCircles(user: UserModel)
 }
