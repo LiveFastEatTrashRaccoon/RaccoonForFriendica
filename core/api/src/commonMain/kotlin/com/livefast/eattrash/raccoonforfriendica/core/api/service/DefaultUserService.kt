@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import io.ktor.client.HttpClient
@@ -101,6 +102,9 @@ internal class DefaultUserService(private val baseUrl: String, private val clien
             parameter("min_id", minId)
             parameter("limit", limit)
         }.body()
+
+    override suspend fun getListsContaining(id: String): List<UserList> =
+        client.get("$baseUrl/v1/accounts/$id/lists").body()
 
     override suspend fun mute(id: String, data: MuteUserForm): Relationship =
         client.post("$baseUrl/v1/accounts/$id/mute") {
