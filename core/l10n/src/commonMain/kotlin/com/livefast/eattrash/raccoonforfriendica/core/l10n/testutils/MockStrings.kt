@@ -22,6 +22,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("accountSectionPosts")
     override val actionAccept: String
         @Composable get() = retrieve("actionAccept")
+    override val actionAdd: String
+        @Composable get() = retrieve("actionAdd")
     override val actionAddImage: String
         @Composable get() = retrieve("actionAddImage")
     override val actionAddImageFromGallery: String
@@ -98,6 +100,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionInsertList")
     override val actionLogout: String
         @Composable get() = retrieve("actionLogout")
+    override val actionManageCircles: String
+        @Composable get() = retrieve("actionManageCircles")
     override val actionMove: String
         @Composable get() = retrieve("actionMove")
     override val actionMute: String
@@ -132,6 +136,9 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionReblog")
     override val actionReject: String
         @Composable get() = retrieve("actionReject")
+
+    override val actionRemove: String
+        @Composable get() = retrieve("actionRemove")
     override val actionRemoveDislike: String
         @Composable get() = retrieve("actionRemoveDislike")
     override val actionRemoveFromBookmarks: String

@@ -15,6 +15,7 @@ import raccoonforfriendica.composeapp.generated.resources.account_section_media
 import raccoonforfriendica.composeapp.generated.resources.account_section_pinned
 import raccoonforfriendica.composeapp.generated.resources.account_section_posts
 import raccoonforfriendica.composeapp.generated.resources.action_accept
+import raccoonforfriendica.composeapp.generated.resources.action_add
 import raccoonforfriendica.composeapp.generated.resources.action_add_image
 import raccoonforfriendica.composeapp.generated.resources.action_add_image_from_gallery
 import raccoonforfriendica.composeapp.generated.resources.action_add_new
@@ -53,6 +54,7 @@ import raccoonforfriendica.composeapp.generated.resources.action_insert_inline_i
 import raccoonforfriendica.composeapp.generated.resources.action_insert_link
 import raccoonforfriendica.composeapp.generated.resources.action_insert_list
 import raccoonforfriendica.composeapp.generated.resources.action_logout
+import raccoonforfriendica.composeapp.generated.resources.action_manage_circles
 import raccoonforfriendica.composeapp.generated.resources.action_move
 import raccoonforfriendica.composeapp.generated.resources.action_mute
 import raccoonforfriendica.composeapp.generated.resources.action_mute_notifications
@@ -70,6 +72,7 @@ import raccoonforfriendica.composeapp.generated.resources.action_publish_default
 import raccoonforfriendica.composeapp.generated.resources.action_quote
 import raccoonforfriendica.composeapp.generated.resources.action_reblog
 import raccoonforfriendica.composeapp.generated.resources.action_reject
+import raccoonforfriendica.composeapp.generated.resources.action_remove
 import raccoonforfriendica.composeapp.generated.resources.action_remove_dislike
 import raccoonforfriendica.composeapp.generated.resources.action_remove_from_bookmarks
 import raccoonforfriendica.composeapp.generated.resources.action_remove_from_favorites
@@ -478,6 +481,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.account_section_posts)
     override val actionAccept: String
         @Composable get() = stringResource(Res.string.action_accept)
+    override val actionAdd: String
+        @Composable get() = stringResource(Res.string.action_add)
     override val actionAddImage: String
         @Composable get() = stringResource(Res.string.action_add_image)
     override val actionAddImageFromGallery: String
@@ -554,6 +559,9 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_insert_list)
     override val actionLogout: String
         @Composable get() = stringResource(Res.string.action_logout)
+
+    override val actionManageCircles: String
+        @Composable get() = stringResource(Res.string.action_manage_circles)
     override val actionMove: String
         @Composable get() = stringResource(Res.string.action_move)
     override val actionMute: String
@@ -588,6 +596,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_reblog)
     override val actionReject: String
         @Composable get() = stringResource(Res.string.action_reject)
+    override val actionRemove: String
+        @Composable get() = stringResource(Res.string.action_remove)
     override val actionRemoveDislike: String
         @Composable get() = stringResource(Res.string.action_remove_dislike)
     override val actionRemoveFromBookmarks: String

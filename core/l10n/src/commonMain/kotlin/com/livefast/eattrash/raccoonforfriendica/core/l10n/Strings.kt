@@ -12,6 +12,7 @@ interface Strings {
     val actionAddImage: String @Composable get
     val actionAddImageFromGallery: String @Composable get
     val actionAddNew: String @Composable get
+    val actionAdd: String @Composable get
     val actionAddPoll: String @Composable get
     val actionAddReaction: String @Composable get
     val actionAddSpoiler: String @Composable get
@@ -47,6 +48,7 @@ interface Strings {
     val actionInsertLink: String @Composable get
     val actionInsertList: String @Composable get
     val actionLogout: String @Composable get
+    val actionManageCircles: String @Composable get
     val actionMove: String @Composable get
     val actionMute: String @Composable get
     val actionMuteNotifications: String @Composable get
@@ -64,6 +66,7 @@ interface Strings {
     val actionQuote: String @Composable get
     val actionReblog: String @Composable get
     val actionReject: String @Composable get
+    val actionRemove: String @Composable get
     val actionRemoveDislike: String @Composable get
     val actionRemoveFromBookmarks: String @Composable get
     val actionRemoveFromFavorites: String @Composable get
