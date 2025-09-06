@@ -23,7 +23,6 @@ internal class DefaultCirclesRepository(private val provider: ServiceProvider) :
     }.getOrNull()
 
     override suspend fun create(title: String, replyPolicy: CircleReplyPolicy, exclusive: Boolean): CircleModel? =
-
         runCatching {
             val data =
                 EditListForm(

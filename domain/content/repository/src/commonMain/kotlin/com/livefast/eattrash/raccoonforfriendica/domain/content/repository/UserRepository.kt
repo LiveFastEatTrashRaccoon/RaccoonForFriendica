@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
@@ -20,6 +21,8 @@ interface UserRepository {
     suspend fun getFollowers(id: String, pageCursor: String? = null): List<UserModel>?
 
     suspend fun getFollowing(id: String, pageCursor: String? = null): List<UserModel>?
+
+    suspend fun getListsContaining(id: String): List<CircleModel>?
 
     suspend fun searchMyFollowing(query: String, pageCursor: String? = null): List<UserModel>?
 
