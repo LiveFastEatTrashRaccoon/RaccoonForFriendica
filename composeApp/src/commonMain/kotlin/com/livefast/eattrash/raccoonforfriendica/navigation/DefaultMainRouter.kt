@@ -343,4 +343,11 @@ class DefaultMainRouter(
     override fun openShortcut(node: String) {
         navigationCoordinator.push(Destination.ShortcutTimeline(node))
     }
+
+    override fun openManageCircles(user: UserModel) {
+        scope.launch {
+            userCache.put(user.id, user)
+            navigationCoordinator.push(Destination.ManageUserCircles(user.id))
+        }
+    }
 }

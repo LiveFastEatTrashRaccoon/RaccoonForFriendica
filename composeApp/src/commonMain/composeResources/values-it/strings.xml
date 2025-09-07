@@ -493,4 +493,7 @@
     <string name="image_field_alt_text">Testo alternativo</string>
     <string name="settings_item_conversation_reply_depth">Profondità risposte in conversazione</string>
     <string name="action_open_in_browser">Apri nel browser</string>
+    <string name="action_manage_circles">Gestione cerchie</string>
+    <string name="action_add">Aggiungi</string>
+    <string name="action_remove">Rimuovi</string>
 </resources>

@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import io.ktor.client.request.forms.FormDataContent
@@ -48,6 +49,8 @@ interface UserService {
     suspend fun getFavorites(maxId: String? = null, minId: String? = null, limit: Int = 20): List<Status>
 
     suspend fun getBookmarks(maxId: String? = null, minId: String? = null, limit: Int = 20): List<Status>
+
+    suspend fun getListsContaining(id: String): List<UserList>
 
     suspend fun mute(id: String, data: MuteUserForm): Relationship
 

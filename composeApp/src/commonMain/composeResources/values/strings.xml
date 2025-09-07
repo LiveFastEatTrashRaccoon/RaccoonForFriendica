@@ -433,6 +433,9 @@
     <string name="action_shortcut">Shortcut to %1$s</string>
     <string name="shortcuts_title">Shortcuts</string>
     <string name="message_no_public_timeline">Maybe this instance does not expose its public timeline.</string>
+    <string name="action_manage_circles">Manage circles</string>
+    <string name="action_add">Add</string>
+    <string name="action_remove">Remove</string>
 
     <plurals name="account_follower">
         <item quantity="one">%1$d follower</item>

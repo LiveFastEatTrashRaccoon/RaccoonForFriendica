@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewMo
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModelWithArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers.CircleMembersViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.manage.ManageUserCirclesViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline.CircleTimelineViewModel
 import org.kodein.di.DI
 import org.kodein.di.instance
@@ -12,6 +13,8 @@ import org.kodein.di.instance
 data class CircleMembersViewModelArgs(val id: String) : ViewModelCreationArgs
 
 data class CircleTimelineViewModelArgs(val id: String) : ViewModelCreationArgs
+
+data class ManageUserCirclesViewModelArgs(val userId: String) : ViewModelCreationArgs
 
 val circlesModule =
     DI.Module("CirclesModule") {
@@ -55,6 +58,14 @@ val circlesModule =
                 getInnerUrl = instance(),
                 timelineNavigationManager = instance(),
                 notificationCenter = instance(),
+            )
+        }
+        bindViewModelWithArgs { args: ManageUserCirclesViewModelArgs ->
+            ManageUserCirclesViewModel(
+                userId = args.userId,
+                circlesRepository = instance(),
+                userCache = instance(),
+                userRepository = instance(),
             )
         }
     }

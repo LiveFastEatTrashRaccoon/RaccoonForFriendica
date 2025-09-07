@@ -232,33 +232,38 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                                 if (!user.url.isNullOrEmpty()) {
                                     this += OptionId.Share.toOption()
                                 }
-                                if (user.muted) {
-                                    this += OptionId.Unmute.toOption()
-                                } else {
-                                    this += OptionId.Mute.toOption()
-                                }
-                                if (user.blocked) {
-                                    this += OptionId.Unblock.toOption()
-                                } else {
-                                    this += OptionId.Block.toOption()
-                                }
                                 if (uiState.currentUserId != null) {
+                                    if (user.muted) {
+                                        this += OptionId.Unmute.toOption()
+                                    } else {
+                                        this += OptionId.Mute.toOption()
+                                    }
+                                    if (user.blocked) {
+                                        this += OptionId.Unblock.toOption()
+                                    } else {
+                                        this += OptionId.Block.toOption()
+                                    }
                                     this +=
                                         CustomOptions.ChangeRateLimit.toOption(
                                             label = LocalStrings.current.actionChangeRateLimit,
                                         )
-                                }
-                                this += OptionId.ReportUser.toOption()
-                                this +=
-                                    Option(
-                                        id = OptionId.Edit,
-                                        label =
-                                        if (uiState.personalNoteEditEnabled) {
-                                            LocalStrings.current.actionCancelEditPersonalNote
-                                        } else {
-                                            LocalStrings.current.actionEditPersonalNote
-                                        },
+
+                                    this += OptionId.ReportUser.toOption()
+                                    this +=
+                                        Option(
+                                            id = OptionId.Edit,
+                                            label =
+                                            if (uiState.personalNoteEditEnabled) {
+                                                LocalStrings.current.actionCancelEditPersonalNote
+                                            } else {
+                                                LocalStrings.current.actionEditPersonalNote
+                                            },
+                                        )
+
+                                    this += CustomOptions.ManageCircles.toOption(
+                                        label = LocalStrings.current.actionManageCircles,
                                     )
+                                }
                                 if (user.group) {
                                     this +=
                                         CustomOptions.SwitchToForumMode.toOption(
@@ -342,6 +347,11 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                                                     model.reduce(
                                                         UserDetailMviModel.Intent.TogglePersonalNoteEditMode,
                                                     )
+
+                                                CustomOptions.ManageCircles ->
+                                                    uiState.user?.also { user ->
+                                                        mainRouter.openManageCircles(user)
+                                                    }
 
                                                 OptionId.ReportUser ->
                                                     uiState.user?.also { userToReport ->
@@ -972,4 +982,6 @@ private sealed interface CustomOptions : OptionId.Custom {
     data object SwitchToForumMode : CustomOptions
 
     data object ChangeRateLimit : CustomOptions
+
+    data object ManageCircles : CustomOptions
 }

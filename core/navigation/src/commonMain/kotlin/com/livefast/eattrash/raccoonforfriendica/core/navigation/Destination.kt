@@ -137,4 +137,7 @@ sealed interface Destination {
 
     @Serializable
     data object NewAccount : Destination
+
+    @Serializable
+    data class ManageUserCircles(val userId: String) : Destination
 }

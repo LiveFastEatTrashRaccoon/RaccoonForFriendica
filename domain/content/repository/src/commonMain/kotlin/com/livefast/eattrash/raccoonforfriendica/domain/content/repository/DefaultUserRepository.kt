@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -85,6 +86,10 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             ).map { it.toModel() }
+    }.getOrNull()
+
+    override suspend fun getListsContaining(id: String): List<CircleModel>? = runCatching {
+        provider.user.getListsContaining(id).map { it.toModel() }
     }.getOrNull()
 
     override suspend fun searchMyFollowing(query: String, pageCursor: String?): List<UserModel>? = runCatching {

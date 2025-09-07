@@ -18,7 +18,7 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 
 internal class DefaultListService(private val baseUrl: String, private val client: HttpClient) : ListService {
-    override suspend fun getAll(): List<UserList> = client.get("$baseUrl/lists").body()
+    override suspend fun getAll(): List<UserList> = client.get("$baseUrl/v1/lists").body()
 
     override suspend fun getFriendicaCircles(): List<FriendicaCircle> =
         client.get("$baseUrl/friendica/group_show").body()
@@ -51,6 +51,7 @@ internal class DefaultListService(private val baseUrl: String, private val clien
 
     override suspend fun removeMembers(id: String, data: EditListMembersForm): Boolean =
         client.delete("$baseUrl/v1/lists/$id/accounts") {
+            contentType(ContentType.Application.Json)
             setBody(data)
         }.status.isSuccess()
 }

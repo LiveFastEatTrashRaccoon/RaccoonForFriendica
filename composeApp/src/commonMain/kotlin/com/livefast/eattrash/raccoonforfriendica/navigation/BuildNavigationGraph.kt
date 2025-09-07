@@ -14,6 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDe
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers.CircleMembersScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.manage.ManageUserCirclesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline.CircleTimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.ConversationScreen
@@ -208,5 +209,9 @@ internal fun NavGraphBuilder.buildNavigationGraph() {
     }
     composable<Destination.NewAccount> {
         NewAccountScreen()
+    }
+    composable<Destination.ManageUserCircles> {
+        val route: Destination.ManageUserCircles = it.toRoute()
+        ManageUserCirclesScreen(userId = route.userId)
     }
 }
