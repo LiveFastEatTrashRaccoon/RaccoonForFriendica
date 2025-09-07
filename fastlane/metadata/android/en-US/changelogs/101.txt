@@ -1,0 +1,4 @@
+- feat: add possibility to manage lists/circles from user detail
+- refactor: update Clipboard usages to new APIs
+- chore: update l10n
+- chore: update dependencies
