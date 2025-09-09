@@ -13,7 +13,7 @@ object Locales {
     const val RO = "ro"
     const val RU = "ru"
     const val TA = "ta"
-    const val UA = "ua"
+    const val UK = "uk"
 
     val AVAILABLE_LANGUAGES =
         listOf(
@@ -29,6 +29,6 @@ object Locales {
             RO,
             RU,
             TA,
-            UA,
+            UK,
         )
 }
