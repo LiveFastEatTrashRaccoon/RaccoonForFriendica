@@ -241,7 +241,7 @@ import raccoonforfriendica.composeapp.generated.resources.language_pt_br
 import raccoonforfriendica.composeapp.generated.resources.language_ro
 import raccoonforfriendica.composeapp.generated.resources.language_ru
 import raccoonforfriendica.composeapp.generated.resources.language_ta
-import raccoonforfriendica.composeapp.generated.resources.language_ua
+import raccoonforfriendica.composeapp.generated.resources.language_uk
 import raccoonforfriendica.composeapp.generated.resources.login_friendica_header
 import raccoonforfriendica.composeapp.generated.resources.login_mastodon_header
 import raccoonforfriendica.composeapp.generated.resources.login_method_basic
@@ -918,8 +918,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.language_ru)
     override val languageTa: String
         @Composable get() = stringResource(Res.string.language_ta)
-    override val languageUa: String
-        @Composable get() = stringResource(Res.string.language_ua)
+    override val languageUk: String
+        @Composable get() = stringResource(Res.string.language_uk)
     override val loginFriendicaHeader: String
         @Composable get() = stringResource(Res.string.login_friendica_header)
     override val loginMastodonHeader: String
@@ -1360,13 +1360,16 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.visibility_unlisted)
 
     @Composable
-    override fun accountFollower(count: Int): String = pluralStringResource(Res.plurals.account_follower, count, count)
+    override fun accountFollower(count: Int): String =
+        pluralStringResource(Res.plurals.account_follower, count, count)
 
     @Composable
-    override fun actionShortcut(node: String): String = stringResource(Res.string.action_shortcut, node)
+    override fun actionShortcut(node: String): String =
+        stringResource(Res.string.action_shortcut, node)
 
     @Composable
-    override fun actionTranslateTo(lang: String): String = stringResource(Res.string.action_translate_to, lang)
+    override fun actionTranslateTo(lang: String): String =
+        stringResource(Res.string.action_translate_to, lang)
 
     @Composable
     override fun accountFollowing(count: Int): String =
@@ -1377,7 +1380,8 @@ class SharedStrings : Strings {
         pluralStringResource(Res.plurals.create_report_selected_rules, count, count)
 
     @Composable
-    override fun dislikesCount(count: Int): String = pluralStringResource(Res.plurals.dislikes_count, count, count)
+    override fun dislikesCount(count: Int): String =
+        pluralStringResource(Res.plurals.dislikes_count, count, count)
 
     @Composable
     override fun extendedSocialInfoFavorites(count: Int): String =
