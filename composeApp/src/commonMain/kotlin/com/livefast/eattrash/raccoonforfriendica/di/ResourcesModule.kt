@@ -12,5 +12,10 @@ import org.kodein.di.singleton
 internal val resourcesModule =
     DI.Module("SharedResourcesModule") {
         bind<CoreResources> { singleton { SharedResources() } }
-        bind<Strings> { factory { _: String -> SharedStrings() } }
+        bind<Strings> {
+            factory { _: String ->
+                // the locale parameter is currently ignored
+                SharedStrings()
+            }
+        }
     }
