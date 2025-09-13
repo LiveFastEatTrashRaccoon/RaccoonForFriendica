@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.appearanceMo
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.viewModelFactoryModule
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.commonUiComponentsModule
 import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.encryption.di.encryptionModule
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.l10nModule
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.navigationModule
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.notificationsModule
@@ -62,6 +63,7 @@ fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
                 apiModule,
                 appearanceModule,
                 commonUiComponentsModule,
+                encryptionModule,
                 l10nModule,
                 navigationModule,
                 notificationsModule,

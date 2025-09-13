@@ -59,6 +59,7 @@ kotlin {
             implementation(projects.core.appearance)
             implementation(projects.core.architecture)
             implementation(projects.core.di)
+            implementation(projects.core.encryption)
             implementation(projects.core.commonui.components)
             implementation(projects.core.commonui.content)
             implementation(projects.core.l10n)
