@@ -2,8 +2,8 @@ package extensions
 
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.compose.ComposePlugin
+import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
@@ -16,7 +16,7 @@ internal fun Project.configureUiTest(extension: KotlinMultiplatformExtension) =
         sourceSets.apply {
             androidUnitTest {
                 dependencies {
-                    @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                    @OptIn(ExperimentalComposeLibrary::class)
                     implementation(composeDeps.uiTest)
                     implementation(libs.findLibrary("compose-ui-test").dependency)
                     implementation(libs.findLibrary("robolectric").dependency)
@@ -27,10 +27,6 @@ internal fun Project.configureUiTest(extension: KotlinMultiplatformExtension) =
         androidTarget {
             @OptIn(ExperimentalKotlinGradlePluginApi::class)
             instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-        }
-
-        dependencies {
-            add("debugImplementation", libs.findLibrary("compose-ui-test-manifest").dependency)
         }
     }
 

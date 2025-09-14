@@ -197,6 +197,7 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    debugImplementation(libs.compose.ui.test.manifest)
     kover(projects.core.appearance)
     kover(projects.core.navigation)
     kover(projects.core.notifications)

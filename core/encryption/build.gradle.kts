@@ -34,7 +34,9 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.compilations.getByName("main") {
             cinterops {
-                val security by creating {}
+                val security by creating {
+                    packageName("core.encryption")
+                }
             }
         }
     }
