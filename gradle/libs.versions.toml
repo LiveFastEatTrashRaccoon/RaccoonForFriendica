@@ -44,7 +44,7 @@ sentry = "0.19.0"
 spotless = "7.2.1"
 stately = "2.1.0"
 turbine = "1.2.1"
-unifiedpush-connector = "3.0.10"
+unifiedpush-connector = "3.1.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
