@@ -22,4 +22,9 @@ internal actual val nativePreferencesModule =
                 )
             }
         }
+        bind<EncryptionHelper> {
+            singleton {
+                DefaultEncryptionHelper()
+            }
+        }
     }
