@@ -20,7 +20,6 @@ compose-plugin = "1.9.0"
 compose-ui-test = "1.9.1"
 connectivity = "2.3.0"
 compose-multiplatform-media-player = "1.0.47"
-cryptography = "0.5.0"
 espresso = "3.7.0"
 junit = "4.13.2"
 kodein = "7.28.0"
@@ -75,9 +74,6 @@ compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", ve
 
 connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
 connectivity-device = { module = "dev.jordond.connectivity:connectivity-device", version.ref = "connectivity" }
-
-cryptography-core = { group = "dev.whyoleg.cryptography", name = "cryptography-core", version.ref = "cryptography" }
-cryptography-provider-optimal = { group = "dev.whyoleg.cryptography", name = "cryptography-provider-optimal", version.ref = "cryptography" }
 
 espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
