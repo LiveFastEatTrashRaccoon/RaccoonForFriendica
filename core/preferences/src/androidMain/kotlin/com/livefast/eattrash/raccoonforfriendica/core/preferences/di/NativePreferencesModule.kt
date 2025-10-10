@@ -10,9 +10,14 @@ import org.kodein.di.singleton
 
 internal actual val nativePreferencesModule =
     DI.Module("NativePreferencesModule") {
-        bind<SharedPreferencesProvider> {
+        bind<SharedPreferencesProvider>(tag = "default") {
             singleton {
-                SharedPreferencesProvider(context = instance())
+                DefaultSharedPreferencesProvider(context = instance())
+            }
+        }
+        bind<SharedPreferencesProvider>(tag = "legacy") {
+            singleton {
+                LegacySharedPreferencesProvider(context = instance())
             }
         }
         bind<SettingsProvider> {
