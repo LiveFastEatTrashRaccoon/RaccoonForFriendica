@@ -12,7 +12,7 @@ class SentryDsnPlugin : Plugin<Project> {
         with(target) {
             val codeGenerator =
                 project.tasks
-                    .create("generateSentryConfig", GenerateSentryConfigTask::class.java)
+                    .register("generateSentryConfig", GenerateSentryConfigTask::class.java)
                     .apply {
                         group = "generation"
                         description = "Generate Sentry configuration file"

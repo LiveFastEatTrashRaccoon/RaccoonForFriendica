@@ -18,7 +18,7 @@ calf = "0.8.0"
 coil = "3.3.0"
 compose-colorpicker = "1.1.2"
 compose-plugin = "1.9.1"
-compose-ui-test = "1.9.1"
+compose-ui-test = "1.9.3"
 connectivity = "2.3.0"
 compose-multiplatform-media-player = "1.0.47"
 espresso = "3.7.0"
@@ -71,7 +71,7 @@ compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", vers
 
 compose-multiplatform-media-player = { module = "network.chaintech:compose-multiplatform-media-player", version.ref = "compose-multiplatform-media-player" }
 compose-gradlePlugin = { module = "org.jetbrains.compose:org.jetbrains.compose.gradle.plugin", version.ref = "compose-plugin" }
-compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler" }
+compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-plugin"  }
 compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "compose-ui-test" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-ui-test" }
 
