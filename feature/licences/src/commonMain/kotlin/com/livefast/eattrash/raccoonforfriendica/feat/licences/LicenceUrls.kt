@@ -21,5 +21,4 @@ internal object LicenceUrls {
     const val SETTINGS = "https://github.com/russhwolf/multiplatform-settings/blob/main/LICENSE.txt"
     const val SENTRY = "https://github.com/getsentry/sentry-kotlin-multiplatform/blob/main/LICENSE"
     const val UNIFIED_PUSH = "https://github.com/UnifiedPush/android-connector/blob/main/LICENSE"
-    const val VOYAGER = "https://github.com/adrielcafe/voyager/blob/main/LICENSE.md"
 }
