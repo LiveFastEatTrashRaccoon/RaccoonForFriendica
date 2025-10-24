@@ -228,14 +228,12 @@ For the main app:
 - [Kodein](https://github.com/kosi-libs/Kodein) for dependency injection;
 - [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing;
 - [Ktor](https://ktor.io/) for networking;
-- [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings) for encrypted shared
-  preferences;
+- [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings) for preference storage;
 - [MaterialKolor](https://github.com/jordond/MaterialKolor) for custom theme generation;
 - [Moko-Permissions](https://github.com/icerockdev/moko-permissions) for runtime permission management;
 - [Room](https://developer.android.com/kotlin/multiplatform/room) for local persistence;
 - [Sentry](https://sentry.io) for crash reporting and user feedback collection;
 - [UnifiedPush](https://unifiedpush.org) for push notifications;
-- [Voyager](https://voyager.adriel.cafe/) for navigation;
 
 For QA:
 
