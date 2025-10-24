@@ -186,16 +186,6 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                             """.trimIndent(),
                             url = LicenceUrls.UNIFIED_PUSH,
                         )
-                    this +=
-                        LicenceItem(
-                            type = LicenceItemType.Library,
-                            title = "Voyager",
-                            subtitle = """
-                                    A multiplatform navigation library built for, and seamlessly integrated with,
-                                    Jetpack Compose
-                            """.trimIndent(),
-                            url = LicenceUrls.VOYAGER,
-                        )
                 },
             )
         }
