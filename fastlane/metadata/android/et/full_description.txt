@@ -1,0 +1,40 @@
+Raccoon on sotsiaalmeediarakendus, mis on loodud tooma Friendica ja Mastodoni sinuni täiesti uuel viisil.
+
+Põhifunktsionaalsus:
+• „sirvimisrežiim“: avasta Födiversumit ilma kasutajakontot loomata
+• mitme ajajoone vaatamine (kohalik, Födiversumis, jälgitavad, kohandatud loendid)
+• tavaline sisuvaade (postituste ajajoone vertikaalne kerimine)
+• lihtsustatud sisuvaade (postituste vahel horisontaalne libistamine)
+• pikkade postituse, vorminduse, pealkirjade ja spoilerite tugi
+• vorminduse tööriistariba ja sõnumi eelvaade
+• nutikas sisukorjelduste (alt-teksti) lisamine manustele
+• intuitiivne teemavaade ActivityPubi gruppides (Friendica, Lemmy, Gup.pe)
+• postituse üksikasjade vaatamine
+• otsesõnumid
+• multimeediagalerii
+• suhtlusringide ja loendite haldamine
+• ajaveebi RSS-voogude sotsiaalne vaade
+• lõimitud sündmuste kalender
+• kasutajaliidese kohandamine (värvid, kirjatüübi suurus, postituse pikkus, „häirimatu“ režiim jne)
+• kavandite salvestamine või postituste ajastamine
+• mitme kasutajakonto tugi
+• avastamine „külalisrežiimis“: teiste serverite avalike ajajoonte vaatamine
+• seadete import ja eksport
+• 100% ühilduvus Mastodoni ja Mastodon Glitch-Soc versiooniga (pikad ja vormindatud postitused)
+
+Friendica on Födiversumisse lõimitud suhtlusvõrk, mis sarnaneb Mastodoni ja Pixelfediga,
+ning on samuti ühilduv Bluesky ja Tumblri platvormidega.
+
+Raccooni eesmärk on muuta Friendica kasutamine lihtsamaks ning koondada selle veebiliidese funktsioonid
+intuitiivsesse ja kergesse vaatesse.
+
+Lisafunktsionaalsus:
+• trendikate postituste, teemaviidete ja jälgimissoovituste vaatamine
+• jälgimistaotluste haldamine
+• postituste ja kasutajate raporteerimine moderaatoritele
+• kasutajate summutamine/blokeerimine, kohandatud kiirusepiirangute seadistamine ja terminite välistamine ajajoonelt
+• küsitlused (Friendicas ainult lugemisõigustes)
+• profiili muutmine
+• oma postituste muutmine ja kustutamine
+• postituste tõlkimine sinu keelde
+• ja loomulikult palju muud!
