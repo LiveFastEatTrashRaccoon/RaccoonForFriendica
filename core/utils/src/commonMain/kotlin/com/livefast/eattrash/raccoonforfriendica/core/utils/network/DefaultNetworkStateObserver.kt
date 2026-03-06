@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 internal class DefaultNetworkStateObserver(
-    private val connectivity: Connectivity = Connectivity(),
+    private val connectivity: Connectivity,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : NetworkStateObserver {
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)

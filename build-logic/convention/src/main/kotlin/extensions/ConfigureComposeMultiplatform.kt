@@ -20,5 +20,10 @@ internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatfor
                     implementation(libs.findLibrary("compose-ui-backhandler").dependency)
                 }
             }
+            jvmMain {
+                dependencies {
+                    implementation(composeDeps.desktop.currentOs)
+                }
+            }
         }
     }

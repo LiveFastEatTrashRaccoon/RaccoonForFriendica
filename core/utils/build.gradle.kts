@@ -13,10 +13,8 @@ kotlin {
                 implementation(libs.coil)
                 implementation(libs.coil.network.ktor)
                 implementation(libs.connectivity.core)
-                implementation(libs.connectivity.device)
                 implementation(libs.kodein)
                 implementation(libs.ktor.cio)
-                implementation(libs.sentry)
 
                 implementation(projects.core.di)
                 implementation(projects.core.l10n)
@@ -25,16 +23,25 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation(libs.androidx.activity.compose)
                 implementation(libs.androidx.activity)
+                implementation(libs.androidx.activity.compose)
                 implementation(libs.androidx.browser)
-                implementation(libs.ktor.android)
                 implementation(libs.coil.gif)
+                implementation(libs.connectivity.device)
+                implementation(libs.ktor.android)
+                implementation(libs.moko.permissions)
+                implementation(libs.moko.permissions.compose)
+                implementation(libs.moko.permissions.notifications)
+                implementation(libs.sentry)
             }
         }
         val iosMain by getting {
             dependencies {
+                implementation(libs.connectivity.device)
                 implementation(libs.ktor.darwin)
+                implementation(libs.moko.permissions)
+                implementation(libs.moko.permissions.compose)
+                implementation(libs.moko.permissions.notifications)
             }
         }
     }
