@@ -20,6 +20,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconManag
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.DeniedAlwaysException
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.DeniedException
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionControllerWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionState
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionType
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.RequestCanceledException
 import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
@@ -40,13 +46,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ImportS
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
-import dev.icerock.moko.permissions.DeniedAlwaysException
-import dev.icerock.moko.permissions.DeniedException
-import dev.icerock.moko.permissions.Permission
-import dev.icerock.moko.permissions.PermissionState
-import dev.icerock.moko.permissions.PermissionsController
-import dev.icerock.moko.permissions.RequestCanceledException
-import dev.icerock.moko.permissions.notifications.REMOTE_NOTIFICATION
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -68,7 +67,7 @@ class SettingsViewModel(
     private val fileSystemManager: FileSystemManager,
     private val importSettings: ImportSettingsUseCase,
     private val exportSettings: ExportSettingsUseCase,
-    private val permissionController: PermissionsController,
+    private val permissionController: PermissionControllerWrapper,
     private val barColorProvider: BarColorProvider,
     private val customTabsHelper: CustomTabsHelper,
 ) : ViewModel(),
@@ -83,7 +82,7 @@ class SettingsViewModel(
             val pushDistributors = pushNotificationManager.getAvailableDistributors()
             val supportsDynamicColors = colorSchemeProvider.supportsDynamicColors
             val pushNotificationPermissionState =
-                permissionController.getPermissionState(Permission.REMOTE_NOTIFICATION)
+                permissionController.getPermissionState(PermissionType.PushNotification)
             val supportsCustomTabs = customTabsHelper.isSupported
             updateState {
                 it.copy(
@@ -527,7 +526,7 @@ class SettingsViewModel(
             else -> {
                 val newState =
                     try {
-                        permissionController.providePermission(Permission.REMOTE_NOTIFICATION)
+                        permissionController.providePermission(PermissionType.PushNotification)
                         PermissionState.Granted
                     } catch (_: DeniedAlwaysException) {
                         PermissionState.DeniedAlways

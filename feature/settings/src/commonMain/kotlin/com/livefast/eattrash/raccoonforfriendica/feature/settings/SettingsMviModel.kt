@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScal
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionState
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadingMode
@@ -17,7 +18,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
-import dev.icerock.moko.permissions.PermissionState
 import kotlin.time.Duration
 
 @Stable

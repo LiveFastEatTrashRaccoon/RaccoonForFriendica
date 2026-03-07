@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.DefaultIma
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.DefaultImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.network.ConnectivityProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.DefaultNetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import org.kodein.di.DI
@@ -22,6 +23,7 @@ val utilsModule =
             nativeAppInfoModule,
             nativeCalendarModule,
             nativeClipboardModule,
+            nativeConnectivityModule,
             nativeDebugModule,
             nativeFileSystemModule,
             nativeGalleryModule,
@@ -62,7 +64,8 @@ val utilsModule =
 
         bind<NetworkStateObserver> {
             singleton {
-                DefaultNetworkStateObserver()
+                val connectivityProvider = instance<ConnectivityProvider>()
+                DefaultNetworkStateObserver(connectivityProvider.provide())
             }
         }
     }

@@ -3,13 +3,13 @@ package com.livefast.eattrash.raccoonforfriendica.feature.settings.di
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.ViewModelCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModelWithArgs
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionControllerWrapper
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback.UserFeedbackViewModel
-import dev.icerock.moko.permissions.PermissionsController
 import org.kodein.di.DI
 import org.kodein.di.instance
 
-data class SettingsViewModelArgs(val controller: PermissionsController) : ViewModelCreationArgs
+data class SettingsViewModelArgs(val controller: PermissionControllerWrapper) : ViewModelCreationArgs
 
 val settingsModule =
     DI.Module("SettingsModule") {
