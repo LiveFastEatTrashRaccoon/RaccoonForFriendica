@@ -9,9 +9,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kodein)
-                implementation(libs.moko.permissions)
-                implementation(libs.moko.permissions.compose)
-                implementation(libs.moko.permissions.notifications)
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.architecture)

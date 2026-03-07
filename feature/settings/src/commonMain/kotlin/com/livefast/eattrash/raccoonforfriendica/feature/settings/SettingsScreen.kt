@@ -76,6 +76,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVaria
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.getFileSystemManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionControllerWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionControllerWrapperBindEffect
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionState
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionsControllerWrapperFactory
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.rememberPermissionsControllerWrapperFactory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadingMode
@@ -84,11 +89,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadable
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.SettingsViewModelArgs
-import dev.icerock.moko.permissions.PermissionState
-import dev.icerock.moko.permissions.PermissionsController
-import dev.icerock.moko.permissions.compose.BindEffect
-import dev.icerock.moko.permissions.compose.PermissionsControllerFactory
-import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -98,10 +98,10 @@ import kotlin.time.Duration.Companion.minutes
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier) {
-    val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
-    val controller: PermissionsController =
+    val factory: PermissionsControllerWrapperFactory = rememberPermissionsControllerWrapperFactory()
+    val controller: PermissionControllerWrapper =
         remember(factory) {
-            factory.createPermissionsController()
+            factory.create()
         }
     val model: SettingsMviModel = getViewModel<SettingsViewModel>(arg = SettingsViewModelArgs(controller))
     val uiState by model.uiState.collectAsState()
@@ -138,7 +138,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     var timelineLayoutBottomSheetOpened by remember { mutableStateOf(false) }
     var replyDepthBottoSheepOpened by remember { mutableStateOf(false) }
 
-    BindEffect(permissionsController = controller)
+    PermissionControllerWrapperBindEffect(controller = controller)
     LaunchedEffect(model) {
         model.effects
             .onEach { evt ->
