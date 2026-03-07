@@ -33,4 +33,6 @@ internal fun Project.configureKotlinMultiplatform(extension: KotlinMultiplatform
                 isStatic = true
             }
         }
+
+        jvm()
     }

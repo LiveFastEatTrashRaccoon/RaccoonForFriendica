@@ -32,6 +32,8 @@ kotlin {
         }
     }
 
+    jvm()
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -140,8 +142,8 @@ android {
             libs.versions.android.targetSdk
                 .get()
                 .toInt()
-        versionCode = 101
-        versionName = "0.4.3-beta11"
+        versionCode = (rootProject.properties["buildNumber"] as? String)?.toInt()
+        versionName = rootProject.properties["versionName"] as? String
     }
     base.archivesName = "RaccoonForFriendica"
     packaging {
