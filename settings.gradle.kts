@@ -26,6 +26,8 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        // for compose-multiplatform-media-player -> compose-webview-multiplatform -> kcef -> jcef -> jogl-all
+        maven("https://jogamp.org/deployment/maven")
     }
 }
 
