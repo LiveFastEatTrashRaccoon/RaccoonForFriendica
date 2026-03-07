@@ -9,12 +9,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class DefaultCrashReportManager(private val keyStore: TemporaryKeyStore) : CrashReportManager {
     private val _enabled = MutableStateFlow(false)
-    override val enabled: StateFlow<Boolean> = _enabled
+    override val enabled: StateFlow<Boolean> = _enabled.asStateFlow()
     private val _restartRequired = MutableStateFlow(false)
     override val restartRequired: StateFlow<Boolean> = _restartRequired
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)

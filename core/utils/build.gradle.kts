@@ -6,6 +6,20 @@ plugins {
     id("com.livefast.eattrash.spotless")
 }
 
+// generate a properties file so the JVM can read the version at runtime
+val generateVersionProperties by tasks.registering {
+    val versionName = rootProject.findProperty("versionName")?.toString() ?: "0.0.1"
+    val outputDir = layout.buildDirectory.dir("generated/app-info")
+    val outputFile = outputDir.map { it.file("version.properties") }
+    inputs.property("version", versionName)
+    outputs.dir(outputDir)
+    doLast {
+        val file = outputFile.get().asFile
+        file.parentFile.mkdirs()
+        file.writeText("version=$versionName")
+    }
+}
+
 kotlin {
     sourceSets {
         val commonMain by getting {
@@ -13,7 +27,6 @@ kotlin {
                 implementation(libs.coil)
                 implementation(libs.coil.network.ktor)
                 implementation(libs.connectivity.core)
-                implementation(libs.connectivity.device)
                 implementation(libs.kodein)
                 implementation(libs.ktor.cio)
                 implementation(libs.sentry)
@@ -25,17 +38,28 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation(libs.androidx.activity.compose)
                 implementation(libs.androidx.activity)
+                implementation(libs.androidx.activity.compose)
                 implementation(libs.androidx.browser)
-                implementation(libs.ktor.android)
                 implementation(libs.coil.gif)
+                implementation(libs.connectivity.device)
+                implementation(libs.ktor.android)
+                implementation(libs.moko.permissions)
+                implementation(libs.moko.permissions.compose)
+                implementation(libs.moko.permissions.notifications)
             }
         }
         val iosMain by getting {
             dependencies {
+                implementation(libs.connectivity.device)
                 implementation(libs.ktor.darwin)
+                implementation(libs.moko.permissions)
+                implementation(libs.moko.permissions.compose)
+                implementation(libs.moko.permissions.notifications)
             }
+        }
+        val jvmMain by getting {
+            resources.srcDir(generateVersionProperties)
         }
     }
 }

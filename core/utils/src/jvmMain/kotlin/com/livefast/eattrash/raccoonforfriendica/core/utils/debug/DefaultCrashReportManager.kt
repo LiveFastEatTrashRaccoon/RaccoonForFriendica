@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.debug
 
 import com.livefast.eattrash.raccoonforfriendica.SentryConfigurationValues
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
-import io.sentry.kotlin.multiplatform.Sentry
-import io.sentry.kotlin.multiplatform.protocol.UserFeedback
+import io.sentry.Sentry
+import io.sentry.UserFeedback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -14,10 +14,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class DefaultCrashReportManager(private val keyStore: TemporaryKeyStore) : CrashReportManager {
+
     private val _enabled = MutableStateFlow(false)
     override val enabled: StateFlow<Boolean> = _enabled.asStateFlow()
+
     private val _restartRequired = MutableStateFlow(false)
-    override val restartRequired: StateFlow<Boolean> = _restartRequired
+    override val restartRequired: StateFlow<Boolean> = _restartRequired.asStateFlow()
+
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     init {
@@ -58,7 +61,11 @@ internal class DefaultCrashReportManager(private val keyStore: TemporaryKeyStore
         }
     }
 
-    override fun collectUserFeedback(tag: CrashReportTag, comment: String, email: String?) {
+    override fun collectUserFeedback(
+        tag: CrashReportTag,
+        comment: String,
+        email: String?,
+    ) {
         check(enabled.value) { return }
         val eventId = Sentry.captureMessage(tag.toMessageTag())
         val feedback =
