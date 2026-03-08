@@ -1,6 +1,7 @@
 package extensions
 
 import org.gradle.api.Project
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.kotlin.dsl.create
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -8,6 +9,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 interface CustomKotlinMultiplatformExtension {
     val baseName: Property<String>
+    val iOSCustomLinkerOptions: ListProperty<String>
 }
 
 internal fun Project.configureKotlinMultiplatform(extension: KotlinMultiplatformExtension) =
@@ -31,6 +33,10 @@ internal fun Project.configureKotlinMultiplatform(extension: KotlinMultiplatform
             it.binaries.framework {
                 baseName = customExtension.baseName.orNull ?: moduleName
                 isStatic = true
+                val customOptions = customExtension.iOSCustomLinkerOptions.orNull ?: emptyList()
+                for (option in customOptions) {
+                    linkerOpts.add(option)
+                }
             }
         }
 

@@ -1,5 +1,5 @@
 import SwiftUI
-import ComposeApp
+import shared
 import os
 
 @main
@@ -22,7 +22,7 @@ struct iOSApp: App {
             }
         }
     }
-    
+
     private let logger = Logger()
 
     private func handleIncomingUrl(_ url: URL) {
@@ -37,7 +37,7 @@ struct iOSApp: App {
             print("Unknown host")
             return
         }
-        
+
         Task {
             let authManager = DiHelperKt.provideAuthManager()
             do {
