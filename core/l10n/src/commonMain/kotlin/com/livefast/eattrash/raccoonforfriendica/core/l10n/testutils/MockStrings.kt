@@ -940,7 +940,7 @@ class MockStrings : Strings {
     override fun unreadMessages(count: Int): String = retrieve("unreadMessages")
 
     @Composable
-    override fun translatedFrom(sourceLang: String): String = retrieve("translatedFrom")
+    override fun translatedFrom(lang: String): String = retrieve("translatedFrom")
 
     @Composable
     override fun translatedUsing(provider: String): String = retrieve("translatedUsing")

@@ -101,8 +101,6 @@ fun CustomImage(
             is AsyncImagePainter.State.Success -> {
                 onSuccess?.invoke(this)
             }
-
-            else -> Unit
         }
     }
 }

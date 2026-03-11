@@ -246,10 +246,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                         }
                     }
 
-                    val rules =
-                        state.info
-                            ?.rules
-                            .orEmpty()
+                    val rules = state.info.rules
                     if (rules.isNotEmpty()) {
                         item {
                             SettingsHeader(
@@ -279,7 +276,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                         SettingsRow(
                             title = LocalStrings.current.settingsAboutAppVersion,
                             value =
-                            state.info?.version
+                            state.info.version
                                 ?: LocalStrings.current.shortUnavailable,
                         )
                     }

@@ -230,7 +230,6 @@ private val NotificationType.channelIdSegment: String?
             NotificationType.Reblog -> "reblog"
             NotificationType.Unknown -> "unknown"
             NotificationType.Update -> "update"
-            else -> null
         }
 
 private fun NotificationType.getChannelId(account: AccountModel): String? = buildString {
