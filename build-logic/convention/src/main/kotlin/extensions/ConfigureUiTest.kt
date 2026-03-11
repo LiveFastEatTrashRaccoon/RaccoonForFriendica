@@ -1,12 +1,10 @@
 package extensions
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import org.gradle.api.Project
 import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import utils.dependency
 import utils.libs
 
@@ -15,6 +13,7 @@ internal fun Project.configureUiTest(extension: KotlinMultiplatformExtension) =
         val composeDeps = extensions.getByType(ComposePlugin.Dependencies::class.java)
         sourceSets.apply {
             androidUnitTest {
+                dependsOn(commonTest.get())
                 dependencies {
                     @OptIn(ExperimentalComposeLibrary::class)
                     implementation(composeDeps.uiTest)
@@ -23,17 +22,22 @@ internal fun Project.configureUiTest(extension: KotlinMultiplatformExtension) =
                     implementation(project(":core:testutils"))
                 }
             }
+            androidInstrumentedTest {
+                dependsOn(commonTest.get())
+                dependencies {
+                    implementation(kotlin("test"))
+                    implementation(libs.findLibrary("androidx-test-core").dependency)
+                    implementation(libs.findLibrary("androidx-test-runner").dependency)
+                    implementation(libs.findLibrary("androidx-test-junit").dependency)
+                    implementation(libs.findLibrary("androidx-test-junit-ktx").dependency)
+                    implementation(libs.findLibrary("espresso").dependency)
+                }
+            }
         }
-        androidTarget {
-            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-            instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-        }
-    }
 
-internal fun Project.configureUiTestAndroid(extension: LibraryExtension) =
-    extension.apply {
-        defaultConfig {
-            testOptions.unitTests.isIncludeAndroidResources = true
-            testInstrumentationRunner = "org.robolectric.RobolectricTestRunner"
+        targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
+            withDeviceTest {
+                instrumentationRunner = "org.robolectric.RobolectricTestRunner"
+            }
         }
     }

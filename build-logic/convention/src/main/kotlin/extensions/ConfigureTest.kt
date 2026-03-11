@@ -1,5 +1,6 @@
 package extensions
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import utils.dependency
@@ -16,9 +17,16 @@ internal fun Project.configureTest(extension: KotlinMultiplatformExtension) =
                 }
             }
             androidUnitTest {
+                dependsOn(commonTest.get())
                 dependencies {
                     implementation(project(":core:testutils"))
                 }
+            }
+        }
+
+        targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
+            withHostTest {
+                isIncludeAndroidResources = true
             }
         }
     }
