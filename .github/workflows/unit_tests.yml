@@ -51,13 +51,13 @@ jobs:
         run: ./gradlew testDebugUnitTest
 
       - name: Generate code coverage
-        run: ./gradlew :shared:koverXmlReportDebug
+        run: ./gradlew :shared:koverXmlReport
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: false
-          files: ./shared/build/reports/kover/reportDebug.xml
+          files: ./shared/build/reports/kover/report.xml
           flags: unittests
           name: raccoon4friendica
           token: ${{ secrets.CODECOV_TOKEN }}
