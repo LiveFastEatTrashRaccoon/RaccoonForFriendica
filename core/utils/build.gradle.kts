@@ -22,7 +22,7 @@ val generateVersionProperties by tasks.registering {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(libs.coil)
                 implementation(libs.coil.network.ktor)
@@ -36,7 +36,7 @@ kotlin {
                 implementation(projects.core.preferences)
             }
         }
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 implementation(libs.androidx.activity)
                 implementation(libs.androidx.activity.compose)
@@ -49,7 +49,7 @@ kotlin {
                 implementation(libs.moko.permissions.notifications)
             }
         }
-        val iosMain by getting {
+        iosMain {
             dependencies {
                 implementation(libs.connectivity.device)
                 implementation(libs.ktor.darwin)
@@ -58,7 +58,7 @@ kotlin {
                 implementation(libs.moko.permissions.notifications)
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             resources.srcDir(generateVersionProperties)
         }
     }

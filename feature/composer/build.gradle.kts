@@ -6,7 +6,7 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(libs.kodein)
 
@@ -29,7 +29,4 @@ kotlin {
             }
         }
     }
-}
-dependencies {
-    implementation(project(":domain:content:usecase"))
 }

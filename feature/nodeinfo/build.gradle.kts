@@ -8,7 +8,7 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(libs.kodein)
 
@@ -27,8 +27,4 @@ kotlin {
             }
         }
     }
-}
-
-dependencies {
-    debugImplementation(libs.compose.ui.test.manifest)
 }

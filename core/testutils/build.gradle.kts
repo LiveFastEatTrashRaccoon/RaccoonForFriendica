@@ -5,8 +5,7 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 implementation(kotlin("test-junit"))
                 implementation(libs.kodein)

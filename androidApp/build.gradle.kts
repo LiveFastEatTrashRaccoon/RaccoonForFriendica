@@ -79,7 +79,6 @@ android {
 }
 
 dependencies {
-    implementation(compose.preview)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.splashscreen)
     implementation(libs.kodein)
@@ -93,4 +92,8 @@ dependencies {
     implementation(projects.core.resources)
     implementation(projects.domain.content.repository)
     implementation(projects.domain.identity.repository)
+
+    debugImplementation(compose.uiTooling)
+    debugImplementation(compose.preview)
+    debugImplementation(libs.compose.ui.test.manifest)
 }
