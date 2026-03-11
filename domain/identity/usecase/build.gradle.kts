@@ -8,12 +8,12 @@ plugins {
 
 kotlin {
     sourceSets {
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 implementation(libs.androidx.work.runtime)
             }
         }
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(libs.kodein)
                 implementation(libs.kotlinx.coroutines)

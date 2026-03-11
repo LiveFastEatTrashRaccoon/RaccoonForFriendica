@@ -6,7 +6,7 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(libs.ksoup.html)
                 implementation(libs.ksoup.entities)

@@ -114,11 +114,11 @@ fun ContentHeader(
                             LinkAnnotation.Clickable(
                                 tag = "user-handle",
                                 linkInteractionListener = {
-                                    user?.also { onOpenUser?.invoke(it) }
+                                    onOpenUser?.invoke(user)
                                 },
                             ),
                         )
-                        append(user?.handle?.ellipsize(30))
+                        append(user.handle?.ellipsize(30))
                         pop()
                     }
                     if (!scheduleDate.isNullOrBlank()) {

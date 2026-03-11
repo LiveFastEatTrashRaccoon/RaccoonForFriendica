@@ -7,7 +7,7 @@ plugins {
 
 kotlin {
     sourceSets {
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 implementation(
                     libs.unifiedpush.connector
@@ -18,7 +18,7 @@ kotlin {
                 }
             }
         }
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(libs.kodein)
                 implementation(libs.ktor.client.core)

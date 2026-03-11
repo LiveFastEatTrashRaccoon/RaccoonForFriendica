@@ -1,8 +1,6 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
     id("com.livefast.eattrash.spotless")
@@ -65,6 +63,7 @@ android {
     }
     buildFeatures {
         compose = true
+        resValues = true
     }
     splits {
         abi {
@@ -79,14 +78,7 @@ android {
     }
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_11)
-    }
-}
-
 dependencies {
-    implementation(compose.preview)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.splashscreen)
     implementation(libs.kodein)
@@ -100,4 +92,8 @@ dependencies {
     implementation(projects.core.resources)
     implementation(projects.domain.content.repository)
     implementation(projects.domain.identity.repository)
+
+    debugImplementation(compose.uiTooling)
+    debugImplementation(compose.preview)
+    debugImplementation(libs.compose.ui.test.manifest)
 }

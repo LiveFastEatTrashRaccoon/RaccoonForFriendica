@@ -7,7 +7,7 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(libs.kodein)
                 implementation(libs.kotlinx.coroutines)
@@ -19,7 +19,7 @@ kotlin {
                 implementation(projects.core.utils)
             }
         }
-        val iosMain by getting {
+        iosMain {
             kotlin.srcDir("build/generated/ksp/metadata")
         }
     }
