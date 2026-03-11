@@ -1,8 +1,6 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
     id("com.livefast.eattrash.spotless")
@@ -65,6 +63,7 @@ android {
     }
     buildFeatures {
         compose = true
+        resValues = true
     }
     splits {
         abi {
@@ -76,12 +75,6 @@ android {
     }
     dependenciesInfo {
         includeInApk = false
-    }
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
