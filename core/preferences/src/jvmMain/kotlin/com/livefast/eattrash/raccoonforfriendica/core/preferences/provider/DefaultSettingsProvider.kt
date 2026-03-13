@@ -1,10 +1,15 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences.provider
 
-import com.russhwolf.settings.PreferencesSettings
+import com.livefast.eattrash.raccoonforfriendica.core.preferences.encryption.EncryptionHelper
 import com.russhwolf.settings.Settings
-import java.util.prefs.Preferences
 
-internal class DefaultSettingsProvider : SettingsProvider {
+internal class DefaultSettingsProvider(
+    private val provider: PreferencesProvider,
+    private val encryptionHelper: EncryptionHelper,
+) : SettingsProvider {
 
-    override fun provide(): Settings = PreferencesSettings(Preferences.userRoot())
+    override fun provide(): Settings = EncryptingPreferencesSettings(
+        preferences = provider.provide(),
+        encryptionHelper = encryptionHelper,
+    )
 }
