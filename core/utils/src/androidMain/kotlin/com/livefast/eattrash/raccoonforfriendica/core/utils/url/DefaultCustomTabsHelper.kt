@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.net.toUri
 
 internal class DefaultCustomTabsHelper(private val context: Context) : CustomTabsHelper {
     private val packageName: String?
@@ -15,7 +16,7 @@ internal class DefaultCustomTabsHelper(private val context: Context) : CustomTab
     }
 
     override fun handle(url: String) {
-        val uri = Uri.parse(url)
+        val uri = url.toUri()
         CustomTabsIntent
             .Builder()
             .apply {
