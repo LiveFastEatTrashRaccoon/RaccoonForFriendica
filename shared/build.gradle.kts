@@ -92,6 +92,12 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
             }
         }
+        jvmMain {
+            dependencies {
+                implementation(libs.ktor.server.core)
+                implementation(libs.ktor.server.cio)
+            }
+        }
     }
 }
 
