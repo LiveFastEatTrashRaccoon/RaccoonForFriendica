@@ -12,13 +12,27 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 import io.ktor.http.path
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration.Companion.minutes
 
 class DefaultAuthManager(
     private val navigationCoordinator: NavigationCoordinator,
     private val credentialsRepository: CredentialsRepository,
     private val keyStore: TemporaryKeyStore,
+    private val redirectServer: RedirectServer,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : AuthManager {
+
+    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
+    private var localServerPort: Int? = null
+
     override val credentialFlow = MutableSharedFlow<ApiCredentials>()
 
     override fun openLogin(type: LoginType) {
@@ -34,21 +48,42 @@ class DefaultAuthManager(
     }
 
     override suspend fun startOAuthFlow(node: String): String {
+        if (redirectServer.isLocalServerRequired) {
+            localServerPort = redirectServer.start()
+        }
+
         val app =
             credentialsRepository.createApplication(
                 node = node,
                 clientName = CLIENT_NAME,
                 website = WEBSITE,
                 scopes = SCOPES,
-                redirectUri = REDIRECT_URI,
+                redirectUri = getRedirectUri(),
             )
-        checkNotNull(app) { "Unable to create remote application" }
-        val clientId = app.clientId
-        val clientSecret = app.clientSecret
-        check(!clientId.isNullOrEmpty()) { "Invalid client ID" }
-        check(!clientSecret.isNullOrEmpty()) { "Invalid client secret" }
+        val clientId = app?.clientId
+        val clientSecret = app?.clientSecret
+        val validData = !clientId.isNullOrEmpty() && !clientSecret.isNullOrEmpty()
+        if (!validData) {
+            redirectServer.stop()
+            localServerPort = null
+        }
+        check(validData) { "Unable to create remote application" }
 
         storeInitialData(node = node, clientId = clientId, clientSecret = clientSecret)
+
+        if (redirectServer.isLocalServerRequired) {
+            scope.launch {
+                try {
+                    withTimeout(5.minutes) {
+                        val code = redirectServer.waitForCode()
+                        doExchangeToken(code)
+                    }
+                } finally {
+                    redirectServer.stop()
+                    localServerPort = null
+                }
+            }
+        }
 
         val res =
             URLBuilder()
@@ -60,7 +95,7 @@ class DefaultAuthManager(
                         append("response_type", RESPONSE_TYPE)
                         append("client_id", clientId)
                         append("client_secret", clientSecret)
-                        append("redirect_uri", REDIRECT_URI)
+                        append("redirect_uri", getRedirectUri())
                         append("scope", SCOPES)
                     }
                 }.buildString()
@@ -70,6 +105,25 @@ class DefaultAuthManager(
     override suspend fun performTokenExchange(url: String) {
         val queryParams = Url(url).parameters
         val code = queryParams["code"].orEmpty()
+        doExchangeToken(code)
+    }
+
+    private fun getRedirectUri(): String {
+        return if (!redirectServer.isLocalServerRequired) {
+            "$REDIRECT_SCHEME://$REDIRECT_HOST"
+        } else {
+            buildString {
+                append("http://localhost")
+                val port = localServerPort
+                if (port != null) {
+                    append(":")
+                    append(port)
+                }
+            }
+        }
+    }
+
+    private suspend fun doExchangeToken(code: String) {
         val node = retrieveNode()
         val clientId = retrieveClientId()
         val clientSecret = retrieveClientSecret()
@@ -84,7 +138,7 @@ class DefaultAuthManager(
                 path = TOKEN_ENDPOINT,
                 clientId = clientId,
                 clientSecret = clientSecret,
-                redirectUri = REDIRECT_URI,
+                redirectUri = getRedirectUri(),
                 grantType = GRANT_TYPE_ACCESS_TOKEN,
                 code = code,
             )
@@ -135,7 +189,6 @@ class DefaultAuthManager(
         private const val SCOPES = "read write follow push"
         const val REDIRECT_SCHEME = "raccoonforfriendica"
         const val REDIRECT_HOST = "auth"
-        private const val REDIRECT_URI = "$REDIRECT_SCHEME://$REDIRECT_HOST"
         private const val GRANT_TYPE_ACCESS_TOKEN = "authorization_code"
         private const val GRANT_TYPE_REFRESH_TOKEN = "refresh_token"
         private const val KEY_CLIENT_ID = "lastAuthClientId"

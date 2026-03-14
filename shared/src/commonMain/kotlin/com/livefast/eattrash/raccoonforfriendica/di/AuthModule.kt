@@ -9,12 +9,15 @@ import org.kodein.di.singleton
 
 internal val authModule =
     DI.Module("AuthModule") {
+        import(nativeAuthModule)
+
         bind<AuthManager> {
             singleton {
                 DefaultAuthManager(
                     navigationCoordinator = instance(),
                     credentialsRepository = instance(),
                     keyStore = instance(),
+                    redirectServer = instance(),
                 )
             }
         }

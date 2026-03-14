@@ -81,7 +81,9 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
         model.effects
             .onEach { event ->
                 when (event) {
-                    is LoginMviModel.Effect.OpenUrl -> uriHandler.openUri(event.url)
+                    is LoginMviModel.Effect.OpenUrl ->
+                        uriHandler.openUri(event.url)
+
                     is LoginMviModel.Effect.Failure ->
                         snackbarHostState.showSnackbar(message = event.message ?: genericError)
 
