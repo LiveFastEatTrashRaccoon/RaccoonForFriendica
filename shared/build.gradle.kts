@@ -1,3 +1,4 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
@@ -105,6 +106,29 @@ customKotlinMultiplatformExtension {
     baseName.set("shared")
     // Required when using NativeSQLiteDriver
     iOSCustomLinkerOptions.set(listOf("-lsqlite3"))
+}
+
+compose.desktop {
+    application {
+        mainClass = "com.livefast.eattrash.raccoonforfriendica.Main"
+        nativeDistributions {
+            javaHome = "/Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Home"
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "Raccoon"
+            packageVersion = (rootProject.properties["versionName"] as? String)?.substringBefore("-")
+            version = (rootProject.properties["buildNumber"] as? Int) ?: 1
+            includeAllModules = true
+            macOS {
+                iconFile.set(project.file("src/jvmMain/resources/icon.icns"))
+            }
+            windows {
+                iconFile.set(project.file("src/jvmMain/resources/icon.ico"))
+            }
+            linux {
+                iconFile.set(project.file("src/jvmMain/resources/icon.png"))
+            }
+        }
+    }
 }
 
 dependencies {
