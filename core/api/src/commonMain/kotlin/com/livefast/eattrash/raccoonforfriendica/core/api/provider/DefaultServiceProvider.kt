@@ -161,7 +161,7 @@ internal class DefaultServiceProvider(
                 }
 
                 HttpResponseValidator {
-                    handleResponseException { exception, _ ->
+                    handleResponseExceptionWithRequest { exception, _ ->
                         if (exception is ClientRequestException &&
                             exception.response.status == HttpStatusCode.Unauthorized
                         ) {
