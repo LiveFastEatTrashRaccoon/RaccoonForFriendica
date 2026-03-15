@@ -16,10 +16,12 @@ internal fun Project.configureTest(extension: KotlinMultiplatformExtension) =
                     implementation(libs.findLibrary("turbine").dependency)
                 }
             }
-            androidUnitTest {
-                dependsOn(commonTest.get())
-                dependencies {
-                    implementation(project(":core:testutils"))
+
+            configureEach {
+                if (name == "androidHostTest") {
+                    dependencies {
+                        implementation(project(":core:testutils"))
+                    }
                 }
             }
         }

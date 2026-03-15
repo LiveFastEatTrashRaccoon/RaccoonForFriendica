@@ -17,6 +17,7 @@ androidx-work = "2.11.1"
 calf = "0.9.0"
 coil = "3.4.0"
 compose-colorpicker = "1.1.3"
+compose-m3 = "1.9.0"
 compose-multiplatform-media-player = "1.0.53"
 compose-plugin = "1.10.2"
 compose-ui-test = "1.10.5"
@@ -70,10 +71,18 @@ coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coil" }
 compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", version.ref = "compose-colorpicker" }
 
 compose-multiplatform-media-player = { module = "network.chaintech:compose-multiplatform-media-player", version.ref = "compose-multiplatform-media-player" }
+
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-plugin" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-plugin" }
 compose-gradlePlugin = { module = "org.jetbrains.compose:org.jetbrains.compose.gradle.plugin", version.ref = "compose-plugin" }
-compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-plugin"  }
+compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "compose-plugin" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-m3" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-plugin" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-plugin" }
+compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-plugin" }
 compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "compose-ui-test" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-ui-test" }
+compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-plugin" }
 
 connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
 connectivity-device = { module = "dev.jordond.connectivity:connectivity-device", version.ref = "connectivity" }

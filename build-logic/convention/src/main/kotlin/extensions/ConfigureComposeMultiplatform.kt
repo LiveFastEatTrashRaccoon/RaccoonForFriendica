@@ -12,10 +12,9 @@ internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatfor
         sourceSets.apply {
             commonMain {
                 dependencies {
-                    implementation(composeDeps.runtime)
-                    implementation(composeDeps.foundation)
-                    implementation(composeDeps.material3)
-                    implementation(composeDeps.materialIconsExtended)
+                    implementation(libs.findLibrary("compose-runtime").dependency)
+                    implementation(libs.findLibrary("compose-foundation").dependency)
+                    implementation(libs.findLibrary("compose-material3").dependency)
                     implementation(libs.findLibrary("androidx-lifecycle-viewmodel-compose").dependency)
                     implementation(libs.findLibrary("compose-ui-backhandler").dependency)
                 }
