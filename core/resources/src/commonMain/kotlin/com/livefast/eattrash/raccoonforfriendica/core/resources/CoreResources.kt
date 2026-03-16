@@ -61,16 +61,16 @@ interface CoreResources {
     val barChart: ImageVector @Composable get
     val book: ImageVector @Composable get
     val bookmark: ImageVector @Composable get
-    val bookmarks: ImageVector @Composable get
+    val bookmarksFill: ImageVector @Composable get
     val bookmarkFill: ImageVector @Composable get
     val bugReport: ImageVector @Composable get
     val buildCircle: ImageVector @Composable get
-    val calendarMonth: ImageVector @Composable get
+    val calendarMonthFill: ImageVector @Composable get
     val camera: ImageVector @Composable get
     val campaign: ImageVector @Composable get
     val cancel: ImageVector @Composable get
     val changeCircle: ImageVector @Composable get
-    val chat: ImageVector @Composable get
+    val chatFill: ImageVector @Composable get
     val check: ImageVector @Composable get
     val chevronForward: ImageVector @Composable get
     val circle: ImageVector @Composable get
@@ -81,11 +81,11 @@ interface CoreResources {
     val darkMode: ImageVector @Composable get
     val darkModeFill: ImageVector @Composable get
     val dashboard: ImageVector @Composable get
+    val dnsFill: ImageVector @Composable get
     val doneAll: ImageVector @Composable get
     val download: ImageVector @Composable get
-    val drafts: ImageVector @Composable get
     val edit: ImageVector @Composable get
-    val explicit: ImageVector @Composable get
+    val explicitFill: ImageVector @Composable get
     val exploreFill: ImageVector @Composable get
     val favorite: ImageVector @Composable get
     val favoriteFill: ImageVector @Composable get
@@ -97,7 +97,7 @@ interface CoreResources {
     val flaky: ImageVector @Composable get
     val gavel: ImageVector @Composable get
     val group: ImageVector @Composable get
-    val handyman: ImageVector @Composable get
+    val handymanFill: ImageVector @Composable get
     val homeFill: ImageVector @Composable get
     val image: ImageVector @Composable get
     val inboxFill: ImageVector @Composable get
@@ -131,10 +131,11 @@ interface CoreResources {
     val share: ImageVector @Composable get
     val search: ImageVector @Composable get
     val send: ImageVector @Composable get
-    val settings: ImageVector @Composable get
+    val settingsFill: ImageVector @Composable get
     val shield: ImageVector @Composable get
     val strikethroughS: ImageVector @Composable get
-    val style: ImageVector @Composable get
+    val styleFill: ImageVector @Composable get
+    val stylusFountainPenFill: ImageVector @Composable get
     val support: ImageVector @Composable get
     val tag: ImageVector @Composable get
     val thumbDown: ImageVector @Composable get
@@ -147,6 +148,6 @@ interface CoreResources {
     val visibility: ImageVector @Composable get
     val visibilityOff: ImageVector @Composable get
     val volunteerActivism: ImageVector @Composable get
-    val workspaces: ImageVector @Composable get
+    val workspacesFill: ImageVector @Composable get
     // endregion
 }

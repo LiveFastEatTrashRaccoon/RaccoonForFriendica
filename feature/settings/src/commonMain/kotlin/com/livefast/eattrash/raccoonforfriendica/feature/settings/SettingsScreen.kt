@@ -200,7 +200,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     // General section
                     SettingsHeader(
                         title = LocalStrings.current.settingsHeaderGeneral,
-                        icon = coreResources.settings,
+                        icon = coreResources.settingsFill,
                     )
                     SettingsRow(
                         title = LocalStrings.current.settingsItemLanguage,
@@ -365,7 +365,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     // Look & feel section
                     SettingsHeader(
                         title = LocalStrings.current.settingsHeaderLookAndFeel,
-                        icon = coreResources.style,
+                        icon = coreResources.styleFill,
                     )
                     SettingsRow(
                         title = LocalStrings.current.settingsItemTimelineLayout,
@@ -449,7 +449,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
                     // NSFW section
                     SettingsHeader(
-                        icon = coreResources.explicit,
+                        icon = coreResources.explicitFill,
                         title = LocalStrings.current.settingsHeaderNsfw,
                     )
                     if (uiState.isLogged) {
@@ -498,7 +498,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     // Other section
                     if (uiState.supportSettingsImportExport) {
                         SettingsHeader(
-                            icon = coreResources.handyman,
+                            icon = coreResources.handymanFill,
                             title = LocalStrings.current.itemOther,
                         )
                         SettingsRow(

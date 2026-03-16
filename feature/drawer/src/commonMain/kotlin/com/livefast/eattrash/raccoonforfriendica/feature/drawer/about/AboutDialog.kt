@@ -144,7 +144,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 }
                 item {
                     AboutItem(
-                        icon = coreResources.chat,
+                        icon = coreResources.chatFill,
                         text = LocalStrings.current.settingsAboutMatrix,
                         textDecoration = TextDecoration.Underline,
                         onClick = {

@@ -36,15 +36,15 @@ import raccoonforfriendica.shared.generated.resources.bluesky_small
 import raccoonforfriendica.shared.generated.resources.book
 import raccoonforfriendica.shared.generated.resources.bookmark
 import raccoonforfriendica.shared.generated.resources.bookmark_fill
-import raccoonforfriendica.shared.generated.resources.bookmarks
+import raccoonforfriendica.shared.generated.resources.bookmarks_fill
 import raccoonforfriendica.shared.generated.resources.bug_report
 import raccoonforfriendica.shared.generated.resources.build_circle
-import raccoonforfriendica.shared.generated.resources.calendar_month
+import raccoonforfriendica.shared.generated.resources.calendar_month_fill
 import raccoonforfriendica.shared.generated.resources.camera
 import raccoonforfriendica.shared.generated.resources.campaign
 import raccoonforfriendica.shared.generated.resources.cancel
 import raccoonforfriendica.shared.generated.resources.change_circle
-import raccoonforfriendica.shared.generated.resources.chat
+import raccoonforfriendica.shared.generated.resources.chatFill
 import raccoonforfriendica.shared.generated.resources.check
 import raccoonforfriendica.shared.generated.resources.chevron_forward
 import raccoonforfriendica.shared.generated.resources.circle
@@ -55,15 +55,15 @@ import raccoonforfriendica.shared.generated.resources.cottage
 import raccoonforfriendica.shared.generated.resources.dark_mode
 import raccoonforfriendica.shared.generated.resources.dark_mode_fill
 import raccoonforfriendica.shared.generated.resources.diaspora_small
+import raccoonforfriendica.shared.generated.resources.dns_fill
 import raccoonforfriendica.shared.generated.resources.done_all
 import raccoonforfriendica.shared.generated.resources.download
-import raccoonforfriendica.shared.generated.resources.drafts
 import raccoonforfriendica.shared.generated.resources.edit
 import raccoonforfriendica.shared.generated.resources.exo_bold
 import raccoonforfriendica.shared.generated.resources.exo_italic
 import raccoonforfriendica.shared.generated.resources.exo_light
 import raccoonforfriendica.shared.generated.resources.exo_regular
-import raccoonforfriendica.shared.generated.resources.explicit
+import raccoonforfriendica.shared.generated.resources.explicit_fill
 import raccoonforfriendica.shared.generated.resources.explore_fill
 import raccoonforfriendica.shared.generated.resources.favorite
 import raccoonforfriendica.shared.generated.resources.favorite_fill
@@ -80,7 +80,7 @@ import raccoonforfriendica.shared.generated.resources.gavel
 import raccoonforfriendica.shared.generated.resources.gnusocial_small
 import raccoonforfriendica.shared.generated.resources.gotosocial_small
 import raccoonforfriendica.shared.generated.resources.group
-import raccoonforfriendica.shared.generated.resources.handyman
+import raccoonforfriendica.shared.generated.resources.handyman_fill
 import raccoonforfriendica.shared.generated.resources.home_fill
 import raccoonforfriendica.shared.generated.resources.ic_alt
 import raccoonforfriendica.shared.generated.resources.ic_default
@@ -127,11 +127,12 @@ import raccoonforfriendica.shared.generated.resources.schedule
 import raccoonforfriendica.shared.generated.resources.schedule_send
 import raccoonforfriendica.shared.generated.resources.search
 import raccoonforfriendica.shared.generated.resources.send
-import raccoonforfriendica.shared.generated.resources.settings
+import raccoonforfriendica.shared.generated.resources.settings_fill
 import raccoonforfriendica.shared.generated.resources.share
 import raccoonforfriendica.shared.generated.resources.shield
 import raccoonforfriendica.shared.generated.resources.strikethrough_s
-import raccoonforfriendica.shared.generated.resources.style
+import raccoonforfriendica.shared.generated.resources.style_fill
+import raccoonforfriendica.shared.generated.resources.stylus_fountain_pen_fill
 import raccoonforfriendica.shared.generated.resources.support
 import raccoonforfriendica.shared.generated.resources.tag
 import raccoonforfriendica.shared.generated.resources.thumb_down
@@ -145,7 +146,7 @@ import raccoonforfriendica.shared.generated.resources.visibility
 import raccoonforfriendica.shared.generated.resources.visibility_off
 import raccoonforfriendica.shared.generated.resources.volunteer_activism
 import raccoonforfriendica.shared.generated.resources.wordpress_small
-import raccoonforfriendica.shared.generated.resources.workspaces
+import raccoonforfriendica.shared.generated.resources.workspaces_fill
 
 internal class SharedResources : CoreResources {
     // region Fonts
@@ -295,8 +296,8 @@ internal class SharedResources : CoreResources {
     override val bookmark: ImageVector
         @Composable get() = vectorResource(Res.drawable.bookmark)
 
-    override val bookmarks: ImageVector
-        @Composable get() = vectorResource(Res.drawable.bookmarks)
+    override val bookmarksFill: ImageVector
+        @Composable get() = vectorResource(Res.drawable.bookmarks_fill)
 
     override val bookmarkFill: ImageVector
         @Composable get() = vectorResource(Res.drawable.bookmark_fill)
@@ -307,8 +308,8 @@ internal class SharedResources : CoreResources {
     override val buildCircle: ImageVector
         @Composable get() = vectorResource(Res.drawable.build_circle)
 
-    override val calendarMonth: ImageVector
-        @Composable get() = vectorResource(Res.drawable.calendar_month)
+    override val calendarMonthFill: ImageVector
+        @Composable get() = vectorResource(Res.drawable.calendar_month_fill)
 
     override val camera: ImageVector
         @Composable get() = vectorResource(Res.drawable.camera)
@@ -322,8 +323,8 @@ internal class SharedResources : CoreResources {
     override val changeCircle: ImageVector
         @Composable get() = vectorResource(Res.drawable.change_circle)
 
-    override val chat: ImageVector
-        @Composable get() = vectorResource(Res.drawable.chat)
+    override val chatFill: ImageVector
+        @Composable get() = vectorResource(Res.drawable.chatFill)
 
     override val check: ImageVector
         @Composable get() = vectorResource(Res.drawable.check)
@@ -355,20 +356,20 @@ internal class SharedResources : CoreResources {
     override val dashboard: ImageVector
         @Composable get() = vectorResource(Res.drawable.dark_mode_fill)
 
+    override val dnsFill: ImageVector
+        @Composable get() = vectorResource(Res.drawable.dns_fill)
+
     override val doneAll: ImageVector
         @Composable get() = vectorResource(Res.drawable.done_all)
 
     override val download: ImageVector
         @Composable get() = vectorResource(Res.drawable.download)
 
-    override val drafts: ImageVector
-        @Composable get() = vectorResource(Res.drawable.drafts)
-
     override val edit: ImageVector
         @Composable get() = vectorResource(Res.drawable.edit)
 
-    override val explicit: ImageVector
-        @Composable get() = vectorResource(Res.drawable.explicit)
+    override val explicitFill: ImageVector
+        @Composable get() = vectorResource(Res.drawable.explicit_fill)
 
     override val exploreFill: ImageVector
         @Composable get() = vectorResource(Res.drawable.explore_fill)
@@ -403,8 +404,8 @@ internal class SharedResources : CoreResources {
     override val group: ImageVector
         @Composable get() = vectorResource(Res.drawable.group)
 
-    override val handyman: ImageVector
-        @Composable get() = vectorResource(Res.drawable.handyman)
+    override val handymanFill: ImageVector
+        @Composable get() = vectorResource(Res.drawable.handyman_fill)
 
     override val homeFill: ImageVector
         @Composable get() = vectorResource(Res.drawable.home_fill)
@@ -505,8 +506,8 @@ internal class SharedResources : CoreResources {
     override val send: ImageVector
         @Composable get() = vectorResource(Res.drawable.send)
 
-    override val settings: ImageVector
-        @Composable get() = vectorResource(Res.drawable.settings)
+    override val settingsFill: ImageVector
+        @Composable get() = vectorResource(Res.drawable.settings_fill)
 
     override val shield: ImageVector
         @Composable get() = vectorResource(Res.drawable.shield)
@@ -514,8 +515,11 @@ internal class SharedResources : CoreResources {
     override val strikethroughS: ImageVector
         @Composable get() = vectorResource(Res.drawable.strikethrough_s)
 
-    override val style: ImageVector
-        @Composable get() = vectorResource(Res.drawable.style)
+    override val styleFill: ImageVector
+        @Composable get() = vectorResource(Res.drawable.style_fill)
+
+    override val stylusFountainPenFill: ImageVector
+        @Composable get() = vectorResource(Res.drawable.stylus_fountain_pen_fill)
 
     override val support: ImageVector
         @Composable get() = vectorResource(Res.drawable.support)
@@ -553,6 +557,6 @@ internal class SharedResources : CoreResources {
     override val volunteerActivism: ImageVector
         @Composable get() = vectorResource(Res.drawable.volunteer_activism)
 
-    override val workspaces: ImageVector
-        @Composable get() = vectorResource(Res.drawable.workspaces)
+    override val workspacesFill: ImageVector
+        @Composable get() = vectorResource(Res.drawable.workspaces_fill)
 }
